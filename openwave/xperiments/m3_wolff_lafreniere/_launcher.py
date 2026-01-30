@@ -388,7 +388,7 @@ def initialize_xperiment(state):
         print("=" * 64)
 
 
-def compute_wave_motion(state):
+def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
     ewave.propagate_wave(
@@ -568,7 +568,7 @@ def main():
 
         if not state.PAUSED:
             # Run simulation step and update time
-            compute_wave_motion(state)
+            compute_wave_oscillation(state)
             compute_force_motion(state)
             state.elapsed_t_rs += state.TIMESTEP  # Accumulate simulation time
             state.frame += 1

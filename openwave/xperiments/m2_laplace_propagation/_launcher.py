@@ -457,7 +457,7 @@ def initialize_xperiment(state):
         instrument.plot_static_charge_profile(state.wave_field)
 
 
-def compute_wave_motion(state):
+def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages.
     The static pulse creates a natural equilibrium via Dirichlet BC reflections.
     """
@@ -615,7 +615,7 @@ def main():
         if not state.PAUSED:
             # Run simulation step and update time
             state.compute_timestep()
-            compute_wave_motion(state)
+            compute_wave_oscillation(state)
             state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1
 
