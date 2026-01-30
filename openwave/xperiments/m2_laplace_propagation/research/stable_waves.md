@@ -425,7 +425,7 @@ The smooth envelope provides infinite hysteresis - charging amplitude is a conti
 ### Charging Control Flow
 
 ```python
-def compute_wave_motion(state):
+def compute_wave_oscillation(state):
     """Compute wave propagation with smooth charging and damping."""
 
     # Compute smooth charging envelope (0.0 to 1.0)

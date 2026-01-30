@@ -364,7 +364,7 @@ def initialize_xperiment(state):
         instrument.print_initial_parameters()
 
 
-def compute_wave_motion(state):
+def compute_wave_oscillation(state):
     """Compute granule oscillations from wave superposition.
 
     Args:
@@ -498,7 +498,7 @@ def main():
             state.elapsed_t += current_time - state.last_time  # Real-time delta accumulation
             state.last_time = current_time
 
-            compute_wave_motion(state)
+            compute_wave_oscillation(state)
             state.frame += 1
         else:
             # Prevent time jump on resume
