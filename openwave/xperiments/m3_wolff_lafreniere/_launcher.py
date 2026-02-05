@@ -239,7 +239,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
     """
     selected_xperiment = None
 
-    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.32) as sub:
+    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.37) as sub:
         sub.text("(needs window reload)", color=colormap.LIGHT_BLUE[1])
         for xp_name in xperiment_mgr.available_xperiments:
             display_name = xperiment_mgr.get_xperiment_display_name(xp_name)
@@ -256,7 +256,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.27) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.37, 0.16, 0.27) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
@@ -276,30 +276,44 @@ def display_controls(state):
 
 def display_wave_menu(state):
     """Display wave properties selection menu."""
-    with render.gui.sub_window("WAVE MENU", 0.00, 0.70, 0.15, 0.17) as sub:
+    with render.gui.sub_window("WAVE MENU", 0.00, 0.71, 0.15, 0.17) as sub:
         if sub.checkbox("Displacement (Longitudinal)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
+        if sub.checkbox("Displacement (Transverse)", state.WAVE_MENU == 2):
+            state.WAVE_MENU = 2
         if sub.checkbox("Amplitude (Longitudinal)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
         if sub.checkbox("Envelope (Longitudinal)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
+        if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 5):
+            state.WAVE_MENU = 5
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement (Longitudinal) on greenyellow gradient
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
-            with render.gui.sub_window("displacement", 0.00, 0.64, 0.08, 0.06) as sub:
+            with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
                     f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                )
+        if state.WAVE_MENU == 2:  # Displacement (Transverse) on bluered gradient
+            render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
+            with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
+                sub.text(
+                    f"{-state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
         if state.WAVE_MENU == 3:  # Amplitude (Longitudinal) on viridis gradient
             render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
-            with render.gui.sub_window("amplitude", 0.00, 0.64, 0.08, 0.06) as sub:
+            with render.gui.sub_window("amplitude", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m")
         if state.WAVE_MENU == 4:  # Envelope (Longitudinal) on greenyellow gradient
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
-            with render.gui.sub_window("envelope", 0.00, 0.64, 0.08, 0.06) as sub:
+            with render.gui.sub_window("envelope", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
                     f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
+        if state.WAVE_MENU == 5:  # Frequency (L&T) on blueprint gradient
+            render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
+            with render.gui.sub_window("frequency", 0.00, 0.65, 0.08, 0.06) as sub:
+                sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -370,15 +384,27 @@ def initialize_xperiment(state):
         state: SimulationState instance with xperiment parameters
     """
     global gy_palette_vertices, gy_palette_colors
+    global br_palette_vertices, br_palette_colors
     global vr_palette_vertices, vr_palette_colors
+    global ib_palette_vertices, ib_palette_colors
+    global bp_palette_vertices, bp_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
     gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
-        colormap.greenyellow, 0.00, 0.63, 0.079, 0.01
+        colormap.greenyellow, 0.00, 0.64, 0.079, 0.01
+    )
+    br_palette_vertices, br_palette_colors = colormap.get_palette_scale(
+        colormap.bluered, 0.00, 0.64, 0.079, 0.01
     )
     vr_palette_vertices, vr_palette_colors = colormap.get_palette_scale(
-        colormap.viridis, 0.00, 0.63, 0.079, 0.01
+        colormap.viridis, 0.00, 0.64, 0.079, 0.01
+    )
+    ib_palette_vertices, ib_palette_colors = colormap.get_palette_scale(
+        colormap.ironbow, 0.00, 0.64, 0.079, 0.01
+    )
+    bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
+        colormap.blueprint, 0.00, 0.64, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -437,6 +463,13 @@ def compute_force_motion(state):
         state.trackers,
         state.wave_center,
     )
+    # # DEBUG: Print force analysis every 100 frames
+    # force_motion.debug_force_analysis(
+    #     state.wave_field,
+    #     state.trackers,
+    #     state.wave_center,
+    #     state.frame,
+    # )
     if state.APPLY_MOTION:
         force_motion.integrate_motion_euler(
             state.wave_field,

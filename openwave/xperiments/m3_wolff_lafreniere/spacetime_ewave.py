@@ -179,13 +179,13 @@ def propagate_wave(
             #     / ti.sqrt((k_grid * r_grid) ** 2 + 1)
             # )  # smoothed 1/r decay
 
-            # DAMPED SMOOTHED 1/r ==================================
-            trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-                base_amplitude_am
-                * wave_field.scale_factor
-                * k_grid
-                / ti.sqrt((k_grid * r_grid) ** 2 + (2 * ti.math.pi) ** 2)
-            )  # smoothed 1/r decay
+            # # DAMPED SMOOTHED 1/r ==================================
+            # trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+            #     base_amplitude_am
+            #     * wave_field.scale_factor
+            #     * k_grid
+            #     / ti.sqrt((k_grid * r_grid) ** 2 + (2 * ti.math.pi) ** 2)
+            # )  # smoothed 1/r decay
 
             # # WOLFF-ORIGINAL ENVELOPE ==================================
             # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
@@ -205,7 +205,7 @@ def propagate_wave(
             # else:
             #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
             #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_amq
+            #             base_amplitude_am
             #             * wave_field.scale_factor
             #             * ti.sin(k_grid * r_grid)
             #             / r_grid
@@ -273,25 +273,25 @@ def propagate_wave(
             #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
             #         )  # smooth 1/r decay
 
-            # # DAMPED + WOLFF ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
-            #     )  # finite value at center, k_grid / constant
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * (
-            #                 k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
-            #                 + ti.sin(k_grid * r_grid) / (r_grid * 4)
-            #             )
-            #         )  # smoothed 1/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
+            # DAMPED + WOLFF ==================================
+            if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+                trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                    base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
+                )  # finite value at center, k_grid / constant
+            else:
+                if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+                    trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                        base_amplitude_am
+                        * wave_field.scale_factor
+                        * (
+                            k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
+                            + ti.sin(k_grid * r_grid) / (r_grid * 4)
+                        )
+                    )  # smoothed 1/r decay
+                else:  # FAR-FIELD: smooth 1/r decay
+                    trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                        base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+                    )  # smooth 1/r decay
 
             # # FLAT NEAR-FIELD ==================================
             # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
@@ -542,13 +542,25 @@ def update_flux_mesh_values(
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
         psiL_value = wave_field.psiL_am[i, j, wave_field.fm_plane_z_idx]
+        psiT_value = wave_field.psiT_am[i, j, wave_field.fm_plane_z_idx]
         ampLr_value = trackers.ampL_local_rms_am[i, j, wave_field.fm_plane_z_idx]
         ampLe_value = trackers.ampL_local_envelope_am[i, j, wave_field.fm_plane_z_idx]
+        ampT_value = trackers.ampT_local_rms_am[i, j, wave_field.fm_plane_z_idx]
+        freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # greenyellow
+        if wave_menu == 5:  # blueprint
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
+                wave_field.nz / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
                 ampLe_value,
                 -trackers.ampL_global_rms_am[None] * 2,
@@ -564,6 +576,16 @@ def update_flux_mesh_values(
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 ampLr_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # bluered
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
+                psiT_value,
+                -trackers.ampT_global_rms_am[None] * 2,
+                trackers.ampT_global_rms_am[None] * 2,
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                psiT_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
         else:  # default to greenyellow (wave_menu == 1)
@@ -583,13 +605,25 @@ def update_flux_mesh_values(
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         psiL_value = wave_field.psiL_am[i, wave_field.fm_plane_y_idx, k]
+        psiT_value = wave_field.psiT_am[i, wave_field.fm_plane_y_idx, k]
         ampLr_value = trackers.ampL_local_rms_am[i, wave_field.fm_plane_y_idx, k]
         ampLe_value = trackers.ampL_local_envelope_am[i, wave_field.fm_plane_y_idx, k]
+        ampT_value = trackers.ampT_local_rms_am[i, wave_field.fm_plane_y_idx, k]
+        freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # greenyellow
+        if wave_menu == 5:  # blueprint
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
+                wave_field.ny / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
                 ampLe_value,
                 -trackers.ampL_global_rms_am[None] * 2,
@@ -605,6 +639,16 @@ def update_flux_mesh_values(
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 ampLr_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # bluered
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
+                psiT_value,
+                -trackers.ampT_global_rms_am[None] * 2,
+                trackers.ampT_global_rms_am[None] * 2,
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                psiT_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
         else:  # default to greenyellow (wave_menu == 1)
@@ -624,13 +668,25 @@ def update_flux_mesh_values(
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         psiL_value = wave_field.psiL_am[wave_field.fm_plane_x_idx, j, k]
+        psiT_value = wave_field.psiT_am[wave_field.fm_plane_x_idx, j, k]
         ampLr_value = trackers.ampL_local_rms_am[wave_field.fm_plane_x_idx, j, k]
         ampLe_value = trackers.ampL_local_envelope_am[wave_field.fm_plane_x_idx, j, k]
+        ampT_value = trackers.ampT_local_rms_am[wave_field.fm_plane_x_idx, j, k]
+        freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # greenyellow
+        if wave_menu == 5:  # blueprint
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
+                wave_field.nx / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
                 ampLe_value,
                 -trackers.ampL_global_rms_am[None] * 2,
@@ -646,6 +702,16 @@ def update_flux_mesh_values(
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 ampLr_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # bluered
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
+                psiT_value,
+                -trackers.ampT_global_rms_am[None] * 2,
+                trackers.ampT_global_rms_am[None] * 2,
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                psiT_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
         else:  # default to greenyellow (wave_menu == 1)
