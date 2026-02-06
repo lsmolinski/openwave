@@ -786,13 +786,13 @@ def interact_wc1_pulse(wave_field: ti.template(), elapsed_t_rs):  # type: ignore
         wave_field: WaveField instance containing displacement arrays and grid info
     """
     wc1x, wc1y, wc1z = wave_field.nx * 2 // 3, wave_field.ny * 2 // 3, wave_field.nz // 2
-    wc_radius = 0  # radius in voxels
+    wc_radius = 12  # radius in voxels
     wc_radius_sq = wc_radius**2  # radius² = 8² voxels (≈ λ/4 for λ=30dx)
     boost = 1  # amplitude boost factor
 
     # Compute angular frequency (ω = 2πf) for temporal phase variation
     omega_rs = (
-        2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
+        4.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
     )  # angular frequency (rad/rs)
 
     for i, j, k in ti.ndrange(
@@ -826,13 +826,13 @@ def interact_wc2_pulse(wave_field: ti.template(), elapsed_t_rs):  # type: ignore
         wave_field: WaveField instance containing displacement arrays and grid info
     """
     wc2x, wc2y, wc2z = wave_field.nx * 3 // 4, wave_field.ny * 3 // 4, wave_field.nz // 2
-    wc_radius = 0  # radius in voxels
+    wc_radius = 12  # radius in voxels
     wc_radius_sq = wc_radius**2  # radius² = 8² voxels (≈ λ/4 for λ=30dx)
     boost = 1  # amplitude boost factor
 
     # Compute angular frequency (ω = 2πf) for temporal phase variation
     omega_rs = (
-        2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
+        4.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
     )  # angular frequency (rad/rs)
 
     for i, j, k in ti.ndrange(
