@@ -22,7 +22,7 @@ print("- The hypothesis that heat relates to standing wave dynamics within parti
 print("  is testable in simulation by comparing predictions between the two models.")
 print()
 print("=" * 64)
-print("\nWanna join the Thermal Waves Xperiment?  Apply here:")
+print("\nWanna join the Thermal Waves Xperiment? Express your interest here:")
 print("  https://github.com/openwave-labs/openwave/discussions/categories/join-xperiments")
 
 try:

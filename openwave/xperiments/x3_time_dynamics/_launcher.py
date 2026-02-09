@@ -26,7 +26,7 @@ print("\n- Goals:")
 print("  Demonstrate time dilation effects in wave medium")
 
 
-print("\nWanna join the Time-Dynamics Xperiment? Apply here:")
+print("\nWanna join the Time-Dynamics Xperiment? Express your interest here:")
 print("  https://github.com/openwave-labs/openwave/discussions/categories/join-xperiments")
 
 try:
