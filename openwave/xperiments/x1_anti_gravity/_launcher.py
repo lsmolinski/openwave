@@ -13,7 +13,7 @@ print(
     "  https://www.researchgate.net/publication/396329338_Method_for_Controlling_the_Motion_of_Non-Magnetic_Objects_Utilizing_Proton_Vibration_Energy"
 )
 
-print("\nWanna join the Anti-Gravity Xperiment?  Apply here:")
+print("\nWanna join the Anti-Gravity Xperiment? Express your interest here:")
 print("  https://github.com/openwave-labs/openwave/discussions/categories/join-xperiments")
 
 try:
