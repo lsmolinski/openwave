@@ -1,11 +1,13 @@
 """
-XPERIMENT: [WIP] TIME-DYNAMICS EXPERIMENT: Time as a function of medium disturbance
+XPERIMENT: [WIP] TIME-DYNAMICS Xperiment: Time as a function of medium disturbance
 
 """
 
 import sys
 
-print("Work in Progress XPERIMENT")
+print("Work in Progress XPERIMENT: TIME-DYNAMICS")
+print("=" * 64)
+print()
 print("- Time-Dynamics: Time dilation/contraction by wave-medium interaction")
 print("- Wavelength (lambda) and frequency (f) modulation effects on local time")
 
@@ -24,8 +26,8 @@ print("\n- Goals:")
 print("  Demonstrate time dilation effects in wave medium")
 
 
-print("\nWanna join the Time-Dynamics Xperiment? Contact us at:")
-print("  https://www.openwavelabs.com")
+print("\nWanna join the Time-Dynamics Xperiment? Apply here:")
+print("  https://github.com/openwave-labs/openwave/discussions/categories/join-xperiments")
 
 try:
     input("\nPress ENTER to return...")
