@@ -14,7 +14,7 @@ density)
 ## Wave Size
 
 - WAVE-DISPLACEMENT: `ψl & ψt [m]`, harmonic oscillation in 2 polarities
-- WAVE-AMPLITUDE: `Al & At = max|ψ| [m]`, displacement envelope (force/pressure/density) [EWT Constant]
+- WAVE-AMPLITUDE: `Al & At = max|ψ| [m]`, displacement envelope (pressure/density/force) [EWT Constant]
 - WAVE-LENGTH: `λ = c/f [m]`, spatial period (changes when moving particle, doppler) [EWT Constant]
   - spatial frequency: `ξ = 1/λ [1/m]`
   - angular wave number: `k = 2π/λ [rad/m]`
