@@ -138,7 +138,7 @@ Key Differences:
 | Order      | 2nd order in time          | 1st order in time                         |
 | Wave speed | Finite c                   | Infinite (dispersion relation ω = ℏk²/2m) |
 | ψ meaning  | Real displacement          | Complex probability amplitude             |
-| Energy     | E = ρV(fA)² (field energy) | E = ⟨ψ\|Ĥ\|ψ⟩ (expectation)                 |
+| Energy     | E = ρV(fA)² (field energy) | E = ⟨ψ\|Ĥ\|ψ⟩ (expectation)               |
 | Particles  | Emergent from wave centers | Fundamental (wave-particle duality)       |
 
 Could we use Schrödinger numerics?
@@ -177,10 +177,10 @@ Verdict: ❌ Not applicable. Dirac equation is for quantum spin-½ fermions. Ope
 |---------------------------|---------------|----------------------------------------------------|
 | Plane-wave eigenmodes     | ⚠️ Limited    | Analysis tool only, not for time-stepping          |
 | Lattice Boltzmann         | ⚠️ Complex    | Not recommended - wrong physics paradigm           |
-| Path Integral Monte Carlo | ❌ No          | Quantum statistical mechanics, not classical waves |
-| Spectral methods          | ✅ Possibly    | Hybrid approach for smooth wave propagation phase  |
+| Path Integral Monte Carlo | ❌ No         | Quantum statistical mechanics, not classical waves |
+| Spectral methods          | ✅ Possibly   | Hybrid approach for smooth wave propagation phase  |
 | Schrödinger equation      | ⚠️ Conceptual | Different physics, can't use directly              |
-| Dirac equation            | ❌ No          | Quantum spinors, not classical scalar waves        |
+| Dirac equation            | ❌ No         | Quantum spinors, not classical scalar waves        |
 
 ## Recommendation for OpenWave LEVEL-1
 

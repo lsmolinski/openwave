@@ -87,17 +87,17 @@ dt_frame = 1/60 ≈ 0.016 s
 
 ## Direct Comparison
 
-| Aspect              | Spring-Mass (LEVEL-0)                     | Wave PDE (LEVEL-1)             |
-|---------------------|-------------------------------------------|--------------------------------|
-| Governing equation  | F = -k(x-L), ẍ = F/m                      | ψ̈ = c²∇²ψ                     |
-| Stiffness           | k ≈ 5.56×10⁴⁴ N/m (FIXED!)                | No springs - pure wave         |
-| CFL condition       | dt < 2/√(k/m)                             | dt < dx/(c√3)                  |
-| Critical dt         | ~7×10⁻¹⁸ s (INFLEXIBLE)                   | ~2.4×10⁻²⁷ s (raw)             |
-| SLO_MO mitigation  | ❌ Can't reduce k without breaking physics | ✅ Can reduce c directly        |
-| Numerical stability | ❌ Explodes (NaN at 0.4s)                  | ✅ Stable with c_slo         |
-| Wave speed fidelity | ❌ XPBD: ~12.5% of c                       | ✅ Exact by construction        |
-| Computational cost  | 8-neighbor springs per granule            | 6-neighbor Laplacian per voxel |
-| Result              | IMPOSSIBLE TRIANGLE                       | FEASIBLE SIMULATION            |
+| Aspect              | Spring-Mass (LEVEL-0)                     | Wave PDE (LEVEL-1)         |
+|---------------------|-------------------------------------------|----------------------------|
+| Governing equation  | F = -k(x-L), ẍ = F/m                      | ψ̈ = c²∇²ψ                  |
+| Stiffness           | k ≈ 5.56×10⁴⁴ N/m (FIXED!)                | No springs - pure wave     |
+| CFL condition       | dt < 2/√(k/m)                             | dt < dx/(c√3)              |
+| Critical dt         | ~7×10⁻¹⁸ s (INFLEXIBLE)                   | ~2.4×10⁻²⁷ s (raw)         |
+| SLO_MO mitigation   | Can't reduce k w/out breaking physics     | Can reduce c directly      |
+| Numerical stability | Explodes (NaN at 0.4s)                    | Stable with c_slo          |
+| Wave speed fidelity | XPBD: ~12.5% of c                         | Exact by construction      |
+| Computational cost  | 8-neighbor springs per granule            | 6-neighbor Laplacian /voxel|
+| Result              | IMPOSSIBLE TRIANGLE                       | FEASIBLE SIMULATION        |
 
 ## Why You Won't Have Numerical Explosion Now
 
@@ -238,7 +238,7 @@ N_substeps = 1  # Single timestep per frame! ✓ STABLE
 ### Comparison Table
 
 | Technique | Spring-Mass (LEVEL-0) | Wave PDE (LEVEL-1) |
-|-----------|----------------------|-------------------|
+| --------- | --------------------- | ------------------ |
 | **Substeps needed** | 40 million per frame | **0** (single step) |
 | **What you tried** | 1000 substeps → NaN | Not applicable |
 | **Why it failed** | k is FIXED by physics | Not applicable |
