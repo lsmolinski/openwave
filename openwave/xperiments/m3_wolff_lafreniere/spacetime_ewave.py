@@ -320,7 +320,9 @@ def propagate_wave(
 
         curr_disp = wave_field.psiL_am[i, j, k]
 
-        # WAVE-TRACKERS ============================================
+        # ================================================================
+        # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
+        # ================================================================
         # # PEAK AMPLITUDE tracking
         # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
         # decay_factor_peak = ti.cast(0.999, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
