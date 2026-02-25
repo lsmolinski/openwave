@@ -321,7 +321,7 @@ def display_level_specs(state, level_bar_vertices):
     render.canvas.triangles(level_bar_vertices, color=colormap.GREEN[1])
     with render.gui.sub_window("VECTOR-WAVE METHOD", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
-        sub.text("Data-Structure: Scalar Field")
+        sub.text("Data-Structure: Vector Field")
         sub.text("Coupling: Phase Sync")
         sub.text("Propagation: Analytical Function")
         sub.text("Boundary: Open (Non-Reflective)")
@@ -417,13 +417,27 @@ def initialize_xperiment(state):
 def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
-    ewave.propagate_wave(
-        state.wave_field,
-        state.trackers,
-        state.wave_center,
-        state.TIMESTEP,
-        state.elapsed_t_rs,
-    )
+    if state.SHOW_FLUX_MESH == 0:
+        # Optimized mode: only compute wave center neighbors (selective voxels)
+        ewave.select_voxels(state.wave_field, state.wave_center)
+        num_selected = state.wave_field.num_selected_voxels[None]
+        ewave.propagate_wave_neighbors(
+            state.wave_field,
+            state.trackers,
+            state.wave_center,
+            state.TIMESTEP,
+            state.elapsed_t_rs,
+            num_selected,
+        )
+    else:
+        # Full grid mode: compute all voxels (for flux mesh visualization)
+        ewave.propagate_wave_full(
+            state.wave_field,
+            state.trackers,
+            state.wave_center,
+            state.TIMESTEP,
+            state.elapsed_t_rs,
+        )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead

@@ -28,15 +28,96 @@ rho = constants.MEDIUM_DENSITY  # medium density for Gaussian energy calc (kg/m�
 
 
 @ti.kernel
-def propagate_wave(
+def select_voxels(
+    wave_field: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+):
+    """
+    Select voxels for optimized wave computation (neighbor-only mode).
+
+    Populates wave_field.selected_voxels with the center + 6 neighbors
+    of each active wave center. Used for force gradient calculations
+    when flux mesh visualization is disabled.
+
+    Args:
+        wave_field: WaveField instance with selected_voxels buffer
+        wave_center: WaveCenter instance with source positions
+    """
+    # Reset counter
+    wave_field.num_selected_voxels[None] = 0
+
+    # 6-neighbor offsets: +x, -x, +y, -y, +z, -z (plus center = 0,0,0)
+    # Using static unrolling for performance
+    for wc_idx in range(wave_center.num_sources):
+        if wave_center.active[wc_idx] == 0:
+            continue
+
+        # Get wave center grid position
+        cx = wave_center.position_grid[wc_idx][0]
+        cy = wave_center.position_grid[wc_idx][1]
+        cz = wave_center.position_grid[wc_idx][2]
+
+        # Add center voxel (offset 0)
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector([cx, cy, cz])
+
+        # Add 6 neighbors with boundary clamping
+        # +x neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector(
+                [ti.min(cx + 1, wave_field.nx - 1), cy, cz]
+            )
+
+        # -x neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector([ti.max(cx - 1, 0), cy, cz])
+
+        # +y neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector(
+                [cx, ti.min(cy + 1, wave_field.ny - 1), cz]
+            )
+
+        # -y neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector([cx, ti.max(cy - 1, 0), cz])
+
+        # +z neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector(
+                [cx, cy, ti.min(cz + 1, wave_field.nz - 1)]
+            )
+
+        # -z neighbor
+        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
+        if idx < wave_field.max_selected_voxels:
+            wave_field.selected_voxels[idx] = ti.Vector([cx, cy, ti.max(cz - 1, 0)])
+
+
+@ti.func
+def compute_voxel_wave(
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
     dt_rs: ti.f32,  # type: ignore
     elapsed_t_rs: ti.f32,  # type: ignore
+    k_grid: ti.f32,  # type: ignore
+    temporal_phase: ti.f32,  # type: ignore
 ):
     """
-    Compute wave displacement using Wolff-LaFreniere analytical wave equation.
+    Compute wave displacement and envelope for a single voxel.
+
+    This function contains the core wave physics computation shared by both
+    full-grid and neighbor-only iteration modes.
 
     Wolff-LaFreniere Combined Form:
         ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
@@ -63,6 +144,364 @@ def propagate_wave(
     See research/01_wolff_lafreniere.md for full derivation and theory.
 
     Args:
+        i, j, k: Voxel grid indices
+        wave_field: WaveField instance
+        trackers: WaveTrackers instance
+        wave_center: WaveCenter instance
+        dt_rs: Timestep size (rs)
+        elapsed_t_rs: Elapsed simulation time (rs)
+        k_grid: Angular wave number (radians per grid index)
+        temporal_phase: Current temporal phase (ω·t)
+    """
+    # Reset before accumulation
+    prev_disp = wave_field.psiL_am[i, j, k]
+    wave_field.psiL_am[i, j, k] = 0.0
+    trackers.ampL_local_envelope_am[i, j, k] = 0.0
+
+    # ================================================================
+    # WAVE PROPAGATION: Update voxels using wave functions
+    # ================================================================
+    # Loop over wave-centers (wave superposition principle causing interference)
+    for wc_idx in range(wave_center.num_sources):
+        # Skip inactive (annihilated) WCs
+        if wave_center.active[wc_idx] == 0:
+            continue
+
+        # Compute radial distance from wave source (in grid indices)
+        r_grid = ti.sqrt(
+            (i - wave_center.position_grid[wc_idx][0]) ** 2
+            + (j - wave_center.position_grid[wc_idx][1]) ** 2
+            + (k - wave_center.position_grid[wc_idx][2]) ** 2
+        )
+
+        # Cache source-specific phase offset
+        source_offset = wave_center.offset[wc_idx]
+
+        # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
+        spatial_phase = k_grid * r_grid
+
+        # ================================================================
+        # Combined and Adjusted WOLFF-LAFRENIERE canonical form:
+        #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
+        # Expanded form:
+        #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
+        #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
+        # ================================================================
+        # Phase term: sin(kr)/r → k as r→0 (physical units)
+        phase_term = ti.select(
+            r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            k_grid,  # analytical limit
+            ti.sin(spatial_phase) / r_grid,
+        )
+
+        # Quadrature term: (1-cos(kr))/r → 0 as r→0
+        quadrature_term = ti.select(
+            r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            0.0,  # analytical limit
+            (1 - ti.cos(spatial_phase)) / r_grid,
+        )
+
+        # Oscillator with source_offset phase shift
+        oscillator = (
+            -ti.cos(temporal_phase + source_offset) * phase_term
+            - ti.sin(temporal_phase + source_offset) * quadrature_term
+        )
+
+        wave_field.psiL_am[i, j, k] += base_amplitude_am * wave_field.scale_factor * oscillator
+
+        # ================================================================
+        # ANALYTICAL SIGNED AMPLITUDE ENVELOPE
+        # TODO: Refine envelope model for force calculations
+        # TODO: Archive previous envelope models in research/
+        # Particles don't respond to 10²⁵ Hz oscillation frequencies.
+        # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
+        # oscillations and responding only to the time-averaged energy-density (envelope).
+        # This envelope drives the force calculations, computed directly from wave functions.
+        # Applies superposition principle for multiple wave-centers, with signed charge sign.
+        # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
+        # Also avoids instability from real-time EMS calculations of moving wave-centers.
+        # ================================================================
+        # Charge sign: cos(0)=+1 (eg: positron), cos(π)=-1 (eg: electron)
+        charge_sign = ti.cos(source_offset)
+
+        # TODO: Investigate why these constants work well for envelope
+        golden_ratio = (1 + ti.sqrt(5)) / 2  # ~1.6180339887
+        # weight_factor = 2.0 * ti.math.pi**2  # ~19.7392088, decay, damping
+        # offset_factor = 1 / (wavelength_grid * golden_ratio)
+
+        # # SPIKED 1/r ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid * 2
+        #     )  # finite value at center, k_grid / constant + offset
+        # else:  # FAR-FIELD: smooth 1/r decay
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #     )  # spiked 1/r decay
+
+        # # SMOOTHED 1/r ==================================
+        # trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #     base_amplitude_am
+        #     * wave_field.scale_factor
+        #     * k_grid
+        #     / ti.sqrt((k_grid * r_grid) ** 2 + 1)
+        # )  # smoothed 1/r decay
+
+        # # DAMPED SMOOTHED 1/r ==================================
+        # trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #     base_amplitude_am
+        #     * wave_field.scale_factor
+        #     * k_grid
+        #     / ti.sqrt((k_grid * r_grid) ** 2 + (2 * ti.math.pi) ** 2)
+        # )  # smoothed 1/r decay
+
+        # # WOLFF-ORIGINAL ENVELOPE ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid
+        #     )  # finite value at center, k_grid
+        # else:
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * ti.sin(k_grid * r_grid) / r_grid
+        #     )  # standing-smooth sin(kr)/r decay
+
+        # # WOLFF ONLY AT NEAR-FIELD ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid
+        #     )  # finite value at center, k_grid
+        # else:
+        #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am
+        #             * wave_field.scale_factor
+        #             * ti.sin(k_grid * r_grid)
+        #             / r_grid
+        #         )  # standing-smooth sin(kr)/r decay
+        #     else:  # FAR-FIELD: smooth 1/r decay
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #         )  # smooth 1/r decay
+
+        # # ABS WOLFF ONLY NEAR-FIELD ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid
+        #     )  # finite value at center, k_grid
+        # else:
+        #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am
+        #             * wave_field.scale_factor
+        #             * ti.abs(ti.sin(k_grid * r_grid))
+        #             / r_grid
+        #         )  # standing-smooth sin(kr)/r decay
+        #     else:  # FAR-FIELD: smooth 1/r decay
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #         )  # smooth 1/r decay
+
+        # # DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi)
+        #         + 1 / (wavelength_grid * golden_ratio)
+        #     )  # finite value at center, k_grid / constant + offset
+        # else:
+        #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am
+        #             * wave_field.scale_factor
+        #             * ti.sin(k_grid * r_grid)
+        #             / (r_grid * 2 * ti.math.pi)
+        #             + 1 / (wavelength_grid * golden_ratio)
+        #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
+        #     else:  # FAR-FIELD: smooth 1/r decay
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #         )  # smooth 1/r decay
+
+        # # ABS DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid / (2)
+        #         + 1 / (wavelength_grid * golden_ratio)
+        #     )  # finite value at center, k_grid / constant + offset
+        # else:
+        #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.5λ
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am
+        #             * wave_field.scale_factor
+        #             * ti.abs(ti.sin(k_grid * r_grid))
+        #             / (r_grid * 2)
+        #             + 1 / (wavelength_grid * golden_ratio)
+        #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
+        #     else:  # FAR-FIELD: smooth 1/r decay
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #         )  # smooth 1/r decay
+
+        # DAMPED + WOLFF ==================================
+        if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+            trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
+            )  # finite value at center, k_grid / constant
+        else:
+            if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+                trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                    base_amplitude_am
+                    * wave_field.scale_factor
+                    * (
+                        k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
+                        + ti.sin(k_grid * r_grid) / (r_grid * 4)
+                    )
+                )  # smoothed 1/r decay
+            else:  # FAR-FIELD: smooth 1/r decay
+                trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+                    base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+                )  # smooth 1/r decay
+
+        # # FLAT NEAR-FIELD ==================================
+        # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+        #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi * 1.25)
+        #     )  # finite value at center, k_grid
+        # else:
+        #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am
+        #             * wave_field.scale_factor
+        #             * k_grid
+        #             / (2 * ti.math.pi * 1.25)
+        #         )  # standing-smooth sin(kr)/r decay
+        #     else:  # FAR-FIELD: smooth 1/r decay
+        #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
+        #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+        #         )  # smooth 1/r decay
+
+    # Precision rounding to ensure wave cancellation
+    # Critical for opposing phase sources (180°) that should annihilate
+    # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
+    # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
+    precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
+    wave_field.psiL_am[i, j, k] = ti.round(wave_field.psiL_am[i, j, k] * precision) / precision
+
+    curr_disp = wave_field.psiL_am[i, j, k]
+
+    # ================================================================
+    # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
+    # ================================================================
+    # # PEAK AMPLITUDE tracking
+    # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
+    # decay_factor_peak = ti.cast(0.999, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
+    # trackers.ampL_local_peak_am[i, j, k] = (
+    #     trackers.ampL_local_peak_am[i, j, k] * decay_factor_peak
+    # )
+
+    # RMS AMPLITUDE tracking via EMA on ψ² (squared displacement)
+    # Running RMS: tracks √⟨ψ²⟩ - the energy-equivalent amplitude (Energy ∝ ψ²)
+    # Used for: energy calculation, force gradients, visualization scaling
+    # Physics: particles respond to time-averaged energy density, not
+    # instantaneous displacement (inertia acts as low-pass filter at ~10²⁵ Hz)
+    # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
+    # α controls adaptation speed: higher = faster response, lower = smoother
+    # 2 polarities tracked: longitudinal & transverse
+    # Longitudinal RMS amplitude
+    disp2_L = wave_field.psiL_am[i, j, k] ** 2
+    current_rms2_L = trackers.ampL_local_rms_am[i, j, k] ** 2
+    alpha_rms_L = 0.005  # EMA smoothing factor for RMS tracking
+    new_rms2_L = alpha_rms_L * disp2_L + (1.0 - alpha_rms_L) * current_rms2_L
+    new_ampL = ti.sqrt(new_rms2_L)
+    # Unconditional decay clears trails from moving sources
+    # Active regions counteract decay via EMA update from strong displacement
+    # Stale regions (waves propagated away) decay to zero over time
+    decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
+    trackers.ampL_local_rms_am[i, j, k] = new_ampL * decay_factor
+
+    # Transverse RMS amplitude
+    disp2_T = wave_field.psiT_am[i, j, k] ** 2
+    current_rms2_T = trackers.ampT_local_rms_am[i, j, k] ** 2
+    alpha_rms_T = 0.005  # EMA smoothing factor for RMS tracking
+    new_rms2_T = alpha_rms_T * disp2_T + (1.0 - alpha_rms_T) * current_rms2_T
+    new_ampT = ti.sqrt(new_rms2_T)
+    trackers.ampT_local_rms_am[i, j, k] = new_ampT * decay_factor
+
+    # TODO: review new frequency tracking method
+    # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
+    # Detect positive-going zero crossing (negative → positive transition)
+    # Period = time between consecutive positive zero crossings
+    # More robust than peak detection since it's amplitude-independent
+    # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
+    # α controls adaptation speed: higher = faster response, lower = smoother
+    if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
+        period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
+        if period_rs > dt_rs * 2:  # Filter out spurious crossings
+            measured_freq = 1.0 / period_rs  # in rHz
+            current_freq = trackers.freq_local_cross_rHz[i, j, k]
+            alpha_freq = 0.05  # EMA smoothing factor for frequency
+            trackers.freq_local_cross_rHz[i, j, k] = (
+                alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
+            )
+        trackers.last_crossing[i, j, k] = elapsed_t_rs
+
+    # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
+    trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
+
+
+@ti.kernel
+def propagate_wave_neighbors(
+    wave_field: ti.template(),  # type: ignore
+    trackers: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
+    num_selected: ti.i32,  # type: ignore
+):
+    """
+    Compute wave displacement for selected neighbor voxels only (optimized mode).
+
+    Processes only the voxels selected by select_voxels() - the center + 6 neighbors
+    of each active wave center. Used for force gradient calculations when flux mesh
+    visualization is disabled.
+
+    Performance: ~7*N voxels instead of nx*ny*nz (massive gain for large grids).
+
+    Args:
+        wave_field: WaveField instance with selected_voxels populated
+        trackers: WaveTrackers instance for amplitude envelope
+        wave_center: WaveCenter instance with source positions
+        dt_rs: Timestep size (rs)
+        elapsed_t_rs: Elapsed simulation time (rs)
+        num_selected: Number of selected voxels to process
+    """
+    # Compute wave parameters
+    omega_rs = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
+    wavelength_grid = base_wavelength * wave_field.scale_factor / wave_field.dx
+    k_grid = 2.0 * ti.math.pi / wavelength_grid
+    temporal_phase = omega_rs * elapsed_t_rs
+
+    # Iterate only over selected voxels (neighbors of wave centers)
+    for sel_idx in range(num_selected):
+        i = wave_field.selected_voxels[sel_idx][0]
+        j = wave_field.selected_voxels[sel_idx][1]
+        k = wave_field.selected_voxels[sel_idx][2]
+        compute_voxel_wave(
+            i, j, k, wave_field, trackers, wave_center, dt_rs, elapsed_t_rs, k_grid, temporal_phase
+        )
+
+
+@ti.kernel
+def propagate_wave_full(
+    wave_field: ti.template(),  # type: ignore
+    trackers: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
+):
+    """
+    Compute wave displacement using Wolff-LaFreniere analytical wave equation (full grid).
+
+    Args:
         wave_field: WaveField instance containing displacement arrays and grid info
         trackers: WaveTrackers instance for tracking wave properties
         wave_center: WaveCenter instance with source positions and phase offsets
@@ -84,298 +523,11 @@ def propagate_wave(
     # Temporal phase: φ = ω·t, oscillatory in time
     temporal_phase = omega_rs * elapsed_t_rs
 
-    # ================================================================
-    # WAVE PROPAGATION: Update voxels using wave functions
-    # ================================================================
-    # Update all voxels
+    # FULL GRID MODE: Compute all voxels (needed for flux mesh visualization)
     for i, j, k in ti.ndrange(nx, ny, nz):
-        prev_disp = wave_field.psiL_am[i, j, k]
-        wave_field.psiL_am[i, j, k] = 0.0  # reset before accumulation
-        trackers.ampL_local_envelope_am[i, j, k] = 0.0  # reset envelope before accumulation
-
-        # loop over wave-centers (wave superposition principle causing interference)
-        for wc_idx in ti.ndrange(wave_center.num_sources):
-            # Skip inactive (annihilated) WCs
-            if wave_center.active[wc_idx] == 0:
-                continue
-
-            # Compute radial distance from wave source (in grid indices)
-            r_grid = ti.sqrt(
-                (i - wave_center.position_grid[wc_idx][0]) ** 2
-                + (j - wave_center.position_grid[wc_idx][1]) ** 2
-                + (k - wave_center.position_grid[wc_idx][2]) ** 2
-            )
-
-            # Cache source-specific phase offset
-            source_offset = wave_center.offset[wc_idx]
-
-            # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
-            spatial_phase = k_grid * r_grid
-
-            # ================================================================
-            # Combined and Adjusted WOLFF-LAFRENIERE canonical form:
-            #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-            # Expanded form:
-            #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-            #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-            # ================================================================
-            # Phase term: sin(kr)/r → k as r→0 (physical units)
-            phase_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                k_grid,  # analytical limit
-                ti.sin(spatial_phase) / r_grid,
-            )
-
-            # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            quadrature_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                0.0,  # analytical limit
-                (1 - ti.cos(spatial_phase)) / r_grid,
-            )
-
-            # Oscillator with source_offset phase shift
-            oscillator = (
-                -ti.cos(temporal_phase + source_offset) * phase_term
-                - ti.sin(temporal_phase + source_offset) * quadrature_term
-            )
-
-            wave_field.psiL_am[i, j, k] += base_amplitude_am * wave_field.scale_factor * oscillator
-
-            # ================================================================
-            # ANALYTICAL SIGNED AMPLITUDE ENVELOPE
-            # TODO: Refine envelope model for force calculations
-            # TODO: Archive previous envelope models in research/
-            # Particles don't respond to 10²⁵ Hz oscillation frequencies.
-            # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
-            # oscillations and responding only to the time-averaged energy-density (envelope).
-            # This envelope drives the force calculations, computed directly from wave functions.
-            # Applies superposition principle for multiple wave-centers, with signed charge sign.
-            # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
-            # Also avoids instability from real-time EMS calculations of moving wave-centers.
-            # ================================================================
-            # Charge sign: cos(0)=+1 (eg: positron), cos(π)=-1 (eg: electron)
-            charge_sign = ti.cos(source_offset)
-
-            # TODO: Investigate why these constants work well for envelope
-            golden_ratio = (1 + ti.sqrt(5)) / 2  # ~1.6180339887
-            weight_factor = 2.0 * ti.math.pi**2  # ~19.7392088, decay, damping
-            offset_factor = 1 / (wavelength_grid * golden_ratio)
-
-            # # SPIKED 1/r ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid * 2
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:  # FAR-FIELD: smooth 1/r decay
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #     )  # spiked 1/r decay
-
-            # # SMOOTHED 1/r ==================================
-            # trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #     base_amplitude_am
-            #     * wave_field.scale_factor
-            #     * k_grid
-            #     / ti.sqrt((k_grid * r_grid) ** 2 + 1)
-            # )  # smoothed 1/r decay
-
-            # # DAMPED SMOOTHED 1/r ==================================
-            # trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #     base_amplitude_am
-            #     * wave_field.scale_factor
-            #     * k_grid
-            #     / ti.sqrt((k_grid * r_grid) ** 2 + (2 * ti.math.pi) ** 2)
-            # )  # smoothed 1/r decay
-
-            # # WOLFF-ORIGINAL ENVELOPE ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * ti.sin(k_grid * r_grid) / r_grid
-            #     )  # standing-smooth sin(kr)/r decay
-
-            # # WOLFF ONLY AT NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.sin(k_grid * r_grid)
-            #             / r_grid
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # ABS WOLFF ONLY NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.abs(ti.sin(k_grid * r_grid))
-            #             / r_grid
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi)
-            #         + 1 / (wavelength_grid * golden_ratio)
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.sin(k_grid * r_grid)
-            #             / (r_grid * 2 * ti.math.pi)
-            #             + 1 / (wavelength_grid * golden_ratio)
-            #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # ABS DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2)
-            #         + 1 / (wavelength_grid * golden_ratio)
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.5λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.abs(ti.sin(k_grid * r_grid))
-            #             / (r_grid * 2)
-            #             + 1 / (wavelength_grid * golden_ratio)
-            #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # DAMPED + WOLFF ==================================
-            if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-                trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-                    base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
-                )  # finite value at center, k_grid / constant
-            else:
-                if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-                    trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am
-                        * wave_field.scale_factor
-                        * (
-                            k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
-                            + ti.sin(k_grid * r_grid) / (r_grid * 4)
-                        )
-                    )  # smoothed 1/r decay
-                else:  # FAR-FIELD: smooth 1/r decay
-                    trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-                    )  # smooth 1/r decay
-
-            # # FLAT NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi * 1.25)
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * k_grid
-            #             / (2 * ti.math.pi * 1.25)
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.ampL_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-        # Precision rounding to ensure wave cancellation
-        # Critical for opposing phase sources (180°) that should annihilate
-        # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
-        # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
-        precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
-        wave_field.psiL_am[i, j, k] = ti.round(wave_field.psiL_am[i, j, k] * precision) / precision
-
-        curr_disp = wave_field.psiL_am[i, j, k]
-
-        # WAVE-TRACKERS ============================================
-        # # PEAK AMPLITUDE tracking
-        # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
-        # decay_factor_peak = ti.cast(0.999, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-        # trackers.ampL_local_peak_am[i, j, k] = (
-        #     trackers.ampL_local_peak_am[i, j, k] * decay_factor_peak
-        # )
-
-        # RMS AMPLITUDE tracking via EMA on ψ² (squared displacement)
-        # Running RMS: tracks √⟨ψ²⟩ - the energy-equivalent amplitude (Energy ∝ ψ²)
-        # Used for: energy calculation, force gradients, visualization scaling
-        # Physics: particles respond to time-averaged energy density, not
-        # instantaneous displacement (inertia acts as low-pass filter at ~10²⁵ Hz)
-        # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
-        # α controls adaptation speed: higher = faster response, lower = smoother
-        # 2 polarities tracked: longitudinal & transverse
-        # Longitudinal RMS amplitude
-        disp2_L = wave_field.psiL_am[i, j, k] ** 2
-        current_rms2_L = trackers.ampL_local_rms_am[i, j, k] ** 2
-        alpha_rms_L = 0.005  # EMA smoothing factor for RMS tracking
-        new_rms2_L = alpha_rms_L * disp2_L + (1.0 - alpha_rms_L) * current_rms2_L
-        new_ampL = ti.sqrt(new_rms2_L)
-        # Unconditional decay clears trails from moving sources
-        # Active regions counteract decay via EMA update from strong displacement
-        # Stale regions (waves propagated away) decay to zero over time
-        decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-        trackers.ampL_local_rms_am[i, j, k] = new_ampL * decay_factor
-
-        # Transverse RMS amplitude
-        disp2_T = wave_field.psiT_am[i, j, k] ** 2
-        current_rms2_T = trackers.ampT_local_rms_am[i, j, k] ** 2
-        alpha_rms_T = 0.005  # EMA smoothing factor for RMS tracking
-        new_rms2_T = alpha_rms_T * disp2_T + (1.0 - alpha_rms_T) * current_rms2_T
-        new_ampT = ti.sqrt(new_rms2_T)
-        trackers.ampT_local_rms_am[i, j, k] = new_ampT * decay_factor
-
-        # TODO: review new frequency tracking method
-        # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
-        # Detect positive-going zero crossing (negative → positive transition)
-        # Period = time between consecutive positive zero crossings
-        # More robust than peak detection since it's amplitude-independent
-        # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
-        # α controls adaptation speed: higher = faster response, lower = smoother
-        if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
-            period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
-            if period_rs > dt_rs * 2:  # Filter out spurious crossings
-                measured_freq = 1.0 / period_rs  # in rHz
-                current_freq = trackers.freq_local_cross_rHz[i, j, k]
-                alpha_freq = 0.05  # EMA smoothing factor for frequency
-                trackers.freq_local_cross_rHz[i, j, k] = (
-                    alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
-                )
-            trackers.last_crossing[i, j, k] = elapsed_t_rs
-
-        # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
-        trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
+        compute_voxel_wave(
+            i, j, k, wave_field, trackers, wave_center, dt_rs, elapsed_t_rs, k_grid, temporal_phase
+        )
 
 
 # ================================================================
