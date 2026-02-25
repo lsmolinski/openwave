@@ -181,16 +181,6 @@ class WaveField:
 
         self.create_flux_mesh()
 
-        # ================================================================
-        # Voxel Selection: for optimized neighbor-only wave computation
-        # ================================================================
-        # When flux mesh visualization is off, we only need wave values at
-        # the 6 neighbors + center of each wave center (for force gradients).
-        # Max selected = 7 voxels per wave center (can have duplicates if WCs are close)
-        self.max_selected_voxels = 7 * 64  # support up to 64 wave centers
-        self.selected_voxels = ti.Vector.field(3, dtype=ti.i32, shape=self.max_selected_voxels)
-        self.num_selected_voxels = ti.field(dtype=ti.i32, shape=())
-
     @ti.kernel
     def populate_grid_lines(self):
         """
