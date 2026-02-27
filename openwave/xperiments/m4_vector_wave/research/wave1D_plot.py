@@ -46,7 +46,7 @@ PERIOD_RS = 2 * np.pi / omega_rs  # one full wave period in rontoseconds
 # Displacement Functions
 # ================================================================
 
-wc_spacing = 40 * base_wavelength_am  # am, spacing between wave centers
+wc_spacing = 10 * base_wavelength_am  # am, spacing between wave centers
 
 x_am = np.linspace(-1.5 * wc_spacing, +1.5 * wc_spacing, 1000)
 
@@ -121,6 +121,7 @@ def compute_wave_standing(
     source_offset = get_source_offset(source)
     psi_am = (
         base_amplitude_am
+        / 2
         * np.cos(omega_rs * t_rs + source_offset)  # temporal phases (rad)
         * np.cos(k_am * radius_am)  # spatial phase, φ = k·r (rad)
     )
@@ -143,7 +144,7 @@ def compute_wave_fullamp(
     source_offset = get_source_offset(source)
     psi_am = (
         base_amplitude_am
-        / 1
+        / 2
         * np.cos(  # full amplitude (am)  # oscillator cosine function
             omega_rs * t_rs  # temporal phase (rad)
             + direction * k_am * radius_am  # spatial phase, spherical wave fronts, φ = ±kr (rad)
@@ -550,6 +551,34 @@ PLOT_CONFIGS = [  # 1 WC: standing + ampfalloff
         "label": "TOTAL Psi (am)",
     },
 ]
+
+PLOT_CONFIGS = [  # 2 WC: standing + ampfalloff
+    {
+        "func": ["standing", "standing"],  # sum of both sources
+        "direction": [1, 1],
+        "source": [1, 2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "INCOMING Psi (am)",
+    },
+    {
+        "func": ["ampfalloff", "ampfalloff"],  # sum of both sources
+        "direction": [-1, -1],
+        "source": [1, 2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "OUTGOING Psi (am)",
+    },
+    {
+        "func": ["standing", "ampfalloff", "standing", "ampfalloff"],  # sum of both sources
+        "direction": [1, -1, 1, -1],
+        "source": [1, 1, 2, 2],  # WC1 + WC2
+        "ylim": (-2.5, 2.5),
+        "height_ratio": 1,
+        "label": "TOTAL Psi (am)",
+    },
+]
+
 
 PLOT_CONFIGS = [  # 1 WC: fullamp + ampfalloff
     {
