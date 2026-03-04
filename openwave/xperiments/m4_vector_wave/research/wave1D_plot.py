@@ -46,7 +46,7 @@ PERIOD_RS = 2 * np.pi / omega_rs  # one full wave period in rontoseconds
 # Displacement Functions
 # ================================================================
 
-wc_spacing = 10 * base_wavelength_am  # am, spacing between wave centers
+wc_spacing = 4 * base_wavelength_am  # am, spacing between wave centers
 
 x_am = np.linspace(-1.5 * wc_spacing, +1.5 * wc_spacing, 1000)
 
@@ -144,7 +144,7 @@ def compute_wave_fullamp(
     source_offset = get_source_offset(source)
     psi_am = (
         base_amplitude_am
-        / 2
+        / 1
         * np.cos(  # full amplitude (am)  # oscillator cosine function
             omega_rs * t_rs  # temporal phase (rad)
             + direction * k_am * radius_am  # spatial phase, spherical wave fronts, φ = ±kr (rad)
@@ -634,6 +634,60 @@ PLOT_CONFIGS = [  # 2 WC: fullamp + ampfalloff
     },
 ]
 
+PLOT_CONFIGS = [  # 2 WC: ampfalloff + ampfalloff
+    {
+        "func": ["ampfalloff"],  # sum of both sources
+        "direction": [-1],
+        "source": [1],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "OUTGOING Psi (am)",
+    },
+    {
+        "func": ["ampfalloff"],  # sum of both sources
+        "direction": [-1],
+        "source": [2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "OUTGOING Psi (am)",
+    },
+    {
+        "func": ["ampfalloff", "ampfalloff"],  # sum of both sources
+        "direction": [-1, -1],
+        "source": [1, 2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "TOTAL Psi (am)",
+    },
+]
+
+PLOT_CONFIGS0 = [  # 2 WC: fullamp + fullamp
+    {
+        "func": ["fullamp"],  # sum of both sources
+        "direction": [-1],
+        "source": [1],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "OUTGOING Psi (am)",
+    },
+    {
+        "func": ["fullamp"],  # sum of both sources
+        "direction": [-1],
+        "source": [2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "OUTGOING Psi (am)",
+    },
+    {
+        "func": ["fullamp", "fullamp"],  # sum of both sources
+        "direction": [-1, -1],
+        "source": [1, 2],  # WC1 + WC2
+        "ylim": (-1.5, 1.5),
+        "height_ratio": 1,
+        "label": "TOTAL Psi (am)",
+    },
+]
+
 PLOT_CONFIGS0 = [  # 1 WC: wolff & lafreniere
     {
         "func": "lafreniere",
@@ -1019,47 +1073,33 @@ def plot_waves(start_paused: bool = False, start_frame: int = 0, save_gif: bool 
         ax.axhline(y=0, color="w", linestyle="--", alpha=0.3)
         # WC1 markers (only if WC1 is used)
         if use_wc1:
-            ax.axvline(x=wc1_x_am, color="orange", linestyle="--", alpha=0.5, label="WC1")
+            ax.axvline(x=wc1_x_am, color="#FF0000", linestyle="--", alpha=0.5, label="WC1 ± λ")
             ax.axvline(
                 x=wc1_x_am + base_wavelength_am,
-                color="yellow",
+                color="#FF0000",
                 linestyle="--",
-                alpha=0.3,
-                label="WC1 ± λ",
+                alpha=0.2,
             )
             ax.axvline(
                 x=wc1_x_am - base_wavelength_am,
-                color="yellow",
+                color="#FF0000",
                 linestyle="--",
-                alpha=0.3,
-            )
-            ax.axvline(
-                x=wc1_x_am + 2 * base_wavelength_am,
-                color="yellow",
-                linestyle="--",
-                alpha=0.3,
-            )
-            ax.axvline(
-                x=wc1_x_am - 2 * base_wavelength_am,
-                color="yellow",
-                linestyle="--",
-                alpha=0.3,
+                alpha=0.2,
             )
         # WC2 markers (only if WC2 is used)
         if use_wc2:
-            ax.axvline(x=wc2_x_am, color="cyan", linestyle="--", alpha=0.5, label="WC2")
+            ax.axvline(x=wc2_x_am, color="#1A99E6", linestyle="--", alpha=0.5, label="WC2 ± λ")
             ax.axvline(
                 x=wc2_x_am + base_wavelength_am,
-                color="magenta",
+                color="#1A99E6",
                 linestyle="--",
-                alpha=0.3,
-                label="WC2 ± λ",
+                alpha=0.2,
             )
             ax.axvline(
                 x=wc2_x_am - base_wavelength_am,
-                color="magenta",
+                color="#1A99E6",
                 linestyle="--",
-                alpha=0.3,
+                alpha=0.2,
             )
         ax.set_xlabel("X (am)", family="Monospace")
         ax.set_ylabel("Displacement (am)", family="Monospace")
