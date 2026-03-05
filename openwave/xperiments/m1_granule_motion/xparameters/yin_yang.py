@@ -61,6 +61,7 @@ XPARAMETERS = {
         # Phase offsets for each source (integer degrees, converted to radians internally)
         # Progressive 30° increments create spiral wave interference pattern
         "PHASE_OFFSETS_DEG": SOURCES_PHASE_DEG,
+        "BASE_WAVE_TOGGLE": 0,  # 1 = enable base_wave, 0 = disable base_wave
         "IN_WAVE_TOGGLE": 0,  # 1 = enable in_wave, 0 = disable in_wave
         "OUT_WAVE_TOGGLE": 1,  # 1 = enable out_wave, 0 = disable out_wave
     },

@@ -119,6 +119,7 @@ class SimulationState:
         self.NUM_SOURCES = 1
         self.SOURCES_POSITION = []
         self.SOURCES_OFFSET_DEG = []
+        self.BASE_WAVE_TOGGLE = 0
         self.IN_WAVE_TOGGLE = 1
         self.OUT_WAVE_TOGGLE = 1
 
@@ -166,6 +167,7 @@ class SimulationState:
         self.NUM_SOURCES = sources["COUNT"]
         self.SOURCES_POSITION = sources["POSITION"]
         self.SOURCES_OFFSET_DEG = sources["PHASE_OFFSETS_DEG"]
+        self.BASE_WAVE_TOGGLE = sources["BASE_WAVE_TOGGLE"]
         self.IN_WAVE_TOGGLE = sources["IN_WAVE_TOGGLE"]
         self.OUT_WAVE_TOGGLE = sources["OUT_WAVE_TOGGLE"]
 
@@ -235,10 +237,11 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.27) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.30) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.BLOCK_SLICE = sub.checkbox("Block Slice", state.BLOCK_SLICE)
         state.SHOW_SOURCES = sub.checkbox("Show Wave Centers (sources)", state.SHOW_SOURCES)
+        state.BASE_WAVE_TOGGLE = sub.checkbox("Base Wave (Full Amp)", state.BASE_WAVE_TOGGLE)
         state.IN_WAVE_TOGGLE = sub.checkbox("Incoming Wave (Full Amp)", state.IN_WAVE_TOGGLE)
         state.OUT_WAVE_TOGGLE = sub.checkbox("Outgoing Wave (Amp Falloff)", state.OUT_WAVE_TOGGLE)
         state.RADIUS_FACTOR = sub.slider_float("Granule", state.RADIUS_FACTOR, 0.1, 2.0)
@@ -381,6 +384,7 @@ def compute_wave_oscillation(state):
         state.AMP_BOOST,
         state.WAVE_MENU,
         state.NUM_SOURCES,
+        state.BASE_WAVE_TOGGLE,
         state.IN_WAVE_TOGGLE,
         state.OUT_WAVE_TOGGLE,
         state.elapsed_t,

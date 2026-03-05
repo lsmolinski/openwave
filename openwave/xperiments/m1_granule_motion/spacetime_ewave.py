@@ -33,11 +33,13 @@ sources_phase_offset = None  # Phase offset for each wave source (radians)
 amp_global_peak_am = None  # max displacement across all granules
 avg_amplitude_am = None  # RMS amplitude (peak × 0.707)
 last_amp_boost = None  # for detecting amp_boost changes
+last_base_wave_toggle = None  # for detecting base_wave toggle changes
 last_in_wave_toggle = None  # for detecting in_wave toggle changes
 last_out_wave_toggle = None  # for detecting out_wave toggle changes
 
 # Center of sources for signed radial displacement
 sources_center_am = None  # geometric center of all wave sources (attometers)
+universe_vertices_am = None  # 8 corner vertices of the universe bounding box (attometers)
 
 
 # ================================================================
@@ -65,7 +67,8 @@ def build_source_vectors(num_sources, sources_position, sources_offset_deg, latt
     """
     global sources_direction, sources_distance_am, sources_phase_offset, sources_pos_field
     global amp_global_peak_am, avg_amplitude_am, sources_center_am
-    global last_amp_boost, last_in_wave_toggle, last_out_wave_toggle
+    global last_amp_boost, last_base_wave_toggle, last_in_wave_toggle, last_out_wave_toggle
+    global universe_vertices_am
 
     # Convert phase from degrees to radians
     sources_offset_rad = [deg * ti.math.pi / 180 for deg in sources_offset_deg]
@@ -85,6 +88,7 @@ def build_source_vectors(num_sources, sources_position, sources_offset_deg, latt
     amp_global_peak_am = ti.field(dtype=ti.f32, shape=())  # max displacement
     avg_amplitude_am = ti.field(dtype=ti.f32, shape=())  # RMS amplitude
     last_amp_boost = ti.field(dtype=ti.f32, shape=())  # for change detection
+    last_base_wave_toggle = ti.field(dtype=ti.i32, shape=())  # detects base_wave toggle changes
     last_in_wave_toggle = ti.field(dtype=ti.i32, shape=())  # detects in_wave toggle changes
     last_out_wave_toggle = ti.field(dtype=ti.i32, shape=())  # detects out_wave toggle changes
 
@@ -102,6 +106,25 @@ def build_source_vectors(num_sources, sources_position, sources_offset_deg, latt
             center_sum[2] / num_sources * lattice.max_universe_edge_am,
         ]
     )
+
+    # Precompute 8 universe vertices (corners of bounding box) for in-wave computation
+    universe_vertices_am = ti.Vector.field(3, dtype=ti.f32, shape=8)
+    lx = lattice.universe_size_am[0]
+    ly = lattice.universe_size_am[1]
+    lz = lattice.universe_size_am[2]
+    for idx, (cx, cy, cz) in enumerate(
+        [
+            (0, 0, 0),
+            (lx, 0, 0),
+            (0, ly, 0),
+            (0, 0, lz),
+            (lx, ly, 0),
+            (lx, 0, lz),
+            (0, ly, lz),
+            (lx, ly, lz),
+        ]
+    ):
+        universe_vertices_am[idx] = ti.Vector([cx, cy, cz])
 
     # Copy source data to Taichi fields
     for i in range(num_sources):
@@ -148,6 +171,7 @@ def oscillate_granules(
     amp_boost: ti.f32,  # type: ignore
     wave_menu: ti.i32,  # type: ignore
     num_sources: ti.i32,  # type: ignore
+    base_wave_toggle: ti.i32,  # type: ignore
     in_wave_toggle: ti.i32,  # type: ignore
     out_wave_toggle: ti.i32,  # type: ignore
     elapsed_t: ti.f32,  # type: ignore
@@ -215,6 +239,7 @@ def oscillate_granules(
         amp_boost: Amplitude multiplier (for visibility in scaled lattices)
         wave_menu: Selected Wave displayed with color palette
         num_sources: Number of wave sources
+        base_wave_toggle: Toggle for base_wave (1 = enable, 0 = disable)
         in_wave_toggle: Toggle for in_wave (1 = enable, 0 = disable)
         out_wave_toggle: Toggle for out_wave (1 = enable, 0 = disable)
         elapsed_t: Current simulation time (accumulated, seconds)
@@ -232,8 +257,26 @@ def oscillate_granules(
 
     # Process all granules in parallel (outermost loop = GPU parallelization)
     for granule_idx in range(position_am.shape[0]):
+        # Temporal phase: φ = ω·t, oscillatory in time
+        temporal_phase = omega_slo * elapsed_t
+
+        # Accumulate in-wave contributions from all 8 universe vertices
+        base_wave_psi = ti.Vector([0.0, 0.0, 0.0])
+        for v in range(8):  # Loop through each universe vertex
+            # Vector from vertex to granule equilibrium position
+            r_vec = equilibrium_am[granule_idx] - universe_vertices_am[v]
+            r_mag = r_vec.norm()
+            # A·cos(ωt + kr)·direction, positive for inward propagation, full amp
+            base_wave_psi += (
+                base_wave_toggle
+                * base_amplitude_am
+                * amp_boost
+                / 8  # incoming wave do not superpose, split per vertex for energy conservation
+                * ti.cos(temporal_phase + k_am * r_mag)
+            ) * (r_vec / r_mag)
+
         # Initialize accumulation variables for wave superposition
-        total_displacement_am = ti.Vector([0.0, 0.0, 0.0])  # sum of displacements from all sources
+        total_displacement_am = base_wave_psi  # sum of displacements from all sources
         total_velocity_am = ti.Vector([0.0, 0.0, 0.0])  # sum of velocities from all sources
 
         # Sum contributions from all sources (wave superposition)
@@ -243,13 +286,10 @@ def oscillate_granules(
             r_am = sources_distance_am[granule_idx, source_idx]
 
             # Phase shift between in/out waves (at wave-center)
-            phase_shift = ti.math.pi / 2
+            phase_shift = ti.math.pi
 
             # Source phase offset: initial phase of this wave-center
             source_offset = sources_phase_offset[source_idx]
-
-            # Temporal phase: φ = ω·t, oscillatory in time
-            temporal_phase = omega_slo * elapsed_t
 
             # Spatial phase: φ = k·r, creates spherical wave fronts
             spatial_phase = k_am * r_am
@@ -340,6 +380,7 @@ def oscillate_granules(
     # Prevents stale high values when amp_boost is reduced
     if (
         last_amp_boost[None] != amp_boost
+        or last_base_wave_toggle[None] != base_wave_toggle
         or last_in_wave_toggle[None] != in_wave_toggle
         or last_out_wave_toggle[None] != out_wave_toggle
     ):
@@ -347,6 +388,7 @@ def oscillate_granules(
             amp_local_peak_am[i] = 0.0
         amp_global_peak_am[None] = 0.0
         last_amp_boost[None] = amp_boost
+        last_base_wave_toggle[None] = base_wave_toggle
         last_in_wave_toggle[None] = in_wave_toggle
         last_out_wave_toggle[None] = out_wave_toggle
     # Convert peak to RMS amplitude: RMS = peak / √2 ≈ peak × 0.707

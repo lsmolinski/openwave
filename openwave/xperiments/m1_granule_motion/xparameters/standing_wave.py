@@ -28,8 +28,8 @@ NORMALIZED_RADIUS = SOURCES_RADIUS / UNIVERSE_EDGE  # normalized radius
 # Positions relative to universe center (0.5, 0.5, Z_POSITION)
 SOURCES_POSITION = [
     [
-        np.cos(i * 2 * np.pi / NUM_SOURCES) * NORMALIZED_RADIUS + 0.5,
-        np.sin(i * 2 * np.pi / NUM_SOURCES) * NORMALIZED_RADIUS + 0.5,
+        0.5,
+        0.5,
         Z_POSITION,
     ]
     for i in range(NUM_SOURCES)
@@ -63,6 +63,7 @@ XPARAMETERS = {
         # Allows creating constructive/destructive interference patterns
         # Common patterns: 0° = in phase, 180° = opposite phase, 90° = quarter-cycle offset
         "PHASE_OFFSETS_DEG": SOURCES_PHASE_DEG,
+        "BASE_WAVE_TOGGLE": 0,  # 1 = enable base_wave, 0 = disable base_wave
         "IN_WAVE_TOGGLE": 1,  # 1 = enable in_wave, 0 = disable in_wave
         "OUT_WAVE_TOGGLE": 1,  # 1 = enable out_wave, 0 = disable out_wave
     },
