@@ -99,7 +99,7 @@ def propagate_wave(
             if wave_center.active[wc_idx] == 0:
                 continue
 
-            # Compute radial distance from wave source (in grid indices)
+            # Compute radial distance from wave center (in grid indices)
             r_grid = ti.sqrt(
                 (i - wave_center.position_grid[wc_idx][0]) ** 2
                 + (j - wave_center.position_grid[wc_idx][1]) ** 2
