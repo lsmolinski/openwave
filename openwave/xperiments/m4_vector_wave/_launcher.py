@@ -112,8 +112,7 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.ampL_global_rms = constants.EWAVE_AMPLITUDE
-        self.ampT_global_rms = 0.0
+        self.amp_global_rms = constants.EWAVE_AMPLITUDE
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
 
@@ -214,8 +213,7 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.ampL_global_rms = constants.EWAVE_AMPLITUDE
-        self.ampT_global_rms = 0.0
+        self.amp_global_rms = constants.EWAVE_AMPLITUDE
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
         self.initialize_grid()
@@ -292,23 +290,23 @@ def display_wave_menu(state):
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
-                    f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
         if state.WAVE_MENU == 2:  # Displacement (Transverse) on bluered gradient
             render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
-                    f"{-state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
         if state.WAVE_MENU == 3:  # Amplitude (Longitudinal) on viridis gradient
             render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.65, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m")
+                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
         if state.WAVE_MENU == 4:  # Envelope (Longitudinal) on greenyellow gradient
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("envelope", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
-                    f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
         if state.WAVE_MENU == 5:  # Frequency (L&T) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
@@ -359,8 +357,7 @@ def display_data_dashboard(state):
             sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
 
         sub.text("\n--- ENERGY-WAVE ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Amp Longitudinal: {state.ampL_global_rms/state.wave_field.scale_factor:.1e} m")
-        sub.text(f"Amp Transverse: {state.ampT_global_rms/state.wave_field.scale_factor:.1e} m")
+        sub.text(f"Amplitude: {state.amp_global_rms/state.wave_field.scale_factor:.1e} m")
         sub.text(f"Frequency: {state.freq_global_avg*state.wave_field.scale_factor:.1e} Hz")
         sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
 
@@ -443,8 +440,7 @@ def compute_wave_oscillation(state):
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
         ewave.sample_avg_trackers(state.wave_field, state.trackers)
-    state.ampL_global_rms = state.trackers.ampL_global_rms_am[None] * constants.ATTOMETER  # in m
-    state.ampT_global_rms = state.trackers.ampT_global_rms_am[None] * constants.ATTOMETER  # in m
+    state.amp_global_rms = state.trackers.amp_global_rms_am[None] * constants.ATTOMETER  # in m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND
     state.wavelength_global_avg = constants.EWAVE_SPEED / (
         state.freq_global_avg or 1

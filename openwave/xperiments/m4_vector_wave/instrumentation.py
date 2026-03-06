@@ -44,13 +44,13 @@ def plot_probe_wave_profile(wave_field):
 
     # Extract displacement along x-axis at center (y, z)
     x_indices = np.arange(wave_field.nx)
-    displacements_L = np.zeros(wave_field.nx)
+    displacements = np.zeros(wave_field.nx)
     displacements_T = np.zeros(wave_field.nx)
 
     # Sample longitudinal displacement values
     for i in range(wave_field.nx):
-        displacements_L[i] = wave_field.psiL_am[i, py, pz]
-        displacements_T[i] = wave_field.psiT_am[i, py, pz]
+        displacements[i] = wave_field.displacement_am[i, py, pz]
+        displacements_T[i] = wave_field.velocity_am[i, py, pz]
 
     # Calculate distance from center in grid indices
     distances = x_indices - px
@@ -64,7 +64,7 @@ def plot_probe_wave_profile(wave_field):
     plt.subplot(1, 2, 1)
     plt.plot(
         distances,
-        displacements_L,
+        displacements,
         color=colormap.viridis_palette[2][1],
         linewidth=4,
         label="LONGITUDINAL",
@@ -119,15 +119,22 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
     # Capture probe values
-    psiL_am = wave_field.psiL_am[px, py, pz] / wave_field.scale_factor
-    psiT_am = wave_field.psiT_am[px, py, pz] / wave_field.scale_factor
-    ampL_local_rms_am = trackers.ampL_local_rms_am[px, py, pz] / wave_field.scale_factor
-    ampT_local_rms_am = trackers.ampT_local_rms_am[px, py, pz] / wave_field.scale_factor
+    displacement_am = wave_field.displacement_am[px, py, pz] / wave_field.scale_factor
+    velocity_am = wave_field.velocity_am[px, py, pz] / wave_field.scale_factor
+    amp_local_rms_am = trackers.amp_local_rms_am[px, py, pz] / wave_field.scale_factor
+    amp_local_peak_am = trackers.amp_local_peak_am[px, py, pz] / wave_field.scale_factor
     freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
 
     # Add to buffer
     _timestep_buffer.append(
-        [timestep, psiL_am, psiT_am, ampL_local_rms_am, ampT_local_rms_am, freq_local_cross_rHz]
+        [
+            timestep,
+            displacement_am,
+            velocity_am,
+            amp_local_rms_am,
+            amp_local_peak_am,
+            freq_local_cross_rHz,
+        ]
     )
 
     # Flush buffer periodically
@@ -152,10 +159,10 @@ def _flush_timestep_buffer() -> None:
             writer.writerow(
                 [
                     "timestep",
-                    "psiL_am",
-                    "psiT_am",
-                    "ampL_local_rms_am",
-                    "ampT_local_rms_am",
+                    "displacement_am",
+                    "velocity_am",
+                    "amp_local_rms_am",
+                    "amp_local_peak_am",
                     "freq_local_cross_rHz",
                 ]
             )
@@ -192,7 +199,7 @@ def _read_timestep_data():
 
     data = {
         "timesteps": [],
-        "displacements_L": [],
+        "displacements": [],
         "displacements_T": [],
         "amplitudes_L": [],
         "amplitudes_T": [],
@@ -203,10 +210,10 @@ def _read_timestep_data():
         reader = csv.DictReader(f)
         for row in reader:
             data["timesteps"].append(int(row["timestep"]))
-            data["displacements_L"].append(float(row["psiL_am"]))
-            data["displacements_T"].append(float(row["psiT_am"]))
-            data["amplitudes_L"].append(float(row["ampL_local_rms_am"]))
-            data["amplitudes_T"].append(float(row["ampT_local_rms_am"]))
+            data["displacements"].append(float(row["displacement_am"]))
+            data["displacements_T"].append(float(row["velocity_am"]))
+            data["amplitudes_L"].append(float(row["amp_local_rms_am"]))
+            data["amplitudes_T"].append(float(row["amp_local_peak_am"]))
             data["frequencies"].append(float(row["freq_local_cross_rHz"]))
 
     return data
@@ -227,7 +234,7 @@ def plot_probe_values():
     plt.subplot(3, 1, 1)
     plt.plot(
         data["timesteps"],
-        data["displacements_L"],
+        data["displacements"],
         color=colormap.viridis_palette[2][1],
         linewidth=2,
         label="DISPLACEMENT (am)",
