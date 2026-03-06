@@ -21,7 +21,7 @@ from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m3_wolff_lafreniere.spacetime_medium as medium
-import openwave.xperiments.m3_wolff_lafreniere.spacetime_ewave as ewave
+import openwave.xperiments.m3_wolff_lafreniere.wave_engine as ewave
 import openwave.xperiments.m3_wolff_lafreniere.particle as particle
 import openwave.xperiments.m3_wolff_lafreniere.force_motion as force_motion
 import openwave.xperiments.m3_wolff_lafreniere.instrumentation as instrument

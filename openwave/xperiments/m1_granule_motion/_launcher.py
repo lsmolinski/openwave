@@ -20,7 +20,7 @@ from openwave.common import colormap, constants
 from openwave.i_o import render, video
 
 import openwave.xperiments.m1_granule_motion.spacetime_medium as medium
-import openwave.xperiments.m1_granule_motion.spacetime_ewave as ewave
+import openwave.xperiments.m1_granule_motion.wave_engine as ewave
 import openwave.xperiments.m1_granule_motion.instrumentation as instrument
 
 # ================================================================
