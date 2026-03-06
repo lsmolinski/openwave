@@ -21,7 +21,7 @@ from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m2_laplace_propagation.spacetime_medium as medium
-import openwave.xperiments.m2_laplace_propagation.spacetime_ewave as ewave
+import openwave.xperiments.m2_laplace_propagation.wave_engine as ewave
 import openwave.xperiments.m2_laplace_propagation.instrumentation as instrument
 
 # ================================================================

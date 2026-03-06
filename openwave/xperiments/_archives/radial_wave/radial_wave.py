@@ -22,7 +22,7 @@ from openwave.common import colormap, constants
 from openwave.i_o import render
 
 import openwave.xperiments._archives.radial_wave.spacetime_medium as medium
-import openwave.xperiments._archives.radial_wave.spacetime_ewave as ewave
+import openwave.xperiments._archives.radial_wave.wave_engine as ewave
 
 # Define the architecture to be used by Taichi (GPU vs CPU)
 ti.init(arch=ti.gpu)  # Use GPU if available, else fallback to CPU
