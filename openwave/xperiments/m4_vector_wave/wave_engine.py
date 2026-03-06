@@ -299,10 +299,16 @@ def propagate_wave_neighbors(
         elapsed_t_rs: Elapsed simulation time (rs)
         num_selected: Number of selected voxels to process
     """
-    # Compute wave parameters
-    omega_rs = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
+    # Compute angular frequency (ω = 2πf) for temporal phase variation
+    omega_rs = (
+        2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
+    )  # angular frequency (rad/rs)
+
+    # Compute angular wave number (k = 2π/λ) for spatial phase variation
     wavelength_grid = base_wavelength * wave_field.scale_factor / wave_field.dx
-    k_grid = 2.0 * ti.math.pi / wavelength_grid
+    k_grid = 2.0 * ti.math.pi / wavelength_grid  # radians per grid index
+
+    # Temporal phase: φ = ω·t, oscillatory in time
     temporal_phase = omega_rs * elapsed_t_rs
 
     # Iterate only over selected voxels (neighbors of wave centers)
