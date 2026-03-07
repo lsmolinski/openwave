@@ -18,7 +18,7 @@ from openwave.common import colormap, constants, equations, utils
 # ================================================================
 base_amplitude_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # in am
 base_frequency = constants.EWAVE_SPEED / constants.EWAVE_LENGTH  # in Hz
-wavelength_am = constants.EWAVE_LENGTH / constants.ATTOMETER  # in am
+base_wavelength_am = constants.EWAVE_LENGTH / constants.ATTOMETER  # in am
 
 # ================================================================
 # Energy-Wave Source Data (Global Fields)
@@ -107,7 +107,7 @@ def build_source_vectors(num_sources, sources_position, sources_offset_deg, latt
         ]
     )
 
-    # Precompute 8 universe vertices (corners of bounding box) for in-wave computation
+    # Precompute 8 universe vertices (corners of bounding box) for base-wave computation
     universe_vertices_am = ti.Vector.field(3, dtype=ti.f32, shape=8)
     lx = lattice.universe_size_am[0]
     ly = lattice.universe_size_am[1]
@@ -249,18 +249,18 @@ def oscillate_granules(
     omega_slo = 2.0 * ti.math.pi * frequency_slo  # angular frequency (rad/s)
 
     # Compute angular wave number (k = 2π/λ) for spatial phase variation
-    k_am = 2.0 * ti.math.pi / wavelength_am  # radians per attometer
+    k_am = 2.0 * ti.math.pi / base_wavelength_am  # radians per attometer
 
     # Reference radius for amplitude normalization (r₀ = 1λ)
     # Prevents singularity at r=0 and sets 1/r falloff reference point
-    r_reference_am = wavelength_am
+    r_reference_am = base_wavelength_am
 
     # Process all granules in parallel (outermost loop = GPU parallelization)
     for granule_idx in range(position_am.shape[0]):
         # Temporal phase: φ = ω·t, oscillatory in time
         temporal_phase = omega_slo * elapsed_t
 
-        # Accumulate in-wave contributions from all 8 universe vertices
+        # Accumulate base-wave contributions from all 8 universe vertices
         base_wave_psi = ti.Vector([0.0, 0.0, 0.0])
         for v in range(8):  # Loop through each universe vertex
             # Vector from vertex to granule equilibrium position
@@ -271,7 +271,7 @@ def oscillate_granules(
                 base_wave_toggle
                 * base_amplitude_am
                 * amp_boost
-                / 8  # incoming wave do not superpose, split per vertex for energy conservation
+                / 8  # base-wave do not superpose, split per vertex for energy conservation
                 * ti.cos(temporal_phase - k_am * r_mag)
             ) * (r_vec / r_mag)
 

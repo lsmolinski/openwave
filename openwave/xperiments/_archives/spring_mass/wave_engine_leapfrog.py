@@ -12,7 +12,7 @@ from openwave.common import constants
 # ================================================================
 # Energy-Wave Oscillation Parameters
 # ================================================================
-amp_local_peak_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # am, oscillation amplitude
+amplitude_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # am, oscillation amplitude
 frequency = constants.EWAVE_SPEED / constants.EWAVE_LENGTH  # Hz, energy-wave frequency
 
 
@@ -58,11 +58,11 @@ def oscillate_vertex(
         phase = float(v) * ti.math.pi / 4.0
 
         # Position: x(t) = x_eq + A·cos(ωt + φ)·direction
-        displacement = amp_local_peak_am * ti.cos(omega_slo * t + phase)
+        displacement = amplitude_am * ti.cos(omega_slo * t + phase)
         position[idx] = vertex_equilibrium[v] + displacement * direction
 
         # Velocity: v(t) = -A·ω·sin(ωt + φ)·direction (derivative of position)
-        velocity_magnitude = -amp_local_peak_am * omega_slo * ti.sin(omega_slo * t + phase)
+        velocity_magnitude = -amplitude_am * omega_slo * ti.sin(omega_slo * t + phase)
         velocity[idx] = velocity_magnitude * direction
 
 
