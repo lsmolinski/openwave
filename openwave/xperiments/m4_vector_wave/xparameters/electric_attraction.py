@@ -24,8 +24,8 @@ XPARAMETERS = {
         "COUNT": 2,  # Number of wave-centers for this xperiment
         # Wave-Center positions: normalized coordinates (0-1 range, relative to max universe edge)
         "POSITION": [
-            [0.25, 0.50, 0.50],
-            [0.75, 0.50, 0.50],
+            [0.45, 0.50, 0.50],
+            [0.55, 0.50, 0.50],
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0, 180],

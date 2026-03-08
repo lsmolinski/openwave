@@ -120,9 +120,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
 
     # Capture probe values
     displacement_am = wave_field.displacement_am[px, py, pz] / wave_field.scale_factor
-    velocity_am = wave_field.velocity_am[px, py, pz] / wave_field.scale_factor
     amp_local_rms_am = trackers.amp_local_rms_am[px, py, pz] / wave_field.scale_factor
-    amp_local_peak_am = trackers.amp_local_peak_am[px, py, pz] / wave_field.scale_factor
     freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
 
     # Add to buffer
@@ -130,9 +128,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
         [
             timestep,
             displacement_am,
-            velocity_am,
             amp_local_rms_am,
-            amp_local_peak_am,
             freq_local_cross_rHz,
         ]
     )
@@ -160,9 +156,7 @@ def _flush_timestep_buffer() -> None:
                 [
                     "timestep",
                     "displacement_am",
-                    "velocity_am",
                     "amp_local_rms_am",
-                    "amp_local_peak_am",
                     "freq_local_cross_rHz",
                 ]
             )
@@ -178,8 +172,6 @@ def _flush_timestep_buffer() -> None:
                     f"{row[1]:.6f}",
                     f"{row[2]:.6f}",
                     f"{row[3]:.6f}",
-                    f"{row[4]:.6f}",
-                    f"{row[5]:.6f}",
                 ]
             )
 
@@ -200,9 +192,7 @@ def _read_timestep_data():
     data = {
         "timesteps": [],
         "displacements": [],
-        "displacements_T": [],
-        "amplitudes_L": [],
-        "amplitudes_T": [],
+        "amplitudes": [],
         "frequencies": [],
     }
 
@@ -211,9 +201,7 @@ def _read_timestep_data():
         for row in reader:
             data["timesteps"].append(int(row["timestep"]))
             data["displacements"].append(float(row["displacement_am"]))
-            data["displacements_T"].append(float(row["velocity_am"]))
-            data["amplitudes_L"].append(float(row["amp_local_rms_am"]))
-            data["amplitudes_T"].append(float(row["amp_local_peak_am"]))
+            data["amplitudes"].append(float(row["amp_local_rms_am"]))
             data["frequencies"].append(float(row["freq_local_cross_rHz"]))
 
     return data
@@ -241,7 +229,7 @@ def plot_probe_values():
     )
     plt.plot(
         data["timesteps"],
-        data["amplitudes_L"],
+        data["amplitudes"],
         color=colormap.viridis_palette[3][1],
         linewidth=2,
         label="RMS AMPLITUDE (am)",
@@ -271,7 +259,7 @@ def plot_probe_values():
     )
     plt.plot(
         data["timesteps"],
-        data["amplitudes_T"],
+        data["amplitudes"],
         color=colormap.ironbow_palette[3][1],
         linewidth=2,
         label="RMS AMPLITUDE (am)",

@@ -113,8 +113,9 @@ class WaveField:
         # Scales 1e-17 m values to ~10 am, well within f32 range
         # Wave displacement vector field (ψ)
         self.displacement_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ
+        # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
-        self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s
+        # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s
 
         # TODO: Implement DERIVED SCALAR FIELDS
         # WAVELENGTH, PERIOD, phase, energy, momentum
@@ -446,7 +447,6 @@ class Trackers:
         # Amplitude tracks A via EMA of |ψ| and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
         self.amp_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, rms amp
-        self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, peak amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 

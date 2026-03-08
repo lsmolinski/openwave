@@ -157,6 +157,11 @@ def compute_voxel_wave(
     prev_disp = wave_field.displacement_am[i, j, k]
     wave_field.displacement_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
 
+    # TODO: review this reference radius logic, currently set to 1λ, ensures finite amplitude at r=0 and sets 1/r falloff reference point, but may need adjustment based on observed behavior or specific wave scenarios
+    # Reference radius for amplitude normalization (r₀ = 1λ)
+    # Prevents singularity at r=0 and sets 1/r falloff reference point
+    r_reference_am = base_wavelength_am
+
     # ================================================================
     # WAVE PROPAGATION: Update voxels using wave functions
     # ================================================================
@@ -166,6 +171,12 @@ def compute_voxel_wave(
         if wave_center.active[wc_idx] == 0:
             continue
 
+        # TODO: review dir_vec logic, duplicating dist/r_grid calculations, consider optimization if needed
+        # Get direction from voxel to wave center (normalized vector)
+        dir_vec = [i, j, k] - wave_center.position_grid[wc_idx]
+        dist = ti.sqrt(dir_vec.dot(dir_vec)) + 1e-10  # add small value to prevent div by zero
+        direction = dir_vec / dist  # normalized direction vector for wave propagation
+
         # Compute radial distance from wave center (in grid indices)
         r_grid = ti.sqrt(
             (i - wave_center.position_grid[wc_idx][0]) ** 2
@@ -173,51 +184,40 @@ def compute_voxel_wave(
             + (k - wave_center.position_grid[wc_idx][2]) ** 2
         )
 
-        # Cache source-specific phase offset
-        source_offset = wave_center.offset[wc_idx]
-
         # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
         spatial_phase = k_grid * r_grid
 
-        # ================================================================
-        # Combined and Adjusted WOLFF-LAFRENIERE canonical form:
-        #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-        # Expanded form:
-        #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-        #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-        # ================================================================
-        # Phase term: sin(kr)/r → k as r→0 (physical units)
-        phase_term = ti.select(
-            r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            k_grid,  # analytical limit
-            ti.sin(spatial_phase) / r_grid,
-        )
+        # TODO: review this logic
+        # Cache source-specific phase offset
+        source_offset = wave_center.offset[wc_idx]
 
-        # Quadrature term: (1-cos(kr))/r → 0 as r→0
-        quadrature_term = ti.select(
-            r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            0.0,  # analytical limit
-            (1 - ti.cos(spatial_phase)) / r_grid,
-        )
+        # Phase shift between in/out waves (at wave-center)
+        phase_shift = ti.math.pi
 
-        # Oscillator with source_offset phase shift
-        oscillator = (
-            -ti.cos(temporal_phase + source_offset) * phase_term
-            - ti.sin(temporal_phase + source_offset) * quadrature_term
-        )
+        # Amplitude falloff for spherical wave: A(r) = A₀/r
+        # Clamp to r_min to avoid singularity at r = 0
+        r_safe_am = ti.max(r_grid, r_reference_am)
+        amplitude_falloff = r_reference_am / r_safe_am
+        # Total amplitude at this distance (with visualization scaling)
+        amplitude_at_r_am = base_amplitude_am * amplitude_falloff
 
+        # Accumulate this source's contribution (wave superposition)
+        # A(r)·cos(ωt ± kr + φ)·direction, negative for outward propagation, amp falloff
         wave_field.displacement_am[i, j, k] += (
-            base_amplitude_am * wave_field.scale_factor * oscillator
-        )
+            amplitude_at_r_am
+            * wave_field.scale_factor
+            * ti.cos(temporal_phase - spatial_phase + source_offset + phase_shift)  # oscillator
+        ) * direction
 
+    # TODO: consider precision rounding to ensure perfect cancellation
     # Precision rounding to ensure wave cancellation
     # Critical for opposing phase sources (180°) that should annihilate
     # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
     # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
-    precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
-    wave_field.displacement_am[i, j, k] = (
-        ti.round(wave_field.displacement_am[i, j, k] * precision) / precision
-    )
+    # precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
+    # wave_field.displacement_am[i, j, k] = (
+    #     ti.round(wave_field.displacement_am[i, j, k] * precision) / precision
+    # )
 
     curr_disp = wave_field.displacement_am[i, j, k]
 
@@ -231,6 +231,8 @@ def compute_voxel_wave(
     #     trackers.ampL_local_peak_am[i, j, k] * decay_factor_peak
     # )
 
+    # TODO: review EMS method for amplitude tracking (values compared to peak amp for force)
+    # TODO: review how vector displacement (has direction component) is handled in RMS calculation
     # RMS AMPLITUDE tracking via EMA on ψ² (squared displacement)
     # Running RMS: tracks √⟨ψ²⟩ - the energy-equivalent amplitude (Energy ∝ ψ²)
     # Used for: energy calculation, force gradients, visualization scaling
@@ -239,7 +241,7 @@ def compute_voxel_wave(
     # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
     # α controls adaptation speed: higher = faster response, lower = smoother
     # RMS amplitude
-    disp2 = wave_field.displacement_am[i, j, k] ** 2
+    disp2 = wave_field.displacement_am[i, j, k].norm() ** 2
     current_rms2 = trackers.amp_local_rms_am[i, j, k] ** 2
     alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
     new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
@@ -258,19 +260,24 @@ def compute_voxel_wave(
     # More robust than peak detection since it's amplitude-independent
     # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
     # α controls adaptation speed: higher = faster response, lower = smoother
-    if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
-        period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
-        if period_rs > dt_rs * 2:  # Filter out spurious crossings
-            measured_freq = 1.0 / period_rs  # in rHz
-            current_freq = trackers.freq_local_cross_rHz[i, j, k]
-            alpha_freq = 0.05  # EMA smoothing factor for frequency
-            trackers.freq_local_cross_rHz[i, j, k] = (
-                alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
-            )
-        trackers.last_crossing[i, j, k] = elapsed_t_rs
 
-    # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
-    trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
+    # if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
+    #     period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
+    #     if period_rs > dt_rs * 2:  # Filter out spurious crossings
+    #         measured_freq = 1.0 / period_rs  # in rHz
+    #         current_freq = trackers.freq_local_cross_rHz[i, j, k]
+    #         alpha_freq = 0.05  # EMA smoothing factor for frequency
+    #         trackers.freq_local_cross_rHz[i, j, k] = (
+    #             alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
+    #         )
+    #     trackers.last_crossing[i, j, k] = elapsed_t_rs
+
+    # # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
+    # trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
+
+    trackers.freq_local_cross_rHz[i, j, k] = (
+        base_frequency_rHz  # TODO: fixed frequency for testing, replace with above method for dynamic frequency
+    )
 
 
 @ti.kernel
@@ -385,14 +392,12 @@ _slice_yz_freq = None
 def _copy_slice_xy(
     trackers: ti.template(),  # type: ignore
     slice_amp: ti.template(),  # type: ignore
-    slice_ampP: ti.template(),  # type: ignore
     slice_freq: ti.template(),  # type: ignore
     mid_z: ti.i32,  # type: ignore
 ):
     """Copy center XY slice (fixed z) to 2D buffer."""
     for i, j in slice_amp:
         slice_amp[i, j] = trackers.amp_local_rms_am[i, j, mid_z]
-        slice_ampP[i, j] = trackers.amp_local_peak_am[i, j, mid_z]
         slice_freq[i, j] = trackers.freq_local_cross_rHz[i, j, mid_z]
 
 
@@ -400,14 +405,12 @@ def _copy_slice_xy(
 def _copy_slice_xz(
     trackers: ti.template(),  # type: ignore
     slice_amp: ti.template(),  # type: ignore
-    slice_ampP: ti.template(),  # type: ignore
     slice_freq: ti.template(),  # type: ignore
     mid_y: ti.i32,  # type: ignore
 ):
     """Copy center XZ slice (fixed y) to 2D buffer."""
     for i, k in slice_amp:
         slice_amp[i, k] = trackers.amp_local_rms_am[i, mid_y, k]
-        slice_ampP[i, k] = trackers.amp_local_peak_am[i, mid_y, k]
         slice_freq[i, k] = trackers.freq_local_cross_rHz[i, mid_y, k]
 
 
@@ -415,14 +418,12 @@ def _copy_slice_xz(
 def _copy_slice_yz(
     trackers: ti.template(),  # type: ignore
     slice_amp: ti.template(),  # type: ignore
-    slice_ampP: ti.template(),  # type: ignore
     slice_freq: ti.template(),  # type: ignore
     mid_x: ti.i32,  # type: ignore
 ):
     """Copy center YZ slice (fixed x) to 2D buffer."""
     for j, k in slice_amp:
         slice_amp[j, k] = trackers.amp_local_rms_am[mid_x, j, k]
-        slice_ampP[j, k] = trackers.amp_local_peak_am[mid_x, j, k]
         slice_freq[j, k] = trackers.freq_local_cross_rHz[mid_x, j, k]
 
 
@@ -513,16 +514,14 @@ def update_flux_mesh_values(
     # Always update all planes (conditionals cause GPU branch divergence)
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx]
-        vel_value = wave_field.velocity_am[i, j, wave_field.fm_plane_z_idx]
+        psi_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx].norm()
         amp_value = trackers.amp_local_rms_am[i, j, wave_field.fm_plane_z_idx]
-        ampP_value = trackers.amp_local_peak_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # blueprint
+        if wave_menu == 3:  # blueprint
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -531,39 +530,17 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
                 wave_field.nz / wave_field.max_grid_size
             )
-        elif wave_menu == 4:  # greenyellow
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
-                ampP_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                ampP_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
                 amp_value, 0, trackers.amp_global_rms_am[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 amp_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # bluered
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
-                vel_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                vel_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
-                psi_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        else:  # default to orange (wave_menu == 1)
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
+                psi_value, 0, trackers.amp_global_rms_am[None] * 10
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 psi_value / univ_edge_z * warp_mesh
@@ -575,16 +552,14 @@ def update_flux_mesh_values(
     # ================================================================
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k]
-        vel_value = wave_field.velocity_am[i, wave_field.fm_plane_y_idx, k]
+        psi_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k].norm()
         amp_value = trackers.amp_local_rms_am[i, wave_field.fm_plane_y_idx, k]
-        ampP_value = trackers.amp_local_peak_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # blueprint
+        if wave_menu == 3:  # blueprint
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -593,39 +568,17 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
                 wave_field.ny / wave_field.max_grid_size
             )
-        elif wave_menu == 4:  # greenyellow
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
-                ampP_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                ampP_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
                 amp_value, 0, trackers.amp_global_rms_am[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 amp_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # bluered
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
-                vel_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                vel_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
-                psi_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        else:  # default to orange (wave_menu == 1)
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
+                psi_value, 0, trackers.amp_global_rms_am[None] * 10
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 psi_value / univ_edge_y * warp_mesh
@@ -637,16 +590,14 @@ def update_flux_mesh_values(
     # ================================================================
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k]
-        vel_value = wave_field.velocity_am[wave_field.fm_plane_x_idx, j, k]
+        psi_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k].norm()
         amp_value = trackers.amp_local_rms_am[wave_field.fm_plane_x_idx, j, k]
-        ampP_value = trackers.amp_local_peak_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # blueprint
+        if wave_menu == 3:  # blueprint
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -655,39 +606,17 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
                 wave_field.nx / wave_field.max_grid_size
             )
-        elif wave_menu == 4:  # greenyellow
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
-                ampP_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                ampP_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
                 amp_value, 0, trackers.amp_global_rms_am[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 amp_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # bluered
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
-                vel_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                vel_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
-                psi_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        else:  # default to orange (wave_menu == 1)
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
+                psi_value, 0, trackers.amp_global_rms_am[None] * 10
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 psi_value / univ_edge_x * warp_mesh
