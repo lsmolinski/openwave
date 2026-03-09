@@ -540,7 +540,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 10
+                psi_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 psi_value / univ_edge_z * warp_mesh
@@ -578,7 +578,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 10
+                psi_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 psi_value / univ_edge_y * warp_mesh
@@ -616,7 +616,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 10
+                psi_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 psi_value / univ_edge_x * warp_mesh
