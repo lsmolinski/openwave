@@ -160,7 +160,7 @@ def compute_voxel_wave(
     # TODO: review this reference radius logic, currently set to 1λ, ensures finite amplitude at r=0 and sets 1/r falloff reference point, but may need adjustment based on observed behavior or specific wave scenarios
     # Reference radius for amplitude normalization (r₀ = 1λ)
     # Prevents singularity at r=0 and sets 1/r falloff reference point
-    r_reference_am = base_wavelength_am
+    r_reference_am = base_wavelength_am / ti.math.pi
 
     # ================================================================
     # WAVE PROPAGATION: Update voxels using wave functions
