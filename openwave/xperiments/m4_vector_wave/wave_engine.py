@@ -514,7 +514,7 @@ def update_flux_mesh_values(
     # Always update all planes (conditionals cause GPU branch divergence)
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx].norm()
+        disp_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx].norm()
         amp_value = trackers.amp_local_rms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
@@ -540,10 +540,10 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                psi_value / univ_edge_z * warp_mesh
+                disp_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
 
@@ -552,7 +552,7 @@ def update_flux_mesh_values(
     # ================================================================
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k].norm()
+        disp_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k].norm()
         amp_value = trackers.amp_local_rms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
@@ -578,10 +578,10 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                psi_value / univ_edge_y * warp_mesh
+                disp_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
 
@@ -590,7 +590,7 @@ def update_flux_mesh_values(
     # ================================================================
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        psi_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k].norm()
+        disp_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k].norm()
         amp_value = trackers.amp_local_rms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
@@ -616,9 +616,9 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
-                psi_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_rms_am[None] * 4
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                psi_value / univ_edge_x * warp_mesh
+                disp_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
