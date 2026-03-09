@@ -111,10 +111,8 @@ class WaveField:
         # PROPAGATED SCALAR FIELDS (values in attometers for f32 precision)
         # This avoids catastrophic cancellation in difference calculations
         # Scales 1e-17 m values to ~10 am, well within f32 range
-        # Longitudinal wave scalar field (ψl)
-        self.psiL_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t
-        # Transverse wave scalar field (ψt)
-        self.psiT_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψt at t
+        # Wave displacement vector field (ψ)
+        self.displacement_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t
 
         # TODO: Implement DERIVED SCALAR FIELDS
         # wavelength, period, phase, energy, momentum
@@ -436,28 +434,22 @@ class Trackers:
         # LOCAL FIELDS per voxel
         # Amplitude tracks A via EMA of |ψ| and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
-        self.ampL_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, longitudinal amp
-        # self.ampL_local_peak_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, longitudinal peak
-        self.ampT_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, transverse amp
+        self.amp_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, longitudinal amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
         # ENVELOPE FIELD for force calculation (smooth 1/r, no oscillations)
         # Tracks signed amplitude envelope: sum of (charge_sign * A₀/r) from each source
         # This gives smooth 1/r² force law matching EWT predictions
-        self.ampL_local_envelope_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, signed
+        self.amp_local_envelope_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, signed
 
         # GLOBAL AVERAGES for visualization scaling & energy calculations
-        self.ampL_global_rms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
-        self.ampT_global_rms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
+        self.amp_global_rms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
 
         # Assign default values for visualization scaling
         # baseline to allow wave peaks to rise without color saturation
-        self.ampL_global_rms_am[None] = (
-            constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
-        )
-        self.ampT_global_rms_am[None] = (
+        self.amp_global_rms_am[None] = (
             constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
         )
         self.freq_global_avg_rHz[None] = (

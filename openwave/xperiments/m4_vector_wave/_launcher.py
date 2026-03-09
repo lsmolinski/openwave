@@ -288,7 +288,7 @@ def display_wave_menu(state):
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
         if state.WAVE_MENU == 2:  # Amplitude (RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
+            with render.gui.sub_window("amplitude", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
         if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)

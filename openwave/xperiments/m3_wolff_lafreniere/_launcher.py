@@ -112,8 +112,7 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.ampL_global_rms = constants.EWAVE_AMPLITUDE
-        self.ampT_global_rms = 0.0
+        self.amp_global_rms = constants.EWAVE_AMPLITUDE
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
 
@@ -214,8 +213,7 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.ampL_global_rms = constants.EWAVE_AMPLITUDE
-        self.ampT_global_rms = 0.0
+        self.amp_global_rms = constants.EWAVE_AMPLITUDE
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
         self.initialize_grid()
@@ -277,40 +275,32 @@ def display_controls(state):
 def display_wave_menu(state):
     """Display wave properties selection menu."""
     with render.gui.sub_window("WAVE MENU", 0.00, 0.71, 0.15, 0.17) as sub:
-        if sub.checkbox("Displacement (Longitudinal)", state.WAVE_MENU == 1):
+        if sub.checkbox("Displacement", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
-        if sub.checkbox("Displacement (Transverse)", state.WAVE_MENU == 2):
+        if sub.checkbox("Amplitude (RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
-        if sub.checkbox("Amplitude (Longitudinal)", state.WAVE_MENU == 3):
+        if sub.checkbox("Envelope (Analytical)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
-        if sub.checkbox("Envelope (Longitudinal)", state.WAVE_MENU == 4):
+        if sub.checkbox("Frequency", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
-        if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 5):
-            state.WAVE_MENU = 5
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
-        if state.WAVE_MENU == 1:  # Displacement (Longitudinal) on greenyellow gradient
+        if state.WAVE_MENU == 1:  # Displacement on greenyellow gradient
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
-                    f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
-        if state.WAVE_MENU == 2:  # Displacement (Transverse) on bluered gradient
-            render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
-            with render.gui.sub_window("displacement", 0.00, 0.65, 0.08, 0.06) as sub:
-                sub.text(
-                    f"{-state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampT_global_rms*2/state.wave_field.scale_factor:.0e}m"
-                )
-        if state.WAVE_MENU == 3:  # Amplitude (Longitudinal) on viridis gradient
+        if state.WAVE_MENU == 2:  # Amplitude (RMS) on viridis gradient
             render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.65, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m")
-        if state.WAVE_MENU == 4:  # Envelope (Longitudinal) on greenyellow gradient
+                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+        if state.WAVE_MENU == 3:  # Envelope (Analytical) on greenyellow gradient
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("envelope", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(
-                    f"{-state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}  {state.ampL_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
-        if state.WAVE_MENU == 5:  # Frequency (L&T) on blueprint gradient
+        if state.WAVE_MENU == 4:  # Frequency on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("frequency", 0.00, 0.65, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
@@ -359,8 +349,7 @@ def display_data_dashboard(state):
             sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
 
         sub.text("\n--- ENERGY-WAVE ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Amp Longitudinal: {state.ampL_global_rms/state.wave_field.scale_factor:.1e} m")
-        sub.text(f"Amp Transverse: {state.ampT_global_rms/state.wave_field.scale_factor:.1e} m")
+        sub.text(f"Amplitude: {state.amp_global_rms/state.wave_field.scale_factor:.1e} m")
         sub.text(f"Frequency: {state.freq_global_avg*state.wave_field.scale_factor:.1e} Hz")
         sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
 
@@ -429,8 +418,7 @@ def compute_wave_oscillation(state):
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
         ewave.sample_avg_trackers(state.wave_field, state.trackers)
-    state.ampL_global_rms = state.trackers.ampL_global_rms_am[None] * constants.ATTOMETER  # in m
-    state.ampT_global_rms = state.trackers.ampT_global_rms_am[None] * constants.ATTOMETER  # in m
+    state.amp_global_rms = state.trackers.amp_global_rms_am[None] * constants.ATTOMETER  # in m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND
     state.wavelength_global_avg = constants.EWAVE_SPEED / (
         state.freq_global_avg or 1
