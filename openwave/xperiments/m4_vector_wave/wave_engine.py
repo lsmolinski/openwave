@@ -202,7 +202,7 @@ def compute_voxel_wave(
         amplitude_at_r_am = base_amplitude_am * amplitude_falloff
 
         # Accumulate this source's contribution (wave superposition)
-        # A(r)·cos(ωt ± kr + φ)·direction, negative for outward propagation, amp falloff
+        # ψ = A(r)·cos(ωt ± kr + φ)·direction, negative for outward propagation, amp falloff
         wave_field.displacement_am[i, j, k] += (
             amplitude_at_r_am
             * wave_field.scale_factor

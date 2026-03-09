@@ -6,7 +6,7 @@ This XPERIMENT showcases:
 """
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
-TARGET_VOXELS = 25_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
@@ -28,7 +28,7 @@ XPARAMETERS = {
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0],
-        "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
+        "APPLY_MOTION": False,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {
         "SHOW_AXIS": False,  # Toggle to show/hide axis lines
@@ -36,7 +36,7 @@ XPARAMETERS = {
         "SHOW_GRID": False,  # Toggle to show/hide the voxel data-grid
         "SHOW_EDGES": False,  # Toggle to show/hide universe edges
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],  # [x, y, z] positions relative to universe size
-        "SHOW_FLUX_MESH": 2,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
+        "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
         "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
