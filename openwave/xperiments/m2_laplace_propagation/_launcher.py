@@ -269,7 +269,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.27) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.25) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)

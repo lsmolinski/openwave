@@ -52,7 +52,7 @@ XPARAMETERS = {
         "POSITION": tetrahedral_10(center=(0.60, 0.73, 0.50)),
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [180, 180, 180, 180, 180, 180, 180, 180, 180, 180],
-        "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
+        "APPLY_MOTION": False,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {
         "SHOW_AXIS": False,  # Toggle to show/hide axis lines
