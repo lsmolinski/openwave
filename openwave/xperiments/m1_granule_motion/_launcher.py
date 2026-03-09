@@ -287,7 +287,7 @@ def display_level_specs(state, level_bar_vertices):
         sub.text("Propagation: Analytical Function")
         if sub.button("Wave Notation Guide"):
             webbrowser.open(
-                "https://github.com/openwave-labs/openwave/blob/main/openwave/common/wave_notation.md"
+                "https://github.com/openwave-labs/openwave/blob/main/openwave/wave_notation.md"
             )
 
 
