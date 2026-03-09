@@ -40,7 +40,7 @@ SOURCES_PHASE_DEG = [0] * NUM_SOURCES
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": "Granule Motion",
+        "X_NAME": "Medium Disturbance",
         "DESCRIPTION": "Detailed simulation of granule motion influenced by standing wave patterns from multiple sources arranged in a circle. Demonstrates complex interference patterns and 2.5D visualization.",
     },
     "camera": {
@@ -73,13 +73,13 @@ XPARAMETERS = {
         "BLOCK_SLICE": False,  # Block-slicing toggle
         "SHOW_SOURCES": True,  # Toggle to show/hide wave source markers
         "RADIUS_FACTOR": 0.35,  # Granule radius scaling factor
-        "FREQ_BOOST": 10.0,  # Frequency boost multiplier
+        "FREQ_BOOST": 2.0,  # Frequency boost multiplier
         "AMP_BOOST": 3.0,  # Amplitude boost multiplier, legacy = 0.1
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {
         "COLOR_THEME": "OCEAN",  # Choose color theme for rendering (OCEAN, DESERT, FOREST)
-        "WAVE_MENU": 2,  # Check _launcher.py display_wave_menu() for wave_menu indexing
+        "WAVE_MENU": 4,  # Check _launcher.py display_wave_menu() for wave_menu indexing
     },
     "analytics": {
         "INSTRUMENTATION": False,  # Toggle data collection (speed & wavelength measurements)

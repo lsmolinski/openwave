@@ -156,8 +156,8 @@ class BCCLattice:
         self.position_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
         self.position_screen = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
         self.equilibrium_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)  # rest
-        self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=self.granule_count)  # wave amplitude
         self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
+        self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=self.granule_count)  # wave amplitude
         self.granule_type = ti.field(dtype=ti.i32, shape=self.granule_count)
         self.front_octant = ti.field(dtype=ti.i32, shape=self.granule_count)
         self.granule_type_color = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
@@ -652,8 +652,8 @@ class SCLattice:
         self.position_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
         self.position_screen = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
         self.equilibrium_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)  # rest
-        self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=self.granule_count)  # wave amplitude
         self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)
+        self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=self.granule_count)  # wave amplitude
         self.granule_type = ti.field(dtype=ti.i32, shape=self.granule_count)
         self.front_octant = ti.field(dtype=ti.i32, shape=self.granule_count)
         self.granule_type_color = ti.Vector.field(3, dtype=ti.f32, shape=self.granule_count)

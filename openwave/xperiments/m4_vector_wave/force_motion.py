@@ -187,31 +187,29 @@ def compute_force_vector(
             and k < nz - sample_radius
         ):
             # ================================================================
-            # Use ENVELOPE field for force calculation (smooth 1/r, no oscillations)
-            # Envelope = sum of (charge_sign * A₀/r) from each source
-            # Gives EWT-predicted 1/r² force law
+            # Use AMPLITUDE field for force calculation
             # ================================================================
-            # Sample envelope at center
-            A_center_am = trackers.ampL_local_envelope_am[i, j, k]
+            # Sample amplitude at center
+            A_center_am = trackers.amp_local_rms_am[i, j, k]
 
             # Central difference gradient with larger sampling radius:
             # grad(A) = (A[+R] - A[-R]) / (2*R*dx)
             # This averages the gradient over a larger region
             sample_dist_am = 2.0 * sample_radius * dx_am
 
-            # X gradient from envelope field
-            A_xp_am = trackers.ampL_local_envelope_am[i + sample_radius, j, k]
-            A_xm_am = trackers.ampL_local_envelope_am[i - sample_radius, j, k]
+            # X gradient from amplitude field
+            A_xp_am = trackers.amp_local_rms_am[i + sample_radius, j, k]
+            A_xm_am = trackers.amp_local_rms_am[i - sample_radius, j, k]
             dA_dx = (A_xp_am - A_xm_am) / sample_dist_am
 
-            # Y gradient from envelope field
-            A_yp_am = trackers.ampL_local_envelope_am[i, j + sample_radius, k]
-            A_ym_am = trackers.ampL_local_envelope_am[i, j - sample_radius, k]
+            # Y gradient from amplitude field
+            A_yp_am = trackers.amp_local_rms_am[i, j + sample_radius, k]
+            A_ym_am = trackers.amp_local_rms_am[i, j - sample_radius, k]
             dA_dy = (A_yp_am - A_ym_am) / sample_dist_am
 
-            # Z gradient from envelope field
-            A_zp_am = trackers.ampL_local_envelope_am[i, j, k + sample_radius]
-            A_zm_am = trackers.ampL_local_envelope_am[i, j, k - sample_radius]
+            # Z gradient from amplitude field
+            A_zp_am = trackers.amp_local_rms_am[i, j, k + sample_radius]
+            A_zm_am = trackers.amp_local_rms_am[i, j, k - sample_radius]
             dA_dz = (A_zp_am - A_zm_am) / sample_dist_am
 
             # DEBUG: Store intermediate values
@@ -503,8 +501,7 @@ def debug_force_analysis(wave_field, trackers, wave_center, frame: int = 0):
             print(f"{'─'*60}")
 
     # Get numpy arrays from taichi fields
-    # Using envelope field (smooth 1/r) for force calculation instead of RMS
-    envelope = trackers.ampL_local_envelope_am.to_numpy()
+    amplitude = trackers.amp_local_rms_am.to_numpy()
     positions = wave_center.position_grid.to_numpy()
     forces = wave_center.force.to_numpy()
     velocities = wave_center.velocity_amrs.to_numpy()
@@ -560,16 +557,16 @@ def debug_force_analysis(wave_field, trackers, wave_center, frame: int = 0):
             print(f"  WARNING: Near z boundary!")
             continue
 
-        # Envelope values at sampling radius distance (smooth 1/r field)
-        A_center = envelope[i, j, k] * ATTOMETER
-        A_xp = envelope[i + sample_radius, j, k] * ATTOMETER
-        A_xm = envelope[i - sample_radius, j, k] * ATTOMETER
-        A_yp = envelope[i, j + sample_radius, k] * ATTOMETER
-        A_ym = envelope[i, j - sample_radius, k] * ATTOMETER
-        A_zp = envelope[i, j, k + sample_radius] * ATTOMETER
-        A_zm = envelope[i, j, k - sample_radius] * ATTOMETER
+        # Amplitude values at sampling radius distance
+        A_center = amplitude[i, j, k] * ATTOMETER
+        A_xp = amplitude[i + sample_radius, j, k] * ATTOMETER
+        A_xm = amplitude[i - sample_radius, j, k] * ATTOMETER
+        A_yp = amplitude[i, j + sample_radius, k] * ATTOMETER
+        A_ym = amplitude[i, j - sample_radius, k] * ATTOMETER
+        A_zp = amplitude[i, j, k + sample_radius] * ATTOMETER
+        A_zm = amplitude[i, j, k - sample_radius] * ATTOMETER
 
-        print(f"  Envelope at center: {A_center:.3e} m ({envelope[i,j,k]:.3f} am)")
+        print(f"  Amplitude at center: {A_center:.3e} m ({amplitude[i,j,k]:.3f} am)")
         print(f"  Amplitude x±{sample_radius}: [{A_xm:.3e}, {A_xp:.3e}] m")
 
         # Gradients with larger sampling distance
