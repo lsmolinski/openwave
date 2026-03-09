@@ -772,13 +772,13 @@ For a sinusoidal wave: ψ(x,t) = A sin(kx - ωt)
 - ψ varies between -A and +A
 - A is the constant amplitude (maximum displacement)
 
-| Computation            | Uses                          |
-|------------------------|-------------------------------|
-| Wave propagation (PDE) | ψ (psiL_am)                   |
+| Computation            | Uses                               |
+|------------------------|----------------------------------- |
+| Wave propagation (PDE) | ψ (psiL_am)                        |
 | Energy density         | A² (amp_local_peak_am²)            |
 | Force calculation, MAP | ∇A (gradient of amp_local_peak_am) |
-| Wave mode (long/trans) | ∇ψ (displacement direction)   |
-| Phase                  | From ψ field                  |
+| Wave mode (long/trans) | ∇ψ (displacement direction)        |
+| Phase                  | From ψ field                       |
 
 - granule displacement (from rest, sine wave, localized)
 - granule amplitude = granule max displacement (constant, localized)
