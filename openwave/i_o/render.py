@@ -208,6 +208,7 @@ def handle_camera():
     camera.position(cam_x, cam_y, cam_z)
     camera.lookat(orbit_center[0], orbit_center[1], orbit_center[2])
     camera.up(0, 0, 1)
+    camera.projection_mode(ti.ui.ProjectionMode.Perspective)
     scene.set_camera(camera)
 
 

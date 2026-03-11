@@ -43,6 +43,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 200,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
+        "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },

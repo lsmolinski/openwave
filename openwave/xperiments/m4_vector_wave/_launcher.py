@@ -135,6 +135,7 @@ class SimulationState:
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
         self.PARTICLE_SHELL = False
+        self.SHOW_GRANULES = False
         self.TIMESTEP = 0.0
         self.PAUSED = False
 
@@ -177,6 +178,7 @@ class SimulationState:
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
+        self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.TIMESTEP = ui["TIMESTEP"]
         self.PAUSED = ui["PAUSED"]
 
@@ -254,12 +256,13 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.37, 0.16, 0.27) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.37, 0.16, 0.30) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
+        state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 30.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
@@ -298,7 +301,7 @@ def display_wave_menu(state):
 
 def display_level_specs(state, level_bar_vertices):
     """Display OpenWave level specifications overlay."""
-    render.canvas.triangles(level_bar_vertices, color=colormap.GREEN[1])
+    render.canvas.triangles(level_bar_vertices, color=colormap.DARK_BLUE[1])
     with render.gui.sub_window("VECTOR-WAVE METHOD", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Vector Field")
@@ -479,7 +482,7 @@ def render_elements(state):
     if state.SHOW_EDGES:
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
-    if state.SHOW_FLUX_MESH > 0:
+    if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
         ewave.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
@@ -522,6 +525,21 @@ def render_elements(state):
             )
             # Render particle shell at wave-center position
             render.scene.particles(position, radius, color=color)
+
+    # Render granule positional displacement (only when flux mesh is active, since position
+    # is sampled from full-grid displacement data)
+    if state.SHOW_GRANULES and state.SHOW_FLUX_MESH > 0:
+        max_particles = 101
+        granule_radius = 0.002  # in screen space (relative to max universe edge and scale factor)
+        amp_boost = state.WARP_MESH  # Boost granule displacement for better visibility
+        nx, ny = state.wave_field.nx, state.wave_field.ny
+        stride = max(1, int(np.ceil(np.sqrt(nx * ny / max_particles))))
+        sampled_nx = (nx + stride - 1) // stride
+        sampled_ny = (ny + stride - 1) // stride
+        num_render = min(sampled_nx * sampled_ny, max_particles)
+        ewave.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
+        pos_np = state.wave_field.position_render.to_numpy()[:num_render]
+        render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
 
 
 # ================================================================
