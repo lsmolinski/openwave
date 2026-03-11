@@ -108,8 +108,6 @@ def compute_voxel_wave(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
-    dt_rs: ti.f32,  # type: ignore
-    elapsed_t_rs: ti.f32,  # type: ignore
     k_grid: ti.f32,  # type: ignore
     temporal_phase: ti.f32,  # type: ignore
 ):
@@ -148,8 +146,6 @@ def compute_voxel_wave(
         wave_field: WaveField instance
         trackers: WaveTrackers instance
         wave_center: WaveCenter instance
-        dt_rs: Timestep size (rs)
-        elapsed_t_rs: Elapsed simulation time (rs)
         k_grid: Angular wave number (radians per grid index)
         temporal_phase: Current temporal phase (ω·t)
     """
@@ -160,7 +156,7 @@ def compute_voxel_wave(
     # TODO: review this reference radius logic, currently set to 1λ, ensures finite amplitude at r=0 and sets 1/r falloff reference point, but may need adjustment based on observed behavior or specific wave scenarios
     # Reference radius for amplitude normalization (r₀ = 1λ)
     # Prevents singularity at r=0 and sets 1/r falloff reference point
-    r_reference_am = base_wavelength_am / ti.math.pi
+    r_reference_grid = base_wavelength / wave_field.dx  # in grid units
 
     # ================================================================
     # WAVE PROPAGATION: Update voxels using wave functions
@@ -188,8 +184,8 @@ def compute_voxel_wave(
 
         # Amplitude falloff for spherical wave: A(r) = A₀/r
         # Clamp to r_min to avoid singularity at r = 0
-        r_safe_am = ti.max(r_grid, r_reference_am)
-        amplitude_falloff = r_reference_am / r_safe_am
+        r_safe_grid = ti.max(r_grid, r_reference_grid)
+        amplitude_falloff = r_reference_grid / r_safe_grid
         # Total amplitude at this distance (with visualization scaling)
         amplitude_at_r_am = base_amplitude_am * amplitude_falloff
 
@@ -277,7 +273,6 @@ def propagate_wave_neighbors(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
-    dt_rs: ti.f32,  # type: ignore
     elapsed_t_rs: ti.f32,  # type: ignore
     num_selected: ti.i32,  # type: ignore
 ):
@@ -294,8 +289,6 @@ def propagate_wave_neighbors(
         wave_field: WaveField instance with selected_voxels populated
         trackers: WaveTrackers instance for amplitude envelope
         wave_center: WaveCenter instance with source positions
-        dt_rs: Timestep size (rs)
-        elapsed_t_rs: Elapsed simulation time (rs)
         num_selected: Number of selected voxels to process
     """
     # Compute angular frequency (ω = 2πf) for temporal phase variation
@@ -315,9 +308,7 @@ def propagate_wave_neighbors(
         i = wave_field.selected_voxels[sel_idx][0]
         j = wave_field.selected_voxels[sel_idx][1]
         k = wave_field.selected_voxels[sel_idx][2]
-        compute_voxel_wave(
-            i, j, k, wave_field, trackers, wave_center, dt_rs, elapsed_t_rs, k_grid, temporal_phase
-        )
+        compute_voxel_wave(i, j, k, wave_field, trackers, wave_center, k_grid, temporal_phase)
 
 
 @ti.kernel
@@ -325,7 +316,6 @@ def propagate_wave_full(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
-    dt_rs: ti.f32,  # type: ignore
     elapsed_t_rs: ti.f32,  # type: ignore
 ):
     """
@@ -335,8 +325,6 @@ def propagate_wave_full(
         wave_field: WaveField instance containing displacement arrays and grid info
         trackers: WaveTrackers instance for tracking wave properties
         wave_center: WaveCenter instance with source positions and phase offsets
-        dt_rs: Timestep size (rs)
-        elapsed_t_rs: Elapsed simulation time (rs)
     """
     # Grid dimensions for boundary handling
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
@@ -355,9 +343,7 @@ def propagate_wave_full(
 
     # FULL GRID MODE: Compute all voxels (needed for flux mesh visualization)
     for i, j, k in ti.ndrange(nx, ny, nz):
-        compute_voxel_wave(
-            i, j, k, wave_field, trackers, wave_center, dt_rs, elapsed_t_rs, k_grid, temporal_phase
-        )
+        compute_voxel_wave(i, j, k, wave_field, trackers, wave_center, k_grid, temporal_phase)
 
 
 # ================================================================

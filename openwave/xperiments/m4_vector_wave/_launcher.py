@@ -399,7 +399,6 @@ def compute_wave_oscillation(state):
             state.wave_field,
             state.trackers,
             state.wave_center,
-            state.TIMESTEP,
             state.elapsed_t_rs,
             num_selected,
         )
@@ -409,7 +408,6 @@ def compute_wave_oscillation(state):
             state.wave_field,
             state.trackers,
             state.wave_center,
-            state.TIMESTEP,
             state.elapsed_t_rs,
         )
 
