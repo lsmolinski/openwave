@@ -527,8 +527,8 @@ def render_elements(state):
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)
     if state.SHOW_GRANULES and state.SHOW_FLUX_MESH > 0:
-        max_particles = 101
-        granule_radius = 0.002  # in screen space (relative to max universe edge and scale factor)
+        max_particles = 401
+        granule_radius = 0.001  # in screen space (relative to max universe edge and scale factor)
         amp_boost = state.WARP_MESH  # Boost granule displacement for better visibility
         nx, ny = state.wave_field.nx, state.wave_field.ny
         stride = max(1, int(np.ceil(np.sqrt(nx * ny / max_particles))))
