@@ -113,6 +113,7 @@ class WaveField:
         # Scales 1e-17 m values to ~10 am, well within f32 range
         # Wave displacement vector field (ψ)
         self.displacement_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ
+        self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
         # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s
