@@ -171,18 +171,10 @@ def compute_voxel_wave(
         if wave_center.active[wc_idx] == 0:
             continue
 
-        # TODO: review dir_vec logic, duplicating dist/r_grid calculations, consider optimization if needed
         # Get direction from voxel to wave center (normalized vector)
         dir_vec = [i, j, k] - wave_center.position_grid[wc_idx]
-        dist = ti.sqrt(dir_vec.dot(dir_vec)) + 1e-10  # add small value to prevent div by zero
-        direction = dir_vec / dist  # normalized direction vector for wave propagation
-
-        # Compute radial distance from wave center (in grid indices)
-        r_grid = ti.sqrt(
-            (i - wave_center.position_grid[wc_idx][0]) ** 2
-            + (j - wave_center.position_grid[wc_idx][1]) ** 2
-            + (k - wave_center.position_grid[wc_idx][2]) ** 2
-        )
+        r_grid = dir_vec.norm() + 1e-10
+        direction = dir_vec / r_grid  # normalized direction vector for wave propagation
 
         # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
         spatial_phase = k_grid * r_grid
