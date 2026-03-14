@@ -191,7 +191,7 @@ def oscillate_granules(
 
     Wave Superposition Principle:
         x_total(t) = Σ[x_i(t)] for all wave sources i
-        x_i(t) = x_eq + A_i(r_i)·cos(ωt + kr_i + φ_source_i)·dir_i
+        x_i(t) = x_eq + A_i(r_i)·cos(kr_i + ωt + φ_source_i)·dir_i
 
     Where for each wave source i:
         - r_i: distance from wave source i to granule
@@ -266,13 +266,13 @@ def oscillate_granules(
             # Vector from vertex to granule equilibrium position
             r_vec = equilibrium_am[granule_idx] - universe_vertices_am[v]
             r_mag = r_vec.norm()
-            # A·cos(ωt - kr)·direction, negative for outward propagation, full amp
+            # A·cos(kr - ωt)·direction, negative for outward propagation, full amp
             base_wave_psi += (
                 base_wave_toggle
                 * base_amplitude_am
                 * amp_boost
                 / 8  # base-wave do not superpose, split per vertex for energy conservation
-                * ti.cos(temporal_phase - k_am * r_mag)
+                * ti.cos(k_am * r_mag - temporal_phase)
             ) * (r_vec / r_mag)
 
         # Initialize accumulation variables for wave superposition
@@ -284,9 +284,6 @@ def oscillate_granules(
             # Get precomputed direction and distance for this granule-source pair
             direction = sources_direction[granule_idx, source_idx]
             r_am = sources_distance_am[granule_idx, source_idx]
-
-            # Phase shift between in/out waves (at wave-center)
-            phase_shift = ti.math.pi
 
             # Source phase offset: initial phase of this wave-center
             source_offset = sources_phase_offset[source_idx]
@@ -306,34 +303,34 @@ def oscillate_granules(
 
             # MAIN WAVE FUNCTION ========================================
             # IN & OUT Wave displacement from this source
-            # A·cos(ωt ± kr + φ)·direction, positive for inward propagation, full amp
-            # A(r)·cos(ωt ± kr + φ)·direction, negative for outward propagation, amp falloff
+            # A·cos(kr + ωt + φ)·direction, positive for inward propagation, full amp
+            # A(r)·sin(kr - ωt - φ)·direction, negative for outward propagation, amp falloff
             in_wave_psi = (
                 in_wave_toggle
                 * base_amplitude_am
                 * amp_boost
                 / num_sources  # incoming wave do not superpose, split per WC for energy conservation
-                * ti.cos(temporal_phase + spatial_phase + source_offset)
+                * ti.cos(spatial_phase + (temporal_phase + source_offset))
             )
             out_wave_psi = (
                 out_wave_toggle
                 * amplitude_at_r_cap_am
-                * ti.cos(temporal_phase - spatial_phase + source_offset + phase_shift)
+                * ti.sin(spatial_phase - (temporal_phase + source_offset))
             )
             source_displacement_am = (in_wave_psi + out_wave_psi) * direction
 
-            # Wave velocity from this source: -A(r)·ω·sin(ωt ± kr + φ)·direction
+            # Wave velocity from this source: -A(r)·ω·sin(kr ± ωt + φ)·direction
             in_wave_vel = (
                 in_wave_toggle
                 * -base_amplitude_am
                 * omega_slo
-                * ti.sin(temporal_phase + spatial_phase + source_offset)
+                * ti.sin(spatial_phase + (temporal_phase + source_offset))
             ) / num_sources  # incoming wave do not superpose, gets split per WC
             out_wave_vel = (
                 out_wave_toggle
                 * -amplitude_at_r_cap_am
                 * omega_slo
-                * ti.sin(temporal_phase - spatial_phase + source_offset + phase_shift)
+                * ti.sin(spatial_phase - (temporal_phase + source_offset))
             )
             source_velocity_am = (in_wave_vel + out_wave_vel) * direction
 
