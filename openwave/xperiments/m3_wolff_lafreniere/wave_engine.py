@@ -38,26 +38,16 @@ def propagate_wave(
     """
     Compute wave displacement using Wolff-LaFreniere analytical wave equation.
 
-    Wolff-LaFreniere Combined Form:
-        ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-
-    Expanded Form (used in implementation):
-        ψ(r,t) = A · [-cos(ωt)·sin(kr)/r - sin(ωt)·(1-cos(kr))/r]
-               = A · [-cos(ωt)·Phase(r) - sin(ωt)·Quadrature(r)]
-
-    Components:
-        Phase:      sin(kr)/r  → k as r→0  (standing wave envelope)
-        Quadrature: (1-cos(kr))/r → 0 as r→0  (traveling wave component)
-
     Physical Properties:
         - Near center: standing wave behavior (finite amplitude at r=0)
         - Far from center: transitions to traveling wave
         - 1/r amplitude falloff (energy conserving, from Wolff)
-        - Electron core diameter = λ (full wavelength, from LaFreniere)
+        - Electron core diameter = λ (full wavelength)
         - Superposition of multiple wave centers supported
 
     Wave Trackers Updated:
-        - amp_local_rms_am: RMS amplitude via EMA on ψ² (for energy/force gradients)
+        - amp_local_emarms_am: RMS amplitude via EMA on ψ² (for visualization)
+        - amp_local_phasorrms_am: RMS amplitude via phasor components (for energy/force gradients)
         - freq_local_cross_rHz: Frequency via zero-crossing detection with EMA smoothing
 
     See research/01_wolff_lafreniere.md for full derivation and theory.
@@ -91,7 +81,10 @@ def propagate_wave(
     for i, j, k in ti.ndrange(nx, ny, nz):
         prev_disp = wave_field.displacement_am[i, j, k]
         wave_field.displacement_am[i, j, k] = 0.0  # reset before accumulation
-        trackers.amp_local_envelope_am[i, j, k] = 0.0  # reset envelope before accumulation
+
+        # Phasor accumulators: coefficients of cos(ωt) and sin(ωt)
+        phasor_P = 0.0  # Σ cos(ωt) coefficient
+        phasor_Q = 0.0  # Σ sin(ωt) coefficient
 
         # loop over wave-centers (wave superposition principle causing interference)
         for wc_idx in ti.ndrange(wave_center.num_sources):
@@ -112,31 +105,153 @@ def propagate_wave(
             # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
             spatial_phase = k_grid * r_grid
 
-            # ================================================================
-            # Combined and Adjusted WOLFF-LAFRENIERE canonical form:
-            #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-            # Expanded form:
-            #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-            #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-            # ================================================================
-            # Phase term: sin(kr)/r → k as r→0 (physical units)
-            phase_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                k_grid,  # analytical limit
-                ti.sin(spatial_phase) / r_grid,
-            )
+            # # ================================================================
+            # # WOLFF-original canonical form:
+            # #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
+            # # Expanded form:
+            # #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
+            # # ================================================================
+            # # Cardinal sine term: sin(kr)/r → k as r→0 (physical units)
+            # sinc_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     k_grid,  # analytical limit
+            #     ti.sin(spatial_phase) / r_grid,
+            # )
 
-            # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            quadrature_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                0.0,  # analytical limit
-                (1 - ti.cos(spatial_phase)) / r_grid,
-            )
+            # # Oscillator with source_offset phase shift
+            # oscillator = ti.cos(temporal_phase + source_offset) + quadrature_term * ti.sin(
+            #     temporal_phase + source_offset
+            # )
 
-            # Oscillator with source_offset phase shift
-            oscillator = (
-                -ti.cos(temporal_phase + source_offset) * phase_term
-                - ti.sin(temporal_phase + source_offset) * quadrature_term
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator * sinc_term
+            # )
+
+            # # ================================================================
+            # # LAFRENIERE-MARCOTTE original canonical form:
+            # #   Phase:      sin(x) / x          → 1 as x→0
+            # #   Quadrature: (1 - cos(x)) / x    → 0 as x→0
+            # #   where x = kr (spatial phase in radians)
+            # #
+            # # Combined time-dependent form:
+            # #   ψ(r,t) = A · [cos(ωt) · sin(kr)/(kr) + sin(ωt) · (1 - cos(kr))/(kr)]
+            # # Which equals:
+            # #   ψ(r,t) = A · [sin(kr - ωt) + sin(ωt)] / (kr)
+            # #
+            # # Behavior:
+            # #   r → 0:  ψ → A · cos(ωt)  (pure standing oscillation, amplitude = 1)
+            # #   r → ∞:  ψ → A · sin(kr - ωt) / (kr)  (outgoing traveling wave)
+            # # LaFreniere uses a single outgoing wave with nonlinear phase correction
+            # # not a superposition of standing + traveling components.
+            # # The standing wave appearance emerges purely from the phase warping near the core.
+            # # ================================================================
+            # # Phase term: sin(kr)/(kr) → 1 as r→0
+            # phase_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     1.0,  # analytical limit: sin(x)/x → 1 as x→0
+            #     ti.sin(spatial_phase) / spatial_phase,
+            # )
+
+            # # Quadrature term: (1-cos(kr))/(kr) → 0 as r→0
+            # quadrature_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     0.0,  # analytical limit: (1-cos(x))/x → 0 as x→0
+            #     (1.0 - ti.cos(spatial_phase)) / spatial_phase,
+            # )
+
+            # # Oscillator with source_offset phase shift
+            # oscillator = (
+            #     ti.cos(temporal_phase + source_offset) * phase_term
+            #     + ti.sin(temporal_phase + source_offset) * quadrature_term
+            # )
+
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator
+            # )
+
+            # # ================================================================
+            # # Combined WOLFF-LAFRENIERE canonical form v1:
+            # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
+            # # Expanded form:
+            # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
+            # #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
+            # # ================================================================
+            # # Phase term: sin(kr)/r → k as r→0 (physical units)
+            # phase_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     k_grid,  # analytical limit
+            #     ti.sin(spatial_phase) / r_grid,
+            # )
+
+            # # Quadrature term: (1-cos(kr))/r → 0 as r→0
+            # quadrature_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     0.0,  # analytical limit
+            #     (1.0 - ti.cos(spatial_phase)) / r_grid,
+            # )
+
+            # # Oscillator with source_offset phase shift
+            # oscillator = (
+            #     -ti.cos(temporal_phase + source_offset) * phase_term
+            #     - ti.sin(temporal_phase + source_offset) * quadrature_term
+            # )
+
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator
+            # )
+
+            # ================================================================
+            # UPGRADED PARTIALLY STANDING WAVE
+            # Superposition of in-wave + out-wave, where the in-wave fades with distance
+            # Physical motivation: near the source, the wave reflects off the core
+            #   creating a standing wave pattern. As you move away, the reflected wave weakens,
+            #   transitioning to a pure traveling wave.
+            # 2 counter-propagating waves with a spatial blending function:
+            #   ψ(r,t) = A · [weight(r,λ)·sin(kr + ωt) + sin(kr - ωt)] / kr
+            #
+            #   Cardinal sine term: sin(kr)/kr → 1 as r→0
+            #       self-normalizes to 1 at origin regardless of wavelength
+            #
+            #   Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
+            #       Equation = 1 / (1 + (r/(λ*transition))²), smooth Lorentzian rolloff
+            #       weight ≈ 1 near center → standing wave (fixed nodes)
+            #       weight → 0 far away → pure outgoing traveling wave
+            #
+            #   Equation components:
+            #       In-Wave: weight(r,λ) · sin(kr + ωt) / kr (nodes move inward)
+            #       Out-Wave: sin(kr - ωt) / kr (nodes move outward)
+            #
+            #   Standing limit (weight=1, no singularity at r=0):
+            #     [sin(kr-ωt) + sin(kr+ωt)] / kr
+            #       → 2·sin(kr)·cos(ωt) / kr
+            #       → 2·cos(ωt) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
+            #
+            #   How it works:
+            #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
+            #   │         Region         │ Weight(r) │                                       Result                                       │
+            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
+            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
+            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt) / kr — pure traveling wave, nodes move freely                         │
+            #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
+            # ================================================================
+
+            # In-wave weight: controls standing → traveling transition
+            # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
+            transition = 1 + 1 / 4  # number of wavelengths (λ)
+            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 2)
+
+            # Combined partially standing wave
+            oscillator = ti.select(
+                r_grid < 0.5,  # center voxel: analytical limit
+                2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt)
+                (
+                    weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
+                    + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
+                )
+                / spatial_phase,  # combined wave with in-wave weighting and 1/r decay
             )
 
             wave_field.displacement_am[i, j, k] += (
@@ -144,174 +259,31 @@ def propagate_wave(
             )
 
             # ================================================================
-            # ANALYTICAL SIGNED AMPLITUDE ENVELOPE
-            # TODO: Refine envelope model for force calculations
-            # TODO: Archive previous envelope models in research/
-            # Particles don't respond to 10²⁵ Hz oscillation frequencies.
-            # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
-            # oscillations and responding only to the time-averaged energy-density (envelope).
-            # This envelope drives the force calculations, computed directly from wave functions.
-            # Applies superposition principle for multiple wave-centers, with signed charge sign.
-            # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
-            # Also avoids instability from real-time EMS calculations of moving wave-centers.
-            # ================================================================
-            # Charge sign: cos(0)=+1 (eg: positron), cos(π)=-1 (eg: electron)
-            charge_sign = ti.cos(source_offset)
+            # PHASOR SUPERPOSITION: accumulate cos(ωt) and sin(ωt) coefficients
+            # ψ_n = A · [(w+1)·sin(x)·cos(ωt+φ) + (w-1)·cos(x)·sin(ωt+φ)] / x
+            # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
+            A_eff = base_amplitude_am * wave_field.scale_factor
+            C_n = ti.select(
+                r_grid < 0.5,
+                2.0 * A_eff,  # center limit: (w+1)·sin(x)/x → 2
+                A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
+            )
+            S_n = ti.select(
+                r_grid < 0.5,
+                0.0,  # center limit: (w-1)·cos(x)/x → 0 (w=1 at center)
+                A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
+            )
+            # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            cos_phi = ti.cos(source_offset)
+            sin_phi = ti.sin(source_offset)
+            phasor_P += C_n * cos_phi + S_n * sin_phi
+            phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
-            # TODO: Investigate why these constants work well for envelope
-            golden_ratio = (1 + ti.sqrt(5)) / 2  # ~1.6180339887
-            weight_factor = 2.0 * ti.math.pi**2  # ~19.7392088, decay, damping
-            offset_factor = 1 / (wavelength_grid * golden_ratio)
-
-            # # SPIKED 1/r ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid * 2
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:  # FAR-FIELD: smooth 1/r decay
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #     )  # spiked 1/r decay
-
-            # # SMOOTHED 1/r ==================================
-            # trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #     base_amplitude_am
-            #     * wave_field.scale_factor
-            #     * k_grid
-            #     / ti.sqrt((k_grid * r_grid) ** 2 + 1)
-            # )  # smoothed 1/r decay
-
-            # # DAMPED SMOOTHED 1/r ==================================
-            # trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #     base_amplitude_am
-            #     * wave_field.scale_factor
-            #     * k_grid
-            #     / ti.sqrt((k_grid * r_grid) ** 2 + (2 * ti.math.pi) ** 2)
-            # )  # smoothed 1/r decay
-
-            # # WOLFF-ORIGINAL ENVELOPE ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * ti.sin(k_grid * r_grid) / r_grid
-            #     )  # standing-smooth sin(kr)/r decay
-
-            # # WOLFF ONLY AT NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.sin(k_grid * r_grid)
-            #             / r_grid
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # ABS WOLFF ONLY NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.abs(ti.sin(k_grid * r_grid))
-            #             / r_grid
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi)
-            #         + 1 / (wavelength_grid * golden_ratio)
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.sin(k_grid * r_grid)
-            #             / (r_grid * 2 * ti.math.pi)
-            #             + 1 / (wavelength_grid * golden_ratio)
-            #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # # ABS DAMPED+OFFSET WOLFF NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2)
-            #         + 1 / (wavelength_grid * golden_ratio)
-            #     )  # finite value at center, k_grid / constant + offset
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.5λ
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * ti.abs(ti.sin(k_grid * r_grid))
-            #             / (r_grid * 2)
-            #             + 1 / (wavelength_grid * golden_ratio)
-            #         )  # standing-smooth sin(kr)/(r·constant) + offset decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
-
-            # DAMPED + WOLFF ==================================
-            if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                    base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
-                )  # finite value at center, k_grid / constant
-            else:
-                if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am
-                        * wave_field.scale_factor
-                        * (
-                            k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
-                            + ti.sin(k_grid * r_grid) / (r_grid * 4)
-                        )
-                    )  # smoothed 1/r decay
-                else:  # FAR-FIELD: smooth 1/r decay
-                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-                    )  # smooth 1/r decay
-
-            # # FLAT NEAR-FIELD ==================================
-            # if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #         base_amplitude_am * wave_field.scale_factor * k_grid / (2 * ti.math.pi * 1.25)
-            #     )  # finite value at center, k_grid
-            # else:
-            #     if r_grid <= (2.5 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am
-            #             * wave_field.scale_factor
-            #             * k_grid
-            #             / (2 * ti.math.pi * 1.25)
-            #         )  # standing-smooth sin(kr)/r decay
-            #     else:  # FAR-FIELD: smooth 1/r decay
-            #         trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-            #             base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-            #         )  # smooth 1/r decay
+        # Phasor RMS: exact amplitude from superposition, no EMA needed
+        # peak = √(P² + Q²), RMS = peak / √2
+        trackers.amp_local_phasorrms_am[i, j, k] = ti.sqrt(
+            phasor_P**2 + phasor_Q**2
+        ) / ti.sqrt(2.0)
 
         # Precision rounding to ensure wave cancellation
         # Critical for opposing phase sources (180°) that should annihilate
@@ -325,7 +297,7 @@ def propagate_wave(
         curr_disp = wave_field.displacement_am[i, j, k]
 
         # ================================================================
-        # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
+        # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization
         # ================================================================
         # # PEAK AMPLITUDE tracking
         # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
@@ -343,7 +315,7 @@ def propagate_wave(
         # α controls adaptation speed: higher = faster response, lower = smoother
         # RMS amplitude
         disp2 = wave_field.displacement_am[i, j, k] ** 2
-        current_rms2 = trackers.amp_local_rms_am[i, j, k] ** 2
+        current_rms2 = trackers.amp_local_emarms_am[i, j, k] ** 2
         alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
         new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
         new_amp = ti.sqrt(new_rms2)
@@ -351,7 +323,7 @@ def propagate_wave(
         # Active regions counteract decay via EMA update from strong displacement
         # Stale regions (waves propagated away) decay to zero over time
         decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-        trackers.amp_local_rms_am[i, j, k] = new_amp * decay_factor
+        trackers.amp_local_emarms_am[i, j, k] = new_amp * decay_factor
 
         # TODO: review new frequency tracking method
         # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
@@ -404,7 +376,7 @@ def _copy_slice_xy(
 ):
     """Copy center XY slice (fixed z) to 2D buffer."""
     for i, j in slice_amp:
-        slice_amp[i, j] = trackers.amp_local_rms_am[i, j, mid_z]
+        slice_amp[i, j] = trackers.amp_local_emarms_am[i, j, mid_z]
         slice_freq[i, j] = trackers.freq_local_cross_rHz[i, j, mid_z]
 
 
@@ -417,7 +389,7 @@ def _copy_slice_xz(
 ):
     """Copy center XZ slice (fixed y) to 2D buffer."""
     for i, k in slice_amp:
-        slice_amp[i, k] = trackers.amp_local_rms_am[i, mid_y, k]
+        slice_amp[i, k] = trackers.amp_local_emarms_am[i, mid_y, k]
         slice_freq[i, k] = trackers.freq_local_cross_rHz[i, mid_y, k]
 
 
@@ -430,7 +402,7 @@ def _copy_slice_yz(
 ):
     """Copy center YZ slice (fixed x) to 2D buffer."""
     for j, k in slice_amp:
-        slice_amp[j, k] = trackers.amp_local_rms_am[mid_x, j, k]
+        slice_amp[j, k] = trackers.amp_local_emarms_am[mid_x, j, k]
         slice_freq[j, k] = trackers.freq_local_cross_rHz[mid_x, j, k]
 
 
@@ -482,12 +454,12 @@ def sample_avg_trackers(
     yz_freq = _slice_yz_freq.to_numpy()[1:-1, 1:-1]
 
     # Compute RMS amplitude: √(⟨A²⟩) for correct energy weighting
-    # amp_local_rms_am contains per-voxel RMS values, square them for energy
+    # amp_local_emarms_am contains per-voxel RMS values, square them for energy
     total_amp_squared = (xy_amp**2).sum() + (xz_amp**2).sum() + (yz_amp**2).sum()
     total_freq = xy_freq.sum() + xz_freq.sum() + yz_freq.sum()
     n_samples = xy_amp.size + xz_amp.size + yz_amp.size
 
-    trackers.amp_global_rms_am[None] = float(np.sqrt(total_amp_squared / n_samples))
+    trackers.amp_global_emarms_am[None] = float(np.sqrt(total_amp_squared / n_samples))
     trackers.freq_global_avg_rHz[None] = float(total_freq / n_samples)
 
 
@@ -522,8 +494,8 @@ def update_flux_mesh_values(
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx]
-        ampR_value = trackers.amp_local_rms_am[i, j, wave_field.fm_plane_z_idx]
-        ampE_value = trackers.amp_local_envelope_am[i, j, wave_field.fm_plane_z_idx]
+        ampE_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
+        ampP_value = trackers.amp_local_phasorrms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
 
@@ -538,29 +510,27 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
                 wave_field.nz / wave_field.max_grid_size
             )
-        elif wave_menu == 3:  # greenyellow
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
-                ampE_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                ampP_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 ampE_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
-                ampR_value, 0, trackers.amp_global_rms_am[None] * 2
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                ampR_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
         else:  # default to greenyellow (wave_menu == 1)
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
                 disp_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 disp_value / univ_edge_z * warp_mesh
@@ -573,8 +543,8 @@ def update_flux_mesh_values(
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k]
-        ampR_value = trackers.amp_local_rms_am[i, wave_field.fm_plane_y_idx, k]
-        ampE_value = trackers.amp_local_envelope_am[i, wave_field.fm_plane_y_idx, k]
+        ampE_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
+        ampP_value = trackers.amp_local_phasorrms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
 
@@ -589,29 +559,27 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
                 wave_field.ny / wave_field.max_grid_size
             )
-        elif wave_menu == 3:  # greenyellow
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
-                ampE_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                ampP_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 ampE_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
-                ampR_value, 0, trackers.amp_global_rms_am[None] * 2
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                ampR_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
         else:  # default to greenyellow (wave_menu == 1)
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
                 disp_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 disp_value / univ_edge_y * warp_mesh
@@ -624,8 +592,8 @@ def update_flux_mesh_values(
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k]
-        ampR_value = trackers.amp_local_rms_am[wave_field.fm_plane_x_idx, j, k]
-        ampE_value = trackers.amp_local_envelope_am[wave_field.fm_plane_x_idx, j, k]
+        ampE_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
+        ampP_value = trackers.amp_local_phasorrms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
 
@@ -640,29 +608,27 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
                 wave_field.nx / wave_field.max_grid_size
             )
-        elif wave_menu == 3:  # greenyellow
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
-                ampE_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                ampP_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 ampE_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
-                ampR_value, 0, trackers.amp_global_rms_am[None] * 2
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                ampR_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
         else:  # default to greenyellow (wave_menu == 1)
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
                 disp_value,
-                -trackers.amp_global_rms_am[None] * 2,
-                trackers.amp_global_rms_am[None] * 2,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 disp_value / univ_edge_x * warp_mesh

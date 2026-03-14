@@ -277,9 +277,9 @@ def display_wave_menu(state):
     with render.gui.sub_window("WAVE MENU", 0.00, 0.74, 0.15, 0.14) as sub:
         if sub.checkbox("Displacement", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
-        if sub.checkbox("Amplitude (RMS)", state.WAVE_MENU == 2):
+        if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
-        if sub.checkbox("Envelope (Analytical)", state.WAVE_MENU == 3):
+        if sub.checkbox("Amplitude (Phasor RMS)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
         if sub.checkbox("Frequency", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
@@ -290,16 +290,14 @@ def display_wave_menu(state):
                 sub.text(
                     f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
                 )
-        if state.WAVE_MENU == 2:  # Amplitude (RMS) on viridis gradient
+        if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on viridis gradient
             render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.68, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
-        if state.WAVE_MENU == 3:  # Envelope (Analytical) on greenyellow gradient
-            render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
-            with render.gui.sub_window("envelope", 0.00, 0.68, 0.08, 0.06) as sub:
-                sub.text(
-                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
-                )
+        if state.WAVE_MENU == 3:  # Amplitude (Phasor RMS) on viridis gradient
+            render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
+            with render.gui.sub_window("amplitude", 0.00, 0.68, 0.08, 0.06) as sub:
+                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
         if state.WAVE_MENU == 4:  # Frequency on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("frequency", 0.00, 0.68, 0.08, 0.06) as sub:
@@ -418,7 +416,7 @@ def compute_wave_oscillation(state):
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
         ewave.sample_avg_trackers(state.wave_field, state.trackers)
-    state.amp_global_rms = state.trackers.amp_global_rms_am[None] * constants.ATTOMETER  # in m
+    state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # in m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND
     state.wavelength_global_avg = constants.EWAVE_SPEED / (
         state.freq_global_avg or 1

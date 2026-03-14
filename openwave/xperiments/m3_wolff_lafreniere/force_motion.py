@@ -192,7 +192,7 @@ def compute_force_vector(
             # Gives EWT-predicted 1/r² force law
             # ================================================================
             # Sample envelope at center
-            A_center_am = trackers.amp_local_envelope_am[i, j, k]
+            A_center_am = trackers.amp_local_phasorrms_am[i, j, k]
 
             # Central difference gradient with larger sampling radius:
             # grad(A) = (A[+R] - A[-R]) / (2*R*dx)
@@ -200,18 +200,18 @@ def compute_force_vector(
             sample_dist_am = 2.0 * sample_radius * dx_am
 
             # X gradient from envelope field
-            A_xp_am = trackers.amp_local_envelope_am[i + sample_radius, j, k]
-            A_xm_am = trackers.amp_local_envelope_am[i - sample_radius, j, k]
+            A_xp_am = trackers.amp_local_phasorrms_am[i + sample_radius, j, k]
+            A_xm_am = trackers.amp_local_phasorrms_am[i - sample_radius, j, k]
             dA_dx = (A_xp_am - A_xm_am) / sample_dist_am
 
             # Y gradient from envelope field
-            A_yp_am = trackers.amp_local_envelope_am[i, j + sample_radius, k]
-            A_ym_am = trackers.amp_local_envelope_am[i, j - sample_radius, k]
+            A_yp_am = trackers.amp_local_phasorrms_am[i, j + sample_radius, k]
+            A_ym_am = trackers.amp_local_phasorrms_am[i, j - sample_radius, k]
             dA_dy = (A_yp_am - A_ym_am) / sample_dist_am
 
             # Z gradient from envelope field
-            A_zp_am = trackers.amp_local_envelope_am[i, j, k + sample_radius]
-            A_zm_am = trackers.amp_local_envelope_am[i, j, k - sample_radius]
+            A_zp_am = trackers.amp_local_phasorrms_am[i, j, k + sample_radius]
+            A_zm_am = trackers.amp_local_phasorrms_am[i, j, k - sample_radius]
             dA_dz = (A_zp_am - A_zm_am) / sample_dist_am
 
             # DEBUG: Store intermediate values
@@ -504,7 +504,7 @@ def debug_force_analysis(wave_field, trackers, wave_center, frame: int = 0):
 
     # Get numpy arrays from taichi fields
     # Using envelope field (smooth 1/r) for force calculation instead of RMS
-    envelope = trackers.amp_local_envelope_am.to_numpy()
+    envelope = trackers.amp_local_phasorrms_am.to_numpy()
     positions = wave_center.position_grid.to_numpy()
     forces = wave_center.force.to_numpy()
     velocities = wave_center.velocity_amrs.to_numpy()
