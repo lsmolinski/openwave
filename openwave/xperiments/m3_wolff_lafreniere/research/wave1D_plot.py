@@ -166,7 +166,7 @@ def compute_wave_ampfalloff(
         direction: +1 for incoming wave, -1 for outgoing wave
         source: Wave source (1 = wc1, 2 = wc2) for phase offset
     """
-    phase_shift = np.pi  # phase shift between in/out waves (at wave-center)
+    phase_shift = np.pi / 2  # phase shift between in/out waves (at wave-center)
     source_offset = get_source_offset(source)
     # λ as reference radius → amplitude = A₀ at r = λ
     # Clamp r to avoid singularity at r = 0 (min r = λ)
