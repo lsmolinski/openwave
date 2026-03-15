@@ -1,5 +1,60 @@
 # Force Unification from Wave Interference
 
+## Table of Contents
+
+- [Goal](#goal)
+- [Conceptual Overview](#conceptual-overview)
+- [Theoretical Foundation](#theoretical-foundation)
+  - [The Spacetime Medium](#the-spacetime-medium)
+  - [Wave Centers and Particle Formation](#wave-centers-and-particle-formation)
+  - [Energy and Force](#energy-and-force)
+  - [Force Unification Hierarchy](#force-unification-hierarchy)
+- [LaFreniere's Force Mechanisms](#lafrenieres-force-mechanisms-from-sa_mechanics-sa_fields-sa_magnetic)
+  - [Radiation Pressure as the Force Carrier](#radiation-pressure-as-the-force-carrier)
+  - [The Diffractive Lens Effect](#the-diffractive-lens-effect)
+  - [Phase Relationships and Charge](#phase-relationships-and-charge)
+  - [Fundamental Wave Interference Principle](#fundamental-wave-interference-principle)
+  - [Magnetic Fields as Hyperboloid Wave Patterns](#magnetic-fields-as-hyperboloid-wave-patterns)
+  - [The Lorentz Force](#the-lorentz-force)
+  - [Standing Waves Modify the Medium](#standing-waves-modify-the-medium)
+  - [Fields Contain Energy (Mass)](#fields-contain-energy-mass)
+  - [Maxwell's Equations — LaFreniere's Reinterpretation](#maxwells-equations--lafrenieres-reinterpretation)
+- [Current Implementation Status](#current-implementation-status)
+  - [Wave Equations Explored](#wave-equations-explored-wave_enginepy)
+  - [Phasor Superposition (Analytical Amplitude)](#phasor-superposition-analytical-amplitude)
+  - [Force Computation](#force-computation-force_motionpy)
+- [Key Challenges](#key-challenges)
+  - [The Envelope Problem](#1-the-envelope-problem)
+  - [Standing vs. Traveling Wave Contribution](#2-standing-vs-traveling-wave-contribution-to-energy)
+  - [Constructive vs. Destructive Interference](#3-constructive-vs-destructive-interference-and-charge)
+  - [Scalar ψ vs Vector ψ](#4-scalar-ψ-vs-vector-ψ--which-forces-need-which)
+  - [The 1/r² Force Law](#5-the-1r²-force-law)
+  - [Previous Envelope Attempts](#5-previous-envelope-attempts-wave_enginepy)
+- [Attack Plan](#attack-plan)
+  - [Decision: Weighted Partial Standing Wave](#decision-weighted-partial-standing-wave-as-primary-equation)
+  - [Next Step: 1D Wave Engine](#next-step-1d-wave-engine-for-rapid-equation-testing-sandbox-environment)
+  - [Phase 1: Validate Phasor Amplitude](#phase-1-validate-phasor-amplitude-against-known-solutions)
+  - [Phase 2: Energy Density Gradients](#phase-2-analyze-energy-density-gradients)
+  - [Phase 3: Isolate Force Mechanism](#phase-3-isolate-the-force-mechanism)
+  - [Phase 4: Standing/Traveling Contributions](#phase-4-separate-standing-and-traveling-contributions)
+  - [Phase 5: Multi-Particle Validation](#phase-5-multi-particle-validation)
+- [Target: Wave Interference Patterns](#target-wave-interference-patterns-lafreniere-reference-animations)
+  - [Primary Reference Animation](#primary-reference-two-opposite-phase-wave-centers)
+  - [Constructive/Destructive Animations](#constructive-and-destructive-reference-animations)
+  - [Force Depends on Phase AND Separation](#key-insight-force-depends-on-both-phase-and-separation)
+  - [Two Force Regimes](#two-force-regimes-standing-wave-lock-vs-electrostatic-force)
+  - [Electron-Proton Interaction](#electron-proton-interaction-future-research)
+  - [Lock-In Instability Status](#current-status-lock-in-instability)
+  - [Wave Equation Analysis for m3](#analysis-what-wave-equation-reproduces-this-in-m3)
+  - [Test Configurations](#key-test-configuration)
+- [Notes](#notes)
+- [Future Directions](#future-directions-post-force-unification)
+  - [Matter Formation](#matter-formation-from-force-equilibrium)
+  - [Photons](#electromagnetic-wave-packets-photons)
+  - [Thermal Energy Hypothesis](#thermal-energy-as-wave-dynamics-hypothesis)
+  - [Spin and Magnetic/Thermal Phenomena](#spin-as-the-key-to-magnetic-and-thermal-phenomena)
+- [Broader Impact](#broader-impact)
+
 ## Goal
 
 Provide numerical evidence that all fundamental forces (electric, magnetic, gravitational) emerge from energy wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
@@ -356,7 +411,7 @@ None produced correct force scaling across all test configurations.
 
 Based on the analysis above, the **weighted partial standing wave** is selected as the primary wave equation for force unification research. The other four forms (Wolff-original, LaFreniere-Marcotte original, phase-warped Marcotte, combined Wolff-LaFreniere) remain in the code as commented reference implementations for comparison testing.
 
-### Next Step: 1D Wave Engine for Rapid Equation Testing
+### Next Step: 1D Wave Engine for Rapid Equation Testing (sandbox environment)
 
 The full 3D Taichi simulator (m3) is powerful but slow to iterate on — each equation change requires running the GPU kernel, waiting for convergence, and visually inspecting 3D fields. A lightweight **1D wave engine** using matplotlib would dramatically accelerate equation development.
 
@@ -393,7 +448,18 @@ The full 3D Taichi simulator (m3) is powerful but slow to iterate on — each eq
 - **Parameter sweeps**: easily sweep separation distance to plot force vs distance curves for 1/r² validation
 - **Debugging**: verify that phasor coefficients, weight functions, and force gradients produce correct values before deploying to the 3D engine
 
-**Location**: `openwave/xperiments/m3_wolff_lafreniere/research/wave_engine_1D_v2.py`, inspired by the similar scrip v1, and old 1D wave engine test. Lets reuse variable naming, layout conventions and some other standards as a template, but start the equations logic from scratch, there is lot to be optimized now.
+**Location**: `openwave/xperiments/m3_wolff_lafreniere/research/wave_engine_1D_v2.py`, inspired by the similar scrip v1, and old 1D wave engine test. Lets reuse variable naming, layout conventions and some other standards as a template, but start the equations logic from scratch, there is lot to be optimized.
+
+**Physics invariant tests**: Alongside the 1D engine, build a pytest test suite that validates each wave equation form against known physical properties before any formula changes are deployed to the 3D engine:
+
+- Dimensional consistency of all force/field equations
+- Boundary behavior: correct limits at r→0 (center voxel) and r→∞ (far-field decay)
+- Energy conservation: total energy in the field should be constant for a static configuration
+- Phasor equivalence: phasor RMS must match EMA-RMS after convergence
+- Near-field/far-field transition: envelope must be continuous across the weight function boundary
+- Charge symmetry: same-charge pair must produce repulsion, opposite-charge pair must produce attraction in the far-field
+
+The 1D engine is ideal for these tests — fast execution, no GPU overhead, and deterministic results.
 
 ### Phase 1: Validate Phasor Amplitude Against Known Solutions
 
@@ -695,3 +761,27 @@ The same fundamental wave field and medium that supports standing waves (particl
 - **The connection**: Both magnetic fields and thermal energy may emerge from the same physical process (spin), manifesting differently depending on whether the spin is coherent (magnetic: aligned spins produce net transverse wave field) or incoherent (thermal: random spin axes produce isotropic energy distribution)
 
 This research direction requires the m4 vector wave method, as spin and transverse waves cannot be represented in the scalar m3 framework.
+
+## Broader Impact
+
+If OpenWave succeeds in providing numerical evidence for force unification from wave interference, the implications extend far beyond theoretical physics:
+
+### Scientific Understanding
+
+A mathematical unification of all fundamental forces from a single wave mechanism would represent a leap in our understanding of nature. Instead of four separate force theories with different mediators and coupling constants, there would be one: energy waves in a medium, with forces emerging from interference patterns. This would provide a concrete, computable foundation for phenomena that quantum mechanics currently describes probabilistically.
+
+### Energy Technology
+
+Understanding how energy is stored, transferred, and converted at the fundamental wave level could transform energy technology. If thermal energy is wave-based (standing wave dynamics rather than kinetic), and if electromagnetic energy emerges from the same medium disturbances, then new pathways for energy conversion become conceivable — potentially more efficient than current methods that rely on intermediate conversions between thermal, mechanical, and electrical energy.
+
+### Transportation and Gravity
+
+If gravitational force is demonstrated to emerge from wave shading effects, and the mechanism is understood at the wave equation level, it opens the door to investigating whether gravity can be modulated by manipulating the wave field — with profound implications for transportation and propulsion technology.
+
+### Medical and Imaging Technology
+
+Fundamental understanding of subatomic wave mechanics could advance medical imaging and diagnostics. Current technologies (MRI, ultrasound, PET) already exploit wave phenomena — a deeper understanding of how waves interact with matter at the most fundamental level could enable new imaging modalities with higher resolution, lower energy requirements, or new contrast mechanisms.
+
+### Engineering and Materials
+
+Wave-based understanding of matter formation and bonding could inform materials science — designing materials with specific properties by engineering their wave interference patterns at the subatomic level, rather than relying on empirical discovery.
