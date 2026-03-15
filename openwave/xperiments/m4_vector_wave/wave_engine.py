@@ -1,7 +1,7 @@
 """
 ENERGY-WAVE ENGINE
 
-ON WOLFF-LAFRENIERE METHOD
+ON VECTOR-WAVE METHOD
 
 Wave Physics Engine @spacetime module. Wave dynamics and motion.
 """
