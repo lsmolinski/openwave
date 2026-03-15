@@ -169,116 +169,138 @@ def propagate_wave(
             #     base_amplitude_am * wave_field.scale_factor * oscillator
             # )
 
-            # # ================================================================
-            # # Combined WOLFF-LAFRENIERE canonical form:
-            # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-            # # Expanded form:
-            # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-            # #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-            # # ================================================================
-            # # Phase term: sin(kr)/r → k as r→0 (physical units)
-            # phase_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     k_grid,  # analytical limit
-            #     ti.sin(spatial_phase) / r_grid,
-            # )
-
-            # # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            # quadrature_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     0.0,  # analytical limit
-            #     (1.0 - ti.cos(spatial_phase)) / r_grid,
-            # )
-
-            # # Oscillator with source_offset phase shift
-            # oscillator = (
-            #     -ti.cos(temporal_phase + source_offset) * phase_term
-            #     - ti.sin(temporal_phase + source_offset) * quadrature_term
-            # )
-
-            # wave_field.displacement_am[i, j, k] += (
-            #     base_amplitude_am * wave_field.scale_factor * oscillator
-            # )
-
             # ================================================================
-            # WEIGHTED PARTIAL STANDING WAVE
-            # Superposition of in-wave + out-wave, where the in-wave fades with distance
-            # Physical motivation:
-            #   Near the source, the wave reflects off the core creating a standing wave pattern.
-            #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
-            #
-            # 2 counter-propagating waves with a spatial blending function:
-            #   ψ(r,t) = A · [weight(r,λ)·sin(kr + ωt) + sin(kr - ωt)] / kr
-            #
-            #   Cardinal sine term: sin(kr)/kr → 1 as r→0
-            #       self-normalizes to 1 at origin regardless of wavelength
-            #
-            #   Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
-            #       Equation = 1 / (1 + (r/(λ*transition))²), smooth Lorentzian rolloff
-            #       weight ≈ 1 near center → standing wave (fixed nodes)
-            #       weight → 0 far away → pure outgoing traveling wave
-            #
-            #   Equation components:
-            #       In-Wave: weight(r,λ) · sin(kr + ωt) / kr (nodes move inward)
-            #       Out-Wave: sin(kr - ωt) / kr (nodes move outward)
-            #
-            #   Standing limit (weight=1, no singularity at r=0):
-            #     [sin(kr-ωt) + sin(kr+ωt)] / kr
-            #       → 2·sin(kr)·cos(ωt) / kr
-            #       → 2·cos(ωt) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
-            #
-            #   How it works:
-            #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
-            #   │         Region         │ Weight(r) │                                       Result                                       │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt) / kr — pure traveling wave, nodes move freely                         │
-            #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
+            # Combined WOLFF-LAFRENIERE canonical form:
+            #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
+            # Expanded form:
+            #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
+            #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
             # ================================================================
-            # In-wave weight: controls standing → traveling transition
-            # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
-            # Sharp rolloff (power=8): weight ≈ 1 within 1.25λ, drops near-instantly after
-            transition = 1 + 1 / 4  # number of wavelengths (λ)
-            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+            # Phase term: sin(kr)/r → k as r→0 (physical units)
+            phase_term = ti.select(
+                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+                k_grid,  # analytical limit
+                ti.sin(spatial_phase) / r_grid,
+            )
 
-            # Combined partially standing wave
-            oscillator = ti.select(
-                r_grid < 0.5,  # center voxel: analytical limit
-                2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt)
-                (
-                    weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
-                    + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
-                )
-                / spatial_phase,  # combined wave with in-wave weighting and 1/r decay
+            # Quadrature term: (1-cos(kr))/r → 0 as r→0
+            quadrature_term = ti.select(
+                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+                0.0,  # analytical limit
+                (1.0 - ti.cos(spatial_phase)) / r_grid,
+            )
+
+            # Oscillator with source_offset phase shift
+            oscillator = (
+                -ti.cos(temporal_phase + source_offset) * phase_term
+                - ti.sin(temporal_phase + source_offset) * quadrature_term
             )
 
             wave_field.displacement_am[i, j, k] += (
                 base_amplitude_am * wave_field.scale_factor * oscillator
             )
 
-            # PHASOR SUPERPOSITION
-            # Accumulate cos(ωt) and sin(ωt) coefficients
-            # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
-            # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
+            # PHASOR SUPERPOSITION: Wolff-LaFreniere form
+            # ψ = A · [-cos(ωt+φ)·sin(kr)/r - sin(ωt+φ)·(1-cos(kr))/r]
+            # C_n = -A·sin(kr)/r (coefficient of cos(ωt+φ))
+            # S_n = -A·(1-cos(kr))/r (coefficient of sin(ωt+φ))
             A_eff = base_amplitude_am * wave_field.scale_factor
             C_n = ti.select(
                 r_grid < 0.5,
-                2.0 * A_eff,  # center limit: (w+1)·sin(kr)/kr → 2
-                A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
+                -A_eff * k_grid,  # center limit: -A·k
+                -A_eff * ti.sin(spatial_phase) / r_grid,
             )
             S_n = ti.select(
                 r_grid < 0.5,
-                0.0,  # center limit: (w-1)·cos(kr)/kr → 0 (w=1 at center)
-                A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
+                0.0,  # center limit: (1-cos(kr))/r → 0
+                -A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
             )
             # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
             cos_phi = ti.cos(source_offset)
             sin_phi = ti.sin(source_offset)
             phasor_P += C_n * cos_phi + S_n * sin_phi
             phasor_Q += -C_n * sin_phi + S_n * cos_phi
+
+            # # ================================================================
+            # # WEIGHTED PARTIAL STANDING WAVE
+            # # Superposition of in-wave + out-wave, where the in-wave fades with distance
+            # # Physical motivation:
+            # #   Near the source, the wave reflects off the core creating a standing wave pattern.
+            # #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
+            # #
+            # # 2 counter-propagating waves with a spatial blending function:
+            # #   ψ(r,t) = A · [weight(r,λ)·sin(kr + ωt) + sin(kr - ωt)] / kr
+            # #
+            # #   Cardinal sine term: sin(kr)/kr → 1 as r→0
+            # #       self-normalizes to 1 at origin regardless of wavelength
+            # #
+            # #   Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
+            # #       Equation = 1 / (1 + (r/(λ*transition))²), smooth Lorentzian rolloff
+            # #       weight ≈ 1 near center → standing wave (fixed nodes)
+            # #       weight → 0 far away → pure outgoing traveling wave
+            # #
+            # #   Equation components:
+            # #       In-Wave: weight(r,λ) · sin(kr + ωt) / kr (nodes move inward)
+            # #       Out-Wave: sin(kr - ωt) / kr (nodes move outward)
+            # #
+            # #   Standing limit (weight=1, no singularity at r=0):
+            # #     [sin(kr-ωt) + sin(kr+ωt)] / kr
+            # #       → 2·sin(kr)·cos(ωt) / kr
+            # #       → 2·cos(ωt) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
+            # #
+            # #   How it works:
+            # #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
+            # #   │         Region         │ Weight(r) │                                       Result                                       │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt) / kr — pure traveling wave, nodes move freely                         │
+            # #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
+            # # ================================================================
+            # # In-wave weight: controls standing → traveling transition
+            # # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
+            # # Sharp rolloff (power=8): weight ≈ 1 within 1.25λ, drops near-instantly after
+            # transition = 1 + 1 / 4  # number of wavelengths (λ)
+            # weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+
+            # # Combined partially standing wave
+            # oscillator = ti.select(
+            #     r_grid < 0.5,  # center voxel: analytical limit
+            #     2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt)
+            #     (
+            #         weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
+            #         + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
+            #     )
+            #     / spatial_phase,  # combined wave with in-wave weighting and 1/r decay
+            # )
+
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator
+            # )
+
+            # # PHASOR SUPERPOSITION: weighted partial standing wave form
+            # # ψ = A · [weight·sin(kr+ωt) + sin(kr-ωt)] / (kr)
+            # # Accumulate cos(ωt) and sin(ωt) coefficients
+            # # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
+            # # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
+            # A_eff = base_amplitude_am * wave_field.scale_factor
+            # C_n = ti.select(
+            #     r_grid < 0.5,
+            #     2.0 * A_eff,  # center limit: (w+1)·sin(kr)/kr → 2
+            #     A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
+            # )
+            # S_n = ti.select(
+            #     r_grid < 0.5,
+            #     0.0,  # center limit: (w-1)·cos(kr)/kr → 0 (w=1 at center)
+            #     A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
+            # )
+            # # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            # cos_phi = ti.cos(source_offset)
+            # sin_phi = ti.sin(source_offset)
+            # phasor_P += C_n * cos_phi + S_n * sin_phi
+            # phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
         # Phasor RMS: exact amplitude from superposition, no EMA needed
         # peak = √(P² + Q²), RMS = peak / √2
