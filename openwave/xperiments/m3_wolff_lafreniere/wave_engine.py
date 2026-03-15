@@ -170,7 +170,7 @@ def propagate_wave(
             # )
 
             # # ================================================================
-            # # Combined WOLFF-LAFRENIERE canonical form v1:
+            # # Combined WOLFF-LAFRENIERE canonical form:
             # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
             # # Expanded form:
             # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
@@ -259,8 +259,8 @@ def propagate_wave(
                 base_amplitude_am * wave_field.scale_factor * oscillator
             )
 
-            # ================================================================
-            # PHASOR SUPERPOSITION: accumulate cos(ωt) and sin(ωt) coefficients
+            # PHASOR SUPERPOSITION
+            # Accumulate cos(ωt) and sin(ωt) coefficients
             # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
             # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
             A_eff = base_amplitude_am * wave_field.scale_factor
