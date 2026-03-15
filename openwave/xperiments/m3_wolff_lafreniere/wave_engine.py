@@ -105,27 +105,52 @@ def propagate_wave(
             # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
             spatial_phase = k_grid * r_grid
 
-            # # ================================================================
-            # # WOLFF-original canonical form:
-            # #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
-            # # Expanded form:
-            # #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
-            # # ================================================================
-            # # Cardinal sine term: sin(kr)/r → k as r→0 (physical units)
-            # sinc_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     k_grid,  # analytical limit
-            #     ti.sin(spatial_phase) / r_grid,
-            # )
+            # ================================================================
+            # WOLFF-original canonical form:
+            #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
+            # Expanded form:
+            #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
+            # Both real and imaginary parts share the same sin(kr)/r spatial envelope.
+            # The imaginary term (quadrature) comes from e^(iωt) expansion with equal weight.
+            # ================================================================
+            # Cardinal sine term: sin(kr)/r → k as r→0 (physical units)
+            sinc_term = ti.select(
+                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+                k_grid,  # analytical limit
+                ti.sin(spatial_phase) / r_grid,
+            )
 
-            # # Oscillator with source_offset phase shift
-            # oscillator = ti.cos(temporal_phase + source_offset) + quadrature_term * ti.sin(
-            #     temporal_phase + source_offset
-            # )
+            # Quadrature term: imaginary coefficient from e^(iωt) = cos(ωt) + i·sin(ωt)
+            # In Wolff's form, both components share sin(kr)/r spatial function
+            # quadrature_term = 1.0 gives full complex oscillator (√2 amplitude, π/4 phase shift)
+            # quadrature_term = 0.0 gives real part only: cos(ωt)·sin(kr)/r
+            quadrature_term = 1.0
 
-            # wave_field.displacement_am[i, j, k] += (
-            #     base_amplitude_am * wave_field.scale_factor * oscillator * sinc_term
-            # )
+            # Oscillator with source_offset phase shift
+            oscillator = ti.cos(temporal_phase + source_offset) + quadrature_term * ti.sin(
+                temporal_phase + source_offset
+            )
+
+            wave_field.displacement_am[i, j, k] += (
+                base_amplitude_am * wave_field.scale_factor * oscillator * sinc_term
+            )
+
+            # PHASOR SUPERPOSITION: Wolff-original form
+            # ψ = A · [cos(ωt+φ) + q·sin(ωt+φ)] · sin(kr)/r
+            # C_n = A·sin(kr)/r  (coefficient of cos(ωt+φ))
+            # S_n = A·q·sin(kr)/r  (coefficient of sin(ωt+φ))
+            A_eff = base_amplitude_am * wave_field.scale_factor
+            C_n = ti.select(
+                r_grid < 0.5,
+                A_eff * k_grid,  # center limit: sin(kr)/r → k
+                A_eff * ti.sin(spatial_phase) / r_grid,
+            )
+            S_n = quadrature_term * C_n  # same spatial function, scaled by quadrature
+            # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            cos_phi = ti.cos(source_offset)
+            sin_phi = ti.sin(source_offset)
+            phasor_P += C_n * cos_phi + S_n * sin_phi
+            phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
             # # ================================================================
             # # LAFRENIERE-MARCOTTE original canonical form:
@@ -169,57 +194,57 @@ def propagate_wave(
             #     base_amplitude_am * wave_field.scale_factor * oscillator
             # )
 
-            # ================================================================
-            # Combined WOLFF-LAFRENIERE canonical form:
-            #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-            # Expanded form:
-            #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-            #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-            # ================================================================
-            # Phase term: sin(kr)/r → k as r→0 (physical units)
-            phase_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                k_grid,  # analytical limit
-                ti.sin(spatial_phase) / r_grid,
-            )
+            # # ================================================================
+            # # Combined WOLFF-LAFRENIERE canonical form:
+            # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
+            # # Expanded form:
+            # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
+            # #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
+            # # ================================================================
+            # # Phase term: sin(kr)/r → k as r→0 (physical units)
+            # phase_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     k_grid,  # analytical limit
+            #     ti.sin(spatial_phase) / r_grid,
+            # )
 
-            # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            quadrature_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                0.0,  # analytical limit
-                (1.0 - ti.cos(spatial_phase)) / r_grid,
-            )
+            # # Quadrature term: (1-cos(kr))/r → 0 as r→0
+            # quadrature_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     0.0,  # analytical limit
+            #     (1.0 - ti.cos(spatial_phase)) / r_grid,
+            # )
 
-            # Oscillator with source_offset phase shift
-            oscillator = (
-                -ti.cos(temporal_phase + source_offset) * phase_term
-                - ti.sin(temporal_phase + source_offset) * quadrature_term
-            )
+            # # Oscillator with source_offset phase shift
+            # oscillator = (
+            #     -ti.cos(temporal_phase + source_offset) * phase_term
+            #     - ti.sin(temporal_phase + source_offset) * quadrature_term
+            # )
 
-            wave_field.displacement_am[i, j, k] += (
-                base_amplitude_am * wave_field.scale_factor * oscillator
-            )
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator
+            # )
 
-            # PHASOR SUPERPOSITION: Wolff-LaFreniere form
-            # ψ = A · [-cos(ωt+φ)·sin(kr)/r - sin(ωt+φ)·(1-cos(kr))/r]
-            # C_n = -A·sin(kr)/r (coefficient of cos(ωt+φ))
-            # S_n = -A·(1-cos(kr))/r (coefficient of sin(ωt+φ))
-            A_eff = base_amplitude_am * wave_field.scale_factor
-            C_n = ti.select(
-                r_grid < 0.5,
-                -A_eff * k_grid,  # center limit: -A·k
-                -A_eff * ti.sin(spatial_phase) / r_grid,
-            )
-            S_n = ti.select(
-                r_grid < 0.5,
-                0.0,  # center limit: (1-cos(kr))/r → 0
-                -A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
-            )
-            # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
-            cos_phi = ti.cos(source_offset)
-            sin_phi = ti.sin(source_offset)
-            phasor_P += C_n * cos_phi + S_n * sin_phi
-            phasor_Q += -C_n * sin_phi + S_n * cos_phi
+            # # PHASOR SUPERPOSITION: Wolff-LaFreniere form
+            # # ψ = A · [-cos(ωt+φ)·sin(kr)/r - sin(ωt+φ)·(1-cos(kr))/r]
+            # # C_n = -A·sin(kr)/r (coefficient of cos(ωt+φ))
+            # # S_n = -A·(1-cos(kr))/r (coefficient of sin(ωt+φ))
+            # A_eff = base_amplitude_am * wave_field.scale_factor
+            # C_n = ti.select(
+            #     r_grid < 0.5,
+            #     -A_eff * k_grid,  # center limit: -A·k
+            #     -A_eff * ti.sin(spatial_phase) / r_grid,
+            # )
+            # S_n = ti.select(
+            #     r_grid < 0.5,
+            #     0.0,  # center limit: (1-cos(kr))/r → 0
+            #     -A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
+            # )
+            # # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            # cos_phi = ti.cos(source_offset)
+            # sin_phi = ti.sin(source_offset)
+            # phasor_P += C_n * cos_phi + S_n * sin_phi
+            # phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
             # # ================================================================
             # # WEIGHTED PARTIAL STANDING WAVE
