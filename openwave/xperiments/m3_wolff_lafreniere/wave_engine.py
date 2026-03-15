@@ -201,11 +201,12 @@ def propagate_wave(
             # )
 
             # ================================================================
-            # UPGRADED PARTIALLY STANDING WAVE
+            # WEIGHTED PARTIAL STANDING WAVE
             # Superposition of in-wave + out-wave, where the in-wave fades with distance
-            # Physical motivation: near the source, the wave reflects off the core
-            #   creating a standing wave pattern. As you move away, the reflected wave weakens,
-            #   transitioning to a pure traveling wave.
+            # Physical motivation:
+            #   Near the source, the wave reflects off the core creating a standing wave pattern.
+            #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
+            #
             # 2 counter-propagating waves with a spatial blending function:
             #   ψ(r,t) = A · [weight(r,λ)·sin(kr + ωt) + sin(kr - ωt)] / kr
             #
@@ -237,11 +238,11 @@ def propagate_wave(
             #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt) / kr — pure traveling wave, nodes move freely                         │
             #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
             # ================================================================
-
             # In-wave weight: controls standing → traveling transition
             # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
+            # Sharp rolloff (power=8): weight ≈ 1 within 1.25λ, drops near-instantly after
             transition = 1 + 1 / 4  # number of wavelengths (λ)
-            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 2)
+            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
 
             # Combined partially standing wave
             oscillator = ti.select(
@@ -260,17 +261,17 @@ def propagate_wave(
 
             # ================================================================
             # PHASOR SUPERPOSITION: accumulate cos(ωt) and sin(ωt) coefficients
-            # ψ_n = A · [(w+1)·sin(x)·cos(ωt+φ) + (w-1)·cos(x)·sin(ωt+φ)] / x
+            # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
             # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
             A_eff = base_amplitude_am * wave_field.scale_factor
             C_n = ti.select(
                 r_grid < 0.5,
-                2.0 * A_eff,  # center limit: (w+1)·sin(x)/x → 2
+                2.0 * A_eff,  # center limit: (w+1)·sin(kr)/kr → 2
                 A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
             )
             S_n = ti.select(
                 r_grid < 0.5,
-                0.0,  # center limit: (w-1)·cos(x)/x → 0 (w=1 at center)
+                0.0,  # center limit: (w-1)·cos(kr)/kr → 0 (w=1 at center)
                 A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
             )
             # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
