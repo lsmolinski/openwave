@@ -107,6 +107,7 @@ def propagate_wave(
 
             # # ================================================================
             # # WOLFF-original canonical form:
+            # # ================================================================
             # #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
             # # Expanded form:
             # #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
@@ -154,6 +155,7 @@ def propagate_wave(
 
             # ================================================================
             # LAFRENIERE-MARCOTTE original canonical form:
+            # ================================================================
             #   Phase:      sin(x) / x          → 1 as x→0
             #   Quadrature: (1 - cos(x)) / x    → 0 as x→0
             #   where x = kr (spatial phase in radians)
@@ -217,6 +219,7 @@ def propagate_wave(
 
             # # ================================================================
             # # Combined WOLFF-LAFRENIERE canonical form:
+            # # ================================================================
             # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
             # # Expanded form:
             # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
@@ -269,6 +272,7 @@ def propagate_wave(
 
             # # ================================================================
             # # WEIGHTED PARTIAL STANDING WAVE
+            # # ================================================================
             # # Superposition of in-wave + out-wave, where the in-wave fades with distance
             # # Physical motivation:
             # #   Near the source, the wave reflects off the core creating a standing wave pattern.
