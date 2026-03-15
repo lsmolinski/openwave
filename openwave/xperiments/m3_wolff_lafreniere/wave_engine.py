@@ -105,94 +105,115 @@ def propagate_wave(
             # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
             spatial_phase = k_grid * r_grid
 
+            # # ================================================================
+            # # WOLFF-original canonical form:
+            # #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
+            # # Expanded form:
+            # #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
+            # # Both real and imaginary parts share the same sin(kr)/r spatial envelope.
+            # # The imaginary term (quadrature) comes from e^(iωt) expansion with equal weight.
+            # # ================================================================
+            # # Cardinal sine term: sin(kr)/r → k as r→0 (physical units)
+            # sinc_term = ti.select(
+            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+            #     k_grid,  # analytical limit
+            #     ti.sin(spatial_phase) / r_grid,
+            # )
+
+            # # Quadrature term: imaginary coefficient from e^(iωt) = cos(ωt) + i·sin(ωt)
+            # # In Wolff's form, both components share sin(kr)/r spatial function
+            # # quadrature_term = 1.0 gives full complex oscillator (√2 amplitude, π/4 phase shift)
+            # # quadrature_term = 0.0 gives real part only: cos(ωt)·sin(kr)/r
+            # quadrature_term = 1.0
+
+            # # Oscillator with source_offset phase shift
+            # oscillator = ti.cos(temporal_phase + source_offset) + quadrature_term * ti.sin(
+            #     temporal_phase + source_offset
+            # )
+
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator * sinc_term
+            # )
+
+            # # PHASOR SUPERPOSITION: Wolff-original form
+            # # ψ = A · [cos(ωt+φ) + q·sin(ωt+φ)] · sin(kr)/r
+            # # C_n = A·sin(kr)/r  (coefficient of cos(ωt+φ))
+            # # S_n = A·q·sin(kr)/r  (coefficient of sin(ωt+φ))
+            # A_eff = base_amplitude_am * wave_field.scale_factor
+            # C_n = ti.select(
+            #     r_grid < 0.5,
+            #     A_eff * k_grid,  # center limit: sin(kr)/r → k
+            #     A_eff * ti.sin(spatial_phase) / r_grid,
+            # )
+            # S_n = quadrature_term * C_n  # same spatial function, scaled by quadrature
+            # # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            # cos_phi = ti.cos(source_offset)
+            # sin_phi = ti.sin(source_offset)
+            # phasor_P += C_n * cos_phi + S_n * sin_phi
+            # phasor_Q += -C_n * sin_phi + S_n * cos_phi
+
             # ================================================================
-            # WOLFF-original canonical form:
-            #   ψ(r,t) = A · e^(iωt) · sin(kr)/r
-            # Expanded form:
-            #   ψ(r,t) = A · [cos(ωt) + i · sin(ωt)] · sin(kr)/r
-            # Both real and imaginary parts share the same sin(kr)/r spatial envelope.
-            # The imaginary term (quadrature) comes from e^(iωt) expansion with equal weight.
+            # LAFRENIERE-MARCOTTE original canonical form:
+            #   Phase:      sin(x) / x          → 1 as x→0
+            #   Quadrature: (1 - cos(x)) / x    → 0 as x→0
+            #   where x = kr (spatial phase in radians)
+            #
+            # Combined time-dependent form:
+            #   ψ(r,t) = A · [cos(ωt) · sin(kr)/(kr) + sin(ωt) · (1 - cos(kr))/(kr)]
+            # Which equals:
+            #   ψ(r,t) = A · [sin(kr - ωt) + sin(ωt)] / (kr)
+            #
+            # Behavior:
+            #   r → 0:  ψ → A · cos(ωt)  (pure standing oscillation, amplitude = 1)
+            #   r → ∞:  ψ → A · sin(kr - ωt) / (kr)  (outgoing traveling wave)
+            # LaFreniere uses a single outgoing wave with nonlinear phase correction
+            # not a superposition of standing + traveling components.
+            # The standing wave appearance emerges purely from the phase warping near the core.
             # ================================================================
-            # Cardinal sine term: sin(kr)/r → k as r→0 (physical units)
-            sinc_term = ti.select(
+            # Phase term: sin(kr)/(kr) → 1 as r→0
+            phase_term = ti.select(
                 r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                k_grid,  # analytical limit
-                ti.sin(spatial_phase) / r_grid,
+                1.0,  # analytical limit: sin(x)/x → 1 as x→0
+                ti.sin(spatial_phase) / spatial_phase,
             )
 
-            # Quadrature term: imaginary coefficient from e^(iωt) = cos(ωt) + i·sin(ωt)
-            # In Wolff's form, both components share sin(kr)/r spatial function
-            # quadrature_term = 1.0 gives full complex oscillator (√2 amplitude, π/4 phase shift)
-            # quadrature_term = 0.0 gives real part only: cos(ωt)·sin(kr)/r
-            quadrature_term = 1.0
+            # Quadrature term: (1-cos(kr))/(kr) → 0 as r→0
+            quadrature_term = ti.select(
+                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
+                0.0,  # analytical limit: (1-cos(x))/x → 0 as x→0
+                (1.0 - ti.cos(spatial_phase)) / spatial_phase,
+            )
 
             # Oscillator with source_offset phase shift
-            oscillator = ti.cos(temporal_phase + source_offset) + quadrature_term * ti.sin(
-                temporal_phase + source_offset
+            oscillator = (
+                ti.cos(temporal_phase + source_offset) * phase_term
+                + ti.sin(temporal_phase + source_offset) * quadrature_term
             )
 
             wave_field.displacement_am[i, j, k] += (
-                base_amplitude_am * wave_field.scale_factor * oscillator * sinc_term
+                base_amplitude_am * wave_field.scale_factor * oscillator
             )
 
-            # PHASOR SUPERPOSITION: Wolff-original form
-            # ψ = A · [cos(ωt+φ) + q·sin(ωt+φ)] · sin(kr)/r
-            # C_n = A·sin(kr)/r  (coefficient of cos(ωt+φ))
-            # S_n = A·q·sin(kr)/r  (coefficient of sin(ωt+φ))
+            # PHASOR SUPERPOSITION: LaFreniere-Marcotte form
+            # ψ = A · [cos(ωt+φ)·sin(kr)/(kr) + sin(ωt+φ)·(1-cos(kr))/(kr)]
+            # C_n = A·sin(kr)/(kr)       (coefficient of cos(ωt+φ))
+            # S_n = A·(1-cos(kr))/(kr)   (coefficient of sin(ωt+φ))
             A_eff = base_amplitude_am * wave_field.scale_factor
             C_n = ti.select(
                 r_grid < 0.5,
-                A_eff * k_grid,  # center limit: sin(kr)/r → k
-                A_eff * ti.sin(spatial_phase) / r_grid,
+                A_eff,  # center limit: sin(kr)/(kr) → 1
+                A_eff * ti.sin(spatial_phase) / spatial_phase,
             )
-            S_n = quadrature_term * C_n  # same spatial function, scaled by quadrature
+            S_n = ti.select(
+                r_grid < 0.5,
+                0.0,  # center limit: (1-cos(kr))/(kr) → 0
+                A_eff * (1.0 - ti.cos(spatial_phase)) / spatial_phase,
+            )
             # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
             cos_phi = ti.cos(source_offset)
             sin_phi = ti.sin(source_offset)
             phasor_P += C_n * cos_phi + S_n * sin_phi
             phasor_Q += -C_n * sin_phi + S_n * cos_phi
-
-            # # ================================================================
-            # # LAFRENIERE-MARCOTTE original canonical form:
-            # #   Phase:      sin(x) / x          → 1 as x→0
-            # #   Quadrature: (1 - cos(x)) / x    → 0 as x→0
-            # #   where x = kr (spatial phase in radians)
-            # #
-            # # Combined time-dependent form:
-            # #   ψ(r,t) = A · [cos(ωt) · sin(kr)/(kr) + sin(ωt) · (1 - cos(kr))/(kr)]
-            # # Which equals:
-            # #   ψ(r,t) = A · [sin(kr - ωt) + sin(ωt)] / (kr)
-            # #
-            # # Behavior:
-            # #   r → 0:  ψ → A · cos(ωt)  (pure standing oscillation, amplitude = 1)
-            # #   r → ∞:  ψ → A · sin(kr - ωt) / (kr)  (outgoing traveling wave)
-            # # LaFreniere uses a single outgoing wave with nonlinear phase correction
-            # # not a superposition of standing + traveling components.
-            # # The standing wave appearance emerges purely from the phase warping near the core.
-            # # ================================================================
-            # # Phase term: sin(kr)/(kr) → 1 as r→0
-            # phase_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     1.0,  # analytical limit: sin(x)/x → 1 as x→0
-            #     ti.sin(spatial_phase) / spatial_phase,
-            # )
-
-            # # Quadrature term: (1-cos(kr))/(kr) → 0 as r→0
-            # quadrature_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     0.0,  # analytical limit: (1-cos(x))/x → 0 as x→0
-            #     (1.0 - ti.cos(spatial_phase)) / spatial_phase,
-            # )
-
-            # # Oscillator with source_offset phase shift
-            # oscillator = (
-            #     ti.cos(temporal_phase + source_offset) * phase_term
-            #     + ti.sin(temporal_phase + source_offset) * quadrature_term
-            # )
-
-            # wave_field.displacement_am[i, j, k] += (
-            #     base_amplitude_am * wave_field.scale_factor * oscillator
-            # )
 
             # # ================================================================
             # # Combined WOLFF-LAFRENIERE canonical form:
