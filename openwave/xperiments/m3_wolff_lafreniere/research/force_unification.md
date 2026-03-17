@@ -787,7 +787,77 @@ These are solvable engineering problems, not fundamental physics issues. The fac
 
 The `transition` parameter in the weight function could serve double duty — controlling both the standing-to-traveling wave transition AND the raw-to-smoothed amplitude transition for force computation.
 
-Resolving this is critical — without clean far-field electrostatic behavior, the Coulomb force cannot be validated. The near-field lock-in and the far-field electrostatic force are both needed, but they require different amplitude field treatments
+Resolving this is critical — without clean far-field electrostatic behavior, the Coulomb force cannot be validated. The near-field lock-in and the far-field electrostatic force are both needed, but they require different amplitude field treatments.
+
+#### 1D Sandbox Validation Status (2026-03-17)
+
+The 1D wave engine sandbox (`wave_engine_1D_v2.py`) is built and operational with:
+
+- Weighted partial standing wave equation + phasor superposition
+- Energy density (Joules) and force field (Newtons) panels
+- Interactive controls: WC on/off toggles, separation slider, phase offset toggle
+- Coulomb reference comparison with direction-match detection
+- Force annotations at each WC position with attraction/repulsion labels
+
+**Confirmed: far-field oscillatory force issue reproduced in 1D.** The same behavior seen in the 3D Taichi engine appears in the 1D sandbox:
+
+- For both phase deltas (0° and 180°), force direction (attraction/repulsion) depends on WC separation distance
+- Every λ/2 change in separation flips the force direction
+- The wave interference between WCs creates a standing wave pattern in the phasor RMS that oscillates with separation
+- At some separations the wave force matches Coulomb direction, at others it shows `WRONG DIRECTION`
+
+This confirms the issue is in the wave equation / phasor physics, not in the 3D simulator implementation. The sinc oscillation in the out-wave spatial function is the root cause.
+
+**Near-field opposite-phase issue**: Opposite-phase (opposite charge) WCs at near-field separations should show **monotonic attraction** — always pulling together until annihilation (at zero separation, waves cancel completely and both WCs cease to exist). Instead, the simulator shows the same oscillatory lock-in behavior as same-phase WCs — alternating attraction/repulsion every λ/2. This is incorrect: the lock-in oscillation should only occur for same-phase pairs (where it creates stable bonding positions). For opposite-phase pairs, the charge-phase difference (π) should ensure destructive interference always dominates between them, producing consistent attraction at all separations. The sinc node structure is overriding the charge-phase signal — another symptom of the same root cause.
+
+#### Open Question: Energy Gradient vs Amplitude Gradient
+
+Current force: `F = -2ρVf² · A · ∇A` (from expanding `∇(A²)`)
+
+Alternative: compute `F = -∇E` directly by first computing `E(x) = ρVf²A²`, then taking `∇E` numerically. While mathematically identical, the numerical behavior may differ:
+
+- `A²` is always positive — no sign oscillation from sinc zeros
+- `A²` oscillates at double frequency with different curvature
+- Numerical gradient of the smoother `E(x)` function may average out sinc artifacts better than computing `A·∇A` from two oscillating quantities
+- Combined with a wider gradient window, `∇E` on the squared envelope may converge toward 1/r² more naturally
+
+This is a one-line change in the sandbox — worth testing early.
+
+#### Open Question: Gradient Sampling Radius
+
+The force gradient ∇A is currently computed per single grid spacing: `np.gradient(rms, dx)` uses central differences over 1 grid unit. This raises the question:
+
+**Is 1 grid unit the physically correct scale for force computation?**
+
+A real particle (wave center) doesn't experience force from a single point — it responds to the energy/amplitude curvature over a spatial region comparable to its own size (~1λ). The current single-grid-unit gradient captures the local slope of the sinc oscillation, which produces the oscillatory force artifacts.
+
+Possible approaches to test:
+
+- [ ] Compute gradient over a larger window (e.g., 1λ or 2λ) using weighted averaging — this would smooth out the sinc oscillation and extract the underlying 1/r envelope trend
+- [ ] Use a Gaussian-weighted gradient kernel with σ ~ λ — physically motivated as the WC's "sensitivity radius"
+- [ ] Compare force vs separation curves for different gradient sampling radii — which produces the smoothest 1/r² decay?
+- [ ] This connects to the dual-treatment idea: near-field uses raw 1-grid gradient (captures lock-in wells), far-field uses smoothed gradient (captures Coulomb trend)
+
+#### Critical Issues Summary — M3 Electrostatic Force Validation
+
+1. **Far-field oscillatory force (MAIN BLOCKER)** — Force direction flips every λ/2 of separation change. The sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances, even in the far-field where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines
+2. **Near-field opposite-phase monotonic attraction** — Opposite-charge WCs should always attract (to annihilation), not oscillate like same-charge lock-in. Currently both phase configurations show the same oscillatory behavior — the sinc node structure overrides the charge-phase signal
+3. **Gradient sampling radius** — Current gradient uses 1 grid unit. A real WC has spatial extent (~1λ). Wider gradient window may smooth out the sinc oscillation and reveal the underlying Coulomb trend. Untested
+4. **Energy gradient ∇E vs amplitude gradient A·∇A** — Computing F = -∇E directly from E(x) = ρVf²A² may behave better numerically: A² is always positive, oscillations are compressed, and combined with wider gradient window may converge toward 1/r² more naturally. Mathematically identical but numerically different
+5. **1/r² force law scaling** — Even if direction is fixed, F ∝ A·∇A with A ∝ 1/r gives F ∝ 1/r³, too steep. Need either a different envelope, interference correction, or different force equation to get Coulomb's 1/r²
+6. **Dual-treatment boundary** — Near-field needs raw oscillatory phasor (for lock-in physics), far-field needs smoothed envelope (for Coulomb). The weight function transition boundary should serve double duty, but this is unimplemented and untested
+
+Issues 1, 2, 3, and 4 are likely connected — solving the gradient sampling or switching to ∇E may resolve the oscillatory behavior. Issue 5 may also resolve if the interference pattern between two sources modifies the effective amplitude scaling.
+
+#### Next Steps (2026-03-18)
+
+- [ ] Test far-field force behavior: sweep separation from 2λ to 10λ, plot force magnitude vs distance, compare against 1/r² Coulomb reference
+- [ ] Experiment with gradient sampling radius: try 1λ, 2λ, 3λ window sizes and compare force smoothness
+- [ ] Test ∇E directly: compute force from energy gradient instead of A·∇A — one-line change in sandbox
+- [ ] Test near-field opposite-phase: sweep separation from 0 to 2λ, verify monotonic attraction (not oscillatory)
+- [ ] Test near-field same-phase: sweep separation from 0 to 2λ, observe lock-in oscillation pattern
+- [ ] Investigate whether smoothing phasor RMS before computing gradient resolves far-field oscillation
+- [ ] Compare force vs separation curves for different approaches — which produces smoothest 1/r² decay?
 
 #### Analysis: What Wave Equation Reproduces This in m3?
 
