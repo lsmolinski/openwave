@@ -556,6 +556,28 @@ def plot_sandbox():
         f_max = np.max(np.abs(force)) if np.max(np.abs(force)) > 0 else 1e-10
         ax3.set_ylim(-f_max * 1.3, f_max * 1.3)
 
+        # Pre-pass: collect force values at each active WC position
+        wc_f_vals = []
+        for i in range(len(wave_centers)):
+            if wc_active[i]:
+                idx = int(np.argmin(np.abs(x_am - wave_centers[i].x_am)))
+                wc_f_vals.append(force[idx])
+            else:
+                wc_f_vals.append(None)
+
+        # Detect attraction / repulsion when exactly 2 WCs are both active.
+        # Sort by position to identify left vs right WC regardless of list order.
+        active_indices = [i for i in range(len(wave_centers)) if wc_active[i]]
+        both_active = len(active_indices) == 2
+        if both_active:
+            i_left, i_right = sorted(active_indices, key=lambda i: wave_centers[i].x_am)
+            f_left = wc_f_vals[i_left]
+            f_right = wc_f_vals[i_right]
+            is_attraction = f_left > 0 and f_right < 0  # forces point toward each other
+            is_repulsion = f_left < 0 and f_right > 0  # forces point away from each other
+        else:
+            is_attraction = is_repulsion = False
+
         # Update WC marker positions, visibility, and force annotations
         for i, (vl1, vl2, vl3) in enumerate(wc_vlines):
             x_pos = wave_centers[i].x_am
@@ -567,22 +589,28 @@ def plot_sandbox():
             # Force annotation at this WC position
             ftxt = wc_force_texts[i]
             ftxt.set_x(x_pos)
-            if not visible or not wc_active[i]:
+            if not visible:
                 ftxt.set_text("")
+                continue
+
+            f_val = wc_f_vals[i]
+            if both_active and is_attraction:
+                label = f">>> Attraction\n{f_val:.3e} N" if i == i_left else f"Attraction <<<\n{f_val:.3e} N"
+                color = "#88FF00"  # green — opposite charges attract
+            elif both_active and is_repulsion:
+                label = f"<<< Repulsion\n{f_val:.3e} N" if i == i_left else f"Repulsion >>>\n{f_val:.3e} N"
+                color = "#FF8800"  # orange — same charges repel
+            elif f_val > 0:
+                label = f"→ Right\n{f_val:.3e} N"
+                color = "#FF4444"
+            elif f_val < 0:
+                label = f"← Left\n{f_val:.3e} N"
+                color = "#4488FF"
             else:
-                idx = int(np.argmin(np.abs(x_am - x_pos)))
-                f_val = force[idx]
-                if f_val > 0:
-                    label = f"→ Right\n{f_val:.3e} N"
-                    color = "#FF4444"
-                elif f_val < 0:
-                    label = f"← Left\n{f_val:.3e} N"
-                    color = "#4488FF"
-                else:
-                    label = f"Neutral\n{f_val:.3e} N"
-                    color = "#aaaaaa"
-                ftxt.set_text(label)
-                ftxt.set_color(color)
+                label = f"Neutral\n{f_val:.3e} N"
+                color = "#aaaaaa"
+            ftxt.set_text(label)
+            ftxt.set_color(color)
 
         fig.canvas.draw_idle()
 
