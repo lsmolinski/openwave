@@ -312,7 +312,11 @@ def plot_sandbox():
 
     # --- Panel 2: Energy Density ---
     (line_energy,) = ax2.plot(
-        x_am, energy, color=colormap.viridis_palette[3][1], linewidth=1.5, label="E(x) = ρV(fA)² [J]"
+        x_am,
+        energy,
+        color=colormap.viridis_palette[3][1],
+        linewidth=1.5,
+        label="E(x) = ρV(fA)² [J]",
     )
     # Mutable list so fill can be replaced in refresh_static
     fill_energy = [ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)]
@@ -352,6 +356,26 @@ def plot_sandbox():
     ax3.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     ax3.legend(loc="upper right", fontsize=9)
     ax3.grid(True, alpha=0.2)
+
+    # --- Force annotations at each WC position ---
+    # Blended transform: x in data coords (am), y in axes fraction (0–1)
+    from matplotlib.transforms import blended_transform_factory
+
+    wc_force_texts = []
+    for wc in wave_centers:
+        txt = ax3.text(
+            wc.x_am,
+            0.97,
+            "",
+            transform=blended_transform_factory(ax3.transData, ax3.transAxes),
+            fontsize=9,
+            family="Monospace",
+            fontweight="bold",
+            ha="center",
+            va="top",
+            bbox=dict(facecolor=colormap.DARK_GRAY[1], edgecolor="none", pad=2),
+        )
+        wc_force_texts.append(txt)
 
     # --- Separation Slider ---
     sep_min, sep_max = 0.25, 10.0  # in wavelengths
@@ -416,21 +440,21 @@ def plot_sandbox():
         fontweight="bold",
         ha="center",
         va="center",
-        color="#FF8800",
+        color="#88FF00",
         picker=True,
-        bbox=dict(facecolor="none", edgecolor="#FF8800", boxstyle="round,pad=0.3", alpha=0.5),
+        bbox=dict(facecolor="none", edgecolor="#88FF00", boxstyle="round,pad=0.3", alpha=0.5),
     )
 
     def update_phase_text():
         """Update phase toggle label."""
         if phase_state["opposite"]:
             phase_txt.set_text("Phase Δ: 180° (opposite charges)")
-            phase_txt.set_color("#FF8800")
-            phase_txt.get_bbox_patch().set_edgecolor("#FF8800")
-        else:
-            phase_txt.set_text("Phase Δ: 0° (same charges)")
             phase_txt.set_color("#88FF00")
             phase_txt.get_bbox_patch().set_edgecolor("#88FF00")
+        else:
+            phase_txt.set_text("Phase Δ: 0° (same charges)")
+            phase_txt.set_color("#FF8800")
+            phase_txt.get_bbox_patch().set_edgecolor("#FF8800")
 
     def apply_phase_offset():
         """Set WC phases based on toggle state."""
@@ -443,11 +467,17 @@ def plot_sandbox():
             # Same: all WCs share phase 0
             for wc in wave_centers:
                 wc.phase = 0.0
-        # Update WC toggle labels to reflect charge
+        # Update WC toggle labels and ax1 vline colors/legend to reflect charge
         for i, (wc, txt) in enumerate(zip(wave_centers, wc_texts)):
             charge = "+" if wc.phase == 0.0 else "−"
             wc_labels[i] = f"WC{i+1} ({charge})"
             txt.set_text(wc_labels[i])
+            color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
+            vl1, vl2, vl3 = wc_vlines[i]
+            for vl in (vl1, vl2, vl3):
+                vl.set_color(color)
+            vl1.set_label(wc_labels[i])
+        ax1.legend(loc="upper right", fontsize=9)
 
     def on_pick(event):
         """Handle clicks on WC toggles and phase toggle."""
@@ -526,13 +556,33 @@ def plot_sandbox():
         f_max = np.max(np.abs(force)) if np.max(np.abs(force)) > 0 else 1e-10
         ax3.set_ylim(-f_max * 1.3, f_max * 1.3)
 
-        # Update WC marker positions and visibility
+        # Update WC marker positions, visibility, and force annotations
         for i, (vl1, vl2, vl3) in enumerate(wc_vlines):
             x_pos = wave_centers[i].x_am
             visible = wc_active[i]
             for vl in (vl1, vl2, vl3):
                 vl.set_xdata([x_pos, x_pos])
                 vl.set_visible(visible)
+
+            # Force annotation at this WC position
+            ftxt = wc_force_texts[i]
+            ftxt.set_x(x_pos)
+            if not visible or not wc_active[i]:
+                ftxt.set_text("")
+            else:
+                idx = int(np.argmin(np.abs(x_am - x_pos)))
+                f_val = force[idx]
+                if f_val > 0:
+                    label = f"→ Right\n{f_val:.3e} N"
+                    color = "#FF4444"
+                elif f_val < 0:
+                    label = f"← Left\n{f_val:.3e} N"
+                    color = "#4488FF"
+                else:
+                    label = f"Neutral\n{f_val:.3e} N"
+                    color = "#aaaaaa"
+                ftxt.set_text(label)
+                ftxt.set_color(color)
 
         fig.canvas.draw_idle()
 
