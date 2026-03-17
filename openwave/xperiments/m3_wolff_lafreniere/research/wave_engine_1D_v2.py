@@ -70,8 +70,22 @@ wave_centers = [
 # Spatial Domain
 # ================================================================
 
-x_am = np.linspace(-1 * wc_separation, +1 * wc_separation, 2000)
+# Domain must be wide enough for max slider separation (10λ) + padding
+max_sep_am = 1 * lam_am  # max slider value in am
+domain_half = max_sep_am / 2 + 5 * lam_am  # WC at edge + 5λ padding each side
+x_am = np.linspace(-domain_half, +domain_half, 4000)
 dx_am = x_am[1] - x_am[0]  # grid spacing
+
+
+def snap_to_grid(pos: float) -> float:
+    """Snap a position to the nearest grid point to avoid asymmetric gradient artifacts."""
+    idx = np.argmin(np.abs(x_am - pos))
+    return float(x_am[idx])
+
+
+# Snap initial WC positions to grid
+for wc in wave_centers:
+    wc.x_am = snap_to_grid(wc.x_am)
 
 
 # ================================================================
@@ -304,7 +318,7 @@ def plot_sandbox():
 
     ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
     ax1.set_xlim(x_am.min(), x_am.max())
-    psi_max = max(np.max(rms) * 2.5, A0_am * 2)
+    psi_max = A0_am * 2
     ax1.set_ylim(-psi_max, psi_max)
     ax1.set_ylabel("Displacement (am)", family="Monospace")
     ax1.legend(loc="upper right", fontsize=9)
@@ -357,6 +371,17 @@ def plot_sandbox():
     ax3.legend(loc="upper right", fontsize=9)
     ax3.grid(True, alpha=0.2)
 
+    # --- Coulomb reference text (bottom of force panel) ---
+    coulomb_text = ax3.text(
+        0.5, 0.02, "",
+        transform=ax3.transAxes,
+        fontsize=9, family="Monospace",
+        ha="center", va="bottom",
+        color="#FFCC00",
+        visible=False,
+        bbox=dict(facecolor="#222222", edgecolor="#FFCC00", boxstyle="round,pad=0.3", alpha=0.7),
+    )
+
     # --- Force annotations at each WC position ---
     # Blended transform: x in data coords (am), y in axes fraction (0–1)
     from matplotlib.transforms import blended_transform_factory
@@ -378,7 +403,7 @@ def plot_sandbox():
         wc_force_texts.append(txt)
 
     # --- Separation Slider ---
-    sep_min, sep_max = 0.25, 10.0  # in wavelengths
+    sep_min, sep_max = 0.0, 10.0  # in wavelengths
     sep_init = wc_separation / lam_am
     slider_sep = Slider(
         ax_slider,
@@ -523,7 +548,7 @@ def plot_sandbox():
         line_rms_neg.set_ydata(-rms)
 
         # Update y-limits for panel 1
-        psi_max = max(np.max(rms) * 2.5, A0_am * 2)
+        psi_max = A0_am * 2
         ax1.set_ylim(-psi_max, psi_max)
 
         # Update energy line + fill
@@ -575,8 +600,44 @@ def plot_sandbox():
             f_right = wc_f_vals[i_right]
             is_attraction = f_left > 0 and f_right < 0  # forces point toward each other
             is_repulsion = f_left < 0 and f_right > 0  # forces point away from each other
+
+            # Coulomb reference: F = ke · q1·q2 / r²
+            ke = constants.COULOMB_CONSTANT  # N·m²/C²
+            qe = constants.ELEMENTARY_CHARGE  # C
+            sep_m = abs(wave_centers[i_right].x_am - wave_centers[i_left].x_am) * constants.ATTOMETER
+            if sep_m > 0:
+                opposite_phase = abs(wave_centers[i_left].phase - wave_centers[i_right].phase) > 1.0
+                charge_product = -qe**2 if opposite_phase else qe**2
+                coulomb_f = ke * charge_product / sep_m**2  # Newtons (signed)
+                sep_lam = sep_m / constants.EWAVE_LENGTH
+                wave_f_signed = f_left if f_left is not None else 0.0  # left WC force (+ = right, - = left)
+                # Check if wave force direction matches Coulomb prediction
+                # Coulomb negative = attraction (forces point inward), positive = repulsion (outward)
+                # For left WC: attraction means force points right (+), repulsion means left (-)
+                coulomb_direction_for_left = -coulomb_f  # flip: coulomb negative(attract) → left WC goes right(+)
+                signs_match = (wave_f_signed * coulomb_direction_for_left) > 0
+
+                if signs_match:
+                    ratio = abs(wave_f_signed) / abs(coulomb_f) if coulomb_f != 0 else 0.0
+                    coulomb_text.set_text(
+                        f"Coulomb: {coulomb_f:.3e} N  |  Wave: {wave_f_signed:.3e} N  |  "
+                        f"Ratio: {ratio:.3e}  |  Sep: {sep_lam:.2f}λ"
+                    )
+                    coulomb_text.set_color("#FFCC00")
+                    coulomb_text.get_bbox_patch().set_edgecolor("#FFCC00")
+                else:
+                    coulomb_text.set_text(
+                        f"WRONG DIRECTION  |  Coulomb: {coulomb_f:.3e} N  |  "
+                        f"Wave: {wave_f_signed:.3e} N  |  Sep: {sep_lam:.2f}λ"
+                    )
+                    coulomb_text.set_color("#FF4444")
+                    coulomb_text.get_bbox_patch().set_edgecolor("#FF4444")
+                coulomb_text.set_visible(True)
+            else:
+                coulomb_text.set_visible(False)
         else:
             is_attraction = is_repulsion = False
+            coulomb_text.set_visible(False)
 
         # Update WC marker positions, visibility, and force annotations
         for i, (vl1, vl2, vl3) in enumerate(wc_vlines):
@@ -595,10 +656,18 @@ def plot_sandbox():
 
             f_val = wc_f_vals[i]
             if both_active and is_attraction:
-                label = f">>> Attraction\n{f_val:.3e} N" if i == i_left else f"Attraction <<<\n{f_val:.3e} N"
+                label = (
+                    f">>> Attraction\n{f_val:.3e} N"
+                    if i == i_left
+                    else f"Attraction <<<\n{f_val:.3e} N"
+                )
                 color = "#88FF00"  # green — opposite charges attract
             elif both_active and is_repulsion:
-                label = f"<<< Repulsion\n{f_val:.3e} N" if i == i_left else f"Repulsion >>>\n{f_val:.3e} N"
+                label = (
+                    f"<<< Repulsion\n{f_val:.3e} N"
+                    if i == i_left
+                    else f"Repulsion >>>\n{f_val:.3e} N"
+                )
                 color = "#FF8800"  # orange — same charges repel
             elif f_val > 0:
                 label = f"→ Right\n{f_val:.3e} N"
@@ -617,10 +686,10 @@ def plot_sandbox():
     def on_slider_change(val):
         """Update WC positions from separation slider."""
         new_sep = val * lam_am
-        # Reposition WCs symmetrically
+        # Reposition WCs symmetrically, snapped to grid
         if len(wave_centers) >= 2:
-            wave_centers[0].x_am = -new_sep / 2
-            wave_centers[1].x_am = +new_sep / 2
+            wave_centers[0].x_am = snap_to_grid(-new_sep / 2)
+            wave_centers[1].x_am = snap_to_grid(+new_sep / 2)
         refresh_static()
 
     slider_sep.on_changed(on_slider_change)
