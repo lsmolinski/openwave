@@ -44,7 +44,7 @@
   - [Phase 2: Energy Density Gradients](#phase-2-analyze-energy-density-gradients)
   - [Phase 3: Isolate Force Mechanism](#phase-3-isolate-the-force-mechanism)
   - [Phase 4: Standing/Traveling Contributions](#phase-4-separate-standing-and-traveling-contributions)
-  - [Phase 5: Multi-Particle Validation](#phase-5-multi-particle-validation)
+  - [Phase 5: Multi-Particle Validation](#phase-5-multi-particle-validation-and-gravitational-force)
 - [Target: Wave Interference Patterns](#target-wave-interference-patterns-lafreniere-reference-animations)
   - [Primary Reference Animation](#primary-reference-two-opposite-phase-wave-centers)
   - [Constructive/Destructive Animations](#constructive-and-destructive-reference-animations)
