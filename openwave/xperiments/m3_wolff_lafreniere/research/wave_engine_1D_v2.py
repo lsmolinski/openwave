@@ -37,6 +37,12 @@ omega = 2.0 * np.pi * f_rHz  # angular frequency (rad/rs)
 k = 2.0 * np.pi / lam_am  # wave number (rad/am)
 period_rs = 2.0 * np.pi / omega  # one full period in rs
 
+# SI unit conversion factors (internal → SI)
+# 1 qg·am²/rs² = 1e-33 kg · (1e-18 m)² / (1e-27 s)² = 1e-15 J
+# 1 qg·am/rs²  = 1e-33 kg · (1e-18 m) / (1e-27 s)²  = 1e+3  N
+ENERGY_TO_J = constants.QUECTOGRAM * constants.ATTOMETER**2 / constants.RONTOSECOND**2
+FORCE_TO_N = constants.QUECTOGRAM * constants.ATTOMETER / constants.RONTOSECOND**2
+
 
 # ================================================================
 # Wave Center Configuration
@@ -64,7 +70,7 @@ wave_centers = [
 # Spatial Domain
 # ================================================================
 
-x_am = np.linspace(-1.5 * wc_separation, +1.5 * wc_separation, 2000)
+x_am = np.linspace(-1 * wc_separation, +1 * wc_separation, 2000)
 dx_am = x_am[1] - x_am[0]  # grid spacing
 
 
@@ -198,7 +204,7 @@ PLOT_DIR = _MODULE_DIR / "_plots"
 
 
 def plot_sandbox():
-    """Animate the 1D wave sandbox with 3 panels.
+    """Animate the 1D wave sandbox with 3 panels + interactive controls.
 
     Panel 1: Displacement ψ(x,t) + Phasor RMS envelope
     Panel 2: Energy density E(x)
@@ -207,100 +213,261 @@ def plot_sandbox():
     Controls:
         SPACE: Pause/Resume
         LEFT/RIGHT: Step frame when paused
+        Slider: WC separation distance
+        Checkboxes: Toggle individual WCs on/off
     """
+    from matplotlib.widgets import Slider
+
     state = {"paused": START_PAUSED, "frame": 0}
 
-    # Precompute static phasor RMS (doesn't change with time)
-    rms = compute_phasor_rms(x_am)
-    energy = compute_energy_density(rms)
-    force = compute_force_field(rms)
+    # Track active WCs (all on by default)
+    wc_active = [True] * len(wave_centers)
+    # Store original positions for separation slider
+    wc_original_positions = [wc.x_am for wc in wave_centers]
 
-    # Setup figure
+    def get_active_centers():
+        """Return list of currently active wave centers."""
+        return [wc for wc, active in zip(wave_centers, wc_active) if active]
+
+    def recompute_static():
+        """Recompute phasor RMS, energy, force from active WCs."""
+        active = get_active_centers()
+        if not active:
+            return np.zeros_like(x_am), np.zeros_like(x_am), np.zeros_like(x_am)
+        # Temporarily swap wave_centers for computation
+        orig = wave_centers.copy()
+        wave_centers.clear()
+        wave_centers.extend(active)
+        rms = compute_phasor_rms(x_am)
+        energy = compute_energy_density(rms)
+        force = compute_force_field(rms)
+        wave_centers.clear()
+        wave_centers.extend(orig)
+        return rms, energy, force
+
+    # Initial computation (internal units → convert to SI for display)
+    rms, energy, force = recompute_static()
+    energy = energy * ENERGY_TO_J
+    force = force * FORCE_TO_N
+
+    # Setup figure with space for widgets
     plt.style.use("dark_background")
-    fig, (ax1, ax2, ax3) = plt.subplots(
+    fig = plt.figure(figsize=(16, 9), facecolor=colormap.DARK_GRAY[1])
+
+    # GridSpec: 3 plot rows (slider placed manually below)
+    gs = fig.add_gridspec(
         3,
         1,
-        figsize=(16, 9),
-        facecolor=colormap.DARK_GRAY[1],
-        gridspec_kw={"height_ratios": [3, 1, 1]},
+        height_ratios=[3, 1, 1],
+        hspace=0.30,
+        top=0.91,
+        bottom=0.10,
+        left=0.06,
+        right=0.98,
     )
+
+    ax1 = fig.add_subplot(gs[0, 0])  # displacement + RMS
+    ax2 = fig.add_subplot(gs[1, 0])  # energy
+    ax3 = fig.add_subplot(gs[2, 0])  # force
+    # Slider: manually positioned, narrower than plots
+    ax_slider = fig.add_axes([0.15, 0.02, 0.70, 0.025])  # [left, bottom, width, height]
+
     fig.suptitle(
         "OPENWAVE Analytics — 1D Wave Force Research",
         fontsize=18,
         family="Monospace",
+        y=0.98,
     )
 
     # --- Panel 1: Displacement + Phasor RMS ---
     (line_psi,) = ax1.plot(
         [], [], color=colormap.viridis_palette[2][1], linewidth=1.5, alpha=0.8, label="ψ(x,t)"
     )
-    ax1.plot(x_am, rms, color=colormap.viridis_palette[4][1], linewidth=2, label="Phasor RMS")
-    ax1.plot(x_am, -rms, color=colormap.viridis_palette[4][1], linewidth=2, alpha=0.5)
+    (line_rms_pos,) = ax1.plot(
+        x_am, rms, color=colormap.viridis_palette[4][1], linewidth=2, label="Phasor RMS"
+    )
+    (line_rms_neg,) = ax1.plot(
+        x_am, -rms, color=colormap.viridis_palette[4][1], linewidth=2, alpha=0.5
+    )
 
-    # WC markers and λ boundaries
-    for wc in wave_centers:
+    # WC marker lines (stored for update)
+    wc_vlines = []
+    for i, wc in enumerate(wave_centers):
         color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
         charge = "+" if wc.phase == 0.0 else "−"
-        ax1.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.6, label=f"WC ({charge})")
-        ax1.axvline(x=wc.x_am + lam_am, color=color, linestyle=":", alpha=0.2)
-        ax1.axvline(x=wc.x_am - lam_am, color=color, linestyle=":", alpha=0.2)
-        # Transition boundary
-        trans_r = TRANSITION_LAM * lam_am
-        ax1.axvline(x=wc.x_am + trans_r, color=color, linestyle="-.", alpha=0.15)
-        ax1.axvline(x=wc.x_am - trans_r, color=color, linestyle="-.", alpha=0.15)
+        vl = ax1.axvline(
+            x=wc.x_am, color=color, linestyle="--", alpha=0.6, label=f"WC{i+1} ({charge})"
+        )
+        vl2 = ax2.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
+        vl3 = ax3.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
+        wc_vlines.append((vl, vl2, vl3))
 
     ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
     ax1.set_xlim(x_am.min(), x_am.max())
-    psi_max = np.max(rms) * 2.5
+    psi_max = max(np.max(rms) * 2.5, A0_am * 2)
     ax1.set_ylim(-psi_max, psi_max)
     ax1.set_ylabel("Displacement (am)", family="Monospace")
     ax1.legend(loc="upper right", fontsize=9)
     ax1.grid(True, alpha=0.2)
 
     # --- Panel 2: Energy Density ---
-    ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)
-    ax2.plot(
-        x_am, energy, color=colormap.viridis_palette[3][1], linewidth=1.5, label="E(x) = ρV(fA)²"
+    (line_energy,) = ax2.plot(
+        x_am, energy, color=colormap.viridis_palette[3][1], linewidth=1.5, label="E(x) = ρV(fA)² [J]"
     )
-
-    for wc in wave_centers:
-        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
-        ax2.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
-
+    # Mutable list so fill can be replaced in refresh_static
+    fill_energy = [ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)]
     ax2.set_xlim(x_am.min(), x_am.max())
-    ax2.set_ylabel("Energy (qg·am²/rs²)", family="Monospace", fontsize=9)
+    ax2.set_ylabel("Energy (J)", family="Monospace", fontsize=9)
+    ax2.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     ax2.legend(loc="upper right", fontsize=9)
     ax2.grid(True, alpha=0.2)
 
     # --- Panel 3: Force Field ---
-    ax3.fill_between(
-        x_am,
-        force,
-        where=(force > 0),
-        color="#FF4444",
-        alpha=0.3,
-        label="→ Right Force Vector (+)",
-    )
-    ax3.fill_between(
-        x_am,
-        force,
-        where=(force < 0),
-        color="#4488FF",
-        alpha=0.3,
-        label="← Left Force Vector (−)",
-    )
-    ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
-
-    for wc in wave_centers:
-        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
-        ax3.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
-
+    (line_force,) = ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
+    # Mutable lists so fills can be replaced in refresh_static
+    fill_force_r = [
+        ax3.fill_between(
+            x_am,
+            force,
+            where=(force > 0),
+            color="#FF4444",
+            alpha=0.3,
+            label="→ Right Force Vector (+)",
+        )
+    ]
+    fill_force_l = [
+        ax3.fill_between(
+            x_am,
+            force,
+            where=(force < 0),
+            color="#4488FF",
+            alpha=0.3,
+            label="← Left Force Vector (−)",
+        )
+    ]
     ax3.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     ax3.set_xlim(x_am.min(), x_am.max())
     ax3.set_xlabel("X (am)", family="Monospace")
-    ax3.set_ylabel("Force (qg·am/rs²)", family="Monospace", fontsize=9)
+    ax3.set_ylabel("Force (N)", family="Monospace", fontsize=9)
+    ax3.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     ax3.legend(loc="upper right", fontsize=9)
     ax3.grid(True, alpha=0.2)
+
+    # --- Separation Slider ---
+    sep_min, sep_max = 0.25, 10.0  # in wavelengths
+    sep_init = wc_separation / lam_am
+    slider_sep = Slider(
+        ax_slider,
+        "WC Separation (λ)",
+        sep_min,
+        sep_max,
+        valinit=sep_init,
+        valstep=0.25,
+        color=colormap.viridis_palette[3][1],
+    )
+
+    # --- WC Toggle Buttons (click text to toggle on/off, top bar) ---
+    wc_labels = []
+    wc_texts = []
+    n_wcs = len(wave_centers)
+    for i, wc in enumerate(wave_centers):
+        charge = "+" if wc.phase == 0.0 else "−"
+        label = f"WC{i+1} ({charge})"
+        wc_labels.append(label)
+        # Lay out horizontally in the title area, left-aligned
+        x_pos = 0.10 + i * 0.10  # left-to-right spacing
+        txt = fig.text(
+            x_pos,
+            0.95,
+            label,
+            fontsize=11,
+            family="Monospace",
+            fontweight="bold",
+            ha="center",
+            va="center",
+            color="yellow",
+            picker=True,
+            bbox=dict(facecolor="none", edgecolor="yellow", boxstyle="round,pad=0.3", alpha=0.5),
+        )
+        wc_texts.append(txt)
+
+    def update_wc_text_style():
+        """Update text colors based on active state."""
+        for i, txt in enumerate(wc_texts):
+            if wc_active[i]:
+                txt.set_color("yellow")
+                txt.get_bbox_patch().set_edgecolor("yellow")
+                txt.get_bbox_patch().set_alpha(0.5)
+            else:
+                txt.set_color("#666666")
+                txt.get_bbox_patch().set_edgecolor("#666666")
+                txt.get_bbox_patch().set_alpha(0.2)
+
+    # --- Phase Offset Toggle (top bar, after WC labels) ---
+    phase_state = {"opposite": True}  # True = 0 vs π (opposite), False = same phase
+    x_phase = 0.98 - 0.12  # right-to-left spacing
+    phase_label_text = "Phase Δ: 180° (opposite charges)"
+    phase_txt = fig.text(
+        x_phase,
+        0.95,
+        phase_label_text,
+        fontsize=11,
+        family="Monospace",
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color="#FF8800",
+        picker=True,
+        bbox=dict(facecolor="none", edgecolor="#FF8800", boxstyle="round,pad=0.3", alpha=0.5),
+    )
+
+    def update_phase_text():
+        """Update phase toggle label."""
+        if phase_state["opposite"]:
+            phase_txt.set_text("Phase Δ: 180° (opposite charges)")
+            phase_txt.set_color("#FF8800")
+            phase_txt.get_bbox_patch().set_edgecolor("#FF8800")
+        else:
+            phase_txt.set_text("Phase Δ: 0° (same charges)")
+            phase_txt.set_color("#88FF00")
+            phase_txt.get_bbox_patch().set_edgecolor("#88FF00")
+
+    def apply_phase_offset():
+        """Set WC phases based on toggle state."""
+        if phase_state["opposite"]:
+            # Opposite: first WC = 0, second WC = π
+            if len(wave_centers) >= 2:
+                wave_centers[0].phase = 0.0
+                wave_centers[1].phase = np.pi
+        else:
+            # Same: all WCs share phase 0
+            for wc in wave_centers:
+                wc.phase = 0.0
+        # Update WC toggle labels to reflect charge
+        for i, (wc, txt) in enumerate(zip(wave_centers, wc_texts)):
+            charge = "+" if wc.phase == 0.0 else "−"
+            wc_labels[i] = f"WC{i+1} ({charge})"
+            txt.set_text(wc_labels[i])
+
+    def on_pick(event):
+        """Handle clicks on WC toggles and phase toggle."""
+        # Phase toggle
+        if event.artist == phase_txt:
+            phase_state["opposite"] = not phase_state["opposite"]
+            apply_phase_offset()
+            update_phase_text()
+            update_wc_text_style()
+            refresh_static()
+            return
+        # WC toggles
+        for i, txt in enumerate(wc_texts):
+            if event.artist == txt:
+                wc_active[i] = not wc_active[i]
+                update_wc_text_style()
+                refresh_static()
+                break
+
+    fig.canvas.mpl_connect("pick_event", on_pick)
 
     # Time display
     time_text = ax1.text(
@@ -313,27 +480,98 @@ def plot_sandbox():
         verticalalignment="top",
     )
 
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.93, hspace=0.25)
+    def refresh_static():
+        """Recompute and redraw all static elements (RMS, energy, force, markers)."""
+        nonlocal rms, energy, force, psi_max
+
+        rms, energy, force = recompute_static()
+        energy = energy * ENERGY_TO_J
+        force = force * FORCE_TO_N
+
+        # Update RMS lines
+        line_rms_pos.set_ydata(rms)
+        line_rms_neg.set_ydata(-rms)
+
+        # Update y-limits for panel 1
+        psi_max = max(np.max(rms) * 2.5, A0_am * 2)
+        ax1.set_ylim(-psi_max, psi_max)
+
+        # Update energy line + fill
+        line_energy.set_ydata(energy)
+        fill_energy[0].remove()
+        fill_energy[0] = ax2.fill_between(
+            x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5
+        )
+        e_max = np.max(energy) if np.max(energy) > 0 else 1e-10
+        ax2.set_ylim(0, e_max * 1.2)
+
+        # Update force line + fills
+        line_force.set_ydata(force)
+        fill_force_r[0].remove()
+        fill_force_l[0].remove()
+        fill_force_r[0] = ax3.fill_between(
+            x_am,
+            force,
+            where=(force > 0),
+            color="#FF4444",
+            alpha=0.3,
+        )
+        fill_force_l[0] = ax3.fill_between(
+            x_am,
+            force,
+            where=(force < 0),
+            color="#4488FF",
+            alpha=0.3,
+        )
+        f_max = np.max(np.abs(force)) if np.max(np.abs(force)) > 0 else 1e-10
+        ax3.set_ylim(-f_max * 1.3, f_max * 1.3)
+
+        # Update WC marker positions and visibility
+        for i, (vl1, vl2, vl3) in enumerate(wc_vlines):
+            x_pos = wave_centers[i].x_am
+            visible = wc_active[i]
+            for vl in (vl1, vl2, vl3):
+                vl.set_xdata([x_pos, x_pos])
+                vl.set_visible(visible)
+
+        fig.canvas.draw_idle()
+
+    def on_slider_change(val):
+        """Update WC positions from separation slider."""
+        new_sep = val * lam_am
+        # Reposition WCs symmetrically
+        if len(wave_centers) >= 2:
+            wave_centers[0].x_am = -new_sep / 2
+            wave_centers[1].x_am = +new_sep / 2
+        refresh_static()
+
+    slider_sep.on_changed(on_slider_change)
 
     def update_plot(frame):
         """Update displacement for given frame."""
         t_rs = (frame / ANIMATION_FRAMES) * period_rs
-        psi = compute_displacement(x_am, t_rs)
+
+        # Compute displacement from active WCs only
+        active = get_active_centers()
+        if active:
+            orig = wave_centers.copy()
+            wave_centers.clear()
+            wave_centers.extend(active)
+            psi = compute_displacement(x_am, t_rs)
+            wave_centers.clear()
+            wave_centers.extend(orig)
+        else:
+            psi = np.zeros_like(x_am)
+
         line_psi.set_data(x_am, psi)
 
         pause_str = " [PAUSED]" if state["paused"] else ""
         time_text.set_text(f"t = {t_rs:.4f} rs  (frame {frame}/{ANIMATION_FRAMES}){pause_str}")
-        return (line_psi, time_text)
-
-    def init():
-        return update_plot(state["frame"])
 
     def animate(frame):
-        if state["paused"]:
-            return update_plot(state["frame"])
-        state["frame"] = frame
-        return update_plot(frame)
+        if not state["paused"]:
+            state["frame"] = frame
+        update_plot(state["frame"])
 
     def on_key(event):
         if event.key == " ":
@@ -351,18 +589,21 @@ def plot_sandbox():
 
     fig.canvas.mpl_connect("key_press_event", on_key)
 
+    # blit=False required for widget redraws
     anim = FuncAnimation(
         fig,
         animate,
-        init_func=init,
         frames=ANIMATION_FRAMES,
         interval=ANIMATION_INTERVAL,
-        blit=True,
+        blit=False,
     )
 
-    return anim
+    # Initial static draw
+    refresh_static()
+
+    return anim, slider_sep, wc_texts, phase_txt  # keep references to prevent GC
 
 
 if __name__ == "__main__":
-    anim = plot_sandbox()
+    anim, _slider, _wc_texts, _phase_txt = plot_sandbox()
     plt.show()
