@@ -1,0 +1,368 @@
+"""
+1D WAVE ENGINE SANDBOX v2 — Force Unification Research Tool
+
+Lightweight 1D wave engine for rapid prototyping and validation of:
+- Wave equations (weighted partial standing wave as primary)
+- Phasor superposition (exact analytical amplitude)
+- Energy density and force field computation
+
+3 panels:
+  1. Displacement ψ(x,t) + Phasor RMS envelope (overlay)
+  2. Energy density E(x) = ρ·V·(f·A)²
+  3. Force field F(x) = -∇E
+
+Controls:
+  SPACE: Pause/Resume animation
+  LEFT/RIGHT arrows: Step frame when paused
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from pathlib import Path
+
+from openwave.common import colormap, constants
+
+
+# ================================================================
+# Physical Constants (EWT)
+# ================================================================
+
+A0_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # amplitude in am
+lam_am = constants.EWAVE_LENGTH / constants.ATTOMETER  # wavelength in am
+f_rHz = constants.EWAVE_FREQUENCY * constants.RONTOSECOND  # frequency in rHz
+rho_qgam = constants.MEDIUM_DENSITY_QGAM  # medium density in qg/am³
+
+omega = 2.0 * np.pi * f_rHz  # angular frequency (rad/rs)
+k = 2.0 * np.pi / lam_am  # wave number (rad/am)
+period_rs = 2.0 * np.pi / omega  # one full period in rs
+
+
+# ================================================================
+# Wave Center Configuration
+# ================================================================
+
+
+class WaveCenter:
+    """A single wave center with position, phase offset, and amplitude."""
+
+    def __init__(self, x_am: float, phase: float = 0.0, amplitude: float = A0_am):
+        self.x_am = x_am  # position on x-axis (am)
+        self.phase = phase  # source_offset: 0 = positron, π = electron
+        self.amplitude = amplitude  # base amplitude (am)
+
+
+# Default: 2 opposite-charge WCs separated by 4λ
+wc_separation = 4 * lam_am
+wave_centers = [
+    WaveCenter(x_am=-wc_separation / 2, phase=0.0),  # positron
+    WaveCenter(x_am=+wc_separation / 2, phase=np.pi),  # electron
+]
+
+
+# ================================================================
+# Spatial Domain
+# ================================================================
+
+x_am = np.linspace(-1.5 * wc_separation, +1.5 * wc_separation, 2000)
+dx_am = x_am[1] - x_am[0]  # grid spacing
+
+
+# ================================================================
+# Wave Equation: Weighted Partial Standing Wave
+# ================================================================
+# ψ = A · [w(r)·sin(kr + ωt + φ) + sin(kr - ωt - φ)] / kr
+#
+# w(r) = 1 / (1 + (r / (transition·λ))^power)
+#
+# Standing limit (w=1): 2·sin(kr)·cos(ωt+φ) / kr
+# Traveling limit (w=0): sin(kr - ωt - φ) / kr
+
+TRANSITION_LAM = 1.25  # standing wave region in wavelengths
+WEIGHT_POWER = 8  # sharpness of standing → traveling transition
+
+
+def compute_weight(r_am: np.ndarray) -> np.ndarray:
+    """In-wave weight: 1 near center (standing), 0 far away (traveling)."""
+    return 1.0 / (1.0 + (r_am / (TRANSITION_LAM * lam_am)) ** WEIGHT_POWER)
+
+
+def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
+    """Compute total displacement from all wave centers at time t.
+
+    Returns superposition of all WCs using weighted partial standing wave.
+    """
+    psi_total = np.zeros_like(x_am)
+
+    for wc in wave_centers:
+        r_am = np.abs(x_am - wc.x_am)
+        kr = k * r_am
+        wt_phi = omega * t_rs + wc.phase
+        w = compute_weight(r_am)
+
+        # Combined partially standing wave
+        # Center safe: kr=0 → limit is 2·cos(ωt+φ)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            wave = np.where(
+                kr < 1e-10,
+                2.0 * np.cos(wt_phi),  # center limit
+                (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
+            )
+
+        psi_total += wc.amplitude * wave
+
+    return psi_total
+
+
+# ================================================================
+# Phasor Superposition (Analytical Amplitude)
+# ================================================================
+# ψ_total(t) = P·cos(ωt) + Q·sin(ωt)
+# Peak = √(P² + Q²),  RMS = Peak / √2
+#
+# Per WC: ψ = A·[(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
+# Rotate by φ to shared cos(ωt)/sin(ωt) basis.
+
+
+def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
+    """Compute exact phasor RMS amplitude at each x position.
+
+    Returns RMS = √(P² + Q²) / √2, where P and Q are the
+    accumulated cos(ωt) and sin(ωt) coefficients from all WCs.
+    """
+    P = np.zeros_like(x_am)
+    Q = np.zeros_like(x_am)
+
+    for wc in wave_centers:
+        r_am = np.abs(x_am - wc.x_am)
+        kr = k * r_am
+        w = compute_weight(r_am)
+
+        # Phasor coefficients for this WC
+        with np.errstate(divide="ignore", invalid="ignore"):
+            C_n = np.where(
+                kr < 1e-10,
+                2.0 * wc.amplitude,  # center limit: (w+1)·sin(kr)/kr → 2
+                wc.amplitude * (w + 1.0) * np.sin(kr) / kr,
+            )
+            S_n = np.where(
+                kr < 1e-10,
+                0.0,  # center limit: (w-1)·cos(kr)/kr → 0
+                wc.amplitude * (w - 1.0) * np.cos(kr) / kr,
+            )
+
+        # Rotate by source_offset to shared cos(ωt)/sin(ωt) basis
+        cos_phi = np.cos(wc.phase)
+        sin_phi = np.sin(wc.phase)
+        P += C_n * cos_phi + S_n * sin_phi
+        Q += -C_n * sin_phi + S_n * cos_phi
+
+    # RMS = peak / √2
+    peak = np.sqrt(P**2 + Q**2)
+    return peak / np.sqrt(2.0)
+
+
+# ================================================================
+# Energy Density and Force
+# ================================================================
+# E = ρ · V · (f · A)²  where V = dx³ (voxel volume)
+# F = -∇E = -2 · ρ · V · f² · A · ∇A
+
+
+def compute_energy_density(rms_am: np.ndarray) -> np.ndarray:
+    """Energy density at each x: E = ρ · dx³ · (f · A)²."""
+    return rho_qgam * dx_am**3 * (f_rHz * rms_am) ** 2
+
+
+def compute_force_field(rms_am: np.ndarray) -> np.ndarray:
+    """Force field: F = -2 · ρ · V · f² · A · ∇A.
+
+    Uses central differences for gradient.
+    """
+    grad_A = np.gradient(rms_am, dx_am)
+    force = -2.0 * rho_qgam * dx_am**3 * f_rHz**2 * rms_am * grad_A
+    return force
+
+
+# ================================================================
+# Animation and Plotting
+# ================================================================
+
+# Animation parameters
+ANIMATION_FRAMES = 100
+ANIMATION_INTERVAL = 50  # ms (20 FPS)
+START_PAUSED = False
+
+_MODULE_DIR = Path(__file__).parent
+PLOT_DIR = _MODULE_DIR / "_plots"
+
+
+def plot_sandbox():
+    """Animate the 1D wave sandbox with 3 panels.
+
+    Panel 1: Displacement ψ(x,t) + Phasor RMS envelope
+    Panel 2: Energy density E(x)
+    Panel 3: Force field F(x)
+
+    Controls:
+        SPACE: Pause/Resume
+        LEFT/RIGHT: Step frame when paused
+    """
+    state = {"paused": START_PAUSED, "frame": 0}
+
+    # Precompute static phasor RMS (doesn't change with time)
+    rms = compute_phasor_rms(x_am)
+    energy = compute_energy_density(rms)
+    force = compute_force_field(rms)
+
+    # Setup figure
+    plt.style.use("dark_background")
+    fig, (ax1, ax2, ax3) = plt.subplots(
+        3,
+        1,
+        figsize=(16, 9),
+        facecolor=colormap.DARK_GRAY[1],
+        gridspec_kw={"height_ratios": [3, 1, 1]},
+    )
+    fig.suptitle(
+        "OPENWAVE Analytics — 1D Wave Force Research",
+        fontsize=18,
+        family="Monospace",
+    )
+
+    # --- Panel 1: Displacement + Phasor RMS ---
+    (line_psi,) = ax1.plot(
+        [], [], color=colormap.viridis_palette[2][1], linewidth=1.5, alpha=0.8, label="ψ(x,t)"
+    )
+    ax1.plot(x_am, rms, color=colormap.viridis_palette[4][1], linewidth=2, label="Phasor RMS")
+    ax1.plot(x_am, -rms, color=colormap.viridis_palette[4][1], linewidth=2, alpha=0.5)
+
+    # WC markers and λ boundaries
+    for wc in wave_centers:
+        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
+        charge = "+" if wc.phase == 0.0 else "−"
+        ax1.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.6, label=f"WC ({charge})")
+        ax1.axvline(x=wc.x_am + lam_am, color=color, linestyle=":", alpha=0.2)
+        ax1.axvline(x=wc.x_am - lam_am, color=color, linestyle=":", alpha=0.2)
+        # Transition boundary
+        trans_r = TRANSITION_LAM * lam_am
+        ax1.axvline(x=wc.x_am + trans_r, color=color, linestyle="-.", alpha=0.15)
+        ax1.axvline(x=wc.x_am - trans_r, color=color, linestyle="-.", alpha=0.15)
+
+    ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
+    ax1.set_xlim(x_am.min(), x_am.max())
+    psi_max = np.max(rms) * 2.5
+    ax1.set_ylim(-psi_max, psi_max)
+    ax1.set_ylabel("Displacement (am)", family="Monospace")
+    ax1.legend(loc="upper right", fontsize=9)
+    ax1.grid(True, alpha=0.2)
+
+    # --- Panel 2: Energy Density ---
+    ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)
+    ax2.plot(
+        x_am, energy, color=colormap.viridis_palette[3][1], linewidth=1.5, label="E(x) = ρV(fA)²"
+    )
+
+    for wc in wave_centers:
+        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
+        ax2.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
+
+    ax2.set_xlim(x_am.min(), x_am.max())
+    ax2.set_ylabel("Energy (qg·am²/rs²)", family="Monospace", fontsize=9)
+    ax2.legend(loc="upper right", fontsize=9)
+    ax2.grid(True, alpha=0.2)
+
+    # --- Panel 3: Force Field ---
+    ax3.fill_between(
+        x_am,
+        force,
+        where=(force > 0),
+        color="#FF4444",
+        alpha=0.3,
+        label="→ Right Force Vector (+)",
+    )
+    ax3.fill_between(
+        x_am,
+        force,
+        where=(force < 0),
+        color="#4488FF",
+        alpha=0.3,
+        label="← Left Force Vector (−)",
+    )
+    ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
+
+    for wc in wave_centers:
+        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
+        ax3.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
+
+    ax3.axhline(y=0, color="w", linestyle="--", alpha=0.3)
+    ax3.set_xlim(x_am.min(), x_am.max())
+    ax3.set_xlabel("X (am)", family="Monospace")
+    ax3.set_ylabel("Force (qg·am/rs²)", family="Monospace", fontsize=9)
+    ax3.legend(loc="upper right", fontsize=9)
+    ax3.grid(True, alpha=0.2)
+
+    # Time display
+    time_text = ax1.text(
+        0.02,
+        0.95,
+        "",
+        transform=ax1.transAxes,
+        fontsize=10,
+        family="Monospace",
+        verticalalignment="top",
+    )
+
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.93, hspace=0.25)
+
+    def update_plot(frame):
+        """Update displacement for given frame."""
+        t_rs = (frame / ANIMATION_FRAMES) * period_rs
+        psi = compute_displacement(x_am, t_rs)
+        line_psi.set_data(x_am, psi)
+
+        pause_str = " [PAUSED]" if state["paused"] else ""
+        time_text.set_text(f"t = {t_rs:.4f} rs  (frame {frame}/{ANIMATION_FRAMES}){pause_str}")
+        return (line_psi, time_text)
+
+    def init():
+        return update_plot(state["frame"])
+
+    def animate(frame):
+        if state["paused"]:
+            return update_plot(state["frame"])
+        state["frame"] = frame
+        return update_plot(frame)
+
+    def on_key(event):
+        if event.key == " ":
+            state["paused"] = not state["paused"]
+            update_plot(state["frame"])
+            fig.canvas.draw_idle()
+        elif event.key == "right" and state["paused"]:
+            state["frame"] = (state["frame"] + 1) % ANIMATION_FRAMES
+            update_plot(state["frame"])
+            fig.canvas.draw_idle()
+        elif event.key == "left" and state["paused"]:
+            state["frame"] = (state["frame"] - 1) % ANIMATION_FRAMES
+            update_plot(state["frame"])
+            fig.canvas.draw_idle()
+
+    fig.canvas.mpl_connect("key_press_event", on_key)
+
+    anim = FuncAnimation(
+        fig,
+        animate,
+        init_func=init,
+        frames=ANIMATION_FRAMES,
+        interval=ANIMATION_INTERVAL,
+        blit=True,
+    )
+
+    return anim
+
+
+if __name__ == "__main__":
+    anim = plot_sandbox()
+    plt.show()
