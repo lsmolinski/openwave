@@ -60,6 +60,7 @@
   - [Photons](#electromagnetic-wave-packets-photons)
   - [Thermal Energy Hypothesis](#thermal-energy-as-wave-dynamics-hypothesis)
   - [Spin and Magnetic/Thermal Phenomena](#spin-as-the-key-to-magnetic-and-thermal-phenomena)
+  - [Time Dynamics](#time-dynamics-future-research--post-force-unification)
 - [Broader Impact](#broader-impact)
 
 ## Goal
@@ -76,6 +77,7 @@ Everything emerges from disturbances in this wave field:
 - **Forces**: energy gradients created by wave interference between wave centers. These gradients generate all known forces — electric, magnetic, gravitational — and hold matter together at every scale
 - **Photons**: traveling wave packets — disturbances propagating through the medium. Unlike static force fields, photons are discrete packets of energy that travel through space and can apply force on distant particles upon absorption
 - **Heat**: disturbances in standing wave form — thermal energy may be encoded in the amplitude or frequency modulation of standing waves within particle structure, rather than in bulk kinetic motion (see Thermal Energy Hypothesis below)
+- **Time**: not a fundamental dimension but an emergent property — the local rate of change determined by wave frequency (f = c/λ). Where λ is shorter, things change faster; where λ is longer, things change slower. Time dilation near massive bodies emerges from λ modulation by wave centers (see Time Dynamics below)
 
 **Simulation model**: The medium is modeled as a particle-based fluid simulation where:
 
@@ -608,14 +610,29 @@ The phasor can be extended to track standing and traveling components independen
 - [ ] Determine which component (or combination) produces the correct force law
 - [ ] Test if the standing wave component alone gives the electric force
 
-### Phase 5: Multi-Particle Validation
+### Phase 5: Multi-Particle Validation and Gravitational Force
 
-Scale up to test gravitational shading:
+Scale up to test gravitational shading and distinguish between two candidate gravity mechanisms:
+
+**Two competing gravity models:**
+
+1. **Shading / directional attenuation**: Wave centers absorb part of the in-wave energy and re-emit an attenuated out-wave (energy lost to magnetic/transverse wave conversion). The out-wave toward another particle is weaker than the out-wave in other directions → directional energy deficit → gravitational attraction. **Problem**: This requires attenuating the wave only in the direction of another particle while keeping all other directions unchanged — this is inherently directional and likely **requires m4 vector displacement** to implement, since scalar m3 has no concept of wave direction per voxel
+
+2. **Buoyancy / medium density (Smoliński)**: The electrical wave equation itself does not change. Instead, wave centers modify the local medium density/pressure (via λ modulation → granule velocity → pressure). Gravity emerges from the energy calculation E = ρV(fA)² where **ρ and f become local variables** rather than constants. **Advantage for m3**: the wave equation stays the same, only the post-hoc energy and force calculation changes. This can be tested in the 1D sandbox by making ρ or f position-dependent
+
+**Implications for 1D sandbox development:**
+
+- For Phases 1-3 (electric force): ρ and f are constant everywhere — no changes needed
+- For Phase 5 (gravity): add option to make ρ(x) and/or f(x) position-dependent, computed from the wave field itself (e.g., ρ depends on local amplitude or λ)
+- This is a small extension to the energy calculation, not a wave equation rewrite
+
+**Tests:**
 
 - [ ] Cluster of same-charge particles: does the combined wave field show reduced amplitude behind the cluster (shading)?
 - [ ] Two clusters separated by distance: does a net force emerge between them?
 - [ ] Compare cluster-cluster force against single-particle-pair force — is there a residual (gravitational) component?
 - [ ] Implement Smoliński's push-out/buoyancy mechanism: model gravity as a pressure deficit where solitons displace medium density, rather than pure wave attenuation
+- [ ] Test buoyancy model in 1D sandbox: make ρ(x) = f(local wave field) and check if gravitational-scale force emerges from the modified energy equation
 - [ ] Test density hierarchy scaling: does the 10⁻⁴² EM-to-gravitational force ratio emerge from the lattice geometry?
 - [ ] Validate computed G against Smoliński's Scilab verification values (see references/MagnetismGravity.pdf)
 
@@ -890,6 +907,83 @@ The same fundamental wave field and medium that supports standing waves (particl
 **Connection to OpenWave**: The vortex model suggests that our standing wave structure near the wave center may actually be a cross-section of a vortex flow pattern. The "standing wave" appearance could arise from the stable circulation pattern of the vortex, where the interference of in-waves and out-waves creates the stationary nodes we observe. In the m4 vector wave method, this vortex circulation should manifest as the toroidal component of the elliptical displacement trajectories.
 
 This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the Yee & Hauger and WKB research already planned for Phase 3.
+
+### Time Dynamics (Future Research — Post Force Unification)
+
+**Core thesis**: Time is not a fundamental dimension — it emerges from the rate of change in the medium. What we perceive as time is the frequency of subatomic wave oscillations at each point in space.
+
+#### Psychological Time vs Real Time
+
+- **Psychological time**: The linear, one-directional experience of time created by memory (past) and imagination (future). This is a perception effect of our minds — past and future don't physically exist, they are records and projections
+- **Real time**: Things are just happening. The only reality is the present state. What exists is **change** — change of position, velocity, rotation, wave state. Every form of energy resolves to movement: chemical "potential" energy is standing waves (stationary motion), spin stores energy as rotational motion, thermal energy is wave dynamics. All energy is fundamentally kinetic — it's all movement
+
+#### Time = Rate of Change = f = c/λ
+
+Since c is absolute (constant everywhere), the rate of change at any point is determined by **λ** (wavelength):
+
+- Time is a **local variable per grid point**, not a frame of reference
+- λ is disturbed by wave centers → λ depends on distance to WC (r) and WC speed (Doppler/Lorentz contraction)
+- Changes happen faster where λ is shorter (higher frequency) and slower where λ is longer
+- At human scale, we experience an averaged-out rate of change, so time feels constant — like a dimension
+- **Time can be bent** because it's a function of medium state, not a fixed reference. Einstein proved this with relativity — high speed creates time dilation. The question is: time is a function of what? Our proposal: **time = λ**, and λ = f(r, v, interference)
+
+#### Key Finding: Energy Starvation and Time Dilation
+
+When destructive interference pushes amplitude too low at a point, **energy conservation forces frequency up** to maintain wave steepness (amplitude × frequency must conserve energy). This frequency increase IS time dilation — the local rate of change speeds up. When frequency returns to normal, it may draw/convert energy from surrounding forms.
+
+This connects amplitude, frequency, wavelength, and energy conservation into a single dynamic:
+
+```text
+Wave steepness conservation: A · f = constant (locally)
+When A drops (destructive interference) → f increases → λ decreases → time speeds up
+When A rises (constructive interference) → f decreases → λ increases → time slows down
+```
+
+#### Implications for Simulation
+
+- Simulation will not be based on uniform timesteps — `dt` and `elapsed_t` will vary by voxel
+- λ becomes a scalar field per voxel, from which local `dt` is computed
+- Force and motion calculations change: energy depends on λ, motion integration uses local dt (acceleration → velocity → position)
+- Requires m4 vector method: λ at each grid point depends on vector direction from multiple WCs
+- This is a big architectural change — to be implemented after force unification is validated
+
+#### Connection to Spin and Force Control
+
+Particle spin may be the "remote control" for time dynamics:
+
+- Spin modulates local frequency → controls local rate of change
+- Frequency modulation of subatomic waves = time dynamics
+- If we can promote controlled changes in λ (via interference, pulsing, or spin manipulation), this could redirect energy gradients and control force direction
+
+#### Practical Applications (Speculative)
+
+If force direction can be controlled by engineering energy density gradients via time dynamics:
+
+- **Transportation**: redirect gravitational force around objects (land, sea, air, space)
+- **Electricity generation**: alternate force direction to produce AC current
+- **Energy conversion**: the energy for these effects likely comes from thermal energy — the object would cool down as standing wave energy converts to directed force (connecting to thermal wave hypothesis)
+
+This is not "free energy from vacuum" — the pressure differential that creates force drains energy from the environment (most likely thermal). When an object accelerates from shifted energy density, the shifted energy becomes kinetic, drawing from surrounding thermal energy. Everything is linked: time dynamics ↔ variable λ ↔ thermal energy ↔ force control.
+
+#### Why This Matters: Every Energy Equation Has Time In It
+
+Every equation of energy contains a time variable. If time itself is a function of medium state (λ), then understanding that function opens doors to new technology everywhere — not just physics, but chemistry, biology, materials, and engineering. Controlling λ means controlling the rate at which energy transforms, reactions proceed, and forces act.
+
+The chain is simple: `λ → f → rate of change → time`
+
+The energy starvation mechanism is the most novel insight: destructive interference drops amplitude → energy conservation forces frequency up → that IS time dilation, emerging from wave mechanics rather than imposed by relativity.
+
+The connection to practical applications through thermal energy drain is what makes this not perpetual motion — you're redirecting energy gradients, not creating energy. The object cools down because thermal (standing wave) energy converts to directed kinetic force. Everything stays conserved.
+
+#### Connection to Medium Pressure and Gravity
+
+Changing λ/frequency changes the rate at which granules cycle through their elliptical motion — meaning different granule velocities. In wave mechanics and particle-fluid simulations (e.g., sound waves), granule velocity is directly related to **localized medium pressure**. Faster cycling = higher pressure, slower cycling = lower pressure.
+
+This creates a direct link to Smoliński's gravitational push-out/buoyancy model: if wave centers alter λ in their vicinity (time dilation near mass), they change the local granule velocity, which changes the local medium pressure/density. The pressure deficit around a massive body IS the gravitational field — and it emerges from λ modulation, not from a separate gravitational mechanism. Gravity, time dilation, and medium pressure become three descriptions of the same underlying phenomenon: **local λ variation**.
+
+**#hackingenergy** — by understanding how time works and its relationship to energy, we can hack energy itself.
+
+**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces in the 1D sandbox, then this becomes accessible. Supported by Yee & Hauger variable-λ paper and the non-linear wave equation research planned for Phase 3.
 
 ## Broader Impact
 
