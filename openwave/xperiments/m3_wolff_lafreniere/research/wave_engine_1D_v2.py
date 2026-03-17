@@ -373,10 +373,14 @@ def plot_sandbox():
 
     # --- Coulomb reference text (bottom of force panel) ---
     coulomb_text = ax3.text(
-        0.5, 0.02, "",
+        0.5,
+        0.02,
+        "",
         transform=ax3.transAxes,
-        fontsize=9, family="Monospace",
-        ha="center", va="bottom",
+        fontsize=9,
+        family="Monospace",
+        ha="center",
+        va="bottom",
         color="#FFCC00",
         visible=False,
         bbox=dict(facecolor="#222222", edgecolor="#FFCC00", boxstyle="round,pad=0.3", alpha=0.7),
@@ -411,7 +415,7 @@ def plot_sandbox():
         sep_min,
         sep_max,
         valinit=sep_init,
-        valstep=0.25,
+        valstep=0.50,
         color=colormap.viridis_palette[3][1],
     )
 
@@ -604,17 +608,25 @@ def plot_sandbox():
             # Coulomb reference: F = ke · q1·q2 / r²
             ke = constants.COULOMB_CONSTANT  # N·m²/C²
             qe = constants.ELEMENTARY_CHARGE  # C
-            sep_m = abs(wave_centers[i_right].x_am - wave_centers[i_left].x_am) * constants.ATTOMETER
+            sep_m = (
+                abs(wave_centers[i_right].x_am - wave_centers[i_left].x_am) * constants.ATTOMETER
+            )
             if sep_m > 0:
-                opposite_phase = abs(wave_centers[i_left].phase - wave_centers[i_right].phase) > 1.0
-                charge_product = -qe**2 if opposite_phase else qe**2
+                opposite_phase = (
+                    abs(wave_centers[i_left].phase - wave_centers[i_right].phase) > 1.0
+                )
+                charge_product = -(qe**2) if opposite_phase else qe**2
                 coulomb_f = ke * charge_product / sep_m**2  # Newtons (signed)
                 sep_lam = sep_m / constants.EWAVE_LENGTH
-                wave_f_signed = f_left if f_left is not None else 0.0  # left WC force (+ = right, - = left)
+                wave_f_signed = (
+                    f_left if f_left is not None else 0.0
+                )  # left WC force (+ = right, - = left)
                 # Check if wave force direction matches Coulomb prediction
                 # Coulomb negative = attraction (forces point inward), positive = repulsion (outward)
                 # For left WC: attraction means force points right (+), repulsion means left (-)
-                coulomb_direction_for_left = -coulomb_f  # flip: coulomb negative(attract) → left WC goes right(+)
+                coulomb_direction_for_left = (
+                    -coulomb_f
+                )  # flip: coulomb negative(attract) → left WC goes right(+)
                 signs_match = (wave_f_signed * coulomb_direction_for_left) > 0
 
                 if signs_match:
