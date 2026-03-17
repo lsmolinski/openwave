@@ -19,6 +19,13 @@
   - [Standing Waves Modify the Medium](#standing-waves-modify-the-medium)
   - [Fields Contain Energy (Mass)](#fields-contain-energy-mass)
   - [Maxwell's Equations — LaFreniere's Reinterpretation](#maxwells-equations--lafrenieres-reinterpretation)
+- [Smoliński's Contributions](#smolińskis-contributions-bcc-lattice-geometric-framework)
+  - [Gravity as Push-Out / Buoyancy](#gravity-as-push-out--buoyancy)
+  - [Density Hierarchy](#density-hierarchy)
+  - [The Degraded EMC Wall](#the-degraded-emc-wall)
+  - [Vacuum Stiffness Modulator](#vacuum-stiffness-modulator-ϵ_m)
+  - [Soliton Geometry: Two Domains and Toroidal Flows](#soliton-geometry-two-domains-and-toroidal-flows)
+  - [Numerical Validation Tools](#numerical-validation-tools)
 - [Current Implementation Status](#current-implementation-status)
   - [Wave Equations Explored](#wave-equations-explored-wave_enginepy)
   - [Phasor Superposition (Analytical Amplitude)](#phasor-superposition-analytical-amplitude)
@@ -61,12 +68,21 @@ Provide numerical evidence that all fundamental forces (electric, magnetic, grav
 
 ## Conceptual Overview
 
-Spacetime is a fluid medium vibrating in harmonic oscillations, at extremely high frequencies. Everything emerges from disturbances in this wave field:
+Spacetime is an elastic fluid structure, vibrating in harmonic oscillations at extremely high frequencies (~10²⁵ Hz), that allows energy to transfer from one point to the next, forming an **energy field**. Through this fluid, waves travel in all directions and get reflected by wave centers that create disturbances. Those energy waves can become **standing** (forming matter) or remain **traveling** (transmitting all forces).
+
+Everything emerges from disturbances in this wave field:
 
 - **Particles (wave centers)**: localized disturbances that reflect and re-emit waves, changing the wave character and shifting energy spatially. The standing wave structure near a wave center IS the particle
 - **Forces**: energy gradients created by wave interference between wave centers. These gradients generate all known forces — electric, magnetic, gravitational — and hold matter together at every scale
 - **Photons**: traveling wave packets — disturbances propagating through the medium. Unlike static force fields, photons are discrete packets of energy that travel through space and can apply force on distant particles upon absorption
 - **Heat**: disturbances in standing wave form — thermal energy may be encoded in the amplitude or frequency modulation of standing waves within particle structure, rather than in bulk kinetic motion (see Thermal Energy Hypothesis below)
+
+**Simulation model**: The medium is modeled as a particle-based fluid simulation where:
+
+- **Granules** = discretized fluid particles representing the medium
+- **Granule motion** around equilibrium traces a circle (or ellipse under multi-source interference)
+- **Vector displacement** captures both position and velocity of each granule
+- **Cycle period** is related to wavelength — this is the source of time itself (time = rate of change in the medium)
 
 All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is to **numerically validate** them through computational analysis and rendered simulations — starting with force emergence from wave interference, then extending to matter formation, photon emission, and thermal dynamics.
 
@@ -119,7 +135,7 @@ The theory proposes that all forces are manifestations of the same wave interfer
 
 2. **Magnetic force** (transverse): When longitudinal energy waves hit a spinning wave center, the energy required for spin is converted into a transverse wave component (90° to longitudinal). This reduces the longitudinal (electric) wave energy. Magnetic force emerges from the transverse wave interference
 
-3. **Gravitational force** (shading): When many wave centers cluster together (large bodies), they collectively absorb/scatter incoming energy waves. The region behind the body has reduced wave amplitude — a "shadow". Another body in this shadow region experiences a net force toward the first body because the energy density gradient points inward. Gravity is a residual effect of large-scale electric wave shading
+3. **Gravitational force** (shading / push-out): When many wave centers cluster together (large bodies), they collectively absorb/scatter incoming energy waves. The region behind the body has reduced wave amplitude — a "shadow". Another body in this shadow region experiences a net force toward the first body because the energy density gradient points inward. Gravity is a residual effect of large-scale electric wave shading. An alternative but compatible formulation (Smoliński) treats gravity as a **pressure deficit (buoyancy)** in the medium: solitons (particles) displace medium density from their interior, creating a push-out effect. The 10⁻⁴² electromagnetic-to-gravitational force ratio emerges geometrically from a density hierarchy in the lattice packing (see Smoliński's Contributions below)
 
 ## LaFreniere's Force Mechanisms (from sa_mechanics, sa_fields, sa_magnetic)
 
@@ -200,6 +216,97 @@ A controversial but relevant claim:
 - They can induce electric and magnetic fields when interacting with matter
 - Maxwell's equations describe field behavior around material devices (antennas, conductors), not wave propagation in vacuum
 - Fields cannot exist far from matter in vacuum — only traveling waves persist
+
+## Smoliński's Contributions (BCC Lattice Geometric Framework)
+
+Source: "The Geometric Identity of Gravity and Dimensional Unification" (Smoliński, 2026) — see `references/MagnetismGravity.pdf` and [GitHub](https://github.com/lsmolinski/MagnetismGravity).
+
+Łukasz Smoliński has developed a zero-parameter extension of EWT where all physical constants are derived from π, e, Planck constants, and the fundamental geometry of a Body-Centered Cubic (BCC) lattice. While primarily a theoretical derivation framework (not a simulation engine), several concepts are directly relevant to OpenWave's force unification goals:
+
+### Gravity as Push-Out / Buoyancy
+
+Instead of gravity arising from wave attenuation (shading), Smoliński models it as a **structural push-out force**:
+
+- Solitons (particles) displace medium density from their interior
+- This creates a pressure deficit — a buoyancy effect within the high-density medium
+- Gravity is the mechanical consequence of this density displacement, not a "message" between particles but a permanent structural "tilt" in the lattice geometry
+- This is compatible with the wave shading model but provides a more concrete mechanism
+
+### Density Hierarchy
+
+The transition from electromagnetic to gravitational force scales is governed by hierarchical density dilution in the lattice:
+
+- **Max Packing** (N_max = 10⁵⁴): Pure geometric capacity of the BCC lattice
+- **Statutory Density** (N_stat = 10⁵²): Standard vacuum density
+- **Effective Density** (N_eff = 10⁴⁸): Matter-occupied regions after push-out
+
+The 10⁻⁴² electromagnetic-to-gravitational force ratio emerges geometrically from the packing impedance of the BCC lattice, not as an arbitrary constant. This could provide calibration targets for our gravitational force simulations.
+
+### The Degraded EMC Wall
+
+A structural interface that ensures the **isotropy of gravity** despite the discrete lattice structure:
+
+- The BCC lattice is inherently anisotropic (discrete directions)
+- The Degraded EMC Wall acts as a boundary that smooths out directional artifacts
+- This allows the discrete lattice to produce a perfectly spherical 1/r² pressure gradient
+- Directly relevant to our 1/r² force law challenge: explains how oscillatory wave structure averages out to smooth macroscopic force
+
+### Vacuum Stiffness Modulator (ϵ_M)
+
+A single geometric parameter that governs multiple physical constants:
+
+- Fine-structure constant (α)
+- Gravitational constant (G)
+- Lepton anomalous magnetic moments
+- Smoliński derives all of these from ϵ_M without free parameters
+
+### Soliton Geometry: Two Domains and Toroidal Flows
+
+Smoliński identifies two distinct physical domains operating within a soliton (particle):
+
+- **Energy Domain (ρ_E)**: The internal "engine" of the particle — dynamic wave-flows governed by **r⁵ scaling** and **non-linear toroidal geometry**. This is where spin and magnetic moments are generated. The flows are asymmetric and toroidal (doughnut-shaped circulation)
+- **EMC Domain (ρ(r))**: The structural displacement of the medium constituents themselves — governed by **r³ scaling**, spherical and isotropic. This is where gravity emerges as a push-out force
+
+The **Principle of Geometric Masking** describes how the internal toroidal asymmetry is hidden behind the spherical EMC boundary: the Degraded EMC Wall acts as a geometric low-pass filter, smoothing the asymmetric internal dynamics into isotropic external gravity.
+
+**Relevance to OpenWave:**
+
+1. **Non-linear wave equations**: The "non-linear toroidal flows" directly imply that the wave equation inside the soliton is non-linear — wavelength and/or amplitude change with distance from center. This aligns with the variable-λ(r) research already documented in our phasor superposition work (Yee & Hauger model, WKB phase integral). The r⁵ energy scaling inside the soliton suggests a specific non-linear relationship that could inform our wave equations near the core
+
+2. **Toroidal standing wave geometry**: The toroidal (doughnut) shape suggests that the standing wave structure of a particle is not purely spherical concentric shells, but has a toroidal circulation pattern. This is consistent with:
+   - Magnetic moment arising from circulating wave flow (toroidal current → magnetic dipole)
+   - Spin as a real physical rotation of wave energy in a toroidal path
+   - The elliptical displacement trajectories observed in m4's vector wave phasor — the ellipse major/minor axes could be cross-sections of a toroidal flow
+
+3. **Two-domain force separation**: The Energy Domain (internal, toroidal, r⁵) vs EMC Domain (external, spherical, r³) maps to our near-field vs far-field force regimes:
+   - Near-field (standing wave lock-in) ↔ Energy Domain (non-linear, toroidal dynamics)
+   - Far-field (electrostatic Coulomb) ↔ EMC Domain (isotropic, spherical 1/r²)
+   - The transition between them (our `weight` function boundary) may correspond to the Degraded EMC Wall
+
+4. **Particle topology**: Smoliński classifies particles by winding number on different topological surfaces:
+   - Electron: sphere topology (S²), winding number K_wc = 10
+   - Muon/Tau: toroidal topology (T²), higher genus
+   - This suggests particle identity is determined by the topology of standing wave structure, not just amplitude/frequency — a fundamentally geometric classification
+
+5. **Connection to OpenWave's m3 vs m4 methods**: The scalar m3 method can model the spherical EMC Domain (external gravity, electric force). But the toroidal Energy Domain — where spin, magnetism, and non-linear dynamics live — likely requires the vector m4 method to capture the toroidal flow geometry. This reinforces the strategy: scalar m3 for electric/gravitational forces first, vector m4 for magnetic/spin phenomena later
+
+### Numerical Validation Tools
+
+The GitHub repository includes Scilab scripts for verifying derived constants:
+
+- `EWT_G_AMM_check.sc` — Gravitational constant derivation verification
+- `EWT_VS_SM.sc` — Comparative analysis between EWT and Standard Model predictions
+- `kaon_pion_tests.sc` — Strong force behavior at specific distances
+- These can serve as reference validation targets for OpenWave simulations
+
+### Relevance to OpenWave Phases
+
+| OpenWave Phase | Smoliński Contribution |
+| -------------- | --------------------- |
+| Phase 3 (Force mechanism) | ϵ_M as structural modulator — force ratios from geometry |
+| Phase 5 (Gravity) | Push-out mechanism, density hierarchy, Degraded EMC Wall |
+| 1/r² problem | Degraded EMC Wall — discrete → isotropic transition |
+| Future (matter formation) | Solitons as topological objects with winding numbers |
 
 ## Current Implementation Status
 
@@ -391,6 +498,8 @@ For Coulomb's law (F ∝ 1/r²), we need either:
 
 This is one of the critical open problems.
 
+**Possible insight from Smoliński**: His "Degraded EMC Wall" concept proposes a structural interface in the lattice that allows the discrete BCC structure to manifest as a perfectly smooth, spherical 1/r² pressure gradient. This addresses exactly how a structured medium (with oscillatory wave nodes) produces an isotropic force that is uniform in all directions. If applicable to our simulator, it could explain how the sinc oscillation in the phasor RMS averages out to smooth 1/r² at macroscopic scales.
+
 ### 5. Previous Envelope Attempts (wave_engine.py)
 
 Multiple envelope models were tried and archived as commented blocks:
@@ -488,7 +597,7 @@ Test which wave equation form produces the correct force behavior:
 - [ ] Compare against Coulomb's law: F = ke·q₁q₂/r²
 - [ ] Identify which equation (if any) produces the correct scaling
 - [ ] Investigate whether standing wave nodes play a role (does the force depend on whether particles sit at nodes or antinodes?)
-- [ ] Test non-linear wave equations where wavelength λ(r) varies with distance from wave center — the Yee & Hauger model predicts discrete wavelength shells: r_n = 2(K-n)λ, which changes the interference pattern and may correct the force scaling (see phasor_superposition.md, WKB/eikonal phase integral approach)
+- [ ] Test non-linear wave equations where wavelength λ(r) varies with distance from wave center — the Yee & Hauger model predicts discrete wavelength shells: r_n = 2(K-n)λ, which changes the interference pattern and may correct the force scaling (see phasor_superposition.md, WKB/eikonal phase integral approach). Smoliński's r⁵ energy scaling inside the soliton's Energy Domain provides a specific non-linear relationship to test — this could define how λ(r) varies near the wave center core
 
 ### Phase 4: Separate Standing and Traveling Contributions
 
@@ -506,6 +615,9 @@ Scale up to test gravitational shading:
 - [ ] Cluster of same-charge particles: does the combined wave field show reduced amplitude behind the cluster (shading)?
 - [ ] Two clusters separated by distance: does a net force emerge between them?
 - [ ] Compare cluster-cluster force against single-particle-pair force — is there a residual (gravitational) component?
+- [ ] Implement Smoliński's push-out/buoyancy mechanism: model gravity as a pressure deficit where solitons displace medium density, rather than pure wave attenuation
+- [ ] Test density hierarchy scaling: does the 10⁻⁴² EM-to-gravitational force ratio emerge from the lattice geometry?
+- [ ] Validate computed G against Smoliński's Scilab verification values (see references/MagnetismGravity.pdf)
 
 ---
 
@@ -760,7 +872,24 @@ The same fundamental wave field and medium that supports standing waves (particl
 - **Thermal energy from spin**: If thermal energy is wave-based (standing wave dynamics within the particle), then spin modulation — changes in spin rate or precession — could be the mechanism by which thermal energy is stored and transferred. Higher temperature = higher spin modulation = more energetic transverse wave emission
 - **The connection**: Both magnetic fields and thermal energy may emerge from the same physical process (spin), manifesting differently depending on whether the spin is coherent (magnetic: aligned spins produce net transverse wave field) or incoherent (thermal: random spin axes produce isotropic energy distribution)
 
-This research direction requires the m4 vector wave method, as spin and transverse waves cannot be represented in the scalar m3 framework.
+**Toroidal flow geometry (Smoliński)**: The spin/magnetic/thermal connection gains a concrete geometric picture from Smoliński's soliton model. The internal "engine" of a particle operates in the Energy Domain where wave energy circulates in **toroidal (doughnut-shaped) flows** governed by non-linear r⁵ scaling. This toroidal circulation is the physical mechanism behind spin:
+
+- **Spin** = toroidal wave flow around the particle core, not an abstract quantum number
+- **Magnetic moment** = natural dipole field from the circulating toroidal current (exactly as a current loop produces a magnetic field in classical EM)
+- **Thermal energy** = modulation of the toroidal flow rate/precession — higher temperature means more energetic toroidal circulation
+- **The m4 elliptical trajectories** observed in phasor analysis may be cross-sections of these toroidal flows — the ellipse semi-major axis captures the longitudinal (electric) component, the semi-minor axis captures the transverse circulation (magnetic/thermal)
+
+**Vortex model of the electron (Butto, 2021)**: The toroidal flow picture gains further support from Butto's vortex theory (see `references/A New Theory for the Essence and Origin of Electron Spin.pdf`), which models the electron as a **superfluid irrotational vortex** in the vacuum medium. Key insights for OpenWave:
+
+- **Spin as differential rotation**: The vortex core rotates at twice the rate of the vortex boundary. The 1/2 spin quantum number is literally the ratio between core and boundary rotation rates — not an abstract quantum number but a measurable gap in rotational velocity. The core completes 720° while the boundary completes 360°
+- **Planck constant = vortex angular momentum**: The circulation Γ = 2πrc is conserved in an irrotational vortex. Multiplied by the electron mass: Γ·m_e = 2πr_e·c·m_e = h (Planck's constant). This connects the fundamental quantum of action to the physical circulation of the vortex
+- **Magnetic moment without g-factor**: The vortex model derives the electron magnetic moment directly from the circulating charge current μ = qcr, without needing the anomalous g-factor correction. The ratio μ/L = q/m_e emerges naturally from vortex hydrodynamics
+- **Helmholtz vortex theorems apply**: (1) vortex strength is constant along its length, (2) a vortex filament cannot end in the fluid — it must form a closed loop or extend to boundaries, (3) an irrotational fluid stays irrotational. These constrain the topology of possible particle structures — closed vortex loops = toroidal geometry
+- **Streamline curvature from differential rotation**: The curved streamlines of the vortex arise from the velocity differential between core and boundary — the faster-spinning core "drags" the surrounding medium, creating spiral arms. This is the physical origin of the wave pattern near the particle center
+
+**Connection to OpenWave**: The vortex model suggests that our standing wave structure near the wave center may actually be a cross-section of a vortex flow pattern. The "standing wave" appearance could arise from the stable circulation pattern of the vortex, where the interference of in-waves and out-waves creates the stationary nodes we observe. In the m4 vector wave method, this vortex circulation should manifest as the toroidal component of the elliptical displacement trajectories.
+
+This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the Yee & Hauger and WKB research already planned for Phase 3.
 
 ## Broader Impact
 
