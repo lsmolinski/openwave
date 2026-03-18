@@ -1,6 +1,6 @@
 # PLAN: Force Unification from Wave Interference
 
-## Goal
+## GOALS
 
 PRIMARY (EMERGENT FORCES)
 
@@ -10,11 +10,11 @@ SECONDARY (EMERGENT WAVES)
 
 - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
 
-## Attack Plan
+## ROADMAP
 
-- ✅ [Build 1D wave engine (sandbox for rapid testing)](#build-1d-wave-engine-sandbox-for-rapid-testing)
+- ✅ [Build 1D wave engine (sandbox for rapid testing)](#-build-1d-wave-engine-sandbox-for-rapid-testing)
 - [ ] Research wave equations that satisfy force unification
-- [ ] [Build Physics invariant tests](#physics-invariant-tests)
+- [ ] [Build Physics invariant tests](#--physics-invariant-tests)
 - [ ] Implement final equations on M3 Scalar Waves
 - [ ] Build M4 Vector Waves
 - [ ] Build Magnetic force simulation
@@ -22,7 +22,7 @@ SECONDARY (EMERGENT WAVES)
 
 ---
 
-## Build 1D wave engine (sandbox for rapid testing)
+## ✅ Build 1D wave engine (sandbox for rapid testing)
 
 The full 3D Taichi simulator (m3) is powerful but slow to iterate on — each equation change requires running the GPU kernel, waiting for convergence, and visually inspecting 3D fields. A lightweight **1D wave engine** using matplotlib would dramatically accelerate equation development.
 
@@ -61,7 +61,7 @@ The full 3D Taichi simulator (m3) is powerful but slow to iterate on — each eq
 
 **Location**: `openwave/xperiments/m3_wolff_lafreniere/research/wave_engine_1D_v2.py`, inspired by the similar scrip v1, and old 1D wave engine test. Lets reuse variable naming, layout conventions and some other standards as a template, but start the equations logic from scratch, there is lot to be optimized.
 
-## Decision: Weighted Partial Standing Wave as Primary Equation
+## ✅ Decision: Weighted Partial Standing Wave as Primary Equation
 
 Based on the analysis above, the **weighted partial standing wave** is selected as the primary wave equation for force unification research. The other four forms (Wolff-original, LaFreniere-Marcotte original, phase-warped Marcotte, combined Wolff-LaFreniere) remain in the code as commented reference implementations for comparison testing.
 
@@ -86,7 +86,7 @@ The other wave equations have limitations for reproducing these patterns:
 - **LaFreniere-Marcotte original**: transition is inherent, not sharp enough — standing character persists too far
 - **Phase-warped Marcotte**: single traveling wave with core correction — no true standing wave nodes near center
 
-## Physics invariant tests
+## [ ] Physics invariant tests
 
 Alongside the 1D engine, build a pytest test suite that validates each wave equation form against known physical properties before any formula changes are deployed to the 3D engine:
 
