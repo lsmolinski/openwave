@@ -18,8 +18,8 @@
 - ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
 - ✅ Coulomb reference comparison in sandbox
 - ✅ Decision: weighted partial standing wave as primary equation
-- [ ] Build physics invariant tests (pytest, boundary limits, energy conservation)
-- [ ] Validate phasor RMS: single WC sinc envelope, same/opposite charge interference, EMA-RMS equivalence
+- ✅ Build physics invariant tests (pytest, boundary limits, energy conservation)
+- ✅ Validate phasor RMS: single WC sinc envelope, same/opposite charge interference, EMA-RMS equivalence
 
 ### [Phase 1: Electric Force — Far-Field (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
