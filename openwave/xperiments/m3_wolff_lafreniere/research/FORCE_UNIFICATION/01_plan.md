@@ -12,13 +12,77 @@ SECONDARY (EMERGENT WAVES)
 
 ## ROADMAP
 
-- ✅ [Build 1D wave engine (sandbox for rapid testing)](#-build-1d-wave-engine-sandbox-for-rapid-testing)
-- [ ] Research wave equations that satisfy force unification
-- [ ] [Build Physics invariant tests](#--physics-invariant-tests)
-- [ ] Implement final equations on M3 Scalar Waves
-- [ ] Build M4 Vector Waves
-- [ ] Build Magnetic force simulation
-- [ ] Develop Time Dynamics (M4 or new method)
+### Phase 0: Tooling
+
+- ✅ Build 1D wave sandbox (matplotlib, interactive controls)
+- ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
+- ✅ Coulomb reference comparison in sandbox
+- ✅ Decision: weighted partial standing wave as primary equation
+- [ ] Build physics invariant tests (pytest, boundary limits, energy conservation)
+- [ ] Validate phasor RMS: single WC sinc envelope, same/opposite charge interference, EMA-RMS equivalence
+
+### Phase 1: Electric Force — Far-Field (1D Sandbox only)
+
+- [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
+- [ ] Test energy gradient ∇E directly vs amplitude gradient A·∇A
+- [ ] Test gradient sampling radius (1 grid vs 1λ vs 2λ window)
+- [ ] Test pressure/velocity gradient (90° phase-shifted from displacement)
+- [ ] Test standing vs traveling wave decomposition (force from each component separately)
+- [ ] Investigate multi-variable energy gradient: ∇A + ∇f + ∇ρ contributions
+- [ ] Validate 1/r² force scaling (Coulomb law match)
+- [ ] Validate force direction: opposite charges attract, same charges repel (consistently)
+- [ ] Parameter sweep: force vs separation from 2λ to 10λ
+- [ ] Plot energy density landscape along axis at various separations
+
+### Phase 2: Electric Force — Near-Field (1D Sandbox only)
+
+- [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
+- [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
+- [ ] Characterize near-field → far-field transition boundary
+- [ ] Validate dual-treatment: raw phasor (near-field) vs smoothed envelope (far-field)
+
+### Phase 3: Electric Force — 3D Validation (M3 Taichi, port from 1D)
+
+- [ ] Port validated 1D equations to M3 3D wave engine
+- [ ] Reproduce 1D force results in 3D (2 WCs on axis)
+- [ ] Test off-axis configurations (verify spherical symmetry)
+- [ ] Validate force & motion integration (particles move correctly)
+- [ ] Compare against Coulomb force at multiple separations
+
+### Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)
+
+- [ ] Test variable λ(r) (Yee & Hauger discrete wavelength shells)
+- [ ] Test Smoliński r⁵ energy scaling near WC core
+- [ ] Evaluate impact on near-field lock-in and far-field force scaling
+- [ ] Compare 5 wave equation forms under same test configuration
+
+### Phase 5: Gravitational Force (M3, Multi-Particle)
+
+- [ ] Test wave shading with particle clusters
+- [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
+- [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
+- [ ] Validate computed G against Smoliński's Scilab reference values
+
+### Phase 6: Magnetic Force (M4 Vector Waves)
+
+- [ ] Build M4 vector wave engine with transverse displacement
+- [ ] Validate elliptical displacement trajectories (6 phasor numbers)
+- [ ] Model spin as toroidal wave flow
+- [ ] Demonstrate magnetic force from transverse wave interference
+- [ ] Separate longitudinal (electric) and transverse (magnetic) force components
+
+### Phase 7: Time Dynamics (M4 or new method)
+
+- [ ] Implement variable λ per voxel (local dt)
+- [ ] Demonstrate time dilation from energy starvation mechanism
+- [ ] Connect λ modulation → granule velocity → pressure → gravity
+- [ ] Test force control via frequency/spin manipulation
+
+### Phase 8: Emergent Waves
+
+- [ ] Demonstrate photon-like traveling wave packets
+- [ ] Test thermal energy as standing wave dynamics
+- [ ] Validate electromagnetic wave emergence from medium disturbances
 
 ---
 
@@ -86,9 +150,15 @@ The other wave equations have limitations for reproducing these patterns:
 - **LaFreniere-Marcotte original**: transition is inherent, not sharp enough — standing character persists too far
 - **Phase-warped Marcotte**: single traveling wave with core correction — no true standing wave nodes near center
 
-## [ ] Physics invariant tests
+---
 
-Alongside the 1D engine, build a pytest test suite that validates each wave equation form against known physical properties before any formula changes are deployed to the 3D engine:
+## PHASE DETAILS Details
+
+Details for each roadmap phase. Checklist items live in the ROADMAP above — details here provide context only.
+
+### Phase 0: Tooling — Details
+
+**Physics invariant tests** (pytest): validate each wave equation form against known physical properties before deploying to 3D engine:
 
 - Dimensional consistency of all force/field equations
 - Boundary behavior: correct limits at r→0 (center voxel) and r→∞ (far-field decay)
@@ -99,66 +169,65 @@ Alongside the 1D engine, build a pytest test suite that validates each wave equa
 
 The 1D engine is ideal for these tests — fast execution, no GPU overhead, and deterministic results.
 
-## Phase 1: Validate Phasor Amplitude Against Known Solutions
+**Phasor validation** (prerequisite to force work): before chasing force emergence, confirm the phasor gives correct amplitude patterns — single particle sinc envelope, same-charge destructive interference, opposite-charge constructive interference, EMA-RMS equivalence.
 
-Before chasing force emergence, confirm the phasor gives correct amplitude patterns:
+### Phase 1: Electric Force — Far-Field — Details
 
-- [ ] Two same-charge (electron-electron) particles: verify destructive interference pattern between them
-- [ ] Two opposite-charge (electron-positron) particles: verify constructive interference between them
-- [ ] Single particle: verify sinc-like amplitude envelope matches wave equation choice
-- [ ] Compare phasor RMS against EMA-RMS to confirm equivalence (they should match after EMA converges)
+The main blocker is the far-field oscillatory force: the sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances. Force direction flips every λ/2 of separation change, even where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines.
 
-## Phase 2: Analyze Energy Density Gradients
+**Candidate solutions to test** (see 05_1D_wave.md for full analysis):
 
-With confirmed amplitude fields, study the energy density landscape:
+- Energy gradient ∇E directly vs amplitude gradient A·∇A — squaring A² changes oscillation structure
+- Gradient sampling radius — 1 grid unit captures sinc detail a real particle wouldn't feel, try 1λ-2λ windows
+- Pressure/velocity gradient — force may be 90° phase-shifted from displacement, following pressure nodes not displacement nodes
+- Multi-variable energy gradient — E = ρV(fA)² has three variables (A, f, ρ) that can all create spatial gradients independently
+- Standing vs traveling wave decomposition — decompose phasor into standing-only and traveling-only amplitudes, test force from each
+- Compare all 5 wave equation forms under same test configuration
 
-- [ ] Plot E = ρV(fA)² along the axis connecting two particles at various separations
-- [ ] Identify where constructive vs destructive interference occurs relative to particle positions
-- [ ] Verify that the energy gradient (∇E) points in the expected direction (attractive for opposite charges, repulsive for same charges)
-- [ ] Check whether the gradient magnitude follows 1/r² scaling with separation distance
+**Validation targets**: plot E = ρV(fA)² along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
-## Phase 3: Isolate the Force Mechanism
+### Phase 2: Electric Force — Near-Field — Details
 
-Test which wave equation form produces the correct force behavior:
+Near-field has two expected behaviors based on charge phase:
 
-- [ ] Run each of the 5 wave equations with same test configuration (2 electrons, 2 positrons, electron-positron pair)
-- [ ] Measure force magnitude vs separation for each
-- [ ] Compare against Coulomb's law: F = ke·q₁q₂/r²
-- [ ] Identify which equation (if any) produces the correct scaling
-- [ ] Investigate whether standing wave nodes play a role (does the force depend on whether particles sit at nodes or antinodes?)
-- [ ] Test non-linear wave equations where wavelength λ(r) varies with distance from wave center — the Yee & Hauger model predicts discrete wavelength shells: r_n = 2(K-n)λ, which changes the interference pattern and may correct the force scaling (see phasor_superposition.md, WKB/eikonal phase integral approach). Smoliński's r⁵ energy scaling inside the soliton's Energy Domain provides a specific non-linear relationship to test — this could define how λ(r) varies near the wave center core
+- **Same phase (same charge)**: oscillatory lock-in — alternating attraction/repulsion every λ/2 creates stable energy wells where particles are trapped (quarks, orbital shells, bonding)
+- **Opposite phase (opposite charge)**: monotonic attraction — consistent pull toward annihilation at zero separation where waves cancel completely
 
-## Phase 4: Separate Standing and Traveling Contributions
+Currently both configurations show the same oscillatory behavior — the sinc node structure overrides the charge-phase signal. Resolving Phase 1 (far-field) may also resolve this.
 
-The phasor can be extended to track standing and traveling components independently:
+The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) needs implementation and tuning. The weight function transition parameter may serve double duty.
 
-- [ ] Decompose the weighted partial standing wave phasor into standing-only and traveling-only amplitudes
-- [ ] Compute force from each component separately
-- [ ] Determine which component (or combination) produces the correct force law
-- [ ] Test if the standing wave component alone gives the electric force
+### Phase 3: Electric Force — 3D Validation — Details
 
-## Phase 5: Multi-Particle Validation and Gravitational Force
+Port the validated 1D equations and force computation to M3 Taichi 3D engine. Verify that 3D results match 1D on-axis results, then test off-axis configurations for spherical symmetry. Validate force & motion integration — particles should move correctly under computed forces.
 
-Scale up to test gravitational shading and distinguish between two candidate gravity mechanisms:
+### Phase 4: Non-Linear Wave Equations — Details
 
-**Two competing gravity models:**
+Test variable λ(r) from two sources:
 
-1. **Shading / directional attenuation**: Wave centers absorb part of the in-wave energy and re-emit an attenuated out-wave (energy lost to magnetic/transverse wave conversion). The out-wave toward another particle is weaker than the out-wave in other directions → directional energy deficit → gravitational attraction. **Problem**: This requires attenuating the wave only in the direction of another particle while keeping all other directions unchanged — this is inherently directional and likely **requires m4 vector displacement** to implement, since scalar m3 has no concept of wave direction per voxel
+- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — changes interference pattern and may correct force scaling (WKB/eikonal phase integral approach)
+- **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
 
-2. **Buoyancy / medium density (Smoliński)**: The electrical wave equation itself does not change. Instead, wave centers modify the local medium density/pressure (via λ modulation → granule velocity → pressure). Gravity emerges from the energy calculation E = ρV(fA)² where **ρ and f become local variables** rather than constants. **Advantage for m3**: the wave equation stays the same, only the post-hoc energy and force calculation changes. This can be tested in the 1D sandbox by making ρ or f position-dependent
+Evaluate impact on both near-field lock-in stability and far-field force scaling.
 
-**Implications for 1D sandbox development:**
+### Phase 5: Gravitational Force — Details
 
-- For Phases 1-3 (electric force): ρ and f are constant everywhere — no changes needed
-- For Phase 5 (gravity): add option to make ρ(x) and/or f(x) position-dependent, computed from the wave field itself (e.g., ρ depends on local amplitude or λ)
-- This is a small extension to the energy calculation, not a wave equation rewrite
+Two competing gravity models:
 
-**Tests:**
+1. **Shading / directional attenuation**: WCs absorb part of in-wave, re-emit attenuated out-wave toward other particles → directional energy deficit → gravity. Likely requires M4 vector displacement (directional attenuation can't be represented in scalar M3)
 
-- [ ] Cluster of same-charge particles: does the combined wave field show reduced amplitude behind the cluster (shading)?
-- [ ] Two clusters separated by distance: does a net force emerge between them?
-- [ ] Compare cluster-cluster force against single-particle-pair force — is there a residual (gravitational) component?
-- [ ] Implement Smoliński's push-out/buoyancy mechanism: model gravity as a pressure deficit where solitons displace medium density, rather than pure wave attenuation
-- [ ] Test buoyancy model in 1D sandbox: make ρ(x) = f(local wave field) and check if gravitational-scale force emerges from the modified energy equation
-- [ ] Test density hierarchy scaling: does the 10⁻⁴² EM-to-gravitational force ratio emerge from the lattice geometry?
-- [ ] Validate computed G against Smoliński's Scilab verification values (see references/MagnetismGravity.pdf)
+2. **Buoyancy / medium density (Smoliński)**: Wave equation unchanged. WCs modify local ρ and f via λ modulation → granule velocity → pressure. Gravity emerges from E = ρV(fA)² where ρ and f become local variables. Works in M3 — only the energy calculation changes
+
+For 1D sandbox: Phases 1-3 use constant ρ and f. Phase 5 adds option for position-dependent ρ(x) and f(x) computed from the wave field.
+
+### Phase 6: Magnetic Force — Details
+
+Requires M4 vector wave method. Magnetic force arises from transverse wave interference. The elliptical displacement trajectories (6 phasor numbers per voxel) naturally encode both longitudinal (electric) and transverse (magnetic) components. Spin modeled as toroidal wave flow — see 06_m4_vector.md for full analysis.
+
+### Phase 7: Time Dynamics — Details
+
+Variable λ per voxel makes dt a local variable — simulation no longer uses uniform timesteps. Energy starvation mechanism: destructive interference drops amplitude → frequency increases (energy conservation) → local time speeds up. See 07_time_dynamics.md for full analysis.
+
+### Phase 8: Emergent Waves — Details
+
+Photons as traveling wave packets, thermal energy as standing wave dynamics. See 08_emergent_waves.md.
