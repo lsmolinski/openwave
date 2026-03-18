@@ -103,17 +103,17 @@ Q += -C_n·sin(φ_n) + S_n·cos(φ_n)
 
 This replaces the EMA-RMS tracking with an exact, instantaneous result — no observation window, no smoothing artifacts.
 
-## Force Computation (force_motion.py)
-
-Current approach:
+## Force Computation
 
 ```text
-F = -2 · ρ · V · f² · A · ∇A
+E(x) = ρ · V · (f · A(x))²      energy per grid point / voxel
+F(x) = -∇E(x)                    force = negative energy gradient
 ```
 
-- Samples phasor RMS amplitude at wave center position and ±R neighbors
-- Central difference gradient: ∇A = (A[+R] - A[-R]) / (2R·dx)
-- Scale correction: F_real = F_scaled / S⁴ (universe scaling)
+- Compute energy density at each grid point from phasor RMS amplitude
+- Force is the negative gradient of energy density (central differences)
+- Computing F from ∇E directly (not expanded chain rule) ensures that future additions of variable ρ(x), f(x), λ(x) are automatically captured without changing force logic
+- Scale correction (M3 only): F_real = F_scaled / S⁴ (universe scaling)
 - Units: computed in qg·am/rs², converted to Newtons
 
 ---

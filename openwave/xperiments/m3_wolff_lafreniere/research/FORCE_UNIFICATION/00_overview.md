@@ -52,13 +52,15 @@ E = ρ · V · (f · A)²
 
 Where ρ is medium density, V is volume, f is frequency, A is displacement amplitude.
 
-Since ρ, V, and f are constant in the monochromatic case:
+Force is the negative gradient of energy density:
 
 ```text
-F = -∇E = -2 · ρ · V · f² · A · ∇A
+F = -∇E
 ```
 
-Force emerges from the **gradient of amplitude** — wherever wave interference creates a spatial variation in amplitude, there is a force. Wave centers (which have mass) move toward lower energy configurations via F = ma. In essence, particles fall into low-energy valleys in the energy density landscape shaped by wave interference.
+Force emerges from the **gradient of energy density** — wherever wave interference creates a spatial variation in energy, there is a force. Wave centers (which have mass) move toward lower energy configurations via F = ma. In essence, particles fall into low-energy valleys in the energy density landscape shaped by wave interference.
+
+Computing F directly from ∇E (rather than expanding the chain rule) means that when ρ(x), f(x), or λ(x) become spatially variable in later phases, the force computation automatically captures all contributions without modification.
 
 This may be the physical mechanism behind what Einstein described as "curvature in spacetime" — not a geometric bending of an abstract manifold, but a real energy density landscape sculpted by wave interference in the medium. The "curvature" is the shape of the energy valleys and hills created by constructive and destructive interference. Particles follow geodesics not because space is curved, but because they roll downhill in the energy density field.
 

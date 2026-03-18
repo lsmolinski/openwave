@@ -20,22 +20,21 @@
 - ✅ Decision: weighted partial standing wave as primary equation
 - ✅ Build physics invariant tests (pytest, boundary limits, energy conservation)
 - ✅ Validate phasor RMS: single WC sinc envelope, same/opposite charge interference, EMA-RMS equivalence
+- ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
+- ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
 ### [Phase 1: Electric Force — Far-Field (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
-  - [ ] Test energy gradient ∇E directly vs amplitude gradient A·∇A
-  - [ ] Test gradient sampling radius (1 grid vs 1λ vs 2λ window)
-
-- [ ] Test pressure/velocity gradient (90° phase-shifted from displacement)
-- [ ] Test standing vs traveling wave decomposition (force from each component separately)
-- [ ] Investigate multi-variable energy gradient: ∇A + ∇f + ∇ρ contributions
-- [ ] Validate 1/r² force scaling (Coulomb law match)
-- [ ] Validate force direction: opposite charges attract, same charges repel (consistently)
-- [ ] Parameter sweep: force vs separation from 2λ to 10λ
+  - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
+  - ✅ Tested gradient sampling radius / Gaussian smoothing (σ = 0.25λ to 2λ) — does not resolve; destroys charge signal
+  - ✅ Tested smooth envelope interaction (|Z₁|·|Z₂| with imposed charge sign) — 17/17 direction + 1/r² scaling, but sign is not emergent
+  - [ ] Test pressure/velocity gradient (90° phase-shifted from displacement)
+  - [ ] Test standing vs traveling wave decomposition (force from each component separately)
+- [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
-- [ ] Test smoothing phasor RMS before computing gradient (resolve far-field oscillation)
+- [ ] Investigate multi-variable energy gradient: ∇f + ∇ρ contributions to ∇E
 
 ### [Phase 2: Electric Force — Near-Field (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
@@ -117,16 +116,20 @@ Why: standing waves near center (w ≈ 1), traveling waves far out (w → 0), in
 
 The main blocker is the far-field oscillatory force: the sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances. Force direction flips every λ/2 of separation change, even where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines.
 
-**Candidate solutions to test** (see 05_1D_wave.md for full analysis):
+**Force computation**: F = -∇E where E(x) = ρ·V·(f·A(x))². Computing from ∇E directly (not chain-rule expansion) ensures future variable ρ(x), f(x), λ(x) are automatically captured.
 
-- Energy gradient ∇E directly vs amplitude gradient A·∇A — squaring A² changes oscillation structure
-- Gradient sampling radius — 1 grid unit captures sinc detail a real particle wouldn't feel, try 1λ-2λ windows
+**Tested and ruled out** (see 05_1D_wave.md for full analysis):
+
+- ✅ Gradient sampling / Gaussian smoothing — destroys charge signal along with oscillation
+- ✅ Smooth envelope with imposed charge sign — perfect 1/r² + direction, but sign is not emergent (equivalent to old analytical envelope)
+
+**Remaining candidates to test:**
+
 - Pressure/velocity gradient — force may be 90° phase-shifted from displacement, following pressure nodes not displacement nodes
-- Multi-variable energy gradient — E = ρV(fA)² has three variables (A, f, ρ) that can all create spatial gradients independently
 - Standing vs traveling wave decomposition — decompose phasor into standing-only and traveling-only amplitudes, test force from each
-- Compare all 5 wave equation forms under same test configuration
+- Multi-variable energy gradient — ∇E with spatially variable ρ(x) and f(x) may contribute force terms that amplitude alone cannot produce
 
-**Validation targets**: plot E = ρV(fA)² along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
+**Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
 ## Phase 2: Electric Force — Near-Field — Details
 

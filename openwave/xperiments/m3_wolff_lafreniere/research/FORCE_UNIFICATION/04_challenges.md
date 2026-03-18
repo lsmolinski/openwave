@@ -72,16 +72,28 @@ The source_offset (0 or π) determines charge. Two electrons (both π) create a 
 
 But the spatial structure of where constructive/destructive interference occurs relative to each particle is what creates the gradient → force.
 
-## ❌ 5. The 1/r² Force Law
+## ✅ 5. The 1/r² Force Law (Resolved in Theory)
 
-For the electric force to emerge, the amplitude gradient must produce a 1/r² dependence. With a single source giving A ∝ 1/r (sinc envelope), ∇A ∝ 1/r², and F ∝ A·∇A ∝ 1/r³. This is too steep.
+The 1/r² scaling emerges correctly from the **interaction energy** between two sources, not from single-source self-energy.
 
-For Coulomb's law (F ∝ 1/r²), we need either:
+At particle 1's position, total energy decomposes into three terms:
 
-- A different amplitude envelope (not 1/r)
-- A correction from the interference pattern between two sources
-- A different force equation than F = -2ρVf²A·∇A
+```text
+E_total ∝ |Z₁|² + |Z₂|² + 2·|Z₁|·|Z₂|·cos(θ₁-θ₂)
+           self₁    self₂    interaction
+```
 
-This is one of the critical open problems.
+- `|Z₁|²` gradient ≈ 0 at WC1's center (symmetric — a particle can't push itself)
+- `|Z₂|²` ∝ 1/r² → gradient ∝ 1/r³, but this term is tiny (far-field squared, negligible)
+- `|Z₁|·|Z₂|` ∝ constant × 1/r → gradient ∝ **1/r²** — dominant force term
 
-**Possible insight from Smoliński**: His "Degraded EMC Wall" concept proposes a structural interface in the lattice that allows the discrete BCC structure to manifest as a perfectly smooth, spherical 1/r² pressure gradient. This addresses exactly how a structured medium (with oscillatory wave nodes) produces an isotropic force that is uniform in all directions. If applicable to our simulator, it could explain how the sinc oscillation in the phasor RMS averages out to smooth 1/r² at macroscopic scales.
+The force between two particles comes from the interaction term, which is the **product** of amplitudes (not the square):
+
+```text
+E_interaction ∝ |Z₁| · |Z₂| ∝ 2A₀ · A₀/(kr) ∝ 1/r
+F = -∇E_int ∝ 1/r²  ✓  Coulomb scaling
+```
+
+**Confirmed numerically**: the smooth envelope test shows constant F_wave/F_coulomb ratio (~6.47e-12) across all separations from 2λ to 10λ, confirming exact 1/r² scaling.
+
+**Remaining issue**: the 1/r² scaling is confirmed using smooth envelopes with imposed charge sign. The challenge is recovering both the correct scaling AND the correct direction from the full wave interference (where the oscillating cos(θ₁-θ₂) factor creates the sinc oscillation problem). The scaling is correct; the direction emergence is the open problem (see Challenge #4).

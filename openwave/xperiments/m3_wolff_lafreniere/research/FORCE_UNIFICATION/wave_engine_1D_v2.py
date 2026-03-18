@@ -186,7 +186,11 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
 # Energy Density and Force
 # ================================================================
 # E = ρ · V · (f · A)²  where V = dx³ (voxel volume)
-# F = -∇E = -2 · ρ · V · f² · A · ∇A
+# F = -∇E  (negative gradient of energy density)
+#
+# Computing F from ∇E directly (not expanded A·∇A) so that future
+# additions of variable ρ(x), f(x), λ(x) are automatically captured
+# without changing the force computation logic.
 
 
 def compute_energy_density(rms_am: np.ndarray) -> np.ndarray:
@@ -195,13 +199,13 @@ def compute_energy_density(rms_am: np.ndarray) -> np.ndarray:
 
 
 def compute_force_field(rms_am: np.ndarray) -> np.ndarray:
-    """Force field: F = -2 · ρ · V · f² · A · ∇A.
+    """Force field: F = -∇E.
 
-    Uses central differences for gradient.
+    Computes energy per grid point, then takes the negative gradient.
+    Uses central differences via np.gradient.
     """
-    grad_A = np.gradient(rms_am, dx_am)
-    force = -2.0 * rho_qgam * dx_am**3 * f_rHz**2 * rms_am * grad_A
-    return force
+    energy = compute_energy_density(rms_am)
+    return -np.gradient(energy, dx_am)
 
 
 # ================================================================

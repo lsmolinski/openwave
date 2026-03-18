@@ -329,7 +329,7 @@ class TestEnergyDensity:
 
 
 class TestForceField:
-    """Force field F = -2·ρ·V·f²·A·∇A."""
+    """Force field F = -∇E where E = ρ·V·(f·A)²."""
 
     def test_zero_at_symmetric_center(self):
         """Single WC at origin → ~zero force at center (gradient of symmetric peak)."""
