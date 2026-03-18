@@ -233,6 +233,7 @@ Instead of gravity arising from wave attenuation (shading), Smoliński models it
 - This creates a pressure deficit — a buoyancy effect within the high-density medium
 - Gravity is the mechanical consequence of this density displacement, not a "message" between particles but a permanent structural "tilt" in the lattice geometry
 - This is compatible with the wave shading model but provides a more concrete mechanism
+- **Connection to granule dynamics and time**: Density in the medium is directly related to granule velocity — the speed at which granules cycle through their elliptical motion (90° phase-shifted from displacement). A density deficit means slower granule cycling → lower local frequency → longer λ → slower rate of change (time dilation). This links Smoliński's buoyancy mechanism to the Time Dynamics hypothesis: gravitational time dilation near massive bodies emerges from the same density/pressure deficit that produces the gravitational force itself. See [Time Dynamics](#time-dynamics-future-research--post-force-unification) for the full chain: **movement → granule velocity → density/pressure → frequency → time**
 
 ### Density Hierarchy
 
@@ -838,6 +839,35 @@ Possible approaches to test:
 - [ ] Compare force vs separation curves for different gradient sampling radii — which produces the smoothest 1/r² decay?
 - [ ] This connects to the dual-treatment idea: near-field uses raw 1-grid gradient (captures lock-in wells), far-field uses smoothed gradient (captures Coulomb trend)
 
+#### Open Question: What Physical Quantity Drives Force?
+
+**Deeper question: Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+
+- **A** (amplitude): what we're currently computing via phasor RMS
+- **f / λ** (frequency / wavelength): if λ varies with position (time dynamics, variable-λ research), then ∇f contributes to ∇E even where ∇A = 0
+- **ρ** (density): if medium density varies with position (Smoliński's buoyancy model), then ∇ρ contributes to ∇E independently of amplitude
+
+The full energy gradient expands to: `∇E = ρV · [2fA² · ∇f + f² · 2A · ∇A] + V(fA)² · ∇ρ`
+
+This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the Time Dynamics and Smoliński sections.
+
+We're currently computing force from the amplitude gradient. But force may not respond to amplitude directly — it may respond to **pressure** or **energy density**, which are related but phase-shifted quantities:
+
+- **Displacement** (what we compute as ψ): the wave displaces the medium from equilibrium
+- **Velocity** (∂ψ/∂t): 90° phase-shifted from displacement — granule velocity
+- **Pressure/density**: related to velocity (or compression), also 90° phase-shifted from displacement
+
+In fluid mechanics, force derives from pressure gradients, not displacement gradients. If the wave equation is fundamentally propagating **pressure or density variations** (not just displacement), then force may be **90° phase-shifted** from where the displacement gradient predicts it. This would change which points in space experience force and could resolve the oscillatory artifact — the pressure nodes are at different spatial positions than the displacement nodes.
+
+The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially smoothing the pattern.
+
+#### Open Question: Numerical Precision and Inertia Filtering
+
+Two additional factors that may be masking or distorting the force signal:
+
+- **Floating-point precision**: f32 arithmetic on very small force values (10⁻³ N scale at subatomic distances) may introduce numerical artifacts. The sinc function has near-zero values between nodes where precision loss is worst. Testing with f64 in the 1D sandbox (numpy default) should rule this out
+- **Inertia as low-pass filter**: Real particles don't respond to 10²⁵ Hz oscillations — their mass acts as a low-pass filter, averaging out rapid force fluctuations. The force we compute should be the **time-averaged** force over at least one wave period, not the instantaneous gradient. The phasor RMS already time-averages amplitude — but if force depends on pressure (which is phase-shifted), the time-averaging may need to account for the phase relationship between displacement and pressure
+
 #### Critical Issues Summary — M3 Electrostatic Force Validation
 
 1. **Far-field oscillatory force (MAIN BLOCKER)** — Force direction flips every λ/2 of separation change. The sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances, even in the far-field where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines
@@ -980,7 +1010,17 @@ This research direction requires the m4 vector wave method, as toroidal/vortex f
 
 ### Time Dynamics (Future Research — Post Force Unification)
 
-**Core thesis**: Time is not a fundamental dimension — it emerges from the rate of change in the medium. What we perceive as time is the frequency of subatomic wave oscillations at each point in space.
+**Core thesis**:
+
+- TIME is not fundamental (not a frame of reference, a dimension).
+- TIME emerges from MOVEMENT (the rate of change).
+- MOVEMENT is fundamental.
+
+What we perceive as time is the frequency of subatomic wave oscillations at each point in space — which is itself the speed of granular movement in the medium.
+
+The full chain from movement to time:
+
+Energy (and forces) is a function of density: `E = ρV(fA)²`. Density (like pressure) is related to granule velocity — the speed at which granules cycle through their elliptical motion (90° phase-shifted from displacement). So the speed of granular movement changes energy and forces. And that same granular speed defines the wave frequency (and λ), which defines time itself. This closes the loop: **movement → granule velocity → frequency → time**. Time emerges from movement, not the other way around.
 
 #### Psychological Time vs Real Time
 
