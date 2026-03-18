@@ -2,17 +2,17 @@
 
 ## GOALS
 
-PRIMARY (EMERGENT FORCES)
+### PRIMARY (EMERGENT FORCES)
 
 - Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational, strong) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
 
-SECONDARY (EMERGENT WAVES)
+### SECONDARY (EMERGENT WAVES)
 
 - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
 
 ## ROADMAP
 
-### Phase 0: Tooling
+### [Phase 0: Tooling](#phase-0-tooling--details)
 
 - ✅ Build 1D wave sandbox (matplotlib, interactive controls)
 - ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
@@ -21,7 +21,7 @@ SECONDARY (EMERGENT WAVES)
 - [ ] Build physics invariant tests (pytest, boundary limits, energy conservation)
 - [ ] Validate phasor RMS: single WC sinc envelope, same/opposite charge interference, EMA-RMS equivalence
 
-### Phase 1: Electric Force — Far-Field (1D Sandbox only)
+### [Phase 1: Electric Force — Far-Field (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
 - [ ] Test energy gradient ∇E directly vs amplitude gradient A·∇A
@@ -33,15 +33,19 @@ SECONDARY (EMERGENT WAVES)
 - [ ] Validate force direction: opposite charges attract, same charges repel (consistently)
 - [ ] Parameter sweep: force vs separation from 2λ to 10λ
 - [ ] Plot energy density landscape along axis at various separations
+- [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
+- [ ] Test smoothing phasor RMS before computing gradient (resolve far-field oscillation)
 
-### Phase 2: Electric Force — Near-Field (1D Sandbox only)
+### [Phase 2: Electric Force — Near-Field (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
 - [ ] Characterize near-field → far-field transition boundary
 - [ ] Validate dual-treatment: raw phasor (near-field) vs smoothed envelope (far-field)
+- [ ] Test with Verlet/leapfrog integrator (energy conservation for lock-in stability)
+- [ ] Test with f64 precision (check if numerical drift causes escape from wells)
 
-### Phase 3: Electric Force — 3D Validation (M3 Taichi, port from 1D)
+### [Phase 3: Electric Force — 3D Validation (M3 Taichi, port from 1D)](#phase-3-electric-force--3d-validation--details)
 
 - [ ] Port validated 1D equations to M3 3D wave engine
 - [ ] Reproduce 1D force results in 3D (2 WCs on axis)
@@ -49,21 +53,21 @@ SECONDARY (EMERGENT WAVES)
 - [ ] Validate force & motion integration (particles move correctly)
 - [ ] Compare against Coulomb force at multiple separations
 
-### Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)
+### [Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)](#phase-4-non-linear-wave-equations--details)
 
 - [ ] Test variable λ(r) (Yee & Hauger discrete wavelength shells)
 - [ ] Test Smoliński r⁵ energy scaling near WC core
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
 - [ ] Compare 5 wave equation forms under same test configuration
 
-### Phase 5: Gravitational Force (M3, Multi-Particle)
+### [Phase 5: Gravitational Force (M3, Multi-Particle)](#phase-5-gravitational-force--details)
 
 - [ ] Test wave shading with particle clusters
 - [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
 - [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
 - [ ] Validate computed G against Smoliński's Scilab reference values
 
-### Phase 6: Magnetic Force (M4 Vector Waves)
+### [Phase 6: Magnetic Force (M4 Vector Waves)](#phase-6-magnetic-force--details)
 
 - [ ] Build M4 vector wave engine with transverse displacement
 - [ ] Validate elliptical displacement trajectories (6 phasor numbers)
@@ -71,14 +75,14 @@ SECONDARY (EMERGENT WAVES)
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
 
-### Phase 7: Time Dynamics (M4 or new method)
+### [Phase 7: Time Dynamics (M4 or new method)](#phase-7-time-dynamics--details)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
 - [ ] Connect λ modulation → granule velocity → pressure → gravity
 - [ ] Test force control via frequency/spin manipulation
 
-### Phase 8: Emergent Waves
+### [Phase 8: Emergent Waves](#phase-8-emergent-waves--details)
 
 - [ ] Demonstrate photon-like traveling wave packets
 - [ ] Test thermal energy as standing wave dynamics
@@ -86,92 +90,29 @@ SECONDARY (EMERGENT WAVES)
 
 ---
 
-## ✅ Build 1D wave engine (sandbox for rapid testing)
+## PHASE DETAILS
 
-The full 3D Taichi simulator (m3) is powerful but slow to iterate on — each equation change requires running the GPU kernel, waiting for convergence, and visually inspecting 3D fields. A lightweight **1D wave engine** using matplotlib would dramatically accelerate equation development.
+Details for each roadmap phase. Checklist items live in the ROADMAP above — details here provide context only.
 
-**Purpose**: A standalone Python script for rapid prototyping and validation of wave equations, phasor superposition, and force computation — without the overhead of the 3D simulator.
+## Phase 0: Tooling — Details
 
-**Features**:
+**1D wave sandbox** (`wave_engine_1D_v2.py`): The full 3D Taichi simulator (m3) is powerful but slow to iterate on. The 1D sandbox provides fast iteration with instant visual feedback — no GPU compile, no 3D rendering. Clean 1D profiles are directly comparable to LaFreniere's reference animations.
 
-- 1D spatial domain (single axis through wave centers) with configurable resolution
-- Arbitrary number of wave centers with controllable parameters:
-  - Position along the axis
-  - Phase offset (source_offset) for charge
-  - Amplitude
-- All 5 wave equation forms available as selectable options
-- Real-time matplotlib animation showing:
-  - Instantaneous displacement ψ(x, t) — oscillating wave
-  - Phasor RMS envelope — steady-state amplitude profile
-  - Energy density E(x) = ρ·V·(f·A)² profile
-  - Force field F(x) = -∇E gradient
-- Interactive parameter controls (sliders or keyboard):
-  - WC separation distance
-  - WC phase offsets
-  - Weight function transition distance and sharpness
-  - Wave equation selection
-- Direct comparison overlays:
-  - Phasor RMS vs EMA-RMS (validation)
-  - Simulated force vs analytical Coulomb force (1/r² reference line)
-  - Near-field vs far-field regime boundary marker
+Features: configurable WC array (position, phase, amplitude), all 5 wave equation forms, real-time matplotlib animation (displacement + phasor RMS overlay, energy density, force field), interactive controls (separation slider, WC on/off toggles, phase offset toggle), Coulomb reference comparison with direction-match detection, force annotations at WC positions.
 
-**Benefits**:
-
-- **Fast iteration**: change equation, see result instantly — no GPU compile, no 3D rendering
-- **Clean 1D profiles**: directly comparable to the 1D cross-sections in LaFreniere's reference animations
-- **Isolated testing**: test each component (wave equation, phasor, force) independently without the full simulation chain
-- **Parameter sweeps**: easily sweep separation distance to plot force vs distance curves for 1/r² validation
-- **Debugging**: verify that phasor coefficients, weight functions, and force gradients produce correct values before deploying to the 3D engine
-
-**Location**: `openwave/xperiments/m3_wolff_lafreniere/research/wave_engine_1D_v2.py`, inspired by the similar scrip v1, and old 1D wave engine test. Lets reuse variable naming, layout conventions and some other standards as a template, but start the equations logic from scratch, there is lot to be optimized.
-
-## ✅ Decision: Weighted Partial Standing Wave as Primary Equation
-
-Based on the analysis above, the **weighted partial standing wave** is selected as the primary wave equation for force unification research. The other four forms (Wolff-original, LaFreniere-Marcotte original, phase-warped Marcotte, combined Wolff-LaFreniere) remain in the code as commented reference implementations for comparison testing.
-
-### Implications for Wave Equation Choice
-
-The **weighted partial standing wave** form is the best candidate:
+**Weighted partial standing wave** selected as primary equation:
 
 ```text
 ψ = A · [w(r)·sin(kr + ωt) + sin(kr - ωt)] / kr
 ```
 
-Why it matches the animations:
+Why: standing waves near center (w ≈ 1), traveling waves far out (w → 0), interference between particles via traveling out-waves, phasor captures the envelope. Other forms have limitations: Wolff (no traveling), LaFreniere-Marcotte (transition not sharp enough), Phase-warped Marcotte (no true standing nodes near center).
 
-- **Standing waves near center** (w ≈ 1): produces the fixed concentric rings visible around each particle in both animations
-- **Traveling waves far out** (w → 0): the out-wave `sin(kr - ωt)/kr` propagates outward, exactly like the moving rings in the animations
-- **Interference between particles**: the traveling out-waves from each source overlap in the gap. Their phase relationship (same offset = constructive, opposite offset = destructive) creates the amplitude modulation visible in the 1D cross-sections
-- **Phasor captures the envelope**: the phasor RMS field should show higher values between same-charge particles and lower values between opposite-charge particles — matching the 1D profiles
+**Physics invariant tests** (pytest): validate wave equations before deploying to 3D engine — dimensional consistency, boundary limits (r→0, r→∞), energy conservation, phasor/EMA-RMS equivalence, near-field/far-field continuity, charge symmetry.
 
-The other wave equations have limitations for reproducing these patterns:
+**Phasor validation** (prerequisite to force work): confirm correct amplitude patterns — single particle sinc envelope, same-charge destructive interference, opposite-charge constructive interference, EMA-RMS equivalence.
 
-- **Wolff-original**: standing wave everywhere — no traveling component to create interference between distant particles
-- **LaFreniere-Marcotte original**: transition is inherent, not sharp enough — standing character persists too far
-- **Phase-warped Marcotte**: single traveling wave with core correction — no true standing wave nodes near center
-
----
-
-## PHASE DETAILS Details
-
-Details for each roadmap phase. Checklist items live in the ROADMAP above — details here provide context only.
-
-### Phase 0: Tooling — Details
-
-**Physics invariant tests** (pytest): validate each wave equation form against known physical properties before deploying to 3D engine:
-
-- Dimensional consistency of all force/field equations
-- Boundary behavior: correct limits at r→0 (center voxel) and r→∞ (far-field decay)
-- Energy conservation: total energy in the field should be constant for a static configuration
-- Phasor equivalence: phasor RMS must match EMA-RMS after convergence
-- Near-field/far-field transition: envelope must be continuous across the weight function boundary
-- Charge symmetry: same-charge pair must produce repulsion, opposite-charge pair must produce attraction in the far-field
-
-The 1D engine is ideal for these tests — fast execution, no GPU overhead, and deterministic results.
-
-**Phasor validation** (prerequisite to force work): before chasing force emergence, confirm the phasor gives correct amplitude patterns — single particle sinc envelope, same-charge destructive interference, opposite-charge constructive interference, EMA-RMS equivalence.
-
-### Phase 1: Electric Force — Far-Field — Details
+## Phase 1: Electric Force — Far-Field — Details
 
 The main blocker is the far-field oscillatory force: the sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances. Force direction flips every λ/2 of separation change, even where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines.
 
@@ -186,7 +127,7 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 
 **Validation targets**: plot E = ρV(fA)² along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
-### Phase 2: Electric Force — Near-Field — Details
+## Phase 2: Electric Force — Near-Field — Details
 
 Near-field has two expected behaviors based on charge phase:
 
@@ -197,11 +138,11 @@ Currently both configurations show the same oscillatory behavior — the sinc no
 
 The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) needs implementation and tuning. The weight function transition parameter may serve double duty.
 
-### Phase 3: Electric Force — 3D Validation — Details
+## Phase 3: Electric Force — 3D Validation — Details
 
 Port the validated 1D equations and force computation to M3 Taichi 3D engine. Verify that 3D results match 1D on-axis results, then test off-axis configurations for spherical symmetry. Validate force & motion integration — particles should move correctly under computed forces.
 
-### Phase 4: Non-Linear Wave Equations — Details
+## Phase 4: Non-Linear Wave Equations — Details
 
 Test variable λ(r) from two sources:
 
@@ -210,7 +151,7 @@ Test variable λ(r) from two sources:
 
 Evaluate impact on both near-field lock-in stability and far-field force scaling.
 
-### Phase 5: Gravitational Force — Details
+## Phase 5: Gravitational Force — Details
 
 Two competing gravity models:
 
@@ -220,14 +161,14 @@ Two competing gravity models:
 
 For 1D sandbox: Phases 1-3 use constant ρ and f. Phase 5 adds option for position-dependent ρ(x) and f(x) computed from the wave field.
 
-### Phase 6: Magnetic Force — Details
+## Phase 6: Magnetic Force — Details
 
 Requires M4 vector wave method. Magnetic force arises from transverse wave interference. The elliptical displacement trajectories (6 phasor numbers per voxel) naturally encode both longitudinal (electric) and transverse (magnetic) components. Spin modeled as toroidal wave flow — see 06_m4_vector.md for full analysis.
 
-### Phase 7: Time Dynamics — Details
+## Phase 7: Time Dynamics — Details
 
 Variable λ per voxel makes dt a local variable — simulation no longer uses uniform timesteps. Energy starvation mechanism: destructive interference drops amplitude → frequency increases (energy conservation) → local time speeds up. See 07_time_dynamics.md for full analysis.
 
-### Phase 8: Emergent Waves — Details
+## Phase 8: Emergent Waves — Details
 
 Photons as traveling wave packets, thermal energy as standing wave dynamics. See 08_emergent_waves.md.

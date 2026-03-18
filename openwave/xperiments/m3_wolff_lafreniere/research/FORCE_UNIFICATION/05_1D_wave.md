@@ -37,56 +37,33 @@ Both animations share key features that constrain which wave equation form can r
 
 ## Critical Issues Summary — Electrostatic Force Validation
 
-1. **Far-field oscillatory force (MAIN BLOCKER)** — Force direction flips every λ/2 of separation change. The sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances, even in the far-field where only smooth 1/r decay should exist. Confirmed in both 3D and 1D engines
-2. **Near-field opposite-phase monotonic attraction** — Opposite-charge WCs should always attract (to annihilation), not oscillate like same-charge lock-in. Currently both phase configurations show the same oscillatory behavior — the sinc node structure overrides the charge-phase signal
+1. **Far-field oscillatory force (MAIN BLOCKER)** — Force direction flips every λ/2 of separation change. The sinc function sin(kr)/kr in the out-wave creates permanent nodes in the phasor RMS at all distances. These sinc nodes dominate over the charge-phase signal: source_offset (0 or π) should determine force direction via phasor P addition (same charge: cos(φ₁)=cos(φ₂) → P adds → larger amplitude) or cancellation (opposite charge: cos(φ₁)=-cos(φ₂) → P cancels → smaller amplitude). The spatial structure of where constructive/destructive interference occurs relative to each particle creates the gradient → force. But the sinc zeros override this charge-phase structure, making force direction depend on separation modulo λ instead of charge. Confirmed in both 3D and 1D engines
+2. **Near-field opposite-phase monotonic attraction** — Opposite-charge WCs should always attract (to annihilation), not oscillate like same-charge lock-in. Currently both phase configurations show the same oscillatory behavior — same root cause as #1
 3. **Gradient sampling radius** — Current gradient uses 1 grid unit. A real WC has spatial extent (~1λ). Wider gradient window may smooth out the sinc oscillation and reveal the underlying Coulomb trend. Untested
 4. **Energy gradient ∇E vs amplitude gradient A·∇A** — Computing F = -∇E directly from E(x) = ρVf²A² may behave better numerically: A² is always positive, oscillations are compressed, and combined with wider gradient window may converge toward 1/r² more naturally. Mathematically identical but numerically different
-5. **1/r² force law scaling** — Even if direction is fixed, F ∝ A·∇A with A ∝ 1/r gives F ∝ 1/r³, too steep. Need either a different envelope, interference correction, or different force equation to get Coulomb's 1/r²
+5. **1/r² force law scaling** — Even if direction is fixed, F ∝ A·∇A with A ∝ 1/r gives F ∝ 1/r³, too steep. Need either a different envelope, a correction from the interference pattern between two sources, or a different force equation. Smoliński's "Degraded EMC Wall" concept may explain how the discrete sinc oscillation averages out to smooth 1/r² at macroscopic scales (see [03_additional.md](03_additional.md#the-degraded-emc-wall))
 6. **Dual-treatment boundary** — Near-field needs raw oscillatory phasor (for lock-in physics), far-field needs smoothed envelope (for Coulomb). The weight function transition boundary should serve double duty, but this is unimplemented and untested
 
 Issues 1, 2, 3, and 4 are likely connected — solving the gradient sampling or switching to ∇E may resolve the oscillatory behavior. Issue 5 may also resolve if the interference pattern between two sources modifies the effective amplitude scaling.
 
-## Key Test Configuration
+## Test Configuration Notes
 
-To reproduce these animations in m3:
+Standard test setup for reproducing LaFreniere reference animations:
 
-- [ ] Place 2 wave centers separated by ~5-10λ
-- [ ] Same charge test: both source_offset = π (or both = 0)
-- [ ] Opposite charge test: source_offset = 0 and π
-- [ ] Use weighted partial standing wave with transition = 1.25λ
-- [ ] Visualize: displacement field (oscillating) + phasor RMS field (envelope)
-- [ ] Compare 1D cross-section along particle axis against the animation profiles
-- [ ] Verify: phasor RMS shows constructive/destructive patterns matching the reference animations
-- [ ] Compute force from phasor RMS gradient at each particle position — confirm direction matches expected attraction/repulsion
+- 2 wave centers separated by ~5-10λ
+- Same charge test: both source_offset = π (or both = 0)
+- Opposite charge test: source_offset = 0 and π
+- Weighted partial standing wave with transition = 1.25λ
+- Visualize: displacement + phasor RMS overlay, energy density, force field
+- Compare 1D profiles against animation cross-sections
+- Compute force from phasor RMS gradient at each WC position
 
-## Two-Regime Force Tests
+**Two-regime tests:**
 
-**Test A — Near-field lock-in (standing wave regime):**
+- Near-field (Test A): 2 particles within 1-2λ — observe oscillatory lock-in, measure stability, test Verlet integrator and f64 precision
+- Far-field (Test B): 2 particles at 5λ, 10λ, 15λ, 20λ — measure force vs distance, compare against Coulomb 1/r²
 
-- [ ] Place 2 opposite-charge particles within 1-2λ of each other
-- [ ] Observe oscillatory force behavior — does force direction alternate with λ/2 separation shifts?
-- [ ] Identify stable equilibrium positions (energy wells) where particles lock in
-- [ ] Measure lock-in stability: how many timesteps before escape?
-- [ ] Test with Verlet/leapfrog integrator instead of Euler to check if energy conservation improves stability
-- [ ] Test with f64 precision to check if numerical drift is the escape cause
-
-**Test B — Far-field electrostatic (traveling wave regime):**
-
-- [ ] Place 2 particles separated by 5λ, 10λ, 15λ, 20λ (well beyond standing wave transition)
-- [ ] Measure force magnitude at each separation
-- [ ] Plot force vs distance — does it follow 1/r² (Coulomb's law)?
-- [ ] Verify force direction: opposite charges attract, same charges repel (consistently, no oscillation)
-- [ ] Compare measured force against analytical Coulomb force: F = ke·q₁q₂/r²
-
-## Next Steps (2026-03-18)
-
-- [ ] Test far-field force behavior: sweep separation from 2λ to 10λ, plot force magnitude vs distance, compare against 1/r² Coulomb reference
-- [ ] Experiment with gradient sampling radius: try 1λ, 2λ, 3λ window sizes and compare force smoothness
-- [ ] Test ∇E directly: compute force from energy gradient instead of A·∇A — one-line change in sandbox
-- [ ] Test near-field opposite-phase: sweep separation from 0 to 2λ, verify monotonic attraction (not oscillatory)
-- [ ] Test near-field same-phase: sweep separation from 0 to 2λ, observe lock-in oscillation pattern
-- [ ] Investigate whether smoothing phasor RMS before computing gradient resolves far-field oscillation
-- [ ] Compare force vs separation curves for different approaches — which produces smoothest 1/r² decay?
+All task checklists are tracked in [01_plan.md](01_plan.md) ROADMAP (Phases 1 and 2).
 
 ---
 
