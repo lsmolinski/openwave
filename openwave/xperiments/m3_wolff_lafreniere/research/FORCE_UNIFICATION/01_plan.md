@@ -24,8 +24,9 @@
 ### [Phase 1: Electric Force — Far-Field (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
-- [ ] Test energy gradient ∇E directly vs amplitude gradient A·∇A
-- [ ] Test gradient sampling radius (1 grid vs 1λ vs 2λ window)
+  - [ ] Test energy gradient ∇E directly vs amplitude gradient A·∇A
+  - [ ] Test gradient sampling radius (1 grid vs 1λ vs 2λ window)
+
 - [ ] Test pressure/velocity gradient (90° phase-shifted from displacement)
 - [ ] Test standing vs traveling wave decomposition (force from each component separately)
 - [ ] Investigate multi-variable energy gradient: ∇A + ∇f + ∇ρ contributions
