@@ -106,3 +106,7 @@ The phasor route gives them analytically in one shot. The timestep route require
 **Connection to OpenWave**: The vortex model suggests that our standing wave structure near the wave center may actually be a cross-section of a vortex flow pattern. The "standing wave" appearance could arise from the stable circulation pattern of the vortex, where the interference of in-waves and out-waves creates the stationary nodes we observe. In the m4 vector wave method, this vortex circulation should manifest as the toroidal component of the elliptical displacement trajectories.
 
 This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the [Yee & Hauger](references/Spin.pdf) and WKB research already planned for Phase 3.
+
+Soliton [Toroidal](03_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
+
+Lafreniere [magnetic field lines](03_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.

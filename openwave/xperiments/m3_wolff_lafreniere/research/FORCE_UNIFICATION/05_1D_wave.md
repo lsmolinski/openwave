@@ -1,6 +1,6 @@
 # 1D WAVE SANDBOX RESEARCH
 
-The 1D wave engine sandbox (`wave_engine_1D_v2.py`) is built and operational with:
+✅ The 1D wave engine sandbox (`wave_engine_1D_v2.py`) is built and operational with:
 
 - Weighted partial standing wave equation + phasor superposition
 - Energy density (Joules) and force field (Newtons) panels
@@ -8,9 +8,9 @@ The 1D wave engine sandbox (`wave_engine_1D_v2.py`) is built and operational wit
 - Coulomb reference comparison with direction-match detection
 - Force annotations at each WC position with attraction/repulsion labels
 
-## Confirmed
+## ❌ Confirmed: Far-field oscillatory force issue reproduced in 1D
 
-Far-field oscillatory force issue reproduced in 1D.** The same behavior seen in the 3D Taichi engine appears in the 1D sandbox:
+The same behavior seen in the 3D Taichi engine appears in the 1D sandbox:
 
 - For both phase deltas (0° and 180°), force direction (attraction/repulsion) depends on WC separation distance
 - Every λ/2 change in separation flips the force direction
@@ -25,15 +25,14 @@ This confirms the issue is in the wave equation / phasor physics, not in the 3D 
 
 **PRIMARY TARGET:** [Lafreniere Attraction](02_equations.md#primary-reference-two-opposite-phase-wave-centers)
 
-Both animations share key features that constrain which wave equation form can reproduce them:
+![alt text](images/wave_interference.gif)
 
-1. **Clear standing wave rings near each particle center** — concentric circles with fixed nodes. This requires a standing wave component near the core (rules out pure traveling wave forms)
+This animation shows the complete wave interaction for two opposite-phase WCs:
 
-2. **Traveling waves far from center** — the outer rings move outward. The wave transitions from standing to traveling character with distance
-
-3. **Interference happens in the traveling wave region** — the force-producing pattern occurs where the traveling waves from both sources overlap between the particles. The standing wave region near each core remains relatively undisturbed
-
-4. **The 1D envelope modulation** — the amplitude envelope (what the phasor RMS captures) shows a smooth modulation that increases (constructive) or decreases (destructive) between particles. This is the energy density landscape whose gradient produces force
+- **Near-field** (~1λ around each WC): fixed standing wave rings — the particle structure itself. Standing wave forces dominate
+- **Far-field** (beyond ~1λ): only traveling waves, 1/r amplitude falloff. This is the electrostatic (Coulomb) regime
+- **Between WCs**: amplitude visibly reduced — destructive interference from opposing phases → lower energy zone → attraction. Counter-propagating traveling waves from each source meet at midpoint, forming a standing wave pattern there
+- **Key for simulation**: standing wave region is sharply localized (~1λ, matches steep weight rolloff), far-field is cleanly traveling (no oscillatory artifacts), and the 1D envelope profile is what the phasor RMS should reproduce
 
 ## Critical Issues Summary — Electrostatic Force Validation
 
