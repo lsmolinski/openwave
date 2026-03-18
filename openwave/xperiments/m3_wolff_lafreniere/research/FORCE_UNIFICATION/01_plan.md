@@ -23,7 +23,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-### [Phase 1: Electric Force — Far-Field (1D Sandbox only)](#phase-1-electric-force--far-field--details)
+### [Phase 1: Electric Force — FAR-FIELD (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -36,7 +36,7 @@
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 - [ ] Investigate multi-variable energy gradient: ∇f + ∇ρ contributions to ∇E
 
-### [Phase 2: Electric Force — Near-Field (1D Sandbox only)](#phase-2-electric-force--near-field--details)
+### [Phase 2: Electric Force — NEAR-FIELD (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation

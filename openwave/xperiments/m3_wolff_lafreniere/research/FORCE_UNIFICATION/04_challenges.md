@@ -63,16 +63,7 @@ This is not imposed — it emerges mathematically from wave interference in 3D s
 
 **Strategy**: Start with scalar m3 to crack the electric force. Once that works, extend to vector m4 where the elliptical displacement geometry should naturally produce the magnetic component.
 
-## ❌ 4. Constructive & Destructive Interference vs. Charge
-
-The source_offset (0 or π) determines charge. Two electrons (both π) create a specific interference pattern. An electron-positron pair (π and 0) creates a different pattern. The phasor superposition captures this:
-
-- Same charge: cos(φ₁) = cos(φ₂), so P contributions add → larger amplitude
-- Opposite charge: cos(φ₁) = -cos(φ₂), so P contributions cancel → smaller amplitude
-
-But the spatial structure of where constructive/destructive interference occurs relative to each particle is what creates the gradient → force.
-
-## ✅ 5. The 1/r² Force Law (Resolved in Theory)
+## ✅ 4. The 1/r² Force Law (Resolved in Theory)
 
 The 1/r² scaling emerges correctly from the **interaction energy** between two sources, not from single-source self-energy.
 
@@ -97,3 +88,12 @@ F = -∇E_int ∝ 1/r²  ✓  Coulomb scaling
 **Confirmed numerically**: the smooth envelope test shows constant F_wave/F_coulomb ratio (~6.47e-12) across all separations from 2λ to 10λ, confirming exact 1/r² scaling.
 
 **Remaining issue**: the 1/r² scaling is confirmed using smooth envelopes with imposed charge sign. The challenge is recovering both the correct scaling AND the correct direction from the full wave interference (where the oscillating cos(θ₁-θ₂) factor creates the sinc oscillation problem). The scaling is correct; the direction emergence is the open problem (see Challenge #4).
+
+## ❌ 5. Constructive & Destructive Interference vs. Charge
+
+The source_offset (0 or π) determines charge. Two electrons (both π) create a specific interference pattern. An electron-positron pair (π and 0) creates a different pattern. The phasor superposition captures this:
+
+- Same charge: cos(φ₁) = cos(φ₂), so P contributions add → larger amplitude
+- Opposite charge: cos(φ₁) = -cos(φ₂), so P contributions cancel → smaller amplitude
+
+But the spatial structure of where constructive/destructive interference occurs relative to each particle is what creates the gradient → force.
