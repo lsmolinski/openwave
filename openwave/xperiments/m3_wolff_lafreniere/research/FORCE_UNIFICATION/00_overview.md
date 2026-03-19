@@ -66,7 +66,7 @@ This may be the physical mechanism behind what Einstein described as "curvature 
 
 ## Force Unification Hierarchy
 
-The theory proposes that all forces are manifestations of the same wave interference:
+The theory proposes that all forces are manifestations of the same wave interference — ultimately, there may be **one single force** (F = -∇E, the gradient of energy). What we call electric, magnetic, and gravitational forces are the same energy gradient projected onto different directional components of the vector wave field. The force type depends on the angle/direction, not on separate mechanisms:
 
 1. **Electric Force** (longitudinal): The fundamental force. Arises from constructive/destructive interference of energy waves between wave centers with different phase offsets. Opposite charges (0 vs π offset) create destructive interference between them → lower amplitude in the gap → particles fall into the energy well → attractive force. Same charges create constructive interference → higher amplitude between them → particles repelled from the high-energy zone → repulsive force
 

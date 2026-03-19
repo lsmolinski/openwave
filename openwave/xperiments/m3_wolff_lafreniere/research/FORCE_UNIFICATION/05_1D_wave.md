@@ -235,6 +235,11 @@ The rotation handedness is NOT captured by |ψ|². To recover charge-sign inform
 - **Divergence** (∇·ψ): compression/rarefaction of the medium — scalar but signed, related to pressure
 - **Curl** (∇×ψ): rotational displacement — vector, related to magnetic field
 - **Energy flux** (ψ × ∂ψ/∂t or similar): directional energy flow — vector with sign from rotation
+- **Per-component amplitude** (A_x, A_y, A_z separately, not collapsed to |A|): preserves directional structure
+
+**One force, different directions**: there may be only one force (F = -∇E). What we call electric, magnetic, and gravitational are the same gradient projected onto different components: longitudinal → electric, transverse → magnetic, residual/bulk density deficit → gravitational. A scalar model collapses all directional information into magnitude — producing correct force scaling (1/r²) but losing force direction (charge sign). See [06_m4_vector.md](06_m4_vector.md#why-scalar-is-insufficient-monopole--longitudinal-only) for full analysis.
+
+**Why scalar fails at direction**: a single WC (monopole) produces only longitudinal waves — radial, no transverse, no magnetic field. The scalar model correctly describes this. But multi-particle interference creates transverse components (elliptical paths). The charge sign lives in the TRANSVERSE structure (rotation handedness), which scalar magnitude discards. Wolff's complex number (i) is an algebraic proxy for the transverse component that vector displacement encodes naturally.
 
 **Connection to electromagnetism**: the right-hand rule, 90° phase shifts, quadratures, imaginary numbers — all of classical EM is built on vector field operations. Spin, ellipses, spirals, toroids, vortices pervade quantum mechanics. The scalar |ψ|² approach may be fundamentally insufficient for force computation — the charge-sign information may ONLY be recoverable from vector field quantities (divergence, curl, flux direction).
 
