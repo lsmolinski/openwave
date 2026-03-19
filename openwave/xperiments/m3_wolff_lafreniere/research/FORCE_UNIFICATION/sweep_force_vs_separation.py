@@ -6,6 +6,9 @@ Sweeps WC separation from 2λ to 10λ and plots:
 - Coulomb reference (1/r²)
 - Direction match/mismatch markers
 
+Supports sweeping a single equation (SWEEP_EQUATION) or all 5 at once
+(SWEEP_EQUATION = 0) for comparison.
+
 Usage:
     python sweep_force_vs_separation.py
 """
@@ -19,6 +22,9 @@ from openwave.common import constants, colormap
 # ================================================================
 # Sweep Configuration
 # ================================================================
+
+# 0 = sweep ALL equations (comparison mode), 1-5 = single equation
+SWEEP_EQUATION = 0
 
 SEP_MIN_LAM = 2.0  # minimum separation (wavelengths)
 SEP_MAX_LAM = 10.0  # maximum separation (wavelengths)
@@ -40,11 +46,12 @@ rho = we.rho_qgam
 # ================================================================
 
 
-def run_sweep(phase1=0.0, phase2=np.pi):
+def run_sweep(phase1=0.0, phase2=np.pi, equation=5):
     """Sweep separation and compute force at left WC via F = -∇E.
 
-    Returns dict with arrays: sep_lam, f_wave, f_coulomb.
+    Returns dict with arrays: sep_lam, f_wave, f_coulomb, equation.
     """
+    we.WAVE_EQUATION = equation
     x = np.linspace(-DOMAIN_HALF_LAM * lam, DOMAIN_HALF_LAM * lam, DOMAIN_NPOINTS)
     dx = x[1] - x[0]
 
@@ -93,6 +100,8 @@ def run_sweep(phase1=0.0, phase2=np.pi):
         "f_wave": f_wave,
         "f_coulomb": f_coulomb,
         "opposite_phase": opposite_phase,
+        "equation": equation,
+        "equation_name": we.WAVE_EQUATION_NAMES.get(equation, "Unknown"),
     }
 
 
@@ -109,12 +118,13 @@ def plot_sweep(results):
     opp = results["opposite_phase"]
 
     charge_label = "opposite charge (attract)" if opp else "same charge (repel)"
+    eq_name = results.get("equation_name", "")
 
     plt.style.use("dark_background")
     fig, axes = plt.subplots(3, 1, figsize=(12, 9), facecolor=colormap.DARK_GRAY[1])
     fig.suptitle(
-        f"Force vs Separation — {charge_label}",
-        fontsize=16,
+        f"Force vs Separation — {charge_label}  [{eq_name}]",
+        fontsize=14,
         family="Monospace",
         y=0.98,
     )
@@ -191,18 +201,20 @@ def plot_sweep(results):
 # ================================================================
 
 if __name__ == "__main__":
-    print("Running force vs separation sweep...")
+    equations = [SWEEP_EQUATION] if SWEEP_EQUATION != 0 else [1, 2, 3, 4, 5]
 
-    # Opposite charge (should attract: positive force on left WC)
-    print("  Opposite charge sweep...")
-    results_opp = run_sweep(phase1=0.0, phase2=np.pi)
+    for eq in equations:
+        eq_name = we.WAVE_EQUATION_NAMES.get(eq, "Unknown")
+        print(f"Running sweep for equation #{eq}: {eq_name}...")
 
-    # Same charge (should repel: negative force on left WC)
-    print("  Same charge sweep...")
-    results_same = run_sweep(phase1=0.0, phase2=0.0)
+        print("  Opposite charge sweep...")
+        results_opp = run_sweep(phase1=0.0, phase2=np.pi, equation=eq)
 
-    fig1 = plot_sweep(results_opp)
-    fig2 = plot_sweep(results_same)
+        print("  Same charge sweep...")
+        results_same = run_sweep(phase1=0.0, phase2=0.0, equation=eq)
+
+        plot_sweep(results_opp)
+        plot_sweep(results_same)
 
     print("Done. Close plots to exit.")
     plt.show()
