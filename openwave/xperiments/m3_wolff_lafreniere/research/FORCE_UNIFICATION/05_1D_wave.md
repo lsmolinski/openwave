@@ -128,17 +128,41 @@ No phase rotation or derivative of a periodic function removes its periodicity. 
 
 **Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](07_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored below in the Multi-Variable Energy Gradient section, where ∇ρ could contribute force independently of ∇A.
 
-## POSSIBLE SOLUTION: Multi-Variable Energy Gradient (non-linear wave equation)
+## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
 
-**Deeper question: Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+**Why non-linear?** All linear operations on the sinc function (smoothing, phase shift, derivatives, scaling) preserve its λ/2-periodic zero structure. Only a non-linear wave equation — where the spatial function is no longer a pure sinc — can break the oscillatory pattern that causes force direction errors.
 
-- **A** (amplitude): currently the only variable — computed via phasor RMS
-- **f / λ** (frequency / wavelength): if λ varies with position (time dynamics, variable-λ research), then ∇f contributes to ∇E even where ∇A = 0
-- **ρ** (density): if medium density varies with position (Smoliński's buoyancy model), then ∇ρ contributes to ∇E independently of amplitude. **Connection to granule velocity**: ρ is directly related to granule velocity — the speed at which granules cycle through their elliptical motion (∂ψ/∂t). Faster cycling = higher local density/pressure, slower cycling = lower density. Wave interference between WCs doesn't just change displacement amplitude — it changes granule velocities, which changes local ρ. This means ∇ρ may carry force information that ∇A alone cannot provide, and with a different spatial structure than the sinc envelope
+**Smoliński's Non-linear Soliton Wave Equation** (MagnetismGravity_v2, Sec 6.1, Eq. 18-19): The soliton is governed by a non-linear wave equation with a cubic stabilizing term:
+
+```text
+(∂²/∂t² - c²∇²) Ψ(r,t) + F(Ψ, ε_G, |ε_M|, N_ν) = 0
+
+where F = k(|ε_M|) · Ψ³    (NLS cubic non-linearity)
+```
+
+The Ψ³ term prevents wave dispersion and creates soliton stability. The coefficient k(|ε_M|) describes the non-linear elasticity of the medium, depending explicitly on the magnetic deficit. **Key insight**: solutions to the non-linear wave equation with cubic term are NOT pure sin(kr)/kr — the soliton spatial structure differs from a sinc, potentially breaking the periodic zero pattern that causes our oscillatory force. This is a well-studied form (Non-linear Schrödinger solitons) with known analytical solutions.
+
+**Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+
+- **A** (amplitude): current phasor RMS — carries sinc oscillation from sin(kr)/kr spatial structure
+- **f / λ** (frequency / wavelength): if λ varies with position ([Yee & Hauger](07_time_dynamics.md#ewt-standing-wave-geometry-yee--hauger) discrete wavelength shells), then ∇f contributes to ∇E even where ∇A = 0. Crucially, variable λ(r) replaces the uniform kr phase with a WKB integral ∫k(r')dr', making node spacing non-uniform — this **breaks the sinc periodicity** that causes the oscillatory force. **Smoliński r⁵ decomposition** (MagnetismGravity_v4 Sec 7.2): E ∝ r⁵ = r³ (volume) × r¹ (amplitude: A ∝ r) × r¹ (frequency: f ∝ 1/r). Inside the soliton, amplitude scales linearly with distance from center and frequency scales inversely — both are concrete non-linear relationships that modify the wave equation near WCs
+- **ρ** (density): if medium density varies with position ([Smoliński's buoyancy model](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework)), then ∇ρ contributes to ∇E independently of amplitude. **Smoliński's explicit density function** (MagnetismGravity_v4 Eq. 32): `ρ(r) = ρ₀(1 - (r/r_ν)^k)^P · Θ(r_ν - r)` — packing density decreases from soliton boundary toward core, only within soliton radius r_ν (Heaviside cutoff). This is a concrete implementable ansatz. **Connection to granule velocity**: ρ is directly related to granule velocity — the speed at which granules cycle through their elliptical motion (∂ψ/∂t). Faster cycling = higher local density/pressure, slower cycling = lower density. Wave interference between WCs doesn't just change displacement amplitude — it changes granule velocities, which changes local ρ. This means ∇ρ may carry force information that ∇A alone cannot provide, and with a different spatial structure than the sinc envelope
 
 This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the [Time Dynamics](07_time_dynamics.md) and [Smoliński sections](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework).
 
 Computing F = -∇E means these additional variables are automatically included when implemented — no force logic changes needed.
+
+**Smoliński's Push-out Operator** (MagnetismGravity_v4 Eq. 90) formalizes exactly this multi-variable approach:
+
+```text
+P̂Φ = -∇ · (η_stat / η_soliton) ∇Φ
+```
+
+This is F = -∇E but with the impedance ratio (statutory density / soliton density) as a spatially varying coefficient. The force is the gradient of a potential weighted by the local density mismatch — precisely what our ∇E captures when ρ(x) becomes a spatial variable.
+
+**Connection to dual-treatment boundary**: Smoliński's Isotropy Operator I (MagnetismGravity_v4 Sec 17.7.1) acts as a **geometric low-pass filter** at the Degraded EMC Wall boundary, averaging angular energy into isotropic gravity. This maps to our weight function transition: inside the boundary → non-linear toroidal dynamics (Energy Domain, r⁵), outside → isotropic spherical push-out (EMC Domain, r³). The weight function could serve as this geometric filter.
+
+**Scheduling**: This is a fallback if all Phase 1 linear approaches fail (expensive implementation: variable λ and ρ fields in 1D sandbox). If Phase 1 succeeds without it, remains as Phase 4 for 3D porting. See [01_plan.md](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) for tasks.
 
 ## POSSIBLE SOLUTION: Energy Flux (Radiation Pressure)
 

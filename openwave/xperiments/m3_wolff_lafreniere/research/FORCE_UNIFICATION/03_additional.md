@@ -84,7 +84,7 @@ A controversial but relevant claim:
 
 ## Smoliński's Contributions (BCC Lattice Geometric Framework)
 
-Source: "The Geometric Identity of Gravity and Dimensional Unification" (Smoliński, 2026) — see [MagnetismGravity](references/MagnetismGravity.pdf) and [GitHub](https://github.com/lsmolinski/MagnetismGravity).
+Source: "The Geometric Identity of Gravity and Dimensional Unification" (Smoliński, 2026) — see [MagnetismGravity](references/MagnetismGravity_v4.pdf) and [GitHub](https://github.com/lsmolinski/MagnetismGravity).
 
 Łukasz Smoliński has developed a zero-parameter extension of EWT where all physical constants are derived from π, e, Planck constants, and the fundamental geometry of a Body-Centered Cubic (BCC) lattice. While primarily a theoretical derivation framework (not a simulation engine), several concepts are directly relevant to OpenWave's force unification goals:
 
@@ -137,7 +137,7 @@ The **Principle of Geometric Masking** describes how the internal toroidal asymm
 
 **Relevance to OpenWave:**
 
-1. **Non-linear wave equations**: The "non-linear toroidal flows" directly imply that the wave equation inside the soliton is non-linear — wavelength and/or amplitude change with distance from center. This aligns with the variable-λ(r) research already documented in our phasor superposition work ([Yee & Hauger](references/Spin.pdf) model, WKB phase integral). The r⁵ energy scaling inside the soliton suggests a specific non-linear relationship that could inform our wave equations near the core
+1. **Non-linear wave equations**: The wave equation inside the soliton is explicitly non-linear. **Smoliński's Soliton Wave Equation** (MagnetismGravity_v2, Sec 6.1, Eq. 18-19): `(∂²/∂t² - c²∇²)Ψ + k(|ε_M|)·Ψ³ = 0` — standard wave equation + cubic NLS stabilizing term. The Ψ³ non-linearity prevents dispersion and creates soliton stability; its coefficient k depends on the magnetic deficit |ε_M| (medium elasticity). Solutions are NOT pure sinc — the spatial structure differs from sin(kr)/kr. This aligns with the variable-λ(r) research ([Yee & Hauger](references/Spin.pdf) model, WKB phase integral). **The r⁵ decomposition** (MagnetismGravity_v4 Sec 7.2) reveals three concrete non-linear relationships: E ∝ r⁵ = r³ (volume) × r¹ (A ∝ r: amplitude scales linearly) × r¹ (f ∝ 1/r: frequency scales inversely). **Explicit density function** (Eq. 32): `ρ(r) = ρ₀(1-(r/r_ν)^k)^P · Θ(r_ν-r)` — packing density decreases toward core, cutoff at soliton radius. **Push-out Operator** (Eq. 90): `P̂Φ = -∇·(η_stat/η_soliton)∇Φ` — force from gradient of potential weighted by local density mismatch, formalizing our F = -∇E with variable ρ(x)
 
 2. **Toroidal standing wave geometry**: The toroidal (doughnut) shape suggests that the standing wave structure of a particle is not purely spherical concentric shells, but has a toroidal circulation pattern. This is consistent with:
    - Magnetic moment arising from circulating wave flow (toroidal current → magnetic dipole)

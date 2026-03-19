@@ -36,7 +36,16 @@
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
-- [ ] Investigate multi-variable energy gradient: ∇f + ∇ρ contributions to ∇E
+
+> **Fallback path**: If all Phase 1 linear approaches fail to resolve the oscillatory force, proceed to [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details) before Phase 2. If Phase 1 succeeds, non-linear equations remain as [Phase 4](#phase-4-non-linear-wave-equations-m3-1d--3d--details) (later optimization).
+
+### [Phase 1b: Non-Linear Wave Equations (1D — FALLBACK)](#phase-1b-non-linear-wave-equations-1d--details)
+
+- [ ] Implement variable λ(r) in 1D sandbox (Yee & Hauger discrete wavelength shells, WKB phase integral)
+- [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
+- [ ] Test F = -∇E with spatially variable ρ(x), f(x), A(x) — all three gradients contributing
+- [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
+- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 
 ### [Phase 2: Electric Force — NEAR-FIELD (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
@@ -55,9 +64,12 @@
 - [ ] Validate force & motion integration (particles move correctly)
 - [ ] Compare against Coulomb force at multiple separations
 
-### [Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)](#phase-4-non-linear-wave-equations--details)
+### [Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)](#phase-4-non-linear-wave-equations-m3-1d--3d--details)
 
-- [ ] Test variable λ(r) (Yee & Hauger discrete wavelength shells)
+> **Conditional scheduling**: If Phase 1b was triggered (fallback), this phase ports the validated non-linear 1D equations to 3D. If Phase 1 succeeded with linear equations, this phase introduces non-linear equations fresh in both 1D and 3D.
+
+- [ ] Port variable λ(r) to M3 3D engine (Yee & Hauger discrete wavelength shells)
+- [ ] Port variable ρ(x) to M3 3D engine (density from granule velocity)
 - [ ] Test Smoliński r⁵ energy scaling near WC core
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
 - [ ] Compare 5 wave equation forms under same test configuration
@@ -129,12 +141,29 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 
 - ✅ Pressure/velocity gradient — 90° phase shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period; no benefit
 
-**Remaining candidates to test:**
+**Remaining candidates to test (linear):**
 
 - Standing vs traveling wave decomposition — decompose phasor into standing-only and traveling-only amplitudes, test force from each
-- Multi-variable energy gradient — ∇E with spatially variable ρ(x) and f(x) may contribute force terms that amplitude alone cannot produce
+
+**Fallback candidate (non-linear — requires implementation):**
+
+- Non-linear wave equations — variable λ(r) and ρ(x) make the sinc spatial structure non-periodic, potentially resolving the force direction problem. See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details) and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4)
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
+
+## Phase 1b: Non-Linear Wave Equations (1D) — Details
+
+**Rationale**: All linear operations on the sinc function preserve its λ/2 periodicity. Only a non-linear wave equation — where the spatial structure itself is no longer a pure sinc — can break the oscillatory pattern. This is the last resort before accepting that the linear weighted partial standing wave cannot produce emergent charge-sign forces.
+
+**Three energy gradient variables** — currently only A varies spatially; making ρ and f spatial variables turns E = ρV(fA)² into a multi-variable field where ∇E captures contributions from all three:
+
+- **A** (amplitude): current phasor RMS — carries sinc oscillation
+- **f / λ** (frequency): Yee & Hauger discrete wavelength shells give λ(r) = 2(K-n)λ per shell. WKB phase integral replaces kr with ∫k(r')dr'. This changes the sinc spatial structure — nodes are no longer equally spaced, breaking the periodic force oscillation
+- **ρ** (density): granule velocity (∂ψ/∂t) determines local medium density/pressure. Wave interference changes granule velocities → changes local ρ. The ∇ρ contribution to ∇E has a different spatial structure than ∇A and may carry force information that amplitude alone cannot provide
+
+**Implementation in 1D sandbox**: replace constant k in phasor coefficients with integrated phase from variable λ(r). Add ρ(x) field computed from local wave state. F = -∇E remains unchanged — it automatically captures all variable contributions.
+
+See [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
 
 ## Phase 2: Electric Force — Near-Field — Details
 
@@ -151,14 +180,18 @@ The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) 
 
 Port the validated 1D equations and force computation to M3 Taichi 3D engine. Verify that 3D results match 1D on-axis results, then test off-axis configurations for spherical symmetry. Validate force & motion integration — particles should move correctly under computed forces.
 
-## Phase 4: Non-Linear Wave Equations — Details
+## Phase 4: Non-Linear Wave Equations (M3, 1D → 3D) — Details
 
-Test variable λ(r) from two sources:
+If Phase 1b was triggered, this phase ports validated non-linear 1D equations to M3 3D. If Phase 1 succeeded linearly, this introduces non-linear equations fresh.
 
-- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — changes interference pattern and may correct force scaling (WKB/eikonal phase integral approach)
+Variable λ(r) from two sources:
+
+- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — changes interference pattern, non-uniform node spacing breaks sinc periodicity (WKB/eikonal phase integral approach)
 - **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
 
-Evaluate impact on both near-field lock-in stability and far-field force scaling.
+Variable ρ(x) from granule velocity — wave interference changes local cycling rate → local density/pressure. ∇ρ contributes to ∇E with different spatial structure than ∇A.
+
+See [Phase 1b details](#phase-1b-non-linear-wave-equations-1d--details) for the theoretical foundation and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
 
 ## Phase 5: Gravitational Force — Details
 
