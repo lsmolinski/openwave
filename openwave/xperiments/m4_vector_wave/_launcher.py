@@ -284,7 +284,7 @@ def display_wave_menu(state):
             state.WAVE_MENU = 2
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
-        if sub.checkbox("ENERGY (Local)", state.WAVE_MENU == 4):
+        if sub.checkbox("ENERGY (Field)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
