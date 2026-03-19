@@ -137,7 +137,7 @@ def compute_voxel_wave(
         - Superposition of multiple wave centers supported
 
     Wave Trackers Updated:
-        - amp_local_rms_am: RMS amplitude via EMA on ψ² (for energy/force gradients)
+        - amp_local_emarms_am: RMS amplitude via EMA on ψ² (for energy/force gradients)
         - freq_local_cross_rHz: Frequency via zero-crossing detection with EMA smoothing
 
     See research/01_wolff_lafreniere.md for full derivation and theory.
@@ -231,7 +231,7 @@ def compute_voxel_wave(
     # α controls adaptation speed: higher = faster response, lower = smoother
     # RMS amplitude
     disp2 = wave_field.displacement_am[i, j, k].norm() ** 2
-    current_rms2 = trackers.amp_local_rms_am[i, j, k] ** 2
+    current_rms2 = trackers.amp_local_emarms_am[i, j, k] ** 2
     alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
     new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
     new_amp = ti.sqrt(new_rms2)
@@ -240,7 +240,7 @@ def compute_voxel_wave(
     # Active regions counteract decay via EMA update from strong displacement
     # Stale regions (waves propagated away) decay to zero over time
     decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-    trackers.amp_local_rms_am[i, j, k] = new_amp * decay_factor
+    trackers.amp_local_emarms_am[i, j, k] = new_amp * decay_factor
 
     # TODO: review new frequency tracking method
     # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
@@ -275,7 +275,7 @@ def compute_voxel_wave(
     # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
     # Internal units: qg·am²/rs² × 1000 → aJ
     dx_am = wave_field.dx_am
-    amp_am = trackers.amp_local_rms_am[i, j, k]
+    amp_am = trackers.amp_local_emarms_am[i, j, k]
     trackers.energy_local_aJ[i, j, k] = (
         rho_qgam * dx_am**3 * (base_frequency_rHz * amp_am) ** 2 * constants.INTERNAL_ENERGY_TO_AJ
     )
@@ -424,7 +424,7 @@ def _copy_slice_xy(
 ):
     """Copy center XY slice (fixed z) to 2D buffer."""
     for i, j in slice_amp:
-        slice_amp[i, j] = trackers.amp_local_rms_am[i, j, mid_z]
+        slice_amp[i, j] = trackers.amp_local_emarms_am[i, j, mid_z]
         slice_freq[i, j] = trackers.freq_local_cross_rHz[i, j, mid_z]
         slice_energy[i, j] = trackers.energy_local_aJ[i, j, mid_z]
 
@@ -439,7 +439,7 @@ def _copy_slice_xz(
 ):
     """Copy center XZ slice (fixed y) to 2D buffer."""
     for i, k in slice_amp:
-        slice_amp[i, k] = trackers.amp_local_rms_am[i, mid_y, k]
+        slice_amp[i, k] = trackers.amp_local_emarms_am[i, mid_y, k]
         slice_freq[i, k] = trackers.freq_local_cross_rHz[i, mid_y, k]
         slice_energy[i, k] = trackers.energy_local_aJ[i, mid_y, k]
 
@@ -454,7 +454,7 @@ def _copy_slice_yz(
 ):
     """Copy center YZ slice (fixed x) to 2D buffer."""
     for j, k in slice_amp:
-        slice_amp[j, k] = trackers.amp_local_rms_am[mid_x, j, k]
+        slice_amp[j, k] = trackers.amp_local_emarms_am[mid_x, j, k]
         slice_freq[j, k] = trackers.freq_local_cross_rHz[mid_x, j, k]
         slice_energy[j, k] = trackers.energy_local_aJ[mid_x, j, k]
 
@@ -513,13 +513,13 @@ def sample_avg_trackers(
     yz_energy = _slice_yz_energy.to_numpy()[1:-1, 1:-1]
 
     # Compute RMS amplitude: √(⟨A²⟩) for correct energy weighting
-    # amp_local_rms_am contains per-voxel RMS values, square them for energy
+    # amp_local_emarms_am contains per-voxel RMS values, square them for energy
     total_amp_squared = (xy_amp**2).sum() + (xz_amp**2).sum() + (yz_amp**2).sum()
     total_freq = xy_freq.sum() + xz_freq.sum() + yz_freq.sum()
     total_energy = xy_energy.sum() + xz_energy.sum() + yz_energy.sum()
     n_samples = xy_amp.size + xz_amp.size + yz_amp.size
 
-    trackers.amp_global_rms_am[None] = float(np.sqrt(total_amp_squared / n_samples))
+    trackers.amp_global_emarms_am[None] = float(np.sqrt(total_amp_squared / n_samples))
     trackers.freq_global_avg_rHz[None] = float(total_freq / n_samples)
     trackers.energy_global_avg_aJ[None] = float(total_energy / n_samples)
 
@@ -555,7 +555,7 @@ def update_flux_mesh_values(
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx].norm()
-        amp_value = trackers.amp_local_rms_am[i, j, wave_field.fm_plane_z_idx]
+        amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         energy_value = trackers.energy_local_aJ[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
@@ -581,7 +581,7 @@ def update_flux_mesh_values(
             )
         elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_rms_am[None] * 2
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 amp_value / univ_edge_z * warp_mesh
@@ -589,7 +589,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
-                disp_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_emarms_am[None] * 4
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
                 disp_value / univ_edge_z * warp_mesh
@@ -602,7 +602,7 @@ def update_flux_mesh_values(
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k].norm()
-        amp_value = trackers.amp_local_rms_am[i, wave_field.fm_plane_y_idx, k]
+        amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         energy_value = trackers.energy_local_aJ[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
@@ -628,7 +628,7 @@ def update_flux_mesh_values(
             )
         elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_rms_am[None] * 2
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 amp_value / univ_edge_y * warp_mesh
@@ -636,7 +636,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
-                disp_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_emarms_am[None] * 4
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
                 disp_value / univ_edge_y * warp_mesh
@@ -649,7 +649,7 @@ def update_flux_mesh_values(
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
         disp_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k].norm()
-        amp_value = trackers.amp_local_rms_am[wave_field.fm_plane_x_idx, j, k]
+        amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         energy_value = trackers.energy_local_aJ[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
@@ -675,7 +675,7 @@ def update_flux_mesh_values(
             )
         elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_rms_am[None] * 2
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 amp_value / univ_edge_x * warp_mesh
@@ -683,7 +683,7 @@ def update_flux_mesh_values(
             )
         else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
-                disp_value, 0, trackers.amp_global_rms_am[None] * 4
+                disp_value, 0, trackers.amp_global_emarms_am[None] * 4
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
                 disp_value / univ_edge_x * warp_mesh

@@ -447,7 +447,7 @@ class Trackers:
         # LOCAL FIELDS per voxel
         # Amplitude tracks A via EMA of |ψ| and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
-        self.amp_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, rms amp
+        self.amp_local_emarms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, rms amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
@@ -455,13 +455,13 @@ class Trackers:
         self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, local energy
 
         # GLOBAL AVERAGES for visualization scaling & energy calculations
-        self.amp_global_rms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
+        self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
         self.energy_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # average energy per voxel
 
         # Assign default values for visualization scaling
         # baseline to allow wave peaks to rise without color saturation
-        self.amp_global_rms_am[None] = (
+        self.amp_global_emarms_am[None] = (
             constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
         )
         self.freq_global_avg_rHz[None] = (

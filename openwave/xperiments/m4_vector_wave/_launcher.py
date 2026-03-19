@@ -421,7 +421,7 @@ def compute_wave_oscillation(state):
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
         ewave.sample_avg_trackers(state.wave_field, state.trackers)
-    state.amp_global_rms = state.trackers.amp_global_rms_am[None] * constants.ATTOMETER  # m
+    state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.energy_global_avg = state.trackers.energy_global_avg_aJ[None] * constants.ATTOJOULE  # J
     state.wavelength_global_avg = constants.EWAVE_SPEED / (
