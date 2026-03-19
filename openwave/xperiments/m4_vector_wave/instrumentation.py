@@ -120,7 +120,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
 
     # Capture probe values
     displacement_am = wave_field.displacement_am[px, py, pz] / wave_field.scale_factor
-    amp_local_rms_am = trackers.amp_local_rms_am[px, py, pz] / wave_field.scale_factor
+    amp_local_emarms_am = trackers.amp_local_emarms_am[px, py, pz] / wave_field.scale_factor
     freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
 
     # Add to buffer
@@ -128,7 +128,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
         [
             timestep,
             displacement_am,
-            amp_local_rms_am,
+            amp_local_emarms_am,
             freq_local_cross_rHz,
         ]
     )
@@ -156,7 +156,7 @@ def _flush_timestep_buffer() -> None:
                 [
                     "timestep",
                     "displacement_am",
-                    "amp_local_rms_am",
+                    "amp_local_emarms_am",
                     "freq_local_cross_rHz",
                 ]
             )
@@ -201,7 +201,7 @@ def _read_timestep_data():
         for row in reader:
             data["timesteps"].append(int(row["timestep"]))
             data["displacements"].append(float(row["displacement_am"]))
-            data["amplitudes"].append(float(row["amp_local_rms_am"]))
+            data["amplitudes"].append(float(row["amp_local_emarms_am"]))
             data["frequencies"].append(float(row["freq_local_cross_rHz"]))
 
     return data

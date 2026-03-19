@@ -135,3 +135,19 @@ In fluid mechanics, force derives from pressure gradients, not displacement grad
 The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially breaking the exact cancellation pattern that makes charge-phase information unrecoverable.
 
 The phasor already contains the 90° information (the Q component is sin(ωt), shifted from the P component cos(ωt)).
+
+## POSSIBLE SOLUTION: Energy Flux (Radiation Pressure)
+
+Force can also arise from **energy flux** — the directional flow of energy through the medium:
+
+- **Energy density** (current: `F = -∇E`): energy *stored* per voxel. Static snapshot. Force from the energy landscape shape (conservative)
+- **Energy flux** (`S = E · v_group`): energy *flowing* through a surface per unit time (W/m²). Has direction — tells which way energy is moving
+- **Radiation pressure** (`P_rad = S/c`): force per unit area from wave momentum transfer. This is LaFreniere's force mechanism — waves exert pressure on wave centers
+
+For the current monochromatic case with constant c: `P_rad = S/c = E·c/c = E`, so `∇P_rad = ∇E` — both approaches give the same force. They diverge when:
+
+- **c varies spatially** (variable medium density → Smoliński's buoyancy model)
+- **Waves are directional** (flux has direction, density doesn't)
+- **Standing vs traveling waves**: standing waves store energy but don't flow (zero flux, nonzero density). Traveling waves carry energy directionally (nonzero flux)
+
+This last point is significant: energy flux could **naturally separate standing wave (near-field) from traveling wave (far-field) contributions** — standing waves have zero net flux, traveling waves have nonzero flux. This connects to the dual-treatment boundary idea: near-field force from energy density gradient (standing wave lock-in), far-field force from energy flux gradient (traveling wave Coulomb regime).

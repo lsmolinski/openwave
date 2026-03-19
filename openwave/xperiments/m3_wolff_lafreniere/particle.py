@@ -57,11 +57,6 @@ class WaveCenter:
         # Force in Newtons (SI) - kept in SI for physics accuracy
         self.force = ti.Vector.field(3, dtype=ti.f32, shape=num_sources)
 
-        # DEBUG: Intermediate values for force calculation inspection, to be stored per source
-        self.debug_A_center = ti.field(dtype=ti.f32, shape=num_sources)
-        self.debug_dA_dx = ti.field(dtype=ti.f32, shape=num_sources)
-        self.debug_force_scale = ti.field(dtype=ti.f32, shape=num_sources)
-
         # Mass in quectogram (qg) - initialized to neutrino mass, f32 friendly
         self.mass_qg = ti.field(dtype=ti.f32, shape=num_sources)
 
