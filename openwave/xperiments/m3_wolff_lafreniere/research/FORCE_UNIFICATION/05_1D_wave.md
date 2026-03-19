@@ -146,7 +146,23 @@ E_interaction ∝ cos(k(r₁ - r₂) - (φ₁ - φ₂)) / (kr₁ · kr₂)
 
 The cos() term oscillates with separation at spatial frequency k — this is the same λ/2 force flip. **The oscillation is intrinsic to coherent wave interference**, not to standing vs traveling character. This explains why the smooth envelope test (|Z₁|·|Z₂|) works — it avoids coherent superposition entirely by computing each source's smooth amplitude separately.
 
-**All linear Phase 1 candidates are now exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear operation on the superposed field can eliminate it while preserving charge-dependent force direction.
+## [ ] Test Alternative Wave Equations (Quick Sweep)
+
+The 1D engine implements 5 wave equation forms ([02_equations.md](02_equations.md)), each with different spatial functions. We've only tested the force sweep with #5 (weighted partial standing wave). The other forms have **different zero structures** that may change the oscillation behavior:
+
+| Equation | Spatial zeros | Zero spacing | Notes |
+| --- | --- | --- | --- |
+| #1 Wolff | sin(kr)/r | λ/2 | Pure standing wave everywhere |
+| #2 LaFreniere-Marcotte | sin(kr)/(kr) + (1-cos(kr))/(kr) | λ | Wider spacing, partially traveling |
+| #3 Phase-warped Marcotte | sin(x_c)/x_c | ~λ (warped near core) | Core correction shifts zeros |
+| #4 Combined Wolff-LF | sin(kr)/r + (1-cos(kr))/r | λ/2 | Wolff normalization |
+| #5 Weighted (current) | (w+1)sin(kr)/(kr) + (w-1)cos(kr)/(kr) | depends on w(r) | Far-field smooth, near-field λ/2 |
+
+**Hypothesis**: equations #2 and #3 (LaFreniere-Marcotte) have zeros at **λ spacing** instead of λ/2. The force oscillation period may differ, the oscillation depth may be shallower, and the interaction with charge-phase (cos(Δφ)) may produce better direction accuracy at certain separations. The phasor decomposition for all 5 forms is already implemented in `wave_engine_1D_v2.py`.
+
+**Test**: run `sweep_force_vs_separation.py` with each equation form, compare direction accuracy and oscillation pattern. Quick to implement — just switch the equation selector and run.
+
+**Expected outcome**: the oscillation is likely still present (coherent interference is fundamental), but comparing across equations may reveal which spatial function best preserves charge-direction information, and whether LaFreniere's reference animations correspond to a specific equation form.
 
 ## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
 

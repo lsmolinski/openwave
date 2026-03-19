@@ -556,7 +556,7 @@ def plot_sandbox():
         line_rms_neg.set_ydata(-rms)
 
         # Update y-limits for panel 1
-        psi_max = A0_am * 2
+        psi_max = A0_am * 0.5
         ax1.set_ylim(-psi_max, psi_max)
 
         # Update energy line + fill

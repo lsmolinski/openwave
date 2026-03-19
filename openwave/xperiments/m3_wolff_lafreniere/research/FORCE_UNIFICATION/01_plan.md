@@ -33,6 +33,7 @@
   - ✅ Ruled out inertia filtering — phasor RMS already IS the time-averaged quantity; problem is spatial sinc, not temporal
   - ✅ Ruled out pressure/velocity gradient — 90° shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period
   - ✅ Ruled out standing vs traveling wave decomposition — each component individually is smooth (1/kr), but coherent superposition of two sources still oscillates via cos(k·Δr) interference; oscillation is intrinsic to wave interference, not to standing/traveling character
+  - [ ] Test alternative wave equations (LaFreniere-Marcotte #2, #3) — different spatial functions have different zero structures; compare sweep results against weighted partial standing wave to check if oscillation period/depth changes
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
@@ -142,7 +143,9 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 - ✅ Pressure/velocity gradient — 90° phase shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period; no benefit
 - ✅ Standing vs traveling wave decomposition — each component individually is smooth (1/kr), but coherent superposition of two sources oscillates via cos(k·Δr); oscillation is intrinsic to wave interference, not standing/traveling character
 
-**All linear candidates exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear operation on the superposed field can eliminate it while preserving charge-dependent direction. See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details) for non-linear fallback, and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
+**Remaining candidate (quick test — still linear but different spatial function):**
+
+- Test alternative wave equations — LaFreniere-Marcotte (#2, #3) have different spatial functions with different zero structures (zeros at λ spacing vs λ/2). The oscillation is still expected from coherent interference, but the zero positions, oscillation depth, and interaction with charge-phase may differ. Quick to test: the 1D engine already has all 5 equations implemented, just need to run the sweep with each. See [05_1D_wave.md](05_1D_wave.md#-test-alternative-wave-equations-quick-sweep) for analysis.
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
