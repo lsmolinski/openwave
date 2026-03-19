@@ -328,7 +328,7 @@ def display_wave_menu(state):
 def display_level_specs(state, level_bar_vertices):
     """Display OpenWave level specifications overlay."""
     render.canvas.triangles(level_bar_vertices, color=colormap.LIGHT_BLUE[1])
-    with render.gui.sub_window("LAPLACE-PROPAGATION METHOD", 0.84, 0.01, 0.16, 0.16) as sub:
+    with render.gui.sub_window("LAPLACE-PROPAGATION METHOD (M2)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Scalar Field")
         sub.text("Coupling: Laplacian Operator")
