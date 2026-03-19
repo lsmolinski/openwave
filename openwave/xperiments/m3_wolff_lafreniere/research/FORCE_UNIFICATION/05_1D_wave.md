@@ -39,7 +39,7 @@ This animation shows the complete wave interaction for two opposite-phase WCs:
 | Regime     | Same Phase                        | Opposite Phase                                |
 | ---------- | --------------------------------- | --------------------------------------------- |
 | Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
-| Far-field  | Constructive → repulsion          | Destructive → attraction             
+| Far-field  | Constructive → repulsion          | Destructive → attraction                      |
 
 ## Critical Issues Summary — Electrostatic Force Validation
 
