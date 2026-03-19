@@ -81,6 +81,7 @@ def propagate_wave(
     for i, j, k in ti.ndrange(nx, ny, nz):
         prev_disp = wave_field.displacement_am[i, j, k]
         wave_field.displacement_am[i, j, k] = 0.0  # reset before accumulation
+        trackers.amp_local_envelope_am[i, j, k] = 0.0  # reset envelope before accumulation
 
         # Phasor accumulators: coefficients of cos(ωt) and sin(ωt)
         phasor_P = 0.0  # Σ cos(ωt) coefficient
@@ -418,6 +419,39 @@ def propagate_wave(
             phasor_P += C_n * cos_phi + S_n * sin_phi
             phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
+            # ================================================================
+            # ANALYTICAL SIGNED ENVELOPE
+            # Particles don't respond to 10²⁵ Hz oscillation frequencies.
+            # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
+            # oscillations and responding only to the time-averaged energy-density (envelope).
+            # This envelope drives the force calculations, computed directly from wave functions.
+            # Applies superposition principle for multiple wave-centers, with signed charge sign.
+            # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
+            # Also avoids instability from real-time EMS calculations of moving wave-centers.
+            # ================================================================
+            # Charge sign: cos(0)=+1 (eg: positron), cos(π)=-1 (eg: electron)
+            charge_sign = ti.cos(source_offset)
+
+            # # DAMPED + WOLFF ==================================
+            if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
+                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
+                    base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
+                )  # finite value at center, k_grid / constant
+            else:
+                if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
+                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
+                        base_amplitude_am
+                        * wave_field.scale_factor
+                        * (
+                            k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
+                            + ti.sin(k_grid * r_grid) / (r_grid * 4)
+                        )
+                    )  # smoothed 1/r decay
+                else:  # FAR-FIELD: smooth 1/r decay
+                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
+                        base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
+                    )  # smooth 1/r decay
+
         # Phasor RMS: exact amplitude from superposition, no EMA needed
         # peak = √(P² + Q²), RMS = peak / √2
         trackers.amp_local_phasorrms_am[i, j, k] = ti.sqrt(
@@ -635,12 +669,13 @@ def update_flux_mesh_values(
         disp_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx]
         ampE_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
         ampP_value = trackers.amp_local_phasorrms_am[i, j, wave_field.fm_plane_z_idx]
+        ampS_value = trackers.amp_local_envelope_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # blueprint
+        if wave_menu == 5:  # blueprint
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -648,6 +683,16 @@ def update_flux_mesh_values(
                 None
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
                 wave_field.nz / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
+                ampS_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                ampS_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # viridis
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
@@ -684,12 +729,13 @@ def update_flux_mesh_values(
         disp_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k]
         ampE_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
         ampP_value = trackers.amp_local_phasorrms_am[i, wave_field.fm_plane_y_idx, k]
+        ampS_value = trackers.amp_local_envelope_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # blueprint
+        if wave_menu == 5:  # blueprint
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -697,6 +743,16 @@ def update_flux_mesh_values(
                 None
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
                 wave_field.ny / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
+                ampS_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                ampS_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # viridis
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
@@ -733,12 +789,13 @@ def update_flux_mesh_values(
         disp_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k]
         ampE_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
         ampP_value = trackers.amp_local_phasorrms_am[wave_field.fm_plane_x_idx, j, k]
+        ampS_value = trackers.amp_local_envelope_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # blueprint
+        if wave_menu == 5:  # blueprint
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
                 freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
             )
@@ -746,6 +803,16 @@ def update_flux_mesh_values(
                 None
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
                 wave_field.nx / wave_field.max_grid_size
+            )
+        elif wave_menu == 4:  # greenyellow
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
+                ampS_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                ampS_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # viridis
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
