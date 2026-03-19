@@ -32,7 +32,7 @@
   - ✅ Ruled out numerical precision — 1D uses f64; M3/M4 f32 with sim-friendly units; oscillation is real math not artifact
   - ✅ Ruled out inertia filtering — phasor RMS already IS the time-averaged quantity; problem is spatial sinc, not temporal
   - ✅ Ruled out pressure/velocity gradient — 90° shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period
-  - [ ] Test standing vs traveling wave decomposition (force from each component separately)
+  - ✅ Ruled out standing vs traveling wave decomposition — each component individually is smooth (1/kr), but coherent superposition of two sources still oscillates via cos(k·Δr) interference; oscillation is intrinsic to wave interference, not to standing/traveling character
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
@@ -140,14 +140,9 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 - ✅ Inertia filtering — phasor RMS already IS the time-averaged amplitude; the oscillatory problem is spatial (sinc structure), not temporal
 
 - ✅ Pressure/velocity gradient — 90° phase shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period; no benefit
+- ✅ Standing vs traveling wave decomposition — each component individually is smooth (1/kr), but coherent superposition of two sources oscillates via cos(k·Δr); oscillation is intrinsic to wave interference, not standing/traveling character
 
-**Remaining candidates to test (linear):**
-
-- Standing vs traveling wave decomposition — decompose phasor into standing-only and traveling-only amplitudes, test force from each
-
-**Fallback candidate (non-linear — requires implementation):**
-
-- Non-linear wave equations — variable λ(r) and ρ(x) make the sinc spatial structure non-periodic, potentially resolving the force direction problem. See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details) and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4)
+**All linear candidates exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear operation on the superposed field can eliminate it while preserving charge-dependent direction. See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details) for non-linear fallback, and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 

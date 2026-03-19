@@ -126,7 +126,27 @@ A 90° phase shift does not resolve the oscillatory force:
 
 No phase rotation or derivative of a periodic function removes its periodicity. The sinc zeros are λ/2-spaced, and any linear operation (derivative, phase shift, scaling) preserves that spacing. The problem would persist, just at different separation values.
 
-**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](07_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored below in the Multi-Variable Energy Gradient section, where ∇ρ could contribute force independently of ∇A.
+**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](07_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored below in the Non-Linear Wave Equations section, where ∇ρ could contribute force independently of ∇A.
+
+## ✅ RULED OUT: Standing vs Traveling Wave Decomposition
+
+Decompose the phasor into standing-wave-only and traveling-wave-only components, test force from each separately.
+
+**Single WC analysis**: each component individually is smooth:
+
+- **Standing** (in-wave): RMS = A·w(r)/kr — smooth, dies off with weight function
+- **Traveling** (out-wave): RMS = A/kr — smooth 1/r everywhere
+- The sinc oscillation `√((w+1)²sin²(kr) + (w-1)²cos²(kr))/kr` only appears when combining both components of the same WC
+
+**Two WC analysis**: even with traveling-wave-only (smooth 1/kr per source), coherent superposition creates oscillatory interference. The interaction energy between two traveling waves contains:
+
+```text
+E_interaction ∝ cos(k(r₁ - r₂) - (φ₁ - φ₂)) / (kr₁ · kr₂)
+```
+
+The cos() term oscillates with separation at spatial frequency k — this is the same λ/2 force flip. **The oscillation is intrinsic to coherent wave interference**, not to standing vs traveling character. This explains why the smooth envelope test (|Z₁|·|Z₂|) works — it avoids coherent superposition entirely by computing each source's smooth amplitude separately.
+
+**All linear Phase 1 candidates are now exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear operation on the superposed field can eliminate it while preserving charge-dependent force direction.
 
 ## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
 
