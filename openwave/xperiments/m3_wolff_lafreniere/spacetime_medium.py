@@ -418,7 +418,7 @@ class Trackers:
     Wave property trackers for each voxel.
     Use separate class to avoid overloading WaveField class.
 
-    Tracks amplitude envelope and frequency at each grid point using
+    Tracks amplitude and frequency at each grid point using
     per-voxel fields and grid-wide averages for visualization scaling.
     """
 
@@ -434,9 +434,12 @@ class Trackers:
         # LOCAL FIELDS per voxel
         # Amplitude tracks A via EMA of |ψ| and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
-        self.amp_local_rms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, longitudinal amp
+        self.amp_local_emarms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, longitudinal amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
+
+        # PHASOR SUPERPOSITION FIELD for force calculation (stores amplitude with oscillations)
+        self.amp_local_phasorrms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am
 
         # ENVELOPE FIELD for force calculation (smooth 1/r, no oscillations)
         # Tracks signed amplitude envelope: sum of (charge_sign * A₀/r) from each source
@@ -444,12 +447,12 @@ class Trackers:
         self.amp_local_envelope_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, signed
 
         # GLOBAL AVERAGES for visualization scaling & energy calculations
-        self.amp_global_rms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
+        self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
 
         # Assign default values for visualization scaling
         # baseline to allow wave peaks to rise without color saturation
-        self.amp_global_rms_am[None] = (
+        self.amp_global_emarms_am[None] = (
             constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
         )
         self.freq_global_avg_rHz[None] = (
