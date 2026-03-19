@@ -32,6 +32,8 @@ import numpy as np
 ATTOMETER = 1e-18  # m/am, attometer length scale
 RONTOSECOND = 1e-27  # s/rs, rontosecond time scale
 QUECTOGRAM = 1e-33  # kg/qg, quectogram mass scale
+ATTOJOULE = 1e-18  # J/aj, attojoule energy scale
+INTERNAL_ENERGY_TO_AJ = 1000.0  # 1 qg·am²/rs² = 1000 aJ
 
 # ================================================================
 # WAVE-FIELD MEDIUM [EWT Constants]
@@ -54,6 +56,8 @@ EWAVE_AMPLITUDE_AM = 0.9215405708  # am, energy-wave amplitude in attometer unit
 EWAVE_LENGTH_AM = 28.54096501  # am, energy-wave length in attometer units
 EWAVE_FREQUENCY_RHZ = 0.01050393558  # rHz, energy-wave frequency in rontosecond units
 EWAVE_PERIOD_RS = 95.20241169  # rs, energy-wave period in rontosecond units
+
+BASE_ENERGY_DENSITY_JAM = 3.6165447046e-18  # J/am³, E = ρ·V·(f·A)² for V = 1 am³
 
 # ================================================================
 # NEUTRINO Particle (seed particle)
