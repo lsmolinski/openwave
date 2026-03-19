@@ -103,38 +103,42 @@ Compute force from the product of individual WC phasor magnitudes |Z₁|·|Z₂|
 - **1/r² scaling confirmed** (constant ratio to Coulomb across all separations)
 - **But**: charge sign is imposed by hand (`-1` for opposite, `+1` for same), not emergent from wave interference. This is equivalent to the old "analytical signed envelope" approach — Coulomb with extra steps, not force emergence
 
-## POSSIBLE SOLUTION: Numerical Precision and Inertia Filtering
+## ✅ RULED OUT: Numerical Precision
 
-Two additional factors that may be masking or distorting the force signal:
+- **Floating-point precision**: The 1D sandbox uses numpy f64 (15 decimal digits) — more than sufficient. All physical constants are already in simulation-friendly units (am, rs, qg) with magnitudes in the O(0.01)–O(10) range, avoiding large/small number cancellation. The sinc zeros are exact zeros of sin(kr), not near-cancellation artifacts. M3/M4 use f32 but with the same unit scaling. **Conclusion**: the oscillatory force is a real mathematical feature of the sinc spatial function, not a floating-point artifact
 
-- **Floating-point precision**: f32 arithmetic on very small force values (10⁻³ N scale at subatomic distances) may introduce numerical artifacts. The sinc function has near-zero values between nodes where precision loss is worst. Testing with f64 in the 1D sandbox (numpy default) should rule this out
-- **Inertia as low-pass filter**: Real particles don't respond to 10²⁵ Hz oscillations — their mass acts as a low-pass filter, averaging out rapid force fluctuations. The force we compute should be the **time-averaged** force over at least one wave period, not the instantaneous gradient. The phasor RMS already time-averages amplitude — but if force depends on pressure (which is phase-shifted), the time-averaging may need to account for the phase relationship between displacement and pressure
+## ✅ RULED OUT: Inertia Filtering
 
-## POSSIBLE SOLUTION: Multi-Variable Energy Gradient
+- **Inertia as low-pass filter**: Real particles don't respond to 10²⁵ Hz oscillations — their mass acts as a low-pass filter, averaging out rapid force fluctuations. **But the phasor RMS already IS this filter** — it gives the exact analytical time-averaged amplitude without simulating any oscillation cycles. The force we compute from ∇E(RMS) is already the time-averaged force. The oscillatory problem is in the *spatial* sinc structure of the RMS envelope, not in temporal high-frequency artifacts that further averaging could remove
 
-**Deeper question: Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+## ✅ RULED OUT: Pressure/Velocity Gradient (90° Phase Shift)
 
-- **A** (amplitude): currently the only variable — computed via phasor RMS
-- **f / λ** (frequency / wavelength): if λ varies with position (time dynamics, variable-λ research), then ∇f contributes to ∇E even where ∇A = 0
-- **ρ** (density): if medium density varies with position (Smoliński's buoyancy model), then ∇ρ contributes to ∇E independently of amplitude
-
-This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the [Time Dynamics](07_time_dynamics.md) and [Smoliński sections](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework).
-
-Computing F = -∇E means these additional variables are automatically included when implemented — no force logic changes needed.
-
-## POSSIBLE SOLUTION: Pressure/Velocity Gradient (90° Phase Shift)
-
-Force may not respond to displacement amplitude directly — it may respond to **pressure** or **energy density**, which are related but phase-shifted quantities:
+The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially breaking the exact cancellation pattern that makes charge-phase information unrecoverable.
 
 - **Displacement** (what we compute as ψ): the wave displaces the medium from equilibrium
 - **Velocity** (∂ψ/∂t): 90° phase-shifted from displacement — granule velocity
 - **Pressure/density**: related to velocity (or compression), also 90° phase-shifted from displacement
 
-In fluid mechanics, force derives from pressure gradients, not displacement gradients. If the wave equation is fundamentally propagating **pressure or density variations** (not just displacement), then force may be **90° phase-shifted** from where the displacement gradient predicts it. This would change which points in space experience force and could resolve the oscillatory artifact — the pressure nodes are at different spatial positions than the displacement nodes.
+A 90° phase shift does not resolve the oscillatory force:
 
-The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially breaking the exact cancellation pattern that makes charge-phase information unrecoverable.
+- **Velocity (∂ψ/∂t)**: velocity RMS = ω × displacement RMS. Since ω is constant, ∇(ω·RMS) = ω·∇(RMS) — identical gradient direction, zero benefit
+- **Pressure (∝ -∂ψ/∂x)**: gives d/dr[sin(kr)/kr] instead of sin(kr)/kr — different zeros, but still oscillates with the same λ/2 period, just shifted by λ/4
 
-The phasor already contains the 90° information (the Q component is sin(ωt), shifted from the P component cos(ωt)).
+No phase rotation or derivative of a periodic function removes its periodicity. The sinc zeros are λ/2-spaced, and any linear operation (derivative, phase shift, scaling) preserves that spacing. The problem would persist, just at different separation values.
+
+**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](07_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored below in the Multi-Variable Energy Gradient section, where ∇ρ could contribute force independently of ∇A.
+
+## POSSIBLE SOLUTION: Multi-Variable Energy Gradient (non-linear wave equation)
+
+**Deeper question: Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+
+- **A** (amplitude): currently the only variable — computed via phasor RMS
+- **f / λ** (frequency / wavelength): if λ varies with position (time dynamics, variable-λ research), then ∇f contributes to ∇E even where ∇A = 0
+- **ρ** (density): if medium density varies with position (Smoliński's buoyancy model), then ∇ρ contributes to ∇E independently of amplitude. **Connection to granule velocity**: ρ is directly related to granule velocity — the speed at which granules cycle through their elliptical motion (∂ψ/∂t). Faster cycling = higher local density/pressure, slower cycling = lower density. Wave interference between WCs doesn't just change displacement amplitude — it changes granule velocities, which changes local ρ. This means ∇ρ may carry force information that ∇A alone cannot provide, and with a different spatial structure than the sinc envelope
+
+This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the [Time Dynamics](07_time_dynamics.md) and [Smoliński sections](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework).
+
+Computing F = -∇E means these additional variables are automatically included when implemented — no force logic changes needed.
 
 ## POSSIBLE SOLUTION: Energy Flux (Radiation Pressure)
 

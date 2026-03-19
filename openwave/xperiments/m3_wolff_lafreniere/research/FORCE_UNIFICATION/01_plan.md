@@ -29,7 +29,9 @@
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
   - ✅ Tested gradient sampling radius / Gaussian smoothing (σ = 0.25λ to 2λ) — does not resolve; destroys charge signal
   - ✅ Tested smooth envelope interaction (|Z₁|·|Z₂| with imposed charge sign) — 17/17 direction + 1/r² scaling, but sign is not emergent
-  - [ ] Test pressure/velocity gradient (90° phase-shifted from displacement)
+  - ✅ Ruled out numerical precision — 1D uses f64; M3/M4 f32 with sim-friendly units; oscillation is real math not artifact
+  - ✅ Ruled out inertia filtering — phasor RMS already IS the time-averaged quantity; problem is spatial sinc, not temporal
+  - ✅ Ruled out pressure/velocity gradient — 90° shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period
   - [ ] Test standing vs traveling wave decomposition (force from each component separately)
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
@@ -122,10 +124,13 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 
 - ✅ Gradient sampling / Gaussian smoothing — destroys charge signal along with oscillation
 - ✅ Smooth envelope with imposed charge sign — perfect 1/r² + direction, but sign is not emergent (equivalent to old analytical envelope)
+- ✅ Numerical precision — 1D uses f64, M3/M4 use f32 with simulation-friendly units; oscillation is real math, not floating-point artifact
+- ✅ Inertia filtering — phasor RMS already IS the time-averaged amplitude; the oscillatory problem is spatial (sinc structure), not temporal
+
+- ✅ Pressure/velocity gradient — 90° phase shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period; no benefit
 
 **Remaining candidates to test:**
 
-- Pressure/velocity gradient — force may be 90° phase-shifted from displacement, following pressure nodes not displacement nodes
 - Standing vs traveling wave decomposition — decompose phasor into standing-only and traveling-only amplitudes, test force from each
 - Multi-variable energy gradient — ∇E with spatially variable ρ(x) and f(x) may contribute force terms that amplitude alone cannot produce
 
