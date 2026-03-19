@@ -38,15 +38,28 @@
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 
-> **Fallback path**: If all Phase 1 linear approaches fail to resolve the oscillatory force, proceed to [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details) before Phase 2. If Phase 1 succeeds, non-linear equations remain as [Phase 4](#phase-4-non-linear-wave-equations-m3-1d--3d--details) (later optimization).
+> **All linear scalar candidates exhausted (9/9 ruled out).** Three remaining paths in order of implementation complexity. Paths B and C are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### [Phase 1b: Non-Linear Wave Equations (1D — FALLBACK)](#phase-1b-non-linear-wave-equations-1d--details)
+### Phase 1a: New Idea (next to explore)
+
+- [ ] To be defined — discussion pending
+
+### [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details)
 
 - [ ] Implement variable λ(r) in 1D sandbox (Yee & Hauger discrete wavelength shells, WKB phase integral)
 - [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
+- [ ] Test Smoliński Ψ³ cubic non-linearity (NLS soliton stabilizer)
 - [ ] Test F = -∇E with spatially variable ρ(x), f(x), A(x) — all three gradients contributing
 - [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
+
+### [Phase 1c: Vector Wave Force (M4 displacement direction)](#phase-1c-vector-wave-force--details)
+
+- [ ] Extend 1D sandbox with vector displacement (2D: x + y components)
+- [ ] Compute divergence (∇·ψ), curl, or energy flux from vector field
+- [ ] Test whether signed vector quantities (divergence, flux direction) recover charge-sign without oscillatory ambiguity
+- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
+- [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
 
 ### [Phase 2: Electric Force — NEAR-FIELD (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
@@ -65,15 +78,17 @@
 - [ ] Validate force & motion integration (particles move correctly)
 - [ ] Compare against Coulomb force at multiple separations
 
-### [Phase 4: Non-Linear Wave Equations (M3, 1D → 3D)](#phase-4-non-linear-wave-equations-m3-1d--3d--details)
+### [Phase 4: Non-Linear + Vector Wave Equations (M3/M4, 1D → 3D)](#phase-4-non-linear--vector-wave-equations--details)
 
-> **Conditional scheduling**: If Phase 1b was triggered (fallback), this phase ports the validated non-linear 1D equations to 3D. If Phase 1 succeeded with linear equations, this phase introduces non-linear equations fresh in both 1D and 3D.
+> **Conditional scheduling**: Ports validated 1D results from Phase 1b (non-linear) and/or Phase 1c (vector) to 3D engines. If Phase 1a solved the problem, this phase introduces non-linear/vector equations as enhancements. Phases 1b and 1c may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
 - [ ] Port variable λ(r) to M3 3D engine (Yee & Hauger discrete wavelength shells)
 - [ ] Port variable ρ(x) to M3 3D engine (density from granule velocity)
+- [ ] Port Ψ³ cubic non-linearity (NLS soliton stabilizer) to 3D
 - [ ] Test Smoliński r⁵ energy scaling near WC core
+- [ ] Port vector force computation (divergence/curl/flux) to M4 3D engine
+- [ ] Test elliptical rotation handedness as charge-sign indicator in M4
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
-- [ ] Compare 5 wave equation forms under same test configuration
 
 ### [Phase 5: Gravitational Force (M3, Multi-Particle)](#phase-5-gravitational-force--details)
 
@@ -174,22 +189,40 @@ Currently both configurations show the same oscillatory behavior — the sinc no
 
 The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) needs implementation and tuning. The weight function transition parameter may serve double duty.
 
+## Phase 1c: Vector Wave Force — Details
+
+**Problem**: F = -∇(|ψ|²) uses scalar magnitude, which discards vector direction information. On-axis, vector reduces to scalar (cos(θ_geo) = -1, constant). No help for the standard test case.
+
+**Opportunity**: vector displacement carries information beyond magnitude — ellipse rotation direction (handedness), divergence (compression), curl (rotation), energy flux direction. These are **signed quantities** that could recover charge-phase information without the oscillatory cos(k·Δr) ambiguity.
+
+**Why this might work**: all of classical EM is built on vector field operations (right-hand rule, cross products, curl). Spin, ellipses, spirals, toroids pervade quantum mechanics. The scalar |ψ|² approach may be fundamentally insufficient — charge-sign information may ONLY exist in vector field structure.
+
+**Connection to Phase 1b (non-linear)**: non-linear internal dynamics (toroidal r⁵ flows, Ψ³ stabilization) naturally produce the elliptical/toroidal vector patterns whose directional properties carry charge info. Phases 1b and 1c may converge.
+
+**Implementation**: extend 1D sandbox with 2D vector displacement (x + y components), compute signed vector quantities (∇·ψ, ∇×ψ, flux), test force from these. See [05_1D_wave.md](05_1D_wave.md#possible-solution-vector-wave-force-m4-displacement-direction) for full analysis.
+
 ## Phase 3: Electric Force — 3D Validation — Details
 
 Port the validated 1D equations and force computation to M3 Taichi 3D engine. Verify that 3D results match 1D on-axis results, then test off-axis configurations for spherical symmetry. Validate force & motion integration — particles should move correctly under computed forces.
 
-## Phase 4: Non-Linear Wave Equations (M3, 1D → 3D) — Details
+## Phase 4: Non-Linear + Vector Wave Equations — Details
 
-If Phase 1b was triggered, this phase ports validated non-linear 1D equations to M3 3D. If Phase 1 succeeded linearly, this introduces non-linear equations fresh.
+Ports validated 1D results from Phase 1b (non-linear) and/or Phase 1c (vector) to 3D engines. Phases 1b and 1c are deeply connected and may converge here.
 
-Variable λ(r) from two sources:
+**Non-linear (from Phase 1b → M3 3D):**
 
-- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — changes interference pattern, non-uniform node spacing breaks sinc periodicity (WKB/eikonal phase integral approach)
+- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — non-uniform node spacing breaks sinc periodicity (WKB/eikonal phase integral)
 - **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
+- **Ψ³ cubic non-linearity**: NLS soliton stabilizer, modifies spatial function from pure sinc
+- **Variable ρ(x)**: from granule velocity — ∇ρ contributes to ∇E with different spatial structure than ∇A
 
-Variable ρ(x) from granule velocity — wave interference changes local cycling rate → local density/pressure. ∇ρ contributes to ∇E with different spatial structure than ∇A.
+**Vector (from Phase 1c → M4 3D):**
 
-See [Phase 1b details](#phase-1b-non-linear-wave-equations-1d--details) for the theoretical foundation and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
+- **Divergence/curl/flux** force computation in full 3D vector field
+- **Elliptical rotation handedness** as charge-sign indicator (6-phasor model)
+- **Toroidal flow geometry**: non-linear + vector converge in the Energy Domain
+
+See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details), [Phase 1c](#phase-1c-vector-wave-force--details), and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
 
 ## Phase 5: Gravitational Force — Details
 

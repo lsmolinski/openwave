@@ -211,3 +211,45 @@ For the current monochromatic case with constant c: `P_rad = S/c = E·c/c = E`, 
 - **Standing vs traveling waves**: standing waves store energy but don't flow (zero flux, nonzero density). Traveling waves carry energy directionally (nonzero flux)
 
 This last point is significant: energy flux could **naturally separate standing wave (near-field) from traveling wave (far-field) contributions** — standing waves have zero net flux, traveling waves have nonzero flux. This connects to the dual-treatment boundary idea: near-field force from energy density gradient (standing wave lock-in), far-field force from energy flux gradient (traveling wave Coulomb regime).
+
+## POSSIBLE SOLUTION: Vector Wave Force (M4 displacement direction)
+
+**The question**: does vector displacement carry charge-phase information that scalar magnitude discards?
+
+**On-axis analysis (scalar = vector, no help)**: For two WCs on the x-axis, the displacement vectors at any point between them are anti-parallel (d̂₁ = +x̂, d̂₂ = -x̂). Only the x-component is nonzero, so |ψ_vec| reduces exactly to |ψ_scalar|. The vector energy |ψ_vec|² expands to:
+
+```text
+|ψ_vec|² = |ψ₁|² + |ψ₂|² + 2·|ψ₁|·|ψ₂|·cos(k·Δr + Δφ)·cos(θ_geo)
+```
+
+On-axis: cos(θ_geo) = -1 (constant), so F = -∇E is identical to scalar. No improvement.
+
+**But vector fields carry more than magnitude**: in M4, displacement traces an **ellipse** (6 phasor numbers: P_x, Q_x, P_y, Q_y, P_z, Q_z). The ellipse has:
+
+- **Magnitude**: semi-major axis → energy (what F = -∇E uses now)
+- **Rotation direction** (handedness): same-phase sources → same handedness, opposite-phase → opposite handedness. This is a **signed quantity** that scalar |ψ|² discards entirely
+- **Orientation**: ellipse plane tilt, major axis direction — geometric info about source positions
+
+The rotation handedness is NOT captured by |ψ|². To recover charge-sign information from the vector field, force must be computed from a **different quantity**:
+
+- **Divergence** (∇·ψ): compression/rarefaction of the medium — scalar but signed, related to pressure
+- **Curl** (∇×ψ): rotational displacement — vector, related to magnetic field
+- **Energy flux** (ψ × ∂ψ/∂t or similar): directional energy flow — vector with sign from rotation
+
+**Connection to electromagnetism**: the right-hand rule, 90° phase shifts, quadratures, imaginary numbers — all of classical EM is built on vector field operations. Spin, ellipses, spirals, toroids, vortices pervade quantum mechanics. The scalar |ψ|² approach may be fundamentally insufficient for force computation — the charge-sign information may ONLY be recoverable from vector field quantities (divergence, curl, flux direction).
+
+**Connection to non-linear equations**: the non-linear Ψ³ soliton equation (Smoliński), toroidal wave flows (Energy Domain, r⁵), and spin-as-vortex (Butto) all require vector displacement. The non-linear and vector approaches may be **two aspects of the same solution** — non-linear internal dynamics producing the toroidal/elliptical vector patterns that carry the charge information we need.
+
+**Status**: Requires M4 vector wave engine or a vector extension to the 1D sandbox. Not a quick test — connects to [Phase 6](01_plan.md#phase-6-magnetic-force-m4-vector-waves--details) (magnetic force) and may need to be pulled earlier if other approaches fail.
+
+---
+
+## Summary: Remaining Paths to Force Direction Resolution
+
+All linear scalar approaches have been exhausted (9 candidates tested and ruled out). Three remaining paths, in order of implementation complexity:
+
+1. **New idea** (next to explore) — to be discussed
+2. **Non-linear wave equations** ([Phase 1b](01_plan.md#phase-1b-non-linear-wave-equations-1d--details)) — variable λ(r), ρ(x), Ψ³ cubic term; breaks sinc periodicity
+3. **Vector wave force** — divergence/curl/flux-based force from M4 vector displacement; recovers charge sign from rotation direction
+
+Paths 2 and 3 are deeply connected: non-linear internal dynamics (toroidal r⁵ flows) naturally produce the vector patterns (elliptical displacement, spin) whose directional properties may carry the charge information. They may ultimately converge into a single solution.
