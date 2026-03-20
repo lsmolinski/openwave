@@ -38,17 +38,25 @@
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 
-> **All linear scalar candidates exhausted (9/9 ruled out). Smooth disturbance model (Phase 1a) also ruled out — charge sign is not emergent from wave physics.** Two remaining paths. Paths B and C are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
+> **All linear scalar candidates exhausted (9/9 ruled out). Signed disturbance model (Phase 1a) also ruled out — charge sign is not emergent from wave physics.** Three remaining paths. Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### [Phase 1a: Base Wave + Disturbance Model](#phase-1a-base-wave--disturbance-model--details)
+### [Phase 1a: Signed Disturbance (forced charge sign)](#phase-1a-signed-disturbance-forced-charge-sign--details) — RULED OUT
 
-- ✅ Implemented base wave model in 1D sandbox (equation #6): A₀ + smooth disturbances with `BASE_AMPLITUDE_RATIO`
+- ✅ Implemented signed disturbance model in 1D sandbox (equation #6): A₀ + q·δ(r) with `BASE_AMPLITUDE_RATIO`
 - ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay
 - ✅ Same charge repulsion: 9/9 correct direction, near-constant Coulomb ratio
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details)
+### [Phase 1b: Base Wave + WC Energy Redistribution](#phase-1b-base-wave--wc-energy-redistribution--details)
+
+- [ ] Model the base wave: isotropic standing wave field with known ρ, λ, A, f — granule displacement in multiple phases (not uniform cos(ωt)), uniform energy density
+- [ ] Model WC disturbance: reflection/scattering of base wave → radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
+- [ ] Determine how WC phase affects the far-field energy drainage pattern (NOT via simple ±1 sign — the mechanism is unknown and must be discovered)
+- [ ] Test force emergence: far-field drainage from WC1 disturbs WC2's standing waves → energy gradient at WC2 → force toward lower energy density
+- [ ] Validate against Coulomb reference (direction + 1/r² scaling)
+
+### [Phase 1c: Non-Linear Wave Equations (1D)](#phase-1c-non-linear-wave-equations-1d--details)
 
 - [ ] Implement variable λ(r) in 1D sandbox (Yee & Hauger discrete wavelength shells, WKB phase integral)
 - [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
@@ -57,7 +65,7 @@
 - [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 
-### [Phase 1c: Vector Wave Force (M4 displacement direction)](#phase-1c-vector-wave-force--details)
+### [Phase 1d: Vector Wave Force (M4 displacement direction)](#phase-1d-vector-wave-force--details)
 
 - [ ] Extend 1D sandbox with vector displacement (2D: x + y components)
 - [ ] Compute divergence (∇·ψ), curl, or energy flux from vector field
@@ -84,7 +92,7 @@
 
 ## [Phase 4: Non-Linear + Vector Wave Equations (M3/M4, 1D → 3D)](#phase-4-non-linear--vector-wave-equations--details)
 
-> **Conditional scheduling**: Ports validated 1D results from Phase 1b (non-linear) and/or Phase 1c (vector) to 3D engines. If Phase 1a solved the problem, this phase introduces non-linear/vector equations as enhancements. Phases 1b and 1c may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
+> **Conditional scheduling**: Ports validated 1D results from Phase 1c (non-linear) and/or Phase 1d (vector) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
 - [ ] Port variable λ(r) to M3 3D engine (Yee & Hauger discrete wavelength shells)
 - [ ] Port variable ρ(x) to M3 3D engine (density from granule velocity)
@@ -164,27 +172,86 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 
 - ✅ Alternative wave equations — all 5 forms (Wolff, LaFreniere-Marcotte, Phase-warped, Combined, Weighted) produce force direction flips. Confirms the oscillation is intrinsic to coherent wave interference regardless of spatial function choice
 
-- ✅ Base wave smooth disturbance (Phase 1a) — smooth δ(r) with q=cos(phase) as ±1 label. Same charge repulsion works, opposite charge fails (asymmetric E ∝ A², Newton's 3rd law violated). Charge sign is not emergent — equivalent to previously ruled-out imposed-sign approach
+- ✅ Signed disturbance (Phase 1a) — signed δ(r) with q=cos(phase) as ±1 label. Same charge repulsion works, opposite charge fails (asymmetric E ∝ A², Newton's 3rd law violated). Charge sign is not emergent — equivalent to previously ruled-out imposed-sign approach. Does not simulate actual wave disturbance
 
-**All linear candidates exhausted (10/10 ruled out).** The oscillatory force is a fundamental consequence of coherent wave interference — no linear wave equation or operation on the superposed field can eliminate it while preserving charge-dependent direction. Smooth non-wave approaches (Phase 1a) bypass interference entirely but are "Coulomb with extra steps" — charge sign is imposed, not emergent.
+**All linear candidates exhausted (10/10 ruled out).** The oscillatory force is a fundamental consequence of coherent wave interference — no linear wave equation or operation on the superposed field can eliminate it while preserving charge-dependent direction. Signed non-wave approaches (Phase 1a) bypass interference entirely but are "Coulomb with extra steps" — charge sign is imposed, not emergent.
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
-## Phase 1a: Base Wave + Disturbance Model — Details
+## Phase 1a: Signed Disturbance (forced charge sign) — Details
 
-**Physical concept (valid)**: Space is filled with a pre-existing **base wave** (fundamental energy wave, isotropic standing waves, uniform A₀). WCs create DISTURBANCES in this field — redistributing energy (concentrating near WC, depleting far field), not injecting new energy.
-
-**Smooth disturbance model (tested and ruled out)**: modeled WCs as smooth amplitude modulators: `A_total = A₀ + Σ q·A_peak·δ(r)` with `q = cos(phase) = ±1`. The dominant force term `2A₀·q·∇δ` gives force proportional to **individual** charge sign q, not the charge **product** q₁·q₂. This produces gravity-like behavior (unidirectional drift), not Coulomb (mutual attraction/repulsion). Same charge repulsion works, opposite charge attraction fails (asymmetric energy landscape, Newton's 3rd law violated).
-
-**Critical finding**: this approach is equivalent to the previously ruled-out "smooth envelope with imposed charge sign" — the charge enters as a ±1 label, not through wave interference. Any solution where you can replace `q = cos(phase)` with a manual `±1` input and get the same result is not emergent force.
-
-**Retained concepts**: the base wave as physical context (the medium exists, has energy density, WCs redistribute it), WC energy redistribution (concentration + deficit), and connections to gravitational shading. The FORCE mechanism must come from genuine wave interference, not smooth labels.
+**Tested and ruled out.** Modeled WCs as signed amplitude modulators (not actual wave disturbances): `A_total = A₀ + Σ q·A_peak·δ(r)` with `q = cos(phase) = ±1`. The dominant force term `2A₀·q·∇δ` gives force proportional to **individual** charge sign q, not the charge **product** q₁·q₂. Same charge repulsion works, opposite charge attraction fails (asymmetric E ∝ A², Newton's 3rd law violated). Charge sign is imposed as a ±1 label, not emergent from wave physics.
 
 See [05_1D_wave.md](05_1D_wave.md#-tested-base-wave--disturbance-model-phase-1a) for full analysis and test results.
 
-## Phase 1b: Non-Linear Wave Equations (1D) — Details
+## Phase 1b: Base Wave + WC Energy Redistribution — Details
 
-**Rationale**: All linear operations on the sinc function preserve its λ/2 periodicity. Only a non-linear wave equation — where the spatial structure itself is no longer a pure sinc — can break the oscillatory pattern. This is the last resort before accepting that the linear weighted partial standing wave cannot produce emergent charge-sign forces.
+### The Base Wave (Fundamental Energy Wave)
+
+The medium is not empty. A pre-existing **isotropic energy wave field** fills all of space — the fundamental longitudinal energy wave described by EWT. Its properties are known from EWT constants:
+
+- Amplitude: A₀ = 9.22 × 10⁻¹⁹ m (0.92 am)
+- Wavelength: λ₀ = 2.85 × 10⁻¹⁷ m (28.5 am)
+- Frequency: f₀ = 1.05 × 10²⁵ Hz (0.0105 rHz)
+- Density: ρ₀ = 3.86 × 10²² kg/m³ (38.6 qg/am³)
+- Energy density: E₀ = ρV(fA₀)² — uniform everywhere (without WCs)
+
+**What we know**: the base wave has well-defined ρ, λ, A, f, and energy density at every point.
+
+**What we don't know**: how granules oscillate (displace) in time. The base wave is NOT a uniform oscillation where everything goes up and down together (like water level). It must represent waves coming from **all directions** — an isotropic field with constant amplitude and constant energy density, but with granule displacements in **multiple phases** at each point.
+
+**Possible nature**: a standing wave field everywhere — a fixed universal background. The medium stores energy in these standing waves as potential for everything: matter, forces, EM waves, heat, and even time itself (the displacement cycle at each point IS the local rate of change — the local clock). The base wave is the source that powers everything, including force (once we prove force is unified as a single mechanism F = -∇E).
+
+**Base wave oscillation scale**: the base wave may have standing wave nodes and anti-nodes, but they are very small — base wave λ = 28 am, while electron radius is 2800 am (100× λ). Particles don't "feel" base wave oscillations directly; they oscillate too fast at 10²⁵ Hz. Particles may only respond to the averaged-out RMS amplitudes.
+
+**With zero WCs**: the sandbox should display this uniform energy field — constant energy density, constant amplitude, but displacement oscillating with wave character (not flat). Discovering the correct time-domain behavior of the isotropic base wave is an open research question for this phase.
+
+**Why this is fundamentally different from all tested approaches**: all 9 previous candidates (equations 1-5, smoothing, etc.) modeled WCs as wave SOURCES emitting into empty space. The coherent superposition of two source waves always contains a cos(k·Δr) interference term that oscillates with separation. The base wave model changes the paradigm: WCs are disturbers of an existing field, not sources. Phase 1a tested this concept with a signed smooth potential (not actual wave disturbance) and failed. Phase 1b explores the actual wave physics of disturbance.
+
+**Prior art in OpenWave**: the base wave was implemented in M1 (granule method) as background waves from 8 universe vertices — each contributing `A·cos(kr - ωt)·direction / 8` with full amplitude (no 1/r falloff), toggled via `BASE_WAVE_TOGGLE`. M2 (grid/Laplace) used boundary wall oscillators instead. Both used additive superposition (base_wave + source_waves), which still produces oscillatory interference. The true base wave + disturbance model must go beyond additive superposition.
+
+### Wave Centers as Energy Redistributors
+
+WCs do not emit waves. They do not inject energy. They create **disturbances** in the base wave field that **redistribute energy density**:
+
+**Reflection / equilibrium (Jeff Yee on the mechanism)**:
+
+> "Is the wave being reflected by a wave center, or is the wave center shifting to the point of equilibrium such that waves from the opposite side continue through at the same amplitude? The math for EWT would support #1 or #2, so it's hard for me to know if a wave center really does a reflection or it is just responding to the position of all waves (from all directions). In my writings, I favor #1, but it's still possible that those that believe a wave center is just the center point of where waves converge with equal amplitude."
+
+Whether reflection (#1) or equilibrium positioning (#2), the result is the same: the base wave is disturbed, and the disturbance expands radially from the WC as a spherical wave of disturbed medium.
+
+**Energy redistribution (globally conserved)**:
+
+- **Near-field (inside particle radius, r < K²λ)**: energy is **concentrated** into the WC's own 3D spherical standing waves. These standing waves define the particle: its radius (K²λ), its mass (energy contained in standing waves, E = mc²), its identity. The standing wave core size depends on the particle type via wave center count K: neutrino K=1 (1λ core), electron K=10 (100λ core). The particle's standing waves are radially oriented disturbances on the base wave oscillations — different from the base wave standing waves (if those are standing as well)
+- **Far-field (outside particle radius)**: energy is **drained** from the surrounding base wave field to supply the near-field concentration. This far-field energy deficit is the mechanism behind force and gravity
+
+**How WC phase affects the far-field drainage**: the phase (source_offset: 0 = positron, π = electron) must affect the spatial pattern of the far-field energy drainage. But NOT via a simple ±1 sign multiplier on a smooth function — that was Phase 1a, and it's not emergent. The actual mechanism by which phase determines the drainage pattern is **unknown and must be discovered** through exploration. This is the central open question of Phase 1b.
+
+### Force Emergence from Energy Redistribution
+
+The proposed mechanism for force:
+
+1. WC1 disturbs the base wave → concentrates energy in its standing wave core → creates a far-field energy deficit (drainage pattern) that radiates outward
+2. This drainage pattern reaches WC2's location and **disturbs WC2's standing waves** — warping the energy field around WC2
+3. The warped energy field creates an **energy gradient at WC2's position**
+4. F = -∇E → WC2 moves toward lower energy density → **force and motion**
+
+The force direction depends on HOW WC1's drainage pattern interacts with WC2's standing waves — and this interaction must depend on the phase relationship between the two WCs. The challenge: discovering what physical mechanism makes this phase-dependent interaction produce the correct Coulomb-like behavior (attract for opposite phase, repel for same phase) without imposing the charge sign by hand.
+
+### Open Questions
+
+- What is the correct time-domain representation of the isotropic base wave in 1D?
+- How does a WC's reflection/scattering produce the radial disturbance?
+- What is the spatial structure of the far-field energy drainage?
+- How does WC phase (0 vs π) modify the drainage pattern?
+- Does the drainage itself oscillate (wave-like) or is it smooth?
+- Can the drainage-drainage interaction between two WCs produce charge-dependent force direction?
+
+See [05_1D_wave.md](05_1D_wave.md#-tested-base-wave--disturbance-model-phase-1a) for Phase 1a analysis and base wave physical concept.
+
+## Phase 1c: Non-Linear Wave Equations (1D) — Details
+
+**Rationale**: All linear operations on the sinc function preserve its λ/2 periodicity. Only a non-linear wave equation — where the spatial structure itself is no longer a pure sinc — can break the oscillatory pattern.
 
 **Three energy gradient variables** — currently only A varies spatially; making ρ and f spatial variables turns E = ρV(fA)² into a multi-variable field where ∇E captures contributions from all three:
 
@@ -207,7 +274,7 @@ Currently both configurations show the same oscillatory behavior — the sinc no
 
 The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) needs implementation and tuning. The weight function transition parameter may serve double duty.
 
-## Phase 1c: Vector Wave Force — Details
+## Phase 1d: Vector Wave Force — Details
 
 **Problem**: F = -∇(|ψ|²) uses scalar magnitude, which discards vector direction information. On-axis, vector reduces to scalar (cos(θ_geo) = -1, constant). No help for the standard test case.
 
@@ -215,7 +282,7 @@ The dual-treatment boundary (raw phasor for near-field, smoothed for far-field) 
 
 **Why this might work**: all of classical EM is built on vector field operations (right-hand rule, cross products, curl). Spin, ellipses, spirals, toroids pervade quantum mechanics. The scalar |ψ|² approach may be fundamentally insufficient — charge-sign information may ONLY exist in vector field structure.
 
-**Connection to Phase 1b (non-linear)**: non-linear internal dynamics (toroidal r⁵ flows, Ψ³ stabilization) naturally produce the elliptical/toroidal vector patterns whose directional properties carry charge info. Phases 1b and 1c may converge.
+**Connection to Phase 1c (non-linear)**: non-linear internal dynamics (toroidal r⁵ flows, Ψ³ stabilization) naturally produce the elliptical/toroidal vector patterns whose directional properties carry charge info. Phases 1c and 1d may converge.
 
 **Implementation**: extend 1D sandbox with 2D vector displacement (x + y components), compute signed vector quantities (∇·ψ, ∇×ψ, flux), test force from these. See [05_1D_wave.md](05_1D_wave.md#possible-solution-vector-wave-force-m4-displacement-direction) for full analysis.
 
@@ -225,22 +292,22 @@ Port the validated 1D equations and force computation to M3 Taichi 3D engine. Ve
 
 ## Phase 4: Non-Linear + Vector Wave Equations — Details
 
-Ports validated 1D results from Phase 1b (non-linear) and/or Phase 1c (vector) to 3D engines. Phases 1b and 1c are deeply connected and may converge here.
+Ports validated 1D results from Phase 1c (non-linear) and/or Phase 1d (vector) to 3D engines. Phases 1c and 1d are deeply connected and may converge here.
 
-**Non-linear (from Phase 1b → M3 3D):**
+**Non-linear (from Phase 1c → M3 3D):**
 
 - **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — non-uniform node spacing breaks sinc periodicity (WKB/eikonal phase integral)
 - **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
 - **Ψ³ cubic non-linearity**: NLS soliton stabilizer, modifies spatial function from pure sinc
 - **Variable ρ(x)**: from granule velocity — ∇ρ contributes to ∇E with different spatial structure than ∇A
 
-**Vector (from Phase 1c → M4 3D):**
+**Vector (from Phase 1d → M4 3D):**
 
 - **Divergence/curl/flux** force computation in full 3D vector field
 - **Elliptical rotation handedness** as charge-sign indicator (6-phasor model)
 - **Toroidal flow geometry**: non-linear + vector converge in the Energy Domain
 
-See [Phase 1b](#phase-1b-non-linear-wave-equations-1d--details), [Phase 1c](#phase-1c-vector-wave-force--details), and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
+See [Phase 1c](#phase-1c-non-linear-wave-equations-1d--details), [Phase 1d](#phase-1d-vector-wave-force--details), and [05_1D_wave.md](05_1D_wave.md#possible-solution-non-linear-wave-equations-phase-1b-fallback--phase-4) for full analysis.
 
 ## Phase 5: Gravitational Force — Details
 

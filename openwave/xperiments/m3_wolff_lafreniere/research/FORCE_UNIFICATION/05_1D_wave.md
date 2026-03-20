@@ -160,19 +160,21 @@ All 5 wave equation forms were swept via `sweep_force_vs_separation.py` (SWEEP_E
 
 **Result**: all 5 equations produce force direction flips with separation. The oscillation period and depth vary by equation, but none achieve consistent correct direction. **Confirms that the oscillation is intrinsic to coherent wave interference** — the interaction energy between two coherent sources always contains a cos(k·Δr) term that oscillates with separation, regardless of the specific spatial function used.
 
-## ✅ TESTED: Base Wave + Disturbance Model (Phase 1a)
+## ✅ TESTED: Signed Disturbance Model (Phase 1a)
 
 ### Physical Concept (VALID — this IS the medium)
 
-Space is not empty — a pre-existing **background radiation** (the fundamental energy wave) fills all of space as isotropic standing waves with uniform amplitude A₀, wavelength λ₀, density ρ₀, and energy E₀ = ρV(fA₀)². This base wave is real — it provides the energy field in which all phenomena occur.
+Space is not empty — a pre-existing **background radiation** (the fundamental energy wave) fills all of space as isotropic standing waves with uniform amplitude A₀, wavelength λ₀, density ρ₀, and energy E₀ = ρV(fA₀)². Wave centers do NOT emit new waves — they create **disturbances** in this base wave field, redistributing energy (concentrating it near themselves as standing waves / matter, creating deficits in the far field).
 
-**With zero WCs**: the medium oscillates everywhere as standing waves — uniform energy density, uniform amplitude and wavelength. Displacement oscillates in time (standing wave pattern from isotropic superposition).
+**Why this is fundamentally different from all tested approaches**: all 9 previous candidates (equations 1-5, smoothing, etc.) modeled WCs as wave SOURCES emitting into empty space. The coherent superposition of two source waves always contains a cos(k·Δr) interference term that oscillates with separation. The base wave model changes the paradigm: WCs are disturbers of an existing field, not sources.
 
-**With WCs**: wave centers scatter/reflect the base wave, creating disturbances that **redistribute energy** — concentrating it near the WC (standing waves = matter) and creating deficits in the far field (energy conservation). The disturbance decays with distance and restores to the undisturbed base wave far from the WC.
+**With zero WCs**: the medium oscillates everywhere as standing waves — uniform energy density, uniform amplitude and wavelength. Displacement oscillates in time (standing wave pattern from isotropic superposition). The base wave may have standing wave nodes and anti-nodes, but they are very small — base wave λ = 28 am, while electron radius is 2800 am (100× λ). Particles don't "feel" base wave oscillations directly; they oscillate too fast at 10²⁵ Hz. Particles may only respond to the averaged-out RMS amplitudes.
 
-### Smooth Disturbance Model (TESTED — charge sign NOT emergent)
+**With WCs**: wave centers scatter/reflect the base wave, creating disturbances that **redistribute energy** — concentrating it near the WC (standing waves = matter) and creating deficits in the far field (energy conservation). Both near-field and far-field are waves with oscillatory displacement (standing and traveling respectively). The disturbance decays with distance and restores to the undisturbed base wave far from the WC.
 
-The first implementation modeled WCs as smooth amplitude modulators:
+### Signed Disturbance Model (TESTED — charge sign NOT emergent)
+
+The first implementation modeled WCs as signed amplitude modulators (not actual wave disturbances):
 
 ```text
 A_total(x) = A₀ + Σ q_n · A_peak · δ(r_n)
@@ -208,7 +210,7 @@ The correct Coulomb term `2q₁q₂·δ₁·δ₂` IS present but is small compa
 **This approach is equivalent to the previously ruled-out "smooth envelope with imposed charge sign":**
 
 - Smooth envelope test: computed |Z₁|·|Z₂| (each smooth 1/kr) with charge sign imposed from source_offset difference → 17/17 direction + 1/r² scaling, but sign is NOT emergent
-- Base wave smooth disturbance: computes A₀ + q·A_peak·δ(r) with charge sign from cos(phase) → same mechanism, different notation
+- Signed disturbance: computes A₀ + q·A_peak·δ(r) with charge sign from cos(phase) → same mechanism, different notation. It doesn't actually simulate a base wave — it's a signed potential, not a wave disturbance
 
 In both cases, the charge sign enters as a **direct label** (±1 multiplier) on a smooth function, not as a consequence of wave interference. The wave character is absent — there is no interference pattern, no superposition, no oscillation. It is `charge_label × smooth_potential → force` — Coulomb's law with extra steps, not force emergence from wave physics.
 
@@ -264,20 +266,20 @@ The base wave concept is physically valid (the medium EXISTS, WCs DO redistribut
 
 **Scalar base → vector emergence**: the fundamental base wave is scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. This means the magnetic field is not fundamental but emergent from spin acting on the longitudinal base wave. Multi-particle interference amplifies the transverse components (combined spin effects).
 
-**Near-field vs far-field**: near the WC core (r < transition·λ), the disturbance is strong enough to create standing waves (particle structure, oscillatory). Far from the WC (r > transition·λ), the disturbance is a smooth amplitude modulation (Coulomb regime, monotonic). The weight function transition serves as the boundary between these regimes.
+**Near-field vs far-field**: both regimes are waves with oscillatory displacement. Near the WC core (r < K²λ, particle radius), the disturbance creates standing waves (particle structure — the standing waves ARE the particle). Far from the WC (r > K²λ), the disturbance propagates as traveling waves with 1/r amplitude decay (Coulomb regime). The transition between regimes corresponds to the particle radius boundary.
 
-**Prior art in OpenWave**: the base wave concept was already implemented in M1 (granule method) as background waves from 8 universe vertices — each contributing `A·cos(kr - ωt)·direction / 8` with full amplitude (no 1/r falloff), toggled via `BASE_WAVE_TOGGLE`. M2 (grid/Laplace) used boundary wall oscillators instead. Both used **additive superposition** (base_wave + source_waves), which still produces oscillatory interference.
+**Prior art in OpenWave**: the base wave concept was already implemented in M1 (granule method) as background waves from 8 universe vertices — each contributing `A·cos(kr - ωt)·direction / 8` with full amplitude (no 1/r falloff), toggled via `BASE_WAVE_TOGGLE`. M2 (grid/Laplace) used boundary wall oscillators instead. Both used **additive superposition** (base_wave + source_waves), which still produces oscillatory interference. Base wave amplitude A₀ at every grid point was constant — the result of isotropic superposition, simplified to 1D.
 
-**Implementation in 1D sandbox** (equation #6 in `wave_engine_1D_v2.py`):
+**Implementation in 1D sandbox** (equation #6 "Signed Disturbance" in `wave_engine_1D_v2.py`):
 
 Implemented with `BASE_AMPLITUDE_RATIO` parameter controlling A₀:
 
 - `BASE_AMPLITUDE_RATIO = 1.0`: full base wave → opposite charge fails (asymmetric, 3rd law violated)
 - `BASE_AMPLITUDE_RATIO = 0.0`: disturbances only → symmetric forces, but cusp artifacts with `1/(1+kr)`. Smooth δ function `1/√(1+(kr)²)` eliminates cusps. **However**, this is NOT emergent — it's `charge_sign × smooth_potential`, equivalent to the imposed-sign smooth envelope already ruled out
 
-**Status**: the smooth disturbance model is ruled out as a force emergence mechanism. The physical concept (base wave exists, WCs redistribute energy) is retained as context for the medium — the force mechanism must still come from wave interference.
+**Status**: the signed disturbance model is ruled out as a force emergence mechanism — it doesn't actually simulate a base wave or wave disturbances. It's a signed potential field, not wave physics. The physical concept (base wave exists, WCs redistribute energy) is retained and explored further in [Phase 1b](01_plan.md#phase-1b-base-wave--wc-energy-redistribution--details), where the goal is to model the actual wave disturbance, not a smooth label.
 
-See [01_plan.md](01_plan.md#phase-1a-base-wave--disturbance-model) for tasks.
+See [01_plan.md](01_plan.md#phase-1a-signed-disturbance-forced-charge-sign--details) for Phase 1a tasks.
 
 ## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
 
@@ -370,15 +372,16 @@ The rotation handedness is NOT captured by |ψ|². To recover charge-sign inform
 
 ## Summary: Remaining Paths to Force Direction Resolution
 
-All linear scalar approaches have been exhausted (9 candidates tested and ruled out). The base wave smooth disturbance model (Phase 1a) was tested and also ruled out — it produces correct force scaling but the charge sign is not emergent from wave physics (it's a label on a smooth function, equivalent to the previously ruled-out imposed-sign approach).
+All linear scalar approaches have been exhausted (9 candidates tested and ruled out). The signed disturbance model (Phase 1a) was tested and also ruled out — it produces correct force scaling but the charge sign is not emergent from wave physics (it's a ±1 label on a signed potential, not actual wave disturbance).
 
-**Key constraint for any valid solution**: the force direction must emerge from **wave interference** — actual oscillating waves superposing, creating interference patterns, generating energy gradients. Solutions that bypass wave interference by encoding charge as a ±1 label on smooth potentials are ruled out as "Coulomb with extra steps."
+**Key constraint for any valid solution**: the force direction must emerge from **wave physics** — actual wave scattering, interference, energy redistribution. Solutions that bypass wave physics by encoding charge as a ±1 label on signed potentials are ruled out as "Coulomb with extra steps."
 
-Two remaining paths, in order of implementation complexity:
+Three remaining paths:
 
-1. **Non-linear wave equations** ([Phase 1b](01_plan.md#phase-1b-non-linear-wave-equations-1d--details)) — variable λ(r), ρ(x), Ψ³ cubic term; breaks sinc periodicity while keeping genuine wave interference
-2. **Vector wave force** ([Phase 1c](01_plan.md#phase-1c-vector-wave-force--details)) — divergence/curl/flux-based force from M4 vector displacement; recovers charge sign from rotation direction
+1. **Base wave + WC energy redistribution** ([Phase 1b](01_plan.md#phase-1b-base-wave--wc-energy-redistribution--details)) — model the actual base wave and how WCs redistribute its energy. WCs don't inject energy — they concentrate it near themselves (standing waves = matter) and drain it from the far field. Force emerges when one WC's far-field drainage disturbs another WC's standing waves. The mechanism by which WC phase determines the drainage pattern is the central open question
+2. **Non-linear wave equations** ([Phase 1c](01_plan.md#phase-1c-non-linear-wave-equations-1d--details)) — variable λ(r), ρ(x), Ψ³ cubic term; breaks sinc periodicity while keeping genuine wave interference
+3. **Vector wave force** ([Phase 1d](01_plan.md#phase-1d-vector-wave-force--details)) — divergence/curl/flux-based force from M4 vector displacement; recovers charge sign from rotation direction
 
-Paths 1 and 2 are deeply connected: non-linear internal dynamics (toroidal r⁵ flows) naturally produce the vector patterns (elliptical displacement, spin) whose directional properties may carry the charge information. They may ultimately converge into a single solution.
+All three paths are connected: the base wave (1b) provides the energy field that WCs disturb; non-linear equations (1c) describe how the disturbance propagates; vector displacement (1d) may carry the charge information that scalar magnitude discards. They may ultimately converge into a single solution.
 
-**The base wave concept remains valid** as the physical context (the medium exists, has energy, WCs redistribute it). But the force mechanism must involve genuine wave scattering/interference, not smooth amplitude labels.
+**The base wave concept is not just context — it is the energy source.** The medium has stored energy (standing waves) as potential for matter, forces, EM waves, heat, and time. WCs redistribute this energy, and the redistribution pattern (affected by WC phase) creates the gradients that produce force.
