@@ -160,6 +160,103 @@ All 5 wave equation forms were swept via `sweep_force_vs_separation.py` (SWEEP_E
 
 **Result**: all 5 equations produce force direction flips with separation. The oscillation period and depth vary by equation, but none achieve consistent correct direction. **Confirms that the oscillation is intrinsic to coherent wave interference** — the interaction energy between two coherent sources always contains a cos(k·Δr) term that oscillates with separation, regardless of the specific spatial function used.
 
+## POSSIBLE SOLUTION: Base Wave + Disturbance Model (Phase 1a — NEW IDEA)
+
+**Core concept**: space is not empty — a pre-existing **background radiation** (the fundamental energy wave) fills all of space as isotropic standing waves with uniform amplitude A₀, wavelength λ₀, density ρ₀, and energy E₀ = ρV(fA₀)². Wave centers do NOT emit new waves — they create **disturbances** in this base wave field, redistributing energy (concentrating it near themselves as standing waves / matter, creating deficits in the far field).
+
+**Why this is fundamentally different from all tested approaches**: all 9 previous candidates modeled WCs as wave SOURCES emitting into empty space. The coherent superposition of two source waves always contains a cos(k·Δr) interference term that oscillates with separation. The base wave model changes the paradigm:
+
+- WCs are SCATTERERS/REFLECTORS of the existing base wave, not sources of new waves
+- The far-field effect is a **smooth amplitude modulation** (energy deficit from redistribution), not an oscillating wave
+- The disturbance function δ(r) is smooth (1/r decay, no sinc oscillation)
+- Charge sign q = cos(source_offset) = ±1 determines whether the disturbance is positive or negative
+
+**Mathematical structure**:
+
+```text
+A_total(x) = A₀ + Σ q_n · A_peak · δ(r_n)
+
+where:
+  A₀ = base wave amplitude (constant, large)
+  q_n = cos(φ_n) = ±1 (charge sign, emergent from source_offset)
+  δ(r) = smooth disturbance function (1/(1+kr), exp(-r/r₀), or similar)
+  r_n = distance from WC_n
+
+E(x) = ρV(f · A_total)²
+F(x) = -∇E
+```
+
+Expanding E for two WCs:
+
+```text
+E = ρVf²(A₀ + q₁δ₁ + q₂δ₂)²
+  = ρVf²[A₀² + 2A₀(q₁δ₁ + q₂δ₂) + (q₁δ₁ + q₂δ₂)²]
+```
+
+The dominant force term is **2A₀ · q₂ · ∇δ₂** (at WC1's position):
+
+- **Linear in charge sign** q₂ — emerges naturally from cos(phase), not imposed
+- **Smooth gradient** ∇δ₂ — no oscillation, no sinc zeros, monotonic
+- **Amplified by base wave** A₀ — the background energy provides the "cross term" that makes linear disturbance dominant over quadratic self-interaction
+- **1/r² force scaling**: if δ ∝ 1/r, then ∇δ ∝ 1/r² → Coulomb scaling
+
+**Force direction analysis**:
+
+- **Opposite charge** (q₁ = +1, q₂ = -1): WC2 creates a negative disturbance (amplitude decrease) at WC1's position. ∇δ₂ points toward WC2 (amplitude recovers toward base). F = -∇E → force toward WC2 → **attraction** ✓
+- **Same charge** (q₁ = +1, q₂ = +1): WC2 creates a positive disturbance (amplitude increase) at WC1's position. ∇δ₂ points away from WC2 (amplitude decreases away from WC2). F = -∇E → force away from WC2 → **repulsion** ✓
+
+**Nature of the base wave**:
+
+- **Scalar and longitudinal only** — the fundamental energy wave is a longitudinal pressure wave, not vector displacement. It becomes scalar when reflected by WCs (Wolff's model)
+- **Not a flat field** — real standing waves oscillating at every voxel (from isotropic superposition of waves from all directions). Has well-defined ρ, λ, A, and E per the EWT standards
+- **Granule motion**: in the isotropic base wave, granules complete full circles (equal amplitude from all directions → circular displacement path). WC disturbances deform these circles into ellipses
+- **Open question**: how the base wave standing waves map to granule/voxel relationships in the 3D grid — the oscillation pattern between grid points needs investigation
+- **Previously explored**: this base wave concept was already simulated in the M1 and M2 methods (particle-based and grid-based aether simulations)
+
+**WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (variable λ(r), variable ρ(r)). The disturbance decays with distance and **restores to the original base wave** far from the WC — matching Wolff's model where the out-wave decays and the undisturbed medium reasserts itself.
+
+**Connection to EWT / LaFreniere**: the base wave IS the "isotropic in-wave from all matter in the universe" described in EWT. LaFreniere's model describes WCs as reflecting incoming waves — the in-wave becomes the out-wave. In this model, the reflection creates a local energy redistribution (standing waves near the WC) and a far-field amplitude deficit (the smooth Coulomb-regime force). Energy is conserved globally — concentrated near WCs, depleted in far field.
+
+**Connection to gravitational shading**: gravity as a shading effect benefits enormously from the base wave model — it provides the explicit **background energy field** being disturbed by WCs (matter). The far-field amplitude deficit from energy redistribution IS the gravitational shading mechanism: WCs absorb/redirect base wave energy, creating a "shadow" (energy deficit) in the far field. Other WCs fall into this deficit → gravity. Multiple WCs (large bodies) create collective deficits. This connects directly to Smoliński's push-out / buoyancy model — the base wave IS the medium whose density deficit produces the push-out force.
+
+**Emergent wave hierarchy from base wave disturbances**:
+
+- **Matter** = standing electromagnetic waves (concentrated base wave energy locked in standing wave structure near WC)
+- **Photons / EM waves** = traveling wave disturbances (when standing waves accelerate or are disrupted, the disturbance propagates as a traveling vector wave)
+- **Heat** = standing wave concentrated energy, related to spinning/magnetic momentum
+- **"The wave is spinning, not the particle"** (Wolff) — spin is a property of the wave structure, not a rotating object
+
+**Dual-phase speculation (yin & yang)**: the base wave may consist of two complementary phase modes. WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states. Matter = standing wave concentration from base wave disturbance. Antimatter = opposite-mode concentration. Annihilation = both modes cancel, releasing concentrated energy back to the base wave.
+
+**Spin as longitudinal → transverse converter**: the WC (or its wave structure) spins in a toroidal/vortex/spiral motion (Wolff: "the wave is spinning, not the particle"). This spin converts longitudinal base wave energy into transverse wave components, deforming granule circles into ellipses and creating the magnetic field of force. The 720° spherical rotation (spin-1/2 from quantum mechanics) reflects the oscillation radially back with a full-cycle phase delay. This connects to both Smoliński's toroidal Energy Domain and Butto's vortex electron model.
+
+**Spin and gravitational shading**: the energy for spinning comes FROM the longitudinal base wave. Spin reduces the longitudinal amplitude by converting it to transverse — this amplitude reduction may be the mechanism behind gravitational shading. The conversion ratio may be related to the **fine-structure constant α** (the coupling strength between electric/longitudinal and magnetic/transverse). If so, the gravitational force weakness (10⁻⁴² of electric) emerges from repeated application of this coupling.
+
+**Open questions on spin-conversion dynamics**:
+
+- Does spin convert longitudinal to transverse at a fixed rate? Per spin cycle? Per unit time?
+- Is the conversion ratio the fine-structure constant α (coupling strength)?
+- Spin velocity → angular momentum → what determines it?
+- Higher spin rate = stronger magnetic moment = more heat (thermal energy)?
+- Magnetic moment = spatial distribution of transverse wave energy?
+- Thermal energy = fluctuations in spin rate/axis (incoherent transverse emission)?
+
+**Scalar base → vector emergence**: the fundamental base wave is scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. This means the magnetic field is not fundamental but emergent from spin acting on the longitudinal base wave. Multi-particle interference amplifies the transverse components (combined spin effects).
+
+**Near-field vs far-field**: near the WC core (r < transition·λ), the disturbance is strong enough to create standing waves (particle structure, oscillatory). Far from the WC (r > transition·λ), the disturbance is a smooth amplitude modulation (Coulomb regime, monotonic). The weight function transition serves as the boundary between these regimes.
+
+**Prior art in OpenWave**: the base wave concept was already implemented in M1 (granule method) as background waves from 8 universe vertices — each contributing `A·cos(kr - ωt)·direction / 8` with full amplitude (no 1/r falloff), toggled via `BASE_WAVE_TOGGLE`. M2 (grid/Laplace) used boundary wall oscillators instead. Both used **additive superposition** (base_wave + source_waves), which still produces oscillatory interference. The innovation in equation #6 is changing the WC role from **wave source** (additive) to **wave disturber** (smooth amplitude modulation of the base field) — the WC doesn't emit new waves, it modulates the existing base wave's amplitude.
+
+**Implementation in 1D sandbox** (equation #6):
+
+1. Base wave amplitude A₀ at every grid point (constant — the result of isotropic superposition, as in M1 but simplified to 1D)
+2. Smooth disturbance function δ(r) = 1/(1 + (kr)²) or similar (NOT sin(kr)/kr — no oscillation)
+3. Charge sign q = cos(phase) = ±1
+4. A_total = A₀ + Σ q_n · A_peak · δ(r_n)
+5. E and F as usual: E = ρV(fA)², F = -∇E
+
+See [01_plan.md](01_plan.md#phase-1a-base-wave--disturbance-model) for tasks.
+
 ## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
 
 **Why non-linear?** All linear operations on the sinc function (smoothing, phase shift, derivatives, scaling) preserve its λ/2-periodic zero structure. Only a non-linear wave equation — where the spatial function is no longer a pure sinc — can break the oscillatory pattern that causes force direction errors.

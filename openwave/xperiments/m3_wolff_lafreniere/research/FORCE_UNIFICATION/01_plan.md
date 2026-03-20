@@ -12,7 +12,7 @@
 
 ## ROADMAP
 
-### [Phase 0: Tooling](#phase-0-tooling--details)
+## [Phase 0: Tooling](#phase-0-tooling--details)
 
 - ✅ Build 1D wave sandbox (matplotlib, interactive controls)
 - ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
@@ -23,7 +23,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-### [Phase 1: Electric Force — FAR-FIELD (1D Sandbox only)](#phase-1-electric-force--far-field--details)
+## [Phase 1: Electric Force — FAR-FIELD (1D Sandbox only)](#phase-1-electric-force--far-field--details)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -40,9 +40,14 @@
 
 > **All linear scalar candidates exhausted (9/9 ruled out).** Three remaining paths in order of implementation complexity. Paths B and C are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### Phase 1a: New Idea (next to explore)
+### [Phase 1a: Base Wave + Disturbance Model](#phase-1a-base-wave--disturbance-model--details)
 
-- [ ] To be defined — discussion pending
+- [ ] Implement base wave model in 1D sandbox (equation #6): constant A₀ + smooth disturbances
+- [ ] Choose disturbance function δ(r): Lorentzian 1/(1+(kr)²), exponential, or weight-function-based
+- [ ] Test force direction: opposite charge attraction, same charge repulsion (emergent from q = cos(phase))
+- [ ] Validate 1/r² force scaling against Coulomb reference
+- [ ] Run sweep_force_vs_separation.py with equation #6
+- [ ] If direction + scaling confirmed, compare energy landscape against LaFreniere reference
 
 ### [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details)
 
@@ -61,7 +66,7 @@
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 - [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
 
-### [Phase 2: Electric Force — NEAR-FIELD (1D Sandbox only)](#phase-2-electric-force--near-field--details)
+## [Phase 2: Electric Force — NEAR-FIELD (1D Sandbox only)](#phase-2-electric-force--near-field--details)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
@@ -70,7 +75,7 @@
 - [ ] Test with Verlet/leapfrog integrator (energy conservation for lock-in stability)
 - [ ] Test with f64 precision (check if numerical drift causes escape from wells)
 
-### [Phase 3: Electric Force — 3D Validation (M3 Taichi, port from 1D)](#phase-3-electric-force--3d-validation--details)
+## [Phase 3: Electric Force — 3D Validation (M3 Taichi, port from 1D)](#phase-3-electric-force--3d-validation--details)
 
 - [ ] Port validated 1D equations to M3 3D wave engine
 - [ ] Reproduce 1D force results in 3D (2 WCs on axis)
@@ -78,7 +83,7 @@
 - [ ] Validate force & motion integration (particles move correctly)
 - [ ] Compare against Coulomb force at multiple separations
 
-### [Phase 4: Non-Linear + Vector Wave Equations (M3/M4, 1D → 3D)](#phase-4-non-linear--vector-wave-equations--details)
+## [Phase 4: Non-Linear + Vector Wave Equations (M3/M4, 1D → 3D)](#phase-4-non-linear--vector-wave-equations--details)
 
 > **Conditional scheduling**: Ports validated 1D results from Phase 1b (non-linear) and/or Phase 1c (vector) to 3D engines. If Phase 1a solved the problem, this phase introduces non-linear/vector equations as enhancements. Phases 1b and 1c may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
@@ -90,14 +95,14 @@
 - [ ] Test elliptical rotation handedness as charge-sign indicator in M4
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
 
-### [Phase 5: Gravitational Force (M3, Multi-Particle)](#phase-5-gravitational-force--details)
+## [Phase 5: Gravitational Force (M3, Multi-Particle)](#phase-5-gravitational-force--details)
 
 - [ ] Test wave shading with particle clusters
 - [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
 - [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
 - [ ] Validate computed G against Smoliński's Scilab reference values
 
-### [Phase 6: Magnetic Force (M4 Vector Waves)](#phase-6-magnetic-force--details)
+## [Phase 6: Magnetic Force (M4 Vector Waves)](#phase-6-magnetic-force--details)
 
 - [ ] Build M4 vector wave engine with transverse displacement
 - [ ] Validate elliptical displacement trajectories (6 phasor numbers)
@@ -105,14 +110,14 @@
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
 
-### [Phase 7: Time Dynamics (M4 or new method)](#phase-7-time-dynamics--details)
+## [Phase 7: Time Dynamics (M4 or new method)](#phase-7-time-dynamics--details)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
 - [ ] Connect λ modulation → granule velocity → pressure → gravity
 - [ ] Test force control via frequency/spin manipulation
 
-### [Phase 8: Emergent Waves](#phase-8-emergent-waves--details)
+## [Phase 8: Emergent Waves](#phase-8-emergent-waves--details)
 
 - [ ] Demonstrate photon-like traveling wave packets
 - [ ] Test thermal energy as standing wave dynamics
@@ -163,6 +168,21 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 **All linear candidates exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear wave equation or operation on the superposed field can eliminate it while preserving charge-dependent direction.
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
+
+## Phase 1a: Base Wave + Disturbance Model — Details
+
+**Paradigm shift**: WCs are not wave SOURCES emitting into empty space. Space is filled with a pre-existing **base wave** (fundamental energy wave, isotropic standing waves, uniform A₀). WCs create DISTURBANCES in this field — redistributing energy, not injecting it.
+
+**Why this is different from all 9 ruled-out approaches**: all previous candidates used additive coherent wave superposition (ψ = Σ waves), which always produces oscillatory interference via cos(k·Δr). The base wave model uses **smooth amplitude modulation** on a pre-existing field:
+
+```text
+A_total = A₀ + Σ q_n · A_peak · δ(r_n)
+E = ρVf²·A_total²  →  dominant force term = 2A₀ · q₂ · ∇δ₂
+```
+
+The force is LINEAR in charge sign q = cos(phase), SMOOTH (no oscillation), and AMPLIFIED by A₀. See [05_1D_wave.md](05_1D_wave.md#possible-solution-base-wave--disturbance-model-phase-1a--new-idea) for full mathematical analysis, force direction derivation, and connection to EWT/LaFreniere/gravitational shading.
+
+**Implementation**: add equation #6 to `wave_engine_1D_v2.py` with base amplitude A₀, smooth disturbance function δ(r), and charge sign q = cos(phase). Test with sweep script.
 
 ## Phase 1b: Non-Linear Wave Equations (1D) — Details
 
