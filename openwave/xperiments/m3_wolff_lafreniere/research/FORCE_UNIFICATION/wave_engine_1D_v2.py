@@ -96,8 +96,9 @@ for wc in wave_centers:
 # 3 = Phase-warped Marcotte:     core-corrected traveling wave
 # 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
+# 6 = Signed Disturbance:          smooth A₀ + q·δ(r), no sinc (Phase 1a)
 
-WAVE_EQUATION = 5
+WAVE_EQUATION = 6
 
 WAVE_EQUATION_NAMES = {
     1: "Wolff-Original",
@@ -105,7 +106,14 @@ WAVE_EQUATION_NAMES = {
     3: "Phase-warped Marcotte",
     4: "Combined Wolff-LF",
     5: "Weighted Partial Standing",
+    6: "Signed Disturbance",
 }
+
+# Base wave parameters (used by equation #6 only)
+# Ratio of base wave amplitude to WC disturbance amplitude.
+# 0.0 = disturbances only (Coulomb: force ∝ q₁q₂, Newton's 3rd law ✓)
+# 1.0 = base wave = WC amplitude (gravity-like: force ∝ q, 3rd law ✗)
+BASE_AMPLITUDE_RATIO = 0.0
 
 # Weight function parameters (used by equation #5 only)
 TRANSITION_LAM = 1.25  # standing wave region in wavelengths
@@ -128,6 +136,23 @@ def _phase_warp(kr: np.ndarray) -> np.ndarray:
 
 def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
     """Compute total displacement from all wave centers at time t."""
+    if WAVE_EQUATION == 6:
+        # A_total(x) = A₀ + Σ q_n · A_peak · δ(r_n)
+        # q = cos(phase) = ±1 (charge sign, emergent)
+        # δ(r) = 1/(1+kr) → smooth 1/r decay → ∇δ ∝ 1/r² → Coulomb scaling
+        # E and F as usual: E = ρVf²A², F = -∇E
+        # Dominant force term: 2A₀ · q₂ · ∇δ₂ — linear in charge sign, smooth, no sinc
+        # Base Wave + Disturbance: A_total(x)·cos(ωt)
+        # Base wave provides uniform A₀; WCs create smooth disturbances
+        a_base = BASE_AMPLITUDE_RATIO * A0_am
+        a_total = a_base * np.ones_like(x_am)
+        for wc in wave_centers:
+            q = np.cos(wc.phase)  # charge sign: +1 or -1
+            r_am = np.abs(x_am - wc.x_am)
+            delta = 1.0 / np.sqrt(1.0 + (k * r_am) ** 2)  # smooth at r=0, 1/r far-field
+            a_total += q * wc.amplitude * delta
+        return a_total * np.cos(omega * t_rs)
+
     psi_total = np.zeros_like(x_am)
 
     for wc in wave_centers:
@@ -194,8 +219,20 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
 
     Returns RMS = √(P² + Q²) / √2, where P and Q are the
     accumulated cos(ωt) and sin(ωt) coefficients from all WCs.
-    Supports all 5 wave equation forms via WAVE_EQUATION selector.
+    Supports all 6 wave equation forms via WAVE_EQUATION selector.
     """
+    if WAVE_EQUATION == 6:
+        # Base Wave + Disturbance: A_total = A₀_base + Σ q·A_peak·δ(r)
+        # RMS = |A_total| / √2  (smooth envelope, no sinc oscillation)
+        a_base = BASE_AMPLITUDE_RATIO * A0_am
+        a_total = a_base * np.ones_like(x_am)
+        for wc in wave_centers:
+            q = np.cos(wc.phase)  # charge sign: +1 or -1
+            r_am = np.abs(x_am - wc.x_am)
+            delta = 1.0 / (1.0 + k * r_am)  # smooth 1/r decay
+            a_total += q * wc.amplitude * delta
+        return np.abs(a_total) / np.sqrt(2.0)
+
     P = np.zeros_like(x_am)
     Q = np.zeros_like(x_am)
 
@@ -625,8 +662,8 @@ def plot_sandbox():
         line_rms_pos.set_ydata(rms)
         line_rms_neg.set_ydata(-rms)
 
-        # Update y-limits for panel 1
-        psi_max = A0_am * 0.5
+        # Update y-limits for panel 1 (data-driven for all equations)
+        psi_max = max(np.max(rms) * np.sqrt(2.0) * 1.2, A0_am * 0.1)
         ax1.set_ylim(-psi_max, psi_max)
 
         # Update energy line + fill

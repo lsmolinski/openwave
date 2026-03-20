@@ -38,16 +38,15 @@
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 
-> **All linear scalar candidates exhausted (9/9 ruled out).** Three remaining paths in order of implementation complexity. Paths B and C are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
+> **All linear scalar candidates exhausted (9/9 ruled out). Smooth disturbance model (Phase 1a) also ruled out — charge sign is not emergent from wave physics.** Two remaining paths. Paths B and C are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
 ### [Phase 1a: Base Wave + Disturbance Model](#phase-1a-base-wave--disturbance-model--details)
 
-- [ ] Implement base wave model in 1D sandbox (equation #6): constant A₀ + smooth disturbances
-- [ ] Choose disturbance function δ(r): Lorentzian 1/(1+(kr)²), exponential, or weight-function-based
-- [ ] Test force direction: opposite charge attraction, same charge repulsion (emergent from q = cos(phase))
-- [ ] Validate 1/r² force scaling against Coulomb reference
-- [ ] Run sweep_force_vs_separation.py with equation #6
-- [ ] If direction + scaling confirmed, compare energy landscape against LaFreniere reference
+- ✅ Implemented base wave model in 1D sandbox (equation #6): A₀ + smooth disturbances with `BASE_AMPLITUDE_RATIO`
+- ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay
+- ✅ Same charge repulsion: 9/9 correct direction, near-constant Coulomb ratio
+- ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
+- ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
 ### [Phase 1b: Non-Linear Wave Equations (1D)](#phase-1b-non-linear-wave-equations-1d--details)
 
@@ -165,24 +164,23 @@ The main blocker is the far-field oscillatory force: the sinc function sin(kr)/k
 
 - ✅ Alternative wave equations — all 5 forms (Wolff, LaFreniere-Marcotte, Phase-warped, Combined, Weighted) produce force direction flips. Confirms the oscillation is intrinsic to coherent wave interference regardless of spatial function choice
 
-**All linear candidates exhausted.** The oscillatory force is a fundamental consequence of coherent wave interference — no linear wave equation or operation on the superposed field can eliminate it while preserving charge-dependent direction.
+- ✅ Base wave smooth disturbance (Phase 1a) — smooth δ(r) with q=cos(phase) as ±1 label. Same charge repulsion works, opposite charge fails (asymmetric E ∝ A², Newton's 3rd law violated). Charge sign is not emergent — equivalent to previously ruled-out imposed-sign approach
+
+**All linear candidates exhausted (10/10 ruled out).** The oscillatory force is a fundamental consequence of coherent wave interference — no linear wave equation or operation on the superposed field can eliminate it while preserving charge-dependent direction. Smooth non-wave approaches (Phase 1a) bypass interference entirely but are "Coulomb with extra steps" — charge sign is imposed, not emergent.
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
 ## Phase 1a: Base Wave + Disturbance Model — Details
 
-**Paradigm shift**: WCs are not wave SOURCES emitting into empty space. Space is filled with a pre-existing **base wave** (fundamental energy wave, isotropic standing waves, uniform A₀). WCs create DISTURBANCES in this field — redistributing energy, not injecting it.
+**Physical concept (valid)**: Space is filled with a pre-existing **base wave** (fundamental energy wave, isotropic standing waves, uniform A₀). WCs create DISTURBANCES in this field — redistributing energy (concentrating near WC, depleting far field), not injecting new energy.
 
-**Why this is different from all 9 ruled-out approaches**: all previous candidates used additive coherent wave superposition (ψ = Σ waves), which always produces oscillatory interference via cos(k·Δr). The base wave model uses **smooth amplitude modulation** on a pre-existing field:
+**Smooth disturbance model (tested and ruled out)**: modeled WCs as smooth amplitude modulators: `A_total = A₀ + Σ q·A_peak·δ(r)` with `q = cos(phase) = ±1`. The dominant force term `2A₀·q·∇δ` gives force proportional to **individual** charge sign q, not the charge **product** q₁·q₂. This produces gravity-like behavior (unidirectional drift), not Coulomb (mutual attraction/repulsion). Same charge repulsion works, opposite charge attraction fails (asymmetric energy landscape, Newton's 3rd law violated).
 
-```text
-A_total = A₀ + Σ q_n · A_peak · δ(r_n)
-E = ρVf²·A_total²  →  dominant force term = 2A₀ · q₂ · ∇δ₂
-```
+**Critical finding**: this approach is equivalent to the previously ruled-out "smooth envelope with imposed charge sign" — the charge enters as a ±1 label, not through wave interference. Any solution where you can replace `q = cos(phase)` with a manual `±1` input and get the same result is not emergent force.
 
-The force is LINEAR in charge sign q = cos(phase), SMOOTH (no oscillation), and AMPLIFIED by A₀. See [05_1D_wave.md](05_1D_wave.md#possible-solution-base-wave--disturbance-model-phase-1a--new-idea) for full mathematical analysis, force direction derivation, and connection to EWT/LaFreniere/gravitational shading.
+**Retained concepts**: the base wave as physical context (the medium exists, has energy density, WCs redistribute it), WC energy redistribution (concentration + deficit), and connections to gravitational shading. The FORCE mechanism must come from genuine wave interference, not smooth labels.
 
-**Implementation**: add equation #6 to `wave_engine_1D_v2.py` with base amplitude A₀, smooth disturbance function δ(r), and charge sign q = cos(phase). Test with sweep script.
+See [05_1D_wave.md](05_1D_wave.md#-tested-base-wave--disturbance-model-phase-1a) for full analysis and test results.
 
 ## Phase 1b: Non-Linear Wave Equations (1D) — Details
 
