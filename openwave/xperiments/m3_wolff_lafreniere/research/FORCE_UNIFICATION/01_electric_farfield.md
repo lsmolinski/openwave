@@ -242,7 +242,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (Phase 1c).
 
-**Scalar base → vector emergence**: the fundamental base wave is scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse.
+**Scalar base → vector emergence**: the fundamental base wave might be scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse.
 
 **Emergent wave hierarchy**:
 
@@ -252,7 +252,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **Dual-phase speculation**: the base wave may consist of two complementary phase modes. WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states.
 
-**Spin as longitudinal → transverse converter**: spin converts longitudinal base wave energy into transverse wave components (720° spherical rotation = spin-1/2). The conversion ratio may be the fine-structure constant α. This connects to Smoliński's toroidal Energy Domain and Butto's vortex electron model.
+**Spin as longitudinal → transverse converter**: spin may convert longitudinal base wave energy into transverse wave components (720° spherical rotation = spin-1/2). The conversion ratio may be the fine-structure constant α. This connects to Smoliński's toroidal Energy Domain and Butto's vortex electron model.
 
 ### Open Questions
 
