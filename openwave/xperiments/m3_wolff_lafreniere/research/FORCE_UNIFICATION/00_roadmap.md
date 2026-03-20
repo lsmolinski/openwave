@@ -22,13 +22,16 @@
   - ✅ Ruled out pressure/velocity gradient — 90° shift moves sinc zeros by λ/4 but preserves λ/2 oscillation period
   - ✅ Ruled out standing vs traveling wave decomposition — each component individually is smooth (1/kr), but coherent superposition of two sources still oscillates via cos(k·Δr) interference; oscillation is intrinsic to wave interference, not to standing/traveling character
   - ✅ Tested all 5 wave equations (Wolff, LaFreniere-Marcotte, Phase-warped, Combined, Weighted) — all produce force direction flips; confirms oscillation is intrinsic to coherent interference regardless of spatial function
+  - ✅ Tested signed disturbance (Phase 1a) — q=cos(phase) as ±1 label on smooth δ(r); not emergent from wave interference
+- ✅ 1/r² force law scaling (RESOLVED) — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
 - [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
+- [ ] Dual-treatment boundary: near-field raw phasor (lock-in) vs far-field smoothed envelope (Coulomb)
 
-> **All linear scalar candidates exhausted (9/9 ruled out). Signed disturbance model (Phase 1a) also ruled out — charge sign is not emergent from wave physics.** Three remaining paths. Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
+> **All linear scalar candidates exhausted (10/10 ruled out, including Phase 1a signed disturbance).** Three remaining paths (1b, 1c, 1d). Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### ✅ [PHASE 1a: Signed Disturbance (forced charge sign)](01_electric_farfield.md#phase-1a-signed-disturbance-forced-charge-sign--details) — RULED OUT
+### ✅ [PHASE 1a: Signed Disturbance (forced charge sign)](01_electric_farfield.md#-signed-disturbance-model-phase-1a) — RULED OUT
 
 - ✅ Implemented signed disturbance model in 1D sandbox (equation #6): A₀ + q·δ(r) with `BASE_AMPLITUDE_RATIO`
 - ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay
@@ -36,7 +39,7 @@
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### [PHASE 1b: Base Wave + WC Energy Redistribution](01_electric_farfield.md#phase-1b-base-wave--wc-energy-redistribution--details)
+### [PHASE 1b: Base Wave + WC Energy Redistribution](01_electric_farfield.md#phase-1b-base-wave--wc-energy-redistribution)
 
 - [ ] Model the base wave: isotropic standing wave field with known ρ, λ, A, f — granule displacement in multiple phases (not uniform cos(ωt)), uniform energy density
 - [ ] Model WC disturbance: reflection/scattering of base wave → radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
@@ -44,22 +47,25 @@
 - [ ] Test force emergence: far-field drainage from WC1 disturbs WC2's standing waves → energy gradient at WC2 → force toward lower energy density
 - [ ] Validate against Coulomb reference (direction + 1/r² scaling)
 
-### [PHASE 1c: Non-Linear Wave Equations (1D)](01_electric_farfield.md#phase-1c-non-linear-wave-equations-1d--details)
+### [PHASE 1c: Non-Linear Wave Equations (1D)](01_electric_farfield.md#phase-1c-non-linear-wave-equations)
 
 - [ ] Implement variable λ(r) in 1D sandbox (Yee & Hauger discrete wavelength shells, WKB phase integral)
 - [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
-- [ ] Test Smoliński Ψ³ cubic non-linearity (NLS soliton stabilizer)
+- [ ] Test Smoliński Ψ³ cubic non-linearity (NLS soliton stabilizer — F(Ψ, ε_G, |ε_M|, N_ν))
 - [ ] Test F = -∇E with spatially variable ρ(x), f(x), A(x) — all three gradients contributing
+- [ ] Evaluate Smoliński Push-out Operator P̂Φ = -∇·(η_stat/η_soliton)∇Φ as variable-ρ force formalization
 - [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 
-### [PHASE 1d: Vector Wave Force (M4 displacement direction)](01_electric_farfield.md#phase-1d-vector-wave-force--details)
+### [PHASE 1d: Vector Wave Force (M4 displacement direction)](01_electric_farfield.md#phase-1d-vector-wave-force)
 
 - [ ] Extend 1D sandbox with vector displacement (2D: x + y components)
 - [ ] Compute divergence (∇·ψ), curl, or energy flux from vector field
 - [ ] Test whether signed vector quantities (divergence, flux direction) recover charge-sign without oscillatory ambiguity
+- [ ] Test per-component amplitude (A_x, A_y, A_z separately, not collapsed to |A|)
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 - [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
+- [ ] Evaluate "one force, different directions" — F = -∇E projected: longitudinal → electric, transverse → magnetic, density deficit → gravitational
 
 ## [PHASE 2: Electric Force — NEAR-FIELD (1D Sandbox only)](02_electric_nearfield.md)
 
