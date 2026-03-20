@@ -96,7 +96,7 @@ for wc in wave_centers:
 # 3 = Phase-warped Marcotte:     core-corrected traveling wave
 # 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
-# 6 = Signed Disturbance:          smooth A₀ + q·δ(r), no sinc (Phase 1a)
+# 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
 
 WAVE_EQUATION = 6
 
@@ -143,7 +143,7 @@ def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
         # E and F as usual: E = ρVf²A², F = -∇E
         # Dominant force term: 2A₀ · q₂ · ∇δ₂ — linear in charge sign, smooth, no sinc
         # Base Wave + Disturbance: A_total(x)·cos(ωt)
-        # Base wave provides uniform A₀; WCs create smooth disturbances
+        # Signed Disturbance: A₀ + q·δ(r) — signed potential, not wave physics
         a_base = BASE_AMPLITUDE_RATIO * A0_am
         a_total = a_base * np.ones_like(x_am)
         for wc in wave_centers:
