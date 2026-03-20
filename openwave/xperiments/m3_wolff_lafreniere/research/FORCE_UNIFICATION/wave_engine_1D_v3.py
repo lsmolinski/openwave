@@ -1,13 +1,17 @@
 """
-1D WAVE ENGINE SANDBOX v2 — Force Unification Research Tool
+1D WAVE ENGINE SANDBOX v3 — Phase 1b: Base Wave Research
 
-Lightweight 1D wave engine for rapid prototyping and validation of:
-- Wave equations (weighted partial standing wave as primary)
-- Phasor superposition (exact analytical amplitude)
-- Energy density and force field computation
+Base wave candidate models for testing the fundamental energy wave field:
+- Model A: Uniform oscillation (null baseline)
+- Model B: Standing wave (counter-propagating)
+- Model C: Stochastic multi-phase (statistical isotropy)
+- Model D: Dual-phase standing wave (quadrature complementary)
+- Model E: Laplacian propagation (time-stepped, reflecting BC)
+
+WC interaction with base wave: not yet implemented (Phase 1b Step 2).
 
 3 panels:
-  1. Displacement ψ(x,t) + Phasor RMS envelope (overlay)
+  1. Displacement ψ(x,t) + RMS envelope (overlay)
   2. Energy density E(x) = ρ·V·(f·A)²
   3. Force field F(x) = -∇E
 
@@ -36,256 +40,236 @@ rho_qgam = constants.MEDIUM_DENSITY_QGAM  # medium density in qg/am³
 omega = 2.0 * np.pi * f_rHz  # angular frequency (rad/rs)
 k = 2.0 * np.pi / lam_am  # wave number (rad/am)
 period_rs = 2.0 * np.pi / omega  # one full period in rs
+c_am_rs = lam_am * f_rHz  # wave speed in am/rs
 
 # SI unit conversion factors (internal → SI)
-# 1 qg·am²/rs² = 1e-33 kg · (1e-18 m)² / (1e-27 s)² = 1e-15 J
-# 1 qg·am/rs²  = 1e-33 kg · (1e-18 m) / (1e-27 s)²  = 1e+3  N
 ENERGY_TO_J = constants.QUECTOGRAM * constants.ATTOMETER**2 / constants.RONTOSECOND**2
 FORCE_TO_N = constants.QUECTOGRAM * constants.ATTOMETER / constants.RONTOSECOND**2
-
-
-# ================================================================
-# Wave Center Configuration
-# ================================================================
-
-
-class WaveCenter:
-    """A single wave center with position, phase offset, and amplitude."""
-
-    def __init__(self, x_am: float, phase: float = 0.0, amplitude: float = A0_am):
-        self.x_am = x_am  # position on x-axis (am)
-        self.phase = phase  # source_offset: 0 = positron, π = electron
-        self.amplitude = amplitude  # base amplitude (am)
-
-
-# Default: 2 opposite-charge WCs separated by 4λ
-wc_separation = 4 * lam_am
-wave_centers = [
-    WaveCenter(x_am=-wc_separation / 2, phase=0.0),  # positron
-    WaveCenter(x_am=+wc_separation / 2, phase=np.pi),  # electron
-]
 
 
 # ================================================================
 # Spatial Domain
 # ================================================================
 
-# Domain must be wide enough for max slider separation (10λ) + padding
-max_sep_am = 1 * lam_am  # max slider value in am
-domain_half = max_sep_am / 2 + 5 * lam_am  # WC at edge + 5λ padding each side
-x_am = np.linspace(-domain_half, +domain_half, 4000)
-dx_am = x_am[1] - x_am[0]  # grid spacing
-
-
-def snap_to_grid(pos: float) -> float:
-    """Snap a position to the nearest grid point to avoid asymmetric gradient artifacts."""
-    idx = np.argmin(np.abs(x_am - pos))
-    return float(x_am[idx])
-
-
-# Snap initial WC positions to grid
-for wc in wave_centers:
-    wc.x_am = snap_to_grid(wc.x_am)
+domain_half = 10 * lam_am  # 10λ each side
+x_am = np.linspace(-domain_half, +domain_half, 4001)  # odd for exact center
+dx_am = x_am[1] - x_am[0]
+N_POINTS = len(x_am)
 
 
 # ================================================================
-# Wave Equation Selection
+# Base Wave Mode Configuration
 # ================================================================
-# 1 = Wolff-Original:            pure standing wave, sin(kr)/kr
-# 2 = LaFreniere-Marcotte:       partially standing/traveling, zeros at λ
-# 3 = Phase-warped Marcotte:     core-corrected traveling wave
-# 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
-# 5 = Weighted Partial Standing: w(r) controlled transition (default)
-# 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
+# A = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
+# B = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
+# C = Stochastic (N-source):     N random-phase standing waves, ~flat energy
+# D = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
+# E = Laplacian Propagation:     time-stepped wave equation, reflecting BC
 
-WAVE_EQUATION = 6
+BASE_WAVE_MODE = "E"
 
-WAVE_EQUATION_NAMES = {
-    1: "Wolff-Original",
-    2: "LaFreniere-Marcotte",
-    3: "Phase-warped Marcotte",
-    4: "Combined Wolff-LF",
-    5: "Weighted Partial Standing",
-    6: "Signed Disturbance",
+BASE_WAVE_NAMES = {
+    "A": "Uniform Oscillation",
+    "B": "Standing Wave",
+    "C": "Stochastic (N-source)",
+    "D": "Dual-Phase Standing Wave",
+    "E": "Laplacian Propagation",
 }
 
-# Base wave parameters (used by equation #6 only)
-# Ratio of base wave amplitude to WC disturbance amplitude.
-# 0.0 = disturbances only (Coulomb: force ∝ q₁q₂, Newton's 3rd law ✓)
-# 1.0 = base wave = WC amplitude (gravity-like: force ∝ q, 3rd law ✗)
-BASE_AMPLITUDE_RATIO = 0.0
+# --- Model C parameters ---
+STOCHASTIC_N_SOURCES = 100
+STOCHASTIC_SEED = 42
 
-# Weight function parameters (used by equation #5 only)
-TRANSITION_LAM = 1.25  # standing wave region in wavelengths
-WEIGHT_POWER = 8  # sharpness of standing → traveling transition
+# --- Model D parameters ---
+# Spatial offset between channels: π/2 → flat energy, π → nodes
+DUAL_SPATIAL_OFFSET = np.pi / 2
+# Temporal offset between channels: π/2 → traveling wave sum, 0 → standing wave sum
+DUAL_TEMPORAL_OFFSET = np.pi / 2
 
-
-def compute_weight(r_am: np.ndarray) -> np.ndarray:
-    """In-wave weight: 1 near center (standing), 0 far away (traveling)."""
-    return 1.0 / (1.0 + (r_am / (TRANSITION_LAM * lam_am)) ** WEIGHT_POWER)
-
-
-def _phase_warp(kr: np.ndarray) -> np.ndarray:
-    """Core correction for equation #3: shift phase by up to π/2 at center."""
-    return np.where(
-        kr < np.pi,
-        kr + (np.pi / 2.0) * (1.0 - kr / np.pi) ** 2,
-        kr,
-    )
-
-
-def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
-    """Compute total displacement from all wave centers at time t."""
-    if WAVE_EQUATION == 6:
-        # A_total(x) = A₀ + Σ q_n · A_peak · δ(r_n)
-        # q = cos(phase) = ±1 (charge sign, emergent)
-        # δ(r) = 1/(1+kr) → smooth 1/r decay → ∇δ ∝ 1/r² → Coulomb scaling
-        # E and F as usual: E = ρVf²A², F = -∇E
-        # Dominant force term: 2A₀ · q₂ · ∇δ₂ — linear in charge sign, smooth, no sinc
-        # Base Wave + Disturbance: A_total(x)·cos(ωt)
-        # Signed Disturbance: A₀ + q·δ(r) — signed potential, not wave physics
-        a_base = BASE_AMPLITUDE_RATIO * A0_am
-        a_total = a_base * np.ones_like(x_am)
-        for wc in wave_centers:
-            q = np.cos(wc.phase)  # charge sign: +1 or -1
-            r_am = np.abs(x_am - wc.x_am)
-            delta = 1.0 / np.sqrt(1.0 + (k * r_am) ** 2)  # smooth at r=0, 1/r far-field
-            a_total += q * wc.amplitude * delta
-        return a_total * np.cos(omega * t_rs)
-
-    psi_total = np.zeros_like(x_am)
-
-    for wc in wave_centers:
-        r_am = np.abs(x_am - wc.x_am)
-        kr = k * r_am
-        wt_phi = omega * t_rs + wc.phase
-
-        with np.errstate(divide="ignore", invalid="ignore"):
-            if WAVE_EQUATION == 1:
-                # Wolff: ψ = A·cos(ωt+φ)·sin(kr)/kr
-                wave = np.where(
-                    kr < 1e-10,
-                    np.cos(wt_phi),
-                    np.cos(wt_phi) * np.sin(kr) / kr,
-                )
-            elif WAVE_EQUATION == 2:
-                # LaFreniere-Marcotte: ψ = A·[cos·sin(kr)/kr + sin·(1-cos(kr))/kr]
-                wave = np.where(
-                    kr < 1e-10,
-                    np.cos(wt_phi),
-                    np.cos(wt_phi) * np.sin(kr) / kr + np.sin(wt_phi) * (1.0 - np.cos(kr)) / kr,
-                )
-            elif WAVE_EQUATION == 3:
-                # Phase-warped Marcotte: ψ = A·sin(x_c - ωt - φ)/x_c
-                x_c = _phase_warp(kr)
-                wave = np.where(
-                    x_c < 1e-10,
-                    np.sin(-wt_phi),
-                    np.sin(x_c - wt_phi) / x_c,
-                )
-            elif WAVE_EQUATION == 4:
-                # Combined: ψ = A·[sin(ωt+φ - kr) - sin(ωt+φ)] / kr
-                wave = np.where(
-                    kr < 1e-10,
-                    -np.cos(wt_phi),  # limit: -kr·cos(ωt+φ)/kr
-                    (np.sin(wt_phi - kr) - np.sin(wt_phi)) / kr,
-                )
-            else:
-                # #5 Weighted partial standing wave (default)
-                w = compute_weight(r_am)
-                wave = np.where(
-                    kr < 1e-10,
-                    2.0 * np.cos(wt_phi),
-                    (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
-                )
-
-        psi_total += wc.amplitude * wave
-
-    return psi_total
+# --- Model E parameters ---
+LAPLACIAN_WARMUP_PERIODS = 20  # warmup in wave periods before animation
+LAPLACIAN_INIT = "gaussian"  # "gaussian" pulse or "standing" analytical
 
 
 # ================================================================
-# Phasor Superposition (Analytical Amplitude)
+# Stochastic Model Precomputation (Model C)
 # ================================================================
-# ψ_total(t) = P·cos(ωt) + Q·sin(ωt)
-# Peak = √(P² + Q²),  RMS = Peak / √2
-#
-# Per WC: compute C_n, S_n from the wave equation form,
-# then rotate by source_offset φ to shared cos(ωt)/sin(ωt) basis.
+
+_stochastic_phases = np.random.default_rng(STOCHASTIC_SEED).uniform(
+    0, 2 * np.pi, STOCHASTIC_N_SOURCES
+)
+
+# Pre-compute spatial envelope: (2A₀/√N) · Σ cos(kx + φᵢ)
+_stochastic_envelope = np.zeros(N_POINTS)
+for _phi in _stochastic_phases:
+    _stochastic_envelope += np.cos(k * x_am + _phi)
+_stochastic_envelope *= 2.0 * A0_am / np.sqrt(STOCHASTIC_N_SOURCES)
 
 
-def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
-    """Compute exact phasor RMS amplitude at each x position.
+# ================================================================
+# Laplacian Model State (Model E)
+# ================================================================
 
-    Returns RMS = √(P² + Q²) / √2, where P and Q are the
-    accumulated cos(ωt) and sin(ωt) coefficients from all WCs.
-    Supports all 6 wave equation forms via WAVE_EQUATION selector.
+_lap = {
+    "psi": np.zeros(N_POINTS),
+    "psi_old": np.zeros(N_POINTS),
+    "dt": 0.0,
+    "t": 0.0,
+    "rms": None,
+    "initialized": False,
+    "steps_per_frame": 1,
+}
+
+
+def _lap_init():
+    """Initialize Laplacian field with Gaussian pulse or analytical standing wave."""
+    dt = 0.9 * dx_am / c_am_rs  # CFL condition
+    _lap["dt"] = dt
+    _lap["t"] = 0.0
+
+    if LAPLACIAN_INIT == "gaussian":
+        # Gaussian pulse at center — waves propagate outward, reflect off boundaries
+        sigma = 2.0 * lam_am
+        _lap["psi"] = A0_am * np.exp(-(x_am**2) / (2.0 * sigma**2))
+        _lap["psi_old"] = _lap["psi"].copy()  # zero initial velocity
+    else:
+        # Analytical standing wave — should be a stable solution of the wave equation
+        _lap["psi"] = A0_am * np.cos(k * x_am)
+        _lap["psi_old"] = A0_am * np.cos(k * x_am) * np.cos(-omega * dt)
+
+    # Dirichlet BC: ψ = 0 at boundaries
+    _lap["psi"][0] = _lap["psi"][-1] = 0.0
+    _lap["psi_old"][0] = _lap["psi_old"][-1] = 0.0
+
+    steps_per_period = max(1, int(period_rs / dt))
+    _lap["steps_per_frame"] = max(1, steps_per_period // 50)
+    _lap["initialized"] = True
+
+
+def _lap_step(n=1):
+    """Advance Laplacian simulation by n timesteps using leap-frog."""
+    if not _lap["initialized"]:
+        _lap_init()
+
+    psi = _lap["psi"]
+    psi_old = _lap["psi_old"]
+    dt = _lap["dt"]
+    c2dt2 = (c_am_rs * dt) ** 2
+
+    for _ in range(n):
+        # 3-point Laplacian on interior
+        laplacian = np.empty_like(psi)
+        laplacian[0] = laplacian[-1] = 0.0
+        laplacian[1:-1] = (psi[2:] - 2.0 * psi[1:-1] + psi[:-2]) / dx_am**2
+
+        psi_new = 2.0 * psi - psi_old + c2dt2 * laplacian
+
+        # Dirichlet BC
+        psi_new[0] = 0.0
+        psi_new[-1] = 0.0
+
+        psi_old[:] = psi
+        psi[:] = psi_new
+        _lap["t"] += dt
+
+
+def _lap_warmup():
+    """Run warmup steps, then measure RMS over one full period."""
+    if not _lap["initialized"]:
+        _lap_init()
+
+    dt = _lap["dt"]
+    steps_per_period = max(1, int(period_rs / dt))
+    warmup_steps = LAPLACIAN_WARMUP_PERIODS * steps_per_period
+
+    print(f"Laplacian warmup: {warmup_steps} steps ({LAPLACIAN_WARMUP_PERIODS} periods)...")
+    _lap_step(warmup_steps)
+
+    # Measure RMS: track peak |ψ| at each point over one full period
+    peak = np.zeros(N_POINTS)
+    for _ in range(steps_per_period):
+        _lap_step(1)
+        np.maximum(peak, np.abs(_lap["psi"]), out=peak)
+
+    _lap["rms"] = peak / np.sqrt(2.0)
+    print(f"Laplacian warmup complete. t = {_lap['t']:.2f} rs")
+
+
+# ================================================================
+# Base Wave Computation
+# ================================================================
+
+
+def compute_base_displacement(x, t):
+    """Compute base wave displacement ψ(x,t) for current mode.
+
+    Models A–D are analytical; Model E returns current Laplacian field state.
     """
-    if WAVE_EQUATION == 6:
-        # Base Wave + Disturbance: A_total = A₀_base + Σ q·A_peak·δ(r)
-        # RMS = |A_total| / √2  (smooth envelope, no sinc oscillation)
-        a_base = BASE_AMPLITUDE_RATIO * A0_am
-        a_total = a_base * np.ones_like(x_am)
-        for wc in wave_centers:
-            q = np.cos(wc.phase)  # charge sign: +1 or -1
-            r_am = np.abs(x_am - wc.x_am)
-            delta = 1.0 / (1.0 + k * r_am)  # smooth 1/r decay
-            a_total += q * wc.amplitude * delta
-        return np.abs(a_total) / np.sqrt(2.0)
+    if BASE_WAVE_MODE == "A":
+        # Uniform: every point oscillates together, no spatial structure
+        return A0_am * np.cos(omega * t) * np.ones_like(x)
 
-    P = np.zeros_like(x_am)
-    Q = np.zeros_like(x_am)
+    elif BASE_WAVE_MODE == "B":
+        # Standing wave: counter-propagating left + right waves
+        return A0_am * np.cos(k * x) * np.cos(omega * t)
 
-    for wc in wave_centers:
-        r_am = np.abs(x_am - wc.x_am)
-        kr = k * r_am
+    elif BASE_WAVE_MODE == "C":
+        # Stochastic: pre-computed spatial envelope × cos(ωt)
+        return _stochastic_envelope * np.cos(omega * t)
 
-        # Phasor coefficients C_n (cos ωt) and S_n (sin ωt) per equation
-        with np.errstate(divide="ignore", invalid="ignore"):
-            if WAVE_EQUATION == 1:
-                # Wolff: ψ = A·cos(ωt+φ)·sin(kr)/kr → C_n = sin(kr)/kr, S_n = 0
-                C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
-                S_n = np.zeros_like(kr)
-            elif WAVE_EQUATION == 2:
-                # LaFreniere-Marcotte: Phase=sin(kr)/kr, Quad=(1-cos(kr))/kr
-                C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
-                S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (1.0 - np.cos(kr)) / kr)
-            elif WAVE_EQUATION == 3:
-                # Phase-warped: sin(x_c)/x_c, -cos(x_c)/x_c
-                x_c = _phase_warp(kr)
-                C_n = np.where(
-                    x_c < 1e-10,
-                    wc.amplitude * 2.0 / np.pi,
-                    wc.amplitude * np.sin(x_c) / x_c,
-                )
-                S_n = np.where(x_c < 1e-10, 0.0, -wc.amplitude * np.cos(x_c) / x_c)
-            elif WAVE_EQUATION == 4:
-                # Combined: C_n = -sin(kr)/kr, S_n = -(1-cos(kr))/kr
-                C_n = np.where(kr < 1e-10, -wc.amplitude, -wc.amplitude * np.sin(kr) / kr)
-                S_n = np.where(kr < 1e-10, 0.0, -wc.amplitude * (1.0 - np.cos(kr)) / kr)
-            else:
-                # #5 Weighted partial standing wave (default)
-                w = compute_weight(r_am)
-                C_n = np.where(
-                    kr < 1e-10,
-                    2.0 * wc.amplitude,
-                    wc.amplitude * (w + 1.0) * np.sin(kr) / kr,
-                )
-                S_n = np.where(
-                    kr < 1e-10,
-                    0.0,
-                    wc.amplitude * (w - 1.0) * np.cos(kr) / kr,
-                )
+    elif BASE_WAVE_MODE == "D":
+        # Dual-phase: two standing wave channels with spatial + temporal offsets
+        # Channel 1: A₀ · cos(kx) · cos(ωt)
+        # Channel 2: A₀ · cos(kx + δs) · cos(ωt + δt)
+        # Displayed displacement is the field sum (what would be measured)
+        ch1 = np.cos(k * x) * np.cos(omega * t)
+        ch2 = np.cos(k * x + DUAL_SPATIAL_OFFSET) * np.cos(omega * t + DUAL_TEMPORAL_OFFSET)
+        return A0_am * (ch1 + ch2)
 
-        # Rotate by source_offset to shared cos(ωt)/sin(ωt) basis
-        cos_phi = np.cos(wc.phase)
-        sin_phi = np.sin(wc.phase)
-        P += C_n * cos_phi + S_n * sin_phi
-        Q += -C_n * sin_phi + S_n * cos_phi
+    elif BASE_WAVE_MODE == "E":
+        # Laplacian: return current simulation state
+        if not _lap["initialized"]:
+            _lap_warmup()
+        return _lap["psi"].copy()
 
-    # RMS = peak / √2
-    peak = np.sqrt(P**2 + Q**2)
-    return peak / np.sqrt(2.0)
+    return np.zeros_like(x)
+
+
+def compute_base_rms(x):
+    """Compute base wave RMS envelope for current mode.
+
+    For dual-phase (D): per-channel energy sum gives combined RMS.
+    Energy is independent per channel — RMS_combined = √(RMS₁² + RMS₂²).
+    For Laplacian (E): measured empirically from simulation.
+    """
+    if BASE_WAVE_MODE == "A":
+        # Uniform: peak = A₀ everywhere, RMS = A₀/√2
+        return (A0_am / np.sqrt(2.0)) * np.ones_like(x)
+
+    elif BASE_WAVE_MODE == "B":
+        # Standing: peak at x = A₀|cos(kx)|, RMS = peak/√2
+        return (A0_am / np.sqrt(2.0)) * np.abs(np.cos(k * x))
+
+    elif BASE_WAVE_MODE == "C":
+        # Stochastic: spatial envelope varies, RMS = |envelope|/√2
+        return np.abs(_stochastic_envelope) / np.sqrt(2.0)
+
+    elif BASE_WAVE_MODE == "D":
+        # Per-channel RMS², summed (independent energy channels):
+        # RMS₁² = (A₀²/2)·cos²(kx),  RMS₂² = (A₀²/2)·cos²(kx + δs)
+        # RMS_combined = √(RMS₁² + RMS₂²)
+        # For δs = π/2: cos² + sin² = 1 → RMS = A₀/√2 (FLAT)
+        # For δs = π:   2cos² → A₀|cos(kx)| (NODES, like B but √2 larger)
+        rms_sq = (A0_am**2 / 2.0) * (np.cos(k * x) ** 2 + np.cos(k * x + DUAL_SPATIAL_OFFSET) ** 2)
+        return np.sqrt(rms_sq)
+
+    elif BASE_WAVE_MODE == "E":
+        # Laplacian: measured RMS from warmup
+        if _lap["rms"] is None:
+            _lap_warmup()
+        return _lap["rms"].copy()
+
+    return np.zeros_like(x)
 
 
 # ================================================================
@@ -293,23 +277,15 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
 # ================================================================
 # E = ρ · V · (f · A)²  where V = dx³ (voxel volume)
 # F = -∇E  (negative gradient of energy density)
-#
-# Computing F from ∇E directly (not expanded A·∇A) so that future
-# additions of variable ρ(x), f(x), λ(x) are automatically captured
-# without changing the force computation logic.
 
 
-def compute_energy_density(rms_am: np.ndarray) -> np.ndarray:
-    """Energy density at each x: E = ρ · dx³ · (f · A)²."""
+def compute_energy_density(rms_am):
+    """Energy density at each x: E = ρ · dx³ · (f · A_rms)²."""
     return rho_qgam * dx_am**3 * (f_rHz * rms_am) ** 2
 
 
-def compute_force_field(rms_am: np.ndarray) -> np.ndarray:
-    """Force field: F = -∇E.
-
-    Computes energy per grid point, then takes the negative gradient.
-    Uses central differences via np.gradient.
-    """
+def compute_force_field(rms_am):
+    """Force field: F = -∇E via central differences."""
     energy = compute_energy_density(rms_am)
     return -np.gradient(energy, dx_am)
 
@@ -318,7 +294,6 @@ def compute_force_field(rms_am: np.ndarray) -> np.ndarray:
 # Animation and Plotting
 # ================================================================
 
-# Animation parameters
 ANIMATION_FRAMES = 100
 ANIMATION_INTERVAL = 50  # ms (20 FPS)
 START_PAUSED = False
@@ -328,64 +303,34 @@ PLOT_DIR = _MODULE_DIR / "_plots"
 
 
 def plot_sandbox():
-    """Animate the 1D wave sandbox with 3 panels + interactive controls.
+    """Animate the 1D base wave sandbox with 3 panels.
 
-    Panel 1: Displacement ψ(x,t) + Phasor RMS envelope
+    Panel 1: Displacement ψ(x,t) + RMS envelope
     Panel 2: Energy density E(x)
     Panel 3: Force field F(x)
 
     Controls:
         SPACE: Pause/Resume
         LEFT/RIGHT: Step frame when paused
-        Slider: WC separation distance
-        Checkboxes: Toggle individual WCs on/off
     """
-    from matplotlib.widgets import Slider
-
     state = {"paused": START_PAUSED, "frame": 0}
 
-    # Track active WCs (all on by default)
-    wc_active = [True] * len(wave_centers)
-    # Store original positions for separation slider
-    wc_original_positions = [wc.x_am for wc in wave_centers]
+    # Initial computation
+    rms = compute_base_rms(x_am)
+    energy = compute_energy_density(rms) * ENERGY_TO_J
+    force = compute_force_field(rms) * FORCE_TO_N
 
-    def get_active_centers():
-        """Return list of currently active wave centers."""
-        return [wc for wc, active in zip(wave_centers, wc_active) if active]
-
-    def recompute_static():
-        """Recompute phasor RMS, energy, force from active WCs."""
-        active = get_active_centers()
-        if not active:
-            return np.zeros_like(x_am), np.zeros_like(x_am), np.zeros_like(x_am)
-        # Temporarily swap wave_centers for computation
-        orig = wave_centers.copy()
-        wave_centers.clear()
-        wave_centers.extend(active)
-        rms = compute_phasor_rms(x_am)
-        energy = compute_energy_density(rms)
-        force = compute_force_field(rms)
-        wave_centers.clear()
-        wave_centers.extend(orig)
-        return rms, energy, force
-
-    # Initial computation (internal units → convert to SI for display)
-    rms, energy, force = recompute_static()
-    energy = energy * ENERGY_TO_J
-    force = force * FORCE_TO_N
-
-    # Setup figure with space for widgets
+    # Setup figure
     plt.style.use("dark_background")
     fig = plt.figure(figsize=(16, 9), facecolor=colormap.DARK_GRAY[1])
 
-    # GridSpec: 3 plot rows (slider placed manually below)
     gs = fig.add_gridspec(
         3,
         1,
         height_ratios=[3, 1, 1],
         hspace=0.30,
         top=0.91,
-        bottom=0.10,
+        bottom=0.06,
         left=0.06,
         right=0.98,
     )
@@ -393,253 +338,69 @@ def plot_sandbox():
     ax1 = fig.add_subplot(gs[0, 0])  # displacement + RMS
     ax2 = fig.add_subplot(gs[1, 0])  # energy
     ax3 = fig.add_subplot(gs[2, 0])  # force
-    # Slider: manually positioned, narrower than plots
-    ax_slider = fig.add_axes([0.15, 0.02, 0.70, 0.025])  # [left, bottom, width, height]
 
-    eq_name = WAVE_EQUATION_NAMES.get(WAVE_EQUATION, "Unknown")
+    mode_name = BASE_WAVE_NAMES.get(BASE_WAVE_MODE, "Unknown")
     fig.suptitle(
-        f"OPENWAVE Analytics — 1D Wave Force Research  [{eq_name}]",
+        f"OPENWAVE — Phase 1b: Base Wave  [{mode_name}]",
         fontsize=16,
         family="Monospace",
         y=0.98,
     )
 
-    # --- Panel 1: Displacement + Phasor RMS ---
+    # Mode info text
+    info_parts = [f"Mode {BASE_WAVE_MODE}: {mode_name}"]
+    if BASE_WAVE_MODE == "C":
+        info_parts.append(f"N={STOCHASTIC_N_SOURCES}, seed={STOCHASTIC_SEED}")
+    elif BASE_WAVE_MODE == "D":
+        info_parts.append(
+            f"spatial={np.degrees(DUAL_SPATIAL_OFFSET):.0f}°, "
+            f"temporal={np.degrees(DUAL_TEMPORAL_OFFSET):.0f}°"
+        )
+    elif BASE_WAVE_MODE == "E":
+        info_parts.append(f"init={LAPLACIAN_INIT}, warmup={LAPLACIAN_WARMUP_PERIODS}T")
+    info_str = "  |  ".join(info_parts)
+    fig.text(
+        0.50,
+        0.935,
+        info_str,
+        fontsize=10,
+        family="Monospace",
+        ha="center",
+        va="center",
+        color="#AAAAAA",
+    )
+
+    # --- Panel 1: Displacement + RMS ---
     (line_psi,) = ax1.plot(
-        [], [], color=colormap.viridis_palette[2][1], linewidth=1.5, alpha=0.8, label="ψ(x,t)"
+        [],
+        [],
+        color=colormap.viridis_palette[2][1],
+        linewidth=1.5,
+        alpha=0.8,
+        label="ψ(x,t)",
     )
     (line_rms_pos,) = ax1.plot(
-        x_am, rms, color=colormap.viridis_palette[4][1], linewidth=2, label="Phasor RMS"
+        x_am,
+        rms,
+        color=colormap.viridis_palette[4][1],
+        linewidth=2,
+        label="RMS envelope",
     )
     (line_rms_neg,) = ax1.plot(
-        x_am, -rms, color=colormap.viridis_palette[4][1], linewidth=2, alpha=0.5
+        x_am,
+        -rms,
+        color=colormap.viridis_palette[4][1],
+        linewidth=2,
+        alpha=0.5,
     )
-
-    # WC marker lines (stored for update)
-    wc_vlines = []
-    for i, wc in enumerate(wave_centers):
-        color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
-        charge = "+" if wc.phase == 0.0 else "−"
-        vl = ax1.axvline(
-            x=wc.x_am, color=color, linestyle="--", alpha=0.6, label=f"WC{i+1} ({charge})"
-        )
-        vl2 = ax2.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
-        vl3 = ax3.axvline(x=wc.x_am, color=color, linestyle="--", alpha=0.4)
-        wc_vlines.append((vl, vl2, vl3))
-
     ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
     ax1.set_xlim(x_am.min(), x_am.max())
-    psi_max = A0_am * 2
+    psi_max = max(np.max(rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1)
     ax1.set_ylim(-psi_max, psi_max)
     ax1.set_ylabel("Displacement (am)", family="Monospace")
     ax1.legend(loc="upper right", fontsize=9)
     ax1.grid(True, alpha=0.2)
 
-    # --- Panel 2: Energy Density ---
-    (line_energy,) = ax2.plot(
-        x_am,
-        energy,
-        color=colormap.viridis_palette[3][1],
-        linewidth=1.5,
-        label="E(x) = ρV(fA)² [J]",
-    )
-    # Mutable list so fill can be replaced in refresh_static
-    fill_energy = [ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)]
-    ax2.set_xlim(x_am.min(), x_am.max())
-    ax2.set_ylabel("Energy (J)", family="Monospace", fontsize=9)
-    ax2.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    ax2.legend(loc="upper right", fontsize=9)
-    ax2.grid(True, alpha=0.2)
-
-    # --- Panel 3: Force Field ---
-    (line_force,) = ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
-    # Mutable lists so fills can be replaced in refresh_static
-    fill_force_r = [
-        ax3.fill_between(
-            x_am,
-            force,
-            where=(force > 0),
-            color="#FF4444",
-            alpha=0.3,
-            label="→ Right Force Vector (+)",
-        )
-    ]
-    fill_force_l = [
-        ax3.fill_between(
-            x_am,
-            force,
-            where=(force < 0),
-            color="#4488FF",
-            alpha=0.3,
-            label="← Left Force Vector (−)",
-        )
-    ]
-    ax3.axhline(y=0, color="w", linestyle="--", alpha=0.3)
-    ax3.set_xlim(x_am.min(), x_am.max())
-    ax3.set_xlabel("X (am)", family="Monospace")
-    ax3.set_ylabel("Force (N)", family="Monospace", fontsize=9)
-    ax3.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    ax3.legend(loc="upper right", fontsize=9)
-    ax3.grid(True, alpha=0.2)
-
-    # --- Coulomb reference text (bottom of force panel) ---
-    coulomb_text = ax3.text(
-        0.5,
-        0.02,
-        "",
-        transform=ax3.transAxes,
-        fontsize=9,
-        family="Monospace",
-        ha="center",
-        va="bottom",
-        color="#FFCC00",
-        visible=False,
-        bbox=dict(facecolor="#222222", edgecolor="#FFCC00", boxstyle="round,pad=0.3", alpha=0.7),
-    )
-
-    # --- Force annotations at each WC position ---
-    # Blended transform: x in data coords (am), y in axes fraction (0–1)
-    from matplotlib.transforms import blended_transform_factory
-
-    wc_force_texts = []
-    for wc in wave_centers:
-        txt = ax3.text(
-            wc.x_am,
-            0.97,
-            "",
-            transform=blended_transform_factory(ax3.transData, ax3.transAxes),
-            fontsize=9,
-            family="Monospace",
-            fontweight="bold",
-            ha="center",
-            va="top",
-            bbox=dict(facecolor=colormap.DARK_GRAY[1], edgecolor="none", pad=2),
-        )
-        wc_force_texts.append(txt)
-
-    # --- Separation Slider ---
-    sep_min, sep_max = 0.0, 10.0  # in wavelengths
-    sep_init = wc_separation / lam_am
-    slider_sep = Slider(
-        ax_slider,
-        "WC Separation (λ)",
-        sep_min,
-        sep_max,
-        valinit=sep_init,
-        valstep=0.50,
-        color=colormap.viridis_palette[3][1],
-    )
-
-    # --- WC Toggle Buttons (click text to toggle on/off, top bar) ---
-    wc_labels = []
-    wc_texts = []
-    n_wcs = len(wave_centers)
-    for i, wc in enumerate(wave_centers):
-        charge = "+" if wc.phase == 0.0 else "−"
-        label = f"WC{i+1} ({charge})"
-        wc_labels.append(label)
-        # Lay out horizontally in the title area, left-aligned
-        x_pos = 0.10 + i * 0.10  # left-to-right spacing
-        txt = fig.text(
-            x_pos,
-            0.93,
-            label,
-            fontsize=11,
-            family="Monospace",
-            fontweight="bold",
-            ha="center",
-            va="center",
-            color="yellow",
-            picker=True,
-            bbox=dict(facecolor="none", edgecolor="yellow", boxstyle="round,pad=0.3", alpha=0.5),
-        )
-        wc_texts.append(txt)
-
-    def update_wc_text_style():
-        """Update text colors based on active state."""
-        for i, txt in enumerate(wc_texts):
-            if wc_active[i]:
-                txt.set_color("yellow")
-                txt.get_bbox_patch().set_edgecolor("yellow")
-                txt.get_bbox_patch().set_alpha(0.5)
-            else:
-                txt.set_color("#666666")
-                txt.get_bbox_patch().set_edgecolor("#666666")
-                txt.get_bbox_patch().set_alpha(0.2)
-
-    # --- Phase Offset Toggle (top bar, after WC labels) ---
-    phase_state = {"opposite": True}  # True = 0 vs π (opposite), False = same phase
-    x_phase = 0.98 - 0.12  # right-to-left spacing
-    phase_label_text = "Phase Δ: 180° (opposite charges)"
-    phase_txt = fig.text(
-        x_phase,
-        0.93,
-        phase_label_text,
-        fontsize=11,
-        family="Monospace",
-        fontweight="bold",
-        ha="center",
-        va="center",
-        color="#88FF00",
-        picker=True,
-        bbox=dict(facecolor="none", edgecolor="#88FF00", boxstyle="round,pad=0.3", alpha=0.5),
-    )
-
-    def update_phase_text():
-        """Update phase toggle label."""
-        if phase_state["opposite"]:
-            phase_txt.set_text("Phase Δ: 180° (opposite charges)")
-            phase_txt.set_color("#88FF00")
-            phase_txt.get_bbox_patch().set_edgecolor("#88FF00")
-        else:
-            phase_txt.set_text("Phase Δ: 0° (same charges)")
-            phase_txt.set_color("#FF8800")
-            phase_txt.get_bbox_patch().set_edgecolor("#FF8800")
-
-    def apply_phase_offset():
-        """Set WC phases based on toggle state."""
-        if phase_state["opposite"]:
-            # Opposite: first WC = 0, second WC = π
-            if len(wave_centers) >= 2:
-                wave_centers[0].phase = 0.0
-                wave_centers[1].phase = np.pi
-        else:
-            # Same: all WCs share phase 0
-            for wc in wave_centers:
-                wc.phase = 0.0
-        # Update WC toggle labels and ax1 vline colors/legend to reflect charge
-        for i, (wc, txt) in enumerate(zip(wave_centers, wc_texts)):
-            charge = "+" if wc.phase == 0.0 else "−"
-            wc_labels[i] = f"WC{i+1} ({charge})"
-            txt.set_text(wc_labels[i])
-            color = "#FF4444" if wc.phase == 0.0 else "#4488FF"
-            vl1, vl2, vl3 = wc_vlines[i]
-            for vl in (vl1, vl2, vl3):
-                vl.set_color(color)
-            vl1.set_label(wc_labels[i])
-        ax1.legend(loc="upper right", fontsize=9)
-
-    def on_pick(event):
-        """Handle clicks on WC toggles and phase toggle."""
-        # Phase toggle
-        if event.artist == phase_txt:
-            phase_state["opposite"] = not phase_state["opposite"]
-            apply_phase_offset()
-            update_phase_text()
-            update_wc_text_style()
-            refresh_static()
-            return
-        # WC toggles
-        for i, txt in enumerate(wc_texts):
-            if event.artist == txt:
-                wc_active[i] = not wc_active[i]
-                update_wc_text_style()
-                refresh_static()
-                break
-
-    fig.canvas.mpl_connect("pick_event", on_pick)
-
-    # Time display
     time_text = ax1.text(
         0.02,
         0.95,
@@ -650,188 +411,106 @@ def plot_sandbox():
         verticalalignment="top",
     )
 
-    def refresh_static():
-        """Recompute and redraw all static elements (RMS, energy, force, markers)."""
-        nonlocal rms, energy, force, psi_max
+    # --- Panel 2: Energy Density ---
+    (line_energy,) = ax2.plot(
+        x_am,
+        energy,
+        color=colormap.viridis_palette[3][1],
+        linewidth=1.5,
+        label="E(x) = ρV(fA)² [J]",
+    )
+    fill_energy = [ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)]
+    ax2.set_xlim(x_am.min(), x_am.max())
+    ax2.set_ylabel("Energy (J)", family="Monospace", fontsize=9)
+    ax2.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    ax2.legend(loc="upper right", fontsize=9)
+    ax2.grid(True, alpha=0.2)
 
-        rms, energy, force = recompute_static()
-        energy = energy * ENERGY_TO_J
-        force = force * FORCE_TO_N
+    e_max = np.max(energy) if np.max(energy) > 0 else 1e-10
+    ax2.set_ylim(0, e_max * 1.2)
 
-        # Update RMS lines
-        line_rms_pos.set_ydata(rms)
-        line_rms_neg.set_ydata(-rms)
+    # Energy uniformity annotation
+    e_min_val = np.min(energy)
+    e_max_val = np.max(energy)
+    if e_max_val > 0:
+        flatness = e_min_val / e_max_val
+        flat_color = "#88FF00" if flatness > 0.95 else "#FF8800" if flatness > 0.5 else "#FF4444"
+        flat_label = "FLAT" if flatness > 0.95 else f"ratio min/max = {flatness:.3f}"
+    else:
+        flat_color = "#666666"
+        flat_label = "zero energy"
+    energy_info = ax2.text(
+        0.5,
+        0.90,
+        f"Energy: {flat_label}",
+        transform=ax2.transAxes,
+        fontsize=10,
+        family="Monospace",
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color=flat_color,
+    )
 
-        # Update y-limits for panel 1 (data-driven for all equations)
-        psi_max = max(np.max(rms) / 3, A0_am * 0.1)
-        ax1.set_ylim(-psi_max, psi_max)
-
-        # Update energy line + fill
-        line_energy.set_ydata(energy)
-        fill_energy[0].remove()
-        fill_energy[0] = ax2.fill_between(
-            x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5
-        )
-        e_max = np.max(energy) if np.max(energy) > 0 else 1e-10
-        ax2.set_ylim(0, e_max * 1.2)
-
-        # Update force line + fills
-        line_force.set_ydata(force)
-        fill_force_r[0].remove()
-        fill_force_l[0].remove()
-        fill_force_r[0] = ax3.fill_between(
+    # --- Panel 3: Force Field ---
+    (line_force,) = ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
+    fill_force_r = [
+        ax3.fill_between(
             x_am,
             force,
             where=(force > 0),
             color="#FF4444",
             alpha=0.3,
+            label="→ Right (+)",
         )
-        fill_force_l[0] = ax3.fill_between(
+    ]
+    fill_force_l = [
+        ax3.fill_between(
             x_am,
             force,
             where=(force < 0),
             color="#4488FF",
             alpha=0.3,
+            label="← Left (−)",
         )
-        f_max = np.max(np.abs(force)) if np.max(np.abs(force)) > 0 else 1e-10
-        ax3.set_ylim(-f_max * 1.3, f_max * 1.3)
+    ]
+    ax3.axhline(y=0, color="w", linestyle="--", alpha=0.3)
+    ax3.set_xlim(x_am.min(), x_am.max())
+    ax3.set_xlabel("X (am)", family="Monospace")
+    ax3.set_ylabel("Force (N)", family="Monospace", fontsize=9)
+    ax3.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    ax3.legend(loc="upper right", fontsize=9)
+    ax3.grid(True, alpha=0.2)
 
-        # Pre-pass: collect force values at each active WC position
-        wc_f_vals = []
-        for i in range(len(wave_centers)):
-            if wc_active[i]:
-                idx = int(np.argmin(np.abs(x_am - wave_centers[i].x_am)))
-                wc_f_vals.append(force[idx])
-            else:
-                wc_f_vals.append(None)
+    f_max = np.max(np.abs(force)) if np.max(np.abs(force)) > 0 else 1e-10
+    ax3.set_ylim(-f_max * 1.3, f_max * 1.3)
 
-        # Detect attraction / repulsion when exactly 2 WCs are both active.
-        # Sort by position to identify left vs right WC regardless of list order.
-        active_indices = [i for i in range(len(wave_centers)) if wc_active[i]]
-        both_active = len(active_indices) == 2
-        if both_active:
-            i_left, i_right = sorted(active_indices, key=lambda i: wave_centers[i].x_am)
-            f_left = wc_f_vals[i_left]
-            f_right = wc_f_vals[i_right]
-            is_attraction = f_left > 0 and f_right < 0  # forces point toward each other
-            is_repulsion = f_left < 0 and f_right > 0  # forces point away from each other
+    # Force magnitude annotation
+    f_peak = np.max(np.abs(force))
+    force_info = ax3.text(
+        0.5,
+        0.90,
+        f"|F|_max = {f_peak:.3e} N",
+        transform=ax3.transAxes,
+        fontsize=10,
+        family="Monospace",
+        ha="center",
+        va="top",
+        color="#AAAAAA",
+    )
 
-            # Coulomb reference: F = ke · q1·q2 / r²
-            ke = constants.COULOMB_CONSTANT  # N·m²/C²
-            qe = constants.ELEMENTARY_CHARGE  # C
-            sep_m = (
-                abs(wave_centers[i_right].x_am - wave_centers[i_left].x_am) * constants.ATTOMETER
-            )
-            if sep_m > 0:
-                opposite_phase = (
-                    abs(wave_centers[i_left].phase - wave_centers[i_right].phase) > 1.0
-                )
-                charge_product = -(qe**2) if opposite_phase else qe**2
-                coulomb_f = ke * charge_product / sep_m**2  # Newtons (signed)
-                sep_lam = sep_m / constants.EWAVE_LENGTH
-                wave_f_signed = (
-                    f_left if f_left is not None else 0.0
-                )  # left WC force (+ = right, - = left)
-                # Check if wave force direction matches Coulomb prediction
-                # Coulomb negative = attraction (forces point inward), positive = repulsion (outward)
-                # For left WC: attraction means force points right (+), repulsion means left (-)
-                coulomb_direction_for_left = (
-                    -coulomb_f
-                )  # flip: coulomb negative(attract) → left WC goes right(+)
-                signs_match = (wave_f_signed * coulomb_direction_for_left) > 0
-
-                if signs_match:
-                    ratio = abs(wave_f_signed) / abs(coulomb_f) if coulomb_f != 0 else 0.0
-                    coulomb_text.set_text(
-                        f"Coulomb: {coulomb_f:.3e} N  |  Wave: {wave_f_signed:.3e} N  |  "
-                        f"Ratio: {ratio:.3e}  |  Sep: {sep_lam:.2f}λ"
-                    )
-                    coulomb_text.set_color("#FFCC00")
-                    coulomb_text.get_bbox_patch().set_edgecolor("#FFCC00")
-                else:
-                    coulomb_text.set_text(
-                        f"WRONG DIRECTION  |  Coulomb: {coulomb_f:.3e} N  |  "
-                        f"Wave: {wave_f_signed:.3e} N  |  Sep: {sep_lam:.2f}λ"
-                    )
-                    coulomb_text.set_color("#FF4444")
-                    coulomb_text.get_bbox_patch().set_edgecolor("#FF4444")
-                coulomb_text.set_visible(True)
-            else:
-                coulomb_text.set_visible(False)
-        else:
-            is_attraction = is_repulsion = False
-            coulomb_text.set_visible(False)
-
-        # Update WC marker positions, visibility, and force annotations
-        for i, (vl1, vl2, vl3) in enumerate(wc_vlines):
-            x_pos = wave_centers[i].x_am
-            visible = wc_active[i]
-            for vl in (vl1, vl2, vl3):
-                vl.set_xdata([x_pos, x_pos])
-                vl.set_visible(visible)
-
-            # Force annotation at this WC position
-            ftxt = wc_force_texts[i]
-            ftxt.set_x(x_pos)
-            if not visible:
-                ftxt.set_text("")
-                continue
-
-            f_val = wc_f_vals[i]
-            if both_active and is_attraction:
-                label = (
-                    f">>> Attraction\n{f_val:.3e} N"
-                    if i == i_left
-                    else f"Attraction <<<\n{f_val:.3e} N"
-                )
-                color = "#88FF00"  # green — opposite charges attract
-            elif both_active and is_repulsion:
-                label = (
-                    f"<<< Repulsion\n{f_val:.3e} N"
-                    if i == i_left
-                    else f"Repulsion >>>\n{f_val:.3e} N"
-                )
-                color = "#FF8800"  # orange — same charges repel
-            elif f_val > 0:
-                label = f"→ Right\n{f_val:.3e} N"
-                color = "#FF4444"
-            elif f_val < 0:
-                label = f"← Left\n{f_val:.3e} N"
-                color = "#4488FF"
-            else:
-                label = f"Neutral\n{f_val:.3e} N"
-                color = "#aaaaaa"
-            ftxt.set_text(label)
-            ftxt.set_color(color)
-
-        fig.canvas.draw_idle()
-
-    def on_slider_change(val):
-        """Update WC positions from separation slider."""
-        new_sep = val * lam_am
-        # Reposition WCs symmetrically, snapped to grid
-        if len(wave_centers) >= 2:
-            wave_centers[0].x_am = snap_to_grid(-new_sep / 2)
-            wave_centers[1].x_am = snap_to_grid(+new_sep / 2)
-        refresh_static()
-
-    slider_sep.on_changed(on_slider_change)
+    # --- Animation ---
 
     def update_plot(frame):
-        """Update displacement for given frame."""
         t_rs = (frame / ANIMATION_FRAMES) * period_rs
 
-        # Compute displacement from active WCs only
-        active = get_active_centers()
-        if active:
-            orig = wave_centers.copy()
-            wave_centers.clear()
-            wave_centers.extend(active)
-            psi = compute_displacement(x_am, t_rs)
-            wave_centers.clear()
-            wave_centers.extend(orig)
+        if BASE_WAVE_MODE == "E":
+            # Laplacian: step simulation forward
+            _lap_step(_lap["steps_per_frame"])
+            psi = _lap["psi"].copy()
+            t_rs = _lap["t"]
         else:
-            psi = np.zeros_like(x_am)
+            psi = compute_base_displacement(x_am, t_rs)
 
         line_psi.set_data(x_am, psi)
 
@@ -859,7 +538,6 @@ def plot_sandbox():
 
     fig.canvas.mpl_connect("key_press_event", on_key)
 
-    # blit=False required for widget redraws
     anim = FuncAnimation(
         fig,
         animate,
@@ -868,12 +546,9 @@ def plot_sandbox():
         blit=False,
     )
 
-    # Initial static draw
-    refresh_static()
-
-    return anim, slider_sep, wc_texts, phase_txt  # keep references to prevent GC
+    return anim
 
 
 if __name__ == "__main__":
-    anim, _slider, _wc_texts, _phase_txt = plot_sandbox()
+    anim = plot_sandbox()
     plt.show()
