@@ -248,18 +248,9 @@ The **spatial offset** controls energy flatness. The **temporal offset** control
 
 **Traveling wave direction and charge/spin**: the direction flip (left ↔ right) with temporal offset sign is physically interesting — it could encode charge sign or spin handedness. WCs that "tap" into one direction vs the other would see different energy landscapes. The challenge: in 3D, there are infinitely many directions, not just two — so mapping this to real charge physics requires understanding how the 3D elliptical motion reduces to the 1D two-channel picture.
 
-**Additional test: π-apart dual phase** — two standing waves offset by half a wavelength (180° spatial phase):
+**π-offset variant** (δs = π): direct superposition cancels to zero, per-channel energy sum has nodes (same as standing wave). Only the 90°-apart case gives flat energy — confirming that quadrature (not arbitrary offset) is the special configuration. Testable in v3 by setting `DUAL_SPATIAL_OFFSET = π`.
 
-```text
-Channel 1:  ψ₁(x,t) = A₀ · cos(kx) · cos(ωt)
-Channel 2:  ψ₂(x,t) = A₀ · cos(kx + π) · cos(ωt)
-           = -A₀ · cos(kx) · cos(ωt)
-```
-
-Direct superposition: `ψ₁ + ψ₂ = 0` (total cancellation). But energy sum: `E₁ + E₂ = ρVf²A₀²cos²(kx)` — still has nodes, same as standing wave. The π-apart case only works as separate energy channels (not field superposition), and even then doesn't produce flat energy. This contrasts with the 90°-apart case where energy complementarity is exact.
-
-- **Use case**: test whether WCs preferentially lock onto one channel (creating charge states?). The dual-phase speculation — "WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states" — directly maps to this model
-- **Connection to charge**: if the base wave has two complementary modes, and WCs disturb one mode more than the other based on their phase, this could be the mechanism for charge-dependent force direction
+**Connection to charge**: WCs may preferentially lock onto one channel (creating charge states). If the base wave has two complementary modes and WCs disturb one mode more than the other based on their phase, this could be the mechanism for charge-dependent force direction.
 
 ## ✅ Laplacian (`BASE_WAVE_MODE = "laplacian"`) — RETIRED
 
@@ -299,35 +290,42 @@ The v3 engine (`wave_engine_1D_v3.py`) replaces the v2 equation selector (#1–#
 
 ```text
 BASE_WAVE_MODE:
-  A = "uniform"        — ψ = A₀·cos(ωt), flat energy
-  B = "standing"       — ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
-  C = "stochastic"     — N random-phase standing waves, ~flat energy
-  D = "dual_phase"     — two 90°-offset standing waves, flat energy (test π-offset too)
-  E = "laplacian"      — time-stepped wave equation, reflecting BC
+  "uniform"    — ψ = A₀·cos(ωt), flat energy
+  "standing"   — ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
+  "stochastic" — N broadband random-phase waves, ~flat energy
+  "quadrature" — two 90°-offset standing waves, flat energy
+  "laplacian"  — time-stepped wave equation, reflecting BC (RETIRED)
 
-WC_INTERACTION_MODE:   (Phase 2 — after base wave is validated)
+WC_INTERACTION_MODE:   (Step 2 — after base wave is validated)
   [to be determined]   — how WCs disturb the base wave
 ```
 
-**Step 1 — Base wave only (no WCs)**:
+### ✅ Step 1 — Base wave only (no WCs) — COMPLETE
 
-- Implement all 5 modes
-- Visualize: displacement ψ(x,t), RMS envelope, energy density E(x)
-- Verify: uniform energy for modes A, C, D; structured energy for B; emergent structure for E
-- Compare: do any analytical modes (A–D) match the Laplacian result (E)?
+All 5 modes implemented and tested:
 
-**Step 2 — Insert WC disturbance**:
+- ✅ **uniform**: flat energy, flat RMS — works as null baseline
+- ✅ **standing**: nodes at λ/2, structured energy — physically validated by Laplacian
+- ✅ **stochastic**: monochromatic bug found and fixed (broadband), quasi-uniform energy at σ=1
+- ✅ **quadrature**: perfectly flat energy (at 90° offset), traveling wave direction flips with sign
+- ✅ **laplacian**: self-stabilizes to standing wave — validates standing wave model, RETIRED
 
-- Design WC interaction mechanism (how does a WC modify the base wave field?)
-- Test energy redistribution: concentration near WC, drainage in far field
-- Test phase dependence: does WC phase (0 vs π) affect the drainage pattern?
-- Measure force: F = -∇E at WC positions
+**Key finding**: Laplacian resolves to standing wave → standing wave is the physically correct 1D base wave form. Quadrature produces flat energy via two complementary channels — most mathematically elegant and may encode real physics (complex sinusoids, spin, charge).
 
-Each base wave mode may interact with WCs differently — that's the point of testing all of them.
+### [ ] Step 2 — Next: WC Disturbance and Contender Selection
 
-### Recommended Implementation Order
+**Immediate next steps**:
 
-1. **Model D (dual-phase)** first — the cleanest analytical model that gives uniform energy density while maintaining real wave structure. Good baseline for verifying the v3 engine works correctly
-2. **Model E (Laplacian)** second — the "ground truth" time-stepped model for comparison against analytical candidates. Architecturally different (time-stepping vs phasor), so validates from a different angle
-3. **Model B (standing wave)** third — shows what happens with nodes. WC disturbance interaction with node structure could be revealing, and the λ/2 node spacing matching the oscillatory force period may be significant
-4. **Models A and C** as needed — A is the trivial null baseline, C is the computationally heavier stochastic model (useful if coherent models fail)
+1. Implement WC interaction ideas from testing:
+   - Uniform model: add π-apart second wave, WCs disturb one phase depending on charge
+   - Quadrature model: WCs tap into one channel direction (left/right traveling wave → charge sign?)
+   - Standing wave model: WCs as boundary conditions or scattering centers within the standing wave field
+
+1. Deeper discussion of results:
+   - Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
+   - Evaluate standing wave node suppression at particle scale — is the scale argument sufficient, or do nodes need to be eliminated?
+
+1. Select 2–3 strongest contenders for WC interaction testing:
+   - **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection)
+   - **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase
+   - **Uniform** — if the π-apart WC idea produces emergent charge-dependent forces
