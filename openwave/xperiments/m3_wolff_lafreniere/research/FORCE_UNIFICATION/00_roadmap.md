@@ -28,7 +28,7 @@
 
 > **All linear scalar candidates exhausted (9/9 ruled out). Signed disturbance model (Phase 1a) also ruled out — charge sign is not emergent from wave physics.** Three remaining paths. Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### [PHASE 1a: Signed Disturbance (forced charge sign)](01_electric_farfield.md#phase-1a-signed-disturbance-forced-charge-sign--details) — RULED OUT
+### ✅ [PHASE 1a: Signed Disturbance (forced charge sign)](01_electric_farfield.md#phase-1a-signed-disturbance-forced-charge-sign--details) — RULED OUT
 
 - ✅ Implemented signed disturbance model in 1D sandbox (equation #6): A₀ + q·δ(r) with `BASE_AMPLITUDE_RATIO`
 - ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay

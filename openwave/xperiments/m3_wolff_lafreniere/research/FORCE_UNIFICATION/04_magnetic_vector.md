@@ -109,6 +109,29 @@ The phasor route gives them analytically in one shot. The timestep route require
 
 This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the [Yee & Hauger](references/Spin.pdf) and WKB research already planned for Phase 3.
 
+## On-Axis Vector Analysis
+
+For two WCs on the x-axis, the displacement vectors at any point between them are anti-parallel (d̂₁ = +x̂, d̂₂ = -x̂). Only the x-component is nonzero, so |ψ_vec| reduces exactly to |ψ_scalar|. The vector energy |ψ_vec|² expands to:
+
+```text
+|ψ_vec|² = |ψ₁|² + |ψ₂|² + 2·|ψ₁|·|ψ₂|·cos(k·Δr + Δφ)·cos(θ_geo)
+```
+
+On-axis: cos(θ_geo) = -1 (constant), so F = -∇E is identical to scalar. No improvement for the standard on-axis test case. The vector advantage only manifests off-axis or with transverse components.
+
+## Spin and Gravitational Shading
+
+The energy for spinning comes FROM the longitudinal base wave. Spin reduces the longitudinal amplitude by converting it to transverse — this amplitude reduction may be the mechanism behind gravitational shading. The conversion ratio may be related to the **fine-structure constant α** (the coupling strength between electric/longitudinal and magnetic/transverse). If so, the gravitational force weakness (10⁻⁴² of electric) emerges from repeated application of this coupling.
+
+## Open Questions — Spin-Conversion Dynamics
+
+- Does spin convert longitudinal to transverse at a fixed rate? Per spin cycle? Per unit time?
+- Is the conversion ratio the fine-structure constant α (coupling strength)?
+- Spin velocity → angular momentum → what determines it?
+- Higher spin rate = stronger magnetic moment = more heat (thermal energy)?
+- Magnetic moment = spatial distribution of transverse wave energy?
+- Thermal energy = fluctuations in spin rate/axis (incoherent transverse emission)?
+
 ## Why Scalar is Insufficient: Monopole = Longitudinal Only
 
 **Key insight**: Wolff's scalar wave model may be scalar precisely because a **single WC (monopole) produces only longitudinal waves** — radial motion, linear oscillations, radially oriented. A monopole has no ellipses, no transverse component, no magnetic field. The scalar model correctly describes a single isolated particle.
