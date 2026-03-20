@@ -89,15 +89,25 @@ for wc in wave_centers:
 
 
 # ================================================================
-# Wave Equation: Weighted Partial Standing Wave
+# Wave Equation Selection
 # ================================================================
-# ψ = A · [w(r)·sin(kr + ωt + φ) + sin(kr - ωt - φ)] / kr
-#
-# w(r) = 1 / (1 + (r / (transition·λ))^power)
-#
-# Standing limit (w=1): 2·sin(kr)·cos(ωt+φ) / kr
-# Traveling limit (w=0): sin(kr - ωt - φ) / kr
+# 1 = Wolff-Original:            pure standing wave, sin(kr)/kr
+# 2 = LaFreniere-Marcotte:       partially standing/traveling, zeros at λ
+# 3 = Phase-warped Marcotte:     core-corrected traveling wave
+# 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
+# 5 = Weighted Partial Standing: w(r) controlled transition (default)
 
+WAVE_EQUATION = 5
+
+WAVE_EQUATION_NAMES = {
+    1: "Wolff-Original",
+    2: "LaFreniere-Marcotte",
+    3: "Phase-warped Marcotte",
+    4: "Combined Wolff-LF",
+    5: "Weighted Partial Standing",
+}
+
+# Weight function parameters (used by equation #5 only)
 TRANSITION_LAM = 1.25  # standing wave region in wavelengths
 WEIGHT_POWER = 8  # sharpness of standing → traveling transition
 
@@ -107,27 +117,62 @@ def compute_weight(r_am: np.ndarray) -> np.ndarray:
     return 1.0 / (1.0 + (r_am / (TRANSITION_LAM * lam_am)) ** WEIGHT_POWER)
 
 
-def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
-    """Compute total displacement from all wave centers at time t.
+def _phase_warp(kr: np.ndarray) -> np.ndarray:
+    """Core correction for equation #3: shift phase by up to π/2 at center."""
+    return np.where(
+        kr < np.pi,
+        kr + (np.pi / 2.0) * (1.0 - kr / np.pi) ** 2,
+        kr,
+    )
 
-    Returns superposition of all WCs using weighted partial standing wave.
-    """
+
+def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
+    """Compute total displacement from all wave centers at time t."""
     psi_total = np.zeros_like(x_am)
 
     for wc in wave_centers:
         r_am = np.abs(x_am - wc.x_am)
         kr = k * r_am
         wt_phi = omega * t_rs + wc.phase
-        w = compute_weight(r_am)
 
-        # Combined partially standing wave
-        # Center safe: kr=0 → limit is 2·cos(ωt+φ)
         with np.errstate(divide="ignore", invalid="ignore"):
-            wave = np.where(
-                kr < 1e-10,
-                2.0 * np.cos(wt_phi),  # center limit
-                (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
-            )
+            if WAVE_EQUATION == 1:
+                # Wolff: ψ = A·cos(ωt+φ)·sin(kr)/kr
+                wave = np.where(
+                    kr < 1e-10,
+                    np.cos(wt_phi),
+                    np.cos(wt_phi) * np.sin(kr) / kr,
+                )
+            elif WAVE_EQUATION == 2:
+                # LaFreniere-Marcotte: ψ = A·[cos·sin(kr)/kr + sin·(1-cos(kr))/kr]
+                wave = np.where(
+                    kr < 1e-10,
+                    np.cos(wt_phi),
+                    np.cos(wt_phi) * np.sin(kr) / kr + np.sin(wt_phi) * (1.0 - np.cos(kr)) / kr,
+                )
+            elif WAVE_EQUATION == 3:
+                # Phase-warped Marcotte: ψ = A·sin(x_c - ωt - φ)/x_c
+                x_c = _phase_warp(kr)
+                wave = np.where(
+                    x_c < 1e-10,
+                    np.sin(-wt_phi),
+                    np.sin(x_c - wt_phi) / x_c,
+                )
+            elif WAVE_EQUATION == 4:
+                # Combined: ψ = A·[sin(ωt+φ - kr) - sin(ωt+φ)] / kr
+                wave = np.where(
+                    kr < 1e-10,
+                    -np.cos(wt_phi),  # limit: -kr·cos(ωt+φ)/kr
+                    (np.sin(wt_phi - kr) - np.sin(wt_phi)) / kr,
+                )
+            else:
+                # #5 Weighted partial standing wave (default)
+                w = compute_weight(r_am)
+                wave = np.where(
+                    kr < 1e-10,
+                    2.0 * np.cos(wt_phi),
+                    (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
+                )
 
         psi_total += wc.amplitude * wave
 
@@ -140,8 +185,8 @@ def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
 # ψ_total(t) = P·cos(ωt) + Q·sin(ωt)
 # Peak = √(P² + Q²),  RMS = Peak / √2
 #
-# Per WC: ψ = A·[(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
-# Rotate by φ to shared cos(ωt)/sin(ωt) basis.
+# Per WC: compute C_n, S_n from the wave equation form,
+# then rotate by source_offset φ to shared cos(ωt)/sin(ωt) basis.
 
 
 def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
@@ -149,6 +194,7 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
 
     Returns RMS = √(P² + Q²) / √2, where P and Q are the
     accumulated cos(ωt) and sin(ωt) coefficients from all WCs.
+    Supports all 5 wave equation forms via WAVE_EQUATION selector.
     """
     P = np.zeros_like(x_am)
     Q = np.zeros_like(x_am)
@@ -156,20 +202,43 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
     for wc in wave_centers:
         r_am = np.abs(x_am - wc.x_am)
         kr = k * r_am
-        w = compute_weight(r_am)
 
-        # Phasor coefficients for this WC
+        # Phasor coefficients C_n (cos ωt) and S_n (sin ωt) per equation
         with np.errstate(divide="ignore", invalid="ignore"):
-            C_n = np.where(
-                kr < 1e-10,
-                2.0 * wc.amplitude,  # center limit: (w+1)·sin(kr)/kr → 2
-                wc.amplitude * (w + 1.0) * np.sin(kr) / kr,
-            )
-            S_n = np.where(
-                kr < 1e-10,
-                0.0,  # center limit: (w-1)·cos(kr)/kr → 0
-                wc.amplitude * (w - 1.0) * np.cos(kr) / kr,
-            )
+            if WAVE_EQUATION == 1:
+                # Wolff: ψ = A·cos(ωt+φ)·sin(kr)/kr → C_n = sin(kr)/kr, S_n = 0
+                C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
+                S_n = np.zeros_like(kr)
+            elif WAVE_EQUATION == 2:
+                # LaFreniere-Marcotte: Phase=sin(kr)/kr, Quad=(1-cos(kr))/kr
+                C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
+                S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (1.0 - np.cos(kr)) / kr)
+            elif WAVE_EQUATION == 3:
+                # Phase-warped: sin(x_c)/x_c, -cos(x_c)/x_c
+                x_c = _phase_warp(kr)
+                C_n = np.where(
+                    x_c < 1e-10,
+                    wc.amplitude * 2.0 / np.pi,
+                    wc.amplitude * np.sin(x_c) / x_c,
+                )
+                S_n = np.where(x_c < 1e-10, 0.0, -wc.amplitude * np.cos(x_c) / x_c)
+            elif WAVE_EQUATION == 4:
+                # Combined: C_n = -sin(kr)/kr, S_n = -(1-cos(kr))/kr
+                C_n = np.where(kr < 1e-10, -wc.amplitude, -wc.amplitude * np.sin(kr) / kr)
+                S_n = np.where(kr < 1e-10, 0.0, -wc.amplitude * (1.0 - np.cos(kr)) / kr)
+            else:
+                # #5 Weighted partial standing wave (default)
+                w = compute_weight(r_am)
+                C_n = np.where(
+                    kr < 1e-10,
+                    2.0 * wc.amplitude,
+                    wc.amplitude * (w + 1.0) * np.sin(kr) / kr,
+                )
+                S_n = np.where(
+                    kr < 1e-10,
+                    0.0,
+                    wc.amplitude * (w - 1.0) * np.cos(kr) / kr,
+                )
 
         # Rotate by source_offset to shared cos(ωt)/sin(ωt) basis
         cos_phi = np.cos(wc.phase)
@@ -290,9 +359,10 @@ def plot_sandbox():
     # Slider: manually positioned, narrower than plots
     ax_slider = fig.add_axes([0.15, 0.02, 0.70, 0.025])  # [left, bottom, width, height]
 
+    eq_name = WAVE_EQUATION_NAMES.get(WAVE_EQUATION, "Unknown")
     fig.suptitle(
-        "OPENWAVE Analytics — 1D Wave Force Research",
-        fontsize=18,
+        f"OPENWAVE Analytics — 1D Wave Force Research  [{eq_name}]",
+        fontsize=16,
         family="Monospace",
         y=0.98,
     )
@@ -435,7 +505,7 @@ def plot_sandbox():
         x_pos = 0.10 + i * 0.10  # left-to-right spacing
         txt = fig.text(
             x_pos,
-            0.95,
+            0.93,
             label,
             fontsize=11,
             family="Monospace",
@@ -466,7 +536,7 @@ def plot_sandbox():
     phase_label_text = "Phase Δ: 180° (opposite charges)"
     phase_txt = fig.text(
         x_phase,
-        0.95,
+        0.93,
         phase_label_text,
         fontsize=11,
         family="Monospace",
@@ -556,7 +626,7 @@ def plot_sandbox():
         line_rms_neg.set_ydata(-rms)
 
         # Update y-limits for panel 1
-        psi_max = A0_am * 2
+        psi_max = A0_am * 0.5
         ax1.set_ylim(-psi_max, psi_max)
 
         # Update energy line + fill

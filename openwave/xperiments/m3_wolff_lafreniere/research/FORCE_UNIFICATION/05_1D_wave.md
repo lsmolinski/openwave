@@ -103,38 +103,195 @@ Compute force from the product of individual WC phasor magnitudes |Z₁|·|Z₂|
 - **1/r² scaling confirmed** (constant ratio to Coulomb across all separations)
 - **But**: charge sign is imposed by hand (`-1` for opposite, `+1` for same), not emergent from wave interference. This is equivalent to the old "analytical signed envelope" approach — Coulomb with extra steps, not force emergence
 
-## POSSIBLE SOLUTION: Numerical Precision and Inertia Filtering
+## ✅ RULED OUT: Numerical Precision
 
-Two additional factors that may be masking or distorting the force signal:
+- **Floating-point precision**: The 1D sandbox uses numpy f64 (15 decimal digits) — more than sufficient. All physical constants are already in simulation-friendly units (am, rs, qg) with magnitudes in the O(0.01)–O(10) range, avoiding large/small number cancellation. The sinc zeros are exact zeros of sin(kr), not near-cancellation artifacts. M3/M4 use f32 but with the same unit scaling. **Conclusion**: the oscillatory force is a real mathematical feature of the sinc spatial function, not a floating-point artifact
 
-- **Floating-point precision**: f32 arithmetic on very small force values (10⁻³ N scale at subatomic distances) may introduce numerical artifacts. The sinc function has near-zero values between nodes where precision loss is worst. Testing with f64 in the 1D sandbox (numpy default) should rule this out
-- **Inertia as low-pass filter**: Real particles don't respond to 10²⁵ Hz oscillations — their mass acts as a low-pass filter, averaging out rapid force fluctuations. The force we compute should be the **time-averaged** force over at least one wave period, not the instantaneous gradient. The phasor RMS already time-averages amplitude — but if force depends on pressure (which is phase-shifted), the time-averaging may need to account for the phase relationship between displacement and pressure
+## ✅ RULED OUT: Inertia Filtering
 
-## POSSIBLE SOLUTION: Multi-Variable Energy Gradient
+- **Inertia as low-pass filter**: Real particles don't respond to 10²⁵ Hz oscillations — their mass acts as a low-pass filter, averaging out rapid force fluctuations. **But the phasor RMS already IS this filter** — it gives the exact analytical time-averaged amplitude without simulating any oscillation cycles. The force we compute from ∇E(RMS) is already the time-averaged force. The oscillatory problem is in the *spatial* sinc structure of the RMS envelope, not in temporal high-frequency artifacts that further averaging could remove
 
-**Deeper question: Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+## ✅ RULED OUT: Pressure/Velocity Gradient (90° Phase Shift)
 
-- **A** (amplitude): currently the only variable — computed via phasor RMS
-- **f / λ** (frequency / wavelength): if λ varies with position (time dynamics, variable-λ research), then ∇f contributes to ∇E even where ∇A = 0
-- **ρ** (density): if medium density varies with position (Smoliński's buoyancy model), then ∇ρ contributes to ∇E independently of amplitude
-
-This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the [Time Dynamics](07_time_dynamics.md) and [Smoliński sections](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework).
-
-Computing F = -∇E means these additional variables are automatically included when implemented — no force logic changes needed.
-
-## POSSIBLE SOLUTION: Pressure/Velocity Gradient (90° Phase Shift)
-
-Force may not respond to displacement amplitude directly — it may respond to **pressure** or **energy density**, which are related but phase-shifted quantities:
+The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially breaking the exact cancellation pattern that makes charge-phase information unrecoverable.
 
 - **Displacement** (what we compute as ψ): the wave displaces the medium from equilibrium
 - **Velocity** (∂ψ/∂t): 90° phase-shifted from displacement — granule velocity
 - **Pressure/density**: related to velocity (or compression), also 90° phase-shifted from displacement
 
-In fluid mechanics, force derives from pressure gradients, not displacement gradients. If the wave equation is fundamentally propagating **pressure or density variations** (not just displacement), then force may be **90° phase-shifted** from where the displacement gradient predicts it. This would change which points in space experience force and could resolve the oscillatory artifact — the pressure nodes are at different spatial positions than the displacement nodes.
+A 90° phase shift does not resolve the oscillatory force:
 
-The chain: `displacement → velocity (90° phase) → pressure/compression → energy → force`. If force follows pressure gradient rather than displacement gradient, the sinc zeros that create our oscillatory force artifact would shift by λ/4 — potentially breaking the exact cancellation pattern that makes charge-phase information unrecoverable.
+- **Velocity (∂ψ/∂t)**: velocity RMS = ω × displacement RMS. Since ω is constant, ∇(ω·RMS) = ω·∇(RMS) — identical gradient direction, zero benefit
+- **Pressure (∝ -∂ψ/∂x)**: gives d/dr[sin(kr)/kr] instead of sin(kr)/kr — different zeros, but still oscillates with the same λ/2 period, just shifted by λ/4
 
-The phasor already contains the 90° information (the Q component is sin(ωt), shifted from the P component cos(ωt)).
+No phase rotation or derivative of a periodic function removes its periodicity. The sinc zeros are λ/2-spaced, and any linear operation (derivative, phase shift, scaling) preserves that spacing. The problem would persist, just at different separation values.
+
+**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](07_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored below in the Non-Linear Wave Equations section, where ∇ρ could contribute force independently of ∇A.
+
+## ✅ RULED OUT: Standing vs Traveling Wave Decomposition
+
+Decompose the phasor into standing-wave-only and traveling-wave-only components, test force from each separately.
+
+**Single WC analysis**: each component individually is smooth:
+
+- **Standing** (in-wave): RMS = A·w(r)/kr — smooth, dies off with weight function
+- **Traveling** (out-wave): RMS = A/kr — smooth 1/r everywhere
+- The sinc oscillation `√((w+1)²sin²(kr) + (w-1)²cos²(kr))/kr` only appears when combining both components of the same WC
+
+**Two WC analysis**: even with traveling-wave-only (smooth 1/kr per source), coherent superposition creates oscillatory interference. The interaction energy between two traveling waves contains:
+
+```text
+E_interaction ∝ cos(k(r₁ - r₂) - (φ₁ - φ₂)) / (kr₁ · kr₂)
+```
+
+The cos() term oscillates with separation at spatial frequency k — this is the same λ/2 force flip. **The oscillation is intrinsic to coherent wave interference**, not to standing vs traveling character. This explains why the smooth envelope test (|Z₁|·|Z₂|) works — it avoids coherent superposition entirely by computing each source's smooth amplitude separately.
+
+## ✅ TESTED: Alternative Wave Equations (All 5 Forms)
+
+All 5 wave equation forms were swept via `sweep_force_vs_separation.py` (SWEEP_EQUATION=0):
+
+| Equation | Spatial zeros | Zero spacing | Force direction flips? |
+| --- | --- | --- | --- |
+| #1 Wolff | sin(kr)/r | λ/2 | Yes |
+| #2 LaFreniere-Marcotte | sin(kr)/(kr) + (1-cos(kr))/(kr) | λ | Yes |
+| #3 Phase-warped Marcotte | sin(x_c)/x_c | ~λ (warped near core) | Yes |
+| #4 Combined Wolff-LF | sin(kr)/r + (1-cos(kr))/r | λ/2 | Yes |
+| #5 Weighted (current) | (w+1)sin(kr)/(kr) + (w-1)cos(kr)/(kr) | depends on w(r) | Yes |
+
+**Result**: all 5 equations produce force direction flips with separation. The oscillation period and depth vary by equation, but none achieve consistent correct direction. **Confirms that the oscillation is intrinsic to coherent wave interference** — the interaction energy between two coherent sources always contains a cos(k·Δr) term that oscillates with separation, regardless of the specific spatial function used.
+
+## POSSIBLE SOLUTION: Base Wave + Disturbance Model (Phase 1a — NEW IDEA)
+
+**Core concept**: space is not empty — a pre-existing **background radiation** (the fundamental energy wave) fills all of space as isotropic standing waves with uniform amplitude A₀, wavelength λ₀, density ρ₀, and energy E₀ = ρV(fA₀)². Wave centers do NOT emit new waves — they create **disturbances** in this base wave field, redistributing energy (concentrating it near themselves as standing waves / matter, creating deficits in the far field).
+
+**Why this is fundamentally different from all tested approaches**: all 9 previous candidates modeled WCs as wave SOURCES emitting into empty space. The coherent superposition of two source waves always contains a cos(k·Δr) interference term that oscillates with separation. The base wave model changes the paradigm:
+
+- WCs are SCATTERERS/REFLECTORS of the existing base wave, not sources of new waves
+- The far-field effect is a **smooth amplitude modulation** (energy deficit from redistribution), not an oscillating wave
+- The disturbance function δ(r) is smooth (1/r decay, no sinc oscillation)
+- Charge sign q = cos(source_offset) = ±1 determines whether the disturbance is positive or negative
+
+**Mathematical structure**:
+
+```text
+A_total(x) = A₀ + Σ q_n · A_peak · δ(r_n)
+
+where:
+  A₀ = base wave amplitude (constant, large)
+  q_n = cos(φ_n) = ±1 (charge sign, emergent from source_offset)
+  δ(r) = smooth disturbance function (1/(1+kr), exp(-r/r₀), or similar)
+  r_n = distance from WC_n
+
+E(x) = ρV(f · A_total)²
+F(x) = -∇E
+```
+
+Expanding E for two WCs:
+
+```text
+E = ρVf²(A₀ + q₁δ₁ + q₂δ₂)²
+  = ρVf²[A₀² + 2A₀(q₁δ₁ + q₂δ₂) + (q₁δ₁ + q₂δ₂)²]
+```
+
+The dominant force term is **2A₀ · q₂ · ∇δ₂** (at WC1's position):
+
+- **Linear in charge sign** q₂ — emerges naturally from cos(phase), not imposed
+- **Smooth gradient** ∇δ₂ — no oscillation, no sinc zeros, monotonic
+- **Amplified by base wave** A₀ — the background energy provides the "cross term" that makes linear disturbance dominant over quadratic self-interaction
+- **1/r² force scaling**: if δ ∝ 1/r, then ∇δ ∝ 1/r² → Coulomb scaling
+
+**Force direction analysis**:
+
+- **Opposite charge** (q₁ = +1, q₂ = -1): WC2 creates a negative disturbance (amplitude decrease) at WC1's position. ∇δ₂ points toward WC2 (amplitude recovers toward base). F = -∇E → force toward WC2 → **attraction** ✓
+- **Same charge** (q₁ = +1, q₂ = +1): WC2 creates a positive disturbance (amplitude increase) at WC1's position. ∇δ₂ points away from WC2 (amplitude decreases away from WC2). F = -∇E → force away from WC2 → **repulsion** ✓
+
+**Nature of the base wave**:
+
+- **Scalar and longitudinal only** — the fundamental energy wave is a longitudinal pressure wave, not vector displacement. It becomes scalar when reflected by WCs (Wolff's model)
+- **Not a flat field** — real standing waves oscillating at every voxel (from isotropic superposition of waves from all directions). Has well-defined ρ, λ, A, and E per the EWT standards
+- **Granule motion**: in the isotropic base wave, granules complete full circles (equal amplitude from all directions → circular displacement path). WC disturbances deform these circles into ellipses
+- **Open question**: how the base wave standing waves map to granule/voxel relationships in the 3D grid — the oscillation pattern between grid points needs investigation
+- **Previously explored**: this base wave concept was already simulated in the M1 and M2 methods (particle-based and grid-based aether simulations)
+
+**WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (variable λ(r), variable ρ(r)). The disturbance decays with distance and **restores to the original base wave** far from the WC — matching Wolff's model where the out-wave decays and the undisturbed medium reasserts itself.
+
+**Connection to EWT / LaFreniere**: the base wave IS the "isotropic in-wave from all matter in the universe" described in EWT. LaFreniere's model describes WCs as reflecting incoming waves — the in-wave becomes the out-wave. In this model, the reflection creates a local energy redistribution (standing waves near the WC) and a far-field amplitude deficit (the smooth Coulomb-regime force). Energy is conserved globally — concentrated near WCs, depleted in far field.
+
+**Connection to gravitational shading**: gravity as a shading effect benefits enormously from the base wave model — it provides the explicit **background energy field** being disturbed by WCs (matter). The far-field amplitude deficit from energy redistribution IS the gravitational shading mechanism: WCs absorb/redirect base wave energy, creating a "shadow" (energy deficit) in the far field. Other WCs fall into this deficit → gravity. Multiple WCs (large bodies) create collective deficits. This connects directly to Smoliński's push-out / buoyancy model — the base wave IS the medium whose density deficit produces the push-out force.
+
+**Emergent wave hierarchy from base wave disturbances**:
+
+- **Matter** = standing electromagnetic waves (concentrated base wave energy locked in standing wave structure near WC)
+- **Photons / EM waves** = traveling wave disturbances (when standing waves accelerate or are disrupted, the disturbance propagates as a traveling vector wave)
+- **Heat** = standing wave concentrated energy, related to spinning/magnetic momentum
+- **"The wave is spinning, not the particle"** (Wolff) — spin is a property of the wave structure, not a rotating object
+
+**Dual-phase speculation (yin & yang)**: the base wave may consist of two complementary phase modes. WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states. Matter = standing wave concentration from base wave disturbance. Antimatter = opposite-mode concentration. Annihilation = both modes cancel, releasing concentrated energy back to the base wave.
+
+**Spin as longitudinal → transverse converter**: the WC (or its wave structure) spins in a toroidal/vortex/spiral motion (Wolff: "the wave is spinning, not the particle"). This spin converts longitudinal base wave energy into transverse wave components, deforming granule circles into ellipses and creating the magnetic field of force. The 720° spherical rotation (spin-1/2 from quantum mechanics) reflects the oscillation radially back with a full-cycle phase delay. This connects to both Smoliński's toroidal Energy Domain and Butto's vortex electron model.
+
+**Spin and gravitational shading**: the energy for spinning comes FROM the longitudinal base wave. Spin reduces the longitudinal amplitude by converting it to transverse — this amplitude reduction may be the mechanism behind gravitational shading. The conversion ratio may be related to the **fine-structure constant α** (the coupling strength between electric/longitudinal and magnetic/transverse). If so, the gravitational force weakness (10⁻⁴² of electric) emerges from repeated application of this coupling.
+
+**Open questions on spin-conversion dynamics**:
+
+- Does spin convert longitudinal to transverse at a fixed rate? Per spin cycle? Per unit time?
+- Is the conversion ratio the fine-structure constant α (coupling strength)?
+- Spin velocity → angular momentum → what determines it?
+- Higher spin rate = stronger magnetic moment = more heat (thermal energy)?
+- Magnetic moment = spatial distribution of transverse wave energy?
+- Thermal energy = fluctuations in spin rate/axis (incoherent transverse emission)?
+
+**Scalar base → vector emergence**: the fundamental base wave is scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. This means the magnetic field is not fundamental but emergent from spin acting on the longitudinal base wave. Multi-particle interference amplifies the transverse components (combined spin effects).
+
+**Near-field vs far-field**: near the WC core (r < transition·λ), the disturbance is strong enough to create standing waves (particle structure, oscillatory). Far from the WC (r > transition·λ), the disturbance is a smooth amplitude modulation (Coulomb regime, monotonic). The weight function transition serves as the boundary between these regimes.
+
+**Prior art in OpenWave**: the base wave concept was already implemented in M1 (granule method) as background waves from 8 universe vertices — each contributing `A·cos(kr - ωt)·direction / 8` with full amplitude (no 1/r falloff), toggled via `BASE_WAVE_TOGGLE`. M2 (grid/Laplace) used boundary wall oscillators instead. Both used **additive superposition** (base_wave + source_waves), which still produces oscillatory interference. The innovation in equation #6 is changing the WC role from **wave source** (additive) to **wave disturber** (smooth amplitude modulation of the base field) — the WC doesn't emit new waves, it modulates the existing base wave's amplitude.
+
+**Implementation in 1D sandbox** (equation #6):
+
+1. Base wave amplitude A₀ at every grid point (constant — the result of isotropic superposition, as in M1 but simplified to 1D)
+2. Smooth disturbance function δ(r) = 1/(1 + (kr)²) or similar (NOT sin(kr)/kr — no oscillation)
+3. Charge sign q = cos(phase) = ±1
+4. A_total = A₀ + Σ q_n · A_peak · δ(r_n)
+5. E and F as usual: E = ρV(fA)², F = -∇E
+
+See [01_plan.md](01_plan.md#phase-1a-base-wave--disturbance-model) for tasks.
+
+## POSSIBLE SOLUTION: Non-Linear Wave Equations ([Phase 1b fallback](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) / [Phase 4](01_plan.md#phase-4-non-linear-wave-equations-m3-1d--3d--details))
+
+**Why non-linear?** All linear operations on the sinc function (smoothing, phase shift, derivatives, scaling) preserve its λ/2-periodic zero structure. Only a non-linear wave equation — where the spatial function is no longer a pure sinc — can break the oscillatory pattern that causes force direction errors.
+
+**Smoliński's Non-linear Soliton Wave Equation** (MagnetismGravity_v2, Sec 6.1, Eq. 18-19): The soliton is governed by a non-linear wave equation with a cubic stabilizing term:
+
+```text
+(∂²/∂t² - c²∇²) Ψ(r,t) + F(Ψ, ε_G, |ε_M|, N_ν) = 0
+
+where F = k(|ε_M|) · Ψ³    (NLS cubic non-linearity)
+```
+
+The Ψ³ term prevents wave dispersion and creates soliton stability. The coefficient k(|ε_M|) describes the non-linear elasticity of the medium, depending explicitly on the magnetic deficit. **Key insight**: solutions to the non-linear wave equation with cubic term are NOT pure sin(kr)/kr — the soliton spatial structure differs from a sinc, potentially breaking the periodic zero pattern that causes our oscillatory force. This is a well-studied form (Non-linear Schrödinger solitons) with known analytical solutions.
+
+**Is amplitude the only variable that creates force?** The current approach treats `F = -∇E` where `E = ρV(fA)²`, assuming ρ, V, and f are constants — so only the amplitude gradient drives force. But the energy equation has **three variables** that can change spatially and create energy gradients:
+
+- **A** (amplitude): current phasor RMS — carries sinc oscillation from sin(kr)/kr spatial structure
+- **f / λ** (frequency / wavelength): if λ varies with position ([Yee & Hauger](07_time_dynamics.md#ewt-standing-wave-geometry-yee--hauger) discrete wavelength shells), then ∇f contributes to ∇E even where ∇A = 0. Crucially, variable λ(r) replaces the uniform kr phase with a WKB integral ∫k(r')dr', making node spacing non-uniform — this **breaks the sinc periodicity** that causes the oscillatory force. **Smoliński r⁵ decomposition** (MagnetismGravity_v4 Sec 7.2): E ∝ r⁵ = r³ (volume) × r¹ (amplitude: A ∝ r) × r¹ (frequency: f ∝ 1/r). Inside the soliton, amplitude scales linearly with distance from center and frequency scales inversely — both are concrete non-linear relationships that modify the wave equation near WCs
+- **ρ** (density): if medium density varies with position ([Smoliński's buoyancy model](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework)), then ∇ρ contributes to ∇E independently of amplitude. **Smoliński's explicit density function** (MagnetismGravity_v4 Eq. 32): `ρ(r) = ρ₀(1 - (r/r_ν)^k)^P · Θ(r_ν - r)` — packing density decreases from soliton boundary toward core, only within soliton radius r_ν (Heaviside cutoff). This is a concrete implementable ansatz. **Connection to granule velocity**: ρ is directly related to granule velocity — the speed at which granules cycle through their elliptical motion (∂ψ/∂t). Faster cycling = higher local density/pressure, slower cycling = lower density. Wave interference between WCs doesn't just change displacement amplitude — it changes granule velocities, which changes local ρ. This means ∇ρ may carry force information that ∇A alone cannot provide, and with a different spatial structure than the sinc envelope
+
+This means force can arise from amplitude curvature (current model), frequency curvature (time dynamics), OR density curvature (buoyancy) — or any combination. The fact that we can't reproduce clean electrostatic force from amplitude gradient alone may be a signal that **the force equation is incomplete** — we may need to include ∇f and/or ∇ρ terms even for the electrostatic case. Wave interference between WCs doesn't just change amplitude — it also changes the effective local frequency and medium density through the mechanisms described in the [Time Dynamics](07_time_dynamics.md) and [Smoliński sections](03_additional.md#smolińskis-contributions-bcc-lattice-geometric-framework).
+
+Computing F = -∇E means these additional variables are automatically included when implemented — no force logic changes needed.
+
+**Smoliński's Push-out Operator** (MagnetismGravity_v4 Eq. 90) formalizes exactly this multi-variable approach:
+
+```text
+P̂Φ = -∇ · (η_stat / η_soliton) ∇Φ
+```
+
+This is F = -∇E but with the impedance ratio (statutory density / soliton density) as a spatially varying coefficient. The force is the gradient of a potential weighted by the local density mismatch — precisely what our ∇E captures when ρ(x) becomes a spatial variable.
+
+**Connection to dual-treatment boundary**: Smoliński's Isotropy Operator I (MagnetismGravity_v4 Sec 17.7.1) acts as a **geometric low-pass filter** at the Degraded EMC Wall boundary, averaging angular energy into isotropic gravity. This maps to our weight function transition: inside the boundary → non-linear toroidal dynamics (Energy Domain, r⁵), outside → isotropic spherical push-out (EMC Domain, r³). The weight function could serve as this geometric filter.
+
+**Scheduling**: This is a fallback if all Phase 1 linear approaches fail (expensive implementation: variable λ and ρ fields in 1D sandbox). If Phase 1 succeeds without it, remains as Phase 4 for 3D porting. See [01_plan.md](01_plan.md#phase-1b-non-linear-wave-equations-1d--details) for tasks.
 
 ## POSSIBLE SOLUTION: Energy Flux (Radiation Pressure)
 
@@ -151,3 +308,50 @@ For the current monochromatic case with constant c: `P_rad = S/c = E·c/c = E`, 
 - **Standing vs traveling waves**: standing waves store energy but don't flow (zero flux, nonzero density). Traveling waves carry energy directionally (nonzero flux)
 
 This last point is significant: energy flux could **naturally separate standing wave (near-field) from traveling wave (far-field) contributions** — standing waves have zero net flux, traveling waves have nonzero flux. This connects to the dual-treatment boundary idea: near-field force from energy density gradient (standing wave lock-in), far-field force from energy flux gradient (traveling wave Coulomb regime).
+
+## POSSIBLE SOLUTION: Vector Wave Force (M4 displacement direction)
+
+**The question**: does vector displacement carry charge-phase information that scalar magnitude discards?
+
+**On-axis analysis (scalar = vector, no help)**: For two WCs on the x-axis, the displacement vectors at any point between them are anti-parallel (d̂₁ = +x̂, d̂₂ = -x̂). Only the x-component is nonzero, so |ψ_vec| reduces exactly to |ψ_scalar|. The vector energy |ψ_vec|² expands to:
+
+```text
+|ψ_vec|² = |ψ₁|² + |ψ₂|² + 2·|ψ₁|·|ψ₂|·cos(k·Δr + Δφ)·cos(θ_geo)
+```
+
+On-axis: cos(θ_geo) = -1 (constant), so F = -∇E is identical to scalar. No improvement.
+
+**But vector fields carry more than magnitude**: in M4, displacement traces an **ellipse** (6 phasor numbers: P_x, Q_x, P_y, Q_y, P_z, Q_z). The ellipse has:
+
+- **Magnitude**: semi-major axis → energy (what F = -∇E uses now)
+- **Rotation direction** (handedness): same-phase sources → same handedness, opposite-phase → opposite handedness. This is a **signed quantity** that scalar |ψ|² discards entirely
+- **Orientation**: ellipse plane tilt, major axis direction — geometric info about source positions
+
+The rotation handedness is NOT captured by |ψ|². To recover charge-sign information from the vector field, force must be computed from a **different quantity**:
+
+- **Divergence** (∇·ψ): compression/rarefaction of the medium — scalar but signed, related to pressure
+- **Curl** (∇×ψ): rotational displacement — vector, related to magnetic field
+- **Energy flux** (ψ × ∂ψ/∂t or similar): directional energy flow — vector with sign from rotation
+- **Per-component amplitude** (A_x, A_y, A_z separately, not collapsed to |A|): preserves directional structure
+
+**One force, different directions**: there may be only one force (F = -∇E). What we call electric, magnetic, and gravitational are the same gradient projected onto different components: longitudinal → electric, transverse → magnetic, residual/bulk density deficit → gravitational. A scalar model collapses all directional information into magnitude — producing correct force scaling (1/r²) but losing force direction (charge sign). See [06_m4_vector.md](06_m4_vector.md#why-scalar-is-insufficient-monopole--longitudinal-only) for full analysis.
+
+**Why scalar fails at direction**: a single WC (monopole) produces only longitudinal waves — radial, no transverse, no magnetic field. The scalar model correctly describes this. But multi-particle interference creates transverse components (elliptical paths). The charge sign lives in the TRANSVERSE structure (rotation handedness), which scalar magnitude discards. Wolff's complex number (i) is an algebraic proxy for the transverse component that vector displacement encodes naturally.
+
+**Connection to electromagnetism**: the right-hand rule, 90° phase shifts, quadratures, imaginary numbers — all of classical EM is built on vector field operations. Spin, ellipses, spirals, toroids, vortices pervade quantum mechanics. The scalar |ψ|² approach may be fundamentally insufficient for force computation — the charge-sign information may ONLY be recoverable from vector field quantities (divergence, curl, flux direction).
+
+**Connection to non-linear equations**: the non-linear Ψ³ soliton equation (Smoliński), toroidal wave flows (Energy Domain, r⁵), and spin-as-vortex (Butto) all require vector displacement. The non-linear and vector approaches may be **two aspects of the same solution** — non-linear internal dynamics producing the toroidal/elliptical vector patterns that carry the charge information we need.
+
+**Status**: Requires M4 vector wave engine or a vector extension to the 1D sandbox. Not a quick test — connects to [Phase 6](01_plan.md#phase-6-magnetic-force-m4-vector-waves--details) (magnetic force) and may need to be pulled earlier if other approaches fail.
+
+---
+
+## Summary: Remaining Paths to Force Direction Resolution
+
+All linear scalar approaches have been exhausted (9 candidates tested and ruled out). Three remaining paths, in order of implementation complexity:
+
+1. **New idea** (next to explore) — to be discussed
+2. **Non-linear wave equations** ([Phase 1b](01_plan.md#phase-1b-non-linear-wave-equations-1d--details)) — variable λ(r), ρ(x), Ψ³ cubic term; breaks sinc periodicity
+3. **Vector wave force** — divergence/curl/flux-based force from M4 vector displacement; recovers charge sign from rotation direction
+
+Paths 2 and 3 are deeply connected: non-linear internal dynamics (toroidal r⁵ flows) naturally produce the vector patterns (elliptical displacement, spin) whose directional properties may carry the charge information. They may ultimately converge into a single solution.

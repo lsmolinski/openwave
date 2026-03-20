@@ -107,6 +107,35 @@ The phasor route gives them analytically in one shot. The timestep route require
 
 This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the [Yee & Hauger](references/Spin.pdf) and WKB research already planned for Phase 3.
 
+## Why Scalar is Insufficient: Monopole = Longitudinal Only
+
+**Key insight**: Wolff's scalar wave model may be scalar precisely because a **single WC (monopole) produces only longitudinal waves** — radial motion, linear oscillations, radially oriented. A monopole has no ellipses, no transverse component, no magnetic field. The scalar model correctly describes a single isolated particle.
+
+**Magnetic fields emerge from multiple particles**: when two or more WCs combine their waves, the interference of radial waves from different directions creates **transverse displacement components** — the elliptical granule paths observed in M4. The transverse component IS the magnetic field. It doesn't exist for a monopole — it emerges from multi-particle wave superposition.
+
+**Why Wolff needs complex numbers (i)**: in the scalar equation, the imaginary unit i encodes a 90° phase-shifted (quadrature) component — a mathematical proxy for the transverse wave that can't be geometrically represented in a scalar field. In a vector model, this transverse component is naturally encoded in the displacement direction itself. The complex number is an algebraic shortcut for what is fundamentally a geometric (vector) quantity.
+
+**Implication for force unification**: there may be only **one force** — the gradient of energy (F = -∇E). What we call electric, magnetic, and gravitational forces are the same energy gradient projected onto different directions:
+
+- **Longitudinal component** of the gradient → electric force
+- **Transverse component** of the gradient → magnetic force
+- **Residual/bulk component** (from density deficit) → gravitational force
+
+The direction of the gradient depends on the vector structure of the wave field at each point. A scalar model collapses all directional information into magnitude — which is why it can produce force magnitude (1/r² scaling) but not force direction (charge sign).
+
+## Per-Component Amplitude (Not Magnitude-Only)
+
+Amplitude must be tracked **per spatial component** (A_x, A_y, A_z), not as a single magnitude |A|. The displacement vector already encodes this in M4 — but the current energy/force computation collapses it to |ψ|² = ψ_x² + ψ_y² + ψ_z² (magnitude squared), losing the directional information.
+
+To recover force direction, energy and force may need to be computed **per component**:
+
+```text
+E_x = ρV(f·ψ_x_rms)²,  E_y = ρV(f·ψ_y_rms)²,  E_z = ρV(f·ψ_z_rms)²
+F_x = -∂E_x/∂x,  F_y = -∂E_y/∂y,  F_z = -∂E_z/∂z
+```
+
+Or from vector operations on the full displacement field (divergence, curl, flux). The per-component approach preserves the directional structure that magnitude-only discards.
+
 Soliton [Toroidal](03_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
 
 Lafreniere [magnetic field lines](03_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.
