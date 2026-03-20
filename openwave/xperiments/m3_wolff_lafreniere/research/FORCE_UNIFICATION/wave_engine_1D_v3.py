@@ -98,7 +98,7 @@ for wc in wave_centers:
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
 # 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
 
-WAVE_EQUATION = 5
+WAVE_EQUATION = 6
 
 WAVE_EQUATION_NAMES = {
     1: "Wolff-Original",
