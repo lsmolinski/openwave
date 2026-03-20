@@ -180,11 +180,11 @@ The base wave concept is physically valid (the medium EXISTS, WCs DO redistribut
 
 ---
 
-## Remaining Paths
+### Remaining Paths
 
-### Phase 1b: Base Wave + WC Energy Redistribution
+## Phase 1b: Base Wave + WC Energy Redistribution
 
-#### The Base Wave (Fundamental Energy Wave)
+### The Base Wave (Fundamental Energy Wave)
 
 The medium is not empty. A pre-existing **isotropic energy wave field** fills all of space — the fundamental longitudinal energy wave described by EWT. Its properties are known:
 
@@ -206,7 +206,7 @@ The medium is not empty. A pre-existing **isotropic energy wave field** fills al
 
 **Prior art**: M1 (granule method) implemented base wave as background waves from 8 universe vertices (A·cos(kr - ωt)·direction / 8, no 1/r falloff, `BASE_WAVE_TOGGLE`). M2 (grid/Laplace) used boundary wall oscillators. Both used additive superposition (base_wave + source_waves), which still produces oscillatory interference. The true base wave + disturbance model must go beyond additive superposition.
 
-#### Wave Centers as Energy Redistributors
+### Wave Centers as Energy Redistributors
 
 WCs do not emit waves. They do not inject energy. They create **disturbances** in the base wave field that **redistribute energy density**:
 
@@ -225,7 +225,7 @@ Both near-field and far-field are waves with oscillatory displacement (standing 
 
 **How WC phase affects the far-field drainage**: the phase (source_offset: 0 = positron, π = electron) must affect the spatial pattern of the far-field energy drainage. But NOT via a simple ±1 sign multiplier — that was Phase 1a, and it's not emergent. The actual mechanism is **unknown and must be discovered**. This is the central open question of Phase 1b.
 
-#### Force Emergence from Energy Redistribution
+### Force Emergence from Energy Redistribution
 
 1. WC1 disturbs the base wave → concentrates energy in its standing wave core → creates a far-field energy deficit (drainage) that radiates outward
 2. This drainage reaches WC2's location and **disturbs WC2's standing waves** — warping the energy field around WC2
@@ -234,7 +234,7 @@ Both near-field and far-field are waves with oscillatory displacement (standing 
 
 The force direction depends on HOW WC1's drainage pattern interacts with WC2's standing waves — and this must depend on the phase relationship between the two WCs.
 
-#### Connections
+### Connections
 
 **EWT / LaFreniere**: the base wave IS the "isotropic in-wave from all matter in the universe." LaFreniere's model describes WCs as reflecting incoming waves — the reflection creates local energy redistribution (standing waves near WC) and a far-field amplitude deficit.
 
@@ -254,7 +254,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **Spin as longitudinal → transverse converter**: spin converts longitudinal base wave energy into transverse wave components (720° spherical rotation = spin-1/2). The conversion ratio may be the fine-structure constant α. This connects to Smoliński's toroidal Energy Domain and Butto's vortex electron model.
 
-#### Open Questions
+### Open Questions
 
 - What is the correct time-domain representation of the isotropic base wave in 1D?
 - How does a WC's reflection/scattering produce the radial disturbance?
@@ -264,7 +264,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 - Can the drainage-drainage interaction between two WCs produce charge-dependent force direction?
 - Does spin convert longitudinal to transverse at a fixed rate? Is the ratio α?
 
-### Phase 1c: Non-Linear Wave Equations
+## Phase 1c: Non-Linear Wave Equations
 
 **Rationale**: All linear operations on the sinc function preserve its λ/2 periodicity. Only a non-linear wave equation — where the spatial structure itself is no longer a pure sinc — can break the oscillatory pattern.
 
@@ -290,7 +290,7 @@ Computing F = -∇E means these additional variables are automatically included 
 
 **Connection to dual-treatment boundary**: Smoliński's Isotropy Operator acts as a **geometric low-pass filter** at the Degraded EMC Wall boundary. Inside → non-linear toroidal dynamics (r⁵), outside → isotropic spherical push-out (r³).
 
-### Phase 1d: Vector Wave Force
+## Phase 1d: Vector Wave Force
 
 **Problem**: F = -∇(|ψ|²) uses scalar magnitude, which discards vector direction information. On-axis, vector reduces to scalar — no help for the standard test case.
 
@@ -306,6 +306,8 @@ Force must be computed from a **different quantity** than |ψ|²:
 **One force, different directions**: F = -∇E is one force — electric (longitudinal), magnetic (transverse), gravitational (density deficit) are projections onto different components. Scalar collapses all directional information into magnitude — correct scaling (1/r²) but wrong direction (charge sign). See [04_magnetic_vector.md](04_magnetic_vector.md#why-scalar-is-insufficient-monopole--longitudinal-only) for full analysis.
 
 **Connection to non-linear equations (Phase 1c)**: non-linear Ψ³ soliton, toroidal wave flows (r⁵), spin-as-vortex all require vector displacement. Phases 1c and 1d may converge.
+
+Maybe this path needs 3D simulation, definitely 1D is not enough, but possibly 2D is not enough either. On the force unification concept, there is only ONE force, but at human scale (inertial frame / mass scale / frequencies that this scale of mass can experience), this single force appears at defined conditions that makes us perceive them as separate forces, so we named and describe them as so, but if they are a single 3D elliptical behavior that can be decomposed into 2 major amplitudes (90 degrees apart) and this elliptical form can be oriented in multiple orders in 3D space, this opens up the possibility. 2D simulation won't capture that.
 
 ---
 
