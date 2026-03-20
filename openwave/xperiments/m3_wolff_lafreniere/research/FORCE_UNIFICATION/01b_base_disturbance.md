@@ -328,4 +328,4 @@ All 5 modes implemented and tested:
 1. Select 2–3 strongest contenders for WC interaction testing:
    - **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection)
    - **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase
-   - **Uniform** — if the π-apart WC idea produces emergent charge-dependent forces
+   - **Uniform + dual phase** — if the π-apart WC idea produces emergent charge-dependent forces
