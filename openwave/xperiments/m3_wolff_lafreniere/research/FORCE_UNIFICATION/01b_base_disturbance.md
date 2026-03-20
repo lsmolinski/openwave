@@ -78,7 +78,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (Phase 1c).
 
-**Scalar base → vector emergence**: the fundamental base wave might be scalar (longitudinal only). Vector (transverse) waves emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse.
+**Scalar base → vector emergence (hypothesis)**: the fundamental base wave might be scalar (longitudinal only) — but this is a hypothesis, not established. In 3D reality, granule displacement traces ellipses with longitudinal, transverse, handedness, and orientation components. Vector (transverse) waves may emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. See [Base Wave Numerical Model](#on-the-longitudinal-assumption) for full dimensional analysis.
 
 **Emergent wave hierarchy**:
 
@@ -99,3 +99,197 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 - Does the drainage itself oscillate (wave-like) or is it smooth?
 - Can the drainage-drainage interaction between two WCs produce charge-dependent force direction?
 - Does spin convert longitudinal to transverse at a fixed rate? Is the ratio α?
+
+---
+
+## Base Wave Numerical Model — Analysis and Implementation Plan
+
+### Prior Art: M1 and M2 Base Wave Implementations
+
+**M1 (granule method)** modeled the base wave as background waves from 8 universe-corner vertices:
+
+```text
+ψ_base = Σ_{v=0}^{7}  (A₀/8) · cos(k·r_v - ωt) · (r̂_v)
+```
+
+Key properties: no 1/r falloff (full amplitude everywhere), amplitude split equally among 8 vertices for energy conservation, additive superposition onto WC source waves. Result: just more coherent waves on top of waves — still produces oscillatory interference when combined with sources.
+
+**M2 (Laplacian grid)** used a fundamentally different approach:
+
+1. Single pulse injected at center
+2. Wave equation `∂²ψ/∂t² = c²∇²ψ` propagated via 6-point Laplacian + leap-frog integrator
+3. Dirichlet BC (ψ=0 at walls) reflects waves back — emulating reflections from all matter in the universe
+4. After many reflections, energy self-distributes into a quasi-uniform field
+
+Key finding: **"get out of the way and let the waves stabilize themselves"** — the base wave emerged naturally from reflections without dynamic intervention. Stable over 20,000+ steps, ~100% energy conservation.
+
+**What both approaches teach us**:
+
+- M1's additive superposition (base + source) is exactly what equations #1–#6 already do — this cannot resolve the oscillatory force blocker
+- M2's Laplacian propagation with reflecting boundaries is more physically honest — the base wave is not prescribed analytically, it emerges from wave dynamics
+- M2 proved that a self-consistent standing wave field forms naturally from reflections — no external driving needed after initial energy injection
+- Neither M1 nor M2 attempted WC-as-disturbance (both added WC waves on top of the base wave)
+
+### What We Know vs What We Don't Know
+
+**What we know**:
+
+- The medium exists, is not empty — it has ρ₀, A₀, λ₀, f₀
+- Waves come from all matter in the universe (all directions)
+- Energy density is uniform (without WCs)
+- λ₀ = 28.5 am, f₀ = 10²⁵ Hz, A₀ = 0.92 am
+
+**What we don't know**:
+
+- How granules oscillate in time at each point — are they all in phase? Random phase? Standing wave nodes?
+- Is it a single coherent wave or a statistical/stochastic field?
+- Does it have spatial structure (nodes) or is it spatially uniform?
+
+### Candidate Base Wave Models for 1D Testing
+
+The central question: what does the base wave look like in 1D? We test multiple candidates to discover which produces the right physics. Each is a selectable mode in the v3 wave engine.
+
+#### Model A: Uniform Oscillation
+
+```text
+ψ_base(x,t) = A₀ · cos(ωt)
+```
+
+Every point oscillates together in phase. No spatial structure. Energy density is perfectly flat: `E = ρV(fA₀)²`. The simplest model — a uniform "hum."
+
+- **Pro**: flat energy → zero gradient → no force from base wave alone (correct baseline)
+- **Con**: not physically realistic — waves arriving from all directions cannot all be in phase everywhere. No wave character (no propagation, no interference)
+- **Use case**: null baseline for comparison
+
+#### Model B: Standing Wave (two counter-propagating waves)
+
+In 1D, "waves from all directions" reduces to waves from left and right:
+
+```text
+ψ_base(x,t) = A₀/2 · cos(kx - ωt) + A₀/2 · cos(kx + ωt)
+             = A₀ · cos(kx) · cos(ωt)
+```
+
+A standing wave with fixed nodes at every λ/2. Energy density has spatial structure: zero at nodes (`kx = nπ + π/2`), maximum at antinodes (`kx = nπ`). RMS envelope = `|A₀ · cos(kx)|/√2` — periodic, not flat.
+
+- **Pro**: genuine wave physics, standing waves from counter-propagation (matches M2 behavior)
+- **Con**: energy is NOT uniform — has zeros at nodes. WC placement relative to nodes matters. Node spacing = λ/2 matches the oscillatory force period we're trying to resolve (coincidence or clue?)
+- **Use case**: test whether WC disturbance of a structured base wave produces different force behavior than WC-as-source. The node structure could interact with WC phase in interesting ways
+- **Open question**: where are the nodes? The node positions depend on boundary conditions and are arbitrary in infinite space — but in a finite simulation domain, reflections fix them
+
+#### Model C: Multi-Phase Superposition (stochastic isotropy)
+
+Superpose N plane waves with random phase offsets to simulate isotropic arrival from many directions:
+
+```text
+ψ_base(x,t) = (A₀/√N) · Σᵢ [cos(kx + φᵢ - ωt) + cos(kx + φᵢ + ωt)]
+            = (2A₀/√N) · Σᵢ cos(kx + φᵢ) · cos(ωt)
+```
+
+As N → ∞, the RMS envelope converges to a **spatially uniform** value (central limit theorem). The instantaneous displacement varies point-to-point but the time-averaged energy density is flat.
+
+- **Pro**: physically motivated (waves from many sources = many random phases), uniform energy density in the statistical limit, genuine wave character at each point
+- **Con**: requires many sources (N ≥ 50–100) for convergence, stochastic — different random seeds give different instantaneous patterns (but same RMS). Computationally heavier
+- **Use case**: the "honest" isotropic model — if the base wave is truly from all matter in the universe, this is the closest 1D representation. Test whether WC disturbance of a stochastic field behaves differently from disturbance of a coherent field
+
+#### Model D: Dual-Phase Standing Wave (complementary quadrature)
+
+Two standing waves offset by a quarter wavelength (90° spatial phase):
+
+```text
+Channel 1:  ψ₁(x,t) = (A₀/√2) · cos(kx) · cos(ωt)
+Channel 2:  ψ₂(x,t) = (A₀/√2) · sin(kx) · sin(ωt)
+```
+
+Each channel individually has nodes. But the nodes never coincide — where cos(kx) = 0, sin(kx) = ±1 and vice versa. The **energy sum** is:
+
+```text
+E_base(x) = ρVf² [A₁·cos(kx)]² + ρVf² [A₂·sin(kx)]²
+           = ρVf² (A₀²/2) · [cos²(kx) + sin²(kx)]
+           = ρVf² A₀²/2   ← FLAT!
+```
+
+Uniform energy density from two structured standing wave channels.
+
+- **Pro**: elegant — each channel is a real standing wave with nodes and antinodes, but their energies complement to produce a perfectly flat energy field. Wave character preserved while energy is uniform
+- **Con**: requires two independent "channels" that don't interfere with each other — is this physically justified? Why would the medium support two orthogonal wave modes?
+
+**Additional test: π-apart dual phase** — two standing waves offset by half a wavelength (180° spatial phase):
+
+```text
+Channel 1:  ψ₁(x,t) = (A₀/√2) · cos(kx) · cos(ωt)
+Channel 2:  ψ₂(x,t) = (A₀/√2) · cos(kx + π) · cos(ωt)
+           = -(A₀/√2) · cos(kx) · cos(ωt)
+```
+
+Direct superposition: `ψ₁ + ψ₂ = 0` (total cancellation). But energy sum: `E₁ + E₂ = ρVf²A₀²cos²(kx)` — still has nodes, same as Model B. The π-apart case only works as separate energy channels (not field superposition), and even then doesn't produce flat energy. This contrasts with the 90°-apart case where energy complementarity is exact.
+
+**Both angular offsets should be tested** to understand how the phase relationship between base wave channels affects energy uniformity and WC interaction.
+
+- **Use case**: test whether WCs preferentially lock onto one channel (creating charge states?). The dual-phase speculation in the main doc — "WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states" — directly maps to this model
+- **Connection to charge**: if the base wave has two complementary modes, and WCs disturb one mode more than the other based on their phase, this could be the mechanism for charge-dependent force direction
+
+#### Model E: Laplacian Propagation (M2 port to 1D)
+
+Instead of an analytical formula, use the actual wave equation with reflecting boundaries:
+
+```text
+∂²ψ/∂t² = c² · ∂²ψ/∂x²
+```
+
+Initialize with a pulse (or boundary oscillators), let it ring and stabilize. The base wave emerges from simulation dynamics — no assumed spatial form.
+
+- **Pro**: most physically honest — no assumptions about the base wave form. The wave equation itself determines what the field looks like. Matches M2's approach (which successfully self-stabilized). Naturally handles WC interaction via the same wave equation (WC = boundary condition or source term within the Laplacian domain)
+- **Con**: architecturally different from analytical phasor computation — requires time-stepping, warmup period for stabilization, and a different code path. Cannot use phasor superposition (which assumes known analytical form). More complex to implement and analyze
+- **Use case**: the "ground truth" model. If any analytical candidate (A–D) matches the Laplacian result, we know that candidate is correct. If none match, the Laplacian reveals what we're missing
+
+### On the "Longitudinal" Assumption
+
+The base wave is described as longitudinal in EWT literature, but **this is a hypothesis, not established fact**. In 1D simulation, we are forced to isolate a single wave mode (longitudinal displacement along x). This is a limitation of the dimensionality, not necessarily of the physics:
+
+- **1D**: only longitudinal mode available — displacement along the propagation axis
+- **2D**: two modes possible — longitudinal (along propagation) + transverse (perpendicular)
+- **3D (reality)**: full elliptical motion — the granule displacement traces an ellipse in 3D space, characterized by: longitudinal amplitude, transverse amplitude, handedness (direction of granule motion around the elliptical track), and ellipse plane orientation
+
+All of these properties can contribute to force direction. The unified force concept proposes that what we perceive as separate forces (electric, magnetic, gravitational) are actually **one 3D elliptical behavior** decomposed into components. At human scale, specific conditions make each component appear distinct — we named and described them as separate forces because that's how they manifest at our scale of mass, frequency, and inertial frame.
+
+A 2D simulation could capture longitudinal + transverse, but **may not be sufficient** — the elliptical form can be oriented in multiple ways in 3D space, and this orientational freedom is likely essential for magnetic fields and spin. The 1D base wave work here is foundational (establishing the energy redistribution mechanism), but the full picture likely requires 3D (Phase 1d / M4).
+
+### Implementation Plan for v3 Wave Engine
+
+The v3 engine (`wave_engine_1D_v3.py`) replaces the v2 equation selector (#1–#6) with:
+
+```text
+BASE_WAVE_MODE:
+  A = "uniform"        — ψ = A₀·cos(ωt), flat energy
+  B = "standing"       — ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
+  C = "stochastic"     — N random-phase standing waves, ~flat energy
+  D = "dual_phase"     — two 90°-offset standing waves, flat energy (test π-offset too)
+  E = "laplacian"      — time-stepped wave equation, reflecting BC
+
+WC_INTERACTION_MODE:   (Phase 2 — after base wave is validated)
+  [to be determined]   — how WCs disturb the base wave
+```
+
+**Step 1 — Base wave only (no WCs)**:
+
+- Implement all 5 modes
+- Visualize: displacement ψ(x,t), RMS envelope, energy density E(x)
+- Verify: uniform energy for modes A, C, D; structured energy for B; emergent structure for E
+- Compare: do any analytical modes (A–D) match the Laplacian result (E)?
+
+**Step 2 — Insert WC disturbance**:
+
+- Design WC interaction mechanism (how does a WC modify the base wave field?)
+- Test energy redistribution: concentration near WC, drainage in far field
+- Test phase dependence: does WC phase (0 vs π) affect the drainage pattern?
+- Measure force: F = -∇E at WC positions
+
+Each base wave mode may interact with WCs differently — that's the point of testing all of them.
+
+### Recommended Implementation Order
+
+1. **Model D (dual-phase)** first — the cleanest analytical model that gives uniform energy density while maintaining real wave structure. Good baseline for verifying the v3 engine works correctly
+2. **Model E (Laplacian)** second — the "ground truth" time-stepped model for comparison against analytical candidates. Architecturally different (time-stepping vs phasor), so validates from a different angle
+3. **Model B (standing wave)** third — shows what happens with nodes. WC disturbance interaction with node structure could be revealing, and the λ/2 node spacing matching the oscillatory force period may be significant
+4. **Models A and C** as needed — A is the trivial null baseline, C is the computationally heavier stochastic model (useful if coherent models fail)
