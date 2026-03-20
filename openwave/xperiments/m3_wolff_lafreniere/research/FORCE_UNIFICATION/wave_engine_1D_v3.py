@@ -60,25 +60,30 @@ N_POINTS = len(x_am)
 # ================================================================
 # Base Wave Mode Configuration
 # ================================================================
-# A = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
-# B = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
-# C = Stochastic (N-source):     N random-phase standing waves, ~flat energy
-# D = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
-# E = Laplacian Propagation:     time-stepped wave equation, reflecting BC
+# uniform    = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
+# standing   = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
+# stochastic = Stochastic (N-source):     N broadband random-phase waves, ~flat energy
+# quadrature = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
+# laplacian  = Laplacian Propagation:     time-stepped wave equation, reflecting BC
 
-BASE_WAVE_MODE = "E"
+BASE_WAVE_MODE = "quadrature"
 
 BASE_WAVE_NAMES = {
-    "A": "Uniform Oscillation",
-    "B": "Standing Wave",
-    "C": "Stochastic (N-source)",
-    "D": "Dual-Phase Standing Wave",
-    "E": "Laplacian Propagation",
+    "uniform": "Uniform Oscillation",
+    "standing": "Standing Wave",
+    "stochastic": "Stochastic (N-source)",
+    "quadrature": "Dual-Phase Standing Wave",
+    "laplacian": "Laplacian Propagation",
 }
 
 # --- Model C parameters ---
 STOCHASTIC_N_SOURCES = 100
 STOCHASTIC_SEED = 42
+# Bandwidth: spread of k values around base k.
+# Monochromatic (σ=0) collapses to a single phase-shifted standing wave
+# because Σ cos(kx+φᵢ) = |S|·cos(kx+arg(S)) for any random φᵢ at same k.
+# Broadband (σ>0) breaks this degeneracy and produces quasi-uniform energy.
+STOCHASTIC_K_SPREAD = 1  # fractional spread: k_i ∈ k·(1 ± σ)
 
 # --- Model D parameters ---
 # Spatial offset between channels: π/2 → flat energy, π → nodes
@@ -88,22 +93,33 @@ DUAL_TEMPORAL_OFFSET = np.pi / 2
 
 # --- Model E parameters ---
 LAPLACIAN_WARMUP_PERIODS = 20  # warmup in wave periods before animation
-LAPLACIAN_INIT = "gaussian"  # "gaussian" pulse or "standing" analytical
+LAPLACIAN_INIT = "standing"  # "gaussian" pulse or "standing" analytical
 
 
 # ================================================================
-# Stochastic Model Precomputation (Model C)
+# Stochastic Model Precomputation (Model C) — Broadband
 # ================================================================
+# Each source has its own k_i and ω_i = c·k_i (broadband).
+# This breaks the monochromatic degeneracy where Σ cos(kx+φ) collapses
+# to a single standing wave. With different k_i, spatial patterns don't
+# combine into a single sinusoid — producing quasi-uniform RMS.
 
-_stochastic_phases = np.random.default_rng(STOCHASTIC_SEED).uniform(
-    0, 2 * np.pi, STOCHASTIC_N_SOURCES
+_rng_c = np.random.default_rng(STOCHASTIC_SEED)
+_stochastic_phases = _rng_c.uniform(0, 2 * np.pi, STOCHASTIC_N_SOURCES)
+_stochastic_k = k * (1.0 + STOCHASTIC_K_SPREAD * _rng_c.uniform(-1, 1, STOCHASTIC_N_SOURCES))
+_stochastic_omega = c_am_rs * _stochastic_k  # ω_i = c · k_i
+
+# Pre-compute per-source spatial patterns: cos(k_i·x + φ_i)  shape (N, N_POINTS)
+_stochastic_spatial = np.cos(_stochastic_k[:, None] * x_am[None, :] + _stochastic_phases[:, None])
+
+# Amplitude scale: A₀·√2/√N so that RMS ≈ A₀/√2 (matches Model A energy)
+_stochastic_amp = A0_am * np.sqrt(2.0) / np.sqrt(STOCHASTIC_N_SOURCES)
+
+# Pre-compute RMS: different ω_i → cross terms average to zero →
+# RMS²(x) = (amp²/2) · Σ cos²(k_i·x + φ_i), RMS = amp/√2 · √(Σ cos²)
+_stochastic_rms = (_stochastic_amp / np.sqrt(2.0)) * np.sqrt(
+    np.sum(_stochastic_spatial**2, axis=0)
 )
-
-# Pre-compute spatial envelope: (2A₀/√N) · Σ cos(kx + φᵢ)
-_stochastic_envelope = np.zeros(N_POINTS)
-for _phi in _stochastic_phases:
-    _stochastic_envelope += np.cos(k * x_am + _phi)
-_stochastic_envelope *= 2.0 * A0_am / np.sqrt(STOCHASTIC_N_SOURCES)
 
 
 # ================================================================
@@ -118,6 +134,10 @@ _lap = {
     "rms": None,
     "initialized": False,
     "steps_per_frame": 1,
+    "steps_per_period": 1,
+    # Live RMS tracking: peak |ψ| over current period
+    "peak_tracker": np.zeros(N_POINTS),
+    "peak_steps": 0,
 }
 
 
@@ -142,7 +162,10 @@ def _lap_init():
     _lap["psi_old"][0] = _lap["psi_old"][-1] = 0.0
 
     steps_per_period = max(1, int(period_rs / dt))
+    _lap["steps_per_period"] = steps_per_period
     _lap["steps_per_frame"] = max(1, steps_per_period // 50)
+    _lap["peak_tracker"][:] = 0.0
+    _lap["peak_steps"] = 0
     _lap["initialized"] = True
 
 
@@ -155,6 +178,9 @@ def _lap_step(n=1):
     psi_old = _lap["psi_old"]
     dt = _lap["dt"]
     c2dt2 = (c_am_rs * dt) ** 2
+
+    peak_tracker = _lap["peak_tracker"]
+    spp = _lap["steps_per_period"]
 
     for _ in range(n):
         # 3-point Laplacian on interior
@@ -171,6 +197,14 @@ def _lap_step(n=1):
         psi_old[:] = psi
         psi[:] = psi_new
         _lap["t"] += dt
+
+        # Live RMS: track peak |ψ| and update RMS every full period
+        np.maximum(peak_tracker, np.abs(psi), out=peak_tracker)
+        _lap["peak_steps"] += 1
+        if _lap["peak_steps"] >= spp:
+            _lap["rms"] = peak_tracker / np.sqrt(2.0)
+            peak_tracker[:] = 0.0
+            _lap["peak_steps"] = 0
 
 
 def _lap_warmup():
@@ -205,19 +239,21 @@ def compute_base_displacement(x, t):
 
     Models A–D are analytical; Model E returns current Laplacian field state.
     """
-    if BASE_WAVE_MODE == "A":
+    if BASE_WAVE_MODE == "uniform":
         # Uniform: every point oscillates together, no spatial structure
         return A0_am * np.cos(omega * t) * np.ones_like(x)
 
-    elif BASE_WAVE_MODE == "B":
+    elif BASE_WAVE_MODE == "standing":
         # Standing wave: counter-propagating left + right waves
         return A0_am * np.cos(k * x) * np.cos(omega * t)
 
-    elif BASE_WAVE_MODE == "C":
-        # Stochastic: pre-computed spatial envelope × cos(ωt)
-        return _stochastic_envelope * np.cos(omega * t)
+    elif BASE_WAVE_MODE == "stochastic":
+        # Broadband stochastic: each source has its own k_i and ω_i
+        # ψ = amp · Σ cos(k_i·x + φ_i) · cos(ω_i·t)
+        temporal = np.cos(_stochastic_omega * t)  # shape (N,)
+        return _stochastic_amp * np.sum(_stochastic_spatial * temporal[:, None], axis=0)
 
-    elif BASE_WAVE_MODE == "D":
+    elif BASE_WAVE_MODE == "quadrature":
         # Dual-phase: two standing wave channels with spatial + temporal offsets
         # Channel 1: A₀ · cos(kx) · cos(ωt)
         # Channel 2: A₀ · cos(kx + δs) · cos(ωt + δt)
@@ -226,7 +262,7 @@ def compute_base_displacement(x, t):
         ch2 = np.cos(k * x + DUAL_SPATIAL_OFFSET) * np.cos(omega * t + DUAL_TEMPORAL_OFFSET)
         return A0_am * (ch1 + ch2)
 
-    elif BASE_WAVE_MODE == "E":
+    elif BASE_WAVE_MODE == "laplacian":
         # Laplacian: return current simulation state
         if not _lap["initialized"]:
             _lap_warmup()
@@ -242,19 +278,20 @@ def compute_base_rms(x):
     Energy is independent per channel — RMS_combined = √(RMS₁² + RMS₂²).
     For Laplacian (E): measured empirically from simulation.
     """
-    if BASE_WAVE_MODE == "A":
+    if BASE_WAVE_MODE == "uniform":
         # Uniform: peak = A₀ everywhere, RMS = A₀/√2
         return (A0_am / np.sqrt(2.0)) * np.ones_like(x)
 
-    elif BASE_WAVE_MODE == "B":
+    elif BASE_WAVE_MODE == "standing":
         # Standing: peak at x = A₀|cos(kx)|, RMS = peak/√2
         return (A0_am / np.sqrt(2.0)) * np.abs(np.cos(k * x))
 
-    elif BASE_WAVE_MODE == "C":
-        # Stochastic: spatial envelope varies, RMS = |envelope|/√2
-        return np.abs(_stochastic_envelope) / np.sqrt(2.0)
+    elif BASE_WAVE_MODE == "stochastic":
+        # Broadband: different ω_i → cross terms average to zero →
+        # RMS²(x) = (amp²/2) · Σ cos²(k_i·x + φ_i) ≈ A₀²/2 (quasi-uniform)
+        return _stochastic_rms
 
-    elif BASE_WAVE_MODE == "D":
+    elif BASE_WAVE_MODE == "quadrature":
         # Per-channel RMS², summed (independent energy channels):
         # RMS₁² = (A₀²/2)·cos²(kx),  RMS₂² = (A₀²/2)·cos²(kx + δs)
         # RMS_combined = √(RMS₁² + RMS₂²)
@@ -263,7 +300,7 @@ def compute_base_rms(x):
         rms_sq = (A0_am**2 / 2.0) * (np.cos(k * x) ** 2 + np.cos(k * x + DUAL_SPATIAL_OFFSET) ** 2)
         return np.sqrt(rms_sq)
 
-    elif BASE_WAVE_MODE == "E":
+    elif BASE_WAVE_MODE == "laplacian":
         # Laplacian: measured RMS from warmup
         if _lap["rms"] is None:
             _lap_warmup()
@@ -349,14 +386,14 @@ def plot_sandbox():
 
     # Mode info text
     info_parts = [f"Mode {BASE_WAVE_MODE}: {mode_name}"]
-    if BASE_WAVE_MODE == "C":
+    if BASE_WAVE_MODE == "stochastic":
         info_parts.append(f"N={STOCHASTIC_N_SOURCES}, seed={STOCHASTIC_SEED}")
-    elif BASE_WAVE_MODE == "D":
+    elif BASE_WAVE_MODE == "quadrature":
         info_parts.append(
             f"spatial={np.degrees(DUAL_SPATIAL_OFFSET):.0f}°, "
             f"temporal={np.degrees(DUAL_TEMPORAL_OFFSET):.0f}°"
         )
-    elif BASE_WAVE_MODE == "E":
+    elif BASE_WAVE_MODE == "laplacian":
         info_parts.append(f"init={LAPLACIAN_INIT}, warmup={LAPLACIAN_WARMUP_PERIODS}T")
     info_str = "  |  ".join(info_parts)
     fig.text(
@@ -501,14 +538,75 @@ def plot_sandbox():
 
     # --- Animation ---
 
+    def _refresh_rms_panels(new_rms):
+        """Update RMS envelope, energy, and force panels from new RMS data."""
+        new_energy = compute_energy_density(new_rms) * ENERGY_TO_J
+        new_force = compute_force_field(new_rms) * FORCE_TO_N
+
+        line_rms_pos.set_ydata(new_rms)
+        line_rms_neg.set_ydata(-new_rms)
+
+        # Rescale panel 1 y-axis
+        pm = max(np.max(new_rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1)
+        ax1.set_ylim(-pm, pm)
+
+        # Energy panel
+        line_energy.set_ydata(new_energy)
+        fill_energy[0].remove()
+        fill_energy[0] = ax2.fill_between(
+            x_am,
+            new_energy,
+            color=colormap.viridis_palette[3][1],
+            alpha=0.5,
+        )
+        em = np.max(new_energy) if np.max(new_energy) > 0 else 1e-10
+        ax2.set_ylim(0, em * 1.2)
+
+        # Energy flatness label
+        e_lo, e_hi = np.min(new_energy), np.max(new_energy)
+        if e_hi > 0:
+            flat = e_lo / e_hi
+            fc = "#88FF00" if flat > 0.95 else "#FF8800" if flat > 0.5 else "#FF4444"
+            fl = "FLAT" if flat > 0.95 else f"ratio min/max = {flat:.3f}"
+        else:
+            fc, fl = "#666666", "zero energy"
+        energy_info.set_text(f"Energy: {fl}")
+        energy_info.set_color(fc)
+
+        # Force panel
+        line_force.set_ydata(new_force)
+        fill_force_r[0].remove()
+        fill_force_l[0].remove()
+        fill_force_r[0] = ax3.fill_between(
+            x_am,
+            new_force,
+            where=(new_force > 0),
+            color="#FF4444",
+            alpha=0.3,
+        )
+        fill_force_l[0] = ax3.fill_between(
+            x_am,
+            new_force,
+            where=(new_force < 0),
+            color="#4488FF",
+            alpha=0.3,
+        )
+        fm = np.max(np.abs(new_force)) if np.max(np.abs(new_force)) > 0 else 1e-10
+        ax3.set_ylim(-fm * 1.3, fm * 1.3)
+        force_info.set_text(f"|F|_max = {np.max(np.abs(new_force)):.3e} N")
+
     def update_plot(frame):
         t_rs = (frame / ANIMATION_FRAMES) * period_rs
 
-        if BASE_WAVE_MODE == "E":
+        if BASE_WAVE_MODE == "laplacian":
             # Laplacian: step simulation forward
+            rms_before = _lap["rms"]
             _lap_step(_lap["steps_per_frame"])
             psi = _lap["psi"].copy()
             t_rs = _lap["t"]
+            # Refresh panels when RMS gets updated (every period)
+            if _lap["rms"] is not rms_before and _lap["rms"] is not None:
+                _refresh_rms_panels(_lap["rms"])
         else:
             psi = compute_base_displacement(x_am, t_rs)
 
