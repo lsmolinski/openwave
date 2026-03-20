@@ -97,7 +97,7 @@ for wc in wave_centers:
 # 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
 
-WAVE_EQUATION = 1
+WAVE_EQUATION = 5
 
 WAVE_EQUATION_NAMES = {
     1: "Wolff-Original",
