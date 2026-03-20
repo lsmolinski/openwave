@@ -1,4 +1,4 @@
-# ADDITIONAL THEORIES TO EWT
+# ✅ ADDITIONAL THEORIES TO EWT
 
 ## LaFreniere's Force Mechanisms
 
