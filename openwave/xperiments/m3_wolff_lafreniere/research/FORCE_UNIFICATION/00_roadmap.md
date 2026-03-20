@@ -50,8 +50,8 @@ Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
 
 Step 2 — WC disturbance and contender selection:
 
-- [ ] Deeper physics discussion: evaluate quadrature direction (left/right) as charge/spin in 3D, standing wave node suppression at particle scale (100λ)
-- [ ] Select 2–3 strongest contenders: quadrature (flat energy + charge encoding), standing (Laplacian-validated), uniform + dual π-apart (zero-energy vacuum)
+- [ ] Deeper physics discussion: evaluate quadrature direction (left/right) as charge/spin in 3D, standing wave node-locking charge hypothesis, node suppression at particle scale (100λ)
+- [ ] Select 2–3 strongest contenders: quadrature (flat energy + charge encoding), standing + node-locking (sinc flip = charge mechanism), uniform + dual π-apart (zero-energy vacuum)
 - [ ] Implement WC interaction: how WCs disturb the base wave field (reflection/scattering, channel-selective, boundary condition, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field)
 - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
 - [ ] Determine how WC phase affects far-field drainage pattern (NOT via ±1 sign — mechanism must be discovered)

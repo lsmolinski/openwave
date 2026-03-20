@@ -187,6 +187,72 @@ A standing wave with fixed nodes at every λ/2. Energy density has spatial struc
 
 **Scale argument for node suppression**: the energy field is discrete at base wave scale (λ = 28 am), but the smallest stable particle (electron) has radius K²λ = 100λ = 2800 am. At that scale, the standing wave nodes are 100× smaller than the particle — the electron "sees" an averaged-out, effectively continuous energy field. Like pixels: when resolution is much finer than the object, discreteness disappears. This is Planck-scale granule motion — at electron scale, the base wave's node structure averages out.
 
+---
+
+## Hypothesis: Node-Locking Charge (standing wave model)
+
+A new idea that reframes the λ/2 force oscillation — instead of treating it as a problem to solve, it may BE the charge mechanism itself.
+
+### Core Concept
+
+If the base wave is a standing wave, the energy landscape has a periodic lattice structure: energy maxima at antinodes, zero energy at nodes, with nodes separated by exactly λ/2. WCs, following F = -∇E, move to minimize their energy — they settle at nodes (energy minima). This creates a natural lattice:
+
+```text
+Energy:   ┌─┐   ┌─┐   ┌─┐   ┌─┐   ┌─┐
+          │ │   │ │   │ │   │ │   │ │
+       ───┘ └───┘ └───┘ └───┘ └───┘ └───
+Nodes:     n₀    n₁    n₂    n₃    n₄
+          ←λ/2→
+```
+
+### Charge from Node Position
+
+The standing wave `ψ = A₀·cos(kx)·cos(ωt)` has alternating character at adjacent nodes. The displacement gradient at each node alternates sign:
+
+- **Even nodes** (n = 0, 2, 4...): the wave approaches the node from positive → negative (∂ψ/∂x < 0 when ψ > 0)
+- **Odd nodes** (n = 1, 3, 5...): the wave approaches from negative → positive (∂ψ/∂x > 0 when ψ > 0)
+
+This alternating gradient character could define **emergent charge**: WCs at even nodes have one "charge," WCs at odd nodes have the opposite. Charge is not intrinsic to the WC — it's determined by position in the standing wave lattice.
+
+### Force Direction from Node Types
+
+Two WCs at nodes separated by nλ/2:
+
+- **n odd** (adjacent nodes, different type) → opposite "charge" → **attract**
+- **n even** (same-type nodes) → same "charge" → **repel**
+
+This maps exactly to the sinc oscillation pattern we observed — force flips every λ/2. But here it's not a bug: it's the mechanism by which charge-dependent force emerges from the standing wave structure.
+
+### Dynamic Charge During Motion
+
+When WCs attract (n odd), they move toward each other. As they approach, they pass through the λ/2 boundary where the force would normally flip. The key question: **does the charge flip neutralize the attraction, or does it sustain it?**
+
+Possible resolution: as two WCs approach from opposite node types, their motion disturbs the standing wave field between them. The disturbance modifies the local node structure — the nodes shift, merge, or disappear as the WCs close in. If the node destruction keeps the WCs in an "attracting" configuration all the way to annihilation, the sinc flip problem is solved dynamically.
+
+### Why This Might Work
+
+- **Embraces the oscillation** instead of fighting it — the λ/2 periodicity is the charge mechanism, not an artifact
+- **Charge is emergent** — determined by position in the base wave lattice, not imposed as ±1
+- **Force direction depends on both WCs** — their relative node positions (even-odd vs even-even) determine attraction/repulsion
+- **Passes the emergence test**: you can't replace this with a manual ±1 label because the charge changes when the WC moves
+
+### Open Discussion
+
+- Does the standing wave node structure survive when WCs disturb it? Or does the WC's own standing wave core overwhelm the base wave nodes?
+- How does dynamic charge (charge changing with motion) affect the force during attraction? Is there a stable attractor or does the system oscillate?
+- At the scale argument (electron = 100λ): if the WC core spans 100 nodes, does the node-type concept still apply? Or is it only relevant at λ-scale separations?
+- How does this interact with the quadrature model? In quadrature, there are no nodes (flat energy) — so this mechanism wouldn't exist. The two models may represent different physical regimes
+
+### Testable in v3
+
+This can be tested by implementing WC interaction in the standing wave model:
+
+1. Place WCs at node positions (energy minima)
+2. Compute the disturbed field (base wave + WC presence)
+3. Measure force at WC positions
+4. Check: does force sign follow the even/odd node pattern?
+5. Simulate WC motion: does attraction persist through node crossings?
+
 ## ✅ Stochastic (`BASE_WAVE_MODE = "stochastic"`)
 
 **Original model (monochromatic)** — N plane waves with random phase offsets at the SAME wavenumber k:
@@ -327,5 +393,5 @@ All 5 modes implemented and tested:
 
 1. Select 2–3 strongest contenders for WC interaction testing:
    - **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection)
-   - **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase
+   - **Standing wave + node-locking charge** — physically validated by Laplacian; WCs lock to nodes, charge emerges from even/odd node position, sinc flip becomes the charge mechanism itself
    - **Uniform + dual phase** — if the π-apart WC idea produces emergent charge-dependent forces

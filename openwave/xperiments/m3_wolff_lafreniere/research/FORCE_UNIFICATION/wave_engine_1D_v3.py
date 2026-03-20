@@ -66,7 +66,7 @@ N_POINTS = len(x_am)
 # quadrature = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
 # laplacian  = Laplacian Propagation:     time-stepped wave equation, reflecting BC
 
-BASE_WAVE_MODE = "quadrature"
+BASE_WAVE_MODE = "standing"
 
 BASE_WAVE_NAMES = {
     "uniform": "Uniform Oscillation",
