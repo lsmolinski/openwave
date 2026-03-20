@@ -145,11 +145,13 @@ Key finding: **"get out of the way and let the waves stabilize themselves"** —
 - Is it a single coherent wave or a statistical/stochastic field?
 - Does it have spatial structure (nodes) or is it spatially uniform?
 
+---
+
 ### Candidate Base Wave Models for 1D Testing
 
 The central question: what does the base wave look like in 1D? We test multiple candidates to discover which produces the right physics. Each is a selectable mode in the v3 wave engine.
 
-#### Model A: Uniform Oscillation
+## Model A: Uniform Oscillation
 
 ```text
 ψ_base(x,t) = A₀ · cos(ωt)
@@ -161,7 +163,7 @@ Every point oscillates together in phase. No spatial structure. Energy density i
 - **Con**: not physically realistic — waves arriving from all directions cannot all be in phase everywhere. No wave character (no propagation, no interference)
 - **Use case**: null baseline for comparison
 
-#### Model B: Standing Wave (two counter-propagating waves)
+## Model B: Standing Wave (two counter-propagating waves)
 
 In 1D, "waves from all directions" reduces to waves from left and right:
 
@@ -177,7 +179,7 @@ A standing wave with fixed nodes at every λ/2. Energy density has spatial struc
 - **Use case**: test whether WC disturbance of a structured base wave produces different force behavior than WC-as-source. The node structure could interact with WC phase in interesting ways
 - **Open question**: where are the nodes? The node positions depend on boundary conditions and are arbitrary in infinite space — but in a finite simulation domain, reflections fix them
 
-#### Model C: Multi-Phase Superposition (stochastic isotropy)
+## [ ] Model C: Multi-Phase Superposition (stochastic isotropy)
 
 Superpose N plane waves with random phase offsets to simulate isotropic arrival from many directions:
 
@@ -192,7 +194,7 @@ As N → ∞, the RMS envelope converges to a **spatially uniform** value (centr
 - **Con**: requires many sources (N ≥ 50–100) for convergence, stochastic — different random seeds give different instantaneous patterns (but same RMS). Computationally heavier
 - **Use case**: the "honest" isotropic model — if the base wave is truly from all matter in the universe, this is the closest 1D representation. Test whether WC disturbance of a stochastic field behaves differently from disturbance of a coherent field
 
-#### Model D: Dual-Phase Standing Wave (complementary quadrature)
+## [ ] Model D: Dual-Phase Standing Wave (complementary quadrature)
 
 Two standing waves offset by a quarter wavelength (90° spatial phase):
 
@@ -211,7 +213,7 @@ E_base(x) = ρVf² [A₁·cos(kx)]² + ρVf² [A₂·sin(kx)]²
 
 Uniform energy density from two structured standing wave channels.
 
-- **Pro**: elegant — each channel is a real standing wave with nodes and antinodes, but their energies complement to produce a perfectly flat energy field. Wave character preserved while energy is uniform
+- **Pro**: elegant — each channel is a real standing wave with nodes and antinodes, but their energies complement to produce a perfectly flat energy field. Wave character preserved while energy is uniform. This might be the encoded longitudinal + transverse wave components, what is represented in multiple wave equations with complex sinusoids (imaginary real + component from Schrödinger, Wolff, etc), modeling the 90 degree separation of those fundamental wave channels. This also possibly encodes spin in 1D mode.
 - **Con**: requires two independent "channels" that don't interfere with each other — is this physically justified? Why would the medium support two orthogonal wave modes?
 
 **Additional test: π-apart dual phase** — two standing waves offset by half a wavelength (180° spatial phase):
@@ -229,7 +231,7 @@ Direct superposition: `ψ₁ + ψ₂ = 0` (total cancellation). But energy sum: 
 - **Use case**: test whether WCs preferentially lock onto one channel (creating charge states?). The dual-phase speculation in the main doc — "WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states" — directly maps to this model
 - **Connection to charge**: if the base wave has two complementary modes, and WCs disturb one mode more than the other based on their phase, this could be the mechanism for charge-dependent force direction
 
-#### Model E: Laplacian Propagation (M2 port to 1D)
+## [ ] Model E: Laplacian Propagation (M2 port to 1D)
 
 Instead of an analytical formula, use the actual wave equation with reflecting boundaries:
 
@@ -243,7 +245,7 @@ Initialize with a pulse (or boundary oscillators), let it ring and stabilize. Th
 - **Con**: architecturally different from analytical phasor computation — requires time-stepping, warmup period for stabilization, and a different code path. Cannot use phasor superposition (which assumes known analytical form). More complex to implement and analyze
 - **Use case**: the "ground truth" model. If any analytical candidate (A–D) matches the Laplacian result, we know that candidate is correct. If none match, the Laplacian reveals what we're missing
 
-### On the "Longitudinal" Assumption
+## On the "Longitudinal" Assumption
 
 The base wave is described as longitudinal in EWT literature, but **this is a hypothesis, not established fact**. In 1D simulation, we are forced to isolate a single wave mode (longitudinal displacement along x). This is a limitation of the dimensionality, not necessarily of the physics:
 
@@ -255,7 +257,9 @@ All of these properties can contribute to force direction. The unified force con
 
 A 2D simulation could capture longitudinal + transverse, but **may not be sufficient** — the elliptical form can be oriented in multiple ways in 3D space, and this orientational freedom is likely essential for magnetic fields and spin. The 1D base wave work here is foundational (establishing the energy redistribution mechanism), but the full picture likely requires 3D (Phase 1d / M4).
 
-### Implementation Plan for v3 Wave Engine
+---
+
+## Implementation Plan for v3 Wave Engine
 
 The v3 engine (`wave_engine_1D_v3.py`) replaces the v2 equation selector (#1–#6) with:
 
