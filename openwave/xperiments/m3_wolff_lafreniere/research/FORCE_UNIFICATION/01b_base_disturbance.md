@@ -151,7 +151,7 @@ Key finding: **"get out of the way and let the waves stabilize themselves"** —
 
 The central question: what does the base wave look like in 1D? We test multiple candidates to discover which produces the right physics. Each is a selectable mode in the v3 wave engine.
 
-## Model A: Uniform Oscillation
+## ✅ Uniform (`BASE_WAVE_MODE = "uniform"`)
 
 ```text
 ψ_base(x,t) = A₀ · cos(ωt)
@@ -159,11 +159,15 @@ The central question: what does the base wave look like in 1D? We test multiple 
 
 Every point oscillates together in phase. No spatial structure. Energy density is perfectly flat: `E = ρV(fA₀)²`. The simplest model — a uniform "hum."
 
-- **Pro**: flat energy → zero gradient → no force from base wave alone (correct baseline)
+- **Pro**: flat energy → zero gradient → no force from base wave alone (correct baseline). Simple and beautiful mathematical manifold
 - **Con**: not physically realistic — waves arriving from all directions cannot all be in phase everywhere. No wave character (no propagation, no interference)
 - **Use case**: null baseline for comparison
 
-## Model B: Standing Wave (two counter-propagating waves)
+**Test result**: RMS is stable and uniform, energy field perfectly flat. Works exactly as expected.
+
+**Idea for WC interaction**: add a second phase wave (π apart) — the two waves sum to zero energy, but WCs disturb one or the other depending on charge sign. This creates a zero-energy vacuum that WCs can asymmetrically perturb.
+
+## ✅ Standing Wave (`BASE_WAVE_MODE = "standing"`)
 
 In 1D, "waves from all directions" reduces to waves from left and right:
 
@@ -174,76 +178,106 @@ In 1D, "waves from all directions" reduces to waves from left and right:
 
 A standing wave with fixed nodes at every λ/2. Energy density has spatial structure: zero at nodes (`kx = nπ + π/2`), maximum at antinodes (`kx = nπ`). RMS envelope = `|A₀ · cos(kx)|/√2` — periodic, not flat.
 
-- **Pro**: genuine wave physics, standing waves from counter-propagation (matches M2 behavior)
+- **Pro**: genuine wave physics, standing waves from counter-propagation. **Physically validated**: the Laplacian propagation model self-stabilizes into exactly this pattern — confirming that counter-propagating waves in a reflecting domain naturally produce a standing wave field
 - **Con**: energy is NOT uniform — has zeros at nodes. WC placement relative to nodes matters. Node spacing = λ/2 matches the oscillatory force period we're trying to resolve (coincidence or clue?)
-- **Use case**: test whether WC disturbance of a structured base wave produces different force behavior than WC-as-source. The node structure could interact with WC phase in interesting ways
+- **Use case**: the physically motivated analytical model. Computationally optimized replacement for the Laplacian (same result, no warmup needed)
 - **Open question**: where are the nodes? The node positions depend on boundary conditions and are arbitrary in infinite space — but in a finite simulation domain, reflections fix them
 
-## [ ] Model C: Multi-Phase Superposition (stochastic isotropy)
+**Test result**: clean standing wave pattern. Nodes and antinodes clearly visible in energy panel.
 
-Superpose N plane waves with random phase offsets to simulate isotropic arrival from many directions:
+**Scale argument for node suppression**: the energy field is discrete at base wave scale (λ = 28 am), but the smallest stable particle (electron) has radius K²λ = 100λ = 2800 am. At that scale, the standing wave nodes are 100× smaller than the particle — the electron "sees" an averaged-out, effectively continuous energy field. Like pixels: when resolution is much finer than the object, discreteness disappears. This is Planck-scale granule motion — at electron scale, the base wave's node structure averages out.
 
-```text
-ψ_base(x,t) = (A₀/√N) · Σᵢ [cos(kx + φᵢ - ωt) + cos(kx + φᵢ + ωt)]
-            = (2A₀/√N) · Σᵢ cos(kx + φᵢ) · cos(ωt)
-```
+## ✅ Stochastic (`BASE_WAVE_MODE = "stochastic"`)
 
-As N → ∞, the RMS envelope converges to a **spatially uniform** value (central limit theorem). The instantaneous displacement varies point-to-point but the time-averaged energy density is flat.
-
-- **Pro**: physically motivated (waves from many sources = many random phases), uniform energy density in the statistical limit, genuine wave character at each point
-- **Con**: requires many sources (N ≥ 50–100) for convergence, stochastic — different random seeds give different instantaneous patterns (but same RMS). Computationally heavier
-- **Use case**: the "honest" isotropic model — if the base wave is truly from all matter in the universe, this is the closest 1D representation. Test whether WC disturbance of a stochastic field behaves differently from disturbance of a coherent field
-
-## [ ] Model D: Dual-Phase Standing Wave (complementary quadrature)
-
-Two standing waves offset by a quarter wavelength (90° spatial phase):
+**Original model (monochromatic)** — N plane waves with random phase offsets at the SAME wavenumber k:
 
 ```text
-Channel 1:  ψ₁(x,t) = (A₀/√2) · cos(kx) · cos(ωt)
-Channel 2:  ψ₂(x,t) = (A₀/√2) · sin(kx) · sin(ωt)
+ψ_base(x,t) = (2A₀/√N) · Σᵢ cos(kx + φᵢ) · cos(ωt)
 ```
 
-Each channel individually has nodes. But the nodes never coincide — where cos(kx) = 0, sin(kx) = ±1 and vice versa. The **energy sum** is:
+**Bug found**: `Σ cos(kx + φᵢ)` with same k and random φᵢ collapses mathematically to `|S|·cos(kx + arg(S))` where S = Σ e^{iφᵢ} — a single complex number. The result is always a **single phase-shifted standing wave**, identical to the standing wave model. Random phases at the same wavenumber cannot produce spatial uniformity in 1D. This is a fundamental mathematical limitation, not a code bug.
+
+**Fixed model (broadband)** — each source has its own k_i spread around the base k:
 
 ```text
-E_base(x) = ρVf² [A₁·cos(kx)]² + ρVf² [A₂·sin(kx)]²
-           = ρVf² (A₀²/2) · [cos²(kx) + sin²(kx)]
-           = ρVf² A₀²/2   ← FLAT!
+k_i = k · (1 + σ · δᵢ),   δᵢ ∈ [-1, 1] random,   σ = STOCHASTIC_K_SPREAD
+ω_i = c · k_i
+
+ψ_base(x,t) = amp · Σᵢ cos(k_i·x + φᵢ) · cos(ω_i·t)
 ```
 
-Uniform energy density from two structured standing wave channels.
+With different k_i, spatial patterns don't combine into a single sinusoid. Different ω_i means cross terms average to zero over time → quasi-uniform RMS. Parameter `STOCHASTIC_K_SPREAD` controls bandwidth: 0 = monochromatic (collapses to standing wave), 1 = full octave spread (maximum spatial uniformity).
 
-- **Pro**: elegant — each channel is a real standing wave with nodes and antinodes, but their energies complement to produce a perfectly flat energy field. Wave character preserved while energy is uniform. This might be the encoded longitudinal + transverse wave components, what is represented in multiple wave equations with complex sinusoids (imaginary real + component from Schrödinger, Wolff, etc), modeling the 90 degree separation of those fundamental wave channels. This also possibly encodes spin in 1D mode.
-- **Con**: requires two independent "channels" that don't interfere with each other — is this physically justified? Why would the medium support two orthogonal wave modes?
+- **Pro**: demonstrates broadband vs monochromatic wave field behavior. Energy field averages out with bandwidth, and roughness further suppresses at larger scales (electron sees smoothed-out fluctuations, like smaller pixels)
+- **Con**: hard to find physical motivation — why would the base wave be broadband? EWT describes a single fundamental wavelength λ₀. The stochastic model may represent statistical noise in the medium, but not the fundamental base wave itself
+- **Use case**: useful as mathematical demonstration of how bandwidth creates spatial uniformity. May become relevant if the medium has λ variation from non-linear effects (Phase 1c)
+
+**Test result** (σ=1): chaotic displacement, but energy field averages to near-uniform. Higher N and broader σ → flatter energy. The pixel analogy holds: at particle scale (100λ), small variations disappear.
+
+## ✅ Quadrature (`BASE_WAVE_MODE = "quadrature"`)
+
+Two standing waves with configurable spatial and temporal offsets:
+
+```text
+Channel 1:  ψ₁(x,t) = A₀ · cos(kx) · cos(ωt)
+Channel 2:  ψ₂(x,t) = A₀ · cos(kx + δs) · cos(ωt + δt)
+
+DUAL_SPATIAL_OFFSET  = δs (default π/2)
+DUAL_TEMPORAL_OFFSET = δt (default π/2)
+```
+
+Per-channel energy sum (independent channels, not field superposition):
+
+```text
+E_base(x) = ρVf² A₀² [cos²(kx) + cos²(kx + δs)] / 2
+```
+
+For δs = π/2: cos²(kx) + sin²(kx) = 1 → **FLAT energy** ✓
+For δs = π: 2cos²(kx) → **nodes** (same as standing wave)
+
+The **spatial offset** controls energy flatness. The **temporal offset** controls the combined displacement waveform without affecting energy:
+
+- δt = +π/2 → traveling wave moving right: `A₀·cos(kx - ωt)`
+- δt = -π/2 → traveling wave moving left: `A₀·cos(kx + ωt)`
+- δt = 0 → standing wave (shifted): `A₀√2·cos(kx - π/4)·cos(ωt)`
+
+- **Pro**: elegant — each channel is a real standing wave with nodes and antinodes, but their energies complement to produce a perfectly flat energy field. Wave character preserved while energy is uniform. This may be the physical meaning behind complex sinusoids in wave equations (Schrödinger, Wolff) — the real and imaginary components represent two 90°-offset standing wave channels. The quadrature structure may encode the longitudinal + transverse wave components, and possibly spin, in a 1D representation of 3D elliptical granule motion
+- **Con**: requires two independent "channels" that don't interfere with each other — is this physically justified? Why would the medium support two orthogonal wave modes? In 1D, only two travel directions exist (left/right), but in 3D space, orientational freedom is much richer — the two-direction model may be an oversimplification
+
+**Test result**: perfectly flat uniform energy (at δs = π/2). Displacement shows traveling wave that **inverts direction** when temporal offset sign flips.
+
+**Traveling wave direction and charge/spin**: the direction flip (left ↔ right) with temporal offset sign is physically interesting — it could encode charge sign or spin handedness. WCs that "tap" into one direction vs the other would see different energy landscapes. The challenge: in 3D, there are infinitely many directions, not just two — so mapping this to real charge physics requires understanding how the 3D elliptical motion reduces to the 1D two-channel picture.
 
 **Additional test: π-apart dual phase** — two standing waves offset by half a wavelength (180° spatial phase):
 
 ```text
-Channel 1:  ψ₁(x,t) = (A₀/√2) · cos(kx) · cos(ωt)
-Channel 2:  ψ₂(x,t) = (A₀/√2) · cos(kx + π) · cos(ωt)
-           = -(A₀/√2) · cos(kx) · cos(ωt)
+Channel 1:  ψ₁(x,t) = A₀ · cos(kx) · cos(ωt)
+Channel 2:  ψ₂(x,t) = A₀ · cos(kx + π) · cos(ωt)
+           = -A₀ · cos(kx) · cos(ωt)
 ```
 
-Direct superposition: `ψ₁ + ψ₂ = 0` (total cancellation). But energy sum: `E₁ + E₂ = ρVf²A₀²cos²(kx)` — still has nodes, same as Model B. The π-apart case only works as separate energy channels (not field superposition), and even then doesn't produce flat energy. This contrasts with the 90°-apart case where energy complementarity is exact.
+Direct superposition: `ψ₁ + ψ₂ = 0` (total cancellation). But energy sum: `E₁ + E₂ = ρVf²A₀²cos²(kx)` — still has nodes, same as standing wave. The π-apart case only works as separate energy channels (not field superposition), and even then doesn't produce flat energy. This contrasts with the 90°-apart case where energy complementarity is exact.
 
-**Both angular offsets should be tested** to understand how the phase relationship between base wave channels affects energy uniformity and WC interaction.
-
-- **Use case**: test whether WCs preferentially lock onto one channel (creating charge states?). The dual-phase speculation in the main doc — "WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states" — directly maps to this model
+- **Use case**: test whether WCs preferentially lock onto one channel (creating charge states?). The dual-phase speculation — "WCs lock onto one mode or the other (source_offset = 0 or π), creating the two charge states" — directly maps to this model
 - **Connection to charge**: if the base wave has two complementary modes, and WCs disturb one mode more than the other based on their phase, this could be the mechanism for charge-dependent force direction
 
-## [ ] Model E: Laplacian Propagation (M2 port to 1D)
+## ✅ Laplacian (`BASE_WAVE_MODE = "laplacian"`) — RETIRED
 
-Instead of an analytical formula, use the actual wave equation with reflecting boundaries:
+Time-stepped wave equation with reflecting boundaries (Dirichlet BC):
 
 ```text
 ∂²ψ/∂t² = c² · ∂²ψ/∂x²
+ψ(x_min) = ψ(x_max) = 0
 ```
 
-Initialize with a pulse (or boundary oscillators), let it ring and stabilize. The base wave emerges from simulation dynamics — no assumed spatial form.
+Initialized with Gaussian pulse or analytical standing wave. After warmup (20+ periods), the field self-stabilizes. Live RMS tracking updates every period via peak |ψ| measurement.
 
-- **Pro**: most physically honest — no assumptions about the base wave form. The wave equation itself determines what the field looks like. Matches M2's approach (which successfully self-stabilized). Naturally handles WC interaction via the same wave equation (WC = boundary condition or source term within the Laplacian domain)
-- **Con**: architecturally different from analytical phasor computation — requires time-stepping, warmup period for stabilization, and a different code path. Cannot use phasor superposition (which assumes known analytical form). More complex to implement and analyze
-- **Use case**: the "ground truth" model. If any analytical candidate (A–D) matches the Laplacian result, we know that candidate is correct. If none match, the Laplacian reveals what we're missing
+- **Pro**: most physically honest — no assumptions about the base wave form. The wave equation itself determines what the field looks like
+- **Con**: architecturally different from analytical computation — requires time-stepping, warmup period, and separate code path
+
+**Test result**: the Laplacian **resolves itself into a standing wave** — identical to the standing wave model. This provides **physical motivation for the analytical standing wave model**: it represents real Laplacian wave propagation in a computationally optimized analytical form. The standing wave isn't an arbitrary choice — it's what the wave equation naturally produces in a reflecting domain.
+
+**Status: RETIRED** — the Laplacian mode validated that the standing wave is the physically correct 1D base wave form. It can now be replaced by the analytical standing wave model for all further work. Kept in v3 code for reference but not needed for Phase 1b Step 2.
 
 ## On the "Longitudinal" Assumption
 
