@@ -1,5 +1,17 @@
 # CONCEPTUAL OVERVIEW
 
+## GOALS: Force Unification from Wave Interference
+
+### PRIMARY (EMERGENT FORCES)
+
+- Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational, strong) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+
+### SECONDARY (EMERGENT WAVES)
+
+- Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
+
+## MAIN CONCEPTS
+
 Spacetime is an elastic fluid structure, vibrating in harmonic oscillations at extremely high frequencies (~10²⁵ Hz), that allows energy to transfer from one point to the next, forming an **energy field**. Through this fluid, waves travel in all directions and get reflected by wave centers that create disturbances. Those energy waves can become **standing** (forming matter) or remain **traveling** (transmitting all forces).
 
 Everything emerges from disturbances in this wave field:

@@ -1,4 +1,6 @@
-# M4 VECTOR WAVE
+# PHASE 4: Magnetic Force (M4 Vector Waves)
+
+Requires M4 vector wave method. Magnetic force arises from transverse wave interference. The elliptical displacement trajectories (6 phasor numbers per voxel) naturally encode both longitudinal (electric) and transverse (magnetic) components. Spin modeled as toroidal wave flow.
 
 ## Elliptical Motion Geometry
 
@@ -136,6 +138,6 @@ F_x = -∂E_x/∂x,  F_y = -∂E_y/∂y,  F_z = -∂E_z/∂z
 
 Or from vector operations on the full displacement field (divergence, curl, flux). The per-component approach preserves the directional structure that magnitude-only discards.
 
-Soliton [Toroidal](03_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
+Soliton [Toroidal](00b_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
 
-Lafreniere [magnetic field lines](03_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.
+Lafreniere [magnetic field lines](00b_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.

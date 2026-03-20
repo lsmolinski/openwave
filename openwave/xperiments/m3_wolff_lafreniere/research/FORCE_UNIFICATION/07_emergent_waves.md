@@ -1,4 +1,6 @@
-# EMERGENT WAVES
+# PHASE 7: Emergent Waves
+
+Photons as traveling wave packets, thermal energy as standing wave dynamics.
 
 ## Electromagnetic Wave Packets (Photons)
 
