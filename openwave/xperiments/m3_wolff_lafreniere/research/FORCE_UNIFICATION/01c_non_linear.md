@@ -25,3 +25,5 @@ Computing F = -∇E means these additional variables are automatically included 
 **Smoliński's Push-out Operator** (Eq. 90): `P̂Φ = -∇·(η_stat/η_soliton)∇Φ` — force from gradient of potential weighted by local density mismatch, formalizing F = -∇E with variable ρ(x).
 
 **Connection to dual-treatment boundary**: Smoliński's Isotropy Operator acts as a **geometric low-pass filter** at the Degraded EMC Wall boundary. Inside → non-linear toroidal dynamics (r⁵), outside → isotropic spherical push-out (r³).
+
+**Connection to wave resonance**: variable λ(r) means different regions oscillate at different frequencies. Energy exchange between regions occurs through **wave resonance** — the mechanism by which A and λ convert into each other while conserving energy. Wolff's coupled-oscillator model describes how two wave systems readjust frequencies through their shared medium. This may be the physical process behind the non-linear energy redistribution that creates force gradients. See [Wave Resonance](06_time_dynamics.md#wave-resonance-as-the-fundamental-energy-exchange-mechanism) for the full analysis.

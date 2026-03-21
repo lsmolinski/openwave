@@ -31,14 +31,15 @@ Since c is absolute (constant everywhere), the rate of change at any point is de
 
 ## Key Finding: Energy Starvation and Time Dilation
 
-When destructive interference pushes amplitude too low at a point, **energy conservation forces frequency up** to maintain wave steepness (amplitude × frequency must conserve energy). This frequency increase IS time dilation — the local rate of change speeds up. When frequency returns to normal, it may draw/convert energy from surrounding forms.
+When destructive interference pushes amplitude too low at a point, **energy conservation forces frequency up** to maintain wave steepness. This frequency increase IS time dilation — the local rate of change speeds up. When frequency returns to normal, it may draw/convert energy from surrounding forms.
 
-This connects amplitude, frequency, wavelength, and energy conservation into a single dynamic:
+**Wave steepness conservation**: the ratio A/λ (equivalently A·f, since f = c/λ) is maintained when energy is conserved locally — it governs how amplitude and wavelength trade off within an isolated system. Since `E = ρV·c²·(A/λ)²`, constant steepness means constant energy. Steepness only changes when energy enters or leaves the system.
 
 ```text
-Wave steepness conservation: A · f = constant (locally)
-When A drops (destructive interference) → f increases → λ decreases → time speeds up
-When A rises (constructive interference) → f decreases → λ increases → time slows down
+Steepness conservation (isolated): A/λ = constant
+When A drops (destructive interference) → λ decreases proportionally → f increases → time speeds up
+When A rises (constructive interference) → λ increases proportionally → f decreases → time slows down
+Energy stays constant — only the A↔λ distribution changes
 ```
 
 ## Implications for Simulation
@@ -76,6 +77,100 @@ This creates a direct link to Smoliński's gravitational push-out/buoyancy model
 **#hackingenergy** — by understanding how time works and its relationship to energy, we can hack energy itself.
 
 **Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces in the 1D sandbox, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research planned for Phase 3.
+
+---
+
+## Wave Resonance as the Fundamental Energy Exchange Mechanism
+
+Resonance may be the universal mechanism by which energy transfers between wave systems — and therefore the mechanism behind force, motion, matter formation, and thermal dynamics.
+
+### Wolff's Frequency Exchange Model
+
+Milo Wolff describes energy exchange as wave resonance between source and receiver atoms (from *Schroedinger's Universe and the Origin of the Natural Laws*):
+
+> "Energy — Changes of wave-states observed by our human sensory system and/or lab apparatus. The Energy transfer is proportional to the frequency difference of the source and receiver frequency of the quantum wave states. Energy Transfers occur in discrete amounts or 'quanta' as a result of resonance between a source wave state and a receiver wave state."
+
+> "Energy exchange is due to wave resonance between the source and receiver atoms or molecules. This is a common situation between instruments in an orchestra or reception of radio signals."
+
+**The morphology of frequency change** (Wolff, Figure 13-1): the IN and OUT waves of two atoms A and B carry information about each other's state, behaving like coupled oscillators. They eventually readjust frequencies to obtain a lower total wave amplitude in the surrounding space. At the end, atom A (the detector) shifts frequency upward, and B (the source) shifts frequency equally downward — complying with conservation of energy.
+
+This is not abstract — it's the physical process by which two wave systems communicate and exchange energy through their shared medium. The medium carries the resonance signal.
+
+### Resonance: The Physics
+
+Every oscillating system has a natural frequency determined by its physical properties. When a periodic force is applied at that natural frequency, each push arrives precisely when the system is already moving in that direction — energy adds constructively cycle after cycle. The amplitude grows until energy input equals energy dissipation.
+
+For a driven damped harmonic oscillator: `mx'' + bx' + kx = F₀·cos(ωt)`. The steady-state amplitude peaks sharply when the driving frequency ω approaches the natural frequency ω₀ = √(k/m). The sharpness (Q factor) depends on damping.
+
+In EWT, the medium has a natural frequency (f₀ = 10²⁵ Hz, λ₀). Particles have their own natural frequencies determined by their standing wave structure. Resonance occurs when these frequencies interact — the mechanism by which particles "communicate" through the wave field.
+
+### Energy is Proportional to Both A and λ
+
+From `E = ρV(fA)²` and `f = c/λ`:
+
+```text
+E = ρV · (c·A/λ)² = ρV·c²·A²/λ²
+```
+
+Energy depends on **both** amplitude (A) and wavelength (λ). This raises a critical question: **can A convert to λ and vice versa?** If so, how?
+
+The energy starvation mechanism already describes one direction: when A drops (destructive interference), energy conservation forces λ to decrease (f increases) to maintain `A·f = constant`. This is A → λ conversion.
+
+The reverse — λ → A — would mean: when λ changes (due to motion, Doppler, or medium variation), amplitude adjusts to conserve energy. This is the mechanism behind length contraction and time dilation in the wave picture.
+
+### λ, Motion, and Relativity
+
+λ is both size and time:
+
+- **λ is size**: the spatial extent of one wave cycle — length
+- **λ with c is time**: f = c/λ — the rate of change at each point
+- **Motion changes λ**: the Doppler effect shifts λ, changing both size and time
+- **Length contraction** is size change (λ change), not space contraction — matter changes size, space doesn't change
+- **Time dilation** is frequency change from λ shift — time changes with motion
+
+This is special relativity from wave mechanics: motion → Doppler → λ shift → changes in both size (length contraction) and time (time dilation). General relativity adds gravity: mass concentrations modify λ in their vicinity → spacetime curvature emerges from λ variation in the medium.
+
+### Energy Exchange = Wavelength Exchange (Resonance)
+
+The central hypothesis: **all energy exchange is wavelength exchange mediated by resonance**.
+
+When two wave systems interact:
+
+1. Their out-waves carry frequency/phase information into the shared medium
+2. The medium transmits this information as traveling waves
+3. Resonance occurs where the driving frequency matches the natural frequency
+4. Energy transfers as frequency shifts — one system shifts up, the other shifts down
+5. Total energy is conserved — the frequency shifts are equal and opposite
+
+This mechanism may underlie:
+
+- **Force and motion**: energy exchange between WCs creates energy gradients → F = -∇E. The resonance between WC standing waves produces the spatial energy redistribution that generates force. WCs don't push each other directly — they exchange energy through the medium via resonance
+- **Matter formation**: particles form when wave resonance creates stable standing wave structures. The natural frequency of the medium determines which configurations are stable — only those that resonate survive
+- **Electromagnetic radiation**: photons are resonance-mediated energy transfers between atoms. Wolff's coupled-oscillator picture: atom A shifts frequency up, atom B shifts down, the difference propagates as a traveling wave packet (photon)
+- **Thermal energy**: heat increases the steepness (A/λ) of standing waves within a particle. The particle naturally wants to return to its fundamental steepness (radiation) — this is thermal emission. When two bodies at different temperatures interact, their standing wave structures exchange energy through resonance until steepness equilibrium
+
+### Thermal Energy as Steepness Variation
+
+Particles have a fundamental/natural steepness (A/λ ratio, and therefore frequency, local time, rate of change) at absolute zero. Heat is encoded as **increased steepness** — the particle stores more energy by increasing A/λ beyond its fundamental value:
+
+- **0 K**: particle at fundamental steepness A₀/λ₀ — minimum energy state
+- **Higher temperature**: steepness increases (A/λ rises) — more energy stored in standing waves. Steepness conservation (A/λ = const) is broken by the external energy input
+- **Radiation**: the particle naturally wants to return to its fundamental steepness, releasing excess energy as traveling waves (photons). This is steepness relaxation
+- **Thermal equilibrium**: two bodies exchange steepness through resonance until their A/λ distributions match — this IS temperature equilibration
+
+**How steepness increases**: when external energy enters the system (absorption, collision), the standing waves gain energy. Since `E = ρV·c²·(A/λ)²`, more energy means higher A/λ. Whether this manifests as higher A (amplitude growth at same λ) or lower λ (wavelength compression at same A) or both depends on the particle's boundary conditions and the mode of energy input.
+
+**Connection to energy starvation**: steepness conservation applies within an isolated system — when A drops at one location, λ drops proportionally (f increases, time speeds up), and vice versa. The total energy stays constant, only the A↔λ balance shifts. External energy input (heating) breaks this conservation by increasing steepness. External energy output (radiation) decreases it.
+
+### Connection to Force Mechanism and Energy Technology
+
+If energy exchange = wavelength exchange through resonance, then controlling resonance means controlling energy flow. This could:
+
+- **Influence energy gradients**: resonance can concentrate energy from one region and move it to another — creating the energy gradient that produces force (F = -∇E)
+- **Generate force**: directed resonance could create electricity (directed energy gradient) or counteract gravity (opposing the density-deficit gradient)
+- **Cool regions**: removing energy via resonance cools the source region — the energy isn't created, it's relocated. The source cools down as its standing wave energy converts to directed force
+
+This is not perpetual motion — it's energy redirection through resonance. The total energy is conserved, but its spatial distribution changes, creating gradients that produce force and motion.
 
 ## EWT Standing Wave Geometry (Yee & Hauger)
 
