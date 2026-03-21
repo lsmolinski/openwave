@@ -189,69 +189,45 @@ A standing wave with fixed nodes at every λ/2. Energy density has spatial struc
 
 ---
 
-## Hypothesis: Node-Locking Charge (standing wave model)
+## ✅ Hypothesis: Node-Locking Charge (standing wave model) — FALSIFIED (Step 2a)
 
-A new idea that reframes the λ/2 force oscillation — instead of treating it as a problem to solve, it may BE the charge mechanism itself.
+Hypothesis: charge is not intrinsic to the WC — it emerges from the WC's position in the standing wave node lattice. Even-node WCs have one "charge," odd-node WCs have the opposite. The sinc λ/2 force oscillation IS the charge mechanism itself.
 
-### Core Concept
+**Prediction**: force alternates every node step (λ/2) — odd separations attract, even separations repel.
 
-If the base wave is a standing wave, the energy landscape has a periodic lattice structure: energy maxima at antinodes, zero energy at nodes, with nodes separated by exactly λ/2. WCs, following F = -∇E, move to minimize their energy — they settle at nodes (energy minima). This creates a natural lattice:
+### Test Implementation (`wave_engine_1D_v3_vnode.py`, `sweep_node_locking.py`)
+
+- Base wave: standing mode `A₀·cos(kx)·cos(ωt)`
+- Two WCs with phase = 0 (no imposed charge), snapped to node positions
+- Combined phasor: base standing wave + WC weighted partial standing waves (eq #5)
+- Swept separation from 1 to 30 nodes (0.5λ to 15λ)
+
+### Results — FALSIFIED
 
 ```text
-Energy:   ┌─┐   ┌─┐   ┌─┐   ┌─┐   ┌─┐
-          │ │   │ │   │ │   │ │   │ │
-       ───┘ └───┘ └───┘ └───┘ └───┘ └───
-Nodes:     n₀    n₁    n₂    n₃    n₄
-          ←λ/2→
+Overall: 7/30 match (23%) — not consistent
+ODD  separations: 7/15 attract (as predicted), 8/15 repel (opposite)
+EVEN separations: 0/15 repel, 15/15 unclear (both forces same direction)
+Force does NOT alternate every λ/2 — 0/29 consecutive transitions alternate
 ```
 
-### Charge from Node Position
+**Actual pattern observed**: the force has period **2λ (4 nodes)**, not λ/2 (1 node):
 
-The standing wave `ψ = A₀·cos(kx)·cos(ωt)` has alternating character at adjacent nodes. The displacement gradient at each node alternates sign:
+- Odd separations of form 4n+3 (sep 3, 7, 11, 15, 19, 23, 27) → **always attract** (7/7)
+- Odd separations of form 4n+1 (sep 1, 5, 9, 13, 17, 21, 25, 29) → **always repel** (8/8)
+- Even separations (all) → **unclear** — both WCs pushed in same direction (net translation, not attraction/repulsion)
 
-- **Even nodes** (n = 0, 2, 4...): the wave approaches the node from positive → negative (∂ψ/∂x < 0 when ψ > 0)
-- **Odd nodes** (n = 1, 3, 5...): the wave approaches from negative → positive (∂ψ/∂x > 0 when ψ > 0)
+### Why It Failed
 
-This alternating gradient character could define **emergent charge**: WCs at even nodes have one "charge," WCs at odd nodes have the opposite. Charge is not intrinsic to the WC — it's determined by position in the standing wave lattice.
+1. **The even/odd node parity is too simple** — the actual force pattern involves the interaction between the WC's own sinc wave structure (which has its own λ/2 periodicity) and the base wave's node lattice. The WC wave dominates over the base wave node structure
+2. **Even separations don't produce repulsion** — they produce asymmetric forces where both WCs are pushed the same direction, suggesting the base wave gradient (not WC interaction) dominates at same-type nodes
+3. **The 2λ periodicity** comes from the WC wave's sinc function interfering with the base wave — a beat pattern between two periodic structures, not a simple node-type alternation
 
-### Force Direction from Node Types
+### What We Learned
 
-Two WCs at nodes separated by nλ/2:
-
-- **n odd** (adjacent nodes, different type) → opposite "charge" → **attract**
-- **n even** (same-type nodes) → same "charge" → **repel**
-
-This maps exactly to the sinc oscillation pattern we observed — force flips every λ/2. But here it's not a bug: it's the mechanism by which charge-dependent force emerges from the standing wave structure.
-
-### Dynamic Charge During Motion
-
-When WCs attract (n odd), they move toward each other. As they approach, they pass through the λ/2 boundary where the force would normally flip. The key question: **does the charge flip neutralize the attraction, or does it sustain it?**
-
-Possible resolution: as two WCs approach from opposite node types, their motion disturbs the standing wave field between them. The disturbance modifies the local node structure — the nodes shift, merge, or disappear as the WCs close in. If the node destruction keeps the WCs in an "attracting" configuration all the way to annihilation, the sinc flip problem is solved dynamically.
-
-### Why This Might Work
-
-- **Embraces the oscillation** instead of fighting it — the λ/2 periodicity is the charge mechanism, not an artifact
-- **Charge is emergent** — determined by position in the base wave lattice, not imposed as ±1
-- **Force direction depends on both WCs** — their relative node positions (even-odd vs even-even) determine attraction/repulsion
-- **Passes the emergence test**: you can't replace this with a manual ±1 label because the charge changes when the WC moves
-
-### Open Discussion
-
-- Does the standing wave node structure survive when WCs disturb it? Or does the WC's own standing wave core overwhelm the base wave nodes?
-- How does dynamic charge (charge changing with motion) affect the force during attraction? Is there a stable attractor or does the system oscillate?
-- At the scale argument (electron = 100λ): if the WC core spans 100 nodes, does the node-type concept still apply? Or is it only relevant at λ-scale separations?
-- How does this interact with the quadrature model? In quadrature, there are no nodes (flat energy) — so this mechanism wouldn't exist. The two models may represent different physical regimes
-
-### Testable in v3
-
-This can be tested by implementing WC interaction in the standing wave model:
-
-1. Place WCs at node positions (energy minima)
-2. Compute the disturbed field (base wave + WC presence)
-3. Measure force at WC positions
-4. Check: does force sign follow the even/odd node pattern?
-5. Simulate WC motion: does attraction persist through node crossings?
+- Charge cannot be purely spatial (position-dependent) in this model — the WC's own wave structure imposes its own periodicity that overrides the base wave's node pattern
+- The standing wave base field is still a valid contender for WC disturbance testing, but the force mechanism must come from WC wave interference, not from node position assignment
+- The "unclear" even-separation result (net translation instead of attraction/repulsion) is interesting — may indicate that same-type node positions create a field asymmetry rather than a symmetric force
 
 ## ✅ Stochastic (`BASE_WAVE_MODE = "stochastic"`)
 
@@ -378,20 +354,45 @@ All 5 modes implemented and tested:
 
 **Key finding**: Laplacian resolves to standing wave → standing wave is the physically correct 1D base wave form. Quadrature produces flat energy via two complementary channels — most mathematically elegant and may encode real physics (complex sinusoids, spin, charge).
 
-### [ ] Step 2 — Next: WC Disturbance and Contender Selection
+### Step 2 — WC Disturbance and Contender Selection
 
-**Immediate next steps**:
+#### ✅ Step 2a: Node-Locking Charge Hypothesis — FALSIFIED
 
-1. Implement WC interaction ideas from testing:
-   - Uniform model: add π-apart second wave, WCs disturb one phase depending on charge
-   - Quadrature model: WCs tap into one channel direction (left/right traveling wave → charge sign?)
-   - Standing wave model: WCs as boundary conditions or scattering centers within the standing wave field
+Tested whether charge emerges from WC position in standing wave node lattice. Prediction: force alternates every λ/2, odd separations attract, even repel. Result: 7/30 match (23%). Actual pattern has 2λ periodicity from WC sinc interacting with base wave nodes. Even separations produce net translation, not repulsion. See [Node-Locking Hypothesis](#-hypothesis-node-locking-charge-standing-wave-model--falsified-step-2a) for full results.
 
-1. Deeper discussion of results:
-   - Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
-   - Evaluate standing wave node suppression at particle scale — is the scale argument sufficient, or do nodes need to be eliminated?
+#### 🔶 Step 2b: Migrate WC Disturbance to v3
 
-1. Select 2–3 strongest contenders for WC interaction testing:
-   - **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection)
-   - **Standing wave + node-locking charge** — physically validated by Laplacian; WCs lock to nodes, charge emerges from even/odd node position, sinc flip becomes the charge mechanism itself
-   - **Uniform + dual phase** — if the π-apart WC idea produces emergent charge-dependent forces
+Port WC wave computation from v2 (equation #5 weighted partial standing wave + phasor superposition) to v3. WCs as wave sources superposed onto the base wave field. This is the existing v2 WC model running on top of each base wave mode — not a new interaction mechanism, but the foundation for testing.
+
+- [ ] Port WC class, separation slider, phase toggle, Coulomb comparison from v2
+- [ ] Combined phasor: base wave phasor + WC phasors → total RMS → energy → force
+- [ ] Test on all 3 remaining contenders: standing, quadrature, uniform
+- [ ] Compare: does the base wave change the force behavior compared to v2 (WCs in empty space)?
+
+**Per-contender WC interaction ideas** (to explore after migration):
+
+- **Quadrature**: WCs tap into one channel direction (left/right traveling wave → charge sign?)
+- **Standing wave**: WCs as boundary conditions or scattering centers within the standing wave field
+- **Uniform**: add π-apart second wave, WCs disturb one phase depending on charge (→ Step 2c)
+
+**WC disturbance mechanisms to investigate**: reflection/scattering of base wave, channel-selective disturbance, boundary condition at WC position, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
+
+#### [ ] Step 2c: Uniform Dual-Phase (π-apart)
+
+After v2 WC features are migrated, implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign.
+
+#### [ ] Step 2d: Deeper Physics Discussion and Contender Selection
+
+**3 remaining contenders** (node-locking eliminated):
+
+- **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection). Traveling wave direction flips with temporal offset sign → possible charge/spin mechanism
+- **Standing wave** — physically validated by
+ Laplacian, simplest model, node structure may interact with WC phase at particle scale (100λ average-out argument)
+- **Uniform + dual phase** — zero-energy vacuum from π-apart waves, WCs asymmetrically perturb one phase depending on charge
+
+**Discussion topics**:
+
+- Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
+- Evaluate standing wave at particle scale (100λ) — does the node structure matter or average out?
+- Compare force behavior across the 3 contenders — which produces the best charge-dependent force direction?
+- Does the base wave change force behavior compared to v2 (WCs in empty space), or is additive superposition still fundamentally the same?
