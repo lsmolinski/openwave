@@ -89,3 +89,5 @@ The theory proposes that all forces are manifestations of the same wave interfer
 4. **Strong Force**: Longitudinal electric force in short distances (λ scale). Particles inside each others standing wave radius will experience the strong force, a concentrated electrical force with stored energy from standing waves.
 
 5. **Orbital Force**: a combination of electric and magnetic forces creating zero amplitude nodes (orbitals), where electrons can be found randomly, doesn't follow a classical planetary orbit.
+
+- Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.

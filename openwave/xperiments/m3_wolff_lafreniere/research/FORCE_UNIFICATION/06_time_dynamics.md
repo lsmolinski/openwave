@@ -90,7 +90,7 @@ Milo Wolff describes energy exchange as wave resonance between source and receiv
 
 > "Energy — Changes of wave-states observed by our human sensory system and/or lab apparatus. The Energy transfer is proportional to the frequency difference of the source and receiver frequency of the quantum wave states. Energy Transfers occur in discrete amounts or 'quanta' as a result of resonance between a source wave state and a receiver wave state."
 
-> "Energy exchange is due to wave resonance between the source and receiver atoms or molecules. This is a common situation between instruments in an orchestra or reception of radio signals."
+"Energy exchange is due to wave resonance between the source and receiver atoms or molecules. This is a common situation between instruments in an orchestra or reception of radio signals."
 
 **The morphology of frequency change** (Wolff, Figure 13-1): the IN and OUT waves of two atoms A and B carry information about each other's state, behaving like coupled oscillators. They eventually readjust frequencies to obtain a lower total wave amplitude in the surrounding space. At the end, atom A (the detector) shifts frequency upward, and B (the source) shifts frequency equally downward — complying with conservation of energy.
 
@@ -266,6 +266,33 @@ The simulation should not use uniform timesteps. Instead:
 - **Energy field computation**: from envelopes A(r) and λ(r), compute E(r) = ρV·c²·(A/λ)². Force from the energy gradient. Visualize with flux mesh (energy density gradient, not just amplitude)
 
 This is a major architectural change — every equation that contains time becomes position-dependent. But it's the physically correct approach: time IS local, determined by the wave field state at each point.
+
+### Energy Gradient Control — The Curvature Matching Principle
+
+The goal is to find ways to move energy gradients around. Spin or time dynamics may be the control mechanism — frequency may be the key variable to manipulate.
+
+**Curvature matching**: when the curvature of space (amplitude envelope) matches the curvature of time (frequency distribution), an implicit channel opens. By changing the curvature of time (λ distribution), magnetic/gravitational waves can be aligned coherently with EM/ultrasound wave directions — creating the most efficient heat-to-motion engine.
+
+**Magnetic wave concentration (laser analogy)**: similar to how mirrors reflect visible light to produce lasers, find materials that reflect **magnetic waves** (transverse wave disturbances from particle spin). Concentrate and reshape the geometry of magnetic waves, as in laser production. Concentrated magnetic waves could curve the local λ field (spacetime) in a desired direction, changing the energy density distribution to generate forces.
+
+**Converting between energy forms**: all energy conversion is λ↔A exchange:
+
+- **Heat → EM radiation**: heat is always propagating into light (electromagnetic radiation) — thermal emission is the natural λ relaxation process. The question is how to **accelerate** this conversion
+- **Heat → electricity**: convert thermal standing wave energy into directed electron motion. Possibly through water molecules (responsive to microwaves, MRI magnetic fields — susceptible to magnetic fields and capable of capturing EM waves and converting to heat, and vice versa)
+- **E-waves → heat and heat → e-waves**: changing λ into A and vice versa. This is changing time. Understanding heat conversion is the key — modeling heat is the key
+- **Cavitation**: heat to light through water may involve cavitation — the collapse of vapor bubbles converting thermal energy into photon emission (sonoluminescence)
+
+Understanding heat is the key to unlocking energy conversion. Modeling heat at the wave level — as spin-driven λ disturbance rather than kinetic vibration — opens pathways that classical thermodynamics cannot see.
+
+### Spacetime as Measurement, Not Reality
+
+**Spacetime is not fundamental — it emerges from wave dynamics.**
+
+Space is a measurement of **length**. Time is a measurement of **change**. Spacetime is just measurements — not reality itself. Abstract representations of reality, done with numbers and symbols that humans can correlate, compare, and count to understand what IS. We reduce unknowns into knowable quantities and call the abstraction "spacetime."
+
+The reality underneath: **waves in a medium**. Length comes from wavelength. Change comes from frequency. The medium's wave state IS the physical reality — spacetime is the human-readable summary of that state. When we say "spacetime curves near mass," the physical reality is: **λ varies near wave centers**, and we measure the consequences as curved geometry.
+
+This is not just philosophy — it has simulation implications. The simulator should compute wave states (A, λ, phase at each point), not spacetime coordinates. Spacetime emerges as a derived quantity, not an input.
 
 ## EWT Standing Wave Geometry (Yee & Hauger)
 
