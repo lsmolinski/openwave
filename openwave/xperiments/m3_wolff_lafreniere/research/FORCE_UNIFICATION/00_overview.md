@@ -49,6 +49,7 @@ Wave centers are points where waves reflect and change character. Key properties
 - **Re-emission**: Every wave center reflects this base wave outward radially, changing its phase and character
 - **Phase offset (source_offset)**: Each wave center has a phase offset that determines its charge signature. `cos(0) = +1` (positron), `cos(π) = -1` (electron). This is the origin of particle charge
 - **Standing waves**: Near the wave center, reflected in-waves and emitted out-waves superpose to form standing waves — the structure of the particle itself
+- **Matter signature frequency**: every element and molecule has a unique frequency signature — a combination of multiple oscillation frequencies, like musical timbre. Discovering these signatures enables manipulation of matter through wave combination (superposition at the right frequencies to control attraction and repulsion)
 
 ### Matter Formation from Standing Waves & Force Equilibrium
 

@@ -118,6 +118,12 @@ The energy starvation mechanism already describes one direction: when A drops (d
 
 The reverse — λ → A — would mean: when λ changes (due to motion, Doppler, or medium variation), amplitude adjusts to conserve energy. This is the mechanism behind length contraction and time dilation in the wave picture.
 
+**Amplitude vs frequency detectability**: we cannot directly detect amplitude of the fundamental energy wave — it is stored away from the material world. But we CAN detect frequency, because frequency is reflected through matter and interacts with our senses. The real energy storage is longitudinal wave amplitude — hidden, un-manifest. Energy becomes manifest through conversion between amplitude and frequency (A ↔ f). This is why all our instruments measure frequency-derived quantities (wavelength, period, spectral lines) rather than fundamental wave amplitude directly.
+
+**Kinetic energy = Doppler effect**: motion of matter creates wavelength compression via Doppler. That compression IS kinetic energy — not a separate concept but a direct consequence of λ change. Action and reaction (Newton's 3rd law) is a consequence of the Lorentz-Doppler effect: the wave medium mediates the symmetric frequency exchange between moving bodies. Kinetic energy is relative (frame-dependent) because Doppler shift is relative.
+
+**Mass = frequency**: mass is not an independent property — it is a manifestation of wave frequency. The standing wave structure of a particle determines its frequency content, and that frequency content determines its mass via E = mc² = ρV(fA)². Higher frequency standing waves = more energy = more mass. Mass IS the frequency of the particle's standing waves.
+
 ### λ, Motion, and Relativity
 
 λ is both size and time:

@@ -123,6 +123,12 @@ On-axis: cos(θ_geo) = -1 (constant), so F = -∇E is identical to scalar. No im
 
 The energy for spinning comes FROM the longitudinal base wave. Spin reduces the longitudinal amplitude by converting it to transverse — this amplitude reduction may be the mechanism behind gravitational shading. The conversion ratio may be related to the **fine-structure constant α** (the coupling strength between electric/longitudinal and magnetic/transverse). If so, the gravitational force weakness (10⁻⁴² of electric) emerges from repeated application of this coupling.
 
+## Permanent Magnets — Electron Alignment Persistence
+
+Electrons are always spinning and generating magnetic fields, but in most materials these spin orientations are random and cancel out — no net magnetic field. When electrons move relative to protons (electric current), the electron-proton attraction creates resistance (reactive force) that aligns electron spins, producing the magnetic flux around a wire (electromagnet).
+
+**Permanent magnets** (iron, neodymium, cobalt): these materials have atomic/molecular structures that allow electron spin alignment to persist. Once magnetized, their crystal structure delays the return to equilibrium — the electron alignment is "locked in" by the atomic lattice geometry. The stronger the locking mechanism, the more permanent the magnet. This is not a different force — it's the same spin-to-transverse-wave conversion, but with the alignment maintained by material structure rather than continuous electric current.
+
 ## Open Questions — Spin-Conversion Dynamics
 
 - Does spin convert longitudinal to transverse at a fixed rate? Per spin cycle? Per unit time?
@@ -131,6 +137,7 @@ The energy for spinning comes FROM the longitudinal base wave. Spin reduces the 
 - Higher spin rate = stronger magnetic moment = more heat (thermal energy)?
 - Magnetic moment = spatial distribution of transverse wave energy?
 - Thermal energy = fluctuations in spin rate/axis (incoherent transverse emission)?
+- What atomic lattice properties determine spin alignment persistence (permanent magnets)?
 
 ## Why Scalar is Insufficient: Monopole = Longitudinal Only
 
