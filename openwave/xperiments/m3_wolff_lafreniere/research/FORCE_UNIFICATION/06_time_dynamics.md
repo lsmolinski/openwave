@@ -172,6 +172,101 @@ If energy exchange = wavelength exchange through resonance, then controlling res
 
 This is not perpetual motion — it's energy redirection through resonance. The total energy is conserved, but its spatial distribution changes, creating gradients that produce force and motion.
 
+---
+
+## The Wavelength Kingdom
+
+### Spacetime is a Function of Wavelength
+
+Space and time are not fundamental — they are abstractions that emerge from wavelength:
+
+- **Space doesn't exist** as a thing. What exists is **length** — the spatial extent of matter and waves. We use length to calculate distances, and distance is an abstraction of length. Space is not a thing
+- **Time doesn't exist** as a thing. What exists is **change** — the rate at which wave states evolve. We measure change and call it time. Time is not a frame of reference — it's a variable, a measurement of rate of change
+- **Both emerge from λ**: wavelength derives into particle length (size of matter) and into time through frequency and period (f = c/λ). With constant wave speed c, λ alone determines both the spatial extent and the temporal rate at each point
+
+```text
+λ → length (size of matter, spatial extent)
+λ → f = c/λ → period = 1/f → time (rate of change)
+λ → spacetime
+```
+
+Spacetime is a function of wavelength and energy (including amplitude). Since `E = ρV·c²·(A/λ)²`, energy ties A and λ together. But λ may be the more fundamental variable — the substrate from which spacetime is constructed.
+
+### λ as the Fundamental Variable (Not Amplitude)
+
+Wavelength may be more important than amplitude as the primary dynamic quantity:
+
+- **λ is disturbed more than A**: near wave centers, the Yee & Hauger model shows λ(r) varying dramatically (shells from 2(K-1)λ at core to 0 at boundary), while amplitude varies more smoothly
+- **λ disturbances are time disturbances**: changing λ changes frequency, which changes the local rate of change — time itself. Amplitude changes redistribute energy but don't alter time
+- **AM vs FM analogy**: amplitude modulation (AM) may correspond to electromagnetic wave disturbances (photons), while frequency modulation (FM) may correspond to time/gravitational dynamics. Two different modes of wave disturbance, two different physical manifestations
+
+**The wave equation should propagate λ disturbances, not just A disturbances.** Current simulation propagates displacement (from which A is derived). Propagating λ variations would capture time dynamics directly. This is the non-linear regime — λ(r) from [Phase 1c](01c_non_linear.md).
+
+### λ = f(r, K, v) — The Wavelength Function
+
+Lambda is not constant — it depends on:
+
+- **r** (distance from wave centers): Yee & Hauger shells show λ(r) = 2(K-n)λ per shell — longer near the core, shrinking outward. The near-field λ dilation conserves energy while amplitude increases, maintaining wave steepness (A/λ = const)
+- **K** (number of wave centers / particle type): K determines particle radius (K²λ) and standing wave structure. Different K = different λ distribution = different time dynamics
+- **v** (velocity of wave centers): motion changes λ through the Doppler effect — compression in the direction of motion (Lorentz contraction). This means time = f(matter, distance, velocity)
+
+Since time = c/λ and length = λ, this means: **time is a function of distance to matter, mass (K), and velocity**. This IS general and special relativity, derived from wave mechanics instead of geometric postulates.
+
+### Motion Impacts on λ
+
+Every form of motion affects wavelength:
+
+- **Linear velocity**: Doppler effect compresses λ in the direction of motion → Lorentz contraction. Length contraction is size change (matter changes λ), not space contraction
+- **Angular velocity (spin)**: particle spin creates magnetic wavelength disturbances. Angular velocity affects λ through the rotational Doppler effect. Spin rate → magnetic moment → transverse λ modulation
+- **Acceleration**: radiates wave disturbances (electromagnetic radiation). Accelerating charges emit EM waves — this is λ disturbance radiation from changing velocity
+
+Not only particle velocity, but angular velocity (spin) impacts wavelength. And the acceleration of both linear and angular quantities produces radiating wavelength disturbances. The simulation must store velocity vectors and angular velocity to compute these λ effects.
+
+### Time as Potential Energy
+
+The energy stored in the wave field's frequency/wavelength distribution is **potential energy that can be converted into motion**. Time itself has elastic potential:
+
+- The wave field stores energy as standing waves — this energy is "un-manifested" in the sense that it doesn't produce net motion until a gradient exists
+- Creating a λ gradient (time gradient) creates an energy gradient → force → motion
+- The energy for motion comes FROM the wave field's temporal potential — the object's standing wave energy converts to directed kinetic energy
+- **Time is the elastic**: it has the elasticity needed to convert potential into motion. The wave steepness (A/λ) represents this stored potential
+
+The "time-oscillator" concept: a device that converts un-manifested fundamental energy-waves into physical forces by engineering λ gradients. Not creating energy — redirecting the wave field's existing temporal potential into directed motion.
+
+### Heat as Spin Dynamics
+
+Temperature might be related to **particle angular velocity / angular momentum**, not atomic vibration in the classical sense:
+
+- Particle spin produces wave disturbances on the wave field
+- These disturbances are intrinsically related to wavelength (and therefore time)
+- Higher spin rate = stronger magnetic moment = more energetic transverse wave emission = higher temperature
+- Heat transfer between bodies = spin-mediated wavelength exchange through resonance
+- These spin disturbances can be interfered with known wave disturbances (electrostatic, magnetic, electromagnetic waves)
+
+This connects heat to the same wavelength framework: thermal energy is spin-driven λ disturbance, not bulk kinetic motion. Controlling spin means controlling temperature.
+
+### Practical Path: Engineering λ Changes
+
+To create useful force/energy effects, search for ways to influence λ of the fundamental waves:
+
+- **Material structures**: the way matter and fundamental particles disturb the original waves depends on geometry — angle, distance, and arrangement create specific interference patterns
+- **Electromagnetic waves**: EM waves can superpose onto the fundamental energy wave field, creating desired λ modifications. Sound waves and mechanical positioning of material structures may also contribute
+- **Wave combination (superposition)**: the key tool — combining waves to engineer specific λ distributions. Methods: Laplacian propagation (physical) or analytical superposition (computational)
+- **The scalability question**: can we superpose envelopes (A(r), λ(r)) directly, or must we work with displacement? Envelope superposition is faster but may miss phase information. Displacement superposition is exact but expensive. Displacement, pressure, and density may be equivalent quantities for this purpose
+
+The conditions for a practical device: material structures positioned at specific angles and distances for wave interference, electromagnetic waves that trigger or combine with the fundamental wave field, and resonance that changes particle spin → λ disturbance → energy gradient → force.
+
+### Frame-Step Simulation Concept
+
+The simulation should not use uniform timesteps. Instead:
+
+- **Frame count** replaces time steps — each frame represents one cycle of computation across all voxels
+- **Per-voxel dt**: within each frame, each voxel has its own time step determined by local λ/f. Where λ is shorter (higher f), more change happens per frame. Where λ is longer (lower f), less change happens
+- **Motion computation changes**: acceleration, velocity, and position integration all use voxel-specific dt. A particle's motion depends on the local time rate at its position
+- **Energy field computation**: from envelopes A(r) and λ(r), compute E(r) = ρV·c²·(A/λ)². Force from the energy gradient. Visualize with flux mesh (energy density gradient, not just amplitude)
+
+This is a major architectural change — every equation that contains time becomes position-dependent. But it's the physically correct approach: time IS local, determined by the wave field state at each point.
+
 ## EWT Standing Wave Geometry (Yee & Hauger)
 
 Reference: [The Geometry of Particle Standing Waves v1.1](references/Spin.pdf) — Jeff Yee & Heinz-Dieter Hauger, 2020.
