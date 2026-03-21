@@ -603,6 +603,20 @@ def plot_sandbox():
     e_max = np.max(energy_j) if np.max(energy_j) > 0 else 1e-10
     ax2.set_ylim(0, e_max * 1.2)
 
+    # Total energy annotation (below legend) — for energy conservation inspection
+    total_e = np.sum(energy_j)
+    total_energy_text = ax2.text(
+        0.99,
+        1.15,
+        f"ΣE = {total_e:.3e} J",
+        transform=ax2.transAxes,
+        fontsize=9,
+        family="Monospace",
+        ha="right",
+        va="top",
+        color="#FFCC00",
+    )
+
     # --- Panel 3: Force Field ---
     (line_force,) = ax3.plot(x_am, force_n, color="w", linewidth=1, alpha=0.8)
     fill_force_r = [
@@ -791,6 +805,9 @@ def plot_sandbox():
         )
         em = np.max(energy_j) if np.max(energy_j) > 0 else 1e-10
         ax2.set_ylim(0, em * 1.2)
+
+        # Update total energy annotation
+        total_energy_text.set_text(f"ΣE = {np.sum(energy_j):.3e} J")
 
         line_force.set_ydata(force_n)
         fill_force_r[0].remove()
