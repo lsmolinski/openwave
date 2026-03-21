@@ -342,7 +342,7 @@ WC_INTERACTION_MODE:   (Step 2 — after base wave is validated)
   [to be determined]   — how WCs disturb the base wave
 ```
 
-### ✅ Step 1 — Base wave only (no WCs) — COMPLETE
+## ✅ Step 1 — Base wave only (no WCs) — COMPLETE
 
 All 5 modes implemented and tested:
 
@@ -354,13 +354,15 @@ All 5 modes implemented and tested:
 
 **Key finding**: Laplacian resolves to standing wave → standing wave is the physically correct 1D base wave form. Quadrature produces flat energy via two complementary channels — most mathematically elegant and may encode real physics (complex sinusoids, spin, charge).
 
-### Step 2 — WC Disturbance and Contender Selection
+## Step 2 — WC Disturbance and Contender Selection
 
-#### ✅ Step 2a: Node-Locking Charge Hypothesis — FALSIFIED
+### ✅ Step 2a: Node-Locking Charge Hypothesis — FALSIFIED
 
 Tested whether charge emerges from WC position in standing wave node lattice. Prediction: force alternates every λ/2, odd separations attract, even repel. Result: 7/30 match (23%). Actual pattern has 2λ periodicity from WC sinc interacting with base wave nodes. Even separations produce net translation, not repulsion. See [Node-Locking Hypothesis](#-hypothesis-node-locking-charge-standing-wave-model--falsified-step-2a) for full results.
 
-#### ✅ Step 2b: Migrate WC Disturbance to v3 — COMPLETED, additive model ruled out
+---
+
+### ✅ Step 2b: Migrate WC Disturbance to v3 — COMPLETED, additive model ruled out
 
 Ported WC wave computation from v2 (equation #5 weighted partial standing wave + phasor superposition) to v3. Combined phasor: base wave phasor + WC phasors → total RMS → energy → force. Includes separation slider, phase toggle, Coulomb comparison, force annotations.
 
@@ -372,7 +374,13 @@ Ported WC wave computation from v2 (equation #5 weighted partial standing wave +
 
 ⚠️ **Energy conservation test (Option B — normalized additive)**: scaling the combined RMS to preserve total energy (ΣE_combined = ΣE_base) conserves energy perfectly, but the normalization is a uniform scale factor. The spatial energy pattern is unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. This confirms: energy-normalizing additive superposition is not sufficient. WCs need to **warp** the energy landscape, not just add waves on top.
 
-⚠️ **Root cause**: additive superposition treats WCs as wave sources emitting into the field. The base wave is just "more field" that gets superposed. The WC interference pattern dominates regardless of the base wave's contribution. For the base wave to matter, WCs must interact with it NON-additively — through reflection, scattering, or multiplicative modulation that changes the spatial structure of the energy landscape itself.
+⚠️ **Root cause**: additive superposition treats WCs as wave sources emitting into the field. More waves = more energy. The base wave is just "more field" that gets superposed — the WC interference pattern dominates regardless of the base wave's contribution. This is exactly the old model (equations #1–#6 from v2) running on top of a base wave, and it cannot resolve the force problem.
+
+**Key conclusion: additive superposition cannot work for Phase 1b, regardless of which base wave mode is underneath.** The WC wave pattern dominates and produces the same sinc oscillation for all 3 contenders (standing, quadrature, uniform). Simply adding a base wave on top does not change force behavior compared to v2 (WCs in empty space) — the base wave contributes a constant phasor offset that shifts the overall amplitude level but does not change the spatial interference pattern or force directions.
+
+**Open question (partially answered)**: does the base wave change force behavior compared to v2? Additive: NO. But non-additive WC interaction (warping, disturbing, redistributing the base wave energy) is still untested — this is the core of Step 2c. The base wave may matter when WCs actually disturb it rather than just superpose on top of it.
+
+For the base wave to matter, WCs must interact with it NON-additively — through reflection, scattering, or multiplicative modulation that changes the spatial structure of the energy landscape itself. Phase 1b requires WCs as energy **redistributors**, not energy **sources**.
 
 **Per-contender WC interaction ideas** (to explore after migration):
 
@@ -382,22 +390,65 @@ Ported WC wave computation from v2 (equation #5 weighted partial standing wave +
 
 **WC disturbance mechanisms to investigate**: reflection/scattering of base wave, channel-selective disturbance, boundary condition at WC position, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
 
-#### [ ] Step 2c: Uniform Dual-Phase (π-apart)
+---
 
-After v2 WC features are migrated, implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign.
+### 🔶 Step 2c: Non-Additive WC Disturbance Models
 
-#### [ ] Step 2d: Deeper Physics Discussion and Contender Selection
+Additive superposition (base + WC waves) is ruled out — it produces the same sinc oscillation regardless of base wave mode. WCs must warp the energy field non-additively. Three candidate approaches:
+
+#### 🔶 Option A: Multiplicative (Energy Redistribution)
+
+WC modifies base wave amplitude via a position-dependent multiplier:
+
+```text
+RMS_total(x) = RMS_base(x) · R(x)
+R(x) > 1 near WC (energy concentration)
+R(x) < 1 far from WC (energy drainage)
+∫ R²(x) · E_base(x) dx = ∫ E_base(x) dx  (energy conservation)
+```
+
+The spatial pattern is fundamentally different from additive — no sinc, just a smooth concentration/depletion shape determined by R(x). R(x) could be derived from the WC's standing wave structure (K²λ radius, 1/r far-field decay). Energy-conserving by construction if R is properly normalized.
+
+**Physical interpretation**: WC absorbs base wave energy from surrounding field and concentrates it into its own standing wave core. The absorption creates a far-field energy deficit — the drainage pattern that generates force on other WCs.
+
+#### ❌ Option B: Normalized Additive — RULED OUT
+
+Scale combined RMS to preserve total energy: `RMS_conserved = RMS_combined · √(ΣE_base / ΣE_combined)`. Energy conserves perfectly, but normalization is a uniform scale factor → spatial pattern unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. Additive superposition with uniform normalization cannot change force behavior.
+
+#### [ ] Option C: Scattering (Reflection/Re-emission)
+
+WC reflects the incoming base wave. Reflected wave interferes with the original base wave — but the reflected energy comes FROM the incident wave, not added on top. This is the LaFreniere model: WC reflects in-waves → out-waves. The interference between incident and reflected creates the energy redistribution.
+
+**Key difference from additive**: in scattering, the incident wave is partially absorbed at the WC position (amplitude reduced), and the scattered wave carries that energy outward. Total energy conserved because scattered = incident - transmitted.
+
+**Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
+
+#### [ ] Option D: Local Absorber (Boundary Condition)
+
+WC acts as a boundary condition in the wave field — a point where displacement is constrained (e.g., pinned to zero, or to a specific amplitude). The wave field adjusts around the constraint, creating concentration and depletion patterns. Similar to how a fixed point in a vibrating string creates standing wave patterns around it.
+
+**Physical interpretation**: the WC IS a point of wave reflection (Dirichlet BC = ψ=0 at WC position). Incoming waves reflect off the WC, creating standing waves near it and an amplitude shadow in the far field.
+
+---
+
+### [ ] Step 2d: Uniform Dual-Phase (π-apart)
+
+Implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Requires non-additive WC interaction from Step 2c.
+
+---
+
+### [ ] Step 2e: Deeper Physics Discussion and Contender Selection
 
 **3 remaining contenders** (node-locking eliminated):
 
 - **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection). Traveling wave direction flips with temporal offset sign → possible charge/spin mechanism
-- **Standing wave** — physically validated by
- Laplacian, simplest model, node structure may interact with WC phase at particle scale (100λ average-out argument)
+- **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase at particle scale (100λ average-out argument)
 - **Uniform + dual phase** — zero-energy vacuum from π-apart waves, WCs asymmetrically perturb one phase depending on charge
 
 **Discussion topics**:
 
 - Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
 - Evaluate standing wave at particle scale (100λ) — does the node structure matter or average out?
-- Compare force behavior across the 3 contenders — which produces the best charge-dependent force direction?
-- Does the base wave change force behavior compared to v2 (WCs in empty space), or is additive superposition still fundamentally the same?
+- Compare force behavior across the 3 base wave contenders with non-additive WC interaction — which produces the best charge-dependent force direction? (Additive was identical across all 3 — non-additive may differentiate them)
+- Compare non-additive WC interaction models (A, C, D) — which produces energy-conserving force with correct charge-dependent direction?
+- Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation blocker?
