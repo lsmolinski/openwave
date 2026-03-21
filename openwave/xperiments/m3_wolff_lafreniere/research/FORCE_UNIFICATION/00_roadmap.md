@@ -51,7 +51,7 @@ Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
 Step 2 — WC disturbance and contender selection:
 
 - ✅ **Step 2a**: Node-locking charge hypothesis — FALSIFIED. Charge as spatial property (even/odd node position) does not predict force direction. 7/30 match (23%). Actual force has 2λ periodicity, not λ/2. Even separations produce net translation, not repulsion
-- 🔶 **Step 2b**: Migrate WC disturbance from v2 to v3 — port WC waves (eq #5), phasor superposition, separation slider, phase toggle, Coulomb comparison. Combined phasor: base wave + WC waves. Test on 3 contenders: standing, quadrature, uniform
+- ✅ **Step 2b**: Migrate WC disturbance from v2 to v3 — COMPLETED, additive model ruled out. Base wave + WC additive superposition produces same sinc oscillation as v2. Energy normalization (Option B) conserves ΣE but doesn't change spatial pattern → forces unchanged. WCs must warp the energy field non-additively (reflection, scattering, multiplicative)
 - [ ] **Step 2c**: Uniform dual-phase (π-apart) — two π-apart base waves summing to zero energy, WCs disturb one phase depending on charge
 - [ ] **Step 2d**: Deeper physics discussion — quadrature direction as charge/spin in 3D, standing wave node structure at particle scale (100λ), compare force behavior across contenders
 - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field

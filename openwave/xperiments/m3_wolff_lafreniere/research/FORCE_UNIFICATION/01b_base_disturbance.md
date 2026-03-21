@@ -360,14 +360,19 @@ All 5 modes implemented and tested:
 
 Tested whether charge emerges from WC position in standing wave node lattice. Prediction: force alternates every λ/2, odd separations attract, even repel. Result: 7/30 match (23%). Actual pattern has 2λ periodicity from WC sinc interacting with base wave nodes. Even separations produce net translation, not repulsion. See [Node-Locking Hypothesis](#-hypothesis-node-locking-charge-standing-wave-model--falsified-step-2a) for full results.
 
-#### 🔶 Step 2b: Migrate WC Disturbance to v3
+#### ✅ Step 2b: Migrate WC Disturbance to v3 — COMPLETED, additive model ruled out
 
-Port WC wave computation from v2 (equation #5 weighted partial standing wave + phasor superposition) to v3. WCs as wave sources superposed onto the base wave field. This is the existing v2 WC model running on top of each base wave mode — not a new interaction mechanism, but the foundation for testing.
+Ported WC wave computation from v2 (equation #5 weighted partial standing wave + phasor superposition) to v3. Combined phasor: base wave phasor + WC phasors → total RMS → energy → force. Includes separation slider, phase toggle, Coulomb comparison, force annotations.
 
-- [ ] Port WC class, separation slider, phase toggle, Coulomb comparison from v2
-- [ ] Combined phasor: base wave phasor + WC phasors → total RMS → energy → force
-- [ ] Test on all 3 remaining contenders: standing, quadrature, uniform
-- [ ] Compare: does the base wave change the force behavior compared to v2 (WCs in empty space)?
+- ✅ Port WC class, separation slider, phase toggle, Coulomb comparison from v2
+- ✅ Combined phasor: base wave phasor + WC phasors → total RMS → energy → force
+- ✅ Added total energy display (ΣE) for energy conservation inspection
+
+**Finding: additive superposition does NOT change force behavior.** Adding WC waves on top of the base wave produces the same sinc oscillation as v2 (WCs in empty space). The base wave contributes a constant offset to the phasor, but the WC interference pattern — and therefore the force direction flips — is identical.
+
+⚠️ **Energy conservation test (Option B — normalized additive)**: scaling the combined RMS to preserve total energy (ΣE_combined = ΣE_base) conserves energy perfectly, but the normalization is a uniform scale factor. The spatial energy pattern is unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. This confirms: energy-normalizing additive superposition is not sufficient. WCs need to **warp** the energy landscape, not just add waves on top.
+
+⚠️ **Root cause**: additive superposition treats WCs as wave sources emitting into the field. The base wave is just "more field" that gets superposed. The WC interference pattern dominates regardless of the base wave's contribution. For the base wave to matter, WCs must interact with it NON-additively — through reflection, scattering, or multiplicative modulation that changes the spatial structure of the energy landscape itself.
 
 **Per-contender WC interaction ideas** (to explore after migration):
 
