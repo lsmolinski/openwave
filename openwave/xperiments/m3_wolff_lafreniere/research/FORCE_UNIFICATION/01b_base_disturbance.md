@@ -477,7 +477,7 @@ Requires non-additive WC interaction from Step 2c — or may work as its own mec
 - Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation / isotropic cancellation blocker?
 - Does the 1D sandbox have a fundamental limitation for this problem (scalar can't represent L/T), or can the quadrature two-channel approach serve as a sufficient proxy?
 
-## ⚠️ M2 Research Prior-Art Findings
+## M2 Research Prior-Art Findings
 
 The M2 (Laplacian propagation) engine already explored exactly what Phase 1b is attempting — creating emergent standing waves around wave centers in a base wave field — and documented 12 experiments with critical findings. The M2 research is directly relevant because it tested WC interactions on a real Laplacian-propagated base wave (the same standing wave field we validated in Step 1).
 
