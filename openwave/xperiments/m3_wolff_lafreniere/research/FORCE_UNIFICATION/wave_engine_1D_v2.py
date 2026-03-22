@@ -429,7 +429,7 @@ def plot_sandbox():
 
     ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
     ax1.set_xlim(x_am.min(), x_am.max())
-    psi_max = A0_am * 2
+    psi_max = A0_am * 0.5
     ax1.set_ylim(-psi_max, psi_max)
     ax1.set_ylabel("Displacement (am)", family="Monospace")
     ax1.legend(loc="upper right", fontsize=9)
@@ -663,7 +663,7 @@ def plot_sandbox():
         line_rms_neg.set_ydata(-rms)
 
         # Update y-limits for panel 1 (data-driven for all equations)
-        psi_max = max(np.max(rms) / 3, A0_am * 0.1)
+        psi_max = A0_am * 0.5
         ax1.set_ylim(-psi_max, psi_max)
 
         # Update energy line + fill

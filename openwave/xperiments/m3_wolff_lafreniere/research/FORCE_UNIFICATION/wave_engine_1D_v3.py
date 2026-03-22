@@ -75,6 +75,7 @@ def snap_to_grid(pos):
 TRANSITION_LAM = 1.25  # standing wave region in wavelengths
 WEIGHT_POWER = 8  # sharpness of standing → traveling transition
 SEPARATION_STEP = 0.5  # step size for separation slider (in wavelength)
+DISP_SCALE = 0.3  # y-axis scale for displacement
 
 
 class WaveCenter:
@@ -108,13 +109,13 @@ def _compute_weight(r_am):
 # quadrature = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
 # laplacian  = Laplacian Propagation:     time-stepped wave equation, reflecting BC
 
-BASE_WAVE_MODE = "standing"
+BASE_WAVE_MODE = "quadrature"
 
 BASE_WAVE_NAMES = {
     "uniform": "Uniform Oscillation",
     "standing": "Standing Wave",
-    "stochastic": "Stochastic (N-source)",
     "quadrature": "Dual-Phase Standing Wave",
+    "stochastic": "Stochastic (N-source)",
     "laplacian": "Laplacian Propagation",
 }
 
@@ -483,18 +484,39 @@ def plot_sandbox():
 
     state = {"paused": START_PAUSED, "frame": 0}
 
-    # Track active WCs
+    # Track active WCs and base wave
     wc_active = [True] * len(wave_centers)
+    base_active = [True]  # mutable list so inner functions can modify
 
     def get_active_centers():
         return [wc for wc, active in zip(wave_centers, wc_active) if active]
 
     def recompute_static():
         active = get_active_centers()
-        if active:
+        if base_active[0] and active:
             rms = compute_combined_rms(x_am, active)
-        else:
+        elif base_active[0]:
             rms = compute_base_rms(x_am)
+        elif active:
+            # WCs only, no base wave — use v2-style phasor (zero base phasor)
+            P = np.zeros_like(x_am)
+            Q = np.zeros_like(x_am)
+            for wc in active:
+                r = np.abs(x_am - wc.x_am)
+                kr = k * r
+                w = _compute_weight(r)
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    C_n = np.where(
+                        kr < 1e-10, 2.0 * wc.amplitude, wc.amplitude * (w + 1.0) * np.sin(kr) / kr
+                    )
+                    S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (w - 1.0) * np.cos(kr) / kr)
+                cos_phi = np.cos(wc.phase)
+                sin_phi = np.sin(wc.phase)
+                P += C_n * cos_phi + S_n * sin_phi
+                Q += -C_n * sin_phi + S_n * cos_phi
+            rms = np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
+        else:
+            rms = np.zeros_like(x_am)
         energy = compute_energy_density(rms)
         force = compute_force_field(rms)
         return rms, energy, force
@@ -568,7 +590,7 @@ def plot_sandbox():
 
     ax1.axhline(y=0, color="w", linestyle="--", alpha=0.2)
     ax1.set_xlim(x_am.min(), x_am.max())
-    psi_max = max(np.max(rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1)
+    psi_max = max(np.max(rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1) * DISP_SCALE
     ax1.set_ylim(-psi_max, psi_max)
     ax1.set_ylabel("Displacement (am)", family="Monospace")
     ax1.legend(loc="upper right", fontsize=9)
@@ -686,6 +708,31 @@ def plot_sandbox():
         color=colormap.viridis_palette[3][1],
     )
 
+    # --- BASE-WAVE Toggle Button ---
+    base_txt = fig.text(
+        0.10,
+        0.93,
+        "BASE",
+        fontsize=11,
+        family="Monospace",
+        fontweight="bold",
+        ha="center",
+        va="center",
+        color="yellow",
+        picker=True,
+        bbox=dict(facecolor="none", edgecolor="yellow", boxstyle="round,pad=0.3", alpha=0.5),
+    )
+
+    def update_base_text_style():
+        if base_active[0]:
+            base_txt.set_color("yellow")
+            base_txt.get_bbox_patch().set_edgecolor("yellow")
+            base_txt.get_bbox_patch().set_alpha(0.5)
+        else:
+            base_txt.set_color("#666666")
+            base_txt.get_bbox_patch().set_edgecolor("#666666")
+            base_txt.get_bbox_patch().set_alpha(0.2)
+
     # --- WC Toggle Buttons ---
     wc_labels = []
     wc_texts = []
@@ -694,7 +741,7 @@ def plot_sandbox():
         label = f"WC{i+1} ({charge})"
         wc_labels.append(label)
         txt = fig.text(
-            0.10 + i * 0.10,
+            0.15 + i * 0.06,
             0.93,
             label,
             fontsize=11,
@@ -764,6 +811,13 @@ def plot_sandbox():
         ax1.legend(loc="upper right", fontsize=9)
 
     def on_pick(event):
+        # Base wave toggle
+        if event.artist == base_txt:
+            base_active[0] = not base_active[0]
+            update_base_text_style()
+            refresh_static()
+            return
+        # Phase toggle
         if event.artist == phase_txt:
             phase_state["opposite"] = not phase_state["opposite"]
             apply_phase_offset()
@@ -771,6 +825,7 @@ def plot_sandbox():
             update_wc_text_style()
             refresh_static()
             return
+        # WC toggles
         for i, txt in enumerate(wc_texts):
             if event.artist == txt:
                 wc_active[i] = not wc_active[i]
@@ -795,7 +850,7 @@ def plot_sandbox():
 
         line_rms_pos.set_ydata(rms)
         line_rms_neg.set_ydata(-rms)
-        pm = max(np.max(rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1)
+        pm = max(np.max(rms) * np.sqrt(2.0) * 1.3, A0_am * 0.1) * DISP_SCALE
         ax1.set_ylim(-pm, pm)
 
         line_energy.set_ydata(energy_j)
@@ -937,10 +992,27 @@ def plot_sandbox():
     def update_plot(frame):
         t_rs = (frame / ANIMATION_FRAMES) * period_rs
         active = get_active_centers()
-        if active:
+        if base_active[0] and active:
             psi = compute_combined_displacement(x_am, t_rs, active)
-        else:
+        elif base_active[0]:
             psi = compute_base_displacement(x_am, t_rs)
+        elif active:
+            # WCs only, no base wave
+            psi = np.zeros_like(x_am)
+            for wc in active:
+                r = np.abs(x_am - wc.x_am)
+                kr = k * r
+                w = _compute_weight(r)
+                wt_phi = omega * t_rs + wc.phase
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    wave = np.where(
+                        kr < 1e-10,
+                        2.0 * np.cos(wt_phi),
+                        (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
+                    )
+                psi += wc.amplitude * wave
+        else:
+            psi = np.zeros_like(x_am)
         line_psi.set_data(x_am, psi)
         pause_str = " [PAUSED]" if state["paused"] else ""
         time_text.set_text(f"t = {t_rs:.4f} rs  (frame {frame}/{ANIMATION_FRAMES}){pause_str}")

@@ -370,15 +370,21 @@ Ported WC wave computation from v2 (equation #5 weighted partial standing wave +
 - ✅ Combined phasor: base wave phasor + WC phasors → total RMS → energy → force
 - ✅ Added total energy display (ΣE) for energy conservation inspection
 
-**Finding: additive superposition does NOT change force behavior.** Adding WC waves on top of the base wave produces the same sinc oscillation as v2 (WCs in empty space). The base wave contributes a constant offset to the phasor, but the WC interference pattern — and therefore the force direction flips — is identical.
+❌ **Finding: additive superposition does NOT change force behavior.** Adding WC waves on top of the base wave produces the same sinc oscillation as v2 (WCs in empty space). The base wave contributes a constant offset to the phasor, but the WC interference pattern — and therefore the force direction flips — is identical.
 
-⚠️ **Energy conservation test (Option B — normalized additive)**: scaling the combined RMS to preserve total energy (ΣE_combined = ΣE_base) conserves energy perfectly, but the normalization is a uniform scale factor. The spatial energy pattern is unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. This confirms: energy-normalizing additive superposition is not sufficient. WCs need to **warp** the energy landscape, not just add waves on top.
+**Energy conservation test (Option B — normalized additive)**: scaling the combined RMS to preserve total energy (ΣE_combined = ΣE_base) conserves energy perfectly, but the normalization is a uniform scale factor. The spatial energy pattern is unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. This confirms: energy-normalizing additive superposition is not sufficient. WCs need to **warp** the energy landscape, not just add waves on top.
 
 ⚠️ **Root cause**: additive superposition treats WCs as wave sources emitting into the field. More waves = more energy. The base wave is just "more field" that gets superposed — the WC interference pattern dominates regardless of the base wave's contribution. This is exactly the old model (equations #1–#6 from v2) running on top of a base wave, and it cannot resolve the force problem.
 
-**Key conclusion: additive superposition cannot work for Phase 1b, regardless of which base wave mode is underneath.** The WC wave pattern dominates and produces the same sinc oscillation for all 3 contenders (standing, quadrature, uniform). Simply adding a base wave on top does not change force behavior compared to v2 (WCs in empty space) — the base wave contributes a constant phasor offset that shifts the overall amplitude level but does not change the spatial interference pattern or force directions.
+❌ **Key conclusion: additive superposition cannot work for Phase 1b, regardless of which base wave mode is underneath.** The WC wave pattern dominates and produces the same sinc oscillation for all 3 contenders (standing, quadrature, uniform). Simply adding a base wave on top does not change force behavior compared to v2 (WCs in empty space) — the base wave contributes a constant phasor offset that shifts the overall amplitude level but does not change the spatial interference pattern or force directions.
 
 **Open question (partially answered)**: does the base wave change force behavior compared to v2? Additive: NO. But non-additive WC interaction (warping, disturbing, redistributing the base wave energy) is still untested — this is the core of Step 2c. The base wave may matter when WCs actually disturb it rather than just superpose on top of it.
+
+---
+
+### 🔶 Step 2c: Non-Additive WC Disturbance Models
+
+Additive superposition (base + WC waves) is ruled out — it produces the same sinc oscillation regardless of base wave mode. WCs must warp the energy field non-additively (warping, disturbing, redistributing the base wave energy spatially).
 
 For the base wave to matter, WCs must interact with it NON-additively — through reflection, scattering, or multiplicative modulation that changes the spatial structure of the energy landscape itself. Phase 1b requires WCs as energy **redistributors**, not energy **sources**.
 
@@ -390,13 +396,9 @@ For the base wave to matter, WCs must interact with it NON-additively — throug
 
 **WC disturbance mechanisms to investigate**: reflection/scattering of base wave, channel-selective disturbance, boundary condition at WC position, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
 
----
+Three candidate approaches:
 
-### 🔶 Step 2c: Non-Additive WC Disturbance Models
-
-Additive superposition (base + WC waves) is ruled out — it produces the same sinc oscillation regardless of base wave mode. WCs must warp the energy field non-additively. Three candidate approaches:
-
-#### 🔶 Option A: Multiplicative (Energy Redistribution)
+#### 🚧 Option A: Multiplicative (Energy Redistribution)
 
 WC modifies base wave amplitude via a position-dependent multiplier:
 
@@ -415,7 +417,7 @@ The spatial pattern is fundamentally different from additive — no sinc, just a
 
 Scale combined RMS to preserve total energy: `RMS_conserved = RMS_combined · √(ΣE_base / ΣE_combined)`. Energy conserves perfectly, but normalization is a uniform scale factor → spatial pattern unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. Additive superposition with uniform normalization cannot change force behavior.
 
-#### [ ] Option C: Scattering (Reflection/Re-emission)
+#### 🚧 Option C: Scattering (Reflection/Re-emission)
 
 WC reflects the incoming base wave. Reflected wave interferes with the original base wave — but the reflected energy comes FROM the incident wave, not added on top. This is the LaFreniere model: WC reflects in-waves → out-waves. The interference between incident and reflected creates the energy redistribution.
 
@@ -423,7 +425,7 @@ WC reflects the incoming base wave. Reflected wave interferes with the original 
 
 **Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
 
-#### [ ] Option D: Local Absorber (Boundary Condition)
+#### 🚧 Option D: Local Absorber (Boundary Condition)
 
 WC acts as a boundary condition in the wave field — a point where displacement is constrained (e.g., pinned to zero, or to a specific amplitude). The wave field adjusts around the constraint, creating concentration and depletion patterns. Similar to how a fixed point in a vibrating string creates standing wave patterns around it.
 
@@ -431,13 +433,13 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 ---
 
-### [ ] Step 2d: Uniform Dual-Phase (π-apart)
+### 🚧 Step 2d: Uniform Dual-Phase (π-apart)
 
 Implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Requires non-additive WC interaction from Step 2c.
 
 ---
 
-### [ ] Step 2e: Deeper Physics Discussion and Contender Selection
+### 🚧 Step 2e: Deeper Physics Discussion and Contender Selection
 
 **3 remaining contenders** (node-locking eliminated):
 

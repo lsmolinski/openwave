@@ -40,25 +40,25 @@
 
 ### [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
 
-Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
+- Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
+  - ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
+  - ✅ Validate energy uniformity: uniform ✓, quadrature ✓ (flat), standing ✗ (nodes at λ/2), stochastic ✓ (broadband fix)
+  - ✅ Laplacian self-stabilizes to standing wave → **standing wave is the physically correct 1D base wave form** (Laplacian retired)
+  - ✅ Stochastic monochromatic bug: `Σ cos(kx+φᵢ)` at same k collapses to single standing wave — fixed with broadband k spread
+  - ✅ Quadrature: flat energy + traveling wave direction flips with temporal offset sign → possible charge/spin encoding via complex sinusoid channels
 
-- ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
-- ✅ Validate energy uniformity: uniform ✓, quadrature ✓ (flat), standing ✗ (nodes at λ/2), stochastic ✓ (broadband fix)
-- ✅ Laplacian self-stabilizes to standing wave → **standing wave is the physically correct 1D base wave form** (Laplacian retired)
-- ✅ Stochastic monochromatic bug: `Σ cos(kx+φᵢ)` at same k collapses to single standing wave — fixed with broadband k spread
-- ✅ Quadrature: flat energy + traveling wave direction flips with temporal offset sign → possible charge/spin encoding via complex sinusoid channels
+- Step 2 — WC disturbance and contender selection:
+  - ✅ **Step 2a**: Node-locking charge hypothesis — FALSIFIED. Charge as spatial property (even/odd node position) does not predict force direction. 7/30 match (23%). Actual force has 2λ periodicity, not λ/2. Even separations produce net translation, not repulsion
+  - ✅ **Step 2b**: Migrate WC disturbance from v2 to v3 — COMPLETED, additive model ruled out. Base wave + WC additive superposition produces same sinc oscillation as v2. Energy normalization (Option B) conserves ΣE but doesn't change spatial pattern → forces unchanged. WCs must warp the energy field non-additively (reflection, scattering, multiplicative)
+  - 🔶 **Step 2c**: Non-additive WC disturbance models — Option B (normalized additive) ruled out. Testing: Option A (multiplicative redistribution), Option C (scattering/reflection), Option D (local absorber/boundary condition)
+  - [ ] **Step 2d**: Uniform dual-phase (π-apart) — requires non-additive WC interaction from Step 2c
+  - [ ] **Step 2e**: Deeper physics discussion — compare non-additive models, quadrature direction as charge/spin in 3D, contender selection
 
-Step 2 — WC disturbance and contender selection:
-
-- ✅ **Step 2a**: Node-locking charge hypothesis — FALSIFIED. Charge as spatial property (even/odd node position) does not predict force direction. 7/30 match (23%). Actual force has 2λ periodicity, not λ/2. Even separations produce net translation, not repulsion
-- ✅ **Step 2b**: Migrate WC disturbance from v2 to v3 — COMPLETED, additive model ruled out. Base wave + WC additive superposition produces same sinc oscillation as v2. Energy normalization (Option B) conserves ΣE but doesn't change spatial pattern → forces unchanged. WCs must warp the energy field non-additively (reflection, scattering, multiplicative)
-- 🔶 **Step 2c**: Non-additive WC disturbance models — Option B (normalized additive) ruled out. Testing: Option A (multiplicative redistribution), Option C (scattering/reflection), Option D (local absorber/boundary condition)
-- [ ] **Step 2d**: Uniform dual-phase (π-apart) — requires non-additive WC interaction from Step 2c
-- [ ] **Step 2e**: Deeper physics discussion — compare non-additive models, quadrature direction as charge/spin in 3D, contender selection
-- [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
-- [ ] Determine how WC phase affects far-field drainage pattern (NOT via ±1 sign — mechanism must be discovered)
-- [ ] Test force emergence: drainage from WC1 disturbs WC2 → energy gradient → F = -∇E
-- [ ] Validate against Coulomb reference (direction + 1/r² scaling)
+- WRAP-UP
+  - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
+  - [ ] Determine how WC phase affects far-field drainage pattern (NOT via ±1 sign — mechanism must be discovered)
+  - [ ] Test force emergence: drainage from WC1 disturbs WC2 → energy gradient → F = -∇E
+  - [ ] Validate against Coulomb reference (direction + 1/r² scaling)
 
 ### [PHASE 1c: Non-Linear Wave Equations (1D)](01c_non_linear.md#phase-1c-non-linear-wave-equations)
 
