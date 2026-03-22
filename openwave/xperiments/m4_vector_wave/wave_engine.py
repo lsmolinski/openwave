@@ -176,10 +176,10 @@ def compute_voxel_wave(
         # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
         spatial_phase = k_grid * r_grid
 
-        # TODO: review this logic
         # Cache source-specific phase offset
         source_offset = wave_center.offset[wc_idx]
 
+        # TODO: review this logic
         # Amplitude falloff for spherical wave: A(r) = A₀/r
         # Clamp to r_min to avoid singularity at r = 0
         r_safe_grid = ti.max(r_grid, r_reference_grid)
