@@ -1,5 +1,17 @@
 # CONCEPTUAL OVERVIEW
 
+## GOALS: Force Unification from Wave Interference
+
+### PRIMARY (EMERGENT FORCES)
+
+- Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational, strong) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+
+### SECONDARY (EMERGENT WAVES)
+
+- Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
+
+## MAIN CONCEPTS
+
 Spacetime is an elastic fluid structure, vibrating in harmonic oscillations at extremely high frequencies (~10²⁵ Hz), that allows energy to transfer from one point to the next, forming an **energy field**. Through this fluid, waves travel in all directions and get reflected by wave centers that create disturbances. Those energy waves can become **standing** (forming matter) or remain **traveling** (transmitting all forces).
 
 Everything emerges from disturbances in this wave field:
@@ -37,6 +49,7 @@ Wave centers are points where waves reflect and change character. Key properties
 - **Re-emission**: Every wave center reflects this base wave outward radially, changing its phase and character
 - **Phase offset (source_offset)**: Each wave center has a phase offset that determines its charge signature. `cos(0) = +1` (positron), `cos(π) = -1` (electron). This is the origin of particle charge
 - **Standing waves**: Near the wave center, reflected in-waves and emitted out-waves superpose to form standing waves — the structure of the particle itself
+- **Matter signature frequency**: every element and molecule has a unique frequency signature — a combination of multiple oscillation frequencies, like musical timbre. Discovering these signatures enables manipulation of matter through wave combination (superposition at the right frequencies to control attraction and repulsion)
 
 ### Matter Formation from Standing Waves & Force Equilibrium
 
@@ -77,3 +90,5 @@ The theory proposes that all forces are manifestations of the same wave interfer
 4. **Strong Force**: Longitudinal electric force in short distances (λ scale). Particles inside each others standing wave radius will experience the strong force, a concentrated electrical force with stored energy from standing waves.
 
 5. **Orbital Force**: a combination of electric and magnetic forces creating zero amplitude nodes (orbitals), where electrons can be found randomly, doesn't follow a classical planetary orbit.
+
+- Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.

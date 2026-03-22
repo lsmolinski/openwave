@@ -1,4 +1,4 @@
-# WAVE EQUATIONS
+# ✅ WAVE EQUATIONS
 
 ## Wave Equations Explored (wave_engine.py)
 

@@ -1,4 +1,6 @@
-# M4 VECTOR WAVE
+# PHASE 4: Magnetic Force (M4 Vector Waves)
+
+Requires M4 vector wave method. Magnetic force arises from transverse wave interference. The elliptical displacement trajectories (6 phasor numbers per voxel) naturally encode both longitudinal (electric) and transverse (magnetic) components. Spin modeled as toroidal wave flow.
 
 ## Elliptical Motion Geometry
 
@@ -107,6 +109,36 @@ The phasor route gives them analytically in one shot. The timestep route require
 
 This research direction requires the m4 vector wave method, as toroidal/vortex flows, spin, and transverse waves cannot be represented in the scalar m3 framework. The non-linear r⁵ scaling inside the Energy Domain also implies variable-wavelength wave equations (λ(r)) near the core, connecting to the [Yee & Hauger](references/Spin.pdf) and WKB research already planned for Phase 3.
 
+## On-Axis Vector Analysis
+
+For two WCs on the x-axis, the displacement vectors at any point between them are anti-parallel (d̂₁ = +x̂, d̂₂ = -x̂). Only the x-component is nonzero, so |ψ_vec| reduces exactly to |ψ_scalar|. The vector energy |ψ_vec|² expands to:
+
+```text
+|ψ_vec|² = |ψ₁|² + |ψ₂|² + 2·|ψ₁|·|ψ₂|·cos(k·Δr + Δφ)·cos(θ_geo)
+```
+
+On-axis: cos(θ_geo) = -1 (constant), so F = -∇E is identical to scalar. No improvement for the standard on-axis test case. The vector advantage only manifests off-axis or with transverse components.
+
+## Spin and Gravitational Shading
+
+The energy for spinning comes FROM the longitudinal base wave. Spin reduces the longitudinal amplitude by converting it to transverse — this amplitude reduction may be the mechanism behind gravitational shading. The conversion ratio may be related to the **fine-structure constant α** (the coupling strength between electric/longitudinal and magnetic/transverse). If so, the gravitational force weakness (10⁻⁴² of electric) emerges from repeated application of this coupling.
+
+## Permanent Magnets — Electron Alignment Persistence
+
+Electrons are always spinning and generating magnetic fields, but in most materials these spin orientations are random and cancel out — no net magnetic field. When electrons move relative to protons (electric current), the electron-proton attraction creates resistance (reactive force) that aligns electron spins, producing the magnetic flux around a wire (electromagnet).
+
+**Permanent magnets** (iron, neodymium, cobalt): these materials have atomic/molecular structures that allow electron spin alignment to persist. Once magnetized, their crystal structure delays the return to equilibrium — the electron alignment is "locked in" by the atomic lattice geometry. The stronger the locking mechanism, the more permanent the magnet. This is not a different force — it's the same spin-to-transverse-wave conversion, but with the alignment maintained by material structure rather than continuous electric current.
+
+## Open Questions — Spin-Conversion Dynamics
+
+- Does spin convert longitudinal to transverse at a fixed rate? Per spin cycle? Per unit time?
+- Is the conversion ratio the fine-structure constant α (coupling strength)?
+- Spin velocity → angular momentum → what determines it?
+- Higher spin rate = stronger magnetic moment = more heat (thermal energy)?
+- Magnetic moment = spatial distribution of transverse wave energy?
+- Thermal energy = fluctuations in spin rate/axis (incoherent transverse emission)?
+- What atomic lattice properties determine spin alignment persistence (permanent magnets)?
+
 ## Why Scalar is Insufficient: Monopole = Longitudinal Only
 
 **Key insight**: Wolff's scalar wave model may be scalar precisely because a **single WC (monopole) produces only longitudinal waves** — radial motion, linear oscillations, radially oriented. A monopole has no ellipses, no transverse component, no magnetic field. The scalar model correctly describes a single isolated particle.
@@ -136,6 +168,6 @@ F_x = -∂E_x/∂x,  F_y = -∂E_y/∂y,  F_z = -∂E_z/∂z
 
 Or from vector operations on the full displacement field (divergence, curl, flux). The per-component approach preserves the directional structure that magnitude-only discards.
 
-Soliton [Toroidal](03_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
+Soliton [Toroidal](00b_additional.md#soliton-geometry-two-domains-and-toroidal-flows) relationship.
 
-Lafreniere [magnetic field lines](03_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.
+Lafreniere [magnetic field lines](00b_additional.md#magnetic-fields-as-hyperboloid-wave-patterns) relationship.
