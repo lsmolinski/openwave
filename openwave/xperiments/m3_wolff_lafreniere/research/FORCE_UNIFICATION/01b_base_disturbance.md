@@ -590,8 +590,8 @@ dual_standing:
 
 #### ⚠️ Base Wave Contender Assessment (post-testing)
 
-- **Quadrature** — confirmed as strongest base wave model. Flat energy, two orthogonal channels that map to L/T duality, traveling wave direction encodes handedness. In 1D the two-direction limitation (left/right) is a projection of 3D rotational freedom (CW/CCW elliptical). The quadrature IS the correct 1D representation — the two channels are the physical L and T components, and the complex sinusoid i in quantum mechanics encodes exactly this 90° phase relationship. Carry forward into Phase 1c as the base wave model
-- **Standing wave** — physically correct (Laplacian-validated), simplest model. Nodes exist at λ/2 but average out at particle scale (electron = 100λ). Useful as a reference but doesn't help with charge-dependent force. The quadrature is a standing wave with a second orthogonal channel — it's a superset
+- **Quadrature** — confirmed as strongest base wave model. Flat energy, two orthogonal channels that map to L/T duality, traveling wave direction encodes handedness. In 1D the two-direction limitation (left/right) is a projection of 3D rotational freedom (CW/CCW elliptical). The quadrature captured something real: the two channels (cos/sin, real/imaginary, L/T) encode a **rotational degree of freedom** that 1D collapses into direction. This is exactly what complex sinusoids do in quantum mechanics — the imaginary unit i encodes a 90° phase relationship that represents physical rotation in 3D space. The quadrature base wave may be the correct 1D representation of the 3D wave field, with the two channels being L and T components. Carry forward into Phase 1c as the base wave model
+- **Standing wave** — physically correct (Laplacian-validated), simplest model. Nodes exist at λ/2 but average out at particle scale (electron = 100λ). The node structure IS real at the base wave scale and may matter for sub-particle physics (neutrino K=1 has only 1λ core — nodes are significant at that scale). For force computation, the standing wave doesn't help with charge-dependent force — confirmed by all tests. The quadrature is a standing wave with a second orthogonal channel — it's a superset
 - **Uniform + dual phase** — charge-blind in testing. Per-channel energy sum is symmetric regardless of which channel is boosted. Needs cross-channel coupling (like L→T) to break symmetry — which points back to the spin mechanism
 
 #### WC Interaction Assessment — 10 Models Tested
@@ -634,6 +634,22 @@ Both remaining paths are needed and will likely converge into one solution:
 - **Phase 1d (variable λ)**: `E = ρV(c·A/λ(r))²` → force from `∇λ` (wavelength gradients). Yee & Hauger shells for λ(r), WKB phase integral. Makes elastic phase warp (Option F) produce force
 
 **Recommended order**: Phase 1c first — the L→T spin is the only charge-sensitive mechanism discovered. It needs true vector displacement to work fully. Phase 1d (variable λ) can be layered on top of the vector engine, and the combined solution (variable λ + L→T spin in vector displacement) may be the unified answer.
+
+#### Phase 1b Delivered
+
+- 5 base wave models tested → **quadrature** is strongest (flat energy, L/T duality, complex sinusoid connection)
+- Standing wave physically validated by Laplacian → correct 1D base wave form
+- 10 WC disturbance models tested → **only L→T spin distinguishes charges**
+- M2 prior art (12 experiments) re-validated in 1D — passive interactions fail
+- **Elastic disturbance** concept introduced — wave character changes at WC, not just reflects
+- 1D scalar sandbox **fundamental limitation** identified — can't represent true L/T
+- **Dual-channel** (π-apart) tested — charge-blind due to symmetric per-channel energy
+
+#### Path Forward
+
+- 🔶 **Phase 1c FIRST** — extend to two-component displacement (ψ_L + ψ_T), implement L→T spin with true independent energy `E = E_L + E_T`
+- 🚧 **Phase 1d SECOND** — variable λ(r) in energy equation, `∇λ` force term
+- Both converge into one solution: variable λ + vector displacement with L→T conversion
 
 **Phase 1b WRAP-UP tasks** (carry forward to Phase 1c/1d):
 
