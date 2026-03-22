@@ -75,7 +75,7 @@ def snap_to_grid(pos):
 TRANSITION_LAM = 1.25  # standing wave region in wavelengths
 WEIGHT_POWER = 8  # sharpness of standing → traveling transition
 SEPARATION_STEP = 0.5  # step size for separation slider (in wavelength)
-DISP_SCALE = 0.5  # y-axis scale for displacement
+DISP_SCALE = 1  # y-axis scale for displacement
 
 
 class WaveCenter:
@@ -103,27 +103,54 @@ wave_centers = [
 # "scattering"     = WC absorbs + re-emits from base wave energy (Option C)
 # "absorber"       = WC as boundary condition, ψ→0 at WC (Option D)
 #
-# Passive options (A/C/D) re-validate M2 findings in 1D.
-# Elastic options (E/F/G) to be added after passive validation.
+# Passive options (A/B/C/D) — M2 findings re-validated in 1D:
+#   A (multiplicative): 48/48 direction, energy conserved, but charge imposed ±1
+#   B (normalized additive): ruled out — uniform scale
+#   C (scattering): sinc reintroduced — random direction
+#   D (absorber): charge-blind — no charge info
+#
+# Elastic options — wave passes THROUGH WC and comes out CHANGED:
+# "elastic_amp"    = smooth amplitude modulation on displacement (Option E)
+# "elastic_phase"  = position-dependent phase/λ warp (Option F)
+# "elastic_spin"   = L→T mode conversion, two-component displacement (Option G)
 
-WC_DISTURBANCE = "additive"
+WC_DISTURBANCE = "elastic_spin"
 
 # --- Multiplicative (Option A) parameters ---
-# R(x) = 1 + gain · δ(r) - drain
-# δ(r) = 1/√(1+(kr)²) — smooth peak at WC, 1/r far-field decay
-# gain: how much energy concentrates at WC
-# drain: computed to conserve total energy (∫R²·E_base = ∫E_base)
-MULT_GAIN = 5.0  # concentration strength (how many times base amplitude at WC center)
+MULT_GAIN = 5.0  # concentration strength
 
 # --- Scattering (Option C) parameters ---
-# WC absorbs fraction of base wave and re-emits as scattered wave
-# Scattered wave has WC's phase signature (charge-dependent)
 SCATTER_FRACTION = 0.3  # fraction of base wave absorbed at WC center
 
 # --- Absorber (Option D) parameters ---
-# WC forces displacement toward zero within a radius, like Dirichlet BC
-# Absorption profile: smooth rolloff from full absorption at center to none at edge
 ABSORBER_RADIUS_LAM = 0.5  # absorption region radius in wavelengths
+
+# --- Elastic Amplitude Modulation (Option E) parameters ---
+# M(r) = 1 + gain · δ(r) applied to the DISPLACEMENT phasor, not just RMS envelope.
+# The modulation changes the phasor coefficients themselves (P, Q scaled by M),
+# creating a wave whose amplitude varies with position through the WC region.
+# Different from Option A: operates on the wave (phasor), not the envelope (RMS).
+# The charge-dependent phase rotation of the phasor means M(r) affects
+# different phases differently → potentially charge-sensitive force.
+ELASTIC_AMP_GAIN = 3.0  # modulation strength at WC center
+
+# --- Elastic Phase Warp (Option F) parameters ---
+# WC introduces a position-dependent phase shift Δφ(r) = phase_strength · δ(r)
+# This is equivalent to local λ variation: Δφ = ∫Δk(r')dr'
+# The WC's own phase (charge) determines the SIGN of the warp:
+# q=+1 → phase advance (shorter effective λ near WC)
+# q=-1 → phase delay (longer effective λ near WC)
+# c stays constant — only λ(r) varies.
+ELASTIC_PHASE_STRENGTH = 2.0  # max phase shift in radians at WC center
+
+# --- Elastic L→T Spin (Option G) parameters ---
+# WC converts fraction of longitudinal phasor into a transverse component.
+# Uses the quadrature model's two channels as L/T proxy:
+# Channel 1 (cos) = longitudinal, Channel 2 (sin) = transverse.
+# At WC: some L energy converts to T, with conversion direction (CW/CCW)
+# determined by WC phase → electron vs positron.
+# Requires BASE_WAVE_MODE = "quadrature" to work.
+ELASTIC_SPIN_FRACTION = 0.3  # fraction of L converted to T at WC center
 
 
 def _compute_weight(r_am):
@@ -475,10 +502,142 @@ def _compute_scattering_rms(x, active_wcs):
     return np.sqrt(rms_transmitted**2 + rms_scattered**2)
 
 
+# ================================================================
+# Elastic Disturbance Models (Options E, F, G)
+# ================================================================
+# These change the wave CHARACTER as it passes through the WC.
+# The outgoing wave is different from the incoming wave — elastic disturbance.
+# NOT tested in M2 — genuinely new territory.
+
+
+def _compute_elastic_amp_rms(x, active_wcs):
+    """Option E: Elastic amplitude modulation on the phasor.
+
+    Modulates the phasor coefficients (P, Q) by a position-dependent
+    envelope M(r) centered at each WC. Unlike multiplicative (Option A)
+    which scales RMS directly, this operates on the PHASOR — the wave's
+    cos/sin components — so the modulation interacts with the phase structure.
+
+    M(r) = 1 + gain · δ(r),  δ(r) = 1/√(1+(kr)²)
+    P_mod = P · M(r),  Q_mod = Q · M(r)
+
+    Because P and Q encode phase information (from both base wave and
+    the spatial structure), scaling them by M(r) creates a disturbance
+    that depends on the local phase — potentially charge-sensitive.
+    Energy normalized to conserve total.
+    """
+    P, Q = _base_phasor(x)
+
+    # Build M(r) = product of all WC modulations
+    M = np.ones_like(x)
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)
+        # The modulation is charge-independent — it scales the wave equally
+        # But the PHASOR it scales already contains phase structure
+        M *= 1.0 + ELASTIC_AMP_GAIN * delta
+
+    # Apply modulation to phasor
+    P_mod = P * M
+    Q_mod = Q * M
+
+    rms = np.sqrt(P_mod**2 + Q_mod**2) / np.sqrt(2.0)
+
+    # Energy-conserving normalization
+    rms_base = compute_base_rms(x)
+    E_base = np.sum(rms_base**2)
+    E_mod = np.sum(rms**2)
+    if E_mod > 0:
+        rms *= np.sqrt(E_base / E_mod)
+
+    return rms
+
+
+def _compute_elastic_phase_rms(x, active_wcs):
+    """Option F: Elastic phase/λ warping.
+
+    WC introduces a charge-dependent phase shift to the phasor:
+    Δφ(r) = q · phase_strength · δ(r)
+    where q = cos(phase) = ±1 (charge sign)
+
+    This rotates the phasor (P, Q) by Δφ at each point:
+    P_rot = P·cos(Δφ) - Q·sin(Δφ)
+    Q_rot = P·sin(Δφ) + Q·cos(Δφ)
+
+    Physically: the WC region has modified λ(r) — the wave's spatial
+    phase accumulates differently near the WC. Positive charge advances
+    phase (shorter effective λ), negative charge delays (longer λ).
+    This creates asymmetric interference between two WCs depending on
+    their relative charge — potentially emergent force direction.
+
+    Energy is exactly conserved (rotation preserves magnitude).
+    """
+    P, Q = _base_phasor(x)
+
+    # Apply charge-dependent phase rotation from each WC
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        q = np.cos(wc.phase)  # charge sign
+        delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)
+        dphi = q * ELASTIC_PHASE_STRENGTH * delta  # charge-dependent phase shift
+
+        # Rotate phasor by dphi at each point
+        cos_dp = np.cos(dphi)
+        sin_dp = np.sin(dphi)
+        P_new = P * cos_dp - Q * sin_dp
+        Q_new = P * sin_dp + Q * cos_dp
+        P, Q = P_new, Q_new
+
+    return np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
+
+
+def _compute_elastic_spin_rms(x, active_wcs):
+    """Option G: L→T spin conversion using quadrature channels.
+
+    Uses the quadrature base wave's two channels as L and T proxies:
+    Channel 1 (P_base from cos(kx)) = longitudinal component
+    Channel 2 (Q_base from sin(kx)) = transverse component
+
+    At each WC, a fraction of L energy converts to T (or vice versa),
+    with the conversion direction determined by WC phase (charge):
+    q = +1 (positron): L → T (CW spin)
+    q = -1 (electron): T → L (CCW spin, or L → -T)
+
+    The conversion is local (strongest at WC, decays with distance).
+    Energy conserved: L² + T² = constant.
+
+    Requires BASE_WAVE_MODE = "quadrature" for meaningful L/T channels.
+    Falls back to base-only RMS for other modes.
+    """
+    if BASE_WAVE_MODE != "quadrature":
+        return compute_base_rms(x)
+
+    # Get base phasor — for quadrature, P encodes L (cos channel), Q encodes T (sin channel)
+    P, Q = _base_phasor(x)
+
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        q = np.cos(wc.phase)  # +1 = positron (L→T), -1 = electron (L→-T)
+        delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)
+        frac = ELASTIC_SPIN_FRACTION * delta  # conversion fraction, local to WC
+
+        # L→T conversion: transfer energy from P (L) to Q (T)
+        # Direction of transfer determined by charge sign q
+        dP = -frac * P  # reduce L
+        dQ = frac * P * q  # increase T (sign from charge)
+
+        P = P + dP
+        Q = Q + dQ
+
+    return np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
+
+
 def compute_combined_rms(x, active_wcs=None):
     """Compute RMS from base wave + WC disturbance for current mode.
 
     Dispatches to the appropriate disturbance model based on WC_DISTURBANCE.
+    Passive: additive, multiplicative, absorber, scattering
+    Elastic: elastic_amp, elastic_phase, elastic_spin
     """
     if active_wcs is None:
         active_wcs = wave_centers
@@ -498,6 +657,12 @@ def compute_combined_rms(x, active_wcs=None):
         return _compute_absorber_rms(x, active_wcs)
     elif WC_DISTURBANCE == "scattering":
         return _compute_scattering_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "elastic_amp":
+        return _compute_elastic_amp_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "elastic_phase":
+        return _compute_elastic_phase_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "elastic_spin":
+        return _compute_elastic_spin_rms(x, active_wcs)
 
     return compute_base_rms(x)
 

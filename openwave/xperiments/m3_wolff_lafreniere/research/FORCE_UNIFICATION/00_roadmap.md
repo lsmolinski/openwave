@@ -50,16 +50,18 @@
 - Step 2 — WC disturbance and contender selection:
   - ✅ **Step 2a**: Node-locking charge hypothesis — FALSIFIED. Charge as spatial property (even/odd node position) does not predict force direction. 7/30 match (23%). Actual force has 2λ periodicity, not λ/2. Even separations produce net translation, not repulsion
   - ✅ **Step 2b**: Migrate WC disturbance from v2 to v3 — COMPLETED, additive model ruled out. Base wave + WC additive superposition produces same sinc oscillation as v2. Energy normalization (Option B) conserves ΣE but doesn't change spatial pattern → forces unchanged. WCs must warp the energy field non-additively (reflection, scattering, multiplicative)
-  - 🔶 **Step 2c**: Non-additive WC disturbance models — passive options tested, elastic options next:
-    - ❌ Option A (multiplicative): 48/48 correct direction, energy conserved, NO sinc flips — but charge imposed via ±1 label (same as Phase 1a), Newton's 3rd ~1.5x asymmetry. Solves sinc but not emergent
-    - ❌ Option B (normalized additive): ruled out — uniform scaling, no spatial change
-    - ❌ Option C (scattering): 12/24 random — scattered sinc wave reintroduces oscillation. Confirms M2
-    - ❌ Option D (absorber): 3/24 unclear, charge-blind — symmetric drain, no charge info. Confirms M2
-    - 🚧 Option E (amplitude modulation): elastic, smooth scaling on displacement
-    - 🚧 Option F (phase/λ warp): elastic, connects to Phase 1c variable λ
-    - 🚧 Option G (L→T spin): elastic, requires two-component displacement
-  - 🚧 **Step 2d**: Dual-channel base wave (π-apart) — two canceling waves, WCs break equilibrium selectively
-  - 🚧 **Step 2e**: Deeper physics discussion — compare passive vs elastic models, quadrature as L/T proxy, spin as elastic disturbance, 1D scalar limitations, contender selection, decide path to Phase 1c or 1d
+  - ✅ **Step 2c**: Non-additive WC disturbance models — passive and elastic tested:
+    - Passive (M2 re-validated in 1D):
+      - ❌ Option A (multiplicative): 48/48 direction, energy conserved, but charge imposed ±1 (not emergent)
+      - ❌ Option B (normalized additive): uniform scaling, no spatial change
+      - ❌ Option C (scattering): sinc reintroduced via re-emitted wave, random direction
+      - ❌ Option D (absorber): charge-blind, symmetric drain
+    - Elastic (new territory, NOT in M2):
+      - ❌ Option E (amplitude modulation): charge-blind — symmetric scaling, always repels 24/24
+      - ❌ Option F (phase/λ warp): near-zero forces — rotation preserves RMS, no gradient. Requires variable-λ energy equation (Phase 1c) to produce force
+      - ❌ Option G (L→T spin): **CHARGE SENSITIVE** — first model to distinguish charges. Opposite: 12/24 oscillates, same: 24/24 unclear. Quadrature proxy limited — needs true two-component displacement (Phase 1d)
+  - 🔶 **Step 2d**: Dual-channel base wave (π-apart) — two canceling waves, WCs break equilibrium selectively
+  - 🚧 **Step 2e**: Physics discussion and path decision — Phase 1b findings point toward Phase 1c (variable λ in energy) and/or Phase 1d (vector displacement for L→T spin). Evaluate which path first
 
 - WRAP-UP
   - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field

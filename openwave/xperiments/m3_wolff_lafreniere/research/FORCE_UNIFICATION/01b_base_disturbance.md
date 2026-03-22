@@ -478,49 +478,83 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 ### Elastic Options (NOT tested in M2 — new territory)
 
-#### 🚧 Option E: Amplitude Modulation (Smooth Elastic Scaling)
+#### ❌ Option E: Amplitude Modulation (Smooth Elastic Scaling) — CHARGE BLIND
 
 WC smoothly scales the wave amplitude as it passes through — not a hard clamp or drain (passive), but a **gradual, position-dependent amplitude envelope** that the wave acquires by traversing the WC region:
 
 ```text
 ψ_out(x) = ψ_in(x) · M(r)
-where M(r) = smooth function: M(0) > 1 (concentration), M(∞) → 1 (undisturbed)
+where M(r) = 1 + gain · δ(r), smooth function: M(0) > 1 (concentration), M(∞) → 1
 ```
 
-Different from Option A (multiplicative on RMS) because this operates on the **displacement field directly**, not just the envelope. The wave itself is modulated — peaks grow near WC, shrink far away — and the modulation pattern propagates outward with the wave.
+Different from Option A (multiplicative on RMS) because this operates on the **phasor coefficients** (P, Q) directly — scaling the wave's cos/sin components by M(r).
 
-**Energy conservation**: `∫M²(r)·ψ²dx = ∫ψ²dx` if M is properly shaped. The concentrated energy near WC comes from depletion in the far field.
+**1D Test results (`WC_DISTURBANCE = "elastic_amp"`, all 3 base modes)**:
 
-**Connection to standing wave formation**: if M(r) has the right spatial profile (peaked at WC with 1/r decay), the modulated wave creates an energy landscape that mimics the standing wave core of a particle — energy concentrated at center, draining outward.
+- ❌ **Charge blind**: always repels 24/24 regardless of charge sign — same result for opposite and same charge on all base modes (standing, quadrature, uniform)
+- ✅ **Energy conservation**: normalized by construction
+- ❌ **No charge sensitivity**: M(r) is charge-independent — it scales the phasor equally for both charges. The phasor it scales already contains phase structure, but the symmetric scaling doesn't extract charge info from it. Same energy peak at WC regardless of `cos(phase)` sign
 
-#### 🚧 Option F: Phase Warping (Elastic Phase Disturbance)
+**Root cause**: amplitude modulation without phase dependence creates a symmetric energy concentration that doesn't distinguish charges. The wave is "elastically disturbed" (amplitude changes), but the disturbance is the same for both charge signs → no charge-dependent force.
 
-WC shifts the wave phase as it passes through — not a fixed phase offset (that's additive), but a **position-dependent phase distortion** that warps the spatial wave structure near the WC. The wave enters with phase φ₁ and exits with phase φ₂ ≠ φ₁.
+#### ❌ Option F: Phase Warping (Elastic Phase Disturbance) — NEAR-ZERO FORCES
+
+WC shifts the wave phase as it passes through — a **position-dependent phase distortion** with charge-dependent sign:
 
 ```text
-ψ_out(x) = ψ_in(x) · e^{i·Δφ(r)}
-where Δφ(r) is a smooth function of distance from WC
+Δφ(r) = q · phase_strength · δ(r)
+P_rot = P·cos(Δφ) - Q·sin(Δφ)
+Q_rot = P·sin(Δφ) + Q·cos(Δφ)
 ```
 
-**Physical interpretation**: the WC region has different wave propagation properties than the surrounding medium — like a refractive lens that bends light by changing its phase velocity. The phase warp creates a non-uniform interference pattern that could break the sinc periodicity.
+**Physical interpretation**: the WC region has modified λ(r) — the wave's spatial phase accumulates differently near the WC. Positive charge advances phase (shorter effective λ), negative charge delays (longer λ). Phase warping is equivalent to local wavelength change: `Δφ(r) = ∫Δk(r')dr'`. Wave speed c stays absolute — only λ(r) varies.
 
-**Connection to variable λ**: phase warping is equivalent to local wavelength change — `Δφ(r) = ∫Δk(r')dr'`. This connects directly to Phase 1c (variable λ, WKB phase integral, Yee & Hauger shells). Note: wave speed c is absolute (property of the medium, constant everywhere). What varies is λ(r) — the WC changes wavelength, not wave speed. Since f = c/λ, wavelength change also changes local frequency → local rate of change → time dynamics. This is Smoliński's density function `ρ(r)` creating the push-out force — not through c variation, but through λ variation at constant c.
+**Connection to variable λ / Phase 1c**: connects directly to Yee & Hauger shells, WKB phase integral, Smoliński's density function. The wavelength change should create energy gradients via `E ∝ (A/λ)²`.
 
-**Implementation in 1D**: modify the phasor phase computation to use `∫k(r')dr'` instead of `kr` (WKB approach). The wavelength change creates energy gradients because `E ∝ (A/λ)²` — shorter λ = higher energy density. Already documented in the Yee & Hauger wavelength shells research.
+**1D Test results (`WC_DISTURBANCE = "elastic_phase"`, all base modes)**:
 
-#### 🚧 Option G: L→T Conversion (Spin — from M2 Spin Theory)
+- ❌ **Mostly unclear**: 15–22/24 separations show near-zero forces. Only 1–6/24 show any direction
+- ✅ **Energy exactly conserved**: phasor rotation preserves magnitude by definition (`|rotated|² = |original|²`)
+- ❌ **Root cause**: rotation preserves RMS → **no energy gradient → no force**. The phase warp changes the wave's phase structure but NOT its amplitude. Since `F = -∇E` and `E ∝ RMS²`, and RMS is unchanged by rotation, there's no force
 
-WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem. M2 attempted implementation (`interact_wc_spinUP/DOWN`) but it "never worked correctly" in 3D — the concept was right but execution needs revisiting.
+**Key insight**: phase warping alone cannot create force in the current F = -∇E framework because phasor rotation is energy-preserving at every point. The phase change is real (λ varies), but our energy formula `E = ρV(fA)²` only sees amplitude A, not phase. To make phase/λ warping produce force, the energy formula must include λ explicitly: `E = ρV(c·A/λ)²` where λ(r) varies — this IS Phase 1c (variable λ in the energy equation). The current phasor framework with constant λ in the energy formula cannot see phase disturbances.
 
-**Requires**: two-component displacement (L + T) — either extend 1D engine with a second displacement track, or use the quadrature model's two channels as L/T proxy. Connects directly to Phase 1d (vector waves).
+⚠️ **Status**: not ruled out — the physics is sound (λ variation creates energy gradients), but the current implementation framework can't capture it. Requires Phase 1c's variable-λ energy equation to test properly.
 
-**Connection to spin**: this IS the physical mechanism behind spin. The wave undergoes a character transformation (L→T) at the WC — Wolff's 720° spherical rotation. CW rotation = electron, CCW = positron. The "spinning" is the wave mode conversion, not physical rotation of matter.
+#### ❌ Option G: L→T Conversion (Spin — from M2 Spin Theory) — CHARGE SENSITIVE, PARTIALLY WORKING
+
+WC converts incoming longitudinal waves into outgoing longitudinal + transverse. Uses the quadrature base wave's two channels as L/T proxy. Conversion direction (CW/CCW) determined by WC phase (charge sign).
+
+```text
+At WC: dP = -frac · P (reduce L)
+       dQ = +frac · P · q (increase T, sign from charge q)
+q = +1 (positron): L→+T (CW spin)
+q = -1 (electron): L→-T (CCW spin)
+```
+
+M2 research proposed this as the solution to isotropic cancellation. M2 attempted implementation but "never worked correctly" in 3D.
+
+**1D Test results (`WC_DISTURBANCE = "elastic_spin"`, quadrature base)**:
+
+- ❌ **Charge-sensitive (partial)**: opposite charge shows 12/24 attract, 12/24 repel (oscillates). Same charge shows 24/24 unclear (both forces in same direction). **This is the first and only model that produces different behavior for opposite vs same charge** — the L→T conversion with charge-dependent sign creates an asymmetry that passive models cannot
+- ❌ **Energy not fully conserved**: E_ratio ≈ 0.96 (4% energy loss from L→T conversion — the T component contributes differently to energy than L)
+- ❌ **Sinc still present for opposite charge**: the 12/24 oscillation suggests the phasor structure still creates sinc-like interference, but the L→T conversion partially disrupts it
+
+**Key findings**:
+
+1. **Charge discrimination is real** — the L→T conversion with charge-dependent direction (CW vs CCW) creates fundamentally different force patterns for opposite vs same charge. No other model achieves this
+2. **The quadrature proxy is limited** — using two phasor channels (P, Q) as L/T is a mathematical approximation of what should be two physically independent displacement components. The phasor channels are not truly independent (they combine into magnitude), limiting how much the L→T conversion can affect the energy landscape
+3. **The oscillation persists** because the conversion modifies P and Q (which still combine via P² + Q² into a sinc-modulated RMS). A truly independent transverse component would add energy separately (E_L + E_T), potentially breaking the sinc pattern
+
+⚠️ **Status**: most promising elastic model. Points strongly toward Phase 1d (full vector displacement with independent L and T components) as the path to resolve the remaining oscillation. The quadrature proxy demonstrates that L→T conversion produces charge sensitivity, but the full effect likely requires true two-component displacement, not phasor channel manipulation.
+
+See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for the theoretical basis.
 
 See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full analysis.
 
 ---
 
-### 🚧 Step 2d: Dual-Channel Base Wave (π-apart)
+### 🔶 Step 2d: Dual-Channel Base Wave (π-apart)
 
 Implement the dual-channel model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Applies to all base wave modes (uniform, standing, quadrature) — maybe there are two fundamental waves always canceling each other out, and WCs disturb that equilibrium, making the dual waves out of anti-phase. This asymmetry is what manifests as energy.
 
