@@ -396,7 +396,19 @@ For the base wave to matter, WCs must interact with it NON-additively — throug
 
 **WC disturbance mechanisms to investigate**: reflection/scattering of base wave, channel-selective disturbance, boundary condition at WC position, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
 
-Three candidate approaches:
+Two categories of WC interaction:
+
+**Passive interactions** (block, reflect, clamp, drain): the wave hits the WC and is reflected, absorbed, or constrained. The wave character doesn't change — only its amplitude or direction. M2 tested 12 variations of passive interaction in 3D, all failed in isotropic fields due to cancellation from all directions (see [M2 Prior-Art Findings](#m2-research-prior-art-findings)). Options A, C, D below are passive — worth re-testing in 1D where cancellation is weaker (only left/right, not omnidirectional).
+
+**Elastic interactions** (warp, shift, modulate): the wave passes THROUGH the WC and comes out **changed** — modified phase, wavelength, amplitude profile, or wave mode. The WC acts as a transformer, not a wall. The wave is **disturbed** in the true physical sense — its character is altered by traversing the WC region. This category was **NOT tested in M2**. Options E, F, G, H below are elastic — genuinely new territory that may produce different results than passive approaches.
+
+The distinction matters because passive interactions create reflections that cancel in isotropic fields (proven in M2), while elastic interactions change what the wave IS — the outgoing wave has different properties than the incoming wave. This asymmetry (in ≠ out) may break the cancellation symmetry.
+
+**Connection to spin**: "spin" is an observed quantum phenomenon never fully understood physically, and likely mislabeled as actual physical rotation of a particle. Wolff's insight: **"the wave is spinning, not the particle"** — spin is the transformation of the in-wave into the out-wave at the wave center, a property of 3D space (720° spherical rotation). Elastic disturbance may be the mechanism behind what we observe as spin — the WC changes the wave character as it passes through, and that change is what we measure as spin, magnetic moment, and charge.
+
+---
+
+### Passive Options (M2-tested, re-validating in 1D)
 
 #### 🚧 Option A: Multiplicative (Energy Redistribution)
 
@@ -437,13 +449,49 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 ⚠️ **M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field. 1D test still worth running for weaker-cancellation validation.
 
+---
+
+### Elastic Options (NOT tested in M2 — new territory)
+
 #### 🚧 Option E: L→T Conversion (Spin — from M2 Spin Theory)
 
-WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem.
+WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem. M2 attempted implementation (`interact_wc_spinUP/DOWN`) but it "never worked correctly" in 3D — the concept was right but execution needs revisiting.
 
 **Requires**: two-component displacement (L + T) — either extend 1D engine with a second displacement track, or use the quadrature model's two channels as L/T proxy. Connects directly to Phase 1d (vector waves).
 
+**Connection to spin**: this IS the physical mechanism behind spin. The wave undergoes a character transformation (L→T) at the WC — Wolff's 720° spherical rotation. CW rotation = electron, CCW = positron. The "spinning" is the wave mode conversion, not physical rotation of matter.
+
 See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full analysis.
+
+#### 🚧 Option F: Phase Warping (Elastic Phase Disturbance)
+
+WC shifts the wave phase as it passes through — not a fixed phase offset (that's additive), but a **position-dependent phase distortion** that warps the spatial wave structure near the WC. The wave enters with phase φ₁ and exits with phase φ₂ ≠ φ₁.
+
+```text
+ψ_out(x) = ψ_in(x) · e^{i·Δφ(r)}
+where Δφ(r) is a smooth function of distance from WC
+```
+
+**Physical interpretation**: the WC region has different wave propagation properties than the surrounding medium — like a refractive lens that bends light by changing its phase velocity. The phase warp creates a non-uniform interference pattern that could break the sinc periodicity.
+
+**Connection to variable λ**: phase warping is equivalent to local wavelength change — `Δφ(r) = ∫Δk(r')dr'`. This connects directly to Phase 1c (variable λ, WKB phase integral, Yee & Hauger shells). Note: wave speed c is absolute (property of the medium, constant everywhere). What varies is λ(r) — the WC changes wavelength, not wave speed. Since f = c/λ, wavelength change also changes local frequency → local rate of change → time dynamics. This is Smoliński's density function `ρ(r)` creating the push-out force — not through c variation, but through λ variation at constant c.
+
+**Implementation in 1D**: modify the phasor phase computation to use `∫k(r')dr'` instead of `kr` (WKB approach). The wavelength change creates energy gradients because `E ∝ (A/λ)²` — shorter λ = higher energy density. Already documented in the Yee & Hauger wavelength shells research.
+
+#### 🚧 Option G: Amplitude Modulation (Smooth Elastic Scaling)
+
+WC smoothly scales the wave amplitude as it passes through — not a hard clamp or drain (passive), but a **gradual, position-dependent amplitude envelope** that the wave acquires by traversing the WC region:
+
+```text
+ψ_out(x) = ψ_in(x) · M(r)
+where M(r) = smooth function: M(0) > 1 (concentration), M(∞) → 1 (undisturbed)
+```
+
+Different from Option A (multiplicative on RMS) because this operates on the **displacement field directly**, not just the envelope. The wave itself is modulated — peaks grow near WC, shrink far away — and the modulation pattern propagates outward with the wave.
+
+**Energy conservation**: `∫M²(r)·ψ²dx = ∫ψ²dx` if M is properly shaped. The concentrated energy near WC comes from depletion in the far field.
+
+**Connection to standing wave formation**: if M(r) has the right spatial profile (peaked at WC with 1/r decay), the modulated wave creates an energy landscape that mimics the standing wave core of a particle — energy concentrated at center, draining outward.
 
 ---
 
