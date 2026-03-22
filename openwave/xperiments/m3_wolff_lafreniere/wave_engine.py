@@ -347,7 +347,7 @@ def propagate_wave(
             #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
             #
             # 2 counter-propagating waves with a spatial blending function:
-            #   ψ(r,t) = A · [weight(r,λ)·sin(kr + ωt + φ) + sin(kr - ωt - φ)] / kr
+            #   ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
             #
             #   Cardinal sine term: sin(kr)/kr → 1 as r→0
             #       self-normalizes to 1 at origin regardless of wavelength

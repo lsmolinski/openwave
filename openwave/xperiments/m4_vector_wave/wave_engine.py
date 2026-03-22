@@ -180,9 +180,6 @@ def compute_voxel_wave(
         # Cache source-specific phase offset
         source_offset = wave_center.offset[wc_idx]
 
-        # Phase shift between in/out waves (at wave-center)
-        phase_shift = ti.math.pi
-
         # Amplitude falloff for spherical wave: A(r) = A₀/r
         # Clamp to r_min to avoid singularity at r = 0
         r_safe_grid = ti.max(r_grid, r_reference_grid)
@@ -191,11 +188,11 @@ def compute_voxel_wave(
         amplitude_at_r_am = base_amplitude_am * amplitude_falloff
 
         # Accumulate this source's contribution (wave superposition)
-        # ψ = A(r)·cos(ωt ± kr + φ + shift)·direction, negative for outward propagation, amp falloff
+        # ψ = A(r)·cos(kr - ωt - φ)·direction, negative for outward propagation, amp falloff
         wave_field.displacement_am[i, j, k] += (
             amplitude_at_r_am
             * wave_field.scale_factor
-            * ti.cos(temporal_phase - spatial_phase + source_offset + phase_shift)  # oscillator
+            * ti.cos(spatial_phase - (temporal_phase + source_offset))  # oscillator
         ) * direction
 
     # TODO: consider precision rounding to ensure perfect cancellation

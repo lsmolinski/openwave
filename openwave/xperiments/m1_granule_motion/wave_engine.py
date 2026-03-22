@@ -302,9 +302,8 @@ def oscillate_granules(
             amplitude_at_r_cap_am = ti.min(amplitude_at_r_am, r_am)
 
             # MAIN WAVE FUNCTION ========================================
-            # IN & OUT Wave displacement from this source
+            # IN Wave displacement from this source
             # A·cos(kr + ωt + φ)·direction, positive for inward propagation, full amp
-            # A(r)·sin(kr - ωt - φ)·direction, negative for outward propagation, amp falloff
             in_wave_psi = (
                 in_wave_toggle
                 * base_amplitude_am
@@ -312,6 +311,9 @@ def oscillate_granules(
                 / num_sources  # incoming wave do not superpose, split per WC for energy conservation
                 * ti.cos(spatial_phase + (temporal_phase + source_offset))
             )
+            # OUT Wave displacement from this source
+            # A(r)·sin(kr - ωt - φ)·direction, negative for outward propagation, amp falloff
+            # Uses sine for 90° phase shift to create nodes at source center (r=0) and wave fronts
             out_wave_psi = (
                 out_wave_toggle
                 * amplitude_at_r_cap_am
