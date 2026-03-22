@@ -526,7 +526,7 @@ Every passive WC interaction (reflect, absorb, clamp, drain, boundary condition)
 
 **Key observation from experiment 5** (cubic Dirichlet): the cube creates a visible wake/shadow during the charging phase (when waves are directional), but the effect disappears completely after stabilization (when waves become isotropic). This proves that the cancellation is specifically an **isotropic symmetry** problem, not a general wave physics problem.
 
-### M2 Proposed Solution: Spin as L→T Conversion (14_spin_theory.md)
+### ⚠️ M2 Proposed Solution: Spin as L→T Conversion (14_spin_theory.md)
 
 The M2 research proposed that the missing physics is **spin — the conversion of longitudinal waves to transverse waves** at the wave center. This is the key insight:
 
@@ -572,14 +572,14 @@ Other tested interactions (all commented out): `interact_wc_swap` (direction swa
 
 **The 1D vs 3D difference is important**: in 3D, isotropic means waves from ALL directions cancel reflections. In 1D, "isotropic" means only left + right — two directions, not infinite. This means 1D tests of Options A/C/D might show effects that are invisible in 3D due to stronger cancellation. Testing in 1D serves as a **weaker-cancellation validation** — if it fails even in 1D, it definitely fails in 3D. If it works in 1D, it may still fail in 3D.
 
-**The M2 research points toward L→T conversion (spin) as the mechanism that breaks isotropic symmetry.** This connects directly to:
+⚠️ **The M2 research points toward L→T conversion (spin) as the mechanism that breaks isotropic symmetry.** This connects directly to:
 
 - The **quadrature model** — the two 90°-offset channels may represent L and T components. The base wave already encodes this duality
 - **Complex sinusoids** — real = L, imaginary = T. This is why wave equations require complex numbers
 - **Phase 1d (vector waves)** — full vector displacement naturally captures L and T as separate components
 - The **"spinning in place" idea** — a standing wave that rotates phase instead of oscillating linearly requires two orthogonal components (L + T)
 
-### Recommended Path Forward
+⚠️ ### Recommended Path Forward
 
 Complete Step 2c testing (Options A/C/D) for validation — even if M2 suggests they'll fail, the 1D test has weaker cancellation and may reveal different behavior. Document results either way. Then evaluate whether to:
 
