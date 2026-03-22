@@ -32,3 +32,36 @@ Force can also arise from **energy flux** — the directional flow of energy thr
 For constant c: `∇P_rad = ∇E` — both approaches give the same force. They diverge when c varies spatially or waves are directional.
 
 Energy flux could **naturally separate standing wave (near-field) from traveling wave (far-field) contributions** — standing waves have zero net flux, traveling waves have nonzero flux.
+
+---
+
+## Findings from Phase 1b Step 2c (hints for Phase 1d implementation)
+
+Phase 1b tested L→T spin conversion (Option G) using the quadrature base wave's two phasor channels (P, Q) as a proxy for longitudinal and transverse components. The WC converts a fraction of L (P) into T (Q) with charge-dependent direction: `q = +1 → L→+T` (CW), `q = -1 → L→-T` (CCW).
+
+**Result — the ONLY model that distinguishes charges**:
+
+- Opposite charge: 12/24 attract, 12/24 repel (oscillates — sinc partially disrupted)
+- Same charge: 24/24 unclear (both forces same direction — distinct from opposite)
+- No other model (7 tested: 4 passive, 3 elastic) produced different behavior for opposite vs same charge
+
+**Why the quadrature proxy is limited**: the two phasor channels P and Q are not truly independent — they combine into magnitude via `RMS = √(P² + Q²)/√2`. Converting energy between P and Q changes their individual values but the magnitude (and therefore energy) is still dominated by the sinc-modulated interference pattern. The L→T conversion shifts energy between channels, but `P² + Q²` doesn't fully decouple them.
+
+**What Phase 1d needs**: true two-component displacement — independent L and T fields that contribute to energy **separately**:
+
+```text
+E_total = E_L + E_T = ρV(f·A_L)² + ρV(f·A_T)²
+```
+
+With independent components:
+
+- L→T conversion at the WC reduces A_L and increases A_T locally
+- The T component is NEW (not in the incoming field) → breaks isotropic cancellation (M2's core finding)
+- The T component doesn't have the same spatial sinc structure as L → its contribution to the energy gradient is different
+- Force direction depends on HOW the L/T balance changes with charge sign → charge-dependent force from wave physics, not imposed labels
+
+**Implementation path**: extend the 1D engine with a second displacement field (ψ_T alongside ψ_L). Each has its own phasor (P_L, Q_L, P_T, Q_T). At WC positions, apply L→T conversion with charge-dependent direction. Energy computed from both: `E = E_L + E_T`. This is a minimal vector extension — 1D spatial domain but 2D displacement (longitudinal + transverse), sufficient to test the spin hypothesis without full 3D.
+
+**Connection to M2 spin theory**: M2's `14_spin_theory.md` proposed exactly this mechanism and attempted implementation (`interact_wc_spinUP/DOWN`) but it "never worked correctly" in the 3D isotropic Laplacian field. The Phase 1b quadrature proxy test confirms the concept works (charge discrimination achieved) but the implementation needs true independent components. Phase 1d should revisit the M2 spin code with the improved understanding from Phase 1b testing.
+
+**Convergence with Phase 1c**: Phases 1c and 1d may converge into one solution — variable λ(r) in the energy equation (1c) + vector displacement with L→T conversion (1d). The L→T spin creates charge-dependent asymmetry, while λ variation creates force from wavelength gradients. Both are needed: L→T alone still oscillates in scalar RMS, λ variation alone has no charge sensitivity. Together they could produce charge-dependent force from wavelength + mode gradients.
