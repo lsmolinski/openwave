@@ -95,6 +95,37 @@ wave_centers = [
 ]
 
 
+# ================================================================
+# WC Disturbance Mode — how WCs interact with the base wave
+# ================================================================
+# "additive"       = WC emits waves ON TOP of base (v2 model, ruled out for force)
+# "multiplicative" = WC modifies base RMS via R(x) multiplier (Option A)
+# "scattering"     = WC absorbs + re-emits from base wave energy (Option C)
+# "absorber"       = WC as boundary condition, ψ→0 at WC (Option D)
+#
+# Passive options (A/C/D) re-validate M2 findings in 1D.
+# Elastic options (E/F/G) to be added after passive validation.
+
+WC_DISTURBANCE = "additive"
+
+# --- Multiplicative (Option A) parameters ---
+# R(x) = 1 + gain · δ(r) - drain
+# δ(r) = 1/√(1+(kr)²) — smooth peak at WC, 1/r far-field decay
+# gain: how much energy concentrates at WC
+# drain: computed to conserve total energy (∫R²·E_base = ∫E_base)
+MULT_GAIN = 5.0  # concentration strength (how many times base amplitude at WC center)
+
+# --- Scattering (Option C) parameters ---
+# WC absorbs fraction of base wave and re-emits as scattered wave
+# Scattered wave has WC's phase signature (charge-dependent)
+SCATTER_FRACTION = 0.3  # fraction of base wave absorbed at WC center
+
+# --- Absorber (Option D) parameters ---
+# WC forces displacement toward zero within a radius, like Dirichlet BC
+# Absorption profile: smooth rolloff from full absorption at center to none at edge
+ABSORBER_RADIUS_LAM = 0.5  # absorption region radius in wavelengths
+
+
 def _compute_weight(r_am):
     """In-wave weight: 1 near WC (standing), 0 far away (traveling)."""
     return 1.0 / (1.0 + (r_am / (TRANSITION_LAM * lam_am)) ** WEIGHT_POWER)
@@ -280,57 +311,194 @@ def _base_phasor(x):
 
 
 # ================================================================
-# Combined Computation: Base Wave + WC Waves
+# Combined Computation: Base Wave + WC Disturbance
 # ================================================================
-# Both base wave and WC waves share the same ω, so phasor superposition
-# is exact. Total phasor: P = P_base + Σ P_n,  Q = Q_base + Σ Q_n
-# RMS = √(P² + Q²) / √2
+# The disturbance mode (WC_DISTURBANCE) determines HOW WCs modify
+# the base wave field. Each mode computes RMS differently:
 #
-# Per WC n: compute C_n, S_n from the weighted partial standing wave,
-# then rotate by source_offset φ to shared cos(ωt)/sin(ωt) basis:
-#   P += C_n·cos(φ) + S_n·sin(φ)
-#   Q += -C_n·sin(φ) + S_n·cos(φ)
+# "additive"       — phasor superposition: P = P_base + Σ P_wc, same as v2
+# "multiplicative"  — RMS = RMS_base · R(x), where R concentrates near WC
+# "absorber"       — RMS = RMS_base · (1 - absorption_profile), Dirichlet-like
+# "scattering"     — RMS_base reduced at WC + scattered wave (from absorbed energy)
+
+
+def _compute_additive_rms(x, active_wcs):
+    """Additive phasor superposition: base wave + WC waves (eq #5).
+
+    Both base wave and WC waves share ω → phasor addition is exact.
+    Per WC: C_n, S_n from weighted partial standing wave, rotated by phase φ.
+    P = P_base + Σ(C_n·cos(φ) + S_n·sin(φ))
+    Q = Q_base + Σ(-C_n·sin(φ) + S_n·cos(φ))
+    RMS = √(P² + Q²) / √2
+    """
+    P, Q = _base_phasor(x)
+
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        kr = k * r
+        w = _compute_weight(r)
+
+        # Phasor coefficients for eq #5 weighted partial standing wave:
+        # C_n = (w+1)·sin(kr)/kr  (cos ωt coefficient)
+        # S_n = (w-1)·cos(kr)/kr  (sin ωt coefficient)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            C_n = np.where(
+                kr < 1e-10, 2.0 * wc.amplitude, wc.amplitude * (w + 1.0) * np.sin(kr) / kr
+            )
+            S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (w - 1.0) * np.cos(kr) / kr)
+
+        # Rotate by source_offset φ to shared cos(ωt)/sin(ωt) basis
+        cos_phi = np.cos(wc.phase)
+        sin_phi = np.sin(wc.phase)
+        P += C_n * cos_phi + S_n * sin_phi
+        Q += -C_n * sin_phi + S_n * cos_phi
+
+    return np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
+
+
+def _compute_multiplicative_rms(x, active_wcs):
+    """Option A: Multiplicative energy redistribution.
+
+    RMS_total(x) = RMS_base(x) · R(x)
+    R(x) = 1 + gain · Σ q_n · δ(r_n) - drain
+    δ(r) = 1/√(1+(kr)²) — smooth peak at WC, 1/r far-field
+    q = cos(phase) — charge sign determines concentration vs depletion
+    drain is computed to conserve total energy: ∫R²·E_base = ∫E_base
+
+    Unlike additive, this WARPS the base wave energy landscape —
+    no sinc oscillation, just smooth concentration/depletion.
+    """
+    rms_base = compute_base_rms(x)
+
+    # Build R(x) = 1 + gain · Σ q · δ(r)
+    R = np.ones_like(x)
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        q = np.cos(wc.phase)  # charge sign: +1 or -1
+        delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)  # smooth at r=0, 1/r far-field
+        R += MULT_GAIN * q * delta
+
+    # Energy-conserving normalization:
+    # We want ∫R²·RMS_base² dx = ∫RMS_base² dx
+    # → scale R so that Σ(R²·RMS_base²) = Σ(RMS_base²)
+    E_base = np.sum(rms_base**2)
+    E_mod = np.sum((R * rms_base) ** 2)
+    if E_mod > 0:
+        R *= np.sqrt(E_base / E_mod)
+
+    return np.abs(R * rms_base)
+
+
+def _compute_absorber_rms(x, active_wcs):
+    """Option D: Local absorber / boundary condition.
+
+    WC forces amplitude toward zero within a radius (like Dirichlet BC).
+    Absorption profile: smooth Gaussian rolloff from full absorption at
+    center to no absorption at edge. Energy removed from WC region is
+    NOT redistributed (lost) — tests whether the energy deficit alone
+    creates correct force direction.
+
+    This is the 1D equivalent of M2 experiments 1-6 (Dirichlet/Neumann).
+    M2 found isotropic cancellation in 3D. In 1D (only left/right),
+    cancellation may be weaker.
+    """
+    rms_base = compute_base_rms(x)
+    absorption = np.ones_like(x)
+
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        radius = ABSORBER_RADIUS_LAM * lam_am
+        # Smooth Gaussian absorption: 1 at center (full absorption) → 0 at edge
+        profile = np.exp(-(r**2) / (2.0 * (radius / 2.0) ** 2))
+        absorption -= profile  # reduce amplitude in absorption zone
+
+    # Clamp to non-negative (full absorption = 0, undisturbed = 1)
+    absorption = np.clip(absorption, 0.0, 1.0)
+
+    return rms_base * absorption
+
+
+def _compute_scattering_rms(x, active_wcs):
+    """Option C: Scattering / reflection / re-emission.
+
+    WC absorbs a fraction of the base wave and re-emits it as a
+    scattered wave with the WC's phase signature. The scattered wave
+    has 1/r decay from the WC position. Total energy conserved:
+    scattered energy comes FROM the absorbed base wave, not added.
+
+    RMS² = (RMS_base · (1 - absorption))² + RMS_scattered²
+    where RMS_scattered = absorbed energy re-emitted with WC phase.
+
+    This is the LaFreniere model: in-wave → reflection → out-wave.
+    The key question: does the scattered wave (which carries charge
+    phase information) create the correct energy gradient?
+    """
+    rms_base = compute_base_rms(x)
+
+    # Step 1: absorb fraction of base wave near each WC
+    absorption = np.zeros_like(x)
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        # Smooth absorption profile centered at WC
+        profile = SCATTER_FRACTION / np.sqrt(1.0 + (k * r) ** 2)
+        absorption += profile
+
+    absorption = np.clip(absorption, 0.0, 0.99)  # never absorb 100%
+    rms_transmitted = rms_base * (1.0 - absorption)
+
+    # Step 2: re-emit absorbed energy as scattered wave with WC phase
+    # Use phasor superposition for the scattered component only
+    P_scat = np.zeros_like(x)
+    Q_scat = np.zeros_like(x)
+
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        kr = k * r
+
+        # Scattered amplitude = what was absorbed at this WC's position
+        # Absorbed energy at WC center, re-emitted with 1/kr decay
+        absorbed_at_center = rms_base[np.argmin(np.abs(x - wc.x_am))] * SCATTER_FRACTION
+        with np.errstate(divide="ignore", invalid="ignore"):
+            scat_amp = np.where(
+                kr < 1e-10, absorbed_at_center, absorbed_at_center * np.sin(kr) / kr
+            )
+
+        # Scattered wave carries WC's phase (charge signature)
+        cos_phi = np.cos(wc.phase)
+        sin_phi = np.sin(wc.phase)
+        P_scat += scat_amp * cos_phi
+        Q_scat += -scat_amp * sin_phi
+
+    rms_scattered = np.sqrt(P_scat**2 + Q_scat**2) / np.sqrt(2.0)
+
+    # Step 3: combine transmitted + scattered (independent, energy-sum)
+    return np.sqrt(rms_transmitted**2 + rms_scattered**2)
 
 
 def compute_combined_rms(x, active_wcs=None):
-    """Compute phasor RMS: base wave + WC waves (eq #5) via phasor superposition.
+    """Compute RMS from base wave + WC disturbance for current mode.
 
-    Returns RMS = √(P² + Q²) / √2, where P and Q are the accumulated
-    cos(ωt) and sin(ωt) coefficients from the base wave + all active WCs.
-
-    For modes with clean phasors (uniform, standing, quadrature): exact analytical.
-    For other modes: base RMS only (WC phasors not addable to non-monochromatic base).
+    Dispatches to the appropriate disturbance model based on WC_DISTURBANCE.
     """
     if active_wcs is None:
         active_wcs = wave_centers
 
-    # Check if mode supports phasor superposition with WCs
-    if BASE_WAVE_MODE in ("uniform", "standing", "quadrature"):
-        P, Q = _base_phasor(x)
+    if not active_wcs:
+        return compute_base_rms(x)
 
-        for wc in active_wcs:
-            r = np.abs(x - wc.x_am)
-            kr = k * r
-            w = _compute_weight(r)
+    # Only monochromatic modes support phasor-based disturbance
+    if BASE_WAVE_MODE not in ("uniform", "standing", "quadrature"):
+        return compute_base_rms(x)
 
-            # Phasor coefficients for eq #5 weighted partial standing wave:
-            # C_n = (w+1)·sin(kr)/kr  (cos ωt coefficient)
-            # S_n = (w-1)·cos(kr)/kr  (sin ωt coefficient)
-            with np.errstate(divide="ignore", invalid="ignore"):
-                C_n = np.where(
-                    kr < 1e-10, 2.0 * wc.amplitude, wc.amplitude * (w + 1.0) * np.sin(kr) / kr
-                )
-                S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (w - 1.0) * np.cos(kr) / kr)
+    if WC_DISTURBANCE == "additive":
+        return _compute_additive_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "multiplicative":
+        return _compute_multiplicative_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "absorber":
+        return _compute_absorber_rms(x, active_wcs)
+    elif WC_DISTURBANCE == "scattering":
+        return _compute_scattering_rms(x, active_wcs)
 
-            # Rotate by source_offset φ to shared cos(ωt)/sin(ωt) basis
-            cos_phi = np.cos(wc.phase)
-            sin_phi = np.sin(wc.phase)
-            P += C_n * cos_phi + S_n * sin_phi
-            Q += -C_n * sin_phi + S_n * cos_phi
-
-        return np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
-
-    # Fallback: base-only RMS for non-phasor modes
     return compute_base_rms(x)
 
 
@@ -546,7 +714,7 @@ def plot_sandbox():
 
     mode_name = BASE_WAVE_NAMES.get(BASE_WAVE_MODE, "Unknown")
     fig.suptitle(
-        f"OPENWAVE — Phase 1b: Base Wave + WC  [{mode_name}]",
+        f"OPENWAVE — Phase 1b  [{mode_name} + {WC_DISTURBANCE}]",
         fontsize=16,
         family="Monospace",
         y=0.98,

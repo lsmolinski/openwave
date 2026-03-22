@@ -410,7 +410,7 @@ The distinction matters because passive interactions create reflections that can
 
 ### Passive Options (M2-tested, re-validating in 1D)
 
-#### 🚧 Option A: Multiplicative (Energy Redistribution)
+#### ❌ Option A: Multiplicative (Energy Redistribution)
 
 WC modifies base wave amplitude via a position-dependent multiplier:
 
@@ -425,13 +425,22 @@ The spatial pattern is fundamentally different from additive — no sinc, just a
 
 **Physical interpretation**: WC absorbs base wave energy from surrounding field and concentrates it into its own standing wave core. The absorption creates a far-field energy deficit — the drainage pattern that generates force on other WCs.
 
-**M2 prior art**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic 3D fields. In 1D the cancellation is weaker (only left/right, not omnidirectional) — worth testing for validation.
+**M2 prior art**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic 3D fields.
+
+**1D Test results (`WC_DISTURBANCE = "multiplicative"`, `MULT_GAIN = 5.0`)**:
+
+- ✅ **Force direction**: 48/48 correct — opposite charge attracts 24/24, same charge repels 24/24. **No sinc flips at any separation** (0.5λ to 12λ). The smooth R(x) multiplier eliminates sinc nodes entirely
+- ✅ **Energy conservation**: ΣE_combined = ΣE_base (normalized by construction)
+- ❌ **Newton's 3rd law**: forces NOT equal — ratio ~1.5x consistently for opposite charge. Better than Phase 1a (~40x), but still asymmetric. Root cause: `R = 1 + gain·q·δ` is asymmetric — concentration (R > 1) peaks higher than depletion (R < 1) dips
+- ❌ **Emergence test: FAILS** — `R(x) = 1 + gain · cos(phase) · δ(r)` uses `q = cos(phase) = ±1` as a label on a smooth function. Same mechanism as Phase 1a (signed disturbance). Replacing `cos(phase)` with manual `+1` or `-1` gives identical results. Charge is imposed, not emergent from wave interference
+
+**Assessment**: multiplicative solves the sinc oscillation problem and conserves energy — two real advances over additive. But charge is still imposed via ±1 label on a smooth envelope (same limitation as Phase 1a). The correct force direction comes from the smooth R(x) shape (no sinc), not from emergent wave physics. Useful as a computational model (Coulomb with smooth envelope), but not force emergence.
 
 #### ❌ Option B: Normalized Additive — RULED OUT
 
 Scale combined RMS to preserve total energy: `RMS_conserved = RMS_combined · √(ΣE_base / ΣE_combined)`. Energy conserves perfectly, but normalization is a uniform scale factor → spatial pattern unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. Additive superposition with uniform normalization cannot change force behavior.
 
-#### 🚧 Option C: Scattering (Reflection/Re-emission)
+#### ❌ Option C: Scattering (Reflection/Re-emission)
 
 WC reflects the incoming base wave. Reflected wave interferes with the original base wave — but the reflected energy comes FROM the incident wave, not added on top. This is the LaFreniere model: WC reflects in-waves → out-waves. The interference between incident and reflected creates the energy redistribution.
 
@@ -439,15 +448,31 @@ WC reflects the incoming base wave. Reflected wave interferes with the original 
 
 **Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
 
-**M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields. 1D has only two directions — cancellation may be less complete.
+**M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields.
 
-#### 🚧 Option D: Local Absorber (Boundary Condition)
+**1D Test results (`WC_DISTURBANCE = "scattering"`, `SCATTER_FRACTION = 0.3`)**:
+
+- ❌ **Force direction**: opposite charge 12/24 attract, 12/24 repel — **random, no charge dependence**. Same charge 13/24 attract, 11/24 repel — also random. The scattered wave (sinc-shaped `sin(kr)/kr`) reintroduces the oscillatory interference pattern, producing force flips at λ/2 intervals
+- ❌ **Energy conservation**: ΣE < ΣE_base — energy not fully conserved. The absorption reduces base wave energy, and the scattered wave doesn't fully compensate
+- ❌ **Charge signal**: the scattered wave carries WC phase via phasor rotation, but the sinc oscillation of the re-emitted wave overwhelms the charge signal — same root cause as additive superposition
+
+**Assessment**: scattering reintroduces the sinc problem through the re-emitted wave. The scattered wave has `sin(kr)/kr` spatial structure, which creates the same oscillatory interference as additive WC waves. Absorbing from the base wave and re-emitting with sinc structure doesn't help — the sinc IS the problem. Confirms M2 findings: passive reflection/scattering fails.
+
+#### ❌ Option D: Local Absorber (Boundary Condition) — RULED OUT
 
 WC acts as a boundary condition in the wave field — a point where displacement is constrained (e.g., pinned to zero, or to a specific amplitude). The wave field adjusts around the constraint, creating concentration and depletion patterns. Similar to how a fixed point in a vibrating string creates standing wave patterns around it.
 
 **Physical interpretation**: the WC IS a point of wave reflection (Dirichlet BC = ψ=0 at WC position). Incoming waves reflect off the WC, creating standing waves near it and an amplitude shadow in the far field.
 
-**M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field. 1D test still worth running for weaker-cancellation validation.
+**M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field.
+
+**1D Test results (`WC_DISTURBANCE = "absorber"`, `ABSORBER_RADIUS_LAM = 0.5`)**:
+
+- ❌ **Force direction**: opposite charge 3/24 attract, 4/24 repel, 17/24 unclear. Same charge identical: 3/24 attract, 4/24 repel, 17/24 unclear. **No charge dependence at all** — forces are near-zero and don't distinguish between opposite and same charge
+- ❌ **Energy conservation**: ΣE < ΣE_base — energy drained from absorption zone, not redistributed
+- ❌ **Charge signal**: absorption profile is charge-independent (same Gaussian drain regardless of WC phase). The absorber creates symmetric energy depletion that doesn't carry any charge information
+
+**Assessment**: the absorber creates a local energy hole, but the hole is the same for both charge signs — no charge-dependent force. This is exactly what M2 found: passive boundary conditions in an isotropic field produce no net force because the disturbance is symmetric and charge-blind. Confirms M2 experiments 1–6 even in 1D with weaker cancellation.
 
 ---
 
