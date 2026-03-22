@@ -152,6 +152,15 @@ ELASTIC_PHASE_STRENGTH = 2.0  # max phase shift in radians at WC center
 # Requires BASE_WAVE_MODE = "quadrature" to work.
 ELASTIC_SPIN_FRACTION = 0.3  # fraction of L converted to T at WC center
 
+# --- Dual-Channel (Step 2d) parameters ---
+# Two π-apart base waves that cancel to zero net energy.
+# WC selectively couples to one channel based on charge:
+# q=+1 (positron) → disturbs channel 1 (concentrates energy)
+# q=-1 (electron) → disturbs channel 2 (concentrates energy)
+# The asymmetry breaks the cancellation locally → energy appears → force.
+# Works with "dual_uniform" or "dual_standing" base wave modes.
+DUAL_CHANNEL_GAIN = 3.0  # how much the WC concentrates energy in its channel
+
 
 def _compute_weight(r_am):
     """In-wave weight: 1 near WC (standing), 0 far away (traveling)."""
@@ -161,11 +170,13 @@ def _compute_weight(r_am):
 # ================================================================
 # Base Wave Mode Configuration
 # ================================================================
-# uniform    = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
-# standing   = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
-# stochastic = Stochastic (N-source):     N broadband random-phase waves, ~flat energy
-# quadrature = Quadrature Wave:  two offset standing waves, flat energy (at 90°)
-# laplacian  = Laplacian Propagation:     time-stepped wave equation, reflecting BC
+# uniform       = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
+# standing      = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
+# stochastic    = Stochastic (N-source):     N broadband random-phase waves, ~flat energy
+# quadrature    = Quadrature Wave:           two offset standing waves, flat energy (at 90°)
+# laplacian     = Laplacian Propagation:     time-stepped wave equation, reflecting BC
+# dual_uniform  = Dual-Channel Uniform:      two π-apart uniform waves, zero net energy
+# dual_standing = Dual-Channel Standing:     two π-apart standing waves, zero net energy
 
 BASE_WAVE_MODE = "quadrature"
 
@@ -175,6 +186,8 @@ BASE_WAVE_NAMES = {
     "quadrature": "Quadrature Wave",
     "stochastic": "Stochastic (N-source)",
     "laplacian": "Laplacian Propagation",
+    "dual_uniform": "Dual-Channel Uniform (π-apart)",
+    "dual_standing": "Dual-Channel Standing (π-apart)",
 }
 
 # --- Stochastic parameters ---
@@ -332,6 +345,18 @@ def _base_phasor(x):
         )
         Q = -A0_am * np.cos(k * x + DUAL_SPATIAL_OFFSET) * np.sin(DUAL_TEMPORAL_OFFSET)
         return P, Q
+
+    elif BASE_WAVE_MODE == "dual_uniform":
+        # Two π-apart uniform: ψ₁ = A₀·cos(ωt), ψ₂ = -A₀·cos(ωt)
+        # Net phasor: P = A₀ + (-A₀) = 0, Q = 0
+        # Zero net phasor — but the dual-channel disturbance operates on
+        # individual channels, not the net. See _compute_dual_channel_rms.
+        return np.zeros_like(x), np.zeros_like(x)
+
+    elif BASE_WAVE_MODE == "dual_standing":
+        # Two π-apart standing: ψ₁ = A₀·cos(kx)·cos(ωt), ψ₂ = -A₀·cos(kx)·cos(ωt)
+        # Net phasor: P = 0, Q = 0
+        return np.zeros_like(x), np.zeros_like(x)
 
     # For stochastic/laplacian, no clean phasor — fall back to base-only RMS
     return np.zeros_like(x), np.zeros_like(x)
@@ -632,18 +657,87 @@ def _compute_elastic_spin_rms(x, active_wcs):
     return np.sqrt(P**2 + Q**2) / np.sqrt(2.0)
 
 
+def _compute_dual_channel_rms(x, active_wcs):
+    """Step 2d: Dual-channel WC disturbance.
+
+    The base wave has two π-apart channels that cancel to zero net energy.
+    WCs selectively concentrate energy in ONE channel based on charge sign:
+    - q = +1 (positron): concentrates energy in channel 1
+    - q = -1 (electron): concentrates energy in channel 2
+
+    Each channel is tracked independently as a phasor.
+    The WC applies a smooth concentration δ(r) to its selected channel only.
+    Energy computed as per-channel sum: E = E_ch1 + E_ch2.
+
+    This creates asymmetric energy landscapes for opposite-charge WCs:
+    - Two +q WCs: both boost ch1 → constructive in ch1 → repel (energy hill between)
+    - Two -q WCs: both boost ch2 → constructive in ch2 → repel (same)
+    - +q and -q: one boosts ch1, other boosts ch2 → energy hills in DIFFERENT channels
+      → the hills don't interact in the same channel → attract? (energy valley between in each channel)
+
+    Requires BASE_WAVE_MODE = "dual_uniform" or "dual_standing".
+    """
+    if BASE_WAVE_MODE == "dual_uniform":
+        # Channel 1: A₀·cos(ωt), Channel 2: -A₀·cos(ωt)
+        P_ch1 = A0_am * np.ones_like(x)
+        Q_ch1 = np.zeros_like(x)
+        P_ch2 = -A0_am * np.ones_like(x)
+        Q_ch2 = np.zeros_like(x)
+    elif BASE_WAVE_MODE == "dual_standing":
+        # Channel 1: A₀·cos(kx)·cos(ωt), Channel 2: -A₀·cos(kx)·cos(ωt)
+        P_ch1 = A0_am * np.cos(k * x)
+        Q_ch1 = np.zeros_like(x)
+        P_ch2 = -A0_am * np.cos(k * x)
+        Q_ch2 = np.zeros_like(x)
+    else:
+        return compute_base_rms(x)
+
+    # WC concentrates energy in its selected channel
+    for wc in active_wcs:
+        r = np.abs(x - wc.x_am)
+        q = np.cos(wc.phase)  # +1 = channel 1, -1 = channel 2
+        delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)  # smooth 1/r concentration
+        boost = DUAL_CHANNEL_GAIN * delta
+
+        if q > 0:
+            # Positron: concentrate in channel 1
+            P_ch1 += A0_am * boost
+        else:
+            # Electron: concentrate in channel 2
+            P_ch2 += -A0_am * boost  # negative amplitude (same sign as ch2 base)
+
+    # Per-channel RMS, then energy-sum
+    rms_ch1 = np.sqrt(P_ch1**2 + Q_ch1**2) / np.sqrt(2.0)
+    rms_ch2 = np.sqrt(P_ch2**2 + Q_ch2**2) / np.sqrt(2.0)
+    rms_combined = np.sqrt(rms_ch1**2 + rms_ch2**2)
+
+    # Energy-conserving normalization
+    rms_base = compute_base_rms(x)
+    E_base = np.sum(rms_base**2)
+    E_combined = np.sum(rms_combined**2)
+    if E_combined > 0:
+        rms_combined *= np.sqrt(E_base / E_combined)
+
+    return rms_combined
+
+
 def compute_combined_rms(x, active_wcs=None):
     """Compute RMS from base wave + WC disturbance for current mode.
 
     Dispatches to the appropriate disturbance model based on WC_DISTURBANCE.
     Passive: additive, multiplicative, absorber, scattering
     Elastic: elastic_amp, elastic_phase, elastic_spin
+    Dual-channel: dual_channel (Step 2d)
     """
     if active_wcs is None:
         active_wcs = wave_centers
 
     if not active_wcs:
         return compute_base_rms(x)
+
+    # Dual-channel modes have their own disturbance
+    if BASE_WAVE_MODE in ("dual_uniform", "dual_standing"):
+        return _compute_dual_channel_rms(x, active_wcs)
 
     # Only monochromatic modes support phasor-based disturbance
     if BASE_WAVE_MODE not in ("uniform", "standing", "quadrature"):
@@ -721,6 +815,16 @@ def compute_base_displacement(x, t):
         ch1 = np.cos(k * x) * np.cos(omega * t)
         ch2 = np.cos(k * x + DUAL_SPATIAL_OFFSET) * np.cos(omega * t + DUAL_TEMPORAL_OFFSET)
         return A0_am * (ch1 + ch2)
+    elif BASE_WAVE_MODE == "dual_uniform":
+        # Two π-apart uniform waves: ψ₁ = A₀·cos(ωt), ψ₂ = A₀·cos(ωt+π) = -A₀·cos(ωt)
+        # Net displacement: ψ₁ + ψ₂ = 0 (perfect cancellation)
+        # But both channels exist — WCs can selectively disturb one
+        # Display shows net displacement (zero without WCs)
+        return np.zeros_like(x)
+    elif BASE_WAVE_MODE == "dual_standing":
+        # Two π-apart standing waves: ψ₁ = A₀·cos(kx)·cos(ωt), ψ₂ = -A₀·cos(kx)·cos(ωt)
+        # Net displacement: zero (perfect cancellation)
+        return np.zeros_like(x)
     elif BASE_WAVE_MODE == "laplacian":
         # Laplacian: return current simulation state
         if not _lap["initialized"]:
@@ -734,6 +838,8 @@ def compute_base_rms(x):
 
     For Quadrature: per-channel energy sum gives combined RMS.
     Energy is independent per channel — RMS_combined = √(RMS₁² + RMS₂²).
+    For dual-channel: each channel has energy, but they cancel in displacement.
+    Per-channel energy sum = A₀²/2 + A₀²/2 = A₀² → RMS = A₀/√2 (flat).
     For Laplacian: measured empirically from simulation.
     """
     if BASE_WAVE_MODE == "uniform":
@@ -754,6 +860,17 @@ def compute_base_rms(x):
         # For δs = π:   2cos² → A₀|cos(kx)| (NODES, like B but √2 larger)
         rms_sq = (A0_am**2 / 2.0) * (np.cos(k * x) ** 2 + np.cos(k * x + DUAL_SPATIAL_OFFSET) ** 2)
         return np.sqrt(rms_sq)
+    elif BASE_WAVE_MODE == "dual_uniform":
+        # Two π-apart uniform waves: each has RMS = A₀/√2
+        # Per-channel energy sum: E₁ + E₂ = 2 · (A₀/√2)² = A₀²
+        # Combined RMS = A₀ (flat, higher than single-channel because both contribute)
+        # But net displacement is zero — energy exists in the cancellation
+        return (A0_am / np.sqrt(2.0)) * np.ones_like(x)
+    elif BASE_WAVE_MODE == "dual_standing":
+        # Two π-apart standing waves: each has RMS = (A₀/√2)·|cos(kx)|
+        # Per-channel energy sum: same cos²(kx) for both → 2·(A₀²/2)·cos²(kx) = A₀²·cos²(kx)
+        # Combined RMS = A₀·|cos(kx)| — has nodes (same as standing but stronger)
+        return A0_am * np.abs(np.cos(k * x)) / np.sqrt(2.0)
     elif BASE_WAVE_MODE == "laplacian":
         # Laplacian: measured RMS from warmup
         if _lap["rms"] is None:

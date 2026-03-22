@@ -60,8 +60,8 @@
       - ❌ Option E (amplitude modulation): charge-blind — symmetric scaling, always repels 24/24
       - ❌ Option F (phase/λ warp): near-zero forces — rotation preserves RMS, no gradient. Requires variable-λ energy equation (Phase 1c) to produce force
       - ❌ Option G (L→T spin): **CHARGE SENSITIVE** — first model to distinguish charges. Opposite: 12/24 oscillates, same: 24/24 unclear. Quadrature proxy limited — needs true two-component displacement (Phase 1d)
-  - 🔶 **Step 2d**: Dual-channel base wave (π-apart) — two canceling waves, WCs break equilibrium selectively
-  - 🚧 **Step 2e**: Physics discussion and path decision — Phase 1b findings point toward Phase 1c (variable λ in energy) and/or Phase 1d (vector displacement for L→T spin). Evaluate which path first
+  - ✅ **Step 2d**: Dual-channel base wave (π-apart) — dual_uniform: charge-blind (always repels, per-channel energy symmetric). dual_standing: partial (12/24 oscillates). Both: perfect energy conservation + Newton's 3rd. Root cause: `E_ch1 + E_ch2` is symmetric w.r.t. which channel is boosted — needs cross-channel coupling (like L→T) to break symmetry
+  - 🔶 **Step 2e**: Physics discussion and path decision — Phase 1b findings point toward Phase 1c (variable λ in energy) and/or Phase 1d (vector displacement for L→T spin). Evaluate which path first
 
 - WRAP-UP
   - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field

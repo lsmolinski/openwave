@@ -382,7 +382,7 @@ Ported WC wave computation from v2 (equation #5 weighted partial standing wave +
 
 ---
 
-### 🔶 Step 2c: Non-Additive WC Disturbance Models
+### ✅ Step 2c: Non-Additive WC Disturbance Models
 
 Additive superposition (base + WC waves) is ruled out — it produces the same sinc oscillation regardless of base wave mode. WCs must warp the energy field non-additively (warping, disturbing, redistributing the base wave energy spatially).
 
@@ -554,11 +554,35 @@ See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full a
 
 ---
 
-### 🔶 Step 2d: Dual-Channel Base Wave (π-apart)
+### ✅ Step 2d: Dual-Channel Base Wave (π-apart) — TESTED
 
-Implement the dual-channel model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Applies to all base wave modes (uniform, standing, quadrature) — maybe there are two fundamental waves always canceling each other out, and WCs disturb that equilibrium, making the dual waves out of anti-phase. This asymmetry is what manifests as energy.
+Two π-apart base waves that cancel to zero net displacement. WCs selectively concentrate energy in ONE channel based on charge sign: `q=+1` boosts channel 1, `q=-1` boosts channel 2. Per-channel energy tracked independently (`E = E_ch1 + E_ch2`), energy-normalized to conserve total.
 
-Requires non-additive WC interaction from Step 2c — or may work as its own mechanism if the WC selectively couples to one channel.
+**Hypothesis**: two fundamental waves always canceling each other out. WCs disturb that equilibrium, making the dual waves out of anti-phase. This asymmetry is what manifests as energy. Opposite-charge WCs boost different channels → energy hills don't interact in the same channel → attract. Same-charge WCs boost the same channel → constructive → repel.
+
+**1D Test results (`dual_uniform` and `dual_standing` base modes)**:
+
+```text
+dual_uniform:
+  Opposite: 0/24 attract, 24/24 repel   → CHARGE BLIND
+  Same:     0/24 attract, 24/24 repel   → always repels regardless of charge
+  Energy: conserved (ratio 1.0000), Newton's 3rd: perfect (1.000)
+
+dual_standing:
+  Opposite: 12/24 attract, 12/24 repel  → PARTIAL (oscillates — sinc)
+  Same:     6/24 attract, 18/24 repel   → mostly repels
+  Energy: conserved (ratio 1.0000), Newton's 3rd: perfect (1.000)
+```
+
+**Analysis**:
+
+- **dual_uniform**: charge-blind — both charges produce the same energy landscape. The per-channel energy sum `E_ch1 + E_ch2` doesn't distinguish which channel was boosted because the RMS magnitude of both channels is symmetric (`|+A₀ + boost|² = |-A₀ - boost|²` after normalization). The smooth concentration creates the same energy peak regardless of channel → always repels from the peak
+- **dual_standing**: partially charge-sensitive — the sinc oscillation from `cos(kx)` interacts differently with each channel's boost, creating some charge dependence. But the effect is weak (12/24 oscillation for opposite, vs 18/24 repel for same). The standing wave's node structure adds spatial variation that the smooth concentration interacts with, but not enough to reliably distinguish charges
+- **Energy conservation and Newton's 3rd**: both PERFECT (1.0000 and 1.000) — the energy-normalizing approach works cleanly for dual-channel. The symmetric boost in each channel creates symmetric forces, unlike the ±1-labeled approaches
+
+**Root cause of charge-blindness**: the per-channel energy sum `RMS_ch1² + RMS_ch2²` is symmetric with respect to which channel is boosted. Boosting channel 1 by amount δ gives `(A+δ)² + A²`. Boosting channel 2 gives `A² + (A+δ)²`. Same total. The energy landscape doesn't distinguish which channel was disturbed — it only sees total energy, and total energy is channel-symmetric.
+
+**What would break this symmetry**: the two channels would need to interact DIFFERENTLY with each other — cross-channel interference where boosting ch1 at position x affects ch2 differently at position x than boosting ch2 at x affects ch1. This requires the channels to not be fully independent — some coupling between them, like the L→T conversion in Option G. The dual-channel concept may need to be combined with elastic disturbance (e.g., WC converts energy between channels, not just concentrates in one).
 
 ---
 
