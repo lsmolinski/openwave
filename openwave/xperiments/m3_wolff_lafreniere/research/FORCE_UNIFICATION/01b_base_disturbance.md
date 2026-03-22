@@ -413,6 +413,8 @@ The spatial pattern is fundamentally different from additive — no sinc, just a
 
 **Physical interpretation**: WC absorbs base wave energy from surrounding field and concentrates it into its own standing wave core. The absorption creates a far-field energy deficit — the drainage pattern that generates force on other WCs.
 
+⚠️ **M2 prior art**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic 3D fields. In 1D the cancellation is weaker (only left/right, not omnidirectional) — worth testing for validation.
+
 #### ❌ Option B: Normalized Additive — RULED OUT
 
 Scale combined RMS to preserve total energy: `RMS_conserved = RMS_combined · √(ΣE_base / ΣE_combined)`. Energy conserves perfectly, but normalization is a uniform scale factor → spatial pattern unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. Additive superposition with uniform normalization cannot change force behavior.
@@ -425,37 +427,163 @@ WC reflects the incoming base wave. Reflected wave interferes with the original 
 
 **Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
 
+⚠️ **M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields. 1D has only two directions — cancellation may be less complete.
+
 #### 🚧 Option D: Local Absorber (Boundary Condition)
 
 WC acts as a boundary condition in the wave field — a point where displacement is constrained (e.g., pinned to zero, or to a specific amplitude). The wave field adjusts around the constraint, creating concentration and depletion patterns. Similar to how a fixed point in a vibrating string creates standing wave patterns around it.
 
 **Physical interpretation**: the WC IS a point of wave reflection (Dirichlet BC = ψ=0 at WC position). Incoming waves reflect off the WC, creating standing waves near it and an amplitude shadow in the far field.
 
+⚠️ **M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field. 1D test still worth running for weaker-cancellation validation.
+
+#### 🚧 Option E: L→T Conversion (Spin — from M2 Spin Theory)
+
+WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem.
+
+**Requires**: two-component displacement (L + T) — either extend 1D engine with a second displacement track, or use the quadrature model's two channels as L/T proxy. Connects directly to Phase 1d (vector waves).
+
+See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full analysis.
+
 ---
 
 ### 🚧 Step 2d: Dual-Channel Base Wave (π-apart)
 
-Implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Requires non-additive WC interaction from Step 2c.
+Implement the dual-channel model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Applies to all base wave modes (uniform, standing, quadrature) — maybe there are two fundamental waves always canceling each other out, and WCs disturb that equilibrium, making the dual waves out of anti-phase. This asymmetry is what manifests as energy.
 
-Dual-Channel Base Wave feeding WCs: uniform, standing, quadrature
-maybe dual-chanel waves π apart, also applies to standing waves not only uniform waves. maybe there are two fundamental waves always canceling each other out but wave centers or matter can disturb that equilibrium and make the dual waves out of anti-phase and this is what manifests as energy
+Requires non-additive WC interaction from Step 2c — or may work as its own mechanism if the WC selectively couples to one channel.
 
 ---
 
 ### 🚧 Step 2e: Deeper Physics Discussion and Contender Selection
 
-**3 remaining contenders** (node-locking eliminated):
+**3 remaining base wave contenders** (node-locking eliminated):
 
-- **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection). Traveling wave direction flips with temporal offset sign → possible charge/spin mechanism
+- **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection + L/T duality). Traveling wave direction flips with temporal offset sign → possible charge/spin mechanism. The two channels may represent L and T components — connecting directly to M2's spin theory solution
 - **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase at particle scale (100λ average-out argument)
 - **Uniform + dual phase** — zero-energy vacuum from π-apart waves, WCs asymmetrically perturb one phase depending on charge
+
+**WC interaction models** (informed by M2 prior art):
+
+- Options A/C/D: test in 1D for validation (weaker cancellation than 3D — may show effects invisible in M2). If they fail even in 1D, definitively ruled out
+- Option E (L→T spin): the M2 research's proposed solution. Requires two-component displacement — could use quadrature channels as L/T proxy, or extend engine with second displacement track
 
 **Discussion topics**:
 
 - Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
 - Evaluate standing wave at particle scale (100λ) — does the node structure matter or average out?
-- Compare force behavior across the 3 base wave contenders with non-additive WC interaction — which produces the best charge-dependent force direction? (Additive was identical across all 3 — non-additive may differentiate them)
-- Compare non-additive WC interaction models (A, C, D) — which produces energy-conserving force with correct charge-dependent direction?
-- Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation blocker?
+- Compare force behavior across base wave contenders with non-additive WC interaction — which produces the best charge-dependent force direction?
+- Compare non-additive WC interaction models (A, C, D, E) — which produces energy-conserving force with correct charge-dependent direction?
+- Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation / isotropic cancellation blocker?
+- Does the 1D sandbox have a fundamental limitation for this problem (scalar can't represent L/T), or can the quadrature two-channel approach serve as a sufficient proxy?
 
-## M2 Research Prior-Art Findings
+## ⚠️ M2 Research Prior-Art Findings
+
+The M2 (Laplacian propagation) engine already explored exactly what Phase 1b is attempting — creating emergent standing waves around wave centers in a base wave field — and documented 12 experiments with critical findings. The M2 research is directly relevant because it tested WC interactions on a real Laplacian-propagated base wave (the same standing wave field we validated in Step 1).
+
+**Source files**: `m2_laplace_propagation/research/13_wave_center.md` (12 experiments), `14_spin_theory.md` (proposed solution), `wave_engine.py` (commented WC interaction code)
+
+### 12 WC Interaction Experiments — Summary
+
+#### Experiments 1–7: Boundary conditions and reflections — ALL FAILED in isotropic fields
+
+| # | Approach | Result |
+| --- | --- | --- |
+| 1 | Single voxel Dirichlet (ψ=0) | Black dot visible, no standing waves. Too small relative to λ |
+| 2 | Single voxel signal inversion | Tiny disruption, no standing waves. Same size problem |
+| 3 | Spherical Dirichlet (r=8 voxels) | Black sphere visible, waves appear to ignore it. Reflections cancel |
+| 4 | Spherical Neumann (∂ψ/∂n=0) | Same as Dirichlet — no standing waves |
+| 5 | Cubic Dirichlet (16³ voxels) | During charging (directional waves): visible wake/shadow. After stabilization (isotropic): no visible effect |
+| 6 | Cubic Neumann | Same as cubic Dirichlet — no standing waves in isotropic field |
+| 7 | Phase-locking single point (ψ = A·cos(ωt)) | Something happens but no clear standing waves |
+
+#### Experiment 8: Kinematic test — SUCCESS (but not emergent)
+
+Directly enforced `ψ(r,t) = 2A·cos(ωt)·cos(kr)` within 2λ radius. Clear concentric standing wave rings visible — confirms visualization works. This is forced/kinematic, not emergent from physics.
+
+#### Experiments 9–12: Lens/amplification models — unstable or ineffective
+
+| # | Approach | Result |
+| --- | --- | --- |
+| 9 | Multiplicative amplification at WC | Unstable — exponential feedback, explodes even at 1.37× |
+| 10 | Neighbor average × amplification | Unstable — explodes at 3.0×, nothing at 2.5× |
+| 11 | Tracker-based amplification | Unstable — explodes at 2.5×. Tracker corrupted by amplified values |
+| 12 | Clamp-based amplitude floor | Stable, creates amplitude peak at WC, but no clear standing waves |
+
+### The Critical Blocker: Isotropic Cancellation
+
+> "In isotropic field, reflections from all directions cancel out in far field. WC becomes invisible."
+
+This is the M2 equivalent of the sinc oscillation problem in M3/1D. In an isotropic (omnidirectional) wave field:
+
+- Waves arrive from ALL directions equally at every point
+- A reflector at any point reflects what's there back where it came from
+- But there's always another wave coming from the opposite direction
+- The reflected wave is countered by the wave from the opposite side
+- Net effect: **zero change to the field structure**
+
+Every passive WC interaction (reflect, absorb, clamp, drain, boundary condition) fails for the same reason. The WC creates a local disturbance, but the isotropic field immediately fills it back in from all sides. The WC becomes "invisible" to the field.
+
+**Key observation from experiment 5** (cubic Dirichlet): the cube creates a visible wake/shadow during the charging phase (when waves are directional), but the effect disappears completely after stabilization (when waves become isotropic). This proves that the cancellation is specifically an **isotropic symmetry** problem, not a general wave physics problem.
+
+### M2 Proposed Solution: Spin as L→T Conversion (14_spin_theory.md)
+
+The M2 research proposed that the missing physics is **spin — the conversion of longitudinal waves to transverse waves** at the wave center. This is the key insight:
+
+**Why L→T conversion breaks the symmetry:**
+
+1. Incoming waves arrive from all directions — **pure longitudinal** (compression/rarefaction)
+2. At the WC, some longitudinal amplitude converts to transverse amplitude
+3. Outgoing waves are **mixed longitudinal + transverse** (reduced L, increased T)
+4. The transverse component is a **NEW type of wave** that wasn't in the incoming field
+5. Because in ≠ out (different wave character), the **symmetry that caused cancellation is broken**
+6. Standing waves can now form from the L/T interference pattern
+
+**Energy conservation**: `E ∝ ampL² + ampT² = constant`. The conversion redistributes energy between modes without creating or destroying it. The conversion ratio may be related to the **fine-structure constant α** (L/T coupling strength).
+
+**Physical basis (Milo Wolff)**: spin is not the particle spinning like a ball — the **wave character is being transformed**. The in-wave must undergo a 720° phase shift (spherical rotation property of 3D space) to become the out-wave. This rotation is spin. Only two directions are possible (CW or CCW) → electron vs positron. Spin is a property of **3D space**, not of the particle itself — explaining why all charged particles have the same spin value.
+
+**Connection to electromagnetism**: if L→T conversion is the mechanism, then:
+
+- **Electric field** ← Longitudinal wave component
+- **Magnetic field** ← Transverse wave component
+- **90° geometric offset** because L and T are perpendicular by definition
+- **Same phase** because they come from the same wave
+
+This would explain why complex numbers are required in quantum mechanics: **real part = L, imaginary part = T**. The Schrödinger equation naturally encodes L/T duality. Probability `|ψ|² = ψ_real² + ψ_imaginary²` is the total energy from both components.
+
+### M2 Spin Code (Commented in wave_engine.py)
+
+Three spin functions were implemented but never worked correctly:
+
+- **`interact_wc_spinUP()`**: phase-shifts psiL by +90° (CW), creates psiT = α × psiL (fine structure ratio). Three-step mechanism: compute phase-shifted L, create T component, output shifted L
+- **`interact_wc_spinUP2()`**: same as spinUP at different WC position
+- **`interact_wc_spinDOWN()`**: phase-shifts psiL by -90° (CCW), negated T component. Opposite spin direction → positron
+
+Other tested interactions (all commented out): `interact_wc_swap` (direction swap), `interact_wc_lens` (amplification), `interact_wc_min` (amplitude floor/clamp), `interact_wc_drain` (50% amplitude reduction), `interact_wc_newmann` (Neumann BC), `interact_wc_dirichlet` (Dirichlet BC), `interact_wc_signal` (phase inversion).
+
+### Implications for Phase 1b Step 2c
+
+**Options A, C, D may face the same isotropic cancellation problem that M2 documented:**
+
+- **Option A (multiplicative)**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic fields. In 1D the "isotropic cancellation" manifests differently (left/right instead of omnidirectional), so results may differ — worth testing for validation
+- **Option C (scattering)**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic fields. Again, 1D has only two directions (left/right), not omnidirectional — the cancellation may be less complete
+- **Option D (boundary condition)**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann). Failed in 3D isotropic field
+
+**The 1D vs 3D difference is important**: in 3D, isotropic means waves from ALL directions cancel reflections. In 1D, "isotropic" means only left + right — two directions, not infinite. This means 1D tests of Options A/C/D might show effects that are invisible in 3D due to stronger cancellation. Testing in 1D serves as a **weaker-cancellation validation** — if it fails even in 1D, it definitely fails in 3D. If it works in 1D, it may still fail in 3D.
+
+**The M2 research points toward L→T conversion (spin) as the mechanism that breaks isotropic symmetry.** This connects directly to:
+
+- The **quadrature model** — the two 90°-offset channels may represent L and T components. The base wave already encodes this duality
+- **Complex sinusoids** — real = L, imaginary = T. This is why wave equations require complex numbers
+- **Phase 1d (vector waves)** — full vector displacement naturally captures L and T as separate components
+- The **"spinning in place" idea** — a standing wave that rotates phase instead of oscillating linearly requires two orthogonal components (L + T)
+
+### Recommended Path Forward
+
+Complete Step 2c testing (Options A/C/D) for validation — even if M2 suggests they'll fail, the 1D test has weaker cancellation and may reveal different behavior. Document results either way. Then evaluate whether to:
+
+1. **Stay in 1D scalar** with the dual-channel (quadrature) model as a proxy for L/T — test if WCs can selectively disturb one channel
+2. **Extend to 1D+1D (two-component displacement)** — add a transverse displacement track to the 1D engine, enabling L→T conversion at WCs without full 3D
+3. **Move to Phase 1c (non-linear)** — variable λ(r) may break the sinc pattern independently of the L/T mechanism
+4. **Move to Phase 1d (vector waves)** — full 3D vector displacement with spin, requires M4 engine

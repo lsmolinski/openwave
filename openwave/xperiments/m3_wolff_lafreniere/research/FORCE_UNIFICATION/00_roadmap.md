@@ -50,9 +50,9 @@
 - Step 2 — WC disturbance and contender selection:
   - ✅ **Step 2a**: Node-locking charge hypothesis — FALSIFIED. Charge as spatial property (even/odd node position) does not predict force direction. 7/30 match (23%). Actual force has 2λ periodicity, not λ/2. Even separations produce net translation, not repulsion
   - ✅ **Step 2b**: Migrate WC disturbance from v2 to v3 — COMPLETED, additive model ruled out. Base wave + WC additive superposition produces same sinc oscillation as v2. Energy normalization (Option B) conserves ΣE but doesn't change spatial pattern → forces unchanged. WCs must warp the energy field non-additively (reflection, scattering, multiplicative)
-  - 🔶 **Step 2c**: Non-additive WC disturbance models — Option B (normalized additive) ruled out. Testing: Option A (multiplicative redistribution), Option C (scattering/reflection), Option D (local absorber/boundary condition)
-  - [ ] **Step 2d**: Dual-Channel Base Wave (π-apart) — requires non-additive WC interaction from Step 2c
-  - [ ] **Step 2e**: Deeper physics discussion — compare non-additive models, quadrature direction as charge/spin in 3D, contender selection
+  - 🔶 **Step 2c**: Non-additive WC disturbance models — Option B (normalized additive) ruled out. Testing: Option A (multiplicative), C (scattering), D (boundary condition), E (L→T spin). M2 prior art: options A/C/D failed in 3D isotropic fields due to cancellation — 1D test has weaker cancellation, worth validating. Option E (spin/L→T) is M2's proposed solution, requires two-component displacement
+  - [ ] **Step 2d**: Dual-channel base wave (π-apart) — two canceling waves, WCs break equilibrium selectively
+  - [ ] **Step 2e**: Deeper physics discussion — compare non-additive models (A/C/D/E), quadrature as L/T proxy, 1D scalar limitations, contender selection, decide path to Phase 1c or 1d
 
 - WRAP-UP
   - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
