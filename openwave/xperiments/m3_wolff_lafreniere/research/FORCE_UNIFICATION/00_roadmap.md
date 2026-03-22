@@ -55,9 +55,9 @@
     - ❌ Option B (normalized additive): ruled out — uniform scaling, no spatial change
     - ❌ Option C (scattering): 12/24 random — scattered sinc wave reintroduces oscillation. Confirms M2
     - ❌ Option D (absorber): 3/24 unclear, charge-blind — symmetric drain, no charge info. Confirms M2
-    - 🚧 Option E (L→T spin): elastic, requires two-component displacement
+    - 🚧 Option E (amplitude modulation): elastic, smooth scaling on displacement
     - 🚧 Option F (phase/λ warp): elastic, connects to Phase 1c variable λ
-    - 🚧 Option G (amplitude modulation): elastic, smooth scaling on displacement
+    - 🚧 Option G (L→T spin): elastic, requires two-component displacement
   - 🚧 **Step 2d**: Dual-channel base wave (π-apart) — two canceling waves, WCs break equilibrium selectively
   - 🚧 **Step 2e**: Deeper physics discussion — compare passive vs elastic models, quadrature as L/T proxy, spin as elastic disturbance, 1D scalar limitations, contender selection, decide path to Phase 1c or 1d
 

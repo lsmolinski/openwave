@@ -478,15 +478,20 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 ### Elastic Options (NOT tested in M2 — new territory)
 
-#### 🚧 Option E: L→T Conversion (Spin — from M2 Spin Theory)
+#### 🚧 Option E: Amplitude Modulation (Smooth Elastic Scaling)
 
-WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem. M2 attempted implementation (`interact_wc_spinUP/DOWN`) but it "never worked correctly" in 3D — the concept was right but execution needs revisiting.
+WC smoothly scales the wave amplitude as it passes through — not a hard clamp or drain (passive), but a **gradual, position-dependent amplitude envelope** that the wave acquires by traversing the WC region:
 
-**Requires**: two-component displacement (L + T) — either extend 1D engine with a second displacement track, or use the quadrature model's two channels as L/T proxy. Connects directly to Phase 1d (vector waves).
+```text
+ψ_out(x) = ψ_in(x) · M(r)
+where M(r) = smooth function: M(0) > 1 (concentration), M(∞) → 1 (undisturbed)
+```
 
-**Connection to spin**: this IS the physical mechanism behind spin. The wave undergoes a character transformation (L→T) at the WC — Wolff's 720° spherical rotation. CW rotation = electron, CCW = positron. The "spinning" is the wave mode conversion, not physical rotation of matter.
+Different from Option A (multiplicative on RMS) because this operates on the **displacement field directly**, not just the envelope. The wave itself is modulated — peaks grow near WC, shrink far away — and the modulation pattern propagates outward with the wave.
 
-See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full analysis.
+**Energy conservation**: `∫M²(r)·ψ²dx = ∫ψ²dx` if M is properly shaped. The concentrated energy near WC comes from depletion in the far field.
+
+**Connection to standing wave formation**: if M(r) has the right spatial profile (peaked at WC with 1/r decay), the modulated wave creates an energy landscape that mimics the standing wave core of a particle — energy concentrated at center, draining outward.
 
 #### 🚧 Option F: Phase Warping (Elastic Phase Disturbance)
 
@@ -503,20 +508,15 @@ where Δφ(r) is a smooth function of distance from WC
 
 **Implementation in 1D**: modify the phasor phase computation to use `∫k(r')dr'` instead of `kr` (WKB approach). The wavelength change creates energy gradients because `E ∝ (A/λ)²` — shorter λ = higher energy density. Already documented in the Yee & Hauger wavelength shells research.
 
-#### 🚧 Option G: Amplitude Modulation (Smooth Elastic Scaling)
+#### 🚧 Option G: L→T Conversion (Spin — from M2 Spin Theory)
 
-WC smoothly scales the wave amplitude as it passes through — not a hard clamp or drain (passive), but a **gradual, position-dependent amplitude envelope** that the wave acquires by traversing the WC region:
+WC converts incoming longitudinal waves into outgoing longitudinal + transverse. The transverse component is NEW (not in the incoming field) → breaks isotropic cancellation symmetry. This is the M2 research's proposed solution to the cancellation problem. M2 attempted implementation (`interact_wc_spinUP/DOWN`) but it "never worked correctly" in 3D — the concept was right but execution needs revisiting.
 
-```text
-ψ_out(x) = ψ_in(x) · M(r)
-where M(r) = smooth function: M(0) > 1 (concentration), M(∞) → 1 (undisturbed)
-```
+**Requires**: two-component displacement (L + T) — either extend 1D engine with a second displacement track, or use the quadrature model's two channels as L/T proxy. Connects directly to Phase 1d (vector waves).
 
-Different from Option A (multiplicative on RMS) because this operates on the **displacement field directly**, not just the envelope. The wave itself is modulated — peaks grow near WC, shrink far away — and the modulation pattern propagates outward with the wave.
+**Connection to spin**: this IS the physical mechanism behind spin. The wave undergoes a character transformation (L→T) at the WC — Wolff's 720° spherical rotation. CW rotation = electron, CCW = positron. The "spinning" is the wave mode conversion, not physical rotation of matter.
 
-**Energy conservation**: `∫M²(r)·ψ²dx = ∫ψ²dx` if M is properly shaped. The concentrated energy near WC comes from depletion in the far field.
-
-**Connection to standing wave formation**: if M(r) has the right spatial profile (peaked at WC with 1/r decay), the modulated wave creates an energy landscape that mimics the standing wave core of a particle — energy concentrated at center, draining outward.
+See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for full analysis.
 
 ---
 
