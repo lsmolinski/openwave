@@ -392,7 +392,7 @@ For the base wave to matter, WCs must interact with it NON-additively — throug
 
 - **Quadrature**: WCs tap into one channel direction (left/right traveling wave → charge sign?)
 - **Standing wave**: WCs as boundary conditions or scattering centers within the standing wave field
-- **Uniform**: add π-apart second wave, WCs disturb one phase depending on charge (→ Step 2c)
+- **Uniform**: add π-apart dual-channel wave, WCs disturb one channel depending on charge (→ Step 2c)
 
 **WC disturbance mechanisms to investigate**: reflection/scattering of base wave, channel-selective disturbance, boundary condition at WC position, radial disturbance expansion, standing wave formation (nλ core, radius = K²λ), energy concentration near WC, energy deficit in far field
 
@@ -433,9 +433,12 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 ---
 
-### 🚧 Step 2d: Uniform Dual-Phase (π-apart)
+### 🚧 Step 2d: Dual-Channel Base Wave (π-apart)
 
 Implement the dual-phase uniform model: two π-apart base waves that sum to zero energy. WCs disturb one phase or the other depending on charge sign. Requires non-additive WC interaction from Step 2c.
+
+Dual-Channel Base Wave feeding WCs: uniform, standing, quadrature
+maybe dual-chanel waves π apart, also applies to standing waves not only uniform waves. maybe there are two fundamental waves always canceling each other out but wave centers or matter can disturb that equilibrium and make the dual waves out of anti-phase and this is what manifests as energy
 
 ---
 
@@ -454,3 +457,5 @@ Implement the dual-phase uniform model: two π-apart base waves that sum to zero
 - Compare force behavior across the 3 base wave contenders with non-additive WC interaction — which produces the best charge-dependent force direction? (Additive was identical across all 3 — non-additive may differentiate them)
 - Compare non-additive WC interaction models (A, C, D) — which produces energy-conserving force with correct charge-dependent direction?
 - Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation blocker?
+
+## M2 Research Prior-Art Findings

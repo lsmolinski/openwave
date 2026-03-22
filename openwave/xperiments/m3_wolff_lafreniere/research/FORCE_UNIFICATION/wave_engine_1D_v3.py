@@ -75,7 +75,7 @@ def snap_to_grid(pos):
 TRANSITION_LAM = 1.25  # standing wave region in wavelengths
 WEIGHT_POWER = 8  # sharpness of standing → traveling transition
 SEPARATION_STEP = 0.5  # step size for separation slider (in wavelength)
-DISP_SCALE = 0.3  # y-axis scale for displacement
+DISP_SCALE = 0.5  # y-axis scale for displacement
 
 
 class WaveCenter:
@@ -106,7 +106,7 @@ def _compute_weight(r_am):
 # uniform    = Uniform Oscillation:       ψ = A₀·cos(ωt), flat energy
 # standing   = Standing Wave:             ψ = A₀·cos(kx)·cos(ωt), nodes at λ/2
 # stochastic = Stochastic (N-source):     N broadband random-phase waves, ~flat energy
-# quadrature = Dual-Phase Standing Wave:  two offset standing waves, flat energy (at 90°)
+# quadrature = Quadrature Wave:  two offset standing waves, flat energy (at 90°)
 # laplacian  = Laplacian Propagation:     time-stepped wave equation, reflecting BC
 
 BASE_WAVE_MODE = "quadrature"
@@ -114,7 +114,7 @@ BASE_WAVE_MODE = "quadrature"
 BASE_WAVE_NAMES = {
     "uniform": "Uniform Oscillation",
     "standing": "Standing Wave",
-    "quadrature": "Dual-Phase Standing Wave",
+    "quadrature": "Quadrature Wave",
     "stochastic": "Stochastic (N-source)",
     "laplacian": "Laplacian Propagation",
 }
@@ -381,7 +381,7 @@ def compute_base_displacement(x, t):
         temporal = np.cos(_stochastic_omega * t)
         return _stochastic_amp * np.sum(_stochastic_spatial * temporal[:, None], axis=0)
     elif BASE_WAVE_MODE == "quadrature":
-        # Dual-phase: two standing wave channels with spatial + temporal offsets
+        # Quadrature: two standing wave channels with spatial + temporal offsets
         # Channel 1: A₀ · cos(kx) · cos(ωt)
         # Channel 2: A₀ · cos(kx + δs) · cos(ωt + δt)
         # Displayed displacement is the field sum (what would be measured)
@@ -399,7 +399,7 @@ def compute_base_displacement(x, t):
 def compute_base_rms(x):
     """Compute base wave RMS envelope for current mode (no WCs).
 
-    For dual-phase (quadrature): per-channel energy sum gives combined RMS.
+    For Quadrature: per-channel energy sum gives combined RMS.
     Energy is independent per channel — RMS_combined = √(RMS₁² + RMS₂²).
     For Laplacian: measured empirically from simulation.
     """
