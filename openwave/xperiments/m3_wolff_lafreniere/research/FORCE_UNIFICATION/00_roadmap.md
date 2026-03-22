@@ -58,36 +58,41 @@
       - ❌ Option D (absorber): charge-blind, symmetric drain
     - Elastic (new territory, NOT in M2):
       - ❌ Option E (amplitude modulation): charge-blind — symmetric scaling, always repels 24/24
-      - ❌ Option F (phase/λ warp): near-zero forces — rotation preserves RMS, no gradient. Requires variable-λ energy equation (Phase 1c) to produce force
-      - ❌ Option G (L→T spin): **CHARGE SENSITIVE** — first model to distinguish charges. Opposite: 12/24 oscillates, same: 24/24 unclear. Quadrature proxy limited — needs true two-component displacement (Phase 1d)
+      - ❌ Option F (phase/λ warp): near-zero forces — rotation preserves RMS, no gradient. Requires variable-λ energy equation (Phase 1d) to produce force
+      - ❌ Option G (L→T spin): **CHARGE SENSITIVE** — first model to distinguish charges. Opposite: 12/24 oscillates, same: 24/24 unclear. Quadrature proxy limited — needs true two-component displacement (Phase 1c)
   - ✅ **Step 2d**: Dual-channel base wave (π-apart) — dual_uniform: charge-blind (always repels, per-channel energy symmetric). dual_standing: partial (12/24 oscillates). Both: perfect energy conservation + Newton's 3rd. Root cause: `E_ch1 + E_ch2` is symmetric w.r.t. which channel is boosted — needs cross-channel coupling (like L→T) to break symmetry
-  - 🔶 **Step 2e**: Physics discussion and path decision — Phase 1b findings point toward Phase 1c (variable λ in energy) and/or Phase 1d (vector displacement for L→T spin). Evaluate which path first
+  - ✅ **Step 2e**: Physics discussion and path decision — COMPLETED. 10 WC models tested: only L→T spin (Option G) distinguishes charges. 1D scalar sandbox has fundamental limitation (can't represent true L/T). Quadrature confirmed as strongest base wave (L/T duality). Path: Phase 1c first (vector displacement for L→T spin), then 1d (variable λ). Both converge into one solution
 
-- WRAP-UP
-  - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
-  - [ ] Determine how WC phase affects far-field drainage pattern (NOT via ±1 sign — mechanism must be discovered)
-  - [ ] Test force emergence: drainage from WC1 disturbs WC2 → energy gradient → F = -∇E
-  - [ ] Validate against Coulomb reference (direction + 1/r² scaling)
+> **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### [PHASE 1c: Non-Linear Wave Equations (1D)](01c_non_linear.md#phase-1c-non-linear-wave-equations)
+### [PHASE 1c: Vector Wave Force (M4 displacement direction)](01c_vector_wave.md#phase-1c-vector-wave-force)
 
-- [ ] Implement variable λ(r) in 1D sandbox (Yee & Hauger discrete wavelength shells, WKB phase integral)
+> **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement. Recommended to tackle FIRST.
+
+- [ ] Extend 1D sandbox with two-component displacement (ψ_L + ψ_T) — independent L and T fields
+- [ ] Implement L→T spin conversion at WC: charge-dependent direction (CW/CCW), energy-conserving `E_L + E_T = const`
+- [ ] Test force from independent L/T energy: `E = E_L + E_T = ρV(f·A_L)² + ρV(f·A_T)²`
+- [ ] Re-test elastic spin (Option G) with true independent components — does sinc oscillation break?
+- [ ] Revisit M2 spin code (`interact_wc_spinUP/DOWN`) with improved understanding
+- [ ] Test per-component amplitude (A_L, A_T separately, not collapsed to |A|)
+- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
+- [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
+- [ ] Evaluate "one force, different directions" — F = -∇E projected: longitudinal → electric, transverse → magnetic, density deficit → gravitational
+- [ ] Combine with Phase 1d variable λ(r) for the converged solution
+
+### [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+
+> **From Phase 1b**: elastic phase warp (Option F) produces zero force because `E = ρV(fA)²` uses constant f — can't see λ variation. Phase 1d must implement `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients. Converges with Phase 1c.
+
+- [ ] Implement variable λ(r) in energy equation: `E = ρV(c·A/λ(r))²` — the `∇λ` force term
+- [ ] Implement λ(r) profile from Yee & Hauger discrete wavelength shells, WKB phase integral
 - [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
 - [ ] Test Smoliński Ψ³ cubic non-linearity (NLS soliton stabilizer — F(Ψ, ε_G, |ε_M|, N_ν))
 - [ ] Test F = -∇E with spatially variable ρ(x), f(x), A(x) — all three gradients contributing
 - [ ] Evaluate Smoliński Push-out Operator P̂Φ = -∇·(η_stat/η_soliton)∇Φ as variable-ρ force formalization
 - [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
+- [ ] Re-test elastic phase warp (Option F) with variable-λ energy equation
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
-
-### [PHASE 1d: Vector Wave Force (M4 displacement direction)](01d_vector_wave.md#phase-1d-vector-wave-force)
-
-- [ ] Extend 1D sandbox with vector displacement (2D: x + y components)
-- [ ] Compute divergence (∇·ψ), curl, or energy flux from vector field
-- [ ] Test whether signed vector quantities (divergence, flux direction) recover charge-sign without oscillatory ambiguity
-- [ ] Test per-component amplitude (A_x, A_y, A_z separately, not collapsed to |A|)
-- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
-- [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
-- [ ] Evaluate "one force, different directions" — F = -∇E projected: longitudinal → electric, transverse → magnetic, density deficit → gravitational
 
 ## [PHASE 2: Electric Force — NEAR-FIELD (1D Sandbox only)](02_electric_nearfield.md)
 
@@ -100,7 +105,7 @@
 
 ## [PHASE 3: Electric Force — 3D Validation (Taichi, port from 1D)](03_electric_3D.md)
 
-> **Conditional scheduling**: Ports validated 1D results from Phase 1c (non-linear) and/or Phase 1d (vector) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
+> **Conditional scheduling**: Ports validated 1D results from  Phase 1c (vector) and/or Phase 1d (non-linear) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
 M3 SCALAR:
 

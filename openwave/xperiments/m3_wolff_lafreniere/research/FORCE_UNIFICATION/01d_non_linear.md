@@ -1,4 +1,4 @@
-# PHASE 1c: Non-Linear Wave Equations (1D)
+# PHASE 1d: Non-Linear Wave Equations
 
 Variable λ(r), ρ(x), Ψ³; breaks sinc periodicity while keeping genuine wave interference
 
@@ -30,7 +30,7 @@ Computing F = -∇E means these additional variables are automatically included 
 
 ---
 
-## Findings from Phase 1b Step 2c (hints for Phase 1c implementation)
+## Findings from Phase 1b Step 2c (hints for Phase 1d implementation)
 
 Phase 1b tested elastic phase warping (Option F) — a charge-dependent phase shift `Δφ(r) = q · strength · δ(r)` applied to the base wave phasor at each WC. The phase warp is equivalent to local λ variation: `Δφ = ∫Δk(r')dr'`.
 
@@ -38,7 +38,7 @@ Phase 1b tested elastic phase warping (Option F) — a charge-dependent phase sh
 
 **Root cause**: the current energy formula `E = ρV(fA)²` uses constant f (and therefore constant λ). Phase warping changes the wave's spatial phase structure but the energy formula doesn't "see" λ variation — it only sees amplitude A. The phase disturbance is physically real (λ varies near WC), but the energy equation is blind to it.
 
-**What Phase 1c needs to fix**: make λ a spatial variable in the energy equation: `E = ρV(c·A/λ(r))²`. When λ(r) varies near the WC (shorter = denser = more energy), the energy gradient becomes:
+**What Phase 1d needs to fix**: make λ a spatial variable in the energy equation: `E = ρV(c·A/λ(r))²`. When λ(r) varies near the WC (shorter = denser = more energy), the energy gradient becomes:
 
 ```text
 ∇E = ρVc² · ∇(A²/λ²) = ρVc² · [2A·∇A/λ² - 2A²·∇λ/λ³]
@@ -48,4 +48,4 @@ The second term `∇λ` is NEW — it creates force from wavelength gradients, i
 
 **Implementation path**: use Yee & Hauger shells for λ(r) profile, WKB phase integral for phasor computation with variable k(r), and the expanded energy formula with λ(r). The phase warp code from Phase 1b (`_compute_elastic_phase_rms`) already computes the rotated phasor — just needs λ(r) in the energy formula to produce force from it.
 
-**Convergence with Phase 1d**: Phases 1c and 1d may converge into one solution — variable λ(r) in the energy equation (1c) + vector displacement with L→T conversion (1d). The λ gradient creates force from wavelength variation, while the L→T spin creates charge-dependent asymmetry. Both are needed: λ variation alone has no charge sensitivity, L→T alone still oscillates in scalar RMS. Together they could produce charge-dependent force from wavelength + mode gradients.
+**Convergence with Phase 1d**: Phases 1c and 1d may converge into one solution — vector displacement with L→T conversion (1c) + variable λ(r) in the energy equation (1d). The λ gradient creates force from wavelength variation, while the L→T spin creates charge-dependent asymmetry. Both are needed: λ variation alone has no charge sensitivity, L→T alone still oscillates in scalar RMS. Together they could produce charge-dependent force from wavelength + mode gradients.

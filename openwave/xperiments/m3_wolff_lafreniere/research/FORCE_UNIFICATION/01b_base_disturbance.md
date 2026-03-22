@@ -1,6 +1,6 @@
-# PHASE 1b: Base Wave + WC Energy Redistribution
+# ✅ PHASE 1b: Base Wave + WC Energy Redistribution — COMPLETED
 
-Model the actual base wave and how WCs redistribute its energy. Central open question: how WC phase determines the drainage pattern
+Model the actual base wave and how WCs redistribute its energy. Central open question: how WC phase determines the drainage pattern → **Answer: L→T spin conversion (elastic disturbance) is the only charge-sensitive mechanism. Requires true vector displacement (Phase 1c) and variable λ in energy equation (Phase 1d).**
 
 ## ❌ The Problem
 
@@ -38,7 +38,7 @@ The medium is not empty. A pre-existing **isotropic energy wave field** fills al
 
 **The base wave concept is not just context — it is the energy source.** The medium has stored energy (standing waves) as potential for matter, forces, EM waves, heat, and time. WCs redistribute this energy, and the redistribution pattern (affected by WC phase) creates the gradients that produce force.
 
-The base wave (1b) provides the energy field that WCs disturb; non-linear equations (1c) describe how the disturbance propagates; vector displacement (1d) may carry the charge information that scalar magnitude discards. They may ultimately converge into a single solution.
+The base wave (1b) provides the energy field that WCs disturb; vector displacement (1c) may carry the charge information that scalar magnitude discards; non-linear equations (1d) describe how the disturbance propagates. They may ultimately converge into a single solution.
 
 **The open question**: can the reflected waves produce a far-field energy gradient that is smooth enough to avoid the sinc oscillation problem, while still being genuine wave interference?
 
@@ -76,7 +76,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **Gravitational shading**: the far-field amplitude deficit from energy redistribution IS the gravitational shading mechanism. WCs absorb/redirect base wave energy, creating a "shadow" in the far field. This connects to Smoliński's push-out / buoyancy model.
 
-**WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (Phase 1c).
+**WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (Phase 1d).
 
 **Scalar base → vector emergence (hypothesis)**: the fundamental base wave might be scalar (longitudinal only) — but this is a hypothesis, not established. In 3D reality, granule displacement traces ellipses with longitudinal, transverse, handedness, and orientation components. Vector (transverse) waves may emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. See [Base Wave Numerical Model](#on-the-longitudinal-assumption) for full dimensional analysis.
 
@@ -252,7 +252,7 @@ With different k_i, spatial patterns don't combine into a single sinusoid. Diffe
 
 - **Pro**: demonstrates broadband vs monochromatic wave field behavior. Energy field averages out with bandwidth, and roughness further suppresses at larger scales (electron sees smoothed-out fluctuations, like smaller pixels)
 - **Con**: hard to find physical motivation — why would the base wave be broadband? EWT describes a single fundamental wavelength λ₀. The stochastic model may represent statistical noise in the medium, but not the fundamental base wave itself
-- **Use case**: useful as mathematical demonstration of how bandwidth creates spatial uniformity. May become relevant if the medium has λ variation from non-linear effects (Phase 1c)
+- **Use case**: useful as mathematical demonstration of how bandwidth creates spatial uniformity. May become relevant if the medium has λ variation from non-linear effects (Phase 1d)
 
 **Test result** (σ=1): chaotic displacement, but energy field averages to near-uniform. Higher N and broader σ → flatter energy. The pixel analogy holds: at particle scale (100λ), small variations disappear.
 
@@ -322,7 +322,7 @@ The base wave is described as longitudinal in EWT literature, but **this is a hy
 
 All of these properties can contribute to force direction. The unified force concept proposes that what we perceive as separate forces (electric, magnetic, gravitational) are actually **one 3D elliptical behavior** decomposed into components. At human scale, specific conditions make each component appear distinct — we named and described them as separate forces because that's how they manifest at our scale of mass, frequency, and inertial frame.
 
-A 2D simulation could capture longitudinal + transverse, but **may not be sufficient** — the elliptical form can be oriented in multiple ways in 3D space, and this orientational freedom is likely essential for magnetic fields and spin. The 1D base wave work here is foundational (establishing the energy redistribution mechanism), but the full picture likely requires 3D (Phase 1d / M4).
+A 2D simulation could capture longitudinal + transverse, but **may not be sufficient** — the elliptical form can be oriented in multiple ways in 3D space, and this orientational freedom is likely essential for magnetic fields and spin. The 1D base wave work here is foundational (establishing the energy redistribution mechanism), but the full picture likely requires 3D (Phase 1c / M4).
 
 ---
 
@@ -446,7 +446,7 @@ WC reflects the incoming base wave. Reflected wave interferes with the original 
 
 **Key difference from additive**: in scattering, the incident wave is partially absorbed at the WC position (amplitude reduced), and the scattered wave carries that energy outward. Total energy conserved because scattered = incident - transmitted.
 
-**Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
+**Connection to Phase 1d**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
 
 **M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields.
 
@@ -509,7 +509,7 @@ Q_rot = P·sin(Δφ) + Q·cos(Δφ)
 
 **Physical interpretation**: the WC region has modified λ(r) — the wave's spatial phase accumulates differently near the WC. Positive charge advances phase (shorter effective λ), negative charge delays (longer λ). Phase warping is equivalent to local wavelength change: `Δφ(r) = ∫Δk(r')dr'`. Wave speed c stays absolute — only λ(r) varies.
 
-**Connection to variable λ / Phase 1c**: connects directly to Yee & Hauger shells, WKB phase integral, Smoliński's density function. The wavelength change should create energy gradients via `E ∝ (A/λ)²`.
+**Connection to variable λ / Phase 1d**: connects directly to Yee & Hauger shells, WKB phase integral, Smoliński's density function. The wavelength change should create energy gradients via `E ∝ (A/λ)²`.
 
 **1D Test results (`WC_DISTURBANCE = "elastic_phase"`, all base modes)**:
 
@@ -517,9 +517,9 @@ Q_rot = P·sin(Δφ) + Q·cos(Δφ)
 - ✅ **Energy exactly conserved**: phasor rotation preserves magnitude by definition (`|rotated|² = |original|²`)
 - ❌ **Root cause**: rotation preserves RMS → **no energy gradient → no force**. The phase warp changes the wave's phase structure but NOT its amplitude. Since `F = -∇E` and `E ∝ RMS²`, and RMS is unchanged by rotation, there's no force
 
-**Key insight**: phase warping alone cannot create force in the current F = -∇E framework because phasor rotation is energy-preserving at every point. The phase change is real (λ varies), but our energy formula `E = ρV(fA)²` only sees amplitude A, not phase. To make phase/λ warping produce force, the energy formula must include λ explicitly: `E = ρV(c·A/λ)²` where λ(r) varies — this IS Phase 1c (variable λ in the energy equation). The current phasor framework with constant λ in the energy formula cannot see phase disturbances.
+**Key insight**: phase warping alone cannot create force in the current F = -∇E framework because phasor rotation is energy-preserving at every point. The phase change is real (λ varies), but our energy formula `E = ρV(fA)²` only sees amplitude A, not phase. To make phase/λ warping produce force, the energy formula must include λ explicitly: `E = ρV(c·A/λ)²` where λ(r) varies — this IS Phase 1d (variable λ in the energy equation). The current phasor framework with constant λ in the energy formula cannot see phase disturbances.
 
-⚠️ **Status**: not ruled out — the physics is sound (λ variation creates energy gradients), but the current implementation framework can't capture it. Requires Phase 1c's variable-λ energy equation to test properly.
+⚠️ **Status**: not ruled out — the physics is sound (λ variation creates energy gradients), but the current implementation framework can't capture it. Requires Phase 1d's variable-λ energy equation to test properly.
 
 #### ❌ Option G: L→T Conversion (Spin — from M2 Spin Theory) — CHARGE SENSITIVE, PARTIALLY WORKING
 
@@ -546,7 +546,7 @@ M2 research proposed this as the solution to isotropic cancellation. M2 attempte
 2. **The quadrature proxy is limited** — using two phasor channels (P, Q) as L/T is a mathematical approximation of what should be two physically independent displacement components. The phasor channels are not truly independent (they combine into magnitude), limiting how much the L→T conversion can affect the energy landscape
 3. **The oscillation persists** because the conversion modifies P and Q (which still combine via P² + Q² into a sinc-modulated RMS). A truly independent transverse component would add energy separately (E_L + E_T), potentially breaking the sinc pattern
 
-⚠️ **Status**: most promising elastic model. Points strongly toward Phase 1d (full vector displacement with independent L and T components) as the path to resolve the remaining oscillation. The quadrature proxy demonstrates that L→T conversion produces charge sensitivity, but the full effect likely requires true two-component displacement, not phasor channel manipulation.
+⚠️ **Status**: most promising elastic model. Points strongly toward Phase 1c (full vector displacement with independent L and T components) as the path to resolve the remaining oscillation. The quadrature proxy demonstrates that L→T conversion produces charge sensitivity, but the full effect likely requires true two-component displacement, not phasor channel manipulation.
 
 See [M2 Research Prior-Art Findings](#m2-research-prior-art-findings) for the theoretical basis.
 
@@ -586,27 +586,61 @@ dual_standing:
 
 ---
 
-### 🚧 Step 2e: Deeper Physics Discussion and Contender Selection
+### ✅ Step 2e: Physics Discussion and Path Decision — PHASE 1b CLOSING
 
-**3 remaining base wave contenders** (node-locking eliminated):
+#### ⚠️ Base Wave Contender Assessment (post-testing)
 
-- **Quadrature** — strongest candidate (flat energy + directional charge encoding + spin/complex sinusoid connection + L/T duality). Traveling wave direction flips with temporal offset sign → possible charge/spin mechanism. The two channels may represent L and T components — connecting directly to M2's spin theory solution
-- **Standing wave** — physically validated by Laplacian, simplest model, node structure may interact with WC phase at particle scale (100λ average-out argument)
-- **Uniform + dual phase** — zero-energy vacuum from π-apart waves, WCs asymmetrically perturb one phase depending on charge
+- **Quadrature** — confirmed as strongest base wave model. Flat energy, two orthogonal channels that map to L/T duality, traveling wave direction encodes handedness. In 1D the two-direction limitation (left/right) is a projection of 3D rotational freedom (CW/CCW elliptical). The quadrature IS the correct 1D representation — the two channels are the physical L and T components, and the complex sinusoid i in quantum mechanics encodes exactly this 90° phase relationship. Carry forward into Phase 1c as the base wave model
+- **Standing wave** — physically correct (Laplacian-validated), simplest model. Nodes exist at λ/2 but average out at particle scale (electron = 100λ). Useful as a reference but doesn't help with charge-dependent force. The quadrature is a standing wave with a second orthogonal channel — it's a superset
+- **Uniform + dual phase** — charge-blind in testing. Per-channel energy sum is symmetric regardless of which channel is boosted. Needs cross-channel coupling (like L→T) to break symmetry — which points back to the spin mechanism
 
-**WC interaction models** (informed by M2 prior art):
+#### WC Interaction Assessment — 10 Models Tested
 
-- Options A/C/D: test in 1D for validation (weaker cancellation than 3D — may show effects invisible in M2). If they fail even in 1D, definitively ruled out
-- Option E (L→T spin): the M2 research's proposed solution. Requires two-component displacement — could use quadrature channels as L/T proxy, or extend engine with second displacement track
+| # | Model | Type | Charge | Key Finding |
+| --- | --- | --- | --- | --- |
+| A | multiplicative | passive | imposed ±1 | 48/48 correct but not emergent |
+| B | normalized additive | passive | N/A | no spatial change |
+| C | scattering | passive | random | sinc reintroduced via re-emitted wave |
+| D | absorber | passive | blind | symmetric drain, no charge info |
+| E | elastic amp | elastic | blind | symmetric scaling |
+| F | elastic phase | elastic | N/A | zero force — RMS preserved by rotation |
+| G | **elastic spin (L→T)** | elastic | **sensitive** | **ONLY model that distinguishes charges** |
+| 2a | node-locking | spatial | wrong | 2λ period, not λ/2 |
+| 2d-uni | dual-channel uniform | dual | blind | per-channel energy symmetric |
+| 2d-stand | dual-channel standing | dual | partial | sinc + some sensitivity |
 
-**Discussion topics**:
+**Only Option G (L→T spin conversion) distinguishes charges.** All other models are either charge-blind, impose charge via ±1 label, or reintroduce the sinc oscillation.
 
-- Evaluate quadrature direction (left/right traveling wave) as charge/spin mechanism — does this have physical motivation in 3D? How does 1D two-direction map to 3D elliptical orientational freedom?
-- Evaluate standing wave at particle scale (100λ) — does the node structure matter or average out?
-- Compare force behavior across base wave contenders with non-additive WC interaction — which produces the best charge-dependent force direction?
-- Compare non-additive WC interaction models (A, C, D, E) — which produces energy-conserving force with correct charge-dependent direction?
-- Which combination of base wave mode + WC interaction mechanism best resolves the sinc oscillation / isotropic cancellation blocker?
-- Does the 1D sandbox have a fundamental limitation for this problem (scalar can't represent L/T), or can the quadrature two-channel approach serve as a sufficient proxy?
+#### ⚠️ Key Conclusions from Phase 1b
+
+1. **Additive superposition cannot resolve the force direction problem** — regardless of base wave mode. The WC interference pattern dominates and produces the same sinc oscillation. The base wave only adds a constant phasor offset (Step 2b finding)
+
+2. **Passive WC interactions fail in isotropic fields** — reflections cancel from all directions. Confirmed in M2 (3D, 12 experiments) and re-confirmed in 1D (weaker cancellation, same result). M2 prior art fully validated
+
+3. **Elastic amplitude modulation is charge-blind** — symmetric scaling doesn't extract charge info from the wave. Elastic phase warping produces zero force — phasor rotation preserves RMS at every point (the energy formula uses constant λ, so it can't see phase changes)
+
+4. **L→T spin conversion is the breakthrough mechanism** — it's the ONLY model that produces different behavior for opposite vs same charge. The charge-dependent direction of mode conversion (CW vs CCW) creates asymmetric energy landscapes. But the quadrature phasor proxy is limited — P² + Q² still produces sinc modulation. True independent L and T displacement components are needed
+
+5. **The 1D scalar sandbox has a fundamental limitation** — it cannot represent true L/T conversion because it has only one displacement component. The phasor channels are mathematical, not physical. True L→T needs two independent displacement fields whose energies sum separately: `E = E_L + E_T`
+
+6. **Phase warp (variable λ) needs variable λ in the energy equation** — the physics is real (λ varies near WCs), but `E = ρV(fA)²` with constant f can't see it. Phase 1d must implement `E = ρV(c·A/λ(r))²` where the `∇λ` term creates force from wavelength gradients
+
+#### ⚠️ Path Forward: Phase 1c and 1d Converge
+
+Both remaining paths are needed and will likely converge into one solution:
+
+- **Phase 1c (vector displacement)**: independent L and T displacement fields → force from L/T balance via `E = E_L + E_T`. Makes elastic spin (Option G) fully distinguish charges without sinc
+
+- **Phase 1d (variable λ)**: `E = ρV(c·A/λ(r))²` → force from `∇λ` (wavelength gradients). Yee & Hauger shells for λ(r), WKB phase integral. Makes elastic phase warp (Option F) produce force
+
+**Recommended order**: Phase 1c first — the L→T spin is the only charge-sensitive mechanism discovered. It needs true vector displacement to work fully. Phase 1d (variable λ) can be layered on top of the vector engine, and the combined solution (variable λ + L→T spin in vector displacement) may be the unified answer.
+
+**Phase 1b WRAP-UP tasks** (carry forward to Phase 1c/1d):
+
+- [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
+- [ ] Determine how WC phase affects far-field drainage pattern (NOT via ±1 sign — mechanism must be discovered → L→T spin is the candidate)
+- [ ] Test force emergence: drainage from WC1 disturbs WC2 → energy gradient → F = -∇E
+- [ ] Validate against Coulomb reference (direction + 1/r² scaling)
 
 ## M2 Research Prior-Art Findings
 
@@ -707,14 +741,14 @@ Other tested interactions (all commented out): `interact_wc_swap` (direction swa
 
 - The **quadrature model** — the two 90°-offset channels may represent L and T components. The base wave already encodes this duality
 - **Complex sinusoids** — real = L, imaginary = T. This is why wave equations require complex numbers
-- **Phase 1d (vector waves)** — full vector displacement naturally captures L and T as separate components
+- **Phase 1c (vector waves)** — full vector displacement naturally captures L and T as separate components
 - The **"spinning in place" idea** — a standing wave that rotates phase instead of oscillating linearly requires two orthogonal components (L + T)
 
-⚠️ ### Recommended Path Forward
+### ⚠️ Recommended Path Forward
 
 Complete Step 2c testing (Options A/C/D) for validation — even if M2 suggests they'll fail, the 1D test has weaker cancellation and may reveal different behavior. Document results either way. Then evaluate whether to:
 
 1. **Stay in 1D scalar** with the dual-channel (quadrature) model as a proxy for L/T — test if WCs can selectively disturb one channel
 2. **Extend to 1D+1D (two-component displacement)** — add a transverse displacement track to the 1D engine, enabling L→T conversion at WCs without full 3D
-3. **Move to Phase 1c (non-linear)** — variable λ(r) may break the sinc pattern independently of the L/T mechanism
-4. **Move to Phase 1d (vector waves)** — full 3D vector displacement with spin, requires M4 engine
+3. **Move to Phase 1d (non-linear)** — variable λ(r) may break the sinc pattern independently of the L/T mechanism
+4. **Move to Phase 1c (vector waves)** — full 3D vector displacement with spin, requires M4 engine
