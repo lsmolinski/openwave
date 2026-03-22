@@ -383,7 +383,7 @@ def propagate_wave(
             transition = 1 + 1 / 4  # number of wavelengths (λ)
             weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
 
-            # Combined partially standing wave
+            # Weighted partial standing wave
             oscillator = ti.select(
                 r_grid < 0.5,  # center voxel: analytical limit
                 2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
