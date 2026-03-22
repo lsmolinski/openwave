@@ -374,7 +374,7 @@ Ported WC wave computation from v2 (equation #5 weighted partial standing wave +
 
 **Energy conservation test (Option B — normalized additive)**: scaling the combined RMS to preserve total energy (ΣE_combined = ΣE_base) conserves energy perfectly, but the normalization is a uniform scale factor. The spatial energy pattern is unchanged → gradients unchanged → forces unchanged → sinc flip unchanged. This confirms: energy-normalizing additive superposition is not sufficient. WCs need to **warp** the energy landscape, not just add waves on top.
 
-⚠️ **Root cause**: additive superposition treats WCs as wave sources emitting into the field. More waves = more energy. The base wave is just "more field" that gets superposed — the WC interference pattern dominates regardless of the base wave's contribution. This is exactly the old model (equations #1–#6 from v2) running on top of a base wave, and it cannot resolve the force problem.
+**Root cause**: additive superposition treats WCs as wave sources emitting into the field. More waves = more energy. The base wave is just "more field" that gets superposed — the WC interference pattern dominates regardless of the base wave's contribution. This is exactly the old model (equations #1–#6 from v2) running on top of a base wave, and it cannot resolve the force problem.
 
 ❌ **Key conclusion: additive superposition cannot work for Phase 1b, regardless of which base wave mode is underneath.** The WC wave pattern dominates and produces the same sinc oscillation for all 3 contenders (standing, quadrature, uniform). Simply adding a base wave on top does not change force behavior compared to v2 (WCs in empty space) — the base wave contributes a constant phasor offset that shifts the overall amplitude level but does not change the spatial interference pattern or force directions.
 
@@ -404,7 +404,7 @@ Two categories of WC interaction:
 
 The distinction matters because passive interactions create reflections that cancel in isotropic fields (proven in M2), while elastic interactions change what the wave IS — the outgoing wave has different properties than the incoming wave. This asymmetry (in ≠ out) may break the cancellation symmetry.
 
-**Connection to spin**: "spin" is an observed quantum phenomenon never fully understood physically, and likely mislabeled as actual physical rotation of a particle. Wolff's insight: **"the wave is spinning, not the particle"** — spin is the transformation of the in-wave into the out-wave at the wave center, a property of 3D space (720° spherical rotation). Elastic disturbance may be the mechanism behind what we observe as spin — the WC changes the wave character as it passes through, and that change is what we measure as spin, magnetic moment, and charge.
+⚠️ **Connection to spin**: "spin" is an observed quantum phenomenon never fully understood physically, and likely mislabeled as actual physical rotation of a particle. Wolff's insight: **"the wave is spinning, not the particle"** — spin is the transformation of the in-wave into the out-wave at the wave center, a property of 3D space (720° spherical rotation). Elastic disturbance may be the mechanism behind what we observe as spin — the WC changes the wave character as it passes through, and that change is what we measure as spin, magnetic moment, and charge.
 
 ---
 
@@ -425,7 +425,7 @@ The spatial pattern is fundamentally different from additive — no sinc, just a
 
 **Physical interpretation**: WC absorbs base wave energy from surrounding field and concentrates it into its own standing wave core. The absorption creates a far-field energy deficit — the drainage pattern that generates force on other WCs.
 
-⚠️ **M2 prior art**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic 3D fields. In 1D the cancellation is weaker (only left/right, not omnidirectional) — worth testing for validation.
+**M2 prior art**: equivalent to M2 experiments 9–12 (amplification/drain). M2 found these either unstable (exponential feedback) or ineffective in isotropic 3D fields. In 1D the cancellation is weaker (only left/right, not omnidirectional) — worth testing for validation.
 
 #### ❌ Option B: Normalized Additive — RULED OUT
 
@@ -439,7 +439,7 @@ WC reflects the incoming base wave. Reflected wave interferes with the original 
 
 **Connection to Phase 1c**: scattering naturally produces variable λ near the WC (wavelength shifts from reflection), connecting to the non-linear wave equations path.
 
-⚠️ **M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields. 1D has only two directions — cancellation may be less complete.
+**M2 prior art**: equivalent to M2 experiments 3–6 (boundary reflection). M2 found reflections cancel in isotropic 3D fields. 1D has only two directions — cancellation may be less complete.
 
 #### 🚧 Option D: Local Absorber (Boundary Condition)
 
@@ -447,7 +447,7 @@ WC acts as a boundary condition in the wave field — a point where displacement
 
 **Physical interpretation**: the WC IS a point of wave reflection (Dirichlet BC = ψ=0 at WC position). Incoming waves reflect off the WC, creating standing waves near it and an amplitude shadow in the far field.
 
-⚠️ **M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field. 1D test still worth running for weaker-cancellation validation.
+**M2 prior art**: directly tested in M2 experiments 1–6 (Dirichlet/Neumann boundaries). Failed in 3D isotropic field. 1D test still worth running for weaker-cancellation validation.
 
 ---
 
