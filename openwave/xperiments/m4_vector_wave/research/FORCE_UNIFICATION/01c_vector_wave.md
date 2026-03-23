@@ -332,9 +332,44 @@ The base wave is **pure longitudinal** — every plane wave displaces along its 
 
 Statistically: the average of cos²θ over a uniform sphere = 1/3. So 1/3 of displacement variance projects onto any chosen direction (L), and 2/3 onto the perpendicular plane (T). This is the **geometric baseline** — the ratio that exists before any WC creates actual transverse waves via spin conversion.
 
-## 🔶 Step 2: WC as L→T Converter (Spin)
+## ✅ Step 2: WC as L→T Converter (Spin) — COMPLETED
 
-Single WC at grid center converts longitudinal → transverse with charge-dependent direction (CW/CCW). Verify energy concentration near WC, drainage in far field, and `E_L + E_T = const`. Revisit M2 spin code with improved understanding.
+Single WC at grid origin emitting spherical out-wave with L + T components. `scripts_vector_wave/step2_single_wc.py`
+
+### Results (all 5 checks passed)
+
+- **Energy concentration**: 1.98x base wave energy at WC core (r ≈ 0), returns to 1.0x beyond r > 1λ
+- **L/T ratio shifts dramatically at WC core**: from baseline 0.33 up to 0.64 (η=0, pure L out-wave) or down to 0.17 (η=1, pure T out-wave). The shift is local — beyond 1λ, baseline 1/3-2/3 restored
+- **CW and CCW produce identical energy** for single WC — spin sign doesn't affect |P|² (|+t̂|² = |-t̂|²). Spin sign matters in Step 3 when two WCs interact
+- **Physical η = α ≈ 1/137**: nearly identical to η=0 because α is so small (0.73%). The effect is real but tiny — electric force (L) overwhelmingly dominates magnetic (T)
+
+### Effect of Conversion Fraction η on Energy at WC Core
+
+| η | Description | Concentration | E_L/E at core | E_L/E baseline |
+| --- | --- | --- | --- | --- |
+| 0.0 | pure L (no spin) | 1.98x | 0.639 | 0.331 |
+| α ≈ 0.0073 | physical (fine structure) | 1.98x | 0.636 | 0.331 |
+| 0.1 | moderate conversion | 1.95x | 0.596 | 0.331 |
+| 0.5 | equal L/T | 1.83x | 0.413 | 0.331 |
+| 1.0 | pure T (complete conversion) | 1.71x | 0.166 | 0.331 |
+
+### WC Out-Wave Equation
+
+```text
+P_wc(r) = A_wc · sinc(k₀r) · exp(+i·(k₀r + φ_wc)) · [√(1-η)·r̂ + √η·q·(ẑ×r̂)]
+```
+
+| Term | Meaning |
+| --- | --- |
+| `A_wc` | Out-wave amplitude = A₀ (same as base wave) |
+| `sinc(k₀r)` | Spherical standing wave envelope: sin(k₀r)/(k₀r), peak = 1 at r=0, nodes at r = nλ/2 |
+| `exp(+i·...)` | Out-wave phasor (positive exponent, vs in-wave negative) |
+| `k₀r + φ_wc` | Spatial phase + source_offset (φ_wc = π for electron, 0 for positron) |
+| `√(1-η)·r̂` | L component (radial direction, reduced by conversion fraction η) |
+| `√η·q·(ẑ×r̂)` | T component (azimuthal, from spin). q = ±1 for CW/CCW. Magnitude `ẑ×r̂` = sin(θ) gives natural dipole pattern |
+
+- **η = α ≈ 1/137**: the fine structure constant. Fraction of in-wave longitudinal energy converted to transverse by spin. From EWT: `α = e²/e₀²` = (elementary charge / Planck charge)². Reference: <https://energywavetheory.com/physics-constants/fine-structure-constant/>
+- **Gravity connection**: the amplitude deficit (in-wave > out-wave) from L→T conversion accumulates to produce the gravitational coupling constant αG ≈ 2.4×10⁻⁴³. Reference: <https://energywavetheory.com/physics-constants/gravity-coupling-constants/>
 
 ## 🚧 Step 3: Two-WC Force Test
 
