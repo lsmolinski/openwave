@@ -1,4 +1,4 @@
-# PHASE 2: Electric Force — Near-Field
+# PHASE 2: NEAR-FIELD Forces
 
 Near-field has two expected behaviors based on charge phase:
 
