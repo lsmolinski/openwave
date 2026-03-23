@@ -25,7 +25,6 @@
 - ✅ 1/r² force law scaling (RESOLVED) — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
-- [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 - [ ] Dual-treatment boundary: near-field raw phasor (lock-in) vs far-field smoothed envelope (Coulomb)
 
 > **All linear scalar candidates exhausted (10/10 ruled out, including Phase 1a signed disturbance).** Three remaining paths (1b, 1c, 1d). Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
@@ -38,7 +37,7 @@
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
+### ✅ [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
 
 - Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
   - ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
@@ -65,7 +64,7 @@
 
 > **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### [PHASE 1c: Vector Wave Force (M4 displacement direction)](01c_vector_wave.md#phase-1c-vector-wave-force)
+### 🔶 [PHASE 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
 
 > **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement. Recommended to tackle FIRST.
 
@@ -80,7 +79,7 @@
 - [ ] Evaluate "one force, different directions" — F = -∇E projected: longitudinal → electric, transverse → magnetic, density deficit → gravitational
 - [ ] Combine with Phase 1d variable λ(r) for the converged solution
 
-### [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+### 🚧 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 
 > **From Phase 1b**: elastic phase warp (Option F) produces zero force because `E = ρV(fA)²` uses constant f — can't see λ variation. Phase 1d must implement `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients. Converges with Phase 1c.
 
