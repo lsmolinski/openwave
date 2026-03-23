@@ -25,7 +25,6 @@
 - ✅ 1/r² force law scaling (RESOLVED) — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 - [ ] Validate force direction: opposite charges attract, same charges repel (emergent, not imposed)
 - [ ] Plot energy density landscape along axis at various separations
-- [ ] Compare 1D profiles against LaFreniere reference animations (constructive/destructive patterns)
 - [ ] Dual-treatment boundary: near-field raw phasor (lock-in) vs far-field smoothed envelope (Coulomb)
 
 > **All linear scalar candidates exhausted (10/10 ruled out, including Phase 1a signed disturbance).** Three remaining paths (1b, 1c, 1d). Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
@@ -38,7 +37,7 @@
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
+### ✅ [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
 
 - Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
   - ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
@@ -65,22 +64,47 @@
 
 > **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### [PHASE 1c: Vector Wave Force (M4 displacement direction)](01c_vector_wave.md#phase-1c-vector-wave-force)
+### 🔶 [PHASE 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
 
-> **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement. Recommended to tackle FIRST.
+> **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement.
+>
+> **Research strategy**: math-only numpy scripts (no visualization). Compute → sweep → analyze → document. Scripts in `scripts_vector_wave/`. When wave equations validated → port to M4 Taichi engine for 3D visualization.
+>
+> **Force mechanism**: `F = -∇E_total = -∇E_L - ∇E_T`. One force, two directions: ∇E_L → electric (longitudinal/radial), ∇E_T → magnetic (transverse/perpendicular). L/T defined relative to radial from WC. Transverse has 360° freedom → magnetic requires alignment/coherence to not cancel. Gravity = residual total energy deficit.
 
-- [ ] Extend 1D sandbox with two-component displacement (ψ_L + ψ_T) — independent L and T fields
-- [ ] Implement L→T spin conversion at WC: charge-dependent direction (CW/CCW), energy-conserving `E_L + E_T = const`
-- [ ] Test force from independent L/T energy: `E = E_L + E_T = ρV(f·A_L)² + ρV(f·A_T)²`
-- [ ] Re-test elastic spin (Option G) with true independent components — does sinc oscillation break?
+Step 1 — 3D Vector Base Wave:
+
+- [ ] 3D grid with vector displacement: `ψ(r) = (ψ_x, ψ_y, ψ_z)`
+- [ ] Isotropic base wave from all directions → uniform energy density
+- [ ] L/T decomposition: `A_L = |ψ · r̂|`, `A_T = |ψ - (ψ · r̂)r̂|`
+- [ ] Verify: base wave alone → flat energy, zero force
+
+Step 2 — WC as L→T Converter (Spin):
+
+- [ ] L→T conversion at WC: reduce A_L, increase A_T, charge-dependent direction (CW/CCW)
+- [ ] Verify: single WC → energy concentration near, drainage far, `E_L + E_T = const`
 - [ ] Revisit M2 spin code (`interact_wc_spinUP/DOWN`) with improved understanding
-- [ ] Test per-component amplitude (A_L, A_T separately, not collapsed to |A|)
-- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
-- [ ] Connect to elliptical rotation handedness (M4 phasor: same-phase = same rotation, opposite = opposite)
-- [ ] Evaluate "one force, different directions" — F = -∇E projected: longitudinal → electric, transverse → magnetic, density deficit → gravitational
-- [ ] Combine with Phase 1d variable λ(r) for the converged solution
 
-### [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+Step 3 — Two-WC Force Test:
+
+- [ ] Two WCs at variable separation, compute `F = -∇(E_L + E_T)`
+- [ ] Sweep: does force direction depend on charge sign? Emergent, not imposed?
+- [ ] Re-test elastic spin with true independent L/T — does sinc oscillation break?
+
+Step 4 — Coulomb Validation:
+
+- [ ] Force magnitude vs Coulomb reference at multiple separations
+- [ ] 1/r² scaling check
+- [ ] Newton's 3rd law (equal and opposite)
+
+Step 5 — Convergence with Phase 1d:
+
+- [ ] Add variable λ(r) to energy: `E = ρV(c·A/λ(r))²`
+- [ ] Test combined: vector displacement + variable λ
+- [ ] Evaluate "one force, different directions" — electric (L), magnetic (T), gravitational (deficit)
+- [ ] Connect to elliptical rotation handedness (CW = electron, CCW = positron)
+
+### 🚧 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 
 > **From Phase 1b**: elastic phase warp (Option F) produces zero force because `E = ρV(fA)²` uses constant f — can't see λ variation. Phase 1d must implement `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients. Converges with Phase 1c.
 

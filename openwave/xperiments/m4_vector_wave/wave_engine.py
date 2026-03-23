@@ -118,29 +118,26 @@ def compute_voxel_wave(
     This function contains the core wave physics computation shared by both
     full-grid and neighbor-only iteration modes.
 
-    Wolff-LaFreniere Combined Form:
-        ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-
-    Expanded Form (used in implementation):
-        ψ(r,t) = A · [-cos(ωt)·sin(kr)/r - sin(ωt)·(1-cos(kr))/r]
-               = A · [-cos(ωt)·Phase(r) - sin(ωt)·Quadrature(r)]
+    Weighted Partial Standing Wave:
+        ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr · r̂
 
     Components:
-        Phase:      sin(kr)/r  → k as r→0  (standing wave envelope)
-        Quadrature: (1-cos(kr))/r → 0 as r→0  (traveling wave component)
+        Out-wave: sin(kr - ωt - φ) / kr  (nodes move outward, always present)
+        In-wave:  w(r) · sin(kr + ωt + φ) / kr  (nodes move inward, fades with distance)
+
+    Weight function w(r,λ):
+        w = 1 / (1 + (r / (1.25λ))⁸)  — sharp Lorentzian rolloff
 
     Physical Properties:
-        - Near center: standing wave behavior (finite amplitude at r=0)
-        - Far from center: transitions to traveling wave
-        - 1/r amplitude falloff (energy conserving, from Wolff)
-        - Electron core diameter = λ (full wavelength, from LaFreniere)
+        - Center (kr ≈ 0): pure standing wave, sinc → 2·cos(ωt+φ), finite at r=0
+        - Transition zone: partially standing, nodes drift outward
+        - Far field (r >> 1.25λ): pure traveling wave, 1/kr falloff
+        - Vector displacement along radial direction r̂ (longitudinal wave)
         - Superposition of multiple wave centers supported
 
     Wave Trackers Updated:
         - amp_local_emarms_am: RMS amplitude via EMA on ψ² (for energy/force gradients)
         - freq_local_cross_rHz: Frequency via zero-crossing detection with EMA smoothing
-
-    See research/01_wolff_lafreniere.md for full derivation and theory.
 
     Args:
         i, j, k: Voxel grid indices
@@ -154,10 +151,8 @@ def compute_voxel_wave(
     prev_disp = wave_field.displacement_am[i, j, k]
     wave_field.displacement_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
 
-    # TODO: review this reference radius logic, currently set to 1λ, ensures finite amplitude at r=0 and sets 1/r falloff reference point, but may need adjustment based on observed behavior or specific wave scenarios
-    # Reference radius for amplitude normalization (r₀ = 1λ)
-    # Prevents singularity at r=0 and sets 1/r falloff reference point
-    r_reference_grid = base_wavelength / wave_field.dx  # in grid units
+    # Wavelength in grid units (for standing wave transition zone)
+    wavelength_grid = 2.0 * ti.math.pi / k_grid
 
     # ================================================================
     # WAVE PROPAGATION: Update voxels using wave functions
@@ -171,31 +166,48 @@ def compute_voxel_wave(
         # Get direction from voxel to wave center (normalized vector)
         dir_vec = [i, j, k] - wave_center.position_grid[wc_idx]
         r_grid = dir_vec.norm() + 1e-10
-        direction = dir_vec / r_grid  # normalized direction vector for wave propagation
+        direction = dir_vec / r_grid
+        # Center voxel: direction is zero (undefined for point source),
+        # use unit-z fallback so scalar oscillator reaches amplitude tracker
+        direction += ti.cast(r_grid < 0.5, ti.f32) * ti.Vector([0.0, 0.0, 1.0])
 
         # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
         spatial_phase = k_grid * r_grid
 
-        # TODO: review this logic
         # Cache source-specific phase offset
         source_offset = wave_center.offset[wc_idx]
 
-        # Phase shift between in/out waves (at wave-center)
-        phase_shift = ti.math.pi
+        # ================================================================
+        # WEIGHTED PARTIAL STANDING WAVE
+        # ================================================================
+        # Superposition of in-wave + out-wave, where the in-wave fades with distance
+        # Near the source: standing wave (in-wave + out-wave interfere)
+        # Far from source: pure traveling wave (in-wave fades)
+        #
+        # ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
+        #
+        # Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
+        # Standing limit (w=1, r→0): 2·cos(ωt + φ) via sinc normalization
+        # Traveling limit (w=0): sin(kr - ωt - φ) / kr
+        # ================================================================
+        # In-wave weight: sharp Lorentzian rolloff at 1.25λ
+        transition = 1 + 1 / 4  # number of wavelengths (λ)
+        weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
 
-        # Amplitude falloff for spherical wave: A(r) = A₀/r
-        # Clamp to r_min to avoid singularity at r = 0
-        r_safe_grid = ti.max(r_grid, r_reference_grid)
-        amplitude_falloff = r_reference_grid / r_safe_grid
-        # Total amplitude at this distance (with visualization scaling)
-        amplitude_at_r_am = base_amplitude_am * amplitude_falloff
+        # Weighted partial standing wave oscillator
+        oscillator = ti.select(
+            r_grid < 0.5,  # center voxel: analytical limit
+            2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
+            (
+                weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
+                + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
+            )
+            / spatial_phase,  # 1/kr decay (sinc envelope)
+        )
 
         # Accumulate this source's contribution (wave superposition)
-        # ψ = A(r)·cos(ωt ± kr + φ + shift)·direction, negative for outward propagation, amp falloff
         wave_field.displacement_am[i, j, k] += (
-            amplitude_at_r_am
-            * wave_field.scale_factor
-            * ti.cos(temporal_phase - spatial_phase + source_offset + phase_shift)  # oscillator
+            base_amplitude_am * wave_field.scale_factor * oscillator
         ) * direction
 
     # TODO: consider precision rounding to ensure perfect cancellation

@@ -78,7 +78,7 @@ The force direction depends on HOW WC1's drainage pattern interacts with WC2's s
 
 **WC disturbance scope**: the disturbance affects not just amplitude but also **wavelength λ** and potentially **density ρ** near the WC. This connects to the multi-variable energy gradient (∇A + ∇f + ∇ρ) and to non-linear wave equations (Phase 1d).
 
-**Scalar base → vector emergence (hypothesis)**: the fundamental base wave might be scalar (longitudinal only) — but this is a hypothesis, not established. In 3D reality, granule displacement traces ellipses with longitudinal, transverse, handedness, and orientation components. Vector (transverse) waves may emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse. See [Base Wave Numerical Model](#on-the-longitudinal-assumption) for full dimensional analysis.
+**Scalar base → vector emergence (hypothesis)**: the fundamental base wave might be scalar (longitudinal only) — but this is a hypothesis, not established. In 3D reality, granule displacement traces ellipses with longitudinal, transverse, handedness, and orientation components. Vector (transverse) waves may emerge from **spin** — the WC's toroidal wave rotation converts longitudinal to transverse.
 
 **Emergent wave hierarchy**:
 
@@ -311,18 +311,6 @@ Initialized with Gaussian pulse or analytical standing wave. After warmup (20+ p
 **Test result**: the Laplacian **resolves itself into a standing wave** — identical to the standing wave model. This provides **physical motivation for the analytical standing wave model**: it represents real Laplacian wave propagation in a computationally optimized analytical form. The standing wave isn't an arbitrary choice — it's what the wave equation naturally produces in a reflecting domain.
 
 **Status: RETIRED** — the Laplacian mode validated that the standing wave is the physically correct 1D base wave form. It can now be replaced by the analytical standing wave model for all further work. Kept in v3 code for reference but not needed for Phase 1b Step 2.
-
-## On the "Longitudinal" Assumption
-
-The base wave is described as longitudinal in EWT literature, but **this is a hypothesis, not established fact**. In 1D simulation, we are forced to isolate a single wave mode (longitudinal displacement along x). This is a limitation of the dimensionality, not necessarily of the physics:
-
-- **1D**: only longitudinal mode available — displacement along the propagation axis
-- **2D**: two modes possible — longitudinal (along propagation) + transverse (perpendicular)
-- **3D (reality)**: full elliptical motion — the granule displacement traces an ellipse in 3D space, characterized by: longitudinal amplitude, transverse amplitude, handedness (direction of granule motion around the elliptical track), and ellipse plane orientation
-
-All of these properties can contribute to force direction. The unified force concept proposes that what we perceive as separate forces (electric, magnetic, gravitational) are actually **one 3D elliptical behavior** decomposed into components. At human scale, specific conditions make each component appear distinct — we named and described them as separate forces because that's how they manifest at our scale of mass, frequency, and inertial frame.
-
-A 2D simulation could capture longitudinal + transverse, but **may not be sufficient** — the elliptical form can be oriented in multiple ways in 3D space, and this orientational freedom is likely essential for magnetic fields and spin. The 1D base wave work here is foundational (establishing the energy redistribution mechanism), but the full picture likely requires 3D (Phase 1c / M4).
 
 ---
 
