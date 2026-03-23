@@ -90,11 +90,11 @@ def compute_phasor_field(coords, k_dirs, phases, a0, k0):
     """
     Compute complex vector phasor from isotropic longitudinal plane waves.
 
-    Each source n:
-      psi_n(r,t) = (a0/sqrt(N)) * cos(k0*k_hat_n.r + phi_n - wt) * k_hat_n
+    Each source n (in-wave, +wt convention):
+      psi_n(r,t) = (a0/sqrt(N)) * cos(k0*k_hat_n.r + phi_n + wt) * k_hat_n
 
-    Complex phasor (dropping shared -wt):
-      Z_n(r) = (a0/sqrt(N)) * exp(i*(k0*k_hat_n.r + phi_n)) * k_hat_n
+    Complex phasor (using e^{-iwt} basis, in-wave = conjugate spatial phase):
+      Z_n(r) = (a0/sqrt(N)) * exp(-i*(k0*k_hat_n.r + phi_n)) * k_hat_n
 
     Returns: P(r) = sum_n Z_n(r),  shape (*grid, 3) complex128
     """
@@ -105,8 +105,8 @@ def compute_phasor_field(coords, k_dirs, phases, a0, k0):
     for n in range(n_src):
         # k_hat_n . r  at every grid point
         kr = k0 * np.einsum('...j,j', coords, k_dirs[n])
-        # Complex amplitude (scalar per grid point)
-        z = amp * np.exp(1j * (kr + phases[n]))
+        # Complex amplitude — in-wave uses conjugate (negative) spatial phase
+        z = amp * np.exp(-1j * (kr + phases[n]))
         # Displacement along k_hat_n (longitudinal)
         P += z[..., np.newaxis] * k_dirs[n]
 

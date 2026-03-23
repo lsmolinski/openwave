@@ -275,11 +275,11 @@ The electron as a superfluid irrotational vortex — supporting the toroidal flo
 
 Math scripts in `scripts_vector_wave/`. Detailed task checklist in [00_roadmap.md](00_roadmap.md).
 
-## Step 1: 3D Vector Base Wave — ✅ COMPLETED
+## ✅ Step 1: 3D Vector Base Wave — COMPLETED
 
 Built 3D isotropic base wave `ψ(r) = (ψ_x, ψ_y, ψ_z)`: N=200 longitudinal plane waves from Fibonacci sphere directions, complex vector phasor field on 64³ grid (8λ extent, 8 vox/λ). `scripts_vector_wave/step1_base_wave.py`
 
-### Results (all 6 checks passed):
+### Results (all 6 checks passed)
 
 - **Mean energy**: matches theory `E = ρVf²A₀²/2` to 0.3% (ratio 1.0033)
 - **Energy CV = 0.5705**: matches chi-squared(6) prediction `1/√3 ≈ 0.5774`. The "speckle" is fundamental to coherent wave interference — the energy has wavelength-scale fluctuations that average out at particle scales (electron = 100λ)
@@ -288,36 +288,63 @@ Built 3D isotropic base wave `ψ(r) = (ψ_x, ψ_y, ψ_z)`: N=200 longitudinal pl
 - **Force = speckle noise only**: |F|_mean matches CV·E·k₀ estimate (ratio 1.03). No large-scale gradient — confirmed null baseline
 - **Convergence**: CV is independent of N_sources (confirmed 50 → 1000), converging to 1/√3 as predicted by chi-squared statistics
 
-Key insight for Step 2: the undisturbed base wave has 1/3 L energy and 2/3 T energy everywhere. A WC that converts L→T via spin will shift this ratio locally, creating the energy gradient that produces force.
+Key insight for Step 2: the undisturbed base wave has a 1/3 L, 2/3 T geometric projection at any reference point (see L/T Projection below). A WC that converts L→T via spin will shift this ratio locally, creating the energy gradient that produces force.
 
-### Vector Base Wave Character
+### Base Wave Equation
 
-- **BASE WAVE EQUATION**: `ψ_n(r,t) = (A₀/√N) · cos(k₀·k̂_n·r + ωt + φ_n) · k̂_n`
-- **Amplitude**: A₀/√N, A₀ = 0.92 am is the total fundamental amplitude. Divided by √N so that total energy sums correctly. Same principle as random walk.
-- **Oscillator**: cosine function, phase computed from spacial_term - temporal_term - source_offset
-- **Direction**: all directions from all matter of the universe, simulated using fibonacci sphere to center
-- **Wave Mode**: longitudinal
-- **Wave Geometry**: plane waves. The base wave comes from all matter in the universe — billions of wave centers at enormous distances. A spherical wave from a distant source, by the time it reaches our simulation volume (8λ = 228 am across), has traveled ~10²⁶ am. At that distance, the wavefront curvature across our grid is essentially zero — the spherical wave IS a plane wave locally.  
+Each of N plane waves from the isotropic field:
 
-### Fibonacci Sphere
+```text
+ψ_n(r,t) = (A₀/√N) · cos(k₀·k̂_n·r + ωt + φ_n) · k̂_n
+```
 
-<https://extremelearning.com.au/evenly-distributing-points-on-a-sphere/>
+| Term | Meaning |
+| --- | --- |
+| `ψ_n` | Vector displacement from the n-th plane wave — a 3D vector [am] |
+| `A₀/√N` | Amplitude per source. A₀ = 0.92 am total. Divided by √N (not N) so total **energy** sums correctly: N × (A₀/√N)² = A₀². Uncorrelated waves add in quadrature (same principle as random walk: N steps of size 1 → distance √N) |
+| `cos(...)` | The oscillation — a scalar that varies in space and time. Phase order: `cos(spatial + temporal + source_offset)` — OpenWave standard |
+| `k₀` | Wavenumber = 2π/λ₀ — converts distance to phase [radians/am] |
+| `k̂_n` | Unit direction vector — one of N Fibonacci sphere points. Represents the propagation direction of this plane wave |
+| `k̂_n · r` | Dot product — projects grid point position onto propagation direction. A plane wave varies along k̂ and is constant on planes perpendicular to k̂ |
+| `k₀·k̂_n·r` | Spatial phase — radians of oscillation between origin and point r along direction k̂_n |
+| `+ωt` | Temporal phase, In-wave convention: `+ωt` = incoming (toward future WC), `-ωt` = outgoing (from WC). Base wave is all in-waves from the universe |
+| `φ_n` | Random phase offset per source (uniform 0 to 2π, seeded for reproducibility). Represents waves from different distant matter arriving with uncorrelated phases |
+| `· k̂_n` | Displacement direction — the wave displaces the medium **along** k̂_n (longitudinal). This is the critical vector part |
 
-- The golden ratio is φ = (1 + √5) / 2 ≈ 1.618. The golden angle is 2π/φ² ≈ 137.5°. Why the golden angle? Because φ is the most irrational number — it's the hardest number to approximate with fractions. This means no two points ever line up in regular rows or columns. If you used 120° (= 1/3 turn), every 3rd point would stack vertically. If you used 144° (= 2/5 turn), every 5th point would align. The golden angle never repeats — it produces the spiral pattern in sunflower seeds, pinecones, and our sphere sampling.  
+- **Wave Direction**: all directions from all matter of the universe, simulated using fibonacci sphere to center
+- **Wave Mode**: pure longitudinal — every plane wave displaces along its propagation direction
+- **Wave Geometry**: plane waves. The base wave comes from all matter in the universe at enormous distances (~10²⁶ am). At that distance, wavefront curvature across our grid (8λ = 228 am) is essentially zero — spherical waves become plane waves locally (same reason sunlight is treated as parallel rays). Spherical waves appear in Step 2 when we add a WC inside the grid
+- **Sign Convention**: `cos(k₀·k̂·r + ωt + φ)` for in-waves, matching OpenWave standard throughout (weighted partial standing wave: `sin(kr + ωt)` = in-wave, `sin(kr - ωt)` = out-wave). In phasor form: in-wave uses `exp(-i·spatial_phase)`, out-wave uses `exp(+i·spatial_phase)`
 
-## Step 2: WC as L→T Converter (Spin)
+### Fibonacci Sphere (Source Directions)
+
+A method to place N points approximately uniformly on a sphere surface using the golden angle spiral. Each point is a unit vector k̂_n — one propagation direction. N=200 gives excellent isotropy (max directional bias = 0.00026). Same concept as M1's 8 cube vertices but with much better coverage (200 uniform directions vs 8 diagonal-biased directions).
+
+The golden ratio φ = (1 + √5)/2 ≈ 1.618 produces the golden angle ≈ 137.5°. The algorithm distributes points uniformly in cos(θ) (compensating for less area near poles) and rotates each successive point by the golden angle in azimuth. Because φ is the most irrational number (hardest to approximate with fractions), no two points ever line up in regular rows or columns — same spiral pattern as sunflower seeds and pinecones.
+
+Reference: <https://extremelearning.com.au/evenly-distributing-points-on-a-sphere/>
+
+### L/T Projection (Geometric Baseline — No WC)
+
+The L/T decomposition requires a **reference point** to define the radial direction — it is meaningless without one. In Step 1, the grid center is used as an arbitrary reference to validate the math; the physics enters in Step 2 when a WC defines the radial direction.
+
+The base wave is **pure longitudinal** — every plane wave displaces along its propagation direction k̂. There are zero transverse waves in the field. The "2/3 transverse" result is a **geometric projection effect**: when waves arrive from all directions and you project their displacements onto a chosen radial direction r̂, only waves aligned with r̂ contribute fully to "longitudinal." Waves from other directions have components perpendicular to r̂ that register as "transverse" — even though each wave is individually 100% longitudinal along its own k̂.
+
+Statistically: the average of cos²θ over a uniform sphere = 1/3. So 1/3 of displacement variance projects onto any chosen direction (L), and 2/3 onto the perpendicular plane (T). This is the **geometric baseline** — the ratio that exists before any WC creates actual transverse waves via spin conversion.
+
+## 🔶 Step 2: WC as L→T Converter (Spin)
 
 Single WC at grid center converts longitudinal → transverse with charge-dependent direction (CW/CCW). Verify energy concentration near WC, drainage in far field, and `E_L + E_T = const`. Revisit M2 spin code with improved understanding.
 
-## Step 3: Two-WC Force Test
+## 🚧 Step 3: Two-WC Force Test
 
 Two WCs at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on charge sign, emergent from wave physics?
 
-## Step 4: Coulomb Validation
+## 🚧 Step 4: Coulomb Validation
 
 Force magnitude vs Coulomb reference, 1/r² scaling, Newton's 3rd law.
 
-## Step 5: Convergence with Phase 1d
+## 🚧 Step 5: Convergence with Phase 1d
 
 Add variable λ(r) to energy equation. Test combined vector displacement + variable λ.
 
