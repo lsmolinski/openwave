@@ -11,7 +11,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-## [PHASE 1: Electric Force — FAR-FIELD (1D Sandbox only)](01_electric_farfield.md)
+## [PHASE 1: FAR-FIELD Force (1D Sandbox only)](01_far_field.md)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -118,7 +118,7 @@ Step 5 — Convergence with Phase 1d:
 - [ ] Re-test elastic phase warp (Option F) with variable-λ energy equation
 - [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
 
-## [PHASE 2: Electric Force — NEAR-FIELD (1D Sandbox only)](02_electric_nearfield.md)
+## [PHASE 2: NEAR-FIELD Forces (1D Sandbox only)](02_near_field.md)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
@@ -127,7 +127,7 @@ Step 5 — Convergence with Phase 1d:
 - [ ] Test with Verlet/leapfrog integrator (energy conservation for lock-in stability)
 - [ ] Test with f64 precision (check if numerical drift causes escape from wells)
 
-## [PHASE 3: Electric Force — 3D Validation (Taichi, port from 1D)](03_electric_3D.md)
+## [PHASE 3: Forces — 3D Validation (Taichi, port from 1D)](03_forces_3D.md)
 
 > **Conditional scheduling**: Ports validated 1D results from  Phase 1c (vector) and/or Phase 1d (non-linear) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
