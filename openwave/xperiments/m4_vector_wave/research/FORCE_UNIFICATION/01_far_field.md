@@ -1,4 +1,4 @@
-# ✅ PHASE 1: Electric Force — FAR-FIELD (1D Sandbox only)
+# ✅ PHASE 1: FAR-FIELD Forces (1D Sandbox only)
 
 ## Table of Contents
 

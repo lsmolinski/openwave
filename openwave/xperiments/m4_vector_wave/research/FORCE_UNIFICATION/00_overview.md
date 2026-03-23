@@ -92,3 +92,36 @@ The theory proposes that all forces are manifestations of the same wave interfer
 5. **Orbital Force**: a combination of electric and magnetic forces creating zero amplitude nodes (orbitals), where electrons can be found randomly, doesn't follow a classical planetary orbit.
 
 - Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.
+
+## List of Research Files
+
+**Foundation:**
+
+- [00_overview.md](00_overview.md) — Conceptual overview, goals, main concepts, force hierarchy
+- [00_roadmap.md](00_roadmap.md) — Task roadmap for all phases with status tracking
+- [00a_equations.md](00a_equations.md) — ✅ Wave equations explored (5 forms), phasor superposition, force computation
+- [00b_additional.md](00b_additional.md) — ✅ Additional theories: LaFreniere, Smoliński (BCC lattice, soliton geometry, push-out)
+- [00c_challenges.md](00c_challenges.md) — ✅ Key challenges (envelope, standing/traveling, scalar/vector, 1/r², interference)
+
+**Phase 1 — Electric Force Far-Field:**
+
+- [01_far_field.md](01_far_field.md) — ✅ Phase 1: Far-field forces (1D sandbox). 9/9 linear candidates ruled out, sinc oscillation analysis
+- [01a_signed.md](01a_signed.md) — ✅ Phase 1a: Signed disturbance (ruled out — charge imposed, not emergent)
+- [01b_base_disturbance.md](01b_base_disturbance.md) — ✅ Phase 1b: Base wave + WC disturbance (completed). 5 base wave modes, 10 WC models, M2 prior art, elastic disturbance concept
+- [01c_vector_wave.md](01c_vector_wave.md) — 🔶 Phase 1c: Vector wave force (IN PROGRESS). 3D displacement, L→T spin, force mechanism
+- [01d_non_linear.md](01d_non_linear.md) — 🚧 Phase 1d: Non-linear wave equations. Variable λ(r), Ψ³, Smoliński push-out. Converges with 1c
+
+**Phases 2–7 — Future:**
+
+- [02_near_field.md](02_near_field.md) — Phase 2: Near-field forces (lock-in, annihilation)
+- [03_forces_3D.md](03_forces_3D.md) — Phase 3: Forces 3D validation (port to Taichi M4)
+- [04_magnetic_vector.md](04_magnetic_vector.md) — Phase 4: Magnetic force (transverse waves, spin, toroidal flow)
+- [05_gravitational.md](05_gravitational.md) — Phase 5: Gravitational force (shading, buoyancy, density hierarchy)
+- [06_time_dynamics.md](06_time_dynamics.md) — Phase 6: Time dynamics (λ as time, wavelength kingdom, wave resonance)
+- [07_emergent_waves.md](07_emergent_waves.md) — Phase 7: Emergent waves (photons, thermal energy, heat as fuel)
+- [10_broader_impact.md](10_broader_impact.md) — Broader scientific and technological impact
+
+**Scripts:**
+
+- `scripts_scalar_wave/` — 1D scalar wave engine scripts (v1, v2, v3, sweeps) — Phase 1a/1b research tools
+- `scripts_vector_wave/` — 3D vector wave research scripts — Phase 1c math exploration
