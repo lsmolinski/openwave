@@ -31,65 +31,80 @@ Everything emerges from disturbances in this wave field:
 
 All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is to **numerically validate** them through computational analysis and rendered simulations — starting with force emergence from wave interference, then extending to matter formation, photon emission, and thermal dynamics.
 
+## ⚠️ Key Concepts Under Investigation
+
+- **BASE WAVE**:
+  - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
+
+- **WAVE CENTERS (WCs)**:
+  - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
+
+- **3D SPACE & VECTOR WAVES**:
+  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
+
+- **FORCE MECHANISM**:
+  - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
+
+- **ELLIPTICAL MOTION & SPIN**:
+  - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
+
+- **NON-LINEAR WAVES (Phase 1d)**:
+  - Variable λ(r) near WCs — wavelength changes with distance from the WC (Yee & Hauger shells `r_wavelength = 2Κλ - 2nλ`, WKB phase integral). The current energy formula `E = ρV(fA)²` uses constant f and can't see λ variation. Phase 1d implements `E = ρV(c·A/λ(r))²` where the `∇λ` term creates force from wavelength gradients. Converges with Phase 1c — variable λ breaks sinc periodicity while vector displacement provides charge sensitivity
+
+- **ENERGY CONSERVATION & WAVE STEEPNESS**:
+  - Wave steepness A/λ = constant for isolated energy redistribution. External energy input (heating) increases steepness. WC spin converts L→T while conserving `E_L + E_T = const`. The conversion ratio may be the fine-structure constant α
+
+- **VISUALIZATION & RENDERING**:
+  - Phase 1c focuses on raw math (numpy scripts) for an accelerated discovery phase — compute, sweep, analyze, document. No matplotlib animation, no 3D rendering. When the wave equations are validated and force emergence is confirmed, the equations get ported to OpenWave's M4 Taichi-based 3D rendering infrastructure (launcher, medium, wave_engine, particles, force & motion) for visualization and public demonstration
+
+- **VALIDATION TARGETS** (the complete force unification validation set):
+  - **Far-field (Coulomb regime)**: force direction emergent (not imposed ±1 — passes emergence test). 1/r² magnitude scaling vs Coulomb reference. Newton's 3rd law (equal and opposite). Opposite charge attracts, same charge repels — at ALL separations (no sinc flips). Energy conserved
+  - **Near-field (particle regime)**: same-phase lock-in — oscillatory force creates stable energy wells (quarks, orbital shells, bonding). Opposite-phase monotonic attraction → annihilation (wave cancellation at zero separation). Near-field to far-field transition boundary — clean crossover from lock-in to Coulomb. Note: the sinc force-flipping that's the PROBLEM in far-field is the DESIRED PHYSICS in near-field — at sub-wavelength distances the oscillating force direction creates the energy wells that lock particles together. The challenge is making it stop at the transition boundary
+  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
+  - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
+  - **Matter formation**: attraction + repulsion equilibrium holds particles together. Standing wave core forms at WC with correct radius (K²λ). Mass = energy in standing waves (E = mc²)
+
 ## The Spacetime Medium
 
-An unknown but fluid-like substance permeates all of space and penetrates all matter. This medium vibrates in harmonic oscillations, forming longitudinal waves that travel through space at the speed of light (c). The medium has measurable properties:
+An unknown but fluid-like substance permeates all of space and penetrates all matter. This medium vibrates in harmonic oscillations, forming waves that travel at the speed of light (c). The medium has measurable properties:
 
-- Density: ρ = 3.86 × 10²² kg/m³ (38.6 qg/am³ in simulation units)
+- Density: ρ = 3.86 × 10²² kg/m³ (38.6 qg/am³)
 - Wave speed: c = 2.998 × 10⁸ m/s (0.3 am/rs)
 - Fundamental amplitude: A₀ = 9.22 × 10⁻¹⁹ m (0.92 am)
 - Fundamental frequency: f₀ = 1.05 × 10²⁵ Hz (0.0105 rHz)
 - Fundamental wavelength: λ₀ = 2.85 × 10⁻¹⁷ m (28.5 am)
 
-## Wave Centers and Particle Formation
+## Energy, Force, and Spacetime Curvature
 
-Wave centers are points where waves reflect and change character. Key properties:
+The EWT energy equation: `E = ρ · V · (f · A)²`. In vector displacement (3D): `E = E_L + E_T = ρV(f·A_L)² + ρV(f·A_T)²`.
 
-- **Reflection**: An isotropic base energy wave is always present at any point in space — the result of reflections from all matter in the universe, reaching every point from all directions (Huygens wavelet principle)
-- **Re-emission**: Every wave center reflects this base wave outward radially, changing its phase and character
-- **Phase offset (source_offset)**: Each wave center has a phase offset that determines its charge signature. `cos(0) = +1` (positron), `cos(π) = -1` (electron). This is the origin of particle charge
-- **Standing waves**: Near the wave center, reflected in-waves and emitted out-waves superpose to form standing waves — the structure of the particle itself
-- **Matter signature frequency**: every element and molecule has a unique frequency signature — a combination of multiple oscillation frequencies, like musical timbre. Discovering these signatures enables manipulation of matter through wave combination (superposition at the right frequencies to control attraction and repulsion)
+Force: `F = -∇E` — wherever wave interference creates spatial variation in energy, there is a force. Particles fall into low-energy valleys in the energy density landscape. Computing F from ∇E directly (not chain-rule expansion) means variable ρ(x), f(x), λ(x) are automatically captured.
 
-### Matter Formation from Standing Waves & Force Equilibrium
-
-Once force unification is demonstrated, matter formation can be explained as the natural consequence of attraction/repulsion forces reaching equilibrium — keeping or separating particles to form the chain of material bonding. The same wave interference forces that create energy gradients would drive the assembly of increasingly complex structures: subatomic particles → electrons → protons/neutrons → atoms → molecules → bulk matter. Each level of organization emerges from force balance at the level below.
-
-## Energy and Force
-
-The EWT energy equation for a volume of medium:
-
-```text
-E = ρ · V · (f · A)²
-```
-
-Where ρ is medium density, V is volume, f is frequency, A is displacement amplitude.
-
-Force is the negative gradient of energy density:
-
-```text
-F = -∇E
-```
-
-Force emerges from the **gradient of energy density** — wherever wave interference creates a spatial variation in energy, there is a force. Wave centers (which have mass) move toward lower energy configurations via F = ma. In essence, particles fall into low-energy valleys in the energy density landscape shaped by wave interference.
-
-Computing F directly from ∇E (rather than expanding the chain rule) means that when ρ(x), f(x), or λ(x) become spatially variable in later phases, the force computation automatically captures all contributions without modification.
-
-This may be the physical mechanism behind what Einstein described as "curvature in spacetime" — not a geometric bending of an abstract manifold, but a real energy density landscape sculpted by wave interference in the medium. The "curvature" is the shape of the energy valleys and hills created by constructive and destructive interference. Particles follow geodesics not because space is curved, but because they roll downhill in the energy density field.
+This may be the mechanism behind "spacetime curvature" — not geometric bending of an abstract manifold, but a real energy density landscape sculpted by wave interference. The "curvature" is the shape of energy valleys and hills. Particles follow geodesics because they roll downhill in the energy field.
 
 ## Force Unification Hierarchy
 
-The theory proposes that all forces are manifestations of the same wave interference — ultimately, there may be **one single force** (F = -∇E, the gradient of energy). What we call electric, magnetic, and gravitational forces are the same energy gradient projected onto different directional components of the vector wave field. The force type depends on the angle/direction, not on separate mechanisms:
+One force `F = -∇E`, projected onto vector displacement components:
 
-1. **Electric Force** (longitudinal): The fundamental force. Arises from constructive/destructive interference of energy waves between wave centers with different phase offsets. Opposite charges (0 vs π offset) create destructive interference between them → lower amplitude in the gap → particles fall into the energy well → attractive force. Same charges create constructive interference → higher amplitude between them → particles repelled from the high-energy zone → repulsive force
+1. **Electric Force** (longitudinal, ∇E_L): constructive/destructive interference from WC phase offsets. Opposite charges (0 vs π) → destructive → energy well → attraction. Same charges → constructive → energy hill → repulsion. Always present (one radial direction)
 
-2. **Magnetic Force** (transverse): When longitudinal energy waves hit a spinning wave center, the energy required for spin is converted into a transverse wave component (90° to longitudinal). This reduces the longitudinal (electric) wave energy. Magnetic force emerges from the transverse wave interference
+2. **Magnetic Force** (transverse, ∇E_T): L→T spin conversion at WC creates transverse wave component (90° to longitudinal). Magnetic force from transverse energy gradient. Conditional — requires spin alignment/coherence (360° transverse freedom cancels unless aligned)
 
-3. **Gravitational Force** (shading / push-out): When many wave centers cluster together (large bodies), they collectively absorb/scatter incoming energy waves. The region around the body has reduced longitudinal wave amplitude — a "shadow". Another body in this shadow region experiences a net force toward the first body because the energy density gradient points inward. Gravity is a residual effect of large-scale electric wave shading. An alternative but compatible formulation (Smoliński) treats gravity as a **pressure deficit (buoyancy)** in the medium: solitons (particles) displace medium density from their interior, creating a push-out effect. The 10⁻⁴² electromagnetic-to-gravitational force ratio emerges geometrically from a density hierarchy in the lattice packing (see Smoliński's Contributions).
+3. **Gravitational Force** (total deficit): WC clusters collectively drain energy from far field → amplitude "shadow" → net inward force. Smoliński: pressure deficit / buoyancy from medium density displacement. The 10⁻⁴² EM-to-gravitational ratio emerges from density hierarchy geometry
 
-4. **Strong Force**: Longitudinal electric force in short distances (λ scale). Particles inside each others standing wave radius will experience the strong force, a concentrated electrical force with stored energy from standing waves.
+4. **Strong Force**: electric force at sub-wavelength distances (λ scale). Particles inside each other's standing wave radius experience concentrated energy from standing waves
 
-5. **Orbital Force**: a combination of electric and magnetic forces creating zero amplitude nodes (orbitals), where electrons can be found randomly, doesn't follow a classical planetary orbit.
+5. **Orbital Force**: combination of electric + magnetic creating zero-amplitude nodes (orbitals) where electrons can be found — not classical planetary orbits
+
+## Wave Centers and Matter
+
+Wave centers elastically disturb the base wave — the wave passes through and comes out changed. Key properties:
+
+- **Base wave interaction**: isotropic energy wave from all matter in the universe (Huygens wavelet principle) is disturbed at each WC
+- **L→T spin conversion**: the disturbance transforms longitudinal → transverse (the physical meaning of spin). CW = electron, CCW = positron
+- **Standing waves**: near the WC, in-waves and disturbed out-waves superpose → standing wave structure = the particle itself
+- **Matter signature frequency**: every element has a unique frequency combination (like timbre). Discovering signatures enables wave-based matter manipulation
+- **Matter formation**: force equilibrium (attraction + repulsion) assembles structures at every scale: subatomic → atoms → molecules → bulk matter
 
 - Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.
 

@@ -4,39 +4,6 @@
 
 Implement true vector displacement (independent L and T components) to test whether L→T spin conversion produces emergent charge-dependent force direction — the ONLY mechanism from Phase 1b that distinguished charges.
 
-## ⚠️ Key Concepts Under Investigation
-
-- **BASE WAVE**:
-  - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
-
-- **WAVE CENTERS (WCs)**:
-  - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
-
-- **3D SPACE & VECTOR WAVES**:
-  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
-
-- **FORCE MECHANISM**:
-  - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
-
-- **ELLIPTICAL MOTION & SPIN**:
-  - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
-
-- **NON-LINEAR WAVES (Phase 1d)**:
-  - Variable λ(r) near WCs — wavelength changes with distance from the WC (Yee & Hauger shells `r_wavelength = 2Κλ - 2nλ`, WKB phase integral). The current energy formula `E = ρV(fA)²` uses constant f and can't see λ variation. Phase 1d implements `E = ρV(c·A/λ(r))²` where the `∇λ` term creates force from wavelength gradients. Converges with Phase 1c — variable λ breaks sinc periodicity while vector displacement provides charge sensitivity
-
-- **ENERGY CONSERVATION & WAVE STEEPNESS**:
-  - Wave steepness A/λ = constant for isolated energy redistribution. External energy input (heating) increases steepness. WC spin converts L→T while conserving `E_L + E_T = const`. The conversion ratio may be the fine-structure constant α
-
-- **VISUALIZATION & RENDERING**:
-  - Phase 1c focuses on raw math (numpy scripts) for an accelerated discovery phase — compute, sweep, analyze, document. No matplotlib animation, no 3D rendering. When the wave equations are validated and force emergence is confirmed, the equations get ported to OpenWave's M4 Taichi-based 3D rendering infrastructure (launcher, medium, wave_engine, particles, force & motion) for visualization and public demonstration
-
-- **VALIDATION TARGETS** (the complete force unification validation set):
-  - **Far-field (Coulomb regime)**: force direction emergent (not imposed ±1 — passes emergence test). 1/r² magnitude scaling vs Coulomb reference. Newton's 3rd law (equal and opposite). Opposite charge attracts, same charge repels — at ALL separations (no sinc flips). Energy conserved
-  - **Near-field (particle regime)**: same-phase lock-in — oscillatory force creates stable energy wells (quarks, orbital shells, bonding). Opposite-phase monotonic attraction → annihilation (wave cancellation at zero separation). Near-field to far-field transition boundary — clean crossover from lock-in to Coulomb. Note: the sinc force-flipping that's the PROBLEM in far-field is the DESIRED PHYSICS in near-field — at sub-wavelength distances the oscillating force direction creates the energy wells that lock particles together. The challenge is making it stop at the transition boundary
-  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
-  - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
-  - **Matter formation**: attraction + repulsion equilibrium holds particles together. Standing wave core forms at WC with correct radius (K²λ). Mass = energy in standing waves (E = mc²)
-
 ## Research Strategy
 
 **Math-only exploration** — no visualization, no animation. Pure numpy scripts that:
@@ -306,43 +273,17 @@ The electron as a superfluid irrotational vortex — supporting the toroidal flo
 
 ## Implementation Plan
 
-Math scripts to build, what to compute, what to measure.
+Math scripts in `scripts_vector_wave/`. Detailed task checklist in [00_roadmap.md](00_roadmap.md).
 
-### Step 1: 3D Vector Base Wave
+**Step 1: 3D Vector Base Wave** — build the 3D isotropic base wave field with vector displacement `ψ(r) = (ψ_x, ψ_y, ψ_z)`. Waves from all directions → uniform energy density. Implement L/T decomposition relative to any reference point. Verify flat energy and zero force without WCs.
 
-Implement the 3D isotropic base wave with vector displacement:
+**Step 2: WC as L→T Converter (Spin)** — single WC at grid center converts longitudinal → transverse with charge-dependent direction (CW/CCW). Verify energy concentration near WC, drainage in far field, and `E_L + E_T = const`. Revisit M2 spin code with improved understanding.
 
-- [ ] 3D grid with vector displacement at each point: `ψ(r) = (ψ_x, ψ_y, ψ_z)`
-- [ ] Isotropic base wave: waves from all directions → uniform energy density
-- [ ] L/T decomposition relative to any reference point
-- [ ] Verify: base wave alone produces flat energy, zero force
+**Step 3: Two-WC Force Test** — two WCs at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on charge sign, emergent from wave physics?
 
-### Step 2: WC as L→T Converter (Spin)
+**Step 4: Coulomb Validation** — force magnitude vs Coulomb reference, 1/r² scaling, Newton's 3rd law.
 
-- [ ] Place WC at grid center
-- [ ] Implement L→T conversion: reduce A_L, increase A_T at WC, with 1/r rolloff
-- [ ] Charge-dependent direction: CW (+½) vs CCW (-½)
-- [ ] Verify: single WC creates energy concentration (standing waves) near it, drainage far field
-- [ ] Verify: energy conservation `E_L + E_T = constant`
-
-### Step 3: Two-WC Force Test
-
-- [ ] Place two WCs at variable separation
-- [ ] Compute `E_total = E_L + E_T` at each grid point
-- [ ] Compute `F = -∇E_total` at WC positions
-- [ ] Sweep separation: does force direction depend on charge sign?
-- [ ] The critical test: opposite charge attracts, same charge repels — emergent, not imposed?
-
-### Step 4: Coulomb Validation
-
-- [ ] Compare force magnitude vs Coulomb reference at multiple separations
-- [ ] Check 1/r² scaling
-- [ ] Check Newton's 3rd law (equal and opposite forces)
-
-### Step 5: Convergence with Phase 1d (Variable λ)
-
-- [ ] Add λ(r) to energy equation: `E = ρV(c·A/λ(r))²`
-- [ ] Test combined: vector displacement + variable λ → does force direction + magnitude work?
+**Step 5: Convergence with Phase 1d** — add variable λ(r) to energy equation. Test combined vector displacement + variable λ.
 
 ---
 
