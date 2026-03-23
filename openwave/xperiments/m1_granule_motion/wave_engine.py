@@ -266,13 +266,13 @@ def oscillate_granules(
             # Vector from vertex to granule equilibrium position
             r_vec = equilibrium_am[granule_idx] - universe_vertices_am[v]
             r_mag = r_vec.norm()
-            # A·cos(kr - ωt)·direction, negative for outward propagation, full amp
+            # A·cos(kr + ωt)·direction, positive for inward propagation, full amp
             base_wave_psi += (
                 base_wave_toggle
                 * base_amplitude_am
                 * amp_boost
                 / 8  # base-wave do not superpose, split per vertex for energy conservation
-                * ti.cos(k_am * r_mag - temporal_phase)
+                * ti.cos(k_am * r_mag + temporal_phase)
             ) * (r_vec / r_mag)
 
         # Initialize accumulation variables for wave superposition

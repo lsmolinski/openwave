@@ -275,15 +275,51 @@ The electron as a superfluid irrotational vortex — supporting the toroidal flo
 
 Math scripts in `scripts_vector_wave/`. Detailed task checklist in [00_roadmap.md](00_roadmap.md).
 
-**Step 1: 3D Vector Base Wave** — build the 3D isotropic base wave field with vector displacement `ψ(r) = (ψ_x, ψ_y, ψ_z)`. Waves from all directions → uniform energy density. Implement L/T decomposition relative to any reference point. Verify flat energy and zero force without WCs.
+## Step 1: 3D Vector Base Wave — ✅ COMPLETED
 
-**Step 2: WC as L→T Converter (Spin)** — single WC at grid center converts longitudinal → transverse with charge-dependent direction (CW/CCW). Verify energy concentration near WC, drainage in far field, and `E_L + E_T = const`. Revisit M2 spin code with improved understanding.
+Built 3D isotropic base wave `ψ(r) = (ψ_x, ψ_y, ψ_z)`: N=200 longitudinal plane waves from Fibonacci sphere directions, complex vector phasor field on 64³ grid (8λ extent, 8 vox/λ). `scripts_vector_wave/step1_base_wave.py`
 
-**Step 3: Two-WC Force Test** — two WCs at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on charge sign, emergent from wave physics?
+### Results (all 6 checks passed):
 
-**Step 4: Coulomb Validation** — force magnitude vs Coulomb reference, 1/r² scaling, Newton's 3rd law.
+- **Mean energy**: matches theory `E = ρVf²A₀²/2` to 0.3% (ratio 1.0033)
+- **Energy CV = 0.5705**: matches chi-squared(6) prediction `1/√3 ≈ 0.5774`. The "speckle" is fundamental to coherent wave interference — the energy has wavelength-scale fluctuations that average out at particle scales (electron = 100λ)
+- **L/T split: E_L/E = 0.3307, E_T/E = 0.6693**: matches theory (1/3 longitudinal, 2/3 transverse). Holds at all 4 tested reference points. This is a fundamental property of isotropic vector fields — one radial direction carries 1/3 of the energy, two perpendicular directions carry 2/3
+- **E_L + E_T = E_total**: exact to machine precision (err = 6.79e-16)
+- **Force = speckle noise only**: |F|_mean matches CV·E·k₀ estimate (ratio 1.03). No large-scale gradient — confirmed null baseline
+- **Convergence**: CV is independent of N_sources (confirmed 50 → 1000), converging to 1/√3 as predicted by chi-squared statistics
 
-**Step 5: Convergence with Phase 1d** — add variable λ(r) to energy equation. Test combined vector displacement + variable λ.
+Key insight for Step 2: the undisturbed base wave has 1/3 L energy and 2/3 T energy everywhere. A WC that converts L→T via spin will shift this ratio locally, creating the energy gradient that produces force.
+
+### Vector Base Wave Character
+
+- **BASE WAVE EQUATION**: `ψ_n(r,t) = (A₀/√N) · cos(k₀·k̂_n·r + ωt + φ_n) · k̂_n`
+- **Amplitude**: A₀/√N, A₀ = 0.92 am is the total fundamental amplitude. Divided by √N so that total energy sums correctly. Same principle as random walk.
+- **Oscillator**: cosine function, phase computed from spacial_term - temporal_term - source_offset
+- **Direction**: all directions from all matter of the universe, simulated using fibonacci sphere to center
+- **Wave Mode**: longitudinal
+- **Wave Geometry**: plane waves. The base wave comes from all matter in the universe — billions of wave centers at enormous distances. A spherical wave from a distant source, by the time it reaches our simulation volume (8λ = 228 am across), has traveled ~10²⁶ am. At that distance, the wavefront curvature across our grid is essentially zero — the spherical wave IS a plane wave locally.  
+
+### Fibonacci Sphere
+
+<https://extremelearning.com.au/evenly-distributing-points-on-a-sphere/>
+
+- The golden ratio is φ = (1 + √5) / 2 ≈ 1.618. The golden angle is 2π/φ² ≈ 137.5°. Why the golden angle? Because φ is the most irrational number — it's the hardest number to approximate with fractions. This means no two points ever line up in regular rows or columns. If you used 120° (= 1/3 turn), every 3rd point would stack vertically. If you used 144° (= 2/5 turn), every 5th point would align. The golden angle never repeats — it produces the spiral pattern in sunflower seeds, pinecones, and our sphere sampling.  
+
+## Step 2: WC as L→T Converter (Spin)
+
+Single WC at grid center converts longitudinal → transverse with charge-dependent direction (CW/CCW). Verify energy concentration near WC, drainage in far field, and `E_L + E_T = const`. Revisit M2 spin code with improved understanding.
+
+## Step 3: Two-WC Force Test
+
+Two WCs at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on charge sign, emergent from wave physics?
+
+## Step 4: Coulomb Validation
+
+Force magnitude vs Coulomb reference, 1/r² scaling, Newton's 3rd law.
+
+## Step 5: Convergence with Phase 1d
+
+Add variable λ(r) to energy equation. Test combined vector displacement + variable λ.
 
 ---
 
