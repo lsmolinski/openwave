@@ -1,4 +1,4 @@
-# 🔶 PHASE 1c: Vector Wave Force — 3D Displacement Research
+# ✅ PHASE 1c: Vector Wave Force — 3D Displacement Research
 
 ## Goal
 
@@ -498,7 +498,7 @@ Key findings from LaFreniere:
 
 Reference: `lafreniere/Gabriel_LaFreniere/sa_phaseshift.html`
 
-## 🔶 Step 4 → Phase 1d: Variable λ(r) for Coulomb Force
+## ✅ Step 4 → Phase 1d: Variable λ(r) for Coulomb Force
 
 Steps 4-5 of Phase 1c (Coulomb validation, convergence with 1d) merge into Phase 1d. The vector displacement infrastructure from Steps 1-2 is ready. The missing mechanism for electric force is variable λ(r) — to be implemented in Phase 1d with:
 
@@ -507,21 +507,6 @@ Steps 4-5 of Phase 1c (Coulomb validation, convergence with 1d) merge into Phase
 - Energy equation: `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients
 - LaFreniere core phase shift: λ/2 advance from compressed core (1λ diameter, 7x compression)
 - Combined with vector displacement (L + T) for full force decomposition
-
----
-
-## Other Force Computation Approaches
-
-Beyond `F = -∇E_total`, vector displacement enables alternative force quantities:
-
-- **Divergence** (∇·ψ): compression/rarefaction — scalar but signed
-- **Curl** (∇×ψ): rotational displacement — vector, related to magnetic field
-- **Energy flux** (ψ × ∂ψ/∂t): directional energy flow (radiation pressure, LaFreniere's mechanism)
-- **Per-component force**: `F_x = -∂E_x/∂x`, `F_y = -∂E_y/∂y`, `F_z = -∂E_z/∂z`
-
-Standing waves have zero net flux, traveling waves have nonzero flux — flux naturally separates near-field (standing, lock-in) from far-field (traveling, Coulomb).
-
-All Maxwell's equations have divergence and curl components.
 
 ---
 

@@ -14,19 +14,60 @@
 
 - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
 
+## CURRENT STATE
+
+### NEAR-FIELD
+
+| Effect | Status | Evidence |
+| --- | --- | --- |
+| Strong Force (lock-in) | ✅ Emerges | WC at Same phase: sinc nodes create energy wells at λ/2, WCs lock into these wells — this IS the strong force binding mechanism for quarks, nuclear binding, and particle formation |
+| Anti-Particle Annihilation | ✅ Emerges | WC at Opposite phase: deepest well at r=0 (zero separation = complete wave cancellation), barriers at λ/2 explain positronium, high kinetic energy overcomes barriers → direct annihilation |
+| Particle Formation | ⚠️ Concept works | Lock-in holds WCs, but M3/M4 K=10 tetrahedron unstable (needs variable λ for non-uniform nodes in equilibrium state) |
+
+### Next to do
+
+- solve K=10 tetrahedron stability on M3/M4
+- rename M3 xperiments with near-field results.
+
+---
+
+### FAR-FIELD
+
+| Effect | Status | Evidence |
+| --- | --- | --- |
+| Electric Force | | Charge emerges, Coulomb validation, ❌ spatial_term flips force direction |
+| Magnetic Force | | Spin |
+| Gravitational Force | | Shading |
+
+### Candidates for testing
+
+#### Energy Flux concept vs. F = -∇E
+
+- F ∝ momentum flux: Poynting vector analog
+- Coulomb force as radiation pressure from the traveling waves, not as energy gradient
+
 ## ⚠️ Key Hypothesis Under Investigation
 
 - **BASE WAVE**:
   - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
+  - TESTING: standing wave, quadrature, uniform, stochastic, laplacian, dual-channel
 
 - **WAVE CENTERS (WCs)**:
   - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
+  - TESTING: (wave equation) in + out, partial standing, out wave only, A(r), λ(r)
+  - sinc function: `ψ = A · cos (kr ± ωt ± φ) / kr`
+  - TESTING: (interaction with base) additive reflection, absorber, elastic disturbance (amp, phase shift, spin)
+  - effect: standing @near_field + traveling @far_field
 
 - **3D SPACE & VECTOR WAVES**:
   - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
 
-- **FORCE MECHANISM**:
-  - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
+- **FORCE MECHANICS**:
+  - One unified force `F = -∇E`: Force emerges from energy gradient
+  - Two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
+  - `E = ρV·(c/λ·A)²`: Energy is a function of Α and λ (ρ might also be variable, c is absolute)
+  - Wave character and superposition (from wave equations) determines A(r) and λ(r) for every point in space.
+  - Wave oscillator as `f(r,t,φ)`: phase = spacial_term + temporal_phase + source_offset.
   - Major clarity gained on what produces what:
     - wave phase → annihilation vs. repulsion
     - standing wave / sinc → strong force / lock-in
@@ -34,7 +75,11 @@
     - spin → magnetic
     - drainage → gravitational
 
-- **ELLIPTICAL MOTION, SPIN, HYPERBOLIC PATTERNS**:
+- **3D WAVE DISPLACEMENT: ELLIPTICAL MOTION, SPIN, HYPERBOLIC PATTERNS**:
+
+  - granule elliptical motion, hyperbolic patterns
+  - needs vector field with orthogonal components
+  - 3D force orthogonality might connect to electromagnetism.
   - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
 
 - **NON-LINEAR WAVES**:
@@ -138,3 +183,16 @@ Wave centers elastically disturb the base wave — the wave passes through and c
 - **Matter formation**: force equilibrium (attraction + repulsion) assembles structures at every scale: subatomic → atoms → molecules → bulk matter
 
 - Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.
+
+## SIMULATOR TOOLS
+
+- 1D & 3D wave engines
+- Wave Equations compute on GPU
+- Multiple methods & options for wave equations, on scalar & vector fields
+- Phasor superposition for exact analytical amplitude computation
+- Variable λ logic (non-linear wave equations)
+- 3D Rendering system
+  - subatomic physics simulation with wave & particle 3D animation (leap-frog integrator)
+  - flux mesh cross-section for variable display (color and magnitude via warp-mesh)
+  - xperiment parametric design
+  - data dashboard & instrumentation for data collection

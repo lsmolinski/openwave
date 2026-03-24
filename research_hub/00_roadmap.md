@@ -1,6 +1,6 @@
 # ROADMAP
 
-## [PHASE 0: Tooling](#phase-0-tooling--details)
+## ✅ [PHASE 0: Tooling](#phase-0-tooling--details)
 
 - ✅ Build 1D wave sandbox (matplotlib, interactive controls)
 - ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
@@ -11,7 +11,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-## [PHASE 1: FAR-FIELD Force (1D Sandbox only)](01_far_field.md)
+## ✅ [PHASE 1: FAR-FIELD Force (1D Sandbox only)](01_far_field.md)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -64,7 +64,7 @@
 
 > **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### 🔶 [PHASE 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
+### ✅ [PHASE 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
 
 > **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement.
 >
@@ -109,7 +109,7 @@ Steps 4-5 — merged into Phase 1d:
 - [ ] Variable λ(r) from Yee & Hauger shells + LaFreniere core phase shift → electric force
 - [ ] Combined vector displacement + variable λ → full force decomposition (electric from ∇λ, magnetic from spin T, gravitational from deficit)
 
-### 🔶 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+### ✅ [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 
 > **From Phase 1c**: spin → magnetic (not electric). Variable λ(r) → electric force candidate. Converges with Phase 1c vector infrastructure.
 
@@ -138,7 +138,7 @@ Carry-Over to Phase 2:
 - [ ] Explore whether sinc lock-in + charge discrimination IS the unified force (near-field = strong, far-field = Coulomb envelope)
 - [ ] Variable ρ(x), Ψ³ non-linearity, combined vector + variable λ (deferred from Phase 1d)
 
-## [PHASE 2: BUILDING BLOCKS)](02_BUILDING_BLOCKS.md)
+## 🔶 [PHASE 2: BUILDING BLOCKS)](02_BUILDING_BLOCKS.md)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
