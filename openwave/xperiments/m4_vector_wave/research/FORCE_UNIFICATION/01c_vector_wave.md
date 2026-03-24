@@ -371,17 +371,106 @@ P_wc(r) = A_wc · sinc(k₀r) · exp(+i·(k₀r + φ_wc)) · [√(1-η)·r̂ + �
 - **η = α ≈ 1/137**: the fine structure constant. Fraction of in-wave longitudinal energy converted to transverse by spin. From EWT: `α = e²/e₀²` = (elementary charge / Planck charge)². Reference: <https://energywavetheory.com/physics-constants/fine-structure-constant/>
 - **Gravity connection**: the amplitude deficit (in-wave > out-wave) from L→T conversion accumulates to produce the gravitational coupling constant αG ≈ 2.4×10⁻⁴³. Reference: <https://energywavetheory.com/physics-constants/gravity-coupling-constants/>
 
-## 🚧 Step 3: Two-WC Force Test
+## ✅ Step 2a: KEY FINDINGS — Spin Scale, Sinc Resolution, and New Direction
 
-Two WCs at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on charge sign, emergent from wave physics?
+### The Sinc Oscillation Was Never a Bug — It's K=1 Physics
+
+Per EWT (Jeff Yee), spin only occurs at electron scale K=10, NOT at the fundamental wave center K=1 (neutrino). A single WC has no spin, no charge, no L→T conversion. The sinc oscillation that's been our "main blocker" for 4 months is actually the **correct physics for K=1**:
+
+| Scale | K | Charge | Spin | Far-field Coulomb? | Sinc oscillation? |
+| --- | --- | --- | --- | --- | --- |
+| Neutrino | 1 | neutral | none | NO | Correct — oscillation = lock-in |
+| Electron | 10 | charged | yes (L→T) | YES | Must be broken by spin |
+
+- **Neutrino (K=1)**: single WC, electrically neutral, no spin. "Not attracted to particles" — can pass through Earth without collision. The oscillatory sinc force at sub-wavelength distances IS the strong force / lock-in that holds neutrinos together into electrons
+- **Electron (K=10)**: 10 WCs in 1-3-6 tetrahedral arrangement at standing wave nodes. Spin emerges when one WC goes "off node" → forced to reposition → continuous rotation through the structure. "The spin of the electron becomes the magnetic force — a new transverse wave." Spin requires energy → L→T conversion at rate α ≈ 1/137
+- **Strong force**: ~137x stronger than electric (= 1/α). At standing wave nodes, full in-wave amplitude is used (no spin loss). Lock-in at sub-wavelength distances: quarks at 3λ_e, nucleons at 4λ_e
+- **Force hierarchy**: all forces are ratios of the electric force. Strong = electric × (1/α). Electric = baseline (in-wave minus spin energy). Magnetic = transverse from spin. Gravitational = accumulated amplitude deficit
+
+References: <https://energywavetheory.com/forces/electric/>, <https://energywavetheory.com/forces/unification-of-forces/>, <https://energywavetheory.com/forces/strong-force/>
+
+### Same Phase vs Opposite Phase — Lock-in and Annihilation
+
+The sinc interaction energy `E_int ∝ cos(k·Δr + Δφ)` naturally produces different well structures for same vs opposite phase, it's actually beautifully consistent:
+
+```text
+Same phase (Δφ = 0):     E_int ∝ +cos(k·Δr)    wells at λ/2, 3λ/2, 5λ/2 ...
+Opposite phase (Δφ = π): E_int ∝ -cos(k·Δr)    wells at 0, λ, 2λ, 3λ ...
+```
+
+| | Same Phase | Opposite Phase |
+| --- | --- | --- |
+| r = 0 | Energy HILL (max repulsion) | Energy WELL (deepest — annihilation) |
+| r = λ/2 | Energy WELL (1st lock-in) | Energy HILL (barrier) |
+| r = λ | Energy HILL | Energy WELL (2nd, shallower) |
+
+**Same phase**: lock-in at standing wave nodes → particle formation. Zero separation = maximum repulsion. This IS how 10 neutrinos form an electron (strong force binding at sub-wavelength distances).
+
+**Opposite phase**: deepest well at r=0 → annihilation. Barriers at λ/2, 3λ/2 can temporarily trap (positronium-like bound states, lifetime ~125 ps to ~142 ns). High kinetic energy overcomes barriers → direct annihilation (particle accelerators).
+
+### Annihilation: What We Can Compare to Observed Data
+
+- **Electron-positron annihilation**: well-observed experimentally (positronium, accelerator collisions). K=10, has spin. This is the comparison target for our simulation
+- **Neutrino-antineutrino annihilation**: NO observed data. EWT neutrino page doesn't mention it. Neutrinos are too weakly interacting to observe annihilation events
+- **Neutrino observation** in general: extremely limited — neutral, passes through Earth, only detected via rare weak-force interactions. No electromagnetic or strong force data to compare against
+
+**Implication for simulation**: we cannot validate K=1 (neutrino) force behavior against experiment because there's no observational data. The neutrino's only use case in our simulation is as a building block for the electron (K=10 tetrahedron). All observable force validation (Coulomb, annihilation, magnetic) must be at K≥10.
+
+### Jeff Yee's Response (2026-03-23)
+
+Key points from Jeff's reply to the Phase 1c research update:
+
+1. **Near-field physics is the breakthrough**: "I think it's a good thing that we're getting the physics we want for near-field, because this is the key to explaining particle formation. Simulations based on real math/physics that show this is actually the real breakthrough."
+2. **L→T conversion insight is novel**: "The interesting one here that I never considered is that L→T conversion causes the slight difference in symmetry."
+3. **Single WC may not do Coulomb**: "two wave centers may be difficult/impossible to show with the Coulomb force because at least in my model, a single wave center doesn't do the transverse conversion. Perhaps it does and it's slight, but perhaps not — at the moment a neutrino (single wave center) is thought to be neutral anyway with no charge."
+4. **Bringing in Dieter Hauger**: the co-author of the Yee & Hauger wavelength shells paper, who "came up with the idea/equation" for where standing waves convert to traveling waves. May have insights on the far-field Coulomb mechanism.
+5. **Variable λ(r)** from the shell model may contribute — the ∇λ force term works independently of sinc oscillation (Phase 1d territory).
+
+### M3 Electron Stability Test (repulsion4.py)
+
+Tested the K=10 tetrahedral electron in M3 with fixes (leapfrog integrator, λ/2 lock spacing, gradient radius 3, damping 0.995). Still unstable because:
+
+**15/45 WC pairs sit at non-node distances.** The tetrahedral geometry (1-3-6 arrangement) produces distances of √3×λ/2 ≈ 0.87λ and √2×λ/2 ≈ 0.71λ between non-adjacent WCs — between standing wave nodes, where the sinc force actively destabilizes.
+
+Two paths to fix:
+
+1. **Non-linear λ(r)** (Phase 1d): Yee & Hauger shells give variable node spacing near the WC core. The real electron tetrahedron may sit at nodes of a non-uniform λ(r) lattice, not the uniform λ/2 lattice
+2. **M4 vector method** (this Phase 1c): L→T spin conversion creates transverse energy with different spatial structure than the sinc pattern. Equilibrium in a vector field (E = E_L + E_T) could accommodate geometry that scalar M3 cannot
+
+### K Variable: Do We Need It in Phase 1c?
+
+**For Steps 3-4 (two-WC force test + Coulomb)**: K is not needed. We test two WCs with spin (η=α) at variable separation. This tests the L→T mechanism for charge-dependent force. The WCs represent simplified "particles with spin" — not full K=10 electrons with tetrahedral structure.
+
+**For electron stability**: K=10 with tetrahedral geometry requires modeling 10 WCs. The tetrahedral shape is defined by the `tetrahedral_10()` function in repulsion4.py. The challenge is not modeling the shape — it's that the shape doesn't fit the uniform sinc node lattice. This requires Phase 1d (variable λ) and/or vector forces.
+
+**For validation against experiment**: all observable comparisons (Coulomb 1/r², annihilation, magnetic force) are at K≥10. K=1 physics (lock-in, neutrality) is internally consistent but has no external data to validate against.
+
+**Recommendation**: proceed with Steps 3-4 using two WCs with spin (no K variable needed). The K=10 tetrahedral electron is a Phase 3+ challenge that requires both variable λ AND vector forces.
+
+### EWT References for Step 2a
+
+- <https://energywavetheory.com/subatomic-particles/neutrino/>
+- <https://energywavetheory.com/subatomic-particles/electron/>
+- <https://energywavetheory.com/subatomic-particles/particle-creation-and-decay/>
+- <https://energywavetheory.com/forces/electric/>
+- <https://energywavetheory.com/forces/unification-of-forces/>
+- <https://energywavetheory.com/forces/strong-force/>
+
+---
+
+## 🔶 Step 3: Two-WC Force Test
+
+Two WCs with spin (η=α) at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on spin sign (CW vs CCW), emergent from wave physics?
+
+This is the first test of whether L→T spin conversion produces charge-dependent Coulomb force. The WCs are simplified "particles with spin" — not full K=10 electrons. If the T component creates consistent force direction in the far field, the mechanism works at any K with spin.
 
 ## 🚧 Step 4: Coulomb Validation
 
-Force magnitude vs Coulomb reference, 1/r² scaling, Newton's 3rd law.
+Force magnitude vs Coulomb reference at multiple separations. 1/r² scaling check. Newton's 3rd law (equal and opposite). Must pass at ALL separations (no sinc flips) for the spin mechanism to succeed.
 
 ## 🚧 Step 5: Convergence with Phase 1d
 
-Add variable λ(r) to energy equation. Test combined vector displacement + variable λ.
+Add variable λ(r) to energy equation: `E = ρV(c·A/λ(r))²`. Test combined vector displacement + variable λ. The ∇λ force term may contribute to Coulomb force independently of spin, and variable node spacing may resolve the tetrahedral stability problem.
 
 ---
 

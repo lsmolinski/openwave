@@ -86,11 +86,20 @@ Step 2 — WC as L→T Converter (Spin) (`step2_single_wc.py`):
 - ✅ L/T ratio shifts at WC core: E_L/E goes from baseline 0.33 up to 0.64 (η=0) or down to 0.17 (η=1). Shift is local (< 1λ)
 - ✅ CW/CCW produce identical energy for single WC. Spin sign matters in Step 3 (two WCs)
 
+Step 2a — Key Findings (Spin Scale & Sinc Resolution):
+
+- ✅ **Sinc oscillation = correct K=1 physics**: neutrino is neutral, no spin, no Coulomb. Lock-in IS the strong force / particle formation mechanism. The "main blocker" was never a bug
+- ✅ **Spin only at K≥10**: per EWT, single WC doesn't do L→T. Electron (K=10, tetrahedral) has spin from off-node WC repositioning
+- ✅ **Annihilation from sinc**: opposite phase wells at r=0 (deepest), barriers at λ/2 (positronium). Same phase wells at λ/2 (lock-in)
+- ✅ **No neutrino observational data**: all validation must be at K≥10 (Coulomb, annihilation, magnetic)
+- ✅ **M3 electron unstable**: tetrahedral geometry has 15/45 pairs at non-node distances (√3×λ/2, √2×λ/2). Needs variable λ (Phase 1d) and/or vector forces (M4)
+- ✅ **Jeff Yee + Dieter Hauger engaged**: Hauger (wavelength shells co-author) may have insights on standing→traveling transition
+
 Step 3 — Two-WC Force Test:
 
-- [ ] Two WCs at variable separation, compute `F = -∇(E_L + E_T)`
-- [ ] Sweep: does force direction depend on charge sign? Emergent, not imposed?
-- [ ] Re-test elastic spin with true independent L/T — does sinc oscillation break?
+- [ ] Two WCs with spin (η=α) at variable separation, compute `F = -∇(E_L + E_T)`
+- [ ] Sweep: does force direction depend on spin sign (CW vs CCW)? Emergent from T component?
+- [ ] Test if T component breaks sinc oscillation for far-field Coulomb
 
 Step 4 — Coulomb Validation:
 
