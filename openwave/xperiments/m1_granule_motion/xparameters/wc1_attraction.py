@@ -11,7 +11,7 @@ Z_POSITION = 0.07  # Z-axis position for all sources
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": "Attraction Force",
+        "X_NAME": "Attractive Forces",
         "DESCRIPTION": "2 sources in linear pattern demonstrating wave superposition",
     },
     "camera": {

@@ -64,8 +64,8 @@ All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is
 - **VALIDATION TARGETS** (the complete force unification validation set):
   - **Far-field (Coulomb regime)**: force direction emergent (not imposed ±1 — passes emergence test). 1/r² magnitude scaling vs Coulomb reference. Newton's 3rd law (equal and opposite). Opposite charge attracts, same charge repels — at ALL separations (no sinc flips). Energy conserved
   - **Near-field (particle regime)**: same-phase lock-in — oscillatory force creates stable energy wells (quarks, orbital shells, bonding). Opposite-phase monotonic attraction → annihilation (wave cancellation at zero separation). Near-field to far-field transition boundary — clean crossover from lock-in to Coulomb. Note: the sinc force-flipping that's the PROBLEM in far-field is the DESIRED PHYSICS in near-field — at sub-wavelength distances the oscillating force direction creates the energy wells that lock particles together. The challenge is making it stop at the transition boundary
-  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
   - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
+  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
   - **Matter formation**: attraction + repulsion equilibrium holds particles together. Standing wave core forms at WC with correct radius (K²λ). Mass = energy in standing waves (E = mc²)
 
 ## The Spacetime Medium
@@ -111,36 +111,3 @@ Wave centers elastically disturb the base wave — the wave passes through and c
 - **Matter formation**: force equilibrium (attraction + repulsion) assembles structures at every scale: subatomic → atoms → molecules → bulk matter
 
 - Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.
-
-## List of Research Files
-
-**Foundation:**
-
-- [00_overview.md](00_overview.md) — Conceptual overview, goals, main concepts, force hierarchy
-- [00_roadmap.md](00_roadmap.md) — Task roadmap for all phases with status tracking
-- [00a_equations.md](00a_equations.md) — ✅ Wave equations explored (5 forms), phasor superposition, force computation
-- [00b_additional.md](00b_additional.md) — ✅ Additional theories: LaFreniere, Smoliński (BCC lattice, soliton geometry, push-out)
-- [00c_challenges.md](00c_challenges.md) — ✅ Key challenges (envelope, standing/traveling, scalar/vector, 1/r², interference)
-
-**Phase 1 — Electric Force Far-Field:**
-
-- [01_far_field.md](01_far_field.md) — ✅ Phase 1: Far-field forces (1D sandbox). 9/9 linear candidates ruled out, sinc oscillation analysis
-- [01a_signed.md](01a_signed.md) — ✅ Phase 1a: Signed disturbance (ruled out — charge imposed, not emergent)
-- [01b_base_disturbance.md](01b_base_disturbance.md) — ✅ Phase 1b: Base wave + WC disturbance (completed). 5 base wave modes, 10 WC models, M2 prior art, elastic disturbance concept
-- [01c_vector_wave.md](01c_vector_wave.md) — 🔶 Phase 1c: Vector wave force (IN PROGRESS). 3D displacement, L→T spin, force mechanism
-- [01d_non_linear.md](01d_non_linear.md) — 🚧 Phase 1d: Non-linear wave equations. Variable λ(r), Ψ³, Smoliński push-out. Converges with 1c
-
-**Phases 2–7 — Future:**
-
-- [02_near_field.md](02_near_field.md) — Phase 2: Near-field forces (lock-in, annihilation)
-- [03_forces_3D.md](03_forces_3D.md) — Phase 3: Forces 3D validation (port to Taichi M4)
-- [04_magnetic_force.md](04_magnetic_force.md) — Phase 4: Magnetic force (transverse waves, spin, toroidal flow)
-- [05_gravitational_force.md](05_gravitational_force.md) — Phase 5: Gravitational force (shading, buoyancy, density hierarchy)
-- [06_time_dynamics.md](06_time_dynamics.md) — Phase 6: Time dynamics (λ as time, wavelength kingdom, wave resonance)
-- [07_emergent_waves.md](07_emergent_waves.md) — Phase 7: Emergent waves (photons, thermal energy, heat as fuel)
-- [10_broader_impact.md](10_broader_impact.md) — Broader scientific and technological impact
-
-**Scripts:**
-
-- `scripts_scalar_wave/` — 1D scalar wave engine scripts (v1, v2, v3, sweeps) — Phase 1a/1b research tools
-- `scripts_vector_wave/` — 3D vector wave research scripts — Phase 1c math exploration

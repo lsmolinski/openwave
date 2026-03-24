@@ -57,9 +57,140 @@ This connects to:
 
 **The Coulomb force may be an inherently 3D phenomenon** — it emerges from the spherical integration of energy gradients, not from any 1D slice. The sinc oscillation IS real on-axis, but the NET force after 3D integration may be smooth and charge-dependent.
 
-### Next Step: 3D Variable-λ Force Test
+### 2D Cross-Section Test (`step1d_variable_lambda_2d.py`)
 
-Implement Phase 1d in 3D using the Phase 1c infrastructure (64³ grid, 200 Fibonacci base wave sources) + Yee & Hauger λ(r) + variable-λ energy equation. Test whether the 3D-integrated force at WC positions shows consistent charge-dependent direction that the 1D test cannot capture.
+Tested with 1024² grid — K=1 at 64 vox/λ (excellent), K=10 at 4 vox/λ (adequate).
+
+**Result: ALL separations are CHARGE-BLIND.** Same-phase and opposite-phase always get the same force direction. 2D off-axis averaging did NOT produce charge-dependent force.
+
+⚠️ Critical observation: the force on WC1 depends on **WC1's own phase relative to the base wave** — NOT on WC2's phase. For example at K=10, sep=105λ: `same(0,0)=REP, same(π,π)=ATT, opp(0,π)=REP, opp(π,0)=ATT` — the direction tracks WC1's phase (0→REP, π→ATT), ignoring WC2 entirely.
+
+**Root cause**: the base wave × WC interaction terms in E_total overwhelm the WC × WC cross term. The charge-dependent force lives in the **interaction energy** `E_int ∝ Re(P_wc1* · P_wc2)`, but `F = -∇E_total` is dominated by the much larger `∇(P_base · P_wc1)` and `∇(P_base · P_wc2)` terms. The WC-WC signal is buried.
+
+### What We've Systematically Eliminated
+
+| Mechanism | Test | Result |
+| --- | --- | --- |
+| Spin alone (L→T) | Phase 1c Step 3 (3D) | Magnetic only, no Coulomb |
+| Variable λ(r) alone | Phase 1d 1D | ∇λ active but charge-blind |
+| 2D off-axis averaging | Phase 1d 2D | Charge-blind, base wave dominates |
+| Variable λ + 2D | Phase 1d 2D | Still charge-blind |
+
+### What Remains: The Interaction Energy
+
+The smooth envelope model from Phase 1 already showed that the WC-WC interaction energy `E_int ∝ |Z₁|·|Z₂|·cos(k·Δr + Δφ)` produces correct force direction (17/17) when extracted directly — but with charge imposed via ±1 label. The challenge has always been making this EMERGENT.
+
+The interaction cross term DOES depend on relative phase (Δφ = source_offset difference). The problem is:
+
+1. The cos(k·Δr) factor creates sinc oscillation in the interaction energy itself
+2. `F = -∇E_total` mixes the interaction signal with the much larger base wave × WC terms
+
+### Isolated Interaction Force Test (`step1d_analytical_force.py`)
+
+Isolated the WC×WC cross term: `E_int = E(wc1+wc2) - E(wc1_alone) - E(wc2_alone)`, removing base wave and self-energy contamination. 2D grid, no base wave, only two WC out-waves.
+
+**K=1 results**: PERFECTLY charge-dependent, PERFECTLY consistent:
+
+```text
+same (0,0): 10/10 ATT — CONSISTENT
+same (π,π): 10/10 ATT — CONSISTENT
+opp  (0,π): 10/10 REP — CONSISTENT
+opp  (π,0): 10/10 REP — CONSISTENT
+```
+
+**K=10 results**: charge-dependent at ALL separations. Mostly consistent (7/9 ATT for same, 7/9 REP for opposite), with flips only at 105λ and 115λ (inside particle radius, near-field).
+
+### ⚠️ Critical Assessment: What We Actually Showed
+
+**The good:**
+
+- The WC×WC interaction cross term IS inherently charge-dependent — same vs opposite phase produce opposite force directions
+- 2D integration (off-axis contributions) produces consistent direction — no sinc flips at most separations
+- The interaction term contains the charge-dependent physics we're looking for
+
+**The problems:**
+
+1. **Same charge ATTRACTS (180° off Coulomb)**: same phase (0,0) → ATT, opposite phase (0,π) → REP. This is the OPPOSITE of Coulomb (same should repel, opposite should attract). This may be the strong force / lock-in capture mechanism (LaFreniere: "external radiation pressure produces an attraction effect" for same-phase lock-in), not the Coulomb force.
+
+2. **We manually subtracted self-energies**: `E_int = E(1+2) - E(1) - E(2)` is a mathematical decomposition, analogous to renormalization. The real wave field includes ALL terms. A particle in the real universe doesn't get to subtract its own self-energy — it feels `F = -∇E_total`. The question is: what mechanism in nature performs this "subtraction"? Possible answer: the WC's own field IS symmetric around itself → ∇E_self = 0 at its center by symmetry → F_self = 0 naturally. The problem was the base wave × WC term overwhelming the signal, not the self-energy.
+
+3. **Base wave × WC dominates in E_total**: when we include the base wave, the WC-base interaction overwhelms the WC-WC interaction. The force on WC1 depends on WC1's phase relative to the base wave, not on WC2's charge. This means the Coulomb force is REAL but much weaker than the WC-base interaction at our simulation scale.
+
+### Honest Status of Force Emergence
+
+| Effect | Status | Evidence |
+| --- | --- | --- |
+| Strong force lock-in | ✅ Emerges | Sinc nodes create energy wells at λ/2 for same-phase WCs |
+| Annihilation | ✅ Emerges | Opposite phase: deepest well at r=0, barriers at λ/2 explain positronium |
+| Particle formation | ✅ Concept works | Lock-in holds WCs, but M3 tetrahedron unstable (needs variable λ for non-uniform nodes) |
+| Charge-dependent interaction | ✅ Exists in cross term | Isolated E_int shows 100% charge-dependent direction (K=1) |
+| Coulomb direction (correct sign) | ❌ Wrong sign | Same→ATT, opposite→REP. 180° opposite to Coulomb. May be strong force capture, not Coulomb |
+| Coulomb from E_total (no subtraction) | ❌ Not yet | Base wave × WC terms overwhelm the WC×WC cross term in F = -∇E_total |
+
+### Next: Standing Wave vs Traveling Wave Decomposition
+
+The M3 wave engine already decomposes each WC's out-wave into standing + traveling components (weighted partial standing wave equation):
+
+```text
+ψ = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
+         ↑ in-wave (w→1 near)     ↑ out-wave (always present)
+
+Phasor decomposition:
+  C_n = (w+1)·sin(kr)/kr    ← STANDING component (dominates near WC)
+  S_n = (w-1)·cos(kr)/kr    ← TRAVELING component (dominates far from WC)
+```
+
+**LaFreniere's key distinction**: standing waves → strong force (lock-in, capture). Traveling waves → electrostatic force (Coulomb). These are different force mechanisms from different wave components.
+
+The standing wave component has sinc nodes `sin(kr)/kr` → lock-in at λ/2. The traveling wave component `sin(kr-ωt)/kr` carries energy flux outward → radiation pressure → Coulomb.
+
+**Hypothesis**: if we compute force from ONLY the traveling wave component of two WC interactions, we may get the correct Coulomb behavior (same repels, opposite attracts) without sinc flips.
+
+### In-Wave / Out-Wave Decomposition Results (`step1d_standing_traveling.py`)
+
+Properly decomposed the weighted partial standing wave into in-wave (`e^{-ikr}`, inward) and out-wave (`e^{+ikr}`, outward) phasors. Computed isolated interaction energy and force from each component separately, plus the full wave.
+
+**Result: ALL three components (in-wave, out-wave, full) produce the SAME λ/2 oscillation pattern.** The direction flips every 0.5λ of separation — alternating between "COULOMB CORRECT" and "INVERTED" at each half-wavelength step. No component is free of the sinc.
+
+| Component | Force magnitude (7λ sep) | Charge-dependent? | Consistent? |
+| --- | --- | --- | --- |
+| In-wave | 8.9×10⁻¹² (negligible at far-field) | Yes | MIXED (λ/2 flips) |
+| Out-wave | 8.6×10⁻⁶ (dominant) | Yes | MIXED (λ/2 flips) |
+| Full | 1.6×10⁻⁵ | Yes | MIXED (λ/2 flips) |
+
+**Definitive finding**: the sinc oscillation is in the OUT-WAVE itself. The pure traveling wave `sin(kr-ωt)/kr` has `sin(kr)/kr` spatial structure — the `1/kr` sinc envelope IS the traveling wave's radial profile for a monochromatic spherical source. There is no wave decomposition that removes the sinc — it's intrinsic to spherical wave propagation at a single frequency.
+
+### Where We Stand: The Sinc Is the Physics
+
+The sinc oscillation cos(k·Δr + Δφ) in the interaction energy is NOT a numerical artifact, model limitation, or decomposition failure. It is the **fundamental mathematical consequence of two coherent monochromatic spherical waves interfering in space.** Every approach that uses:
+
+1. Single frequency ω (monochromatic)
+2. Spherical wave propagation (1/r decay)
+3. Coherent superposition (amplitudes add)
+
+...will ALWAYS produce cos(k·Δr) in the interaction term, regardless of:
+
+- Variable λ(r) (changes node positions but not the far-field periodicity)
+- L→T spin conversion (creates perpendicular force, not radial)
+- 2D/3D integration (sinc persists off-axis too for isolated interaction)
+- Standing/traveling decomposition (both have sinc structure)
+- Self-energy subtraction (reveals the cross term, which oscillates)
+
+### ⚠️ What Must Be Different for Coulomb
+
+For the Coulomb force to emerge without sinc flips, the interaction must violate at least one of the three conditions above:
+
+1. **Non-monochromatic**: if the out-wave has a wavelength SPREAD (not single λ), the cos(k·Δr) terms at different k values partially cancel, smoothing the oscillation. This connects to the Yee & Hauger shells — if different shells emit at different effective wavelengths, the far-field is broadband. This is also the stochastic base wave concept from Phase 1b.
+
+2. **Non-coherent superposition**: if particles are not phase-locked to each other (random phase jitter, thermal fluctuations), the cos(Δφ) term averages to zero for same-phase but survives for opposite-phase through a different mechanism.
+
+3. **Not pure spherical propagation**: if the WC modifies the wavefront shape (e.g., toroidal/elliptical from spin, diffractive lens focusing), the 1/kr sinc might not apply.
+
+4. **Force from energy FLUX, not energy DENSITY**: LaFreniere's radiation pressure model computes force from wave momentum transfer (Poynting-like flux), not from -∇E. Flux-based force may behave differently from gradient-based force.
+
+5. **The force is statistical/averaged**: maybe the Coulomb force IS the time-averaged or ensemble-averaged sinc, where the averaging window is the particle radius K²λ. At K=10 (100λ radius), averaging over 100 wavelengths would capture ~200 sinc oscillation cycles, potentially averaging them out.
+
+These are the remaining avenues. Each represents a fundamentally different approach from what we've tried.
 
 ---
 
