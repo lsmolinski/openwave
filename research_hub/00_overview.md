@@ -16,7 +16,7 @@
 
 ## CURRENT STATE
 
-### NEAR-FIELD
+### NEAR-FIELD (particles)
 
 | Effect | Status | Evidence |
 | --- | --- | --- |
@@ -27,11 +27,11 @@
 ### Next to do
 
 - solve K=10 tetrahedron stability on M3/M4
-- rename M3 xperiments with near-field results.
+- rename M3 xperiments with near-field results, remove amp envelope
 
 ---
 
-### FAR-FIELD
+### FAR-FIELD (electromagnetism)
 
 | Effect | Status | Evidence |
 | --- | --- | --- |
@@ -46,6 +46,15 @@
 - F ∝ momentum flux: Poynting vector analog
 - Coulomb force as radiation pressure from the traveling waves, not as energy gradient
 
+---
+
+### Force Regime Matrix
+
+| Regime     | Same Phase                        | Opposite Phase                                |
+| ---------- | --------------------------------- | --------------------------------------------- |
+| Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
+| Far-field  | Constructive → repulsion          | Destructive → attraction                      |
+
 ## ⚠️ Key Hypothesis Under Investigation
 
 - **BASE WAVE**:
@@ -59,9 +68,6 @@
   - TESTING: (interaction with base) additive reflection, absorber, elastic disturbance (amp, phase shift, spin)
   - effect: standing @near_field + traveling @far_field
 
-- **3D SPACE & VECTOR WAVES**:
-  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
-
 - **FORCE MECHANICS**:
   - One unified force `F = -∇E`: Force emerges from energy gradient
   - Two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
@@ -74,6 +80,9 @@
     - UNKNOWN → electric / charges
     - spin → magnetic
     - drainage → gravitational
+
+- **3D SPACE & VECTOR WAVES**:
+  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
 
 - **3D WAVE DISPLACEMENT: ELLIPTICAL MOTION, SPIN, HYPERBOLIC PATTERNS**:
 
@@ -105,13 +114,6 @@ Matter, forces need to emerge from wave physics (not be imposed):
 1. The force must come from **wave interference** — the constructive/destructive pattern of actual oscillating waves
 2. The charge sign must enter through the **phase relationship** between waves (how they interfere), not as a ±1 label on a smooth function
 3. The force direction must depend on **both** charges' phases interacting, not on either one individually
-
-## Force Regime Matrix
-
-| Regime     | Same Phase                        | Opposite Phase                                |
-| ---------- | --------------------------------- | --------------------------------------------- |
-| Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
-| Far-field  | Constructive → repulsion          | Destructive → attraction                      |
 
 ## MAIN CONCEPTS
 
