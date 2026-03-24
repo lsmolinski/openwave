@@ -130,8 +130,8 @@ Wave centers elastically disturb the base wave — the wave passes through and c
 
 - [02_near_field.md](02_near_field.md) — Phase 2: Near-field forces (lock-in, annihilation)
 - [03_forces_3D.md](03_forces_3D.md) — Phase 3: Forces 3D validation (port to Taichi M4)
-- [04_magnetic_vector.md](04_magnetic_vector.md) — Phase 4: Magnetic force (transverse waves, spin, toroidal flow)
-- [05_gravitational.md](05_gravitational.md) — Phase 5: Gravitational force (shading, buoyancy, density hierarchy)
+- [04_magnetic_force.md](04_magnetic_force.md) — Phase 4: Magnetic force (transverse waves, spin, toroidal flow)
+- [05_gravitational_force.md](05_gravitational_force.md) — Phase 5: Gravitational force (shading, buoyancy, density hierarchy)
 - [06_time_dynamics.md](06_time_dynamics.md) — Phase 6: Time dynamics (λ as time, wavelength kingdom, wave resonance)
 - [07_emergent_waves.md](07_emergent_waves.md) — Phase 7: Emergent waves (photons, thermal energy, heat as fuel)
 - [10_broader_impact.md](10_broader_impact.md) — Broader scientific and technological impact

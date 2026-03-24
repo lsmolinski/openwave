@@ -159,7 +159,7 @@ M4 VECTOR:
 - [ ] Test elliptical rotation handedness as charge-sign indicator in M4
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
 
-## [PHASE 4: Magnetic Force (M4 Vector Waves)](04_magnetic_vector.md)
+## [PHASE 4: Magnetic Force (M4 Vector Waves)](04_magnetic_force.md)
 
 - [ ] Build M4 vector wave engine with transverse displacement
 - [ ] Validate elliptical displacement trajectories (6 phasor numbers)
@@ -167,7 +167,7 @@ M4 VECTOR:
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
 
-## [PHASE 5: Gravitational Force (M3, Multi-Particle)](05_gravitational.md)
+## [PHASE 5: Gravitational Force (M3, Multi-Particle)](05_gravitational_force.md)
 
 - [ ] Test wave shading with particle clusters
 - [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
