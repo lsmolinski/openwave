@@ -1,4 +1,4 @@
-# PHASE 3: Forces — 3D Validation
+# PHASE 3: 3D RENDERING
 
 Port the validated 1D equations and force computation to M3 Taichi 3D engine. Verify that 3D results match 1D on-axis results, then test off-axis configurations for spherical symmetry. Validate force & motion integration — particles should move correctly under computed forces.
 

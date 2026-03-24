@@ -137,7 +137,7 @@ Future (if 3D force test succeeds):
 - [ ] Validate against Coulomb reference (direction + 1/r² scaling)
 - [ ] Re-test with combined vector displacement (L/T) + variable λ
 
-## [PHASE 2: NEAR-FIELD Forces (1D Sandbox only)](02_near_field.md)
+## [PHASE 2: BUILDING BLOCKS)](02_BUILDING_BLOCKS.md)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation

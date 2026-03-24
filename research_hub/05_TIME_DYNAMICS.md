@@ -1,4 +1,4 @@
-# PHASE 6: Time Dynamics (M4 or new method)
+# PHASE 5: TIME DYNAMICS
 
 Variable λ per voxel makes dt a local variable — simulation no longer uses uniform timesteps. Energy starvation mechanism: destructive interference drops amplitude → frequency increases (energy conservation) → local time speeds up.
 

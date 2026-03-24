@@ -1,14 +1,57 @@
 # CONCEPTUAL OVERVIEW
 
-## GOALS: Force Unification from Wave Interference
+## GOALS: Matter Formation & Force Unification from Wave Interference
 
-### PRIMARY (EMERGENT FORCES)
+### PRIMARY (EMERGENT PARTICLES)
 
-- Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational, strong) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+- Provide numerical evidence that all PARTICLES emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
 
-### SECONDARY (EMERGENT WAVES)
+### SECONDARY (EMERGENT FORCES)
+
+- Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+
+### TERTIARY (EMERGENT WAVES)
 
 - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
+
+## ⚠️ Key Concepts Under Investigation
+
+- **BASE WAVE**:
+  - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
+
+- **WAVE CENTERS (WCs)**:
+  - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
+
+- **3D SPACE & VECTOR WAVES**:
+  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
+
+- **FORCE MECHANISM**:
+  - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
+  - Major clarity gained on what produces what:
+    - wave phase → annihilation vs. repulsion
+    - standing wave / sinc → strong force / lock-in
+    - UNKNOWN → electric / charges
+    - spin → magnetic
+    - drainage → gravitational
+
+- **ELLIPTICAL MOTION, SPIN, HYPERBOLIC PATTERNS**:
+  - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
+
+- **NON-LINEAR WAVES**:
+  - Variable λ(r) near WCs — wavelength changes with distance from the WC (Yee & Hauger shells `r_wavelength = 2Κλ - 2nλ`, WKB phase integral). The current energy formula `E = ρV(fA)²` uses constant f and can't see λ variation. Phase 1d implements `E = ρV(c·A/λ(r))²` where the `∇λ` term creates force from wavelength gradients. Converges with Phase 1c — variable λ breaks sinc periodicity while vector displacement provides charge sensitivity
+
+- **ENERGY CONSERVATION & WAVE STEEPNESS**:
+  - Wave steepness A/λ = constant for isolated energy redistribution. External energy input (heating) increases steepness. WC spin converts L→T while conserving `E_L + E_T = const`. The conversion ratio may be the fine-structure constant α
+
+- **VISUALIZATION & RENDERING**:
+  - Phase 1c focuses on raw math (numpy scripts) for an accelerated discovery phase — compute, sweep, analyze, document. No matplotlib animation, no 3D rendering. When the wave equations are validated and force emergence is confirmed, the equations get ported to OpenWave's M4 Taichi-based 3D rendering infrastructure (launcher, medium, wave_engine, particles, force & motion) for visualization and public demonstration
+
+- **VALIDATION TARGETS** (the complete force unification validation set):
+  - **Near-field (particle regime)**: same-phase lock-in — oscillatory force creates stable energy wells (quarks, orbital shells, bonding). Opposite-phase monotonic attraction → annihilation (wave cancellation at zero separation). Near-field to far-field transition boundary — clean crossover from lock-in to Coulomb. Note: the sinc force-flipping that's the PROBLEM in far-field is the DESIRED PHYSICS in near-field — at sub-wavelength distances the oscillating force direction creates the energy wells that lock particles together. The challenge is making it stop at the transition boundary
+  - **Matter formation**: attraction + repulsion equilibrium holds particles together. Standing wave core forms at WC with correct radius (K²λ). Mass = energy in standing waves (E = mc²)
+  - **Far-field (Coulomb regime)**: force direction emergent (not imposed ±1 — passes emergence test). 1/r² magnitude scaling vs Coulomb reference. Newton's 3rd law (equal and opposite). Opposite charge attracts, same charge repels — at ALL separations (no sinc flips). Energy conserved
+  - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
+  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
 
 ## MAIN CONCEPTS
 
@@ -31,44 +74,7 @@ Everything emerges from disturbances in this wave field:
 
 All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is to **numerically validate** them through computational analysis and rendered simulations — starting with force emergence from wave interference, then extending to matter formation, photon emission, and thermal dynamics.
 
-## ⚠️ Key Concepts Under Investigation
-
-- **BASE WAVE**:
-  - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
-
-- **WAVE CENTERS (WCs)**:
-  - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
-
-- **3D SPACE & VECTOR WAVES**:
-  - In 3D, spherical wave interference from the base wave + WC disturbance always promotes elliptical granule motion — even one WC + base wave is enough. Energy is not scalar in 3D — it requires a vector field with independent longitudinal (L) and transverse (T) components: `E = E_L + E_T`. Scalar models (M3/1D) collapse directional information into magnitude, producing correct 1/r² scaling but wrong force direction. Vector displacement is required to capture charge-dependent force — this is why Phase 1c must work in 3D
-
-- **FORCE MECHANISM**:
-  - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
-  - Major clarity gained on what produces what:
-    - spin → magnetic
-    - variable λ → electric
-    - sinc → strong force / lock-in
-
-- **ELLIPTICAL MOTION & SPIN**:
-  - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
-
-- **NON-LINEAR WAVES (Phase 1d)**:
-  - Variable λ(r) near WCs — wavelength changes with distance from the WC (Yee & Hauger shells `r_wavelength = 2Κλ - 2nλ`, WKB phase integral). The current energy formula `E = ρV(fA)²` uses constant f and can't see λ variation. Phase 1d implements `E = ρV(c·A/λ(r))²` where the `∇λ` term creates force from wavelength gradients. Converges with Phase 1c — variable λ breaks sinc periodicity while vector displacement provides charge sensitivity
-
-- **ENERGY CONSERVATION & WAVE STEEPNESS**:
-  - Wave steepness A/λ = constant for isolated energy redistribution. External energy input (heating) increases steepness. WC spin converts L→T while conserving `E_L + E_T = const`. The conversion ratio may be the fine-structure constant α
-
-- **VISUALIZATION & RENDERING**:
-  - Phase 1c focuses on raw math (numpy scripts) for an accelerated discovery phase — compute, sweep, analyze, document. No matplotlib animation, no 3D rendering. When the wave equations are validated and force emergence is confirmed, the equations get ported to OpenWave's M4 Taichi-based 3D rendering infrastructure (launcher, medium, wave_engine, particles, force & motion) for visualization and public demonstration
-
-- **VALIDATION TARGETS** (the complete force unification validation set):
-  - **Far-field (Coulomb regime)**: force direction emergent (not imposed ±1 — passes emergence test). 1/r² magnitude scaling vs Coulomb reference. Newton's 3rd law (equal and opposite). Opposite charge attracts, same charge repels — at ALL separations (no sinc flips). Energy conserved
-  - **Near-field (particle regime)**: same-phase lock-in — oscillatory force creates stable energy wells (quarks, orbital shells, bonding). Opposite-phase monotonic attraction → annihilation (wave cancellation at zero separation). Near-field to far-field transition boundary — clean crossover from lock-in to Coulomb. Note: the sinc force-flipping that's the PROBLEM in far-field is the DESIRED PHYSICS in near-field — at sub-wavelength distances the oscillating force direction creates the energy wells that lock particles together. The challenge is making it stop at the transition boundary
-  - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
-  - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
-  - **Matter formation**: attraction + repulsion equilibrium holds particles together. Standing wave core forms at WC with correct radius (K²λ). Mass = energy in standing waves (E = mc²)
-
-## The Spacetime Medium
+## The Spacetime Medium & The Fundamental Energy Wave
 
 An unknown but fluid-like substance permeates all of space and penetrates all matter. This medium vibrates in harmonic oscillations, forming waves that travel at the speed of light (c). The medium has measurable properties:
 
@@ -94,7 +100,14 @@ One force `F = -∇E`, projected onto vector displacement components:
 
 2. **Magnetic Force** (transverse, ∇E_T): L→T spin conversion at WC creates transverse wave component (90° to longitudinal). Magnetic force from transverse energy gradient. Conditional — requires spin alignment/coherence (360° transverse freedom cancels unless aligned)
 
-3. **Gravitational Force** (total deficit): WC clusters collectively drain energy from far field → amplitude "shadow" → net inward force. Smoliński: pressure deficit / buoyancy from medium density displacement. The 10⁻⁴² EM-to-gravitational ratio emerges from density hierarchy geometry
+3. **Gravitational Force** (total deficit): WC clusters collectively drain energy from far field → amplitude "shadow" → net inward force. Smoliński: pressure deficit / buoyancy from medium density displacement. The 10⁻⁴² EM-to-gravitational ratio emerges from density hierarchy geometry. Two competing gravity models:
+
+    - **Shading / directional attenuation**: WCs absorb part of in-wave, re-emit attenuated out-wave toward other particles → directional energy deficit → gravity. Likely requires M4 vector displacement (directional attenuation can't be represented in scalar M3)
+
+    - **Buoyancy / medium density (Smoliński)**: Wave equation unchanged. WCs modify local ρ and f via λ modulation → granule velocity → pressure. Gravity emerges from E = ρV(fA)² where ρ and f become local variables. Works in M3 — only the energy calculation changes
+
+For 1D sandbox: Phases 1-3 use constant ρ and f. Phase 5 adds option for position-dependent ρ(x) and f(x) computed from the wave field.
+
 
 4. **Strong Force**: electric force at sub-wavelength distances (λ scale). Particles inside each other's standing wave radius experience concentrated energy from standing waves
 

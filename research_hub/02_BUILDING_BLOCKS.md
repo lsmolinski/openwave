@@ -1,4 +1,4 @@
-# PHASE 2: NEAR-FIELD Forces
+# PHASE 2: BUILDING BLOCKS
 
 Near-field has two expected behaviors based on charge phase:
 
