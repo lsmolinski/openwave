@@ -458,19 +458,55 @@ Two paths to fix:
 
 ---
 
-## 🔶 Step 3: Two-WC Force Test
+## ❌ Step 3: Two-WC Force Test — SPIN ALONE DOESN'T CREATE COULOMB
 
-Two WCs with spin (η=α) at variable separation. Compute `F = -∇(E_L + E_T)` at WC positions. Sweep separations and test the critical question: does force direction depend on spin sign (CW vs CCW), emergent from wave physics?
+Tested two WCs with spin (η = α, 0.1, 0.5) at separations 2λ to 6λ. Four spin configurations (CW-CW, CCW-CCW, CW-CCW, CCW-CW). `scripts_vector_wave/step3_two_wc_force.py`
 
-This is the first test of whether L→T spin conversion produces charge-dependent Coulomb force. The WCs are simplified "particles with spin" — not full K=10 electrons. If the T component creates consistent force direction in the far field, the mechanism works at any K with spin.
+### Result: ALL configurations show MIXED force directions
 
-## 🚧 Step 4: Coulomb Validation
+No consistent charge-dependent pattern. Force direction flips with separation for all spin combinations. Same-spin does NOT always repel, opposite-spin does NOT always attract.
 
-Force magnitude vs Coulomb reference at multiple separations. 1/r² scaling check. Newton's 3rd law (equal and opposite). Must pass at ALL separations (no sinc flips) for the spin mechanism to succeed.
+### Root Cause: On-Axis Limitation
 
-## 🚧 Step 5: Convergence with Phase 1d
+The T component from spin is **perpendicular** to the axis connecting the two WCs (`t̂ = ẑ × r̂ = ŷ` on-axis). It creates transverse (magnetic-like) force, but does NOT contribute to the radial (electric) force along the connecting axis. The radial force is dominated by the L component, which has the same sinc oscillation as the scalar model.
 
-Add variable λ(r) to energy equation: `E = ρV(c·A/λ(r))²`. Test combined vector displacement + variable λ. The ∇λ force term may contribute to Coulomb force independently of spin, and variable node spacing may resolve the tetrahedral stability problem.
+This was already predicted in the "On-Axis Vector Analysis" section: "For two WCs on the x-axis, displacement vectors are anti-parallel. Only x-component is nonzero, so |ψ_vec| reduces exactly to |ψ_scalar|."
+
+### Conclusion
+
+- **Spin (L→T conversion) creates magnetic force** (transverse to WC axis) — to be validated in Phase 4
+- **Spin does NOT create electric force** (radial/Coulomb) — the sinc oscillation persists in the L component
+- **Electric force needs a different mechanism** — the remaining candidate is **variable λ(r)** from Phase 1d
+
+### LaFreniere Phase Shift Discovery (from `sa_phaseshift.html`)
+
+LaFreniere found that the electron core (one full λ diameter) creates a **λ/2 phase shift** in the wave passing through it. The medium is compressed inside the core (7x smaller volume than the first onion layer), waves accelerate through the core, and emerge phase-shifted by half a wavelength. Peaks become valleys. This phase shift — not spin — is what creates the **charge sign** (electron = shifted, positron = opposite shift).
+
+Key findings from LaFreniere:
+
+- The electron is a "pulsating wave center" — standing waves progressively transform to traveling waves
+- The core is exactly 1λ in diameter — the first onion layer is 7x the core volume
+- Medium compression inside the core causes wave acceleration (faster than c locally)
+- The λ/2 phase shift is a physical consequence of core traversal geometry
+- Two electrons close together: the phase shift determines constructive vs destructive interference → repulsion vs attraction
+- The "capture phenomenon": equilibrium exists at λ/4 offset where attraction and repulsion balance → quark formation (gluonic field)
+- Electron-positron pair: π/2 phase offset produces unidirectional radiation → magnetic fields. Direction reversed for opposite spin or λ/2 distance change → north/south poles
+
+**Connection to Phase 1d**: the phase shift emerges from **variable λ(r) inside the core** — wavelength compression creates the phase advance. This is exactly what Phase 1d's `E = ρV(c·A/λ(r))²` with `∇λ` force term aims to capture. The variable-λ mechanism may produce the Coulomb force that spin alone cannot.
+
+**Connection to spin**: spin adds the transverse component (magnetic force, π/2 phase offset for electron-positron radiation), but the charge sign comes from core geometry (λ/2 phase shift). Both mechanisms are needed: variable λ for electric, spin for magnetic.
+
+Reference: `lafreniere/Gabriel_LaFreniere/sa_phaseshift.html`
+
+## 🔶 Step 4 → Phase 1d: Variable λ(r) for Coulomb Force
+
+Steps 4-5 of Phase 1c (Coulomb validation, convergence with 1d) merge into Phase 1d. The vector displacement infrastructure from Steps 1-2 is ready. The missing mechanism for electric force is variable λ(r) — to be implemented in Phase 1d with:
+
+- Yee & Hauger wavelength shells: `λ(n) = 2(K-n)λ` per shell
+- WKB phase integral for phasor computation with variable k(r)
+- Energy equation: `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients
+- LaFreniere core phase shift: λ/2 advance from compressed core (1λ diameter, 7x compression)
+- Combined with vector displacement (L + T) for full force decomposition
 
 ---
 

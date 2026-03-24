@@ -95,24 +95,19 @@ Step 2a — Key Findings (Spin Scale & Sinc Resolution):
 - ✅ **M3 electron unstable**: tetrahedral geometry has 15/45 pairs at non-node distances (√3×λ/2, √2×λ/2). Needs variable λ (Phase 1d) and/or vector forces (M4)
 - ✅ **Jeff Yee + Dieter Hauger engaged**: Hauger (wavelength shells co-author) may have insights on standing→traveling transition
 
-Step 3 — Two-WC Force Test:
+Step 3 — Two-WC Force Test (`step3_two_wc_force.py`):
 
-- [ ] Two WCs with spin (η=α) at variable separation, compute `F = -∇(E_L + E_T)`
-- [ ] Sweep: does force direction depend on spin sign (CW vs CCW)? Emergent from T component?
-- [ ] Test if T component breaks sinc oscillation for far-field Coulomb
+- ❌ Tested 4 spin configs (CW-CW, CCW-CCW, CW-CCW, CCW-CW) at η=α, 0.1, 0.5 across separations 2-6λ
+- ❌ ALL configs show MIXED force directions — no consistent charge-dependent pattern
+- ❌ Root cause: on-axis limitation. T component is perpendicular to WC axis → creates magnetic force, not electric. L component still has sinc oscillation → no Coulomb
+- ✅ **Conclusion**: spin creates magnetic force (Phase 4), NOT electric force. Electric force needs variable λ(r) (Phase 1d)
+- ✅ **LaFreniere phase shift discovery**: electron core (1λ diameter) creates λ/2 phase shift from medium compression (7x). This phase shift — not spin — is what creates charge sign. Connects directly to Phase 1d variable λ(r)
 
-Step 4 — Coulomb Validation:
+Steps 4-5 — merged into Phase 1d:
 
-- [ ] Force magnitude vs Coulomb reference at multiple separations
-- [ ] 1/r² scaling check
-- [ ] Newton's 3rd law (equal and opposite)
-
-Step 5 — Convergence with Phase 1d:
-
-- [ ] Add variable λ(r) to energy: `E = ρV(c·A/λ(r))²`
-- [ ] Test combined: vector displacement + variable λ
-- [ ] Evaluate "one force, different directions" — electric (L), magnetic (T), gravitational (deficit)
-- [ ] Connect to elliptical rotation handedness (CW = electron, CCW = positron)
+- [ ] Phase 1c vector infrastructure (Steps 1-2) ready for Phase 1d integration
+- [ ] Variable λ(r) from Yee & Hauger shells + LaFreniere core phase shift → electric force
+- [ ] Combined vector displacement + variable λ → full force decomposition (electric from ∇λ, magnetic from spin T, gravitational from deficit)
 
 ### 🚧 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 

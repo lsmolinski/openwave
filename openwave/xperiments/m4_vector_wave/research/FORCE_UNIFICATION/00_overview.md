@@ -44,6 +44,10 @@ All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is
 
 - **FORCE MECHANISM**:
   - One unified force `F = -∇E`, two directions. `∇E_L` = electric force (radial/longitudinal gradient), `∇E_T` = magnetic force (perpendicular/transverse gradient). L/T defined relative to radial direction from the WC experiencing the force. Electric always present (one radial direction). Magnetic conditional — transverse has 360° freedom, cancels unless aligned/coherent (moving electrons, permanent magnets, spin coherence). Gravity = residual total energy deficit (omnidirectional, always attractive, weak)
+  - Major clarity gained on what produces what:
+    - spin → magnetic
+    - variable λ → electric
+    - sinc → strong force / lock-in
 
 - **ELLIPTICAL MOTION & SPIN**:
   - The ellipse at each point encodes L amplitude (semi-major), T amplitude (semi-minor), handedness (CW/CCW rotation direction = spin up/down = electron/positron), and ellipse plane orientation. Described by 6 phasor numbers (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z). Complex sinusoids in QM encode this naturally: real = L, imaginary = T, |ψ|² = E_L + E_T. The imaginary unit i IS the 90° quadrature relationship between L and T components. Spin is the L→T wave transformation at the WC (Wolff: "the wave is spinning, not the particle"), with 720° spherical rotation required by 3D space geometry
