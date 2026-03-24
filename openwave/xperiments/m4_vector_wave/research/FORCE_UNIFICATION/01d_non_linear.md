@@ -4,6 +4,65 @@ Variable λ(r), ρ(x), Ψ³; breaks sinc periodicity while keeping genuine wave 
 
 **Rationale**: All linear operations on the sinc function preserve its λ/2 periodicity. Only a non-linear wave equation — where the spatial structure itself is no longer a pure sinc — can break the oscillatory pattern.
 
+---
+
+## 1D Variable-λ Test Results (`step1d_variable_lambda.py`)
+
+Tested two WCs on 1D axis with Yee & Hauger λ(r) profile and variable-λ energy equation `E = ρV(c·A/λ(r))²`. Compared K=1 (neutrino) and K=10 (electron) across separations 1.5× to 4× particle radius, four phase configurations.
+
+### K=1 (neutrino): No λ variation → identical to constant-λ
+
+- λ(r) = λ₀ everywhere (K=1 has only 1 shell, no variation)
+- WKB phase = constant-k phase (Δφ = 0)
+- Force directions: ALL MIXED, var-λ = const-λ exactly
+- **Correct**: neutrino is neutral, sinc persists at K=1
+
+### K=10 (electron): ∇λ term IS active but charge-blind
+
+- λ(r) varies dramatically: core λ = 10λ₀, first shell = 19.5λ₀, shrinking to λ₀ at boundary
+- WKB phase deficit: Δφ = -182π at particle boundary (massive non-linear phase accumulation)
+- **var-λ and const-λ DIVERGE** at far-field separations (250λ, 400λ) — the ∇λ term reverses force direction compared to constant-λ. This confirms the ∇λ mechanism works.
+- **BUT: force is charge-blind** — ALL four phase configs (same/opposite) get the same direction at each separation. The λ(r) profile depends on K (structure), not on source_offset (charge). The ∇λ contribution creates the same force for same and opposite phase.
+
+### Conclusion: ∇λ works but is charge-blind in 1D
+
+| Finding | Status |
+| --- | --- |
+| ∇λ changes force vs constant-λ | ✅ confirmed at K=10 |
+| K=1 vs K=10 behave differently | ✅ confirmed (K=1 no effect, K=10 significant) |
+| Charge-dependent force from ∇λ | ❌ charge-blind (same direction for all phases) |
+| 1D sinc still dominates charge physics | ❌ sinc oscillation persists along axis |
+
+---
+
+## ⚠️ Critical Insight: 3D Spherical Integration May Break Sinc
+
+The 1D test only captures the ON-AXIS force. But 3D spherical wave interference creates energy gradients in ALL directions (visible in M1 simulation screenshots — elliptical/hyperbolic interference patterns extending off-axis between two WCs).
+
+The force on a WC is `F = -∇E` integrated over the **full 3D volume**, not just the connecting axis. Off-axis contributions have different oscillation periods:
+
+```text
+On-axis (θ=0):   path difference = d          → oscillation period λ/2
+At angle θ:      path difference = d·cos(θ)   → period λ/(2·cos(θ)) — LONGER
+Perpendicular:   path difference ≈ 0          → no oscillation
+```
+
+When integrating -∇E over all solid angles, these different periods **average out the sinc flips**. The on-axis λ/2 oscillation is counteracted by non-oscillating off-axis contributions. The net force could be smooth even though the on-axis slice oscillates.
+
+This connects to:
+
+- **LaFreniere's diffractive lens effect**: standing wave zones between particles focus energy from a wide solid angle onto the axis, amplifying the net force through 3D constructive interference
+- **Smoliński's Degraded EMC Wall**: the geometric low-pass filter that smooths oscillatory structure from the discrete lattice into isotropic gravity — the 3D spherical averaging IS this filter
+- **Phase 1c on-axis limitation**: the L→T spin test (Step 3) also failed because it only measured on-axis force. The T component creates off-axis gradients that project onto the axis differently
+
+**The Coulomb force may be an inherently 3D phenomenon** — it emerges from the spherical integration of energy gradients, not from any 1D slice. The sinc oscillation IS real on-axis, but the NET force after 3D integration may be smooth and charge-dependent.
+
+### Next Step: 3D Variable-λ Force Test
+
+Implement Phase 1d in 3D using the Phase 1c infrastructure (64³ grid, 200 Fibonacci base wave sources) + Yee & Hauger λ(r) + variable-λ energy equation. Test whether the 3D-integrated force at WC positions shows consistent charge-dependent direction that the 1D test cannot capture.
+
+---
+
 ## Findings from Phase 1b Step 2c (hints for Phase 1d implementation)
 
 Phase 1b tested elastic phase warping (Option F) — a charge-dependent phase shift `Δφ(r) = q · strength · δ(r)` applied to the base wave phasor at each WC. The phase warp is equivalent to local λ variation: `Δφ = ∫Δk(r')dr'`.

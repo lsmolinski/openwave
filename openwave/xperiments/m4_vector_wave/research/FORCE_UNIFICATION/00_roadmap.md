@@ -109,19 +109,33 @@ Steps 4-5 — merged into Phase 1d:
 - [ ] Variable λ(r) from Yee & Hauger shells + LaFreniere core phase shift → electric force
 - [ ] Combined vector displacement + variable λ → full force decomposition (electric from ∇λ, magnetic from spin T, gravitational from deficit)
 
-### 🚧 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+### 🔶 [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 
-> **From Phase 1b**: elastic phase warp (Option F) produces zero force because `E = ρV(fA)²` uses constant f — can't see λ variation. Phase 1d must implement `E = ρV(c·A/λ(r))²` where `∇λ` creates force from wavelength gradients. Converges with Phase 1c.
+> **From Phase 1c**: spin → magnetic (not electric). Variable λ(r) → electric force candidate. Converges with Phase 1c vector infrastructure.
 
-- [ ] Implement variable λ(r) in energy equation: `E = ρV(c·A/λ(r))²` — the `∇λ` force term
-- [ ] Implement λ(r) profile from Yee & Hauger discrete wavelength shells, WKB phase integral
-- [ ] Implement variable ρ(x) in 1D sandbox (density from granule velocity / wave interference)
-- [ ] Test Smoliński Ψ³ cubic non-linearity (NLS soliton stabilizer — F(Ψ, ε_G, |ε_M|, N_ν))
-- [ ] Test F = -∇E with spatially variable ρ(x), f(x), A(x) — all three gradients contributing
-- [ ] Evaluate Smoliński Push-out Operator P̂Φ = -∇·(η_stat/η_soliton)∇Φ as variable-ρ force formalization
-- [ ] Evaluate whether non-linear spatial structure breaks the sinc periodicity and resolves force direction
-- [ ] Re-test elastic phase warp (Option F) with variable-λ energy equation
-- [ ] If successful, validate against Coulomb reference (direction + 1/r² scaling)
+1D Variable-λ Test (`step1d_variable_lambda.py`):
+
+- ✅ Implement variable λ(r) from Yee & Hauger shells + WKB phase integral
+- ✅ Implement variable-λ energy equation: `E = ρV(c·A/λ(r))²`
+- ✅ Test K=1 (neutrino): no λ variation → sinc persists → neutral. Correct.
+- ✅ Test K=10 (electron): ∇λ term IS active (reverses force vs const-λ at some separations)
+- ❌ Charge-blind: ∇λ creates same force for all phase configs (λ depends on K, not charge)
+- ⚠️ **1D on-axis limitation**: sinc oscillation dominates on-axis. But 3D spherical integration may average out the sinc through different oscillation periods at different angles
+
+🔶 3D Variable-λ Force Test (NEXT):
+
+- [ ] Implement Phase 1d on 3D grid (64³, using Phase 1c base wave infrastructure)
+- [ ] WC out-waves with WKB phase + variable-λ energy on 3D grid
+- [ ] Force: F = -∇E computed as 3D gradient (captures off-axis contributions)
+- [ ] Test whether 3D-integrated force breaks sinc and shows charge-dependent direction
+- [ ] Compare K=1 vs K=10 in 3D
+
+Future (if 3D force test succeeds):
+
+- [ ] Implement variable ρ(x) (Smoliński density)
+- [ ] Test Smoliński Ψ³ cubic non-linearity
+- [ ] Validate against Coulomb reference (direction + 1/r² scaling)
+- [ ] Re-test with combined vector displacement (L/T) + variable λ
 
 ## [PHASE 2: NEAR-FIELD Forces (1D Sandbox only)](02_near_field.md)
 
