@@ -84,6 +84,12 @@ The transition from vacuum to gravitational force involves three density levels:
 
 The 10⁻⁴² EM-to-gravitational ratio emerges from this hierarchy. For Phase 1d, the relevant insight is that ρ(r) varies from N_ν,stat (far field) to a displaced value near the WC core. This density variation contributes to ∇E through the ρ(r) term in `E = ρ(r)·V·(c·A/λ(r))²`.
 
+### Connection to Medium Pressure and Gravity — λ Unifies All Three
+
+Changing λ/frequency changes the rate at which granules cycle through their elliptical motion — meaning different granule velocities. In wave mechanics and particle-fluid simulations (e.g., sound waves), granule velocity is directly related to **localized medium pressure**. Faster cycling = higher pressure, slower cycling = lower pressure.
+
+This creates a direct link to Smoliński's gravitational push-out/buoyancy model: if wave centers alter λ in their vicinity (time dilation near mass), they change the local granule velocity, which changes the local medium pressure/density. The pressure deficit around a massive body IS the gravitational field — and it emerges from λ modulation, not from a separate gravitational mechanism. Gravity, time dilation, and medium pressure become three descriptions of the same underlying phenomenon: **local λ variation**.
+
 ### Soliton Push-Out — Gravity as Density Deficit
 
 Gravity emerges as "volumetric density of the displacement deficit" — the WC displaces medium from its interior, creating a pressure deficit. This is not a separate force but a geometric consequence of the soliton structure within the high-density medium.
