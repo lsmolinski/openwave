@@ -53,6 +53,21 @@
   - **Magnetic**: transverse force component (∇E_T) reproduces magnetic field geometry. Spin alignment → coherent T field → detectable magnetism. Perpendicular to electric (∇E_L) at 90°
   - **Gravitational**: 10⁻⁴² EM-to-gravitational force ratio emerges from the model (shading / density deficit). Computed G matches Smoliński's Scilab reference values
 
+## ⚠️ Emergence Criteria
+
+Matter, forces need to emerge from wave physics (not be imposed):
+
+1. The force must come from **wave interference** — the constructive/destructive pattern of actual oscillating waves
+2. The charge sign must enter through the **phase relationship** between waves (how they interfere), not as a ±1 label on a smooth function
+3. The force direction must depend on **both** charges' phases interacting, not on either one individually
+
+## Force Regime Matrix
+
+| Regime     | Same Phase                        | Opposite Phase                                |
+| ---------- | --------------------------------- | --------------------------------------------- |
+| Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
+| Far-field  | Constructive → repulsion          | Destructive → attraction                      |
+
 ## MAIN CONCEPTS
 
 Spacetime is an elastic fluid structure, vibrating in harmonic oscillations at extremely high frequencies (~10²⁵ Hz), that allows energy to transfer from one point to the next, forming an **energy field**. Through this fluid, waves travel in all directions and get reflected by wave centers that create disturbances. Those energy waves can become **standing** (forming matter) or remain **traveling** (transmitting all forces).

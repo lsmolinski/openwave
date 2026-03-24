@@ -122,20 +122,21 @@ Steps 4-5 — merged into Phase 1d:
 - ❌ Charge-blind: ∇λ creates same force for all phase configs (λ depends on K, not charge)
 - ⚠️ **1D on-axis limitation**: sinc oscillation dominates on-axis. But 3D spherical integration may average out the sinc through different oscillation periods at different angles
 
-🔶 3D Variable-λ Force Test (NEXT):
+Sinc Elimination Tests:
 
-- [ ] Implement Phase 1d on 3D grid (64³, using Phase 1c base wave infrastructure)
-- [ ] WC out-waves with WKB phase + variable-λ energy on 3D grid
-- [ ] Force: F = -∇E computed as 3D gradient (captures off-axis contributions)
-- [ ] Test whether 3D-integrated force breaks sinc and shows charge-dependent direction
-- [ ] Compare K=1 vs K=10 in 3D
+- ❌ **#5 Statistical averaging** (step1d_averaged_force.py): sinc perfectly symmetric → averaging gives 50/50, not a direction
+- ❌ **#1 Broadband shells** (step1d_broadband.py): multiple cosines still oscillate, no convergence
+- ⚠️ **#4 1D Flux** (step1d_flux_force.py): same-charge K=10 = 50/50 REP (CONSISTENT, first ever!), but opp-charge also REP (baseline push dominates in 1D)
+- ⚠️ **#4 2D Flux** (step1d_flux_force_2d.py): **100% charge discrimination** — same ≠ opposite at ALL 22 separations. Sinc persists (direction flips every λ/2) but charge sensitivity is perfect. Coulomb correct at half-integer λ separations.
 
-Future (if 3D force test succeeds):
+> **Phase 1 CONCLUSION**: the sinc oscillation cos(k·Δr) is intrinsic to monochromatic spherical wave interference. It cannot be removed by variable λ, spin, decomposition, averaging, or broadband. However, the 2D radiation pressure (flux) produces 100% charge discrimination — same and opposite ALWAYS get opposite force directions. The sinc determines WHERE the equilibrium/lock-in points are; the charge difference determines WHICH direction at each point.
 
-- [ ] Implement variable ρ(x) (Smoliński density)
-- [ ] Test Smoliński Ψ³ cubic non-linearity
-- [ ] Validate against Coulomb reference (direction + 1/r² scaling)
-- [ ] Re-test with combined vector displacement (L/T) + variable λ
+Carry-Over to Phase 2:
+
+- [ ] Investigate flux-based force (`S = -c²·ψ·∇ψ`) as the primary Coulomb mechanism instead of `F = -∇E`
+- [ ] Test 3D flux integration — does full spherical flux produce consistent Coulomb at any K?
+- [ ] Explore whether sinc lock-in + charge discrimination IS the unified force (near-field = strong, far-field = Coulomb envelope)
+- [ ] Variable ρ(x), Ψ³ non-linearity, combined vector + variable λ (deferred from Phase 1d)
 
 ## [PHASE 2: BUILDING BLOCKS)](02_BUILDING_BLOCKS.md)
 

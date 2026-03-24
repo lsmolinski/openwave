@@ -3,9 +3,7 @@
 ## Table of Contents
 
 - [The Problem](#-the-problem)
-- [Emergence Criteria](#-emergence-criteria)
 - [Target Behavior (LaFreniere Reference)](#target-behavior-lafreniere-reference)
-- [Force Regime Matrix](#force-regime-matrix)
 - [Critical Issues Summary](#critical-issues-summary)
 - [Tested and Ruled Out (9/9)](#tested-and-ruled-out-99)
   - [Gradient Sampling / Gaussian Smoothing](#-gradient-sampling-radius-gaussian-smoothing)
@@ -36,16 +34,6 @@ The next step is validating the energy field by plotting E(x) along the inter-pa
 
 Force is computed as F = -∇E where E(x) = ρ·V·(f·A(x))², calculated directly from ∇E rather than chain-rule expansion so that future spatially-varying ρ(x), f(x), and λ(x) are automatically captured.
 
-## ❌ Emergence Criteria
-
-For force direction to emerge from wave physics (not be imposed):
-
-1. The force must come from **wave interference** — the constructive/destructive pattern of actual oscillating waves
-2. The charge sign must enter through the **phase relationship** between waves (how they interfere), not as a ±1 label on a smooth function
-3. The force direction must depend on **both** charges' phases interacting, not on either one individually
-
-The base wave concept is physically valid (the medium EXISTS, WCs DO redistribute energy). But the FORCE mechanism must involve actual wave scattering/reflection/interference — the WC reflects the base wave, the reflected wave interferes with the base wave and with other WCs' reflected waves, and the interference pattern creates the energy gradient that produces force.
-
 ---
 
 ## Target Behavior (LaFreniere Reference)
@@ -59,14 +47,7 @@ This animation shows the complete wave interaction for two opposite-phase WCs:
 - **Near-field** (~1λ around each WC): fixed standing wave rings — the particle structure itself. Standing wave forces dominate
 - **Far-field** (beyond ~1λ): only traveling waves, 1/r amplitude falloff. This is the electrostatic (Coulomb) regime
 - **Between WCs**: amplitude visibly reduced — destructive interference from opposing phases → lower energy zone → attraction. Counter-propagating traveling waves from each source meet at midpoint, forming a standing wave pattern there
-- **Key for simulation**: standing wave region is sharply localized (~1λ, matches steep weight rolloff), far-field is cleanly traveling (no oscillatory artifacts), and the 1D envelope profile is what the phasor RMS should reproduce
-
-## Force Regime Matrix
-
-| Regime     | Same Phase                        | Opposite Phase                                |
-| ---------- | --------------------------------- | --------------------------------------------- |
-| Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
-| Far-field  | Constructive → repulsion          | Destructive → attraction                      |
+- **Key for simulation**: standing wave region is sharply localized (~1λ, matches steep weight rolloff), far-field is cleanly traveling (no oscillatory artifacts), and the 1D envelope profile is what the phasor RMS should reproduce                   |
 
 ## Critical Issues Summary
 

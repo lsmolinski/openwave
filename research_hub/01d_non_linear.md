@@ -194,6 +194,83 @@ These are the remaining avenues. Each represents a fundamentally different appro
 
 ---
 
+### Avenue #1: Broadband from Yee & Hauger Shells (`step1d_broadband.py`) — ❌ ELIMINATED
+
+Hypothesis: each shell emits at different λ → far-field is broadband → cos(k_n·Δr) at different k_n partially cancel.
+
+K=10 has 9 shells at λ/λ₀ = [18, 16, 14, 12, 10, 8, 6, 4, 2]. Each contributes an out-wave at its own wavenumber.
+
+**Result**: ALL K values MIXED. Multiple cosines at different frequencies create complex beating, not convergence. K=10 broadband: 28/50 ATT, 22/50 REP — still MIXED.
+
+### Avenue #4: Flux-Based Force — Radiation Pressure
+
+#### 1D Flux Test (`step1d_flux_force.py`) — ⚠️ PARTIAL SUCCESS
+
+Hypothesis: force from energy FLUX `S = -c²·ψ·∂ψ/∂x` (wave momentum transfer) instead of energy gradient `F = -∇E`.
+
+Time-averaged over one full period (32 samples). Two flux definitions tested: spatial `S = -c²·ψ·∂ψ/∂x` and temporal `S = ψ·∂ψ/∂t`.
+
+**K=1**: MIXED for all methods.
+
+**K=10**: Flux(spatial) same charge = **50/50 REP → CONSISTENT → COULOMB CORRECT** — first ever consistent result for any configuration at K=10. But opposite charge = 49/50 REP (should be ATT) — the baseline outward push from radiation pressure dominates over the charge-dependent correction in 1D.
+
+| Method | K=10 same (expect REP) | K=10 opp (expect ATT) |
+| --- | --- | --- |
+| Gradient (-∇E) | 25/50 MIXED | 25/50 MIXED |
+| Flux (spatial) | **50/50 REP CONSISTENT** | 49/50 REP (wrong) |
+| Flux (temporal) | 49/50 REP | 48/50 REP |
+
+The flux mechanism extracts consistent direction where the gradient cannot — but only for same charge. Opposite charge needs the 2D off-axis inward pressure (LaFreniere's diffractive lens).
+
+#### 2D Flux Test (`step1d_flux_force_2d.py`) — ⚠️ KEY FINDING
+
+Full 2D time-domain computation: weighted partial standing wave on 512² grid (32 vox/λ), time-averaged flux through a circle surrounding WC1.
+
+**Breakthrough: 100% charge discrimination at ALL separations.** Same and opposite phase ALWAYS produce OPPOSITE force directions at every separation tested (22/22):
+
+```text
+sep=2.00λ:  same=ATT  opp=REP  → OPPOSITE
+sep=2.50λ:  same=REP  opp=ATT  → OPPOSITE  ← COULOMB CORRECT
+sep=3.00λ:  same=ATT  opp=REP  → OPPOSITE
+sep=3.50λ:  same=REP  opp=ATT  → OPPOSITE  ← COULOMB CORRECT
+...every separation: same ≠ opp
+```
+
+**The sinc oscillation persists** — the ABSOLUTE direction flips every λ/2. But the RELATIVE direction (same vs opposite) is ALWAYS opposite. At half-integer λ separations (2.5, 3.5, 4.5...): Coulomb correct (same=REP, opp=ATT). At integer λ (2, 3, 4...): inverted.
+
+**Key properties of the 2D flux result:**
+
+- **Charge discrimination: 100%** — same and opposite ALWAYS get opposite directions
+- **Sinc persists**: absolute direction flips every λ/2 for both
+- **Equilibrium points**: at quarter-λ offsets, forces are ~10x smaller — lock-in equilibrium (LaFreniere "capture")
+- **Force decays with distance**: ~1/r trend under the oscillation
+- **Coulomb correct at half-integer λ separations**: same=REP, opp=ATT
+
+This IS the wave interference physics: the sinc oscillation produces alternating lock-in and Coulomb zones. The full 2D radiation pressure correctly captures the charge discrimination that the energy gradient approach misses.
+
+### Avenue #5: Statistical Averaging Over Particle Radius (`step1d_averaged_force.py`) — ❌ ELIMINATED
+
+Hypothesis: average the sinc interaction force over K²λ (particle radius). K=1 → 1λ window → no smoothing → neutral. K=10 → 100λ window → 200 sinc cycles → smooth → Coulomb.
+
+**Result**: ALL K values (1, 2, 3, 5, 10) give 25/50 ATT, 25/50 REP — perfect 50/50 split. The sinc is perfectly symmetric: each half-cycle of attraction is exactly balanced by repulsion. Averaging over many cycles gives ~zero, not a net direction.
+
+### Phase 1 — Mechanism Status After All Tests
+
+| # | Avenue | Script | Result |
+| --- | --- | --- | --- |
+| — | Spin L→T (1c) | step3_two_wc_force.py | Magnetic only, not electric |
+| — | Variable λ (1d, 1D) | step1d_variable_lambda.py | ∇λ active but charge-blind |
+| — | Variable λ (1d, 2D) | step1d_variable_lambda_2d.py | Charge-blind, base wave dominates |
+| — | Variable λ (1d, 3D) | step1d_variable_lambda_3d.py | K=10 resolution too low |
+| — | Isolated interaction | step1d_analytical_force.py | Charge-dependent but wrong sign (ATT for same) |
+| — | In/out wave decomp | step1d_standing_traveling.py | Sinc in ALL components |
+| 1 | Broadband shells | step1d_broadband.py | ❌ Multiple cosines still oscillate |
+| 4 | 1D flux | step1d_flux_force.py | ⚠️ Same-charge consistent at K=10 |
+| 4 | **2D flux** | **step1d_flux_force_2d.py** | **⚠️ 100% charge discrimination, sinc persists** |
+| 5 | Statistical averaging | step1d_averaged_force.py | ❌ Sinc symmetric → zero |
+
+---
+
 ## Findings from Phase 1b Step 2c (hints for Phase 1d implementation)
 
 Phase 1b tested elastic phase warping (Option F) — a charge-dependent phase shift `Δφ(r) = q · strength · δ(r)` applied to the base wave phasor at each WC. The phase warp is equivalent to local λ variation: `Δφ = ∫Δk(r')dr'`.
