@@ -108,7 +108,6 @@ One force `F = -∇E`, projected onto vector displacement components:
 
 For 1D sandbox: Phases 1-3 use constant ρ and f. Phase 5 adds option for position-dependent ρ(x) and f(x) computed from the wave field.
 
-
 4. **Strong Force**: electric force at sub-wavelength distances (λ scale). Particles inside each other's standing wave radius experience concentrated energy from standing waves
 
 5. **Orbital Force**: combination of electric + magnetic creating zero-amplitude nodes (orbitals) where electrons can be found — not classical planetary orbits
