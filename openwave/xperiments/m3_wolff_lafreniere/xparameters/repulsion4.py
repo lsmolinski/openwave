@@ -2,14 +2,35 @@
 XPERIMENT PARAMETERS
 
 This XPERIMENT showcases:
--
+- 10 WC electron in tetrahedral arrangement
+- WCs placed at standing wave node separations (lambda/2)
+- Tests lock-in stability with leapfrog integrator
+
+STATUS: UNSTABLE — tetrahedral geometry is incompatible with uniform lambda/2
+node lattice. 15/45 WC pairs sit at non-node distances (sqrt(3)*lam/2,
+sqrt(2)*lam/2) creating destabilizing forces. Two paths to fix:
+  1. Non-linear lambda(r) from Yee & Hauger shells (Phase 1d) — variable node
+     spacing may accommodate the tetrahedral geometry
+  2. M4 vector method (Phase 1c) — L/T spin conversion may create different
+     equilibrium conditions than scalar M3
 """
 
 import numpy as np
+from openwave.common import constants
+
+# Standing wave node spacing: lambda/2 is the first lock-in well
+# WCs should sit at standing wave nodes of each other's fields
+EWAVE_LENGTH = constants.EWAVE_LENGTH  # m, ~2.854e-17 m
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
-LOCK_SPACING = 0.02  # center-to-center separation between adjacent elements
+
+# Lock spacing calibrated to lambda/2 (first standing wave node)
+# In normalized coords: (lambda/2) / UNIVERSE_EDGE * grid_size / grid_size = lambda/2 / UNIVERSE_EDGE
+# But we need it in normalized (0-1) coords based on grid_size
+# grid_n ~ 464 for 100M voxels, dx ~ 2.16e-18 m
+# lambda/2 = 1.427e-17 m, in voxels = 6.6, in normalized = 6.6/464 ~ 0.014
+LOCK_SPACING = (EWAVE_LENGTH / 2) / UNIVERSE_EDGE  # ~0.0143, = lambda/2 in normalized coords
 
 
 def tetrahedral_10(center=(0.5, 0.5, 0.5)):
@@ -63,7 +84,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 2,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
+        "TIMESTEP": 2.0,  # Simulation timestep in rontoseconds (reduced for stability)
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {

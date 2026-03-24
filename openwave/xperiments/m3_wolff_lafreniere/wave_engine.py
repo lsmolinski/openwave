@@ -532,7 +532,7 @@ def propagate_wave(
         # interference always produces sinc oscillation in force (cos(k·Δr) term).
         # Moved to M4 vector field (independent L/T components, E = E_L + E_T)
         # to capture charge-dependent force from L→T spin conversion.
-        amp_am = trackers.amp_local_envelope_am[i, j, k]
+        amp_am = trackers.amp_local_phasorrms_am[i, j, k]
         trackers.energy_local_aJ[i, j, k] = (
             rho_qgam
             * dx_am**3

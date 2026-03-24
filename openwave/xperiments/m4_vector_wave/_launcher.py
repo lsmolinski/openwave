@@ -460,7 +460,7 @@ def compute_force_motion(state):
         state.wave_center,
     )
     if state.APPLY_MOTION:
-        force_motion.integrate_motion_euler(
+        force_motion.integrate_motion_leapfrog(
             state.wave_field,
             state.wave_center,
             state.TIMESTEP,
