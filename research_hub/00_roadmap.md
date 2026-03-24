@@ -146,7 +146,18 @@ Future (if 3D force test succeeds):
 - [ ] Test with Verlet/leapfrog integrator (energy conservation for lock-in stability)
 - [ ] Test with f64 precision (check if numerical drift causes escape from wells)
 
-## [PHASE 3: Forces — 3D Validation (Taichi, port from 1D)](03_forces_3D.md)
+- [ ] Build M4 vector wave engine with transverse displacement
+- [ ] Validate elliptical displacement trajectories (6 phasor numbers)
+- [ ] Model spin as toroidal wave flow
+- [ ] Demonstrate magnetic force from transverse wave interference
+- [ ] Separate longitudinal (electric) and transverse (magnetic) force components
+
+- [ ] Test wave shading with particle clusters
+- [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
+- [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
+- [ ] Validate computed G against Smoliński's Scilab reference values
+
+## [PHASE 3: 3D RENDERING](03_3D_RENDERING.md)
 
 > **Conditional scheduling**: Ports validated 1D results from  Phase 1c (vector) and/or Phase 1d (non-linear) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
 
@@ -168,33 +179,18 @@ M4 VECTOR:
 - [ ] Test elliptical rotation handedness as charge-sign indicator in M4
 - [ ] Evaluate impact on near-field lock-in and far-field force scaling
 
-## [PHASE 4: Magnetic Force (M4 Vector Waves)](04_magnetic_force.md)
+## [PHASE 4: EMERGENT WAVES](04_EMERGENT_WAVES.md)
 
-- [ ] Build M4 vector wave engine with transverse displacement
-- [ ] Validate elliptical displacement trajectories (6 phasor numbers)
-- [ ] Model spin as toroidal wave flow
-- [ ] Demonstrate magnetic force from transverse wave interference
-- [ ] Separate longitudinal (electric) and transverse (magnetic) force components
+- [ ] Demonstrate photon-like traveling wave packets
+- [ ] Test thermal energy as standing wave dynamics
+- [ ] Validate electromagnetic wave emergence from medium disturbances
 
-## [PHASE 5: Gravitational Force (M3, Multi-Particle)](05_gravitational_force.md)
-
-- [ ] Test wave shading with particle clusters
-- [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
-- [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
-- [ ] Validate computed G against Smoliński's Scilab reference values
-
-## [PHASE 6: Time Dynamics (M4 or new method)](06_time_dynamics.md)
+## [PHASE 5: TIME DYNAMICS](05_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
 - [ ] Connect λ modulation → granule velocity → pressure → gravity
 - [ ] Test force control via frequency/spin manipulation
-
-## [PHASE 7: Emergent Waves](07_emergent_waves.md)
-
-- [ ] Demonstrate photon-like traveling wave packets
-- [ ] Test thermal energy as standing wave dynamics
-- [ ] Validate electromagnetic wave emergence from medium disturbances
 
 ---
 

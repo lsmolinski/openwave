@@ -14,7 +14,7 @@
 
 - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
 
-## ⚠️ Key Concepts Under Investigation
+## ⚠️ Key Hypothesis Under Investigation
 
 - **BASE WAVE**:
   - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
