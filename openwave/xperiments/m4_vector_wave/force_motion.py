@@ -88,10 +88,15 @@ def compute_ewt_electric_force(
 
 # Gradient sampling: number of voxel shells and weight exponent
 # GRADIENT_SAMPLE_RADIUS = 1: standard central difference (single shell)
-# GRADIENT_SAMPLE_RADIUS > 1: weighted multi-shell gradient
+# GRADIENT_SAMPLE_RADIUS > 1: weighted multi-shell gradient (better well resolution)
 # GRADIENT_WEIGHT_FALLOFF = 2: weights as 1/d² (particle energy density ∝ A² ∝ 1/r²)
-GRADIENT_SAMPLE_RADIUS = 1  # voxels (must be Python int for ti.static)
+GRADIENT_SAMPLE_RADIUS = 3  # voxels (increased from 1 for better lock-in well resolution)
 GRADIENT_WEIGHT_FALLOFF = 2  # exponent for 1/d^n weighting
+
+# Velocity damping: fraction of velocity retained per timestep
+# 1.0 = no damping, 0.99 = light damping, 0.95 = moderate damping
+# Physically: models energy dissipation via radiation (photon emission)
+VELOCITY_DAMPING = 0.995
 
 
 @ti.kernel
@@ -300,6 +305,85 @@ def integrate_motion_euler(
         # wave_center.position_float[wc_idx][2] = ti.max(
         #     margin, ti.min(nz_f - margin, wave_center.position_float[wc_idx][2])
         # )
+
+        # Sync integer position for wave generation
+        wave_center.position_grid[wc_idx][0] = ti.cast(
+            wave_center.position_float[wc_idx][0], ti.i32
+        )
+        wave_center.position_grid[wc_idx][1] = ti.cast(
+            wave_center.position_float[wc_idx][1], ti.i32
+        )
+        wave_center.position_grid[wc_idx][2] = ti.cast(
+            wave_center.position_float[wc_idx][2], ti.i32
+        )
+
+
+# ================================================================
+# Motion Integration (Leapfrog / Velocity Verlet)
+# ================================================================
+
+
+@ti.kernel
+def integrate_motion_leapfrog(
+    wave_field: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+):
+    """
+    Integrate particle motion using Velocity Verlet (leapfrog) method.
+
+    Symplectic integrator — conserves energy in oscillatory systems,
+    preventing numerical drift that causes particles to escape lock-in wells.
+
+    Leapfrog kick-drift-kick (combined across calls):
+      v += a * dt   (full kick)
+      x += v * dt   (drift with updated velocity)
+
+    Args:
+        wave_field: WaveField instance (for dx voxel size)
+        wave_center: WaveCenter instance with force/velocity/position fields
+        dt_rs: Timestep in rontoseconds
+    """
+    accel_conv_qg = ti.cast(1e-3, ti.f32)  # (F_N / m_qg) * 1e-3 -> am/rs²
+    dx_am = wave_field.dx / ti.cast(ATTOMETER, ti.f32)
+    damping = ti.cast(VELOCITY_DAMPING, ti.f32)
+
+    for wc_idx in range(wave_center.num_sources):
+        if wave_center.active[wc_idx] == 0:
+            continue
+
+        F_x = wave_center.force[wc_idx][0]
+        F_y = wave_center.force[wc_idx][1]
+        F_z = wave_center.force[wc_idx][2]
+        m_qg = wave_center.mass_qg[wc_idx]
+
+        # Acceleration from current force
+        a_x = (F_x / m_qg) * accel_conv_qg
+        a_y = (F_y / m_qg) * accel_conv_qg
+        a_z = (F_z / m_qg) * accel_conv_qg
+
+        # Full velocity kick: v += a * dt
+        wave_center.velocity_amrs[wc_idx][0] += a_x * dt_rs
+        wave_center.velocity_amrs[wc_idx][1] += a_y * dt_rs
+        wave_center.velocity_amrs[wc_idx][2] += a_z * dt_rs
+
+        # Apply damping (models radiation energy loss)
+        wave_center.velocity_amrs[wc_idx][0] *= damping
+        wave_center.velocity_amrs[wc_idx][1] *= damping
+        wave_center.velocity_amrs[wc_idx][2] *= damping
+
+        # Drift: x += v * dt
+        dx_am_step = wave_center.velocity_amrs[wc_idx][0] * dt_rs
+        dy_am_step = wave_center.velocity_amrs[wc_idx][1] * dt_rs
+        dz_am_step = wave_center.velocity_amrs[wc_idx][2] * dt_rs
+
+        di = dx_am_step / dx_am
+        dj = dy_am_step / dx_am
+        dk = dz_am_step / dx_am
+
+        wave_center.position_float[wc_idx][0] += di
+        wave_center.position_float[wc_idx][1] += dj
+        wave_center.position_float[wc_idx][2] += dk
 
         # Sync integer position for wave generation
         wave_center.position_grid[wc_idx][0] = ti.cast(
