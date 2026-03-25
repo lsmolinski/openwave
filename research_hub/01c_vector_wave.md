@@ -23,7 +23,7 @@ When the wave equations are validated, they get ported to the M4 Taichi engine (
 
 ---
 
-## Phase 1b Carry-Forward (compact summary)
+## Phase 1b Carry-Over (compact summary)
 
 Phase 1b tested 10 WC disturbance models on 5 base wave modes in a 1D scalar sandbox:
 
@@ -34,7 +34,7 @@ Phase 1b tested 10 WC disturbance models on 5 base wave modes in a 1D scalar san
 - **Passive WC interactions fail** — reflections cancel in isotropic fields (M2 confirmed in 3D, re-confirmed in 1D)
 - **Elastic disturbance is the mechanism** — wave character changes at WC (not reflects). Spin = wave transformation (Wolff: "the wave is spinning, not the particle")
 
-Carry-forward tasks:
+Carry-over tasks:
 
 - [ ] Test energy redistribution: concentration near WC (r < K²λ), drainage in far field
 - [ ] Determine how WC phase affects far-field drainage pattern → L→T spin is the candidate mechanism
@@ -238,36 +238,6 @@ For two WCs on the x-axis, displacement vectors are anti-parallel (d̂₁ = +x̂
 ```
 
 On-axis: cos(θ_geo) = -1 (constant). The vector advantage only manifests **off-axis** or with **transverse components** — which is exactly what L→T spin conversion produces.
-
----
-
-## Spin, Magnetism, and Thermal Energy
-
-**Spin** may be the unifying concept:
-
-- **Magnetic moment from spin**: L→T conversion at WC creates transverse wave emission. Coherent spin alignment = net transverse field = magnetism
-- **Thermal energy from spin**: incoherent spin fluctuations (random T directions) = heat. Higher temperature = more energetic L→T cycling
-- **Gravitational shading from spin**: spin converts L→T, reducing longitudinal amplitude. This L reduction is the gravitational "shadow" — the mechanism behind shading/push-out gravity
-
-The fine-structure constant α may be the L→T conversion ratio. If gravity emerges from repeated application of this coupling, the 10⁻⁴² EM-to-gravitational ratio emerges naturally.
-
-### Toroidal Flow Geometry (Smoliński)
-
-The internal "engine" of a particle operates in the Energy Domain with toroidal (doughnut-shaped) wave flows governed by r⁵ scaling:
-
-- **Spin** = toroidal wave flow around the particle core
-- **Magnetic moment** = natural dipole from circulating toroidal current
-- **Thermal energy** = modulation of toroidal flow rate/precession
-- The elliptical displacement trajectories may be cross-sections of toroidal flows
-
-### Vortex Electron Model (Butto, 2021)
-
-The electron as a superfluid irrotational vortex — supporting the toroidal flow picture:
-
-- **Spin-½ = differential rotation**: core rotates at 2× boundary rate (720° core / 360° boundary)
-- **Planck constant = vortex angular momentum**: Γ·m_e = h
-- **Magnetic moment without g-factor**: μ = qcr from vortex hydrodynamics
-- **Helmholtz theorems**: vortex filaments form closed loops → toroidal geometry
 
 ---
 

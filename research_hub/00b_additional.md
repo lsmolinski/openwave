@@ -33,7 +33,7 @@ A critical distinction from LaFreniere:
 
 This means counter-propagating waves (in-wave + out-wave) always create standing wave structure. The standing waves periodically appear and disappear everywhere simultaneously, but the energy is never lost — it redistributes locally.
 
-## Magnetic Fields as Hyperboloid Wave Patterns
+## Magnetic Fields as Hyperbolic Wave Patterns
 
 Two concentric spherical wave systems (e.g., two electrons in proximity) produce interference on **hyperboloid** and ellipsoidal surfaces. LaFreniere's key insights:
 
