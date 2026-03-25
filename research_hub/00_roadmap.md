@@ -140,45 +140,47 @@ Carry-Over to Phase 2:
 
 ## 🔶 [PHASE 2: BUILDING BLOCKS](02_BUILDING_BLOCKS.md)
 
-- [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
-- [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation
-- [ ] Characterize near-field → far-field transition boundary
-- [ ] Validate dual-treatment: raw phasor (near-field) vs smoothed envelope (far-field)
-- [ ] Test with Verlet/leapfrog integrator (energy conservation for lock-in stability)
-- [ ] Test with f64 precision (check if numerical drift causes escape from wells)
+### 🔶 Phase 2a: Near-Field — Particle Formation (M3 Scalar)
 
-- [ ] Build M4 vector wave engine with transverse displacement
-- [ ] Validate elliptical displacement trajectories (6 phasor numbers)
-- [ ] Model spin as toroidal wave flow
-- [ ] Demonstrate magnetic force from transverse wave interference
+M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
+
+- [ ] Stabilize K=10 electron tetrahedron on M3
+  - [ ] Implement variable λ(r) from Yee & Hauger shells (non-uniform node spacing)
+  - [ ] Test whether variable nodes accommodate the 15/45 non-node pairs
+  - [ ] Leapfrog integrator + damping already in place
+- [ ] Validate same-phase lock-in in 3D animation (two WCs, energy wells)
+- [ ] Validate opposite-phase annihilation pathway (two WCs, barrier structure)
+- [ ] Test multi-WC lock-in: K=2, K=3, ..., K=10 progressive build-up
+  - [ ] K=2..9 should be unstable (temporary), K=10 should be stable
+  - [ ] Test geometry: self-organize vs prescribed?
+- [ ] Characterize near-field → far-field transition boundary (particle radius K²λ)
+- [ ] Wrap M3 near-field validation and rename xperiments
+
+### 🚧 Phase 2b: Far-Field — Electromagnetism and Traveling Waves (M4 Vector)
+
+M4 vector method needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral.
+
+- [ ] Build / extend M4 vector wave engine with L→T spin conversion
+  - [ ] Vector displacement `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
+  - [ ] L→T conversion at standalone particle WCs (η = α ≈ 1/137)
+  - [ ] Elliptical displacement trajectories (6 phasor numbers)
+- [ ] Model spin as toroidal wave flow (Smoliński Energy Domain, Butto vortex)
+- [ ] Test standalone particle (K=10 electron) as Coulomb source
+  - [ ] Compare with neutrino (should be neutral — no Coulomb)
+  - [ ] Does spinning tetrahedral geometry produce consistent Coulomb direction?
+- [ ] Investigate 3D flux-based force (extend Phase 1 2D flux to 3D spherical)
+- [ ] Investigate charge mechanism (dual vs non-dual, core phase shift, variable λ)
+- [ ] Validate Coulomb: direction at all separations, 1/r² scaling, Newton's 3rd
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
+- [ ] Demonstrate magnetic force from transverse wave interference
 
-- [ ] Test wave shading with particle clusters
-- [ ] Test Smoliński buoyancy model: ρ(x) and f(x) as local variables
-- [ ] Validate 10⁻⁴² EM-to-gravitational force ratio
-- [ ] Validate computed G against Smoliński's Scilab reference values
+### 🚧 Phase 2c: Gravitational Force and Composite Particles
 
-## [PHASE 3: 3D RENDERING](03_3D_RENDERING.md)
-
-> **Conditional scheduling**: Ports validated 1D results from  Phase 1c (vector) and/or Phase 1d (non-linear) to 3D engines. Phases 1c and 1d may converge here — non-linear toroidal dynamics naturally produce vector patterns that carry charge information.
-
-M3 SCALAR:
-
-- [ ] Port validated 1D equations to M3 3D wave engine
-- [ ] Reproduce 1D force results in 3D (2 WCs on axis)
-- [ ] Test off-axis configurations (verify spherical symmetry)
-- [ ] Validate force & motion integration (particles move correctly)
-- [ ] Compare against Coulomb force at multiple separations
-
-M4 VECTOR:
-
-- [ ] Port variable λ(r) to M3 3D engine (Yee & Hauger discrete wavelength shells)
-- [ ] Port variable ρ(x) to M3 3D engine (density from granule velocity)
-- [ ] Port Ψ³ cubic non-linearity (NLS soliton stabilizer) to 3D
-- [ ] Test Smoliński r⁵ energy scaling near WC core
-- [ ] Port vector force computation (divergence/curl/flux) to M4 3D engine
-- [ ] Test elliptical rotation handedness as charge-sign indicator in M4
-- [ ] Evaluate impact on near-field lock-in and far-field force scaling
+- [ ] Gravitational force from spin energy deficit (L→T drainage → amplitude deficit)
+- [ ] Test wave shading with standalone particle clusters → accumulated deficit → gravity
+- [ ] Compare with 10⁻⁴² EM-to-gravitational ratio
+- [ ] Validate against Smoliński's Scilab reference values
+- [ ] Composite particle formation: proton (4e⁻ + 1e⁺), neutron (proton + e⁻ at center)
 
 ## [PHASE 4: EMERGENT WAVES](04_EMERGENT_WAVES.md)
 
