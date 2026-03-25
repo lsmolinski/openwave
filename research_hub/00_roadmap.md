@@ -138,7 +138,7 @@ Carry-Over to Phase 2:
 - [ ] Explore whether sinc lock-in + charge discrimination IS the unified force (near-field = strong, far-field = Coulomb envelope)
 - [ ] Variable ρ(x), Ψ³ non-linearity, combined vector + variable λ (deferred from Phase 1d)
 
-## 🔶 [PHASE 2: BUILDING BLOCKS)](02_BUILDING_BLOCKS.md)
+## 🔶 [PHASE 2: BUILDING BLOCKS](02_BUILDING_BLOCKS.md)
 
 - [ ] Same-phase lock-in: verify oscillatory force creates stable energy wells
 - [ ] Opposite-phase monotonic attraction: verify consistent attraction to annihilation

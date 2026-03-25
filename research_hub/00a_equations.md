@@ -67,7 +67,7 @@ Expanded:
 - Uses 1/r normalization (not 1/kr) — center amplitude depends on wavelength
 - **Limitation**: standing wave nodes (zeros of sin(kr)) persist at all distances, and the uniform pulsation term doesn't match LaFreniere's reference animations
 
-#### 5. Weighted Partial Standing Wave
+### 5. Weighted Partial Standing Wave
 
 ```text
 ψ = A · [w(r)·sin(kr + ωt) + sin(kr - ωt)] / kr

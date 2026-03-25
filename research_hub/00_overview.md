@@ -2,27 +2,27 @@
 
 ## GOALS: Matter Formation & Force Unification from Wave Interference
 
-### PRIMARY (EMERGENT PARTICLES)
+- ### EMERGENT PARTICLES
 
-- Provide numerical evidence that all PARTICLES emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+  - Provide numerical evidence that all PARTICLES emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
 
-### SECONDARY (EMERGENT FORCES)
+- ### EMERGENT FORCES
 
-- Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
+  - Provide numerical evidence that all fundamental FORCES (electric, magnetic, gravitational) emerge from Energy Wave interference patterns in a spacetime medium — validating Energy Wave Theory (EWT) through simulation.
 
-### TERTIARY (EMERGENT WAVES)
+- ### EMERGENT WAVES
 
-- Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave.
+  - Provide numerical evidence that ELECTROMAGNETIC WAVES and HEAT emerge from Energy Wave interference patterns in a spacetime medium.
 
 ## CURRENT STATE
 
-### NEAR-FIELD (particles)
+### NEAR-FIELD (particles, standing waves)
 
 | Effect | Status | Evidence |
 | --- | --- | --- |
-| Strong Force (lock-in) | ✅ Emerges | WC at Same phase: sinc nodes create energy wells at λ/2, WCs lock into these wells — this IS the strong force binding mechanism for quarks, nuclear binding, and particle formation |
-| Anti-Particle Annihilation | ✅ Emerges | WC at Opposite phase: deepest well at r=0 (zero separation = complete wave cancellation), barriers at λ/2 explain positronium, high kinetic energy overcomes barriers → direct annihilation |
-| Particle Formation | ⚠️ Concept works | Lock-in holds WCs, but M3/M4 K=10 tetrahedron unstable (needs variable λ for non-uniform nodes in equilibrium state) |
+| Strong Force (lock-in) | ✅ Emerges | Wave-Center at SAME PHASE: sinc nodes create energy wells at λ/2, WCs lock into these wells — this IS the strong force binding mechanism for quarks, nuclear binding, and particle formation |
+| Anti-Particle Annihilation | ✅ Emerges | Wave-Center at OPPOSITE PHASE: deepest well at r=0 (zero separation = complete wave cancellation), barriers at λ/2 explain positronium, high kinetic energy overcomes barriers → direct annihilation |
+| Particle Formation | ⚠️ Concept works | Lock-in holds Wave-Centers, but M3/M4 K=10 tetrahedron unstable (needs variable λ for non-uniform nodes in equilibrium state) |
 
 ### Next to do
 
@@ -31,7 +31,7 @@
 
 ---
 
-### FAR-FIELD (electromagnetism)
+### FAR-FIELD (electromagnetism, traveling waves)
 
 | Effect | Status | Evidence |
 | --- | --- | --- |
@@ -59,12 +59,16 @@
 
 - **BASE WAVE**:
   - The fundamental energy wave that fills all of space — the energy source for matter formation, force emergence, EM waves, and heat. Waves arriving from all directions create an isotropic field. In 1D, validated as a standing wave (`ψ = A₀·cos(kx)·cos(ωt)`) via Laplacian self-stabilization. In 3D, the isotropic superposition from all directions creates a uniform energy density field with vector displacement at every point. The base wave equation in 3D and its exact form are still to be determined — this is Step 1 of Phase 1c
-  - TESTING: standing wave, quadrature, uniform, stochastic, laplacian, dual-channel
+  - TESTING: standing wave, quadrature, uniform, stochastic, laplacian
+  - TO EXPLORE: dual-channel
 
 - **WAVE CENTERS (WCs)**:
   - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found. The WC equation and exact disturbance mechanism are still being explored — this is Step 2 of Phase 1c
   - TESTING: (wave equation) in + out, partial standing, out wave only, A(r), λ(r)
   - sinc function: `ψ = A · cos (kr ± ωt ± φ) / kr`
+  - partial standing wave: `ψ = A · [w(r)·sin(kr + ωt) + sin(kr - ωt)] / kr`
+  - phasor superposition: analytical amplitude computation, this replaces the EMA-RMS tracking with an exact, instantaneous result — no observation window, no smoothing artifacts (00a_equations.md)
+  - non-linear equation (variable λ): Wave centers may have longer wavelengths at the core (pushing amplitude up to conserve energy/steepness), with λ getting shorter as r increases until stabilizing at some distance (00a_equations.md)
   - TESTING: (interaction with base) additive reflection, absorber, elastic disturbance (amp, phase shift, spin)
   - effect: standing @near_field + traveling @far_field
 
@@ -186,13 +190,13 @@ Wave centers elastically disturb the base wave — the wave passes through and c
 
 - Also refer to `../CLAUDE.md` file to search for any available context to the OpenWave project in a parent directory.
 
-## SIMULATOR TOOLS
+## OPENWAVE SIMULATOR TOOLS
 
 - 1D & 3D wave engines
 - Wave Equations compute on GPU
 - Multiple methods & options for wave equations, on scalar & vector fields
 - Phasor superposition for exact analytical amplitude computation
-- Variable λ logic (non-linear wave equations)
+- Non-linear wave equations for variable λ logic
 - 3D Rendering system
   - subatomic physics simulation with wave & particle 3D animation (leap-frog integrator)
   - flux mesh cross-section for variable display (color and magnitude via warp-mesh)

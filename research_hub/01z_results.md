@@ -136,6 +136,36 @@ Variable λ/frequency → variable granule velocity → variable medium pressure
 
 ---
 
+## Spin, Magnetism, and Thermal Energy
+
+**Spin** may be the unifying concept:
+
+- **Magnetic moment from spin**: L→T conversion at WC creates transverse wave emission. Coherent spin alignment = net transverse field = magnetism
+- **Thermal energy from spin**: incoherent spin fluctuations (random T directions) = heat. Higher temperature = more energetic L→T cycling
+- **Gravitational shading from spin**: spin converts L→T, reducing longitudinal amplitude. This L reduction is the gravitational "shadow" — the mechanism behind shading/push-out gravity
+
+The fine-structure constant α may be the L→T conversion ratio. If gravity emerges from repeated application of this coupling, the 10⁻⁴² EM-to-gravitational ratio emerges naturally.
+
+### Toroidal Flow Geometry (Smoliński)
+
+The internal "engine" of a particle operates in the Energy Domain with toroidal (doughnut-shaped) wave flows governed by r⁵ scaling:
+
+- **Spin** = toroidal wave flow around the particle core
+- **Magnetic moment** = natural dipole from circulating toroidal current
+- **Thermal energy** = modulation of toroidal flow rate/precession
+- The elliptical displacement trajectories may be cross-sections of toroidal flows
+
+### Vortex Electron Model (Butto, 2021)
+
+The electron as a superfluid irrotational vortex — supporting the toroidal flow picture:
+
+- **Spin-½ = differential rotation**: core rotates at 2× boundary rate (720° core / 360° boundary)
+- **Planck constant = vortex angular momentum**: Γ·m_e = h
+- **Magnetic moment without g-factor**: μ = qcr from vortex hydrodynamics
+- **Helmholtz theorems**: vortex filaments form closed loops → toroidal geometry
+
+---
+
 ## Carry-Over: Knowledge & Ideas for Phase 2
 
 ### The Most Promising Lead: 2D Flux
