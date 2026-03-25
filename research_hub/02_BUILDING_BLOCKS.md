@@ -213,12 +213,46 @@ Gravitational force is the residual: total energy deficit from L→T spin conver
 
 **Goal**: Demonstrate how spin creates charge, Coulomb force, and magnetic force. This requires M4 (vector wave engine) because far-field forces emerge from the transverse wave component that spin creates — a scalar field cannot represent this.
 
-**Why spin is the key**: Phase 1 showed single WCs (neutrinos) cannot produce Coulomb. The neutrino has no spin, no charge. The electron (K=10) has spin because its tetrahedral geometry forces continuous WC rotation. Spin creates L→T conversion, which:
+**Why spin is the key**: Phase 1 showed single WCs (neutrinos) cannot produce Coulomb. The neutrino has no spin, no charge. The electron (K=10) has spin because its non-dual tetrahedral geometry forces continuous WC rotation. Spin creates L→T conversion, which:
 
 - Generates a transverse out-wave (magnetic force)
 - Promotes a phase shift from the spinning geometry (charge sign)
 - Distorts the wavefront from pure spherical to toroidal/elliptical
 - Creates the traveling wave pattern beyond particle radius that IS the electric field
+
+**Context sources for spin development** (load these when starting Phase 2b):
+
+EWT theory and equations:
+
+- [EWT Forces: Electric](https://energywavetheory.com/forces/electric/) — charge as traveling wave amplitude
+- [EWT Forces: Magnetic](https://energywavetheory.com/forces/magnetic/) — transverse wave from spin
+- [EWT Forces: Unification](https://energywavetheory.com/forces/unification-of-forces/) — force hierarchy
+- [EWT Electron](https://energywavetheory.com/subatomic-particles/electron/) — spin mechanism, L→T
+- [EWT Constants: Fine Structure](https://energywavetheory.com/physics-constants/fine-structure-constant/) — α = L→T conversion ratio
+
+Wave equation foundations:
+
+- Wolff-original complex sinusoidal: `ψ = A · e^(iωt) · sin(kr)/r` — the imaginary component IS the transverse wave (see [00a_equations.md](00a_equations.md))
+- LaFreniere radiation pressure model: `lafreniere/Gabriel_LaFreniere/sa_phaseshift.html` — core phase shift, diffractive lens, wave speed in compressed medium
+- [LaFreniere Electron](http://www.interwaves.com/en/sa_electron.htm) — standing → traveling transition, near-field → far-field
+
+Scientific papers (in `/scientific_source/`):
+
+- `01. The Geometry of Spacetime and the Unification of Forces v2.3.pdf` — force unification framework
+- `02. The Geometry of Particles and the Explanation of Their Creation and Decay v2.pdf` — dual/non-dual tetrahedra, particle geometry, spin
+- `03. The Physics of SubAtomic Particles.pdf` — particle physics context
+- `06. Constants and Equations - Waves.pdf` — primary constants reference
+- Yee & Hauger wavelength shells: `references/Spin.pdf` — variable λ(r), standing → traveling transition
+
+Additional references (in `/references/`):
+
+- Smolinski: `references/MagnetismGravity_v4.pdf` — toroidal soliton geometry, r⁵ energy scaling, Energy Domain vs EMC Domain, non-linear wave equation `(∂²/∂t² - c²∇²)Ψ + k·Ψ³ = 0`
+- Butto (2021): `references/` — vortex electron model, superfluid irrotational vortex, spin-½ as differential rotation (720° core / 360° boundary), Helmholtz theorems → toroidal geometry
+
+Phase 1c vector wave research (validated infrastructure):
+
+- [01c_vector_wave.md](01c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
+- Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
 - [ ] Build / extend M4 vector wave engine with L→T spin conversion
   - Vector displacement: `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
