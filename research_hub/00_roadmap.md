@@ -161,7 +161,10 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Validates EWT prediction: 1-3-6 tetrahedron is simplest 3D geometry where all WCs sit near nodes
 - [ ] Characterize near-field → far-field transition boundary (particle radius K²λ)
   - [ ] Where do standing waves end and traveling waves begin?
-- [ ] Wrap M3 near-field validation and rename xperiments
+- [ ] Wrap M3:
+  - [ ] near-field validation
+  - [ ] rename xperiments
+  - [ ] collect proof for particle formation from waves
 
 ### 🚧 Phase 2b: Far-Field — Electromagnetism and Traveling Waves (M4 Vector)
 
