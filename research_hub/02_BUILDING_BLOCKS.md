@@ -26,13 +26,13 @@ Full Phase 1 results: [01z_results.md](01z_results.md)
 
 ## PHASE 2 STRATEGY
 
-### 🔶 Phase 2a: Near-Field — Particle Formation from Standing Waves (M3 Scalar)
+### 🔶 BLOCK 1: Near-Field — Particle Formation from Standing Waves (M3 Scalar)
 
 **Goal**: Demonstrate stable standalone particle formation in M3 3D simulator. The near-field is purely longitudinal standing wave physics — M3 (scalar method) should be sufficient. We already simulate lock-in and annihilation; the missing piece is the K=10 electron tetrahedron stability.
 
 **Why M3 is enough for near-field**: lock-in is a longitudinal phenomenon — sinc energy wells from spherical standing wave interference. No transverse component (spin) is needed for lock-in itself. M3 already demonstrates the right near-field physics. Far-field (Coulomb, magnetic) needs spin → needs vector field → that's Phase 2b on M4.
 
-### 🚧 Phase 2b and 2c: Far-Field — Electromagnetism and Traveling Waves (M4 Vector)
+### 🚧 BLOCKS 2 and 3: Far-Field — Electro-Magnetism and Traveling Waves (M4 Vector)
 
 **Goal**: Demonstrate how spin creates charge, Coulomb force, and magnetic force. This requires M4 (vector wave engine) because far-field forces emerge from the transverse wave component that spin creates — a scalar field cannot represent this.
 
@@ -77,9 +77,13 @@ Phase 1c vector wave research (validated infrastructure):
 - [01c_vector_wave.md](01c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
 - Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
-### 🚧 Phase 2d: Gravitational Force and Composite Particles
+### 🚧 BLOCK 4 and 5: Gravitational Force and Composite Particles
 
 **Goal**: Demonstrate gravity from spin energy deficit and test composite particle (proton = 4e⁻ + 1e⁺, neutron = proton + e⁻ at center) formation.
+
+### 🚧 BLOCK 6: Emergent Waves
+
+**Goal**: Demonstrate Electro_magnetic Waves being generated and Thermal Energy.
 
 ---
 

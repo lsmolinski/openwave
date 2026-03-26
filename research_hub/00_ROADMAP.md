@@ -140,13 +140,13 @@ Carry-Over to Phase 2:
 
 ## 🔶 [PHASE 2: BUILDING BLOCKS](02_BUILDING_BLOCKS.md)
 
-Follows the building blocks hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md) (steps 1-11). See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for strategy, context sources, and open questions.
+Follows the building blocks hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md). See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for strategy, context sources, and open questions.
 
-### 🔶 Phase 2a: Particle Formation from Near-Field Standing Waves (M3 Scalar)
+### 🔶 BLOCK 1: [PARTICLE FORMATION](02B1_particle_formation.md) from Near-Field Standing Waves (M3 Scalar)
 
 M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
 
-#### Block 2a.1: Energy wave + WC disturbance → fundamental particle
+#### Block 1a: Energy wave + WC disturbance → fundamental particle
 
 - [ ] Validate same-phase lock-in in 3D animation
   - [ ] Two fundamental particles (WCs), same phase, observe oscillation in energy wells
@@ -155,7 +155,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Two fundamental particles, opposite phase, observe attraction through barriers
   - [ ] Measure barrier heights at λ/2 intervals, compare with positronium lifetime data
 
-#### Block 2a.2: K=1 lock-in → standalone particle formation
+#### Block 1b: K=1 lock-in → standalone particle formation
 
 - [ ] Test multi-WC lock-in: K=2, K=3, ..., K=10 progressive build-up
   - [ ] K=2..9 should be unstable (temporary particles that decay)
@@ -170,18 +170,18 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 - [ ] Characterize near-field → far-field transition boundary (particle radius K²λ)
   - [ ] Where do standing waves end and traveling waves begin?
 
-#### Wrap 2a
+#### Wrap-Up Block 1
 
 - [ ] Collect proof for particle formation from waves (electron properties)
 - [ ] Rename xperiments with near-field results
 - [ ] review <https://energywavetheory.com/project/phase1/>
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2b: Electric Force from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
+### 🚧 BLOCK 2: [ELECTRIC FORCE](02B2_electric_force.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
 M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for context sources and references to load when starting this phase.
 
-#### Block 2b.1: Charge emergence (from non-dual spin)
+#### Block 2a: Charge emergence (from non-dual spin)
 
 - [ ] Investigate charge mechanism
   - [ ] Spin
@@ -189,7 +189,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Role of LaFreniere core phase shift (λ/2 from compression)
   - [ ] Does variable λ(r) inside the standalone particle create the charge sign?
 
-#### Block 2b.2: Coulomb / electric force (1st measurable force, longitudinal)
+#### Block 2b: Coulomb / electric force (1st measurable force, longitudinal)
 
 - [ ] Build / extend M4 vector wave engine with L→T spin conversion
   - [ ] Vector displacement `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
@@ -209,9 +209,15 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Symmetry: Newton's 3rd law (equal and opposite)
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2c: Magnetic Force (requires M4 Vector)
+#### Block 2c: Strong Force (electric at sub-λ between K=10 standalone particles)
 
-#### Block 2c.1: Bohr magneton / magnetic force (2nd force, transverse)
+- [ ] Test K=10 near-field overlap → combined standing waves, high-energy lock-in
+- [ ] Verify ~137× Coulomb strength (= 1/α) at sub-λ distances
+- [ ] Investigate gluonic field mechanism (magnetic role?)
+
+### 🚧 BLOCK 3: [MAGNETIC FORCE](02B3_magnetic_force.md) (requires M4 Vector)
+
+#### Block 3a: Bohr magneton / magnetic force (2nd force, transverse)
 
 - [ ] Model spin as toroidal wave flow (Smoliński Energy Domain, Butto vortex)
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
@@ -220,9 +226,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2d: Gravity, Strong Force, and Composite Particles
-
-#### Block 2d.1: Gravitational Force (residual from L→T drainage)
+### 🚧 BLOCK 4: [GRAVITATIONAL FORCE](02B4_gravitational_force.md) (residual from L→T drainage)
 
 - [ ] Gravitational force from spin energy deficit (L→T drainage → amplitude deficit)
   - [ ] Test whether deficit accumulates over K WCs (factor of K×α?)
@@ -230,13 +234,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Compare with 10⁻⁴² EM-to-gravitational ratio
 - [ ] Validate against Smoliński's Scilab reference values
 
-#### Block 2d.2: Strong Force (electric at sub-λ between K=10 standalone particles)
-
-- [ ] Test K=10 near-field overlap → combined standing waves, high-energy lock-in
-- [ ] Verify ~137× Coulomb strength (= 1/α) at sub-λ distances
-- [ ] Investigate gluonic field mechanism (magnetic role?)
-
-#### Block 2d.3: Composite particles → nuclei → atoms (Orbital Force)
+### 🚧 BLOCK 5: [COMPOSITE PARTICLE](02B5_composite_particle.md) → nuclei → atoms (Orbital Force)
 
 - [ ] Composite particle formation
   - [ ] Proton: 4 electrons + 1 positron at center (tetrahedral)
@@ -246,13 +244,13 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## [PHASE 4: EMERGENT WAVES](04_EMERGENT_WAVES.md)
+### 🚧 BLOCK 6: [EMERGENT_WAVES](02B6_emergent_waves.md)
 
 - [ ] Demonstrate photon-like traveling wave packets
 - [ ] Test thermal energy as standing wave dynamics
 - [ ] Validate electromagnetic wave emergence from medium disturbances
 
-## [PHASE 5: TIME DYNAMICS](05_TIME_DYNAMICS.md)
+## [PHASE 3: TIME DYNAMICS](03_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
