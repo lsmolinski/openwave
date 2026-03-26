@@ -26,7 +26,7 @@ class WaveCenter:
     The phase offset models electrostatic charge (0 = electron, pi = positron).
     """
 
-    def __init__(self, grid_size, num_sources, sources_position, sources_offset_deg):
+    def __init__(self, grid_size, num_sources, sources_position, sources_offset_deg, init_velocity=None):
         """
         Initialize the WaveCenter with given source positions and phase offsets.
 
@@ -85,8 +85,12 @@ class WaveCenter:
             self.position_grid[i] = [pos_i, pos_j, pos_k]
             self.position_float[i] = [float(pos_i), float(pos_j), float(pos_k)]
 
-            # Initialize motion fields (at rest, no force)
-            self.velocity_amrs[i] = [0.0, 0.0, 0.0]
+            # Initialize velocity from xparameter or zero (am/rs)
+            if init_velocity and i < len(init_velocity):
+                self.velocity_amrs[i] = list(init_velocity[i])
+            else:
+                self.velocity_amrs[i] = [0.0, 0.0, 0.0]
+
             self.force[i] = [0.0, 0.0, 0.0]  # Newtons
             self.mass_qg[i] = constants.NEUTRINO_MASS_QG  # Default to neutrino mass, qg
 

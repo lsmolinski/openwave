@@ -124,6 +124,7 @@ class SimulationState:
         self.NUM_SOURCES = 1
         self.SOURCES_POSITION = []
         self.SOURCES_OFFSET_DEG = []
+        self.INIT_VELOCITY = None
         self.APPLY_MOTION = True
 
         # UI control variables
@@ -165,6 +166,7 @@ class SimulationState:
         self.NUM_SOURCES = sources["COUNT"]
         self.SOURCES_POSITION = sources["POSITION"]
         self.SOURCES_OFFSET_DEG = sources["PHASE_OFFSETS_DEG"]
+        self.INIT_VELOCITY = sources.get("INIT_VELOCITY", None)
         self.APPLY_MOTION = sources["APPLY_MOTION"]
 
         # UI defaults
@@ -204,6 +206,7 @@ class SimulationState:
             self.NUM_SOURCES,
             self.SOURCES_POSITION,
             self.SOURCES_OFFSET_DEG,
+            self.INIT_VELOCITY,
         )
 
     def reset_sim(self):

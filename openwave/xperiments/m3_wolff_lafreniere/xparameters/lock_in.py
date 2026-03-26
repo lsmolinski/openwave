@@ -29,6 +29,11 @@ XPARAMETERS = {
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [180, 180],
+        # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs).
+        "INIT_VELOCITY": [
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+        ],
         "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {

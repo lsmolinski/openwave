@@ -29,6 +29,11 @@ XPARAMETERS = {
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0, 180],
+        # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs). Head-on collision along x-axis
+        "INIT_VELOCITY": [
+            [1.0, 0.0, 0.0],  # WC0: push right toward WC1
+            [-1.0, 0.0, 0.0],  # WC1: push left toward WC0
+        ],
         "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {
@@ -40,7 +45,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
+        "TIMESTEP": 3.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {
