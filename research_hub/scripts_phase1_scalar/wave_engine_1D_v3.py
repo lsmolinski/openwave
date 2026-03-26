@@ -51,7 +51,10 @@ FORCE_TO_N = constants.QUECTOGRAM * constants.ATTOMETER / constants.RONTOSECOND*
 # Spatial Domain
 # ================================================================
 
-domain_half = 10 * lam_am  # 10λ each side
+# Domain must be wide enough for max slider separation + padding
+MAX_SEP_LAMB = 10  # max slider value in wavelengths
+max_sep_am = MAX_SEP_LAMB * lam_am  # max slider value in am
+domain_half = max_sep_am / 2 + 5 * lam_am  # WC at edge + 5λ padding each side
 x_am = np.linspace(-domain_half, +domain_half, 4001)  # odd for exact center
 dx_am = x_am[1] - x_am[0]
 N_POINTS = len(x_am)
@@ -1152,7 +1155,7 @@ def plot_sandbox():
         ax_slider,
         "WC Separation (λ)",
         0.0,
-        15.0,
+        MAX_SEP_LAMB,
         valinit=sep_init,
         valstep=SEPARATION_STEP,
         color=colormap.viridis_palette[3][1],

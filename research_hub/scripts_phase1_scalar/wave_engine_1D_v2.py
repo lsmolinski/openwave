@@ -70,10 +70,11 @@ wave_centers = [
 # Spatial Domain
 # ================================================================
 
-# Domain must be wide enough for max slider separation (10λ) + padding
-max_sep_am = 1 * lam_am  # max slider value in am
+# Domain must be wide enough for max slider separation + padding
+MAX_SEP_LAMB = 10  # max slider value in wavelengths
+max_sep_am = MAX_SEP_LAMB * lam_am  # max slider value in am
 domain_half = max_sep_am / 2 + 5 * lam_am  # WC at edge + 5λ padding each side
-x_am = np.linspace(-domain_half, +domain_half, 4000)
+x_am = np.linspace(-domain_half, +domain_half, 4001)  # odd for exact center
 dx_am = x_am[1] - x_am[0]  # grid spacing
 
 
@@ -518,7 +519,7 @@ def plot_sandbox():
         wc_force_texts.append(txt)
 
     # --- Separation Slider ---
-    sep_min, sep_max = 0.0, 10.0  # in wavelengths
+    sep_min, sep_max = 0.0, MAX_SEP_LAMB  # in wavelengths
     sep_init = wc_separation / lam_am
     slider_sep = Slider(
         ax_slider,
