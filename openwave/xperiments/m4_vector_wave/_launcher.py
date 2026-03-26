@@ -20,10 +20,10 @@ import numpy as np
 from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
-import openwave.xperiments.m4_vector_wave.spacetime_medium as medium
-import openwave.xperiments.m4_vector_wave.wave_engine as ewave
+import openwave.xperiments.m4_vector_wave.medium as medium
 import openwave.xperiments.m4_vector_wave.particle as particle
-import openwave.xperiments.m4_vector_wave.force_motion as force_motion
+import openwave.xperiments.m4_vector_wave.wave_engine as ewave
+import openwave.xperiments.m4_vector_wave.xforce_motion as force_motion
 import openwave.xperiments.m4_vector_wave.instrumentation as instrument
 
 # ================================================================

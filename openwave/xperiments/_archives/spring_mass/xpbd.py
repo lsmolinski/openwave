@@ -11,7 +11,7 @@ import time
 from openwave.common import colormap, constants, equations
 from openwave.i_o import render
 
-import openwave.xperiments._archives.spring_mass.spacetime_medium as medium
+import openwave.xperiments._archives.spring_mass.medium as medium
 import openwave.xperiments._archives.spring_mass.wave_engine_xpbd as ewave
 
 # Define the architecture to be used by Taichi (GPU vs CPU)
