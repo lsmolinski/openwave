@@ -163,6 +163,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Test geometry: self-organize vs prescribed?
   - [ ] Validates EWT prediction: 1-3-6 tetrahedron is simplest 3D geometry where all WCs sit near nodes
 - [ ] Stabilize K=10 electron tetrahedron on M3
+  - [ ] Test other wave equations
   - [ ] Implement variable λ(r) from Yee & Hauger shells (non-uniform node spacing)
   - [ ] Test whether variable nodes accommodate the 15/45 non-node pairs (√3×λ/2, √2×λ/2)
   - [ ] Leapfrog integrator + damping already in place
