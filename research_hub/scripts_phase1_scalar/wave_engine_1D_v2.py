@@ -70,10 +70,11 @@ wave_centers = [
 # Spatial Domain
 # ================================================================
 
-# Domain must be wide enough for max slider separation (10λ) + padding
-max_sep_am = 1 * lam_am  # max slider value in am
+# Domain must be wide enough for max slider separation + padding
+MAX_SEP_LAMB = 10  # max slider value in wavelengths
+max_sep_am = MAX_SEP_LAMB * lam_am  # max slider value in am
 domain_half = max_sep_am / 2 + 5 * lam_am  # WC at edge + 5λ padding each side
-x_am = np.linspace(-domain_half, +domain_half, 4000)
+x_am = np.linspace(-domain_half, +domain_half, 4001)  # odd for exact center
 dx_am = x_am[1] - x_am[0]  # grid spacing
 
 
@@ -93,7 +94,7 @@ for wc in wave_centers:
 # ================================================================
 # 1 = Wolff-Original:            pure standing wave, sin(kr)/kr
 # 2 = LaFreniere-Marcotte:       partially standing/traveling, zeros at λ
-# 3 = Phase-warped Marcotte:     core-corrected traveling wave
+# 3 = Phase-warped LaFreniere:     core-corrected traveling wave
 # 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
 # 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
@@ -103,7 +104,7 @@ WAVE_EQUATION = 5
 WAVE_EQUATION_NAMES = {
     1: "Wolff-Original",
     2: "LaFreniere-Marcotte",
-    3: "Phase-warped Marcotte",
+    3: "Phase-warped LaFreniere",
     4: "Combined Wolff-LF",
     5: "Weighted Partial Standing",
     6: "Signed Disturbance",
@@ -176,7 +177,7 @@ def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
                     np.cos(wt_phi) * np.sin(kr) / kr + np.sin(wt_phi) * (1.0 - np.cos(kr)) / kr,
                 )
             elif WAVE_EQUATION == 3:
-                # Phase-warped Marcotte: ψ = A·sin(x_c - ωt - φ)/x_c
+                # Phase-warped LaFreniere: ψ = A·sin(x_c - ωt - φ)/x_c
                 x_c = _phase_warp(kr)
                 wave = np.where(
                     x_c < 1e-10,
@@ -251,7 +252,7 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
                 C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
                 S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (1.0 - np.cos(kr)) / kr)
             elif WAVE_EQUATION == 3:
-                # Phase-warped: sin(x_c)/x_c, -cos(x_c)/x_c
+                # Phase-warped LaFreniere: sin(x_c)/x_c, -cos(x_c)/x_c
                 x_c = _phase_warp(kr)
                 C_n = np.where(
                     x_c < 1e-10,
@@ -518,7 +519,7 @@ def plot_sandbox():
         wc_force_texts.append(txt)
 
     # --- Separation Slider ---
-    sep_min, sep_max = 0.0, 10.0  # in wavelengths
+    sep_min, sep_max = 0.0, MAX_SEP_LAMB  # in wavelengths
     sep_init = wc_separation / lam_am
     slider_sep = Slider(
         ax_slider,

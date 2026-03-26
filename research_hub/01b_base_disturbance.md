@@ -1,4 +1,4 @@
-# ✅ PHASE 1b: Base Wave + WC Energy Redistribution — COMPLETED
+# ✅ Phase 1b: Base Wave + WC Energy Redistribution — COMPLETED
 
 Model the actual base wave and how WCs redistribute its energy. Central open question: how WC phase determines the drainage pattern → **Answer: L→T spin conversion (elastic disturbance) is the only charge-sensitive mechanism. Requires true vector displacement (Phase 1c) and variable λ in energy equation (Phase 1d).**
 

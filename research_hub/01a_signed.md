@@ -1,4 +1,4 @@
-# ✅ PHASE 1a: Signed Disturbance (forced charge sign)
+# ✅ Phase 1a: Signed Disturbance (forced charge sign)
 
 Modeled WCs as signed amplitude modulators (not actual wave disturbances): `A_total = A₀ + Σ q·A_peak·δ(r)` with `q = cos(phase) = ±1`.
 

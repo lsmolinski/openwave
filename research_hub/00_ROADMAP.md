@@ -1,6 +1,6 @@
 # ROADMAP
 
-## ✅ [PHASE 0: Tooling](#phase-0-tooling--details)
+## ✅ [PHASE 0: TOLLING & CONTEXT](#phase-0-tooling--details)
 
 - ✅ Build 1D wave sandbox (matplotlib, interactive controls)
 - ✅ Phasor superposition (analytical amplitude, replaces EMA-RMS)
@@ -11,7 +11,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-## ✅ [PHASE 1: FAR-FIELD Force (1D Sandbox only)](01_far_field.md)
+## ✅ [PHASE 1: EXPLORING WAVE EQUATIONS](01_EXPLORING.md)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -29,7 +29,7 @@
 
 > **All linear scalar candidates exhausted (10/10 ruled out, including Phase 1a signed disturbance).** Three remaining paths (1b, 1c, 1d). Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### ✅ [PHASE 1a: Signed Disturbance (forced charge sign)](01a_signed.md#phase-1a-signed-disturbance-forced-charge-sign) — RULED OUT
+### ✅ [Phase 1a: Signed Disturbance (forced charge sign)](01a_signed.md#phase-1a-signed-disturbance-forced-charge-sign) — RULED OUT
 
 - ✅ Implemented signed disturbance model in 1D sandbox (equation #6): A₀ + q·δ(r) with `BASE_AMPLITUDE_RATIO`
 - ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay
@@ -37,7 +37,7 @@
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### ✅ [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
+### ✅ [Phase 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
 
 - Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
   - ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
@@ -64,7 +64,7 @@
 
 > **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### ✅ [PHASE 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
+### ✅ [Phase 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
 
 > **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement.
 >
@@ -109,7 +109,7 @@ Steps 4-5 — merged into Phase 1d:
 - [ ] Variable λ(r) from Yee & Hauger shells + LaFreniere core phase shift → electric force
 - [ ] Combined vector displacement + variable λ → full force decomposition (electric from ∇λ, magnetic from spin T, gravitational from deficit)
 
-### ✅ [PHASE 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+### ✅ [Phase 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
 
 > **From Phase 1c**: spin → magnetic (not electric). Variable λ(r) → electric force candidate. Converges with Phase 1c vector infrastructure.
 
@@ -140,13 +140,13 @@ Carry-Over to Phase 2:
 
 ## 🔶 [PHASE 2: BUILDING BLOCKS](02_BUILDING_BLOCKS.md)
 
-Follows the building blocks hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md) (steps 1-11). See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for strategy, context sources, and open questions.
+Follows the building blocks hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md). See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for strategy, context sources, and open questions.
 
-### 🔶 Phase 2a: Near-Field — Particle Formation (M3 Scalar)
+### 🔶 BLOCK 1: [PARTICLE FORMATION](02B1_particle_formation.md) from Near-Field Standing Waves (M3 Scalar)
 
 M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
 
-#### Block 2a.1: Energy wave + WC disturbance → fundamental particle
+#### Block 1a: Energy wave + WC disturbance → fundamental particle
 
 - [ ] Validate same-phase lock-in in 3D animation
   - [ ] Two fundamental particles (WCs), same phase, observe oscillation in energy wells
@@ -155,7 +155,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Two fundamental particles, opposite phase, observe attraction through barriers
   - [ ] Measure barrier heights at λ/2 intervals, compare with positronium lifetime data
 
-#### Block 2a.2: K=1 lock-in → standalone particle formation
+#### Block 1b: K=1 lock-in → standalone particle formation
 
 - [ ] Test multi-WC lock-in: K=2, K=3, ..., K=10 progressive build-up
   - [ ] K=2..9 should be unstable (temporary particles that decay)
@@ -163,35 +163,33 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Test geometry: self-organize vs prescribed?
   - [ ] Validates EWT prediction: 1-3-6 tetrahedron is simplest 3D geometry where all WCs sit near nodes
 - [ ] Stabilize K=10 electron tetrahedron on M3
+  - [ ] Test other wave equations
   - [ ] Implement variable λ(r) from Yee & Hauger shells (non-uniform node spacing)
   - [ ] Test whether variable nodes accommodate the 15/45 non-node pairs (√3×λ/2, √2×λ/2)
   - [ ] Leapfrog integrator + damping already in place
 - [ ] Characterize near-field → far-field transition boundary (particle radius K²λ)
   - [ ] Where do standing waves end and traveling waves begin?
 
-#### Wrap 2a
+#### Wrap-Up Block 1
 
 - [ ] Collect proof for particle formation from waves (electron properties)
 - [ ] Rename xperiments with near-field results
 - [ ] review <https://energywavetheory.com/project/phase1/>
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2b: Far-Field — Electric Force and Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
+### 🚧 BLOCK 2: [ELECTRIC FORCE](02B2_electric_force.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
 M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for context sources and references to load when starting this phase.
 
-#### Block 2a.1: K=10 spin
-
-- [ ] Spin
-
-#### Block 2b.2: Charge emergence (from non-dual spin)
+#### Block 2a: Charge emergence (from non-dual spin)
 
 - [ ] Investigate charge mechanism
+  - [ ] Spin
   - [ ] How does spin + 1-3-6 non-dual geometry create the wavefront disturbance?
   - [ ] Role of LaFreniere core phase shift (λ/2 from compression)
   - [ ] Does variable λ(r) inside the standalone particle create the charge sign?
 
-#### Block 2b.3: Coulomb / electric force (1st measurable force, longitudinal)
+#### Block 2b: Coulomb / electric force (1st measurable force, longitudinal)
 
 - [ ] Build / extend M4 vector wave engine with L→T spin conversion
   - [ ] Vector displacement `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
@@ -211,9 +209,15 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Symmetry: Newton's 3rd law (equal and opposite)
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2c: Far-Field — Magnetic Force (requires M4 Vector)
+#### Block 2c: Strong Force (electric at sub-λ between K=10 standalone particles)
 
-#### Block 2c.1: Bohr magneton / magnetic force (2nd force, transverse)
+- [ ] Test K=10 near-field overlap → combined standing waves, high-energy lock-in
+- [ ] Verify ~137× Coulomb strength (= 1/α) at sub-λ distances
+- [ ] Investigate gluonic field mechanism (magnetic role?)
+
+### 🚧 BLOCK 3: [MAGNETIC FORCE](02B3_magnetic_force.md) (requires M4 Vector)
+
+#### Block 3a: Bohr magneton / magnetic force (2nd force, transverse)
 
 - [ ] Model spin as toroidal wave flow (Smoliński Energy Domain, Butto vortex)
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
@@ -222,9 +226,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2d: Gravity, Strong Force, and Composite Particles
-
-#### Block 2d.1: Gravitational Force (residual from L→T drainage)
+### 🚧 BLOCK 4: [GRAVITATIONAL FORCE](02B4_gravitational_force.md) (residual from L→T drainage)
 
 - [ ] Gravitational force from spin energy deficit (L→T drainage → amplitude deficit)
   - [ ] Test whether deficit accumulates over K WCs (factor of K×α?)
@@ -232,13 +234,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Compare with 10⁻⁴² EM-to-gravitational ratio
 - [ ] Validate against Smoliński's Scilab reference values
 
-#### Block 2d.2: Strong Force (electric at sub-λ between K=10 standalone particles)
-
-- [ ] Test K=10 near-field overlap → combined standing waves, high-energy lock-in
-- [ ] Verify ~137× Coulomb strength (= 1/α) at sub-λ distances
-- [ ] Investigate gluonic field mechanism (magnetic role?)
-
-#### Block 2d.3: Composite particles → nuclei → atoms (Orbital Force)
+### 🚧 BLOCK 5: [COMPOSITE PARTICLE](02B5_composite_particle.md) → nuclei → atoms (Orbital Force)
 
 - [ ] Composite particle formation
   - [ ] Proton: 4 electrons + 1 positron at center (tetrahedral)
@@ -248,13 +244,13 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## [PHASE 4: EMERGENT WAVES](04_EMERGENT_WAVES.md)
+### 🚧 BLOCK 6: [EMERGENT_WAVES](02B6_emergent_waves.md)
 
 - [ ] Demonstrate photon-like traveling wave packets
 - [ ] Test thermal energy as standing wave dynamics
 - [ ] Validate electromagnetic wave emergence from medium disturbances
 
-## [PHASE 5: TIME DYNAMICS](05_TIME_DYNAMICS.md)
+## [PHASE 3: TIME DYNAMICS](03_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism

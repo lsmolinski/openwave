@@ -1,4 +1,4 @@
-# ✅ PHASE 1c: Vector Wave Force — 3D Displacement Research
+# ✅ Phase 1c: Vector Wave Force — 3D Displacement Research
 
 ## Goal
 

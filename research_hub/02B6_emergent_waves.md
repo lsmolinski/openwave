@@ -1,4 +1,4 @@
-# PHASE 4: EMERGENT WAVES
+# BLOCK 6: EMERGENT WAVES
 
 Photons as traveling wave packets, thermal energy as standing wave dynamics.
 

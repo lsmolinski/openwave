@@ -1,4 +1,4 @@
-# ✅ PHASE 1d: Non-Linear Wave Equations
+# ✅ Phase 1d: Non-Linear Wave Equations
 
 Variable λ(r), ρ(x), Ψ³; breaks sinc periodicity while keeping genuine wave interference
 
