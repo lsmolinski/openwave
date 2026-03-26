@@ -473,7 +473,8 @@ def compute_force_motion(state):
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
     # Detect and handle particle annihilation (opposite phase WCs meeting)
     # Threshold: WCs can be at grid diagonal positions and TIMESTEP may cause larger jumps
-    force_motion.detect_annihilation(state.wave_center, 5.0)
+    annihilation_threshold = state.wave_field.ewave_res / 3.0  # in voxels
+    force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
 def render_elements(state):

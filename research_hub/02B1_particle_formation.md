@@ -31,6 +31,35 @@ Superposition of two counter-propagating spherical waves with a spatial blending
 1. **Monochromatic** (single frequency) — real particles may be broadband. This is the root cause of the sinc barrier issue at far-field.
 1. **The 1.25λ transition distance** — chosen to include the first quadrature lobe in the standing wave zone. Not derived from EWT constants.
 
+### Amplitude profile: sinc steepness and energy conservation
+
+The standing wave spatial function `sin(kr)/kr` (sinc) creates a steep amplitude rise toward the center. This is correct physics for 3D spherical geometry — not a numerical artifact.
+
+**Energy in a thin shell at radius r:**
+
+```text
+E_shell = ρ · (f·A(r))² · 4πr² · dr
+
+With A(r) = 2A₀ · sin(kr)/kr:
+
+E_shell ∝ r² × (sin(kr)/kr)²  =  sin²(kr) / k²
+```
+
+The `r²` from shell surface area **exactly cancels** the `1/r²` from the sinc envelope. Each half-wavelength shell contains roughly the same total energy. Amplitude concentrates toward the center because the same energy packs into a smaller volume (like a whirlpool: speed ∝ 1/r, cross-section ∝ r², total flow constant).
+
+**Amplitude values across the standing wave:**
+
+| Distance | kr | sinc | Envelope (×2A₀) | Shell volume ∝ r² |
+| --- | --- | --- | --- | --- |
+| center | 0 | 1.000 | 2.00 | tiny |
+| λ/4 | π/2 | 0.637 | 1.27 | 16× larger |
+| λ/2 | π | 0 | 0 (node) | 64× larger |
+| 3λ/4 | 3π/2 | 0.212 | 0.42 | 144× larger |
+
+**Why it doesn't diverge at r=0:** The sinc function is the spherical Bessel function j₀(kr), the regular solution that stays finite at the origin. Unlike bare `1/r`, the `sin(kr)/kr → 1` at center (L'Hôpital), giving a finite peak amplitude of 2A₀.
+
+**Variable λ(r) — future refinement:** The current sinc assumes constant λ everywhere. The Yee & Hauger shells and the energy steepness concept (`A/λ ≈ const`) suggest λ grows near the center too: `A(r)↑, λ(r)↑`. This would make the profile less steep than pure sinc while conserving energy steepness. Deferred to Block 1b (variable λ for tetrahedron stability).
+
 ### Sensitivity to investigate
 
 - Does changing the transition distance (0.5λ, 1.25λ, 2λ) qualitatively change lock-in physics, or just shift barrier distances?
