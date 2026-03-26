@@ -26,7 +26,7 @@
 
 ---
 
-### FAR-FIELD (electromagnetism, traveling waves) — Phase 2b target (M4 vector)
+### FAR-FIELD (electromagnetism, traveling waves) — Phase 2b, 2c, 2d target (M4 vector)
 
 | Effect | Status | Evidence |
 | --- | --- | --- |
@@ -61,6 +61,7 @@ Everything builds bottom-up. Each level enables the next:
         + propagates traveling waves
     └── standing wave energy profile: steepness A/λ preserved or not?
     └── energy equation: `E = ρV·(c/λ·A)²`
+    └── base wave + disturbance vs. encode in + out wave
 
  3. LOCKED-IN K=1s → STANDALONE PARTICLE FORMATION                   [M3 scalar]
     └── 3D spherical wave with spatial term creates energy wells (zero-amplitude nodes) that lock particles

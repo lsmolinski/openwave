@@ -142,7 +142,7 @@ Carry-Over to Phase 2:
 
 Follows the building blocks hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md) (steps 1-11). See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for strategy, context sources, and open questions.
 
-### 🔶 Phase 2a: Near-Field — Particle Formation (M3 Scalar)
+### 🔶 Phase 2a: Particle Formation from Near-Field Standing Waves (M3 Scalar)
 
 M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
 
@@ -177,22 +177,19 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 - [ ] review <https://energywavetheory.com/project/phase1/>
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2b: Far-Field — Electric Force and Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
+### 🚧 Phase 2b: Electric Force from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
 M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [02_BUILDING_BLOCKS.md](02_BUILDING_BLOCKS.md) for context sources and references to load when starting this phase.
 
-#### Block 2a.1: K=10 spin
-
-- [ ] Spin
-
-#### Block 2b.2: Charge emergence (from non-dual spin)
+#### Block 2b.1: Charge emergence (from non-dual spin)
 
 - [ ] Investigate charge mechanism
+  - [ ] Spin
   - [ ] How does spin + 1-3-6 non-dual geometry create the wavefront disturbance?
   - [ ] Role of LaFreniere core phase shift (λ/2 from compression)
   - [ ] Does variable λ(r) inside the standalone particle create the charge sign?
 
-#### Block 2b.3: Coulomb / electric force (1st measurable force, longitudinal)
+#### Block 2b.2: Coulomb / electric force (1st measurable force, longitudinal)
 
 - [ ] Build / extend M4 vector wave engine with L→T spin conversion
   - [ ] Vector displacement `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
@@ -212,7 +209,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Symmetry: Newton's 3rd law (equal and opposite)
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 Phase 2c: Far-Field — Magnetic Force (requires M4 Vector)
+### 🚧 Phase 2c: Magnetic Force (requires M4 Vector)
 
 #### Block 2c.1: Bohr magneton / magnetic force (2nd force, transverse)
 
