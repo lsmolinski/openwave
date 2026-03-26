@@ -1,4 +1,4 @@
-# PHASE 1: RESULTS, CONCLUSIONS & CARRY-OVER
+# Phase 1: Results, Conclusions & Carry-Over
 
 ## What We Set Out To Do
 
@@ -195,10 +195,18 @@ The isolated interaction cross term gives same→ATT (should be REP). The 2D flu
 
 ### Deferred Mechanisms (not yet tested)
 
-- Variable ρ(r) from Smoliński density function
-- Ψ³ cubic non-linearity (NLS soliton stabilizer)
+- **Yee & Hauger**: discrete wavelength shells r_n = 2(K-n)λ — non-uniform node spacing breaks sinc periodicity (WKB/eikonal phase integral)
+- **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
+- **Ψ³ cubic non-linearity**: NLS soliton stabilizer, modifies spatial function from pure sinc
+- **Variable ρ(x)**: from granule velocity — ∇ρ contributes to ∇E with different spatial structure than ∇A, from Smoliński density function
 - Non-coherent superposition (thermal phase jitter)
 - Non-spherical propagation (toroidal from spin, diffractive lens)
+
+**Vector (from Phase 1d → M4 3D):**
+
+- **Divergence/curl/flux** force computation in full 3D vector field
+- **Elliptical rotation handedness** as charge-sign indicator (6-phasor model)
+- **Toroidal flow geometry**: non-linear + vector converge in the Energy Domain
 - Combined vector displacement + variable λ + flux force
 - Energy flux (Poynting-like) in full 3D with vector displacement
 
