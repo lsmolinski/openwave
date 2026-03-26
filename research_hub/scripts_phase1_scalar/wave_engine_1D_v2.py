@@ -93,7 +93,7 @@ for wc in wave_centers:
 # ================================================================
 # 1 = Wolff-Original:            pure standing wave, sin(kr)/kr
 # 2 = LaFreniere-Marcotte:       partially standing/traveling, zeros at λ
-# 3 = Phase-warped Marcotte:     core-corrected traveling wave
+# 3 = Phase-warped LaFreniere:     core-corrected traveling wave
 # 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
 # 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
@@ -103,7 +103,7 @@ WAVE_EQUATION = 5
 WAVE_EQUATION_NAMES = {
     1: "Wolff-Original",
     2: "LaFreniere-Marcotte",
-    3: "Phase-warped Marcotte",
+    3: "Phase-warped LaFreniere",
     4: "Combined Wolff-LF",
     5: "Weighted Partial Standing",
     6: "Signed Disturbance",
@@ -176,7 +176,7 @@ def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
                     np.cos(wt_phi) * np.sin(kr) / kr + np.sin(wt_phi) * (1.0 - np.cos(kr)) / kr,
                 )
             elif WAVE_EQUATION == 3:
-                # Phase-warped Marcotte: ψ = A·sin(x_c - ωt - φ)/x_c
+                # Phase-warped LaFreniere: ψ = A·sin(x_c - ωt - φ)/x_c
                 x_c = _phase_warp(kr)
                 wave = np.where(
                     x_c < 1e-10,
@@ -251,7 +251,7 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
                 C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
                 S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (1.0 - np.cos(kr)) / kr)
             elif WAVE_EQUATION == 3:
-                # Phase-warped: sin(x_c)/x_c, -cos(x_c)/x_c
+                # Phase-warped LaFreniere: sin(x_c)/x_c, -cos(x_c)/x_c
                 x_c = _phase_warp(kr)
                 C_n = np.where(
                     x_c < 1e-10,
