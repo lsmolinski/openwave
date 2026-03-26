@@ -2,16 +2,25 @@
 XPERIMENT PARAMETERS
 
 This XPERIMENT showcases:
--
+- Opposite-phase WC annihilation (diagonal approach, ~1λ separation)
+- WCs placed at ~1λ apart (crosses one barrier at λ/2 with initial velocity)
+- Tests whether KE overcomes one barrier before r=0 well captures them
+
+PHYSICS: At ~1λ separation, there is one barrier at λ/2 between the WCs and r=0.
+  The initial velocity provides KE to cross it. If they get past the λ/2 barrier,
+  the r=0 well captures them for annihilation.
 """
 
+from openwave.common import constants
+
+EWAVE_LENGTH = constants.EWAVE_LENGTH  # m, ~2.854e-17 m
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
         "X_NAME": f"  /Annihilation 2",
-        "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
+        "DESCRIPTION": "Opposite-phase WC annihilation",
     },
     "camera": {
         "INITIAL_POSITION": [1.42, 1.26, 0.70],  # [x, y, z] in normalized coordinates
@@ -29,10 +38,10 @@ XPARAMETERS = {
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0, 180],
-        # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs). Diagonal collision
+        # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs)
         "INIT_VELOCITY": [
-            [0.03, -0.03, -0.02],  # WC0: push toward WC1 (diagonal)
-            [-0.03, 0.03, 0.02],  # WC1: push toward WC0 (diagonal)
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
         ],
         "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
