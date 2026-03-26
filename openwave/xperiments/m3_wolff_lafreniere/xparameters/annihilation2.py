@@ -34,7 +34,7 @@ XPARAMETERS = {
         # Wave-Center positions: normalized coordinates (0-1 range, relative to max universe edge)
         "POSITION": [
             [0.25, 0.75, 0.75],
-            [0.75, 0.25, 0.35],
+            [0.75, 0.25, 0.25],
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0, 180],
@@ -54,7 +54,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 15.0,  # Simulation timestep in rontoseconds (10-27s)
+        "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {
