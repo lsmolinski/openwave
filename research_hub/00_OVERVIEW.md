@@ -46,11 +46,14 @@
 | Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
 | Far-field  | Constructive → repulsion          | Destructive → attraction                      |
 
-## BUILDING BLOCKS — From Waves to Matter
+## BUILDING BLOCKS — From Waves to Matter & Forces
 
 Everything builds bottom-up. Each level enables the next:
 
 ```text
+================================================================
+ BLOCK 1: PARTICLE FORMATION
+================================================================
  1. ENERGY WAVE (base wave)                                          [M3 scalar]
     └── energy source: wave carries energy from displacement amplitude & frequency
     └── incoming from all directions → isotropic field (Fibonacci sphere)
@@ -70,8 +73,9 @@ Everything builds bottom-up. Each level enables the next:
     └── not all K stable: K=2..9 decay, K=10 most stable
     └── dual geometry (K=1,8,20) → neutral. Non-dual (K=10,28,50) → charged
 
----
-
+================================================================
+ BLOCK 2: ELECTRIC FORCE
+================================================================
  4. K=10 SPIN (from NON-DUAL geometry)                                [M3 scalar]
     └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
     └── off-node WC displaces next → continuous rotation = spin
@@ -88,32 +92,41 @@ Everything builds bottom-up. Each level enables the next:
     └── 1/r² scaling, direction from charge sign
     └── `F = -∇E`
 
----
-
- 7. BOHR MAGNETON / MAGNETIC FORCE (2nd force, transverse)            [M4 vector]
-    └── L→T spin conversion creates transverse wave (L amplitude drain, fine structure)
-    └── elliptical vector displacement (6 phasor numbers)
-    └── electromagnetism emerges from L + T force components
-
- 8. GRAVITATIONAL FORCE (residual from L→T drainage)
-    └── longitudinal amplitude deficit from spin energy conversion
-    └── 10⁻⁴² ratio from accumulated deficit
-
- 9. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
+ 7. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
     └── K=10 near-fields overlap → combined standing waves, larger volume
     └── much higher energy than K=1 lock-in (K=10 × K=10)
     └── ~137× Coulomb (= 1/α). Gluonic fields from quarks, possibly magnetic role
 
-10. COMPOSITE PARTICLES → NUCLEI → ATOMS → MOLECULES
+================================================================
+ BLOCK 3: MAGNETIC FORCE
+================================================================
+ 8. BOHR MAGNETON / MAGNETIC FORCE (2nd force, transverse)            [M4 vector]
+    └── L→T spin conversion creates transverse wave (L amplitude drain, fine structure)
+    └── elliptical vector displacement (6 phasor numbers, L + T force components)
+
+================================================================
+ BLOCK 4: GRAVITATIONAL FORCE
+================================================================
+ 9. GRAVITATIONAL FORCE (residual from L→T drainage)
+    └── longitudinal amplitude deficit from spin energy conversion
+    └── 10⁻⁴² ratio from accumulated deficit
+
+================================================================
+ BLOCK 5: COMPOSITE PARTICLES
+================================================================
+ 10. COMPOSITE PARTICLES → NUCLEI → ATOMS → MOLECULES
     └── proton: 4e⁻ + 1e⁺ at center (tetrahedral)
     └── neutron: proton + e⁻ at center (charge neutralized)
     └── nuclei: composite particles bound by strong force
-    └── atoms: nuclei + orbital electrons (Coulomb + magnetic = orbital force)
+    └── atoms: nuclei + electrons (Coulomb + magnetic = orbital force)
 
----
-
-11. EM WAVES + HEAT (later)
-    └── traveling wave disturbances, thermal standing wave modulation
+================================================================
+ BLOCK 6: EMERGENT WAVES
+================================================================
+ 11. EM WAVES
+    └── traveling wave disturbances
+ 12. HEAT
+    └── thermal standing wave modulation
 ```
 
 ### EWT Particle Hierarchy
@@ -186,7 +199,7 @@ References: [Subatomic Particles](https://energywavetheory.com/subatomic-particl
 
 - **WAVE CENTERS (WCs)**:
   - Locations in 3D space where the base wave is elastically disturbed — the wave passes through and comes out changed (not just reflected). Phase 1b tested 10 disturbance models: passive (reflect, absorb, clamp, scatter) all failed; elastic L→T spin conversion is the only charge-sensitive mechanism found
-  - VALIDATED: (wave equation) in + out, partial standing, out wave only, A(r), λ(r)
+  - VALIDATED: (wave equation) in + out partial standing, out wave only, A(r), λ(r)
   - sinc function: `ψ = A · cos (kr ± ωt ± φ) / kr`
   - partial standing wave: `ψ = A · [w(r)·sin(kr + ωt) + sin(kr - ωt)] / kr`
   - phasor superposition: analytical amplitude computation, this replaces the EMA-RMS tracking with an exact, instantaneous result — no observation window, no smoothing artifacts (00a_equations.md)
@@ -201,11 +214,11 @@ References: [Subatomic Particles](https://energywavetheory.com/subatomic-particl
   - Wave character and superposition (from wave equations) determines A(r) and λ(r) for every point in space.
   - Phase oscillator: `cos(spatial_term + temporal_phase + source_offset)`, `f(r,t,φ)`
   - What produces what (Phase 1 + Phase 2 understanding):
-    - sinc standing wave → strong force / lock-in (Phase 1 ✅)
-    - wave phase (0 vs π) → annihilation vs lock-in (Phase 1 ✅)
-    - non-dual geometry + spin → charge + electric / Coulomb (Phase 2b target)
-    - L→T spin conversion → magnetic force (Phase 2b target)
-    - spin energy deficit → gravitational shading (Phase 2c target)
+    - sinc standing wave → lock-in
+    - wave phase (0 vs π) → annihilation vs lock-in
+    - non-dual geometry + spin → charge + electric / Coulomb / strong force
+    - L→T spin conversion → magnetic force
+    - spin energy deficit → gravitational shading
   - Alternative: energy flux `S = -c²·ψ·∇ψ` (radiation pressure) produces 100% charge discrimination in 2D where gradient fails — evaluate flux vs gradient per regime
 
 - **3D SPACE & VECTOR WAVES**:
@@ -220,10 +233,10 @@ References: [Subatomic Particles](https://energywavetheory.com/subatomic-particl
   - Wave steepness A/λ = constant for isolated energy redistribution. External energy input (heating) increases steepness. WC spin converts L→T while conserving `E_L + E_T = const`. The conversion ratio may be the fine-structure constant α
 
 - **VALIDATION TARGETS**:
-  - **Near-field (Phase 2a)**: K=10 tetrahedron stability, K=2..9 instability, lock-in wells, annihilation barriers, transition boundary at K²λ, material proof = electron properties standing wave core at WC with radius K²λ. Mass = energy in standing waves (E = mc²)
-  - **Far-field (Phase 2b & 2c)**: charge from non-dual spin, Coulomb (emergent direction, 1/r²), magnetic (∇E_T, 90° to electric)
-  - **Gravity (Phase 2d)**: 10⁻⁴² ratio from spin deficit, G vs Smoliński reference
-  - **Strong force**: electric + magnetic at sub-λ between K=10s (~137× Coulomb)
+  - **Near-field**: K=10 tetrahedron stability, K=2..9 instability, lock-in wells, annihilation barriers, transition boundary at K²λ, material proof = electron properties standing wave core at WC with radius K²λ. Mass = energy in standing waves (E = mc²)
+  - **Far-field**: charge from non-dual spin, Coulomb (emergent direction, 1/r²), magnetic (∇E_T, 90° to electric)
+  - **Gravity**: 10⁻⁴² ratio from spin deficit, G vs Smoliński reference
+  - **Strong Force**: electric + magnetic at sub-λ between K=10s (~137× Coulomb)
 
 ## Emergence Criteria
 
