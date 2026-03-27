@@ -18,16 +18,16 @@ UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 
-def tetrahedron_10(center=(0.5, 0.5, 0.5), rotation_deg=(0, 0, 0)):
+def tetrahedron_10(univ_edge, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0)):
     """Generate 10 positions in 1-3-6 tetrahedral arrangement.
 
     Args:
         center: (x, y, z) center position in normalized coords
-        rotation_deg: (rx, ry, rz) rotation in degrees around x, y, z axes
+        rotation: (rx, ry, rz) rotation in degrees around x, y, z axes
     """
     # Lock spacing calibrated to lambda (first standing wave node)
     # In normalized coords: lambda / UNIVERSE_EDGE
-    LOCK_SPACING = constants.EWAVE_LENGTH / UNIVERSE_EDGE  # lambda in normalized coords
+    LOCK_SPACING = constants.EWAVE_LENGTH / univ_edge  # lambda in normalized coords
 
     layer_h = LOCK_SPACING * np.sqrt(2 / 3)  # tetrahedral layer spacing
     cx, cy, cz = center
@@ -50,7 +50,7 @@ def tetrahedron_10(center=(0.5, 0.5, 0.5), rotation_deg=(0, 0, 0)):
     ]
 
     # Apply rotation if specified
-    rx, ry, rz = np.radians(rotation_deg)
+    rx, ry, rz = np.radians(rotation)
     Rx = np.array([[1, 0, 0], [0, np.cos(rx), -np.sin(rx)], [0, np.sin(rx), np.cos(rx)]])
     Ry = np.array([[np.cos(ry), 0, np.sin(ry)], [0, 1, 0], [-np.sin(ry), 0, np.cos(ry)]])
     Rz = np.array([[np.cos(rz), -np.sin(rz), 0], [np.sin(rz), np.cos(rz), 0], [0, 0, 1]])
@@ -60,8 +60,8 @@ def tetrahedron_10(center=(0.5, 0.5, 0.5), rotation_deg=(0, 0, 0)):
 
 
 # ── TEST 1: Rotated electron (45° on all axes) ──────────────────────────────
-POSITIONS = tetrahedron_10(center=(0.50, 0.50, 0.50), rotation_deg=(0, 0, 0))
-# POSITIONS = tetrahedron_10(center=(0.35, 0.65, 0.45), rotation_deg=(0, 0, 0))
+POSITIONS = tetrahedron_10(UNIVERSE_EDGE, center=(0.50, 0.50, 0.50), rotation=(0, 0, 0))
+# POSITIONS = tetrahedron_10(UNIVERSE_EDGE, center=(0.35, 0.65, 0.45), rotation=(0, 0, 0))
 PHASES = [180] * 10  # electron (all same phase = 180°)
 
 XPARAMETERS = {

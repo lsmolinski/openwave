@@ -13,54 +13,13 @@ TESTS (switch by uncommenting the desired POSITION/PHASE block):
 
 import numpy as np
 from openwave.common import constants
+from openwave.xperiments.m3_wolff_lafreniere.xparameters.tetra_electron import tetrahedron_10
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
-
-def tetrahedron_10(center=(0.5, 0.5, 0.5), rotation_deg=(0, 0, 0)):
-    """Generate 10 positions in 1-3-6 tetrahedral arrangement.
-
-    Args:
-        center: (x, y, z) center position in normalized coords
-        rotation_deg: (rx, ry, rz) rotation in degrees around x, y, z axes
-    """
-    # Lock spacing calibrated to lambda (first standing wave node)
-    # In normalized coords: lambda / UNIVERSE_EDGE
-    LOCK_SPACING = constants.EWAVE_LENGTH / UNIVERSE_EDGE  # lambda in normalized coords
-
-    layer_h = LOCK_SPACING * np.sqrt(2 / 3)  # tetrahedral layer spacing
-    cx, cy, cz = center
-
-    Rb = LOCK_SPACING * 2 / np.sqrt(3)  # base vertex radius
-    Rm = LOCK_SPACING / np.sqrt(3)  # midpoint/middle layer radius
-
-    angles_v = np.radians([90, 210, 330])  # vertex angles
-    angles_m = np.radians([30, 150, 270])  # midpoint angles
-
-    # Generate positions relative to center (0,0,0)
-    local_positions = [
-        # Base: 3 vertices + 3 midpoints
-        *[[Rb * np.cos(a), Rb * np.sin(a), 0] for a in angles_v],
-        *[[Rm * np.cos(a), Rm * np.sin(a), 0] for a in angles_m],
-        # Middle: 3 elements
-        *[[Rm * np.cos(a), Rm * np.sin(a), layer_h] for a in angles_v],
-        # Apex: 1 element
-        [0, 0, 2 * layer_h],
-    ]
-
-    # Apply rotation if specified
-    rx, ry, rz = np.radians(rotation_deg)
-    Rx = np.array([[1, 0, 0], [0, np.cos(rx), -np.sin(rx)], [0, np.sin(rx), np.cos(rx)]])
-    Ry = np.array([[np.cos(ry), 0, np.sin(ry)], [0, 1, 0], [-np.sin(ry), 0, np.cos(ry)]])
-    Rz = np.array([[np.cos(rz), -np.sin(rz), 0], [np.sin(rz), np.cos(rz), 0], [0, 0, 1]])
-    R = Rz @ Ry @ Rx
-
-    return [[cx + p[0], cy + p[1], cz + p[2]] for p in (R @ np.array(local_positions).T).T]
-
-
 # ── TEST: Positron (same geometry, phase = 0°) ────────────────────────────
-POSITIONS = tetrahedron_10(center=(0.50, 0.50, 0.50), rotation_deg=(45, 45, 45))
+POSITIONS = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=(0.5, 0.5, 0.5), rotation=(45, 45, 45))
 PHASES = [0] * 10  # positron (all same phase = 0°)
 
 XPARAMETERS = {
