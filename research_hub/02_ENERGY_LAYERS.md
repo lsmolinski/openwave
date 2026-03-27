@@ -1,6 +1,6 @@
-# PHASE 2: BUILDING BLOCKS
+# PHASE 2: ENERGY LAYERS
 
-The building blocks hierarchy, EWT particle terminology, dual/non-dual geometry, and concepts to investigate are documented in [00_OVERVIEW.md](00_OVERVIEW.md). Task checklists are tracked in [00_ROADMAP.md](00_ROADMAP.md).
+The ENERGY LAYERS hierarchy, EWT particle terminology, dual/non-dual geometry, and concepts to investigate are documented in [00_OVERVIEW.md](00_OVERVIEW.md). Task checklists are tracked in [00_ROADMAP.md](00_ROADMAP.md).
 
 This document contains Phase 2 strategy, context sources, and open questions.
 
@@ -26,13 +26,13 @@ Full Phase 1 results: [01z_results.md](01z_results.md)
 
 ## PHASE 2 STRATEGY
 
-### 🔶 BLOCK 1: Near-Field — Particle Formation from Standing Waves (M3 Scalar)
+### 🔶 LAYERS 1-3: Particle Formation from Standing Waves (M3 Scalar, near-field)
 
 **Goal**: Demonstrate stable standalone particle formation in M3 3D simulator. The near-field is purely longitudinal standing wave physics — M3 (scalar method) should be sufficient. We already simulate lock-in and annihilation; the missing piece is the K=10 electron tetrahedron stability.
 
 **Why M3 is enough for near-field**: lock-in is a longitudinal phenomenon — sinc energy wells from spherical standing wave interference. No transverse component (spin) is needed for lock-in itself. M3 already demonstrates the right near-field physics. Far-field (Coulomb, magnetic) needs spin → needs vector field → that's Phase 2b on M4.
 
-### 🚧 BLOCKS 2 and 3: Far-Field — Electro-Magnetism and Traveling Waves (M4 Vector)
+### 🚧 LAYER 4: Electro-Magnetism and Traveling Waves (M4 Vector, far-field)
 
 **Goal**: Demonstrate how spin creates charge, Coulomb force, and magnetic force. This requires M4 (vector wave engine) because far-field forces emerge from the transverse wave component that spin creates — a scalar field cannot represent this.
 
@@ -77,13 +77,17 @@ Phase 1c vector wave research (validated infrastructure):
 - [01c_vector_wave.md](01c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
 - Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
-### 🚧 BLOCK 4 and 5: Gravitational Force and Composite Particles
+- Demonstrate gravity from spin energy deficit
+
+- Demonstrate Electro_magnetic Waves being generated
+
+### 🚧 LAYER 5: Composite Particles
 
 **Goal**: Demonstrate gravity from spin energy deficit and test composite particle (proton = 4e⁻ + 1e⁺, neutron = proton + e⁻ at center) formation.
 
-### 🚧 BLOCK 6: Emergent Waves
+### 🚧 LAYER 6: Thermal Energy
 
-**Goal**: Demonstrate Electro_magnetic Waves being generated and Thermal Energy.
+**Goal**: Demonstrate Thermal Energy.
 
 ---
 
