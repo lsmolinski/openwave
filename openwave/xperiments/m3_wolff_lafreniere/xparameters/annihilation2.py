@@ -2,44 +2,58 @@
 XPERIMENT PARAMETERS
 
 This XPERIMENT showcases:
--
+- Opposite-phase WC annihilation (diagonal approach, ~1λ separation)
+- WCs placed at ~1λ apart (crosses one barrier at λ/2 with initial velocity)
+- Tests whether KE overcomes one barrier before r=0 well captures them
+
+PHYSICS: At ~1λ separation, there is one barrier at λ/2 between the WCs and r=0.
+  The initial velocity provides KE to cross it. If they get past the λ/2 barrier,
+  the r=0 well captures them for annihilation.
 """
 
-UNIVERSE_EDGE = 1e-14  # m, universe edge length in meters
-TARGET_VOXELS = 500_000_000  # Target voxel count (impacts performance)
+from openwave.common import constants
+
+EWAVE_LENGTH = constants.EWAVE_LENGTH  # m, ~2.854e-17 m
+UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
+TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Stress Test: {TARGET_VOXELS/1e6:.0f}M voxels",
-        "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
+        "X_NAME": f"  /Annihilation 2",
+        "DESCRIPTION": "Opposite-phase WC annihilation",
     },
     "camera": {
-        "INITIAL_POSITION": [1.40, 1.40, 1.20],  # [x, y, z] in normalized coordinates
+        "INITIAL_POSITION": [1.42, 1.26, 0.70],  # [x, y, z] in normalized coordinates
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],  # m, simulation domain [x, y, z]
         "TARGET_VOXELS": TARGET_VOXELS,  # Simulation voxel count (impacts performance)
     },
     "wave_centers": {
-        "COUNT": 1,  # Number of wave-centers for this xperiment
+        "COUNT": 2,  # Number of wave-centers for this xperiment
         # Wave-Center positions: normalized coordinates (0-1 range, relative to max universe edge)
         "POSITION": [
-            [0.50, 0.50, 0.50],
+            [0.25, 0.75, 0.75],
+            [0.75, 0.25, 0.25],
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
-        "PHASE_OFFSETS_DEG": [0],
+        "PHASE_OFFSETS_DEG": [0, 180],
+        # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs)
+        "INIT_VELOCITY": [
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+        ],
         "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {
-        "SHOW_AXIS": False,  # Toggle to show/hide axis lines
+        "SHOW_AXIS": True,  # Toggle to show/hide axis lines
         "TICK_SPACING": 0.25,  # Axis tick marks spacing for position reference
         "SHOW_GRID": False,  # Toggle to show/hide the voxel data-grid
-        "SHOW_EDGES": False,  # Toggle to show/hide universe edges
+        "SHOW_EDGES": True,  # Toggle to show/hide universe edges
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],  # [x, y, z] positions relative to universe size
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
-        "WARP_MESH": 0,  # Visual warp mesh effect intensity
-        "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
-        "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
+        "WARP_MESH": 500,  # Visual warp mesh effect intensity
+        "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
         "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },

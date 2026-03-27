@@ -262,19 +262,19 @@ def integrate_motion_euler(
         wave_center.velocity_amrs[wc_idx][1] += a_y_amrs * dt_rs
         wave_center.velocity_amrs[wc_idx][2] += a_z_amrs * dt_rs
 
-        # # Clamp velocity to speed of light (c = 0.3 am/rs)
-        # # velocity clamp to prevent superluminal speeds
-        # c_amrs = ti.cast(0.3, ti.f32)
-        # v_mag = ti.sqrt(
-        #     wave_center.velocity_amrs[wc_idx][0] ** 2
-        #     + wave_center.velocity_amrs[wc_idx][1] ** 2
-        #     + wave_center.velocity_amrs[wc_idx][2] ** 2
-        # )
-        # if v_mag > c_amrs:
-        #     scale = c_amrs / v_mag
-        #     wave_center.velocity_amrs[wc_idx][0] *= scale
-        #     wave_center.velocity_amrs[wc_idx][1] *= scale
-        #     wave_center.velocity_amrs[wc_idx][2] *= scale
+        # Clamp velocity to speed of light (c = 0.3 am/rs)
+        # velocity clamp to prevent superluminal speeds
+        c_amrs = ti.cast(0.3, ti.f32)
+        v_mag = ti.sqrt(
+            wave_center.velocity_amrs[wc_idx][0] ** 2
+            + wave_center.velocity_amrs[wc_idx][1] ** 2
+            + wave_center.velocity_amrs[wc_idx][2] ** 2
+        )
+        if v_mag > c_amrs:
+            scale = c_amrs / v_mag
+            wave_center.velocity_amrs[wc_idx][0] *= scale
+            wave_center.velocity_amrs[wc_idx][1] *= scale
+            wave_center.velocity_amrs[wc_idx][2] *= scale
 
         # Position change in attometers
         dx_am_step = wave_center.velocity_amrs[wc_idx][0] * dt_rs
@@ -371,6 +371,19 @@ def integrate_motion_leapfrog(
         wave_center.velocity_amrs[wc_idx][0] *= damping
         wave_center.velocity_amrs[wc_idx][1] *= damping
         wave_center.velocity_amrs[wc_idx][2] *= damping
+
+        # Clamp velocity to speed of light (c = 0.3 am/rs)
+        c_amrs = ti.cast(0.3, ti.f32)
+        v_mag = ti.sqrt(
+            wave_center.velocity_amrs[wc_idx][0] ** 2
+            + wave_center.velocity_amrs[wc_idx][1] ** 2
+            + wave_center.velocity_amrs[wc_idx][2] ** 2
+        )
+        if v_mag > c_amrs:
+            scale = c_amrs / v_mag
+            wave_center.velocity_amrs[wc_idx][0] *= scale
+            wave_center.velocity_amrs[wc_idx][1] *= scale
+            wave_center.velocity_amrs[wc_idx][2] *= scale
 
         # Drift: x += v * dt
         dx_am_step = wave_center.velocity_amrs[wc_idx][0] * dt_rs

@@ -57,7 +57,7 @@ def tetrahedral_10(center=(0.5, 0.5, 0.5)):
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Electron Test",
+        "X_NAME": f"  /Tetrahedron Electron",
         "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
     },
     "camera": {

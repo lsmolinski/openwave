@@ -173,7 +173,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 #### Wrap-Up Block 1
 
 - [ ] Collect proof for particle formation from waves (electron properties)
-- [ ] Rename xperiments with near-field results
+- ✅ Rename xperiments with near-field results
 - [ ] review <https://energywavetheory.com/project/phase1/>
 - [ ] review <https://energywavetheory.com/project/phase2/>
 

@@ -429,29 +429,44 @@ def propagate_wave(
             # Applies superposition principle for multiple wave-centers, with signed charge sign.
             # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
             # Also avoids instability from real-time EMS calculations of moving wave-centers.
+            #
+            # Derives the time-averaged amplitude envelope directly from the
+            # weighted partial standing wave phasor components (C_n, S_n):
+            #   |phasor| = √((w+1)²·sinc² + (w-1)²·cosc²)
+            #   envelope = charge_sign × A_eff × |phasor|
+            #
+            # Behavior by regime (automatic from the weight function, no separate branches):
+            #   Center (r=0)        | w=1.0 | |phasor|=2              | Peak standing wave
+            #   Near  (r < 1.25λ)   | w≈1.0 | 2·|sin(kr)|/kr         | Sinc oscillation → lock-in wells
+            #   Transition           | 0→1   | blended                 | Smooth rolloff
+            #   Far   (r >> 1.25λ)  | w≈0.0 | 1/kr (smooth, no sinc) | Coulomb placeholder (1/r)
+            #
+            # Far-field: sin²+cos² = 1 (quadrature cancellation) → smooth 1/kr.
+            #   Standing wave has no quadrature (S_n=0 when w=1) → sinc oscillation survives.
+            #   Traveling wave has both components in quadrature → oscillation cancels.
+            #   Coulomb direction from charge_sign superposition:
+            #   same sign → constructive → high E → repulsion gradient.
+            #   opposite  → destructive → low E  → attraction gradient.
+            #
+            # NOTE: charge_sign is IMPOSED (cos(phase_offset) = ±1), not
+            # emergent from wave interference. True Coulomb from spin-based
+            # charge is deferred to Block 2 / M4 vector field. The signed
+            # envelope is a placeholder that gives correct force direction
+            # and 1/r² scaling while we solve near-field particle formation.
             # ================================================================
-            # Charge sign: cos(0)=+1 (eg: positron), cos(π)=-1 (eg: electron)
             charge_sign = ti.cos(source_offset)
 
-            # # DAMPED + WOLFF ==================================
-            if r_grid < 0.5:  # CENTER VOXEL only, avoids singularity
-                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                    base_amplitude_am * wave_field.scale_factor * (k_grid / (2 * ti.math.pi))
-                )  # finite value at center, k_grid / constant
+            if r_grid < 0.5:  # CENTER VOXEL: analytical limit
+                # w→1: (w+1)·sinc→2, (w-1)·cosc→0 → |phasor|=2
+                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * 2.0)
             else:
-                if r_grid <= (1.25 * 2 * ti.math.pi / k_grid):  # NEAR-FIELD: time-dilated-1.25λ
-                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am
-                        * wave_field.scale_factor
-                        * (
-                            k_grid / ti.sqrt((k_grid * r_grid) ** 2 + (48))
-                            + ti.sin(k_grid * r_grid) / (r_grid * 4)
-                        )
-                    )  # smoothed 1/r decay
-                else:  # FAR-FIELD: smooth 1/r decay
-                    trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
-                        base_amplitude_am * wave_field.scale_factor * 1.0 / r_grid
-                    )  # smooth 1/r decay
+                # Single-WC phasor magnitude from weighted partial standing wave
+                sinc_term = ti.sin(spatial_phase) / spatial_phase  # sin(kr)/kr
+                cosc_term = ti.cos(spatial_phase) / spatial_phase  # cos(kr)/kr
+                phasor_mag = ti.sqrt(
+                    ((weight + 1.0) * sinc_term) ** 2 + ((weight - 1.0) * cosc_term) ** 2
+                )
+                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * phasor_mag)
 
         # Phasor RMS: exact amplitude from superposition, no EMA needed
         # peak = √(P² + Q²), RMS = peak / √2
@@ -522,16 +537,24 @@ def propagate_wave(
 
         # ================================================================
         # LOCAL ENERGY PER VOXEL: E = ρ · V · (f · A)² in aJ (attojoules)
-        # F = -∇E (force = negative energy gradient, computed in force_motion)
+        # F = -∇E (force = negative energy gradient, computed in xforce_motion)
         # ================================================================
         # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
         # Internal units: qg·am²/rs² × 1000 → aJ
         dx_am = wave_field.dx_am
-        # M3 limitation: using scalar amplitude envelope for energy (E = ρV(fA)²).
-        # Scalar methods can't resolve correct force direction — coherent wave
-        # interference always produces sinc oscillation in force (cos(k·Δr) term).
-        # Moved to M4 vector field (independent L/T components, E = E_L + E_T)
-        # to capture charge-dependent force from L→T spin conversion.
+        #
+        # BLOCK 1 (M3): Energy from signed envelope.
+        #   Near-field: sinc structure from wave interference (lock-in, annihilation).
+        #   Far-field: smooth 1/r with imposed charge sign (±1 placeholder).
+        #   Limitation: far-field Coulomb direction uses imposed charge, not emergent
+        #   from wave physics. Coherent monochromatic interference always produces
+        #   cos(k·Δr) oscillation in the phasor cross-term — no single-frequency
+        #   wave equation avoids this (Phase 1 conclusion, all 10 models tested).
+        #
+        # BLOCK 2 (M4): Coulomb from spin-based charge (L→T conversion).
+        #   Vector field (E = E_L + E_T) needed for emergent charge direction.
+        #   Carry-over approaches: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale.
+        #
         amp_am = trackers.amp_local_envelope_am[i, j, k]
         trackers.energy_local_aJ[i, j, k] = (
             rho_qgam

@@ -6,11 +6,11 @@ This XPERIMENT showcases:
 """
 
 UNIVERSE_EDGE = 1e-14  # m, universe edge length in meters
-TARGET_VOXELS = 450_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 200_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Max Test: {TARGET_VOXELS/1e6:.0f}M voxels",
+        "X_NAME": f"(max test) {TARGET_VOXELS/1e6:.0f}M voxels",
         "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
     },
     "camera": {
@@ -43,7 +43,6 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 200,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
-        "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },

@@ -20,10 +20,10 @@ import numpy as np
 from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
-import openwave.xperiments.m3_wolff_lafreniere.spacetime_medium as medium
-import openwave.xperiments.m3_wolff_lafreniere.wave_engine as ewave
+import openwave.xperiments.m3_wolff_lafreniere.medium as medium
 import openwave.xperiments.m3_wolff_lafreniere.particle as particle
-import openwave.xperiments.m3_wolff_lafreniere.force_motion as force_motion
+import openwave.xperiments.m3_wolff_lafreniere.wave_engine as ewave
+import openwave.xperiments.m3_wolff_lafreniere.xforce_motion as force_motion
 import openwave.xperiments.m3_wolff_lafreniere.instrumentation as instrument
 
 # ================================================================
@@ -124,6 +124,7 @@ class SimulationState:
         self.NUM_SOURCES = 1
         self.SOURCES_POSITION = []
         self.SOURCES_OFFSET_DEG = []
+        self.INIT_VELOCITY = None
         self.APPLY_MOTION = True
 
         # UI control variables
@@ -165,6 +166,7 @@ class SimulationState:
         self.NUM_SOURCES = sources["COUNT"]
         self.SOURCES_POSITION = sources["POSITION"]
         self.SOURCES_OFFSET_DEG = sources["PHASE_OFFSETS_DEG"]
+        self.INIT_VELOCITY = sources.get("INIT_VELOCITY", None)
         self.APPLY_MOTION = sources["APPLY_MOTION"]
 
         # UI defaults
@@ -204,6 +206,7 @@ class SimulationState:
             self.NUM_SOURCES,
             self.SOURCES_POSITION,
             self.SOURCES_OFFSET_DEG,
+            self.INIT_VELOCITY,
         )
 
     def reset_sim(self):
@@ -464,7 +467,8 @@ def compute_force_motion(state):
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
     # Detect and handle particle annihilation (opposite phase WCs meeting)
     # Threshold: WCs can be at grid diagonal positions and TIMESTEP may cause larger jumps
-    force_motion.detect_annihilation(state.wave_center, 5.0)
+    annihilation_threshold = state.wave_field.ewave_res / 3.0  # in voxels
+    force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
 def render_elements(state):
@@ -537,7 +541,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "attraction1"
+    default_xperiment = selected_xperiment_arg or "annihilation1"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
