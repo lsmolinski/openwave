@@ -46,84 +46,92 @@
 | Near-field | Lock-in (quarks, orbits, bonding) | Attraction → annihilation (wave cancellation) |
 | Far-field  | Constructive → repulsion          | Destructive → attraction                      |
 
-## BUILDING BLOCKS — From Waves to Matter & Forces
+## ENERGY LAYERS — From Waves to Matter & Forces
 
-Everything builds bottom-up. Each level enables the next:
+Everything builds bottom-up. Each layer enables the next:
 
 ```text
 ================================================================
- BLOCK 1: PARTICLE FORMATION
+ LAYER 0: ???
 ================================================================
- 1. ENERGY WAVE (base wave)                                          [M3 scalar]
+
+================================================================
+ LAYER 1: FUNDAMENTAL ENERGY WAVE & TIME EMERGENCE
+================================================================
+ L1a. ENERGY WAVE (base wave)                                          [M3 scalar]
     └── energy source: wave carries energy from displacement amplitude & frequency
     └── incoming from all directions → isotropic field (Fibonacci sphere)
     └── stabilized wave type: standing wave
+    └── time as the fundamental wave cycle, rhythm, frequency
 
- 2. WC DISTURBED STANDING WAVES → FUNDAMENTAL PARTICLE (K=1)         [M3 scalar]
+================================================================
+ LAYER 2: WAVE CENTERS & STANDING WAVES
+================================================================
+ L2a. WC DISTURBED STANDING WAVES → FUNDAMENTAL PARTICLE (K=1)         [M3 scalar]
     └── disturbance: shifts in energy field
     └── creates spherical standing waves + propagates traveling waves
 
- 3. LOCKED-IN K=1s → STANDALONE PARTICLE FORMATION                   [M3 scalar]
+================================================================
+ LAYER 3: STANDALONE PARTICLE EMERGENCE
+================================================================
+ L3a. LOCKED-IN K=1s → STANDALONE PARTICLE FORMATION                   [M3 scalar]
     └── 3D spherical wave (spatial term) creates energy wells (zero-amplitude nodes)
     └── same phase particles locks-in, opposite phase annihilate    
     └── multiple WCs, K = WC count
     └── not all K stable: K=2..9 decay, K=10 most stable
     └── dual geometry (K=1,8,20) → neutral. Non-dual (K=10,28,50) → charged
+    └── particle annihilation (opposite phase wave cancellation)
 
 ================================================================
- BLOCK 2: ELECTRIC FORCE
+ LAYER 4: FORCE EMERGENCE (ELECTROMAGNETISM & GRAVITY)
 ================================================================
- 4. K=10 SPIN (from NON-DUAL geometry)                                [M3 scalar]
-    └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
-    └── off-node WC displaces next → continuous rotation = spin
-
- 5. CHARGE EMERGENCE (from non-dual spin)                             [M3/4 vector]
+ L4a. CHARGE EMERGENCE (from non-dual spin)                             [M3/4 vector]
     └── spin modifies wavefront: toroidal/elliptical, phase-shifted, not pure spherical
     └── understanding spin is key: it creates the far-field electrostatic effect,
         magnetic force, AND gravitational deficit — all three emerge from spin
     └── net wave amplitude at particle's first wavelength = charge
 
- 6. COULOMB / ELECTRIC FORCE (1st force to emerge, longitudinal)      [M3/4 vector]
+ L4b. COULOMB / ELECTRIC FORCE (1st force to emerge, longitudinal)      [M3/4 vector]
     └── traveling waves beyond particle radius carry charge information
     └── maybe longitudinal can be encoded with scalar displacement fields
     └── 1/r² scaling, direction from charge sign
     └── `F = -∇E`
 
- 7. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
+ L4c. K=10 SPIN (from NON-DUAL geometry)                                [M3 scalar]
+    └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
+    └── off-node WC displaces next → continuous rotation = spin
+
+ L4d. BOHR MAGNETON / MAGNETIC FORCE (2nd force, transverse)            [M4 vector]
+    └── L→T spin conversion creates transverse wave (L amplitude drain, fine structure)
+    └── elliptical vector displacement (6 phasor numbers, L + T force components)
+
+ L4e. GRAVITATIONAL FORCE (residual from L→T drainage)
+    └── longitudinal amplitude deficit from spin energy conversion
+    └── 10⁻⁴² ratio from accumulated deficit
+ 
+================================================================
+ LAYER 5: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
+================================================================
+ L5a. EM WAVES
+    └── traveling wave disturbances
+ 
+ L5b. HEAT
+    └── thermal standing wave modulation
+
+================================================================
+ LAYER 6: COMPOSITE PARTICLE EMERGENCE
+================================================================
+ L6a. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
     └── K=10 near-fields overlap → combined standing waves, larger volume
     └── much higher energy than K=1 lock-in (K=10 × K=10)
     └── ~137× Coulomb (= 1/α). Gluonic fields from quarks, possibly magnetic role
 
-================================================================
- BLOCK 3: MAGNETIC FORCE
-================================================================
- 8. BOHR MAGNETON / MAGNETIC FORCE (2nd force, transverse)            [M4 vector]
-    └── L→T spin conversion creates transverse wave (L amplitude drain, fine structure)
-    └── elliptical vector displacement (6 phasor numbers, L + T force components)
-
-================================================================
- BLOCK 4: GRAVITATIONAL FORCE
-================================================================
- 9. GRAVITATIONAL FORCE (residual from L→T drainage)
-    └── longitudinal amplitude deficit from spin energy conversion
-    └── 10⁻⁴² ratio from accumulated deficit
-
-================================================================
- BLOCK 5: COMPOSITE PARTICLES
-================================================================
- 10. COMPOSITE PARTICLES → NUCLEI → ATOMS → MOLECULES
+ L6b. PROTON → NUCLEI → ATOMS → MOLECULES
     └── proton: 4e⁻ + 1e⁺ at center (tetrahedral)
     └── neutron: proton + e⁻ at center (charge neutralized)
     └── nuclei: composite particles bound by strong force
     └── atoms: nuclei + electrons (Coulomb + magnetic = orbital force)
 
-================================================================
- BLOCK 6: EMERGENT WAVES
-================================================================
- 11. EM WAVES
-    └── traveling wave disturbances
- 12. HEAT
-    └── thermal standing wave modulation
 ```
 
 ## KEY CONCEPTS

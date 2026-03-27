@@ -1,4 +1,4 @@
-# BLOCK 1: PARTICLE FORMATION
+# LEVEL 3: PARTICLE EMERGENCE
 
 Near-field standing wave physics — demonstrating that particles emerge from wave interference.
 

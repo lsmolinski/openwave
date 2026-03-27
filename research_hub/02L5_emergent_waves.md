@@ -1,4 +1,4 @@
-# BLOCK 6: EMERGENT WAVES
+# LEVEL 5: EMERGENT WAVES
 
 Photons as traveling wave packets, thermal energy as standing wave dynamics.
 
