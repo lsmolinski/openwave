@@ -58,7 +58,7 @@ The `r²` from shell surface area **exactly cancels** the `1/r²` from the sinc 
 
 **Why it doesn't diverge at r=0:** The sinc function is the spherical Bessel function j₀(kr), the regular solution that stays finite at the origin. Unlike bare `1/r`, the `sin(kr)/kr → 1` at center (L'Hôpital), giving a finite peak amplitude of 2A₀.
 
-**Variable λ(r) — future refinement:** The current sinc assumes constant λ everywhere. The Yee & Hauger shells and the energy steepness concept (`A/λ ≈ const`) suggest λ grows near the center too: `A(r)↑, λ(r)↑`. This would make the profile less steep than pure sinc while conserving energy steepness. Deferred to Block 1b (variable λ for tetrahedron stability).
+**Variable λ(r) — future refinement:** The current sinc assumes constant λ everywhere. The Yee & Hauger shells and the energy steepness concept (`A/λ ≈ const`) suggest λ grows near the center too: `A(r)↑, λ(r)↑`. This would make the profile less steep than pure sinc while conserving energy steepness. Deferred to Layer 3 (variable λ for tetrahedron stability).
 
 ### Sensitivity to investigate
 
@@ -109,17 +109,17 @@ The standing wave (w=1) has **no quadrature component** (`S_n = 0`), so the sin 
 - Same sign → constructive superposition → high E → repulsion gradient
 - Opposite sign → destructive superposition → low E → attraction gradient
 
-True emergent charge from spin-based L→T conversion is deferred to **Block 2 / M4 vector field**.
+True emergent charge from spin-based L→T conversion is deferred to **M4 vector field**.
 
 ### The sinc barrier problem (Phase 1 conclusion)
 
 Coherent monochromatic wave interference ALWAYS produces `cos(k·Δr)` oscillation in the phasor cross-term. No single-frequency wave equation avoids this (all 10 models tested in Phase 1). The signed envelope sidesteps this for far-field by using the single-WC phasor magnitude (smooth 1/r) instead of the multi-WC phasor (oscillating cross-terms). Near-field sinc structure is preserved for lock-in physics.
 
-Carry-over approaches for emergent far-field Coulomb (Block 2): 3D flux, variable λ(r), non-linear Ψ³, K=10 scale averaging.
+Carry-over approaches for emergent far-field Coulomb: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale averaging.
 
 ---
 
-## BLOCK 1 CLAIMS — What we're demonstrating
+## LAYER 1 CLAIMS — What we're demonstrating
 
 All claims emerge from wave interference (not imposed):
 
@@ -130,7 +130,7 @@ All claims emerge from wave interference (not imposed):
 
 What's acknowledged as placeholder:
 
-- Far-field force direction from imposed charge sign (Block 2)
+- Far-field force direction from imposed charge sign
 - Weight function parameters (sensitivity testing needed)
 
 ---

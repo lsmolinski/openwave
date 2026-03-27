@@ -5,7 +5,7 @@ This XPERIMENT showcases:
 -
 """
 
-UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
+UNIVERSE_EDGE = 5e-16  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
@@ -14,7 +14,7 @@ XPARAMETERS = {
         "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
     },
     "camera": {
-        "INITIAL_POSITION": [1.16, 0.98, 0.62],  # [x, y, z] in normalized coordinates
+        "INITIAL_POSITION": [1.03, 0.92, 0.96],  # [x, y, z] in normalized coordinates
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],  # m, simulation domain [x, y, z]
@@ -41,9 +41,9 @@ XPARAMETERS = {
         "SHOW_EDGES": False,  # Toggle to show/hide universe edges
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],  # [x, y, z] positions relative to universe size
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
-        "WARP_MESH": 500,  # Visual warp mesh effect intensity
+        "WARP_MESH": 300,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
+        "TIMESTEP": 1.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {
