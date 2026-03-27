@@ -59,25 +59,17 @@ def tetrahedron_10(center=(0.5, 0.5, 0.5), rotation_deg=(0, 0, 0)):
     return [[cx + p[0], cy + p[1], cz + p[2]] for p in (R @ np.array(local_positions).T).T]
 
 
-# ── TEST 1: Rotated electron (45° on all axes) ──────────────────────────────
-POSITIONS = tetrahedron_10(center=(0.50, 0.50, 0.50), rotation_deg=(0, 0, 0))
-PHASES = [180] * 10  # electron (all same phase = 180°)
-
-# ── TEST 2: Positron (same geometry, phase = 0°) ────────────────────────────
-# POSITIONS = tetrahedron_10(center=(0.50, 0.50, 0.50), rotation_deg=(45, 45, 45))
-# PHASES = [0] * 10  # positron (all same phase = 0°)
-
-# ── TEST 3: Translated (off-center, different grid alignment) ────────────────
-# POSITIONS = tetrahedron_10(center=(0.35, 0.65, 0.45), rotation_deg=(0, 0, 0))
-# PHASES = [180] * 10
+# ── TEST: Positron (same geometry, phase = 0°) ────────────────────────────
+POSITIONS = tetrahedron_10(center=(0.50, 0.50, 0.50), rotation_deg=(45, 45, 45))
+PHASES = [0] * 10  # positron (all same phase = 0°)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Particle Formation",
+        "X_NAME": f"  /Tetrahedron Positron",
         "DESCRIPTION": "K=10 tetrahedron stability validation",
     },
     "camera": {
-        "INITIAL_POSITION": [0.27, 1.62, 0.90],  # [x, y, z] in normalized coordinates
+        "INITIAL_POSITION": [0.29, 1.28, 0.22],  # [x, y, z] in normalized coordinates
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],  # m, simulation domain [x, y, z]
@@ -95,7 +87,7 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 2,
+        "SHOW_FLUX_MESH": 1,
         "WARP_MESH": 150,
         "PARTICLE_SHELL": True,
         "TIMESTEP": 2.0,

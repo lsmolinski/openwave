@@ -73,7 +73,7 @@ PHASES = [180] * 10  # electron (all same phase = 180°)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Particle Formation",
+        "X_NAME": f"  /Tetrahedrons",
         "DESCRIPTION": "K=10 tetrahedron stability validation",
     },
     "camera": {
