@@ -77,17 +77,17 @@ Phase 1c vector wave research (validated infrastructure):
 - [01c_vector_wave.md](01c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
 - Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
+### 🚧 LAYER 5: Gravity Emergence
+
 - Demonstrate gravity from spin energy deficit
 
-- Demonstrate Electro_magnetic Waves being generated
+### 🚧 LAYER 6: Emergent Waves
 
-### 🚧 LAYER 5: Composite Particles
+- **Goal**: Demonstrate Electro_magnetic Waves being generated and Thermal Energy.
 
-**Goal**: Demonstrate gravity from spin energy deficit and test composite particle (proton = 4e⁻ + 1e⁺, neutron = proton + e⁻ at center) formation.
+### 🚧 LAYER 7: Composite Particles
 
-### 🚧 LAYER 6: Thermal Energy
-
-**Goal**: Demonstrate Thermal Energy.
+- **Goal**: Demonstrate gravity from spin energy deficit and test composite particle (proton = 4e⁻ + 1e⁺, neutron = proton + e⁻ at center) formation.
 
 ---
 

@@ -181,11 +181,11 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 - [ ] review <https://energywavetheory.com/project/phase1/>
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-### 🚧 LAYER 4: [FORCE EMERGENCE](02L4_force_emergence.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
+### 🚧 LAYER 4: [ELECTROMAGNETISM EMERGENCE](02L4_electromagnetism_emergence.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
 M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [02_ENERGY_LAYERS.md](02_ENERGY_LAYERS.md) for context sources and references to load when starting this phase.
 
-#### Layer 4a: Charge emergence (from non-dual spin)
+#### Layer 4a-b: Charge emergence (from non-dual spin)
 
 - [ ] Investigate charge mechanism
   - [ ] Spin
@@ -193,7 +193,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Role of LaFreniere core phase shift (λ/2 from compression)
   - [ ] Does variable λ(r) inside the standalone particle create the charge sign?
 
-#### Layer 4b: Coulomb / electric force (1st measurable force, longitudinal)
+#### Layer 4c: Coulomb / electric force (1st measurable force, longitudinal)
 
 - [ ] Build / extend M4 vector wave engine with L→T spin conversion
   - [ ] Vector displacement `ψ = (ψ_x, ψ_y, ψ_z)` per voxel
@@ -213,7 +213,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
   - [ ] Symmetry: Newton's 3rd law (equal and opposite)
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-#### Layer 4c-4d: Bohr magneton / magnetic force (2nd force, transverse)
+#### Layer 4d: Bohr magneton / magnetic force (2nd force, transverse)
 
 - [ ] Model spin as toroidal wave flow (Smoliński Energy Domain, Butto vortex)
 - [ ] Separate longitudinal (electric) and transverse (magnetic) force components
@@ -222,7 +222,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Demonstrate magnetic force from transverse wave interference
 - [ ] review <https://energywavetheory.com/project/phase2/>
 
-#### Layer 4e: Gravitational Force (residual from L→T drainage)
+### 🚧 LAYER 5: [GRAVITY EMERGENCE](02L5_gravity_emergence.md)
 
 - [ ] Gravitational force from spin energy deficit (L→T drainage → amplitude deficit)
   - [ ] Test whether deficit accumulates over K WCs (factor of K×α?)
@@ -230,27 +230,27 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Compare with 10⁻⁴² EM-to-gravitational ratio
 - [ ] Validate against Smoliński's Scilab reference values
 
-### 🚧 LAYER 5: [EMERGENT WAVES](02L5_emergent_waves.md)
+### 🚧 LAYER 6: [EMERGENT WAVES](02L6_emergent_waves.md)
 
-#### Layer 5a: Electromagnetics Waves
+#### Layer 6a: Electromagnetics Waves
 
 - [ ] Demonstrate photon-like traveling wave packets
 - [ ] Validate electromagnetic wave emergence from medium disturbances
 
-#### Layer 5b: Thermal Waves
+#### Layer 6b: Thermal Waves
 
 - [ ] Test thermal energy as standing wave dynamics
 - [ ] Validate thermal wave emergence from medium disturbances
 
-### 🚧 LAYER 6: [COMPOSITE PARTICLE](02L6_composite_particle.md) → nuclei → atoms (Orbital Force)
+### 🚧 LAYER 7: [COMPOSITE PARTICLE](02L7_composite_particle.md) → nuclei → atoms (Orbital Force)
 
-#### Layer 6a: Strong Force (electric at sub-λ between K=10 standalone particles)
+#### Layer 7a: Strong Force (electric at sub-λ between K=10 standalone particles)
 
 - [ ] Test K=10 near-field overlap → combined standing waves, high-energy lock-in
 - [ ] Verify ~137× Coulomb strength (= 1/α) at sub-λ distances
 - [ ] Investigate gluonic field mechanism (magnetic role?)
 
-#### Layer 6b: Composite Particles
+#### Layer 7b: Composite Particles
 
 - [ ] Composite particle formation
   - [ ] Proton: 4 electrons + 1 positron at center (tetrahedral)

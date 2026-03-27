@@ -83,50 +83,53 @@ Everything builds bottom-up. Each layer enables the next:
     └── particle annihilation (opposite phase wave cancellation)
 
 ================================================================
- LAYER 4: FORCE EMERGENCE (ELECTROMAGNETISM & GRAVITY)
+ LAYER 4: ELECTROMAGNETISM EMERGENCE
 ================================================================
- L4a. CHARGE EMERGENCE (from non-dual spin)                             [M3/4 vector]
+ L4a. K=10 SPIN (from NON-DUAL geometry)                                [M3/4]
+    └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
+    └── off-node WC displaces next → continuous rotation = spin
+
+ L4b. CHARGE EMERGENCE (from non-dual spin)                             [M3/4]
     └── spin modifies wavefront: toroidal/elliptical, phase-shifted, not pure spherical
     └── understanding spin is key: it creates the far-field electrostatic effect,
         magnetic force, AND gravitational deficit — all three emerge from spin
     └── net wave amplitude at particle's first wavelength = charge
 
- L4b. COULOMB / ELECTRIC FORCE (1st force to emerge, longitudinal)      [M3/4 vector]
+ L4c. COULOMB / ELECTRIC FORCE (1st force to emerge, longitudinal)      [M3/4]
     └── traveling waves beyond particle radius carry charge information
     └── maybe longitudinal can be encoded with scalar displacement fields
     └── 1/r² scaling, direction from charge sign
     └── `F = -∇E`
 
- L4c. K=10 SPIN (from NON-DUAL geometry)                                [M3 scalar]
-    └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
-    └── off-node WC displaces next → continuous rotation = spin
-
  L4d. BOHR MAGNETON / MAGNETIC FORCE (2nd force, transverse)            [M4 vector]
     └── L→T spin conversion creates transverse wave (L amplitude drain, fine structure)
     └── elliptical vector displacement (6 phasor numbers, L + T force components)
 
- L4e. GRAVITATIONAL FORCE (residual from L→T drainage)
+================================================================
+ LAYER 5: GRAVITY EMERGENCE
+================================================================
+ L5a. GRAVITATIONAL FORCE (residual from L→T drainage)
     └── longitudinal amplitude deficit from spin energy conversion
     └── 10⁻⁴² ratio from accumulated deficit
  
 ================================================================
- LAYER 5: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
+ LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
 ================================================================
- L5a. EM WAVES
+ L6a. EM WAVES
     └── traveling wave disturbances
  
- L5b. HEAT
+ L6b. HEAT
     └── thermal standing wave modulation
 
 ================================================================
- LAYER 6: COMPOSITE PARTICLE EMERGENCE
+ LAYER 7: COMPOSITE PARTICLE EMERGENCE
 ================================================================
- L6a. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
+ L7a. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
     └── K=10 near-fields overlap → combined standing waves, larger volume
     └── much higher energy than K=1 lock-in (K=10 × K=10)
     └── ~137× Coulomb (= 1/α). Gluonic fields from quarks, possibly magnetic role
 
- L6b. PROTON → NUCLEI → ATOMS → MOLECULES
+ L7b. PROTON → NUCLEI → ATOMS → MOLECULES
     └── proton: 4e⁻ + 1e⁺ at center (tetrahedral)
     └── neutron: proton + e⁻ at center (charge neutralized)
     └── nuclei: composite particles bound by strong force
