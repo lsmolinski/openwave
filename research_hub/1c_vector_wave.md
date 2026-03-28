@@ -243,7 +243,7 @@ On-axis: cos(θ_geo) = -1 (constant). The vector advantage only manifests **off-
 
 ## Implementation Plan
 
-Math scripts in `scripts_vector_wave/`. Detailed task checklist in [00_roadmap.md](00_roadmap.md).
+Math scripts in `scripts_vector_wave/`. Detailed task checklist in [0_ROADMAP.md](0_ROADMAP.md).
 
 ## ✅ Step 1: 3D Vector Base Wave — COMPLETED
 
@@ -500,4 +500,4 @@ Both are needed: L→T alone may still oscillate if using sinc spatial structure
 - Butto (2021): *A New Theory for the Essence and Origin of Electron Spin* (vortex model)
 - Yee & Hauger: *The Geometry of Particle Standing Waves v1.1* (wavelength shells)
 - LaFreniere: wave reflection/radiation pressure model
-- Phase 1b full results: `01b_base_disturbance.md`
+- Phase 1b full results: `1b_base_disturbance.md`

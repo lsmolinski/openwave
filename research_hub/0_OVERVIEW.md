@@ -149,8 +149,8 @@ Everything builds bottom-up. Each layer enables the next:
     - VALIDATED: (wave equation) in + out partial standing, out wave only, A(r), λ(r)
       - sinc function: `ψ = A · cos (kr ± ωt ± φ) / kr`
       - partial standing wave: `ψ = A · [w(r)·sin(kr + ωt) + sin(kr - ωt)] / kr`
-    - phasor superposition: analytical amplitude computation, this replaces the EMA-RMS tracking with an exact, instantaneous result — no observation window, no smoothing artifacts (00a_equations.md)
-    - non-linear equation (variable λ): Wave centers may have longer wavelengths at the core (pushing amplitude up to conserve energy/steepness), with λ getting shorter as r increases until stabilizing at some distance (00a_equations.md)
+    - phasor superposition: analytical amplitude computation, this replaces the EMA-RMS tracking with an exact, instantaneous result — no observation window, no smoothing artifacts (0a_equations.md)
+    - non-linear equation (variable λ): Wave centers may have longer wavelengths at the core (pushing amplitude up to conserve energy/steepness), with λ getting shorter as r increases until stabilizing at some distance (0a_equations.md)
     - VALIDATED: (interaction with base) additive reflection, absorber, elastic disturbance (amp, phase shift, spin)
     - effect: standing @near_field + traveling @far_field
     - └── standing wave energy profile: steepness A/λ preserved or not?

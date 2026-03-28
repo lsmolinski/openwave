@@ -14,8 +14,8 @@
   - [Standing vs Traveling Wave Decomposition](#-standing-vs-traveling-wave-decomposition)
   - [Alternative Wave Equations (All 5 Forms)](#-alternative-wave-equations-all-5-forms)
 - Major Paths
-  - [PHASE 1a: Signed Disturbance (forced charge sign)](01a_signed.md#phase-1a-signed-disturbance-forced-charge-sign)
-  - [PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
+  - [PHASE 1a: Signed Disturbance (forced charge sign)](1a_signed.md#phase-1a-signed-disturbance-forced-charge-sign)
+  - [PHASE 1b: Base Wave + WC Energy Redistribution](1b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
   - [PHASE 1c: Non-Linear Wave Equations (1D)](01c_non_linear.md#phase-1c-non-linear-wave-equations)
   - [PHASE 1d: Vector Wave Force (M4 displacement direction)](01d_vector_wave.md#phase-1d-vector-wave-force)
 - [Summary](#summary)
@@ -38,7 +38,7 @@ Force is computed as F = -∇E where E(x) = ρ·V·(f·A(x))², calculated direc
 
 ## Target Behavior (LaFreniere Reference)
 
-**PRIMARY TARGET:** [Lafreniere Attraction](00a_equations.md#primary-reference-two-opposite-phase-wave-centers)
+**PRIMARY TARGET:** [Lafreniere Attraction](0a_equations.md#primary-reference-two-opposite-phase-wave-centers)
 
 ![alt text](images/wave_interference.gif)
 
@@ -53,7 +53,7 @@ This animation shows the complete wave interaction for two opposite-phase WCs:
 
 1. ❌ **Far-field oscillatory force (MAIN BLOCKER)** — Force direction flips every λ/2 of separation change. The sinc function sin(kr)/kr creates permanent nodes in the phasor RMS. These sinc nodes dominate over the charge-phase signal, making force direction depend on separation modulo λ instead of charge. Confirmed in both 3D and 1D engines
 2. ❌ **Near-field opposite-phase monotonic attraction** — Opposite-charge WCs should always attract (to annihilation), not oscillate like same-charge lock-in. Same root cause as #1
-3. ✅ **1/r² force law scaling (RESOLVED)** — Force between two particles comes from the **interaction energy** E_int ∝ |Z₁|·|Z₂| ∝ 1/r, whose gradient is ∝ 1/r². Confirmed numerically. See [00c_challenges.md](00c_challenges.md#-5-the-1r-force-law-resolved-in-theory)
+3. ✅ **1/r² force law scaling (RESOLVED)** — Force between two particles comes from the **interaction energy** E_int ∝ |Z₁|·|Z₂| ∝ 1/r, whose gradient is ∝ 1/r². Confirmed numerically. See [0c_challenges.md](0c_challenges.md#-5-the-1r-force-law-resolved-in-theory)
 4. ❌ **Dual-treatment boundary** — Near-field needs raw oscillatory phasor (for lock-in physics), far-field needs smoothed envelope (for Coulomb). Unimplemented
 
 ---
@@ -130,7 +130,7 @@ E_interaction ∝ cos(k(r₁ - r₂) - (φ₁ - φ₂)) / (kr₁ · kr₂)
 
 Three remaining paths, all connected:
 
-1. **Base wave + WC energy redistribution** ([PHASE 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)) — model the actual base wave and how WCs redistribute its energy. Central open question: how WC phase determines the drainage pattern
+1. **Base wave + WC energy redistribution** ([PHASE 1b: Base Wave + WC Energy Redistribution](1b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)) — model the actual base wave and how WCs redistribute its energy. Central open question: how WC phase determines the drainage pattern
 2. **Non-linear wave equations** ([PHASE 1c: Non-Linear Wave Equations (1D)](01c_non_linear.md#phase-1c-non-linear-wave-equations)) — variable λ(r), ρ(x), Ψ³; breaks sinc periodicity while keeping genuine wave interference
 3. **Vector wave force** ([PHASE 1d: Vector Wave Force (M4 displacement direction)](01d_vector_wave.md#phase-1d-vector-wave-force)) — divergence/curl/flux from M4 vector displacement; recovers charge sign from rotation direction
 

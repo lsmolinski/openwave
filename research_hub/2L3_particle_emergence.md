@@ -2,7 +2,7 @@
 
 Near-field standing wave physics — demonstrating that particles emerge from wave interference.
 
-Task checklists in [00_ROADMAP.md](00_ROADMAP.md). Energy layers hierarchy in [00_OVERVIEW.md](00_OVERVIEW.md).
+Task checklists in [0_ROADMAP.md](0_ROADMAP.md). Energy layers hierarchy in [0_OVERVIEW.md](0_OVERVIEW.md).
 
 ---
 

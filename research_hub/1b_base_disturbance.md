@@ -12,7 +12,7 @@ The main blocker is still the far-field oscillatory force: the sinc function sin
 
 **Validation targets**: plot E(x) along the axis connecting two particles at various separations, identify constructive/destructive interference locations, verify gradient direction and 1/r² magnitude scaling against Coulomb reference.
 
-All task checklists are tracked in [00_roadmap.md](00_roadmap.md).
+All task checklists are tracked in [0_ROADMAP.md](0_ROADMAP.md).
 
 ## The Base Wave (Fundamental Energy Wave)
 
