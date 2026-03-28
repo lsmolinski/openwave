@@ -281,12 +281,12 @@ def oscillate_granules(
 
         # Sum contributions from all sources (wave superposition)
         for source_idx in range(num_sources):
-            # Spatial phase: φ = k·r, creates spherical wave fronts
-            spatial_phase = k_am * r_am
-
             # Get precomputed direction and distance for this granule-source pair
             direction = sources_direction[granule_idx, source_idx]
             r_am = sources_distance_am[granule_idx, source_idx]
+
+            # Spatial phase: φ = k·r, creates spherical wave fronts
+            spatial_phase = k_am * r_am
 
             # Source phase offset: initial phase of this wave-center
             source_offset = sources_phase_offset[source_idx]
