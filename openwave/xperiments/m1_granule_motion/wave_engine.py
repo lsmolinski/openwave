@@ -266,13 +266,13 @@ def oscillate_granules(
             # Vector from vertex to granule equilibrium position
             r_vec = equilibrium_am[granule_idx] - universe_vertices_am[v]
             r_mag = r_vec.norm()
-            # A·cos(kr + ωt)·direction, positive for inward propagation, full amp
+            # A·cos(kr - ωt)·direction, negative for outward propagation from vertex, full amp
             base_wave_psi += (
                 base_wave_toggle
                 * base_amplitude_am
                 * amp_boost
                 / 8  # base-wave do not superpose, split per vertex for energy conservation
-                * ti.cos(k_am * r_mag + temporal_phase)
+                * ti.cos(k_am * r_mag - temporal_phase)
             ) * (r_vec / r_mag)
 
         # Initialize accumulation variables for wave superposition
@@ -281,15 +281,15 @@ def oscillate_granules(
 
         # Sum contributions from all sources (wave superposition)
         for source_idx in range(num_sources):
+            # Spatial phase: φ = k·r, creates spherical wave fronts
+            spatial_phase = k_am * r_am
+
             # Get precomputed direction and distance for this granule-source pair
             direction = sources_direction[granule_idx, source_idx]
             r_am = sources_distance_am[granule_idx, source_idx]
 
             # Source phase offset: initial phase of this wave-center
             source_offset = sources_phase_offset[source_idx]
-
-            # Spatial phase: φ = k·r, creates spherical wave fronts
-            spatial_phase = k_am * r_am
 
             # Amplitude falloff for spherical wave: A(r) = A₀/r
             # Clamp to r_min to avoid singularity at r = 0
@@ -303,7 +303,7 @@ def oscillate_granules(
 
             # MAIN WAVE FUNCTION ========================================
             # IN Wave displacement from this source
-            # A·cos(kr + ωt + φ)·direction, positive for inward propagation, full amp
+            # A·cos(kr + (ωt + φ))·direction, positive for inward propagation, full amp
             in_wave_psi = (
                 in_wave_toggle
                 * base_amplitude_am
@@ -312,7 +312,7 @@ def oscillate_granules(
                 * ti.cos(spatial_phase + (temporal_phase + source_offset))
             )
             # OUT Wave displacement from this source
-            # A(r)·sin(kr - ωt - φ)·direction, negative for outward propagation, amp falloff
+            # A(r)·sin(kr - (ωt + φ))·direction, negative for outward propagation, amp falloff
             # Uses sine for 90° phase shift to create nodes at source center (r=0) and wave fronts
             out_wave_psi = (
                 out_wave_toggle
@@ -321,7 +321,7 @@ def oscillate_granules(
             )
             source_displacement_am = (in_wave_psi + out_wave_psi) * direction
 
-            # Wave velocity from this source: -A(r)·ω·sin(kr ± ωt + φ)·direction
+            # Wave velocity from this source: -A(r)·ω·sin(kr ± (ωt + φ))·direction
             in_wave_vel = (
                 in_wave_toggle
                 * -base_amplitude_am
