@@ -356,51 +356,65 @@ def propagate_wave(
             #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff / x_c)
 
             # ================================================================
-            # Combined WOLFF-LAFRENIERE canonical form
+            # Combined WOLFF-LAFRENIERE — Standard Form
             # ================================================================
+            # Phase convention: spatial ± (temporal + offset)
+            #   (kr ± (ωt + φ))
+            #
+            # Product form (from sin(A)-sin(B) = 2cos((A+B)/2)sin((A-B)/2)):
+            #   ψ(r,t) = 2A · sin(kr/2) · cos(kr/2 - (ωt + φ)) / r
+            #
+            #   sin(kr/2) / r  = spatial envelope (sinc zeros at λ, 2λ...)
+            #   cos(kr/2-(ωt+φ)) = traveling wave at half-wavenumber
+            #   2A             = standing wave doubling (in + out constructive)
+            #
+            # The product form is a modulated traveling wave: the particle
+            # (envelope) shapes the outgoing force field (traveling oscillation).
+            #
+            # The Phase and Quadrature terms are embedded in the product:
+            #   sin(kr/2)·cos(kr/2-(ωt+φ)) expands back to:
+            #     ½sin(kr)·cos(ωt+φ) + ½(1-cos(kr))·sin(ωt+φ)
+            #   C_n = ½sin(kr)/r  (Phase:      zeros at λ/2, λ, 3λ/2...)
+            #   S_n = ½(1-cos(kr))/r (Quadrature: zeros at λ, 2λ, 3λ...)
+            # The ratio |S_n/C_n| = |tan(kr/2)| encodes position-dependent
+            # elliptical oscillation (circular at λ/4, linear at λ/2).
+            #
+            # Center limit (r→0): sin(kr/2)/r → k/2, cos(0-(ωt+φ)) → cos(ωt+φ)
+            #   ψ(0,t) = 2A·(k/2)·cos(ωt+φ) = A·k·cos(ωt+φ)
+            #
+            # Original form:
             #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
             # Expanded form:
             #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
             #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
             # ================================================================
-            # Phase term: sin(kr)/r → k as r→0 (physical units)
-            phase_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                k_grid,  # analytical limit
-                ti.sin(spatial_phase) / r_grid,
-            )
-
-            # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            quadrature_term = ti.select(
-                r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-                0.0,  # analytical limit
-                (1.0 - ti.cos(spatial_phase)) / r_grid,
-            )
-
-            # Oscillator with source_offset phase shift
-            oscillator = (
-                -ti.cos(temporal_phase + source_offset) * phase_term
-                - ti.sin(temporal_phase + source_offset) * quadrature_term
-            )
-
-            wave_field.displacement_am[i, j, k] += (
-                base_amplitude_am * wave_field.scale_factor * oscillator
-            )
-
-            # PHASOR SUPERPOSITION: Wolff-LaFreniere form
-            # ψ = A · [-cos(ωt+φ)·sin(kr)/r - sin(ωt+φ)·(1-cos(kr))/r]
-            # C_n = -A·sin(kr)/r (coefficient of cos(ωt+φ))
-            # S_n = -A·(1-cos(kr))/r (coefficient of sin(ωt+φ))
             A_eff = base_amplitude_am * wave_field.scale_factor
+            half_phase = spatial_phase / 2.0  # kr/2
+
+            # Displacement: ψ = 2A · sin(kr/2) · cos(kr/2 - (ωt+φ)) / r
+            oscillator = ti.select(
+                r_grid < 0.5,  # center voxel: analytical limit
+                k_grid * ti.cos(temporal_phase + source_offset),  # A·k·cos(ωt+φ)
+                2.0
+                * ti.sin(half_phase)
+                * ti.cos(half_phase - (temporal_phase + source_offset))
+                / r_grid,
+            )
+            wave_field.displacement_am[i, j, k] += A_eff * oscillator
+
+            # PHASOR SUPERPOSITION: expand product back to Phase + Quadrature
+            # C_n = A·sin(kr)/r  (coefficient of cos(ωt+φ))
+            # S_n = A·(1-cos(kr))/r  (coefficient of sin(ωt+φ))
+            # (factor of 2 absorbed: 2·½ = 1)
             C_n = ti.select(
                 r_grid < 0.5,
-                -A_eff * k_grid,  # center limit: -A·k
-                -A_eff * ti.sin(spatial_phase) / r_grid,
+                A_eff * k_grid,  # center limit: sin(kr)/r → k
+                A_eff * ti.sin(spatial_phase) / r_grid,
             )
             S_n = ti.select(
                 r_grid < 0.5,
                 0.0,  # center limit: (1-cos(kr))/r → 0
-                -A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
+                A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
             )
             # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
             cos_phi = ti.cos(source_offset)
