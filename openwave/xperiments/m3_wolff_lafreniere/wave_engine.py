@@ -448,7 +448,7 @@ def propagate_wave(
             # #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
             # #
             # # 2 counter-propagating waves with a spatial blending function:
-            # #   ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
+            # #   ψ(r,t) = A · [w·sin(kr+(ωt+φ)) + sin(kr-(ωt+φ))] / kr
             # #
             # #   Cardinal sine term: sin(kr)/kr → 1 as r→0
             # #       self-normalizes to 1 at origin regardless of wavelength
@@ -463,19 +463,19 @@ def propagate_wave(
             # #       Out-Wave: sin(kr - ωt - φ) / kr (nodes move outward)
             # #
             # #   Standing limit (weight=1, no singularity at r=0):
-            # #     [sin(kr-ωt - φ) + sin(kr+ωt + φ)] / kr
-            # #       → 2·sin(kr)·cos(ωt + φ) / kr
-            # #       → 2·cos(ωt + φ) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
+            # #     [sin(kr-(ωt+φ)) + sin(kr+(ωt+φ))] / kr
+            # #       → 2·sin(kr)·cos(ωt+φ) / kr
+            # #       → 2·cos(ωt+φ) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
             # #
             # #   How it works:
             # #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
             # #   │         Region         │ Weight(r) │                                       Result                                       │
             # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            # #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt + φ) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
+            # #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt+φ) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
             # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
             # #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
             # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            # #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt - φ) / kr — pure traveling wave, nodes move freely                         │
+            # #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr-(ωt+φ)) / kr — pure traveling wave, nodes move freely                         │
             # #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
             # # ================================================================
             # # In-wave weight: controls standing → traveling transition
@@ -487,7 +487,7 @@ def propagate_wave(
             # # Weighted partial standing wave
             # oscillator = ti.select(
             #     r_grid < 0.5,  # center voxel: analytical limit
-            #     2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
+            #     2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt+φ)
             #     (
             #         weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
             #         + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
@@ -656,7 +656,7 @@ def propagate_wave(
         #   Carry-over approaches: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale.
         #   to use: amp_local_phasorrms_am
         #
-        amp_am = trackers.amp_local_envelope_am[i, j, k]
+        amp_am = trackers.amp_local_phasorrms_am[i, j, k]
         trackers.energy_local_aJ[i, j, k] = (
             rho_qgam
             * dx_am**3
