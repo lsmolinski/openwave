@@ -95,7 +95,7 @@ for wc in wave_centers:
 # 1 = Wolff-Original:            pure standing wave, sin(kr)/kr
 # 2 = LaFreniere-Marcotte:       partially standing/traveling, zeros at λ
 # 3 = Phase-warped LaFreniere:     core-corrected traveling wave
-# 4 = Combined Wolff-LaFreniere: sin(kr)/kr + (1-cos(kr))/kr, 1/r norm
+# 4 = Combined Wolff-LaFreniere: 2·sin(kr/2)·cos(kr/2-(ωt+φ))/kr, std form
 # 5 = Weighted Partial Standing: w(r) controlled transition (default)
 # 6 = Signed Disturbance:   signed A₀ + q·δ(r), no sinc (Phase 1a, ruled out)
 
@@ -185,11 +185,12 @@ def compute_displacement(x_am: np.ndarray, t_rs: float) -> np.ndarray:
                     np.sin(x_c - wt_phi) / x_c,
                 )
             elif WAVE_EQUATION == 4:
-                # Combined: ψ = A·[sin(ωt+φ - kr) - sin(ωt+φ)] / kr
+                # Combined W-L standard form: ψ = 2A·sin(kr/2)·cos(kr/2-(ωt+φ))/kr
+                half_kr = kr / 2.0
                 wave = np.where(
                     kr < 1e-10,
-                    -np.cos(wt_phi),  # limit: -kr·cos(ωt+φ)/kr
-                    (np.sin(wt_phi - kr) - np.sin(wt_phi)) / kr,
+                    np.cos(wt_phi),  # center limit: A·k·cos(ωt+φ) / k = cos(ωt+φ)
+                    2.0 * np.sin(half_kr) * np.cos(half_kr - wt_phi) / kr,
                 )
             else:
                 # #5 Weighted partial standing wave (default)
@@ -261,9 +262,10 @@ def compute_phasor_rms(x_am: np.ndarray) -> np.ndarray:
                 )
                 S_n = np.where(x_c < 1e-10, 0.0, -wc.amplitude * np.cos(x_c) / x_c)
             elif WAVE_EQUATION == 4:
-                # Combined: C_n = -sin(kr)/kr, S_n = -(1-cos(kr))/kr
-                C_n = np.where(kr < 1e-10, -wc.amplitude, -wc.amplitude * np.sin(kr) / kr)
-                S_n = np.where(kr < 1e-10, 0.0, -wc.amplitude * (1.0 - np.cos(kr)) / kr)
+                # Combined W-L: C_n = A·sin(kr)/kr, S_n = A·(1-cos(kr))/kr
+                # (from expanding 2·sin(kr/2)·cos(kr/2-(ωt+φ))/kr back to Phase+Quadrature)
+                C_n = np.where(kr < 1e-10, wc.amplitude, wc.amplitude * np.sin(kr) / kr)
+                S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (1.0 - np.cos(kr)) / kr)
             else:
                 # #5 Weighted partial standing wave (default)
                 w = compute_weight(r_am)
