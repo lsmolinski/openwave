@@ -1,137 +1,160 @@
-# LEVEL 3: PARTICLE EMERGENCE
+# LAYERS 1-3: PARTICLE EMERGENCE
 
 Near-field standing wave physics — demonstrating that particles emerge from wave interference.
 
-Task checklists in [00_ROADMAP.md](00_ROADMAP.md). Building blocks hierarchy in [00_OVERVIEW.md](00_OVERVIEW.md).
+Task checklists in [00_ROADMAP.md](00_ROADMAP.md). Energy layers hierarchy in [00_OVERVIEW.md](00_OVERVIEW.md).
 
 ---
 
-## WAVE EQUATION: Weighted Partial Standing Wave
+## WAVE EQUATIONS TESTED
 
-Superposition of two counter-propagating spherical waves with a spatial blending function:
+Five wave equations tested in M3 for lock-in, annihilation, and K=10 tetrahedron stability. All are exact solutions to the 3D wave equation in spherical coordinates.
+
+### Combined Wolff-LaFreniere (current best)
+
+Phase convention: `spatial ± (temporal + offset)` → `(kr ± (ωt + φ))`
 
 ```text
-ψ(r,t) = A · [w(r)·sin(kr + ωt + φ) + sin(kr - ωt - φ)] / kr
-              \______ in-wave ______/   \_____ out-wave _____/
+Standard form (product):
+  ψ(r,t) = 2A · sin(kr/2) · cos(kr/2 - (ωt + φ)) / r
+
+  sin(kr/2) / r       = spatial envelope (sinc zeros at λ, 2λ... = particle structure)
+  cos(kr/2 - (ωt+φ))  = traveling wave at half-wavenumber (force field propagation)
+  2A                   = standing wave doubling (in + out constructive)
+
+Phasor (expand product back to Phase + Quadrature):
+  sin(kr/2)·cos(kr/2-(ωt+φ)) = ½sin(kr)·cos(ωt+φ) + ½(1-cos(kr))·sin(ωt+φ)
+  C_n = A·sin(kr)/r            (Phase:      zeros at λ/2, λ, 3λ/2...)
+  S_n = A·(1-cos(kr))/r        (Quadrature: zeros at λ, 2λ, 3λ...)
+  |phasor| = 2·|sin(kr/2)| / r (using 1-cos=2sin²(x/2))
+
+Center limit (r→0):
+  ψ(0,t) = A·k·cos(ωt+φ)
 ```
+
+The product form is a **modulated traveling wave**: the particle (envelope) shapes the outgoing force field (traveling oscillation). One formula, one physical picture.
+
+**Key property**: sinc zeros at **λ intervals** (not λ/2). The λ/2 lock-in distance is at the **peak** of the envelope (sin(π/2)=1), not at a node. All 45 K=10 tetrahedron WC pairs sit within [0, λ) where there are no zeros.
+
+**Quadrature term**: C_n and S_n have DIFFERENT spatial functions (sin(kr)/r vs (1-cos(kr))/r). The ratio |S_n/C_n| = |tan(kr/2)| varies with distance — encoding position-dependent elliptical oscillation. At λ/4: circular. At λ/2: purely quadrature. The product form absorbs this into the `kr/2` spatial phase of the traveling wave — the ellipticity is encoded as position-dependent phase, not lost.
+
+### Equation comparison
+
+| Property | Wolff-original | Combined W-L | Weighted PSW |
+| --- | --- | --- | --- |
+| Center amplitude | k√2 ≈ 0.67 | k ≈ 0.48 | 2.0 |
+| Envelope zeros at | λ/2, λ, 3λ/2... | **λ, 2λ, 3λ...** | λ/2, λ, 3λ/2... |
+| Well spacing | λ/2 | **λ** | λ/2 |
+| First barrier | λ/2 from WC | **λ from WC** | λ/2 from WC |
+| Quadrature | same spatial fn | **different fns** | weight-dependent |
+| K=10 at perfect placement | unstable (zero at λ/2) | **holds** (peak at λ/2) | unstable (zero at λ/2) |
 
 ### What IS grounded in wave physics
 
-- **`sin(kr ± ωt) / kr`** — exact analytical solution to the 3D wave equation in spherical coordinates. Textbook.
-- **Superposition principle** — adding two solutions gives another solution. Textbook.
-- **In-wave + out-wave** — Wolff's Space Resonance model. The in-wave is the Huygens reconstruction from all other matter in the universe (every out-wave from every other particle converges back). Established wave physics (Huygens-Fresnel principle).
-- **Standing wave at core** — when w=1, the superposition gives `2·sin(kr)·cos(ωt+φ)/kr`, a pure standing wave. The particle IS the standing wave. Central claim of Wolff/EWT.
-- **Traveling wave at distance** — when w=0, only the out-wave remains: `sin(kr-ωt-φ)/kr`. The force field IS the traveling wave.
-- **Sinc lock-in** — energy wells at `kr = nπ` from `sin(kr)/kr` nodes. Direct consequence of the wave equation, not imposed.
-- **Annihilation** — opposite-phase superposition cancels. Direct consequence of superposition.
+- **`sin(kr ± ωt) / r`** — exact solution to 3D wave equation in spherical coordinates. Textbook.
+- **Superposition principle** — adding solutions gives another solution. Textbook.
+- **In-wave + out-wave** — Wolff's Space Resonance model. Huygens-Fresnel principle.
+- **Standing wave at core** — the particle IS the standing wave. Central claim of Wolff/EWT.
+- **Sinc lock-in** — energy wells from wave nodes. Direct consequence of wave equation.
+- **Annihilation** — opposite-phase cancellation. Direct consequence of superposition.
 
-### What's a modeling choice (not derived from first principles)
+### What's a modeling choice (not derived)
 
-1. **The weight function** `w(r) = 1 / (1 + (r / 1.25λ)^8)` — the shape, the power (8), the transition distance (1.25λ). Physically motivated (in-wave convergence weakens with distance) but the specific function is chosen, not predicted.
-1. **Monochromatic** (single frequency) — real particles may be broadband. This is the root cause of the sinc barrier issue at far-field.
-1. **The 1.25λ transition distance** — chosen to include the first quadrature lobe in the standing wave zone. Not derived from EWT constants.
-
-### Amplitude profile: sinc steepness and energy conservation
-
-The standing wave spatial function `sin(kr)/kr` (sinc) creates a steep amplitude rise toward the center. This is correct physics for 3D spherical geometry — not a numerical artifact.
-
-**Energy in a thin shell at radius r:**
-
-```text
-E_shell = ρ · (f·A(r))² · 4πr² · dr
-
-With A(r) = 2A₀ · sin(kr)/kr:
-
-E_shell ∝ r² × (sin(kr)/kr)²  =  sin²(kr) / k²
-```
-
-The `r²` from shell surface area **exactly cancels** the `1/r²` from the sinc envelope. Each half-wavelength shell contains roughly the same total energy. Amplitude concentrates toward the center because the same energy packs into a smaller volume (like a whirlpool: speed ∝ 1/r, cross-section ∝ r², total flow constant).
-
-**Amplitude values across the standing wave:**
-
-| Distance | kr | sinc | Envelope (×2A₀) | Shell volume ∝ r² |
-| --- | --- | --- | --- | --- |
-| center | 0 | 1.000 | 2.00 | tiny |
-| λ/4 | π/2 | 0.637 | 1.27 | 16× larger |
-| λ/2 | π | 0 | 0 (node) | 64× larger |
-| 3λ/4 | 3π/2 | 0.212 | 0.42 | 144× larger |
-
-**Why it doesn't diverge at r=0:** The sinc function is the spherical Bessel function j₀(kr), the regular solution that stays finite at the origin. Unlike bare `1/r`, the `sin(kr)/kr → 1` at center (L'Hôpital), giving a finite peak amplitude of 2A₀.
-
-**Variable λ(r) — future refinement:** The current sinc assumes constant λ everywhere. The Yee & Hauger shells and the energy steepness concept (`A/λ ≈ const`) suggest λ grows near the center too: `A(r)↑, λ(r)↑`. This would make the profile less steep than pure sinc while conserving energy steepness. Deferred to Layer 3 (variable λ for tetrahedron stability).
-
-### Sensitivity to investigate
-
-- Does changing the transition distance (0.5λ, 1.25λ, 2λ) qualitatively change lock-in physics, or just shift barrier distances?
-- Does changing the power (2, 4, 8) affect stability?
+1. **The wave equation form** — Combined W-L selected empirically (best K=10 stability at perfect placement). Physical justification for this specific combination not yet established.
+1. **Monochromatic** (single frequency) — root cause of sinc barrier issue at far-field.
+1. **The 1.25λ transition distance** for signed envelope blend — modeling parameter.
 
 ---
 
 ## SIGNED ENVELOPE — Energy & Force
 
-The force is computed from `F = -∇E` where `E = ρ·V·(f·A)²` and A is the signed envelope.
+Force computed from `F = -∇E` where `E = ρ·V·(f·A)²` and A is the signed envelope.
 
-The envelope is the **single-WC phasor magnitude** from the same wave equation, multiplied by a charge sign:
-
-```text
-envelope = charge_sign × A_eff × |phasor|
-
-|phasor| = √( (w+1)²·sinc² + (w-1)²·cosc² )
-
-where:  sinc = sin(kr)/kr,  cosc = cos(kr)/kr
-```
-
-### Behavior by regime (automatic from the weight function)
-
-| Region | Weight | \|phasor\| | Physics |
-| --- | --- | --- | --- |
-| Center (r=0) | 1.0 | 2.0 | Peak standing wave |
-| Near-field (r < 1.25λ) | ~1.0 | `2·\|sin(kr)\|/kr` | Sinc oscillation → lock-in wells |
-| Transition | 0→1 | blended | Smooth rolloff |
-| Far-field (r >> 1.25λ) | ~0.0 | `1/kr` | Smooth 1/r (no sinc) |
-
-### Why far-field is smooth
-
-In the far-field (w=0), sin and cos are in **quadrature** (90° apart):
+### Combined W-L envelope (hybrid near/far)
 
 ```text
-|phasor| = √( sin²(kr)/kr² + cos²(kr)/kr² )
-         = √( 1/kr² )       ← sin² + cos² = 1
-         = 1/kr              ← smooth, no oscillation
+Near-field:  charge_sign × A_eff × 2|sin(kr/2)| / r   (sinc wells at λ)
+Far-field:   charge_sign × A_eff × 2 / r               (smooth, no barriers)
+Transition:  blended via weight = 1 / (1 + (r/1.25λ)^8)
+Center:      charge_sign × A_eff × k                   (≈ 0.48, finite)
 ```
-
-The standing wave (w=1) has **no quadrature component** (`S_n = 0`), so the sin zeros survive as sinc oscillation. The traveling wave has both components → oscillation cancels.
 
 ### Charge sign — imposed, not emergent
 
-`charge_sign = cos(source_offset)` gives ±1 based on phase (0° = positron, 180° = electron). This is NOT emergent from wave interference — it's an imposed label that gives correct Coulomb direction as a placeholder.
-
-- Same sign → constructive superposition → high E → repulsion gradient
-- Opposite sign → destructive superposition → low E → attraction gradient
-
-True emergent charge from spin-based L→T conversion is deferred to **M4 vector field**.
-
-### The sinc barrier problem (Phase 1 conclusion)
-
-Coherent monochromatic wave interference ALWAYS produces `cos(k·Δr)` oscillation in the phasor cross-term. No single-frequency wave equation avoids this (all 10 models tested in Phase 1). The signed envelope sidesteps this for far-field by using the single-WC phasor magnitude (smooth 1/r) instead of the multi-WC phasor (oscillating cross-terms). Near-field sinc structure is preserved for lock-in physics.
-
-Carry-over approaches for emergent far-field Coulomb: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale averaging.
+`charge_sign = cos(source_offset)` gives ±1 (imposed). Same sign → constructive → repulsion. Opposite → destructive → attraction. True Coulomb from spin deferred to Layer 4 / M4.
 
 ---
 
-## LAYER 1 CLAIMS — What we're demonstrating
+## AMPLITUDE PROFILE: Sinc Steepness & Energy Conservation
 
-All claims emerge from wave interference (not imposed):
+```text
+E_shell ∝ r² × (sin(kr)/kr)² = sin²(kr)/k²
+```
 
-1. **Lock-in** — same-phase WCs lock into sinc energy wells at λ/2 intervals
-1. **Annihilation** — opposite-phase WCs cancel via superposition (deepest well at r=0)
-1. **K=10 stability** — 1-3-6 tetrahedral geometry is the first configuration where all WCs sit near standing wave nodes
-1. **K=2..9 instability** — intermediate geometries can't accommodate all WCs at nodes → decay
+Shell surface area (r²) exactly cancels 1/r² from sinc → each shell has roughly equal energy. The sinc function `sin(kr)/kr` (spherical Bessel j₀) stays finite at origin (→ 1). Variable λ(r) from Yee & Hauger would make profile less steep. Deferred.
 
-What's acknowledged as placeholder:
+---
 
-- Far-field force direction from imposed charge sign
-- Weight function parameters (sensitivity testing needed)
+## WHAT WE DEMONSTRATED
+
+### Lock-in (same-phase WCs)
+
+- 2 WCs at λ separation oscillate around equilibrium — visually demonstrated
+- K=10 (1-3-6 tetrahedron) holds with Combined W-L at perfect placement
+- Validated: rotation-invariant, translation-invariant, phase-invariant (e⁻ and e⁺ both stable)
+
+### Annihilation (opposite-phase WCs)
+
+- Requires INIT_VELOCITY (momentum injection) — phasor cross-term barriers block approach, signed envelope has no far-field attraction
+- Annihilation threshold at 1.2λ (standing wave core overlap)
+- Both head-on (annihilation1) and diagonal (annihilation2) demonstrated
+- Far-field Coulomb attraction deferred to Layer 4 / M4
+
+### K=10 tetrahedron — perfect placement only
+
+- Combined W-L: all 45 pair distances in [0, λ) → maximum envelope → holds
+- Other equations: sinc zero at λ/2 → pairs at λ/2 have zero lock-in force → unstable
+
+---
+
+## WHAT WE DID NOT ACHIEVE — K-Selectivity
+
+### The critical test
+
+Perturb WC positions by ±10-30% of λ. If K=10 recovers and K=2..9 don't → genuine wave physics selectivity.
+
+### Result: K-selectivity NOT achieved
+
+K=10 breaks WORSE than lower K under perturbation, with both energy sources. Higher resolution (26 voxels/λ) didn't help.
+
+| Energy source | Perfect placement | With perturbation |
+| --- | --- | --- |
+| Total phasor | all K stable | K=10 breaks worst |
+| Signed envelope | all K stable | K=10 breaks worst |
+
+### Root cause analysis
+
+1. **Signed envelope: shallow equilibria** — wells at D=λ are where other WC's envelope is zero. No deep restoring force. Perturbation pushes WCs out irreversibly.
+
+1. **Total phasor: oscillating cross-term** — genuine interference wells but also barriers. Under perturbation, 45 competing pair forces amplify displacement instead of restoring.
+
+1. **More pairs = more instability** — K=10 has 45 pairs (competing forces in many directions) vs K=2 has 1 pair. Simpler structures are more robust.
+
+1. **Point-sampling limitation** — force from gradient at a single grid point. Collective 10-WC standing wave may need volume integration, not point sampling.
+
+1. **Wells too broad or too deep** — Combined W-L envelope has no zeros in [0, λ), making the entire range a single basin. No fine structure to discriminate K=10 geometry from others.
+
+---
+
+## OPEN QUESTIONS
+
+1. **Variable λ(r)**: does non-uniform wavelength break the symmetry that makes all K stable? Different K geometries have different multi-body wavelength profiles
+1. **Non-linear terms**: Ψ³ soliton stabilizer (Smoliński) — K-dependent well structure?
+1. **Volume-integrated force**: integrate ∇E over sphere around WC instead of point-sampling
+1. **M4 vector field**: L→T spin converts longitudinal to transverse. Spin geometry IS K-dependent — might provide missing selectivity
+1. **Self-organization**: scatter K WCs randomly, let only stable K survive (long sim times)
+1. **Broadband waves**: multiple frequencies create K-dependent resonances?
+1. **Different wave equations**: the energy well structure depends critically on the spatial function. More equations need testing.
 
 ---
 
@@ -141,22 +164,32 @@ Scripts at `openwave/xperiments/m3_wolff_lafreniere/`. Launched from `_launcher.
 
 ### Per-frame computation
 
-1. **`wave_engine.propagate_wave()`** — computes displacement (weighted partial standing wave), phasor RMS, signed envelope, EMA-RMS, energy field
-1. **`xforce_motion.compute_force_vector()`** — `F = -∇E` with weighted multi-shell gradient (radius=3, 1/d² falloff). Energy from signed envelope
-1. **`xforce_motion.integrate_motion_leapfrog()`** — symplectic integrator, 0.995 damping
-1. **`xforce_motion.detect_annihilation()`** — opposite-phase pairs within 5 grid units
+1. **`wave_engine.propagate_wave()`** — displacement (Combined W-L), phasor RMS, signed envelope, EMA-RMS, energy
+1. **`xforce_motion.compute_force_vector()`** — `F = -∇E` weighted multi-shell gradient (R=3, 1/d²). Energy switchable: signed envelope or phasor
+1. **`xforce_motion.integrate_motion_leapfrog()`** — symplectic, velocity clamp at c, configurable damping
+1. **`xforce_motion.detect_annihilation()`** — opposite-phase pairs within 1.2λ
 
 ### Xperiments
 
-| Xperiment | Setup | Goal |
+| Xperiment | Setup | Status |
 | --- | --- | --- |
-| annihilation1 | 2 WC, opposite phase, head-on | Demonstrate wave cancellation |
-| annihilation2 | 2 WC, opposite phase, diagonal | Demonstrate off-axis annihilation |
-| lock_in | 2 WC, same phase, close | Demonstrate standing wave lock-in |
-| tetrahedron | 10 WC, 1-3-6 geometry | Stabilize K=10 electron |
+| annihilation1 | 2 WC, opposite phase, head-on | Working (INIT_VELOCITY + threshold) |
+| annihilation2 | 2 WC, opposite phase, diagonal | Working (INIT_VELOCITY + threshold) |
+| tetra_electron | K=10 electron, 1-3-6 | Stable at perfect placement only |
+| tetra_positron | K=10 positron, rotated | Stable at perfect placement only |
+| formation | K=2..10 with perturbation | K-selectivity NOT achieved |
+| tetras | Multi-particle interaction | Pending |
 
-### Known issues
+### Features added
 
-- **K=10 tetrahedron unstable** — 15/45 WC pairs at non-node distances (√3×λ/2, √2×λ/2). Needs variable λ(r) and/or wave equation tuning.
-- **Damping (0.995)** — drains KE over ~500 frames. May need tuning per xperiment.
-- **Annihilation threshold (5 grid units)** — may need calibration for different grid resolutions.
+- **INIT_VELOCITY**: per-xperiment initial velocity (annihilation momentum injection)
+- **VELOCITY_DAMPING**: per-xperiment (1.0 = no damping for annihilation, 0.995 for lock-in)
+- **Velocity clamp to c** (0.3 am/rs): both Euler and leapfrog integrators
+- **Annihilation threshold**: 1.2λ (standing wave core overlap)
+- **Tetrahedron rotation/translation**: grid-independence validation
+- **K=2..10 geometry generator**: with configurable perturbation
+- **Multiple signed envelopes**: per wave equation (Wolff, Combined W-L, LaFreniere, Weighted PSW)
+
+### The sinc barrier problem (Phase 1 conclusion, confirmed)
+
+Coherent monochromatic wave interference ALWAYS produces `cos(k·Δr)` oscillation in phasor cross-terms. No single-frequency wave equation avoids this. Smooth far-field force requires imposed charge sign (not emergent). Carry-over approaches for Layer 4: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale averaging.
