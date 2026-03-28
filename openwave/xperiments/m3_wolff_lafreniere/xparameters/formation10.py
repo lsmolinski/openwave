@@ -55,7 +55,7 @@ PHASES = [180] * K  # all same phase (electron-like)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Particle K={K}",
+        "X_NAME": f"  /Electron K={K}",
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {

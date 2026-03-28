@@ -13,7 +13,7 @@ TESTS (switch by uncommenting the desired POSITION/PHASE block):
 
 import numpy as np
 from openwave.common import constants
-from openwave.xperiments.m3_wolff_lafreniere.xparameters.tetra_electron import tetrahedron_10
+from openwave.xperiments.m3_wolff_lafreniere.xparameters.formation02 import tetrahedron_10
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
