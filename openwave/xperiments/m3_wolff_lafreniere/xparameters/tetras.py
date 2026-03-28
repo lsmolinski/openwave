@@ -1,49 +1,60 @@
 """
 XPERIMENT PARAMETERS
 
-Validation suite for K=10 electron/positron stability.
-Tests that the Combined Wolff-LaFreniere tetrahedron stability is real physics,
-not a lucky grid alignment.
+Two K=10 tetrahedra interaction tests.
+Tests particle-particle behavior at distance.
 
-TESTS (switch by uncommenting the desired POSITION/PHASE block):
-  1. ROTATED ELECTRON — same K=10 tetrahedron, rotated 45° on all axes
-  2. POSITRON — same geometry, opposite phase (0° instead of 180°)
-  3. TRANSLATED — moved to a different position in the universe
+TESTS (switch by uncommenting the desired block):
+  1. ELECTRON + ELECTRON — same phase (180°+180°), expect repulsion
+  2. ELECTRON + POSITRON — opposite phase (180°+0°), expect attraction
+  3. POSITRON + POSITRON — same phase (0°+0°), expect repulsion
 """
 
-import numpy as np
-from openwave.common import constants
 from openwave.xperiments.m3_wolff_lafreniere.xparameters.formation02 import tetrahedron_10
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
-# ── TEST 1: Rotated electron (45° on all axes) ──────────────────────────────
-POSITIONS = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=(0.50, 0.50, 0.50), rotation=(0, 0, 0))
-PHASES = [180] * 10  # electron (all same phase = 180°)
+# Separation between the two tetrahedra centers (~10λ apart along x-axis)
+# Each tetrahedron has radius ~1λ, so 10λ gives ~8λ clear space between them
+SEP_X = 0.30  # normalized coords (~10λ at 1e-15 universe)
 
-# ── TEST 2: Positron (same geometry, phase = 0°) ────────────────────────────
-# POSITIONS = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=(0.5, 0.5, 0.5), rotation=(45, 45, 45))
-# PHASES = [0] * 10  # positron (all same phase = 0°)
+# ── TEST 1: Electron + Electron (same phase → expect repulsion) ─────────────
+POSITIONS_A = tetrahedron_10(UNIVERSE_EDGE, (0.5 - SEP_X / 2, 0.50, 0.50), (0, 0, 0))
+POSITIONS_B = tetrahedron_10(UNIVERSE_EDGE, (0.5 + SEP_X / 2, 0.50, 0.50), (60, 30, 0))
+PHASES_A = [180] * 10  # electron
+PHASES_B = [180] * 10  # electron
 
-# ── TEST 3: Translated (off-center, different grid alignment) ────────────────
-# POSITIONS = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=(0.35, 0.65, 0.45), rotation=(0, 0, 0))
-# PHASES = [180] * 10
+# ── TEST 2: Electron + Positron (opposite phase → expect attraction) ─────────
+# POSITIONS_A = tetrahedron_10(UNIVERSE_EDGE, (0.5 - SEP_X / 2, 0.50, 0.50), (0, 0, 0))
+# POSITIONS_B = tetrahedron_10(UNIVERSE_EDGE, (0.5 + SEP_X / 2, 0.50, 0.50), (60, 30, 0))
+# PHASES_A = [180] * 10  # electron
+# PHASES_B = [0] * 10  # positron
+
+# ── TEST 3: Positron + Positron (same phase → expect repulsion) ──────────────
+# POSITIONS_A = tetrahedron_10(UNIVERSE_EDGE, (0.5 - SEP_X / 2, 0.50, 0.50), (0, 0, 0))
+# POSITIONS_B = tetrahedron_10(UNIVERSE_EDGE, (0.5 + SEP_X / 2, 0.50, 0.50), (60, 30, 0))
+# PHASES_A = [0] * 10  # positron
+# PHASES_B = [0] * 10  # positron
+
+# Combine both tetrahedra into a single WC list
+POSITIONS = POSITIONS_A + POSITIONS_B
+PHASES = PHASES_A + PHASES_B
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Tetrahedrons",
-        "DESCRIPTION": "K=10 tetrahedron stability validation",
+        "X_NAME": f"  /2 Tetrahedra (WIP)",
+        "DESCRIPTION": "Two K=10 tetrahedra interaction",
     },
     "camera": {
-        "INITIAL_POSITION": [0.27, 1.62, 0.90],  # [x, y, z] in normalized coordinates
+        "INITIAL_POSITION": [0.27, 1.62, 0.90],
     },
     "universe": {
-        "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],  # m, simulation domain [x, y, z]
-        "TARGET_VOXELS": TARGET_VOXELS,  # Simulation voxel count (impacts performance)
+        "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
+        "TARGET_VOXELS": TARGET_VOXELS,
     },
     "wave_centers": {
-        "COUNT": 10,  # Number of wave-centers for this xperiment
+        "COUNT": 20,  # 10 + 10 = two tetrahedra
         "POSITION": POSITIONS,
         "PHASE_OFFSETS_DEG": PHASES,
         "APPLY_MOTION": True,

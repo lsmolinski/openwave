@@ -87,7 +87,7 @@ XPARAMETERS = {
     },
     "color_defaults": {
         "COLOR_THEME": "OCEAN",
-        "WAVE_MENU": 4,
+        "WAVE_MENU": 2,
     },
     "analytics": {
         "INSTRUMENTATION": False,

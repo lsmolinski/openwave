@@ -10,7 +10,7 @@ TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Wave Profile, {TARGET_VOXELS/1e6:.0f}M voxels",
+        "X_NAME": f"Particle Formation (K=1)",
         "DESCRIPTION": "Energy Wave Charging, Propagation and Interaction",
     },
     "camera": {
