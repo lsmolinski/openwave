@@ -50,12 +50,14 @@ K = 10
 # At 0.0: perfect lattice (all K stable). At 0.2+: real test.
 PERTURBATION = 0.1  # fraction of λ (0.0 = perfect, 0.3 = 30% random displacement)
 
-POSITIONS = generate_K_positions(K, perturbation=PERTURBATION)
+POSITIONS = generate_K_positions(
+    K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
+)
 PHASES = [180] * K  # all same phase (electron-like)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Electron K={K}",
+        "X_NAME": f"  /Electron (K={K})",
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {

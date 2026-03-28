@@ -90,7 +90,7 @@ def tetrahedron_10(univ_edge, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0)):
     return [[cx + p[0], cy + p[1], cz + p[2]] for p in (R @ np.array(local_positions).T).T]
 
 
-def generate_K_positions(K, center=(0.5, 0.5, 0.5), perturbation=0.0):
+def generate_K_positions(K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=0.0):
     """Generate K WC positions in a compact geometry at λ spacing.
 
     Uses simple symmetric arrangements. Not all are the natural EWT geometry
@@ -179,7 +179,7 @@ def generate_K_positions(K, center=(0.5, 0.5, 0.5), perturbation=0.0):
 
     elif K == 10:
         # 1-3-6 tetrahedron
-        positions = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=center)
+        positions = tetrahedron_10(univ_edge=UNIVERSE_EDGE, center=center, rotation=rotation)
 
     else:
         raise ValueError(f"K={K} not implemented")
@@ -193,12 +193,14 @@ def generate_K_positions(K, center=(0.5, 0.5, 0.5), perturbation=0.0):
     return positions
 
 
-POSITIONS = generate_K_positions(K, perturbation=PERTURBATION)
+POSITIONS = generate_K_positions(
+    K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
+)
 PHASES = [180] * K  # all same phase (electron-like)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Particle Formation K={K}",
+        "X_NAME": f"Particle Formation (K={K})",
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {

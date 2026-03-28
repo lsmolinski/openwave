@@ -24,7 +24,7 @@ PHASES = [0] * 10  # positron (all same phase = 0°)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Positron",
+        "X_NAME": f"  /Positron (K=10)",
         "DESCRIPTION": "K=10 tetrahedron stability validation",
     },
     "camera": {

@@ -52,11 +52,11 @@ Everything builds bottom-up. Each layer enables the next:
 
 ```text
 ================================================================
- LAYER 0: ???
+ LAYER 0: ψαλλ ιτ ςηατεωερ υοθ ςαντ, ςε δον'τ κνος υετ
 ================================================================
 
 ================================================================
- LAYER 1: FUNDAMENTAL ENERGY WAVE & TIME EMERGENCE
+ ✅ LAYER 1: FUNDAMENTAL ENERGY WAVE & TIME EMERGENCE
 ================================================================
  L1a. ENERGY WAVE (base wave)                                          [M3 scalar]
     └── energy source: wave carries energy from displacement amplitude & frequency
@@ -65,14 +65,15 @@ Everything builds bottom-up. Each layer enables the next:
     └── time as the fundamental wave cycle, rhythm, frequency
 
 ================================================================
- LAYER 2: WAVE CENTERS & STANDING WAVES
+ ✅ LAYER 2: WAVE CENTERS & STANDING WAVES
 ================================================================
  L2a. WC DISTURBED STANDING WAVES → FUNDAMENTAL PARTICLE (K=1)         [M3 scalar]
-    └── disturbance: shifts in energy field
+    └── disturbance: shifts in energy field, wave interference
     └── creates spherical standing waves + propagates traveling waves
+    └── particle and anti-particle: phase offset
 
 ================================================================
- LAYER 3: STANDALONE PARTICLE EMERGENCE
+ 🚧 LAYER 3: STANDALONE PARTICLE EMERGENCE
 ================================================================
  L3a. LOCKED-IN K=1s → STANDALONE PARTICLE FORMATION                   [M3 scalar]
     └── 3D spherical wave (spatial term) creates energy wells (zero-amplitude nodes)
@@ -83,7 +84,7 @@ Everything builds bottom-up. Each layer enables the next:
     └── particle annihilation (opposite phase wave cancellation)
 
 ================================================================
- LAYER 4: ELECTROMAGNETISM EMERGENCE
+ 🚧 LAYER 4: ELECTROMAGNETISM EMERGENCE
 ================================================================
  L4a. K=10 SPIN (from NON-DUAL geometry)                                [M3/4]
     └── non-dual tetrahedral geometry (1-3-6) can't have all WCs at nodes
@@ -106,14 +107,14 @@ Everything builds bottom-up. Each layer enables the next:
     └── elliptical vector displacement (6 phasor numbers, L + T force components)
 
 ================================================================
- LAYER 5: GRAVITY EMERGENCE
+ 🚧 LAYER 5: GRAVITY EMERGENCE
 ================================================================
  L5a. GRAVITATIONAL FORCE (residual from L→T drainage)
     └── longitudinal amplitude deficit from spin energy conversion
     └── 10⁻⁴² ratio from accumulated deficit
  
 ================================================================
- LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
+ 🚧 LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
 ================================================================
  L6a. EM WAVES
     └── traveling wave disturbances
@@ -122,7 +123,7 @@ Everything builds bottom-up. Each layer enables the next:
     └── thermal standing wave modulation
 
 ================================================================
- LAYER 7: COMPOSITE PARTICLE EMERGENCE
+ 🚧 LAYER 7: COMPOSITE PARTICLES EMERGENCE
 ================================================================
  L7a. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
     └── K=10 near-fields overlap → combined standing waves, larger volume
@@ -297,9 +298,9 @@ This may be the mechanism behind "spacetime curvature" — not geometric bending
 
 Forces emerge in order — each level requires the previous:
 
-1. **Electric Force / Coulomb** (1st measurable force, longitudinal ∇E_L): only non-dual standalone particles (K=10 electron) have spin. Spin creates phase shift + toroidal wavefront distortion → traveling waves beyond particle radius carry charge information → Coulomb. Dual particles (K=1,8,20 neutrinos) are neutral. Charge = net wave amplitude at the standalone particle's first wavelength. 🚧 Phase 2b target
+1. **Electric Force / Coulomb** (1st measurable force, longitudinal ∇E_L): only non-dual standalone particles (K=10 electron) have spin. Spin creates phase shift + toroidal wavefront distortion → traveling waves beyond particle radius carry charge information → Coulomb. Dual particles (K=1,8,20 neutrinos) are neutral. Charge = net wave amplitude at the standalone particle's first wavelength.
 
-2. **Magnetic Force / Bohr Magneton** (2nd measurable force, transverse ∇E_T): L→T spin conversion at rate α ≈ 1/137 creates a new transverse wave component (90° to longitudinal). Longitudinal amplitude drain. Conditional — requires spin alignment/coherence (360° transverse freedom cancels unless aligned). Electromagnetism emerges from the combination of electric (L) and magnetic (T). 🚧 Phase 2b target
+2. **Magnetic Force / Bohr Magneton** (2nd measurable force, transverse ∇E_T): L→T spin conversion at rate α ≈ 1/137 creates a new transverse wave component (90° to longitudinal). Longitudinal amplitude drain. Conditional — requires spin alignment/coherence (360° transverse freedom cancels unless aligned). Electromagnetism emerges from the combination of electric (L) and magnetic (T).
 
 3. **Gravitational Force** (residual from L→T drainage): spin energy conversion creates longitudinal amplitude deficit → "shadow" → net inward force. The 10⁻⁴² EM-to-gravitational ratio emerges from accumulated deficit over K WCs. Two models:
 

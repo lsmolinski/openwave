@@ -262,14 +262,14 @@ To create useful force/energy effects, search for ways to influence λ of the fu
 
 The conditions for a practical device: material structures positioned at specific angles and distances for wave interference, electromagnetic waves that trigger or combine with the fundamental wave field, and resonance that changes particle spin → λ disturbance → energy gradient → force.
 
-### Frame-Step Simulation Concept
+### Frame-Step Simulation Concept (time becomes a local variable)
 
 The simulation should not use uniform timesteps. Instead:
 
-- **Frame count** replaces time steps — each frame represents one cycle of computation across all voxels
-- **Per-voxel dt**: within each frame, each voxel has its own time step determined by local λ/f. Where λ is shorter (higher f), more change happens per frame. Where λ is longer (lower f), less change happens
-- **Motion computation changes**: acceleration, velocity, and position integration all use voxel-specific dt. A particle's motion depends on the local time rate at its position
 - **Energy field computation**: from envelopes A(r) and λ(r), compute E(r) = ρV·c²·(A/λ)². Force from the energy gradient. Visualize with flux mesh (energy density gradient, not just amplitude)
+- **Frame count** replaces time steps — each frame represents one cycle of computation across all voxels
+- **Per-voxel dt**: within each frame, each voxel has its own time step determined by local λ/f. Where λ is shorter (higher f), faster change happens per frame. Where λ is longer (lower f), slower change happens
+- **Motion computation changes**: acceleration, velocity, and position integration all use voxel-specific dt. A particle's motion depends on the local time rate at its position
 
 This is a major architectural change — every equation that contains time becomes position-dependent. But it's the physically correct approach: time IS local, determined by the wave field state at each point.
 
@@ -302,7 +302,7 @@ This is not just philosophy — it has simulation implications. The simulator sh
 
 ## EWT Standing Wave Geometry (Yee & Hauger)
 
-Reference: [The Geometry of Particle Standing Waves v1.1](references/Spin.pdf) — Jeff Yee & Heinz-Dieter Hauger, 2020.
+Reference: [The Geometry of Particle Standing Waves v1.1](references/Lambda.pdf) — Jeff Yee & Heinz-Dieter Hauger, 2020.
 
 This paper provides a discrete model for the wavelength spacing within a particle's standing wave structure.
 

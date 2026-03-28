@@ -649,7 +649,7 @@ def propagate_wave(
         trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
 
         # ================================================================
-        # LOCAL ENERGY PER VOXEL: E = ρ · V · (f · A)² in aJ (attojoules)
+        # LOCAL ENERGY PER VOXEL: E = ρ·V·(f·A)² in aJ (attojoules)
         # F = -∇E (force = negative energy gradient, computed in xforce_motion)
         # ================================================================
         # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
@@ -670,7 +670,7 @@ def propagate_wave(
         #   Carry-over approaches: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale.
         #   to use: amp_local_phasorrms_am
         #
-        amp_am = trackers.amp_local_phasorrms_am[i, j, k]
+        amp_am = trackers.amp_local_envelope_am[i, j, k]
         trackers.energy_local_aJ[i, j, k] = (
             rho_qgam
             * dx_am**3
