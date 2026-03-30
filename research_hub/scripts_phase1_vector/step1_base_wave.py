@@ -24,7 +24,7 @@ Physics:
 
 Usage: python step1_base_wave.py
 
-Research: Phase 1c Vector Wave Force (FORCE_UNIFICATION/01c_vector_wave.md)
+Research: Phase 1c Vector Wave Force (FORCE_UNIFICATION/1c_vector_wave.md)
 Strategy: math-only numpy, no visualization.
 """
 
@@ -34,32 +34,33 @@ import time
 # ============================================================
 # PHYSICAL CONSTANTS (sim units: am, rs, qg)
 # ============================================================
-A0   = 0.92       # Fundamental amplitude [am]
-LAM0 = 28.5       # Fundamental wavelength [am]
-F0   = 0.0105     # Fundamental frequency [rHz]
-RHO0 = 38.6       # Medium density [qg/am^3]
-C    = 0.3        # Wave speed [am/rs]
-K0   = 2 * np.pi / LAM0  # Wavenumber [1/am]
+A0 = 0.92  # Fundamental amplitude [am]
+LAM0 = 28.5  # Fundamental wavelength [am]
+F0 = 0.0105  # Fundamental frequency [rHz]
+RHO0 = 38.6  # Medium density [qg/am^3]
+C = 0.3  # Wave speed [am/rs]
+K0 = 2 * np.pi / LAM0  # Wavenumber [1/am]
 
 # ============================================================
 # GRID PARAMETERS
 # ============================================================
-N_GRID   = 64      # Points per axis (64^3 = 262,144 voxels)
-GRID_LAM = 8.0     # Grid extent in wavelengths
-L        = GRID_LAM * LAM0   # Physical size [am]
-DX       = L / N_GRID        # Grid spacing [am]
-V_VOXEL  = DX ** 3           # Voxel volume [am^3]
+N_GRID = 64  # Points per axis (64^3 = 262,144 voxels)
+GRID_LAM = 8.0  # Grid extent in wavelengths
+L = GRID_LAM * LAM0  # Physical size [am]
+DX = L / N_GRID  # Grid spacing [am]
+V_VOXEL = DX**3  # Voxel volume [am^3]
 
 # ============================================================
 # BASE WAVE PARAMETERS
 # ============================================================
-N_SOURCES = 200    # Number of isotropic plane wave sources
-RNG_SEED  = 42     # For reproducibility
+N_SOURCES = 200  # Number of isotropic plane wave sources
+RNG_SEED = 42  # For reproducibility
 
 
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
+
 
 def fibonacci_sphere(n):
     """Generate n approximately uniform points on unit sphere."""
@@ -68,23 +69,26 @@ def fibonacci_sphere(n):
     phi = np.arccos(1.0 - 2.0 * (idx + 0.5) / n)
     # Golden angle spacing in azimuth
     theta = np.pi * (1.0 + np.sqrt(5.0)) * idx
-    return np.column_stack([
-        np.sin(phi) * np.cos(theta),
-        np.sin(phi) * np.sin(theta),
-        np.cos(phi),
-    ])
+    return np.column_stack(
+        [
+            np.sin(phi) * np.cos(theta),
+            np.sin(phi) * np.sin(theta),
+            np.cos(phi),
+        ]
+    )
 
 
 def build_grid(n_grid, dx):
     """Build 3D coordinate grid centered at origin. Returns (N,N,N,3)."""
     ax = (np.arange(n_grid) - n_grid / 2.0 + 0.5) * dx
-    gx, gy, gz = np.meshgrid(ax, ax, ax, indexing='ij')
+    gx, gy, gz = np.meshgrid(ax, ax, ax, indexing="ij")
     return np.stack([gx, gy, gz], axis=-1)
 
 
 # ============================================================
 # CORE PHYSICS
 # ============================================================
+
 
 def compute_phasor_field(coords, k_dirs, phases, a0, k0):
     """
@@ -104,7 +108,7 @@ def compute_phasor_field(coords, k_dirs, phases, a0, k0):
 
     for n in range(n_src):
         # k_hat_n . r  at every grid point
-        kr = k0 * np.einsum('...j,j', coords, k_dirs[n])
+        kr = k0 * np.einsum("...j,j", coords, k_dirs[n])
         # Complex amplitude — in-wave uses conjugate (negative) spatial phase
         z = amp * np.exp(-1j * (kr + phases[n]))
         # Displacement along k_hat_n (longitudinal)
@@ -119,8 +123,8 @@ def energy_from_phasor(P):
     E(r) = rho * V * f^2 * |P|^2 / 2
     The /2 converts peak amplitude to RMS: A_rms = |P|/sqrt(2).
     """
-    amp_sq = np.sum(np.abs(P) ** 2, axis=-1)   # |Px|^2 + |Py|^2 + |Pz|^2
-    return RHO0 * V_VOXEL * F0 ** 2 * amp_sq / 2.0
+    amp_sq = np.sum(np.abs(P) ** 2, axis=-1)  # |Px|^2 + |Py|^2 + |Pz|^2
+    return RHO0 * V_VOXEL * F0**2 * amp_sq / 2.0
 
 
 def force_from_energy(E, dx):
@@ -152,10 +156,10 @@ def lt_decomposition(P, ref_point, coords):
     valid = dist[..., 0] > DX * 0.5
 
     # Complex dot product P . r_hat
-    P_dot_r = np.sum(P * r_hat, axis=-1)      # complex scalar per point
-    A_L_sq = np.abs(P_dot_r) ** 2              # |P.r_hat|^2
-    A_T_sq = np.sum(np.abs(P) ** 2, axis=-1) - A_L_sq   # |P|^2 - A_L^2
-    A_T_sq = np.maximum(A_T_sq, 0.0)           # clamp float noise
+    P_dot_r = np.sum(P * r_hat, axis=-1)  # complex scalar per point
+    A_L_sq = np.abs(P_dot_r) ** 2  # |P.r_hat|^2
+    A_T_sq = np.sum(np.abs(P) ** 2, axis=-1) - A_L_sq  # |P|^2 - A_L^2
+    A_T_sq = np.maximum(A_T_sq, 0.0)  # clamp float noise
 
     return A_L_sq, A_T_sq, valid
 
@@ -163,6 +167,7 @@ def lt_decomposition(P, ref_point, coords):
 # ============================================================
 # MAIN
 # ============================================================
+
 
 def main():
     print("=" * 65)
@@ -199,7 +204,7 @@ def main():
     E_mean = E.mean()
     E_std = E.std()
     CV = E_std / E_mean
-    E_theory = RHO0 * V_VOXEL * F0 ** 2 * A0 ** 2 / 2.0
+    E_theory = RHO0 * V_VOXEL * F0**2 * A0**2 / 2.0
 
     print(f"\n{'─' * 65}")
     print(f"  TEST 1: ENERGY DENSITY (expect uniform)")
@@ -247,8 +252,8 @@ def main():
     # ================================================================
     # TEST 4:  Energy conservation  E_L + E_T = E_total
     # ================================================================
-    E_L = RHO0 * V_VOXEL * F0 ** 2 * A_L_sq / 2.0
-    E_T = RHO0 * V_VOXEL * F0 ** 2 * A_T_sq / 2.0
+    E_L = RHO0 * V_VOXEL * F0**2 * A_L_sq / 2.0
+    E_T = RHO0 * V_VOXEL * F0**2 * A_T_sq / 2.0
     decomp_err = np.abs(E_L + E_T - E).max() / E_mean
 
     print(f"\n{'─' * 65}")
@@ -264,10 +269,10 @@ def main():
     print(f"{'─' * 65}")
 
     offsets = [
-        ("center",     np.array([0.0, 0.0, 0.0])),
-        ("+2 lam x",   np.array([2 * LAM0, 0.0, 0.0])),
-        ("-2 lam y",   np.array([0.0, -2 * LAM0, 0.0])),
-        ("diagonal",   np.array([LAM0, LAM0, LAM0])),
+        ("center", np.array([0.0, 0.0, 0.0])),
+        ("+2 lam x", np.array([2 * LAM0, 0.0, 0.0])),
+        ("-2 lam y", np.array([0.0, -2 * LAM0, 0.0])),
+        ("diagonal", np.array([LAM0, LAM0, LAM0])),
     ]
     for label, rp in offsets:
         al, at, v = lt_decomposition(P, rp, coords)
@@ -294,7 +299,9 @@ def main():
         P_s = compute_phasor_field(coords_s, kd, ph, A0, K0)
         amp_sq_s = np.sum(np.abs(P_s) ** 2, axis=-1)
         cv_s = amp_sq_s.std() / amp_sq_s.mean()
-        print(f"  N={n_src:5d}  CV={cv_s:.4f}  theory={chi2_cv:.4f}  err={abs(cv_s - chi2_cv):.4f}")
+        print(
+            f"  N={n_src:5d}  CV={cv_s:.4f}  theory={chi2_cv:.4f}  err={abs(cv_s - chi2_cv):.4f}"
+        )
 
     # ================================================================
     # VALIDATION SUMMARY
@@ -304,24 +311,24 @@ def main():
     print(f"{'=' * 65}")
 
     checks = [
-        ("Mean energy matches theory (+/- 5%)",
-         abs(E_mean / E_theory - 1.0) < 0.05,
-         f"ratio = {E_mean / E_theory:.4f}"),
-        ("CV matches chi2(6) = 1/sqrt(3) (+/- 0.05)",
-         abs(CV - 1.0 / np.sqrt(3)) < 0.05,
-         f"CV = {CV:.4f}, theory = {1/np.sqrt(3):.4f}"),
-        ("Force = speckle noise (within 2x estimate)",
-         interior.mean() / F_noise_theory < 2.0,
-         f"|F|/noise = {interior.mean() / F_noise_theory:.4f}"),
-        ("E_L/E = 1/3 +/- 0.05",
-         abs(frac_L - 1.0 / 3) < 0.05,
-         f"E_L/E = {frac_L:.4f}"),
-        ("E_T/E = 2/3 +/- 0.05",
-         abs(frac_T - 2.0 / 3) < 0.05,
-         f"E_T/E = {frac_T:.4f}"),
-        ("E_L + E_T = E (err < 1e-10)",
-         decomp_err < 1e-10,
-         f"err = {decomp_err:.2e}"),
+        (
+            "Mean energy matches theory (+/- 5%)",
+            abs(E_mean / E_theory - 1.0) < 0.05,
+            f"ratio = {E_mean / E_theory:.4f}",
+        ),
+        (
+            "CV matches chi2(6) = 1/sqrt(3) (+/- 0.05)",
+            abs(CV - 1.0 / np.sqrt(3)) < 0.05,
+            f"CV = {CV:.4f}, theory = {1/np.sqrt(3):.4f}",
+        ),
+        (
+            "Force = speckle noise (within 2x estimate)",
+            interior.mean() / F_noise_theory < 2.0,
+            f"|F|/noise = {interior.mean() / F_noise_theory:.4f}",
+        ),
+        ("E_L/E = 1/3 +/- 0.05", abs(frac_L - 1.0 / 3) < 0.05, f"E_L/E = {frac_L:.4f}"),
+        ("E_T/E = 2/3 +/- 0.05", abs(frac_T - 2.0 / 3) < 0.05, f"E_T/E = {frac_T:.4f}"),
+        ("E_L + E_T = E (err < 1e-10)", decomp_err < 1e-10, f"err = {decomp_err:.2e}"),
     ]
 
     all_pass = True

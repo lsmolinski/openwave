@@ -1,6 +1,6 @@
 # PHASE 2: ENERGY LAYERS
 
-The ENERGY LAYERS hierarchy, EWT particle terminology, dual/non-dual geometry, and concepts to investigate are documented in [00_OVERVIEW.md](00_OVERVIEW.md). Task checklists are tracked in [00_ROADMAP.md](00_ROADMAP.md).
+The ENERGY LAYERS hierarchy, EWT particle terminology, dual/non-dual geometry, and concepts to investigate are documented in [0_OVERVIEW.md](0_OVERVIEW.md). Task checklists are tracked in [0_ROADMAP.md](0_ROADMAP.md).
 
 This document contains Phase 2 strategy, context sources, and open questions.
 
@@ -20,7 +20,7 @@ Phase 1 exhaustively tested whether Coulomb force emerges from two fundamental p
 
 **Critical realization**: spherical 3D waves from single WCs (fundamental particles) produce lock-in and annihilation (near-field) but do NOT produce Coulomb alone. The sinc oscillation IS the correct near-field physics. Coulomb requires standalone particles (K≥10) with non-dual geometry + spin. A neutrino (K=1) is electrically neutral — we cannot expect Coulomb from a single WC.
 
-Full Phase 1 results: [01z_results.md](01z_results.md)
+Full Phase 1 results: [1z_results.md](1z_results.md)
 
 ---
 
@@ -55,7 +55,7 @@ EWT theory and equations:
 
 Wave equation foundations:
 
-- Wolff-original complex sinusoidal: `ψ = A · e^(iωt) · sin(kr)/r` — the imaginary component IS the transverse wave (see [00a_equations.md](00a_equations.md))
+- Wolff-original complex sinusoidal: `ψ = A · e^(iωt) · sin(kr)/r` — the imaginary component IS the transverse wave (see [0a_equations.md](0a_equations.md))
 - LaFreniere radiation pressure model: `lafreniere/Gabriel_LaFreniere/sa_phaseshift.html` — core phase shift, diffractive lens, wave speed in compressed medium
 - [LaFreniere Electron](http://www.interwaves.com/en/sa_electron.htm) — standing → traveling transition, near-field → far-field
 
@@ -74,7 +74,7 @@ Additional references (in `/references/`):
 
 Phase 1c vector wave research (validated infrastructure):
 
-- [01c_vector_wave.md](01c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
+- [1c_vector_wave.md](1c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
 - Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
 ### 🚧 LAYER 5: Gravity Emergence

@@ -55,8 +55,16 @@ Else:       x_c = x
 ### 4. Combined Wolff-LaFreniere
 
 ```text
+Standard form (product):
+  ψ(r,t) = 2A · sin(kr/2) · cos(kr/2 - (ωt + φ)) / r
+
+  sin(kr/2) / r       = spatial envelope (sinc zeros at λ, 2λ... = particle structure)
+  cos(kr/2 - (ωt+φ))  = traveling wave at half-wavenumber (force field propagation)
+  2A                   = standing wave doubling (in + out constructive)
+
+Original form:
 ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-Expanded:
+Expanded form:
 ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
 ```
 

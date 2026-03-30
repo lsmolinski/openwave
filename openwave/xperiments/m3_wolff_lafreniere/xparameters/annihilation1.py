@@ -31,15 +31,15 @@ XPARAMETERS = {
         "COUNT": 2,  # Number of wave-centers for this xperiment
         # Wave-Center positions: normalized coordinates (0-1 range, relative to max universe edge)
         "POSITION": [
-            [0.25, 0.50, 0.50],
-            [0.75, 0.50, 0.50],
+            [0.05, 0.50, 0.50],
+            [0.95, 0.50, 0.50],
         ],
         # Phase offsets for each wave-center (integer degrees, converted to radians internally)
         "PHASE_OFFSETS_DEG": [0, 180],
         # Initial velocity [vx, vy, vz] in am/rs (c = 0.3 am/rs)
         "INIT_VELOCITY": [
-            [0.0, 0.0, 0.0],
-            [0.0, 0.0, 0.0],
+            [0.3, 0.0, 0.0],
+            [-0.3, 0.0, 0.0],
         ],
         "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
@@ -52,7 +52,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds
+        "TIMESTEP": 16.0,  # Simulation timestep in rontoseconds
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {

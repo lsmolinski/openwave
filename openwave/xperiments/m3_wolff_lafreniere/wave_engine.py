@@ -155,6 +155,44 @@ def propagate_wave(
             # phasor_P += C_n * cos_phi + S_n * sin_phi
             # phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
+            # # SIGNED ENVELOPE: Wolff-original form (hybrid near/far)
+            # # Single-WC phasor magnitude:
+            # #   C_n = A·sin(kr)/r,  S_n = q·C_n  (same spatial function)
+            # #   |phasor| = |C_n|·√(1+q²) = √2·|sin(kr)|/r  (for q=1)
+            # #
+            # # Near-field (r < 1.25λ): Wolff sinc — lock-in wells from standing
+            # #   wave nodes at kr=nπ. Validated: lock-in + tetrahedron stable.
+            # # Far-field (r >> 1.25λ): smooth √(1+q²)/r — no sinc barriers,
+            # #   enables WC approach for annihilation.
+            # # Transition: blended via standing wave weight function.
+            # # The sinc peak envelope (√2/r) matches the smooth value (√2/r),
+            # # so the blend is seamless at peaks — zeros only in near-field.
+            # #
+            # # Behavior:
+            # #   Center (r=0)        | k·√2 ≈ 0.67            | Lock-in wells
+            # #   Near  (r < 1.25λ)   | √2·|sin(kr)|/r (sinc)  | Lock-in wells
+            # #   Transition           | blended                  | Smooth rolloff
+            # #   Far   (r >> 1.25λ)  | √2/r (smooth)           | Coulomb placeholder
+            # #
+            # # NOTE: charge_sign is IMPOSED, not emergent. M4.
+            # charge_sign = ti.cos(source_offset)
+            # q_factor = ti.sqrt(1.0 + quadrature_term * quadrature_term)  # √(1+q²)
+            # if r_grid < 0.5:  # CENTER VOXEL: analytical limit
+            #     # sin(kr)/r → k, |phasor| = k·√(1+q²)
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (
+            #         A_eff * k_grid * q_factor
+            #     )
+            # else:
+            #     # Near-field: Wolff sinc (lock-in wells from standing wave nodes)
+            #     sinc_env = q_factor * ti.abs(ti.sin(spatial_phase)) / r_grid
+            #     # Far-field: smooth envelope (matches sinc peak, no barriers)
+            #     smooth_env = q_factor / r_grid
+            #     # Blend: weight transitions sinc → smooth at ~1.25λ
+            #     transition = 1.25  # wavelengths
+            #     w_blend = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+            #     envelope_val = w_blend * sinc_env + (1.0 - w_blend) * smooth_env
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * envelope_val)
+
             # # ================================================================
             # # LAFRENIERE-MARCOTTE original canonical form
             # # ================================================================
@@ -285,134 +323,98 @@ def propagate_wave(
             # phasor_P += C_n * cos_phi + S_n * sin_phi
             # phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
-            # # ================================================================
-            # # Combined WOLFF-LAFRENIERE canonical form
-            # # ================================================================
-            # #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
-            # # Expanded form:
-            # #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
-            # #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
-            # # ================================================================
-            # # Phase term: sin(kr)/r → k as r→0 (physical units)
-            # phase_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     k_grid,  # analytical limit
-            #     ti.sin(spatial_phase) / r_grid,
-            # )
-
-            # # Quadrature term: (1-cos(kr))/r → 0 as r→0
-            # quadrature_term = ti.select(
-            #     r_grid < 0.5,  # threshold in grid units (catches center voxel only)
-            #     0.0,  # analytical limit
-            #     (1.0 - ti.cos(spatial_phase)) / r_grid,
-            # )
-
-            # # Oscillator with source_offset phase shift
-            # oscillator = (
-            #     -ti.cos(temporal_phase + source_offset) * phase_term
-            #     - ti.sin(temporal_phase + source_offset) * quadrature_term
-            # )
-
-            # wave_field.displacement_am[i, j, k] += (
-            #     base_amplitude_am * wave_field.scale_factor * oscillator
-            # )
-
-            # # PHASOR SUPERPOSITION: Wolff-LaFreniere form
-            # # ψ = A · [-cos(ωt+φ)·sin(kr)/r - sin(ωt+φ)·(1-cos(kr))/r]
-            # # C_n = -A·sin(kr)/r (coefficient of cos(ωt+φ))
-            # # S_n = -A·(1-cos(kr))/r (coefficient of sin(ωt+φ))
-            # A_eff = base_amplitude_am * wave_field.scale_factor
-            # C_n = ti.select(
-            #     r_grid < 0.5,
-            #     -A_eff * k_grid,  # center limit: -A·k
-            #     -A_eff * ti.sin(spatial_phase) / r_grid,
-            # )
-            # S_n = ti.select(
-            #     r_grid < 0.5,
-            #     0.0,  # center limit: (1-cos(kr))/r → 0
-            #     -A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
-            # )
-            # # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
-            # cos_phi = ti.cos(source_offset)
-            # sin_phi = ti.sin(source_offset)
-            # phasor_P += C_n * cos_phi + S_n * sin_phi
-            # phasor_Q += -C_n * sin_phi + S_n * cos_phi
+            # # SIGNED ENVELOPE: LaFreniere phase-warped form
+            # # Single-WC phasor magnitude from the phase-warped equation:
+            # #   C_n = sin(x_c)/x_c,  S_n = -cos(x_c)/x_c
+            # #   |phasor| = √(sin²(x_c) + cos²(x_c)) / x_c = 1/x_c
+            # #
+            # # The phase warp gives BOTH sin and cos components (full quadrature)
+            # # at ALL distances — so |phasor| = 1/x_c is smooth everywhere.
+            # # No sinc oscillation in the envelope, even at near-field.
+            # #
+            # # Behavior (single formula, no branches):
+            # #   Center (r=0)   | x_c = π/2  | |phasor| = 2/π ≈ 0.637 | Finite peak
+            # #   Near (r < λ/2) | x_c warped | 1/x_c smooth            | No sinc barriers
+            # #   Far (r > λ/2)  | x_c = kr   | 1/kr                    | Smooth 1/r decay
+            # #
+            # # Center amplitude (2/π ≈ 0.637) is derived from the phase warp geometry:
+            # #   x_c(0) = π/2, and sin(π/2)/(π/2) = 2/π.
+            # #   Not hand-tuned — emerges from the LaFreniere core correction.
+            # #
+            # # Coulomb direction from charge_sign superposition:
+            # #   same sign → constructive → high E → repulsion gradient.
+            # #   opposite  → destructive → low E  → attraction gradient.
+            # #
+            # # NOTE: charge_sign is IMPOSED (cos(phase_offset) = ±1), not emergent.
+            # # True Coulomb from spin deferred to M4 vector field.
+            # charge_sign = ti.cos(source_offset)
+            # if r_grid < 0.5:  # CENTER VOXEL: analytical limit, avoid singularity
+            #     # x_c → π/2, |phasor| = 1/(π/2) = 2/π
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * 2.0 / ti.math.pi)
+            # else:
+            #     # |phasor| = 1/x_c (smooth everywhere from full quadrature)
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff / x_c)
 
             # ================================================================
-            # WEIGHTED PARTIAL STANDING WAVE
+            # Combined WOLFF-LAFRENIERE — Standard Form
             # ================================================================
-            # Superposition of in-wave + out-wave, where the in-wave fades with distance
-            # Physical motivation:
-            #   Near the source, the wave reflects off the core creating a standing wave pattern.
-            #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
+            # Phase convention: spatial ± (temporal + offset)
+            #   (kr ± (ωt + φ))
             #
-            # 2 counter-propagating waves with a spatial blending function:
-            #   ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
+            # Product form (from sin(A)-sin(B) = 2cos((A+B)/2)sin((A-B)/2)):
+            #   ψ(r,t) = 2A · sin(kr/2) · cos(kr/2 - (ωt + φ)) / r
             #
-            #   Cardinal sine term: sin(kr)/kr → 1 as r→0
-            #       self-normalizes to 1 at origin regardless of wavelength
+            #   sin(kr/2) / r  = spatial envelope (sinc zeros at λ, 2λ...)
+            #   cos(kr/2-(ωt+φ)) = traveling wave at half-wavenumber
+            #   2A             = standing wave doubling (in + out constructive)
             #
-            #   Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
-            #       Equation = 1 / (1 + (r/(λ*transition))²), smooth Lorentzian rolloff
-            #       weight ≈ 1 near center → standing wave (fixed nodes)
-            #       weight → 0 far away → pure outgoing traveling wave
+            # The product form is a modulated traveling wave: the particle
+            # (envelope) shapes the outgoing force field (traveling oscillation).
             #
-            #   Equation components:
-            #       In-Wave: weight(r,λ) · sin(kr + ωt + φ) / kr (nodes move inward)
-            #       Out-Wave: sin(kr - ωt - φ) / kr (nodes move outward)
+            # The Phase and Quadrature terms are embedded in the product:
+            #   sin(kr/2)·cos(kr/2-(ωt+φ)) expands back to:
+            #     ½sin(kr)·cos(ωt+φ) + ½(1-cos(kr))·sin(ωt+φ)
+            #   C_n = ½sin(kr)/r  (Phase:      zeros at λ/2, λ, 3λ/2...)
+            #   S_n = ½(1-cos(kr))/r (Quadrature: zeros at λ, 2λ, 3λ...)
+            # The ratio |S_n/C_n| = |tan(kr/2)| encodes position-dependent
+            # elliptical oscillation (circular at λ/4, linear at λ/2).
             #
-            #   Standing limit (weight=1, no singularity at r=0):
-            #     [sin(kr-ωt - φ) + sin(kr+ωt + φ)] / kr
-            #       → 2·sin(kr)·cos(ωt + φ) / kr
-            #       → 2·cos(ωt + φ) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
+            # Center limit (r→0): sin(kr/2)/r → k/2, cos(0-(ωt+φ)) → cos(ωt+φ)
+            #   ψ(0,t) = 2A·(k/2)·cos(ωt+φ) = A·k·cos(ωt+φ)
             #
-            #   How it works:
-            #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
-            #   │         Region         │ Weight(r) │                                       Result                                       │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt + φ) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
-            #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
-            #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr - ωt - φ) / kr — pure traveling wave, nodes move freely                         │
-            #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
+            # Original form:
+            #   ψ(r,t) = A · [sin(ωt - kr) - sin(ωt)] / r
+            # Expanded form:
+            #   ψ(r,t) = A · [-cos(ωt) · sin(kr)/r - sin(ωt) · (1 - cos(kr))/r]
+            #   ψ(r,t) = A · [-cos(ωt) · Phase(r) - sin(ωt) · Quadrature(r)]
             # ================================================================
-            # In-wave weight: controls standing → traveling transition
-            # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
-            # Sharp rolloff (power=8): weight ≈ 1 within 1.25λ, drops near-instantly after
-            transition = 1 + 1 / 4  # number of wavelengths (λ)
-            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+            A_eff = base_amplitude_am * wave_field.scale_factor
+            half_phase = spatial_phase / 2.0  # kr/2
 
-            # Weighted partial standing wave
+            # Displacement: ψ = 2A · sin(kr/2) · cos(kr/2 - (ωt+φ)) / r
             oscillator = ti.select(
                 r_grid < 0.5,  # center voxel: analytical limit
-                2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
-                (
-                    weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
-                    + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
-                )
-                / spatial_phase,  # combined wave with in-wave weighting and 1/r decay
+                k_grid * ti.cos(temporal_phase + source_offset),  # A·k·cos(ωt+φ)
+                2.0
+                * ti.sin(half_phase)
+                * ti.cos(half_phase - (temporal_phase + source_offset))
+                / r_grid,
             )
+            wave_field.displacement_am[i, j, k] += A_eff * oscillator
 
-            wave_field.displacement_am[i, j, k] += (
-                base_amplitude_am * wave_field.scale_factor * oscillator
-            )
-
-            # PHASOR SUPERPOSITION: weighted partial standing wave form
-            # ψ = A · [weight·sin(kr+ωt) + sin(kr-ωt)] / (kr)
-            # Accumulate cos(ωt) and sin(ωt) coefficients
-            # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
-            # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
-            A_eff = base_amplitude_am * wave_field.scale_factor
+            # PHASOR SUPERPOSITION: expand product back to Phase + Quadrature
+            # C_n = A·sin(kr)/r  (coefficient of cos(ωt+φ))
+            # S_n = A·(1-cos(kr))/r  (coefficient of sin(ωt+φ))
+            # (factor of 2 absorbed: 2·½ = 1)
             C_n = ti.select(
                 r_grid < 0.5,
-                2.0 * A_eff,  # center limit: (w+1)·sin(kr)/kr → 2
-                A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
+                A_eff * k_grid,  # center limit: sin(kr)/r → k
+                A_eff * ti.sin(spatial_phase) / r_grid,
             )
             S_n = ti.select(
                 r_grid < 0.5,
-                0.0,  # center limit: (w-1)·cos(kr)/kr → 0 (w=1 at center)
-                A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
+                0.0,  # center limit: (1-cos(kr))/r → 0
+                A_eff * (1.0 - ti.cos(spatial_phase)) / r_grid,
             )
             # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
             cos_phi = ti.cos(source_offset)
@@ -420,53 +422,164 @@ def propagate_wave(
             phasor_P += C_n * cos_phi + S_n * sin_phi
             phasor_Q += -C_n * sin_phi + S_n * cos_phi
 
-            # ================================================================
-            # ANALYTICAL SIGNED ENVELOPE
-            # Particles don't respond to 10²⁵ Hz oscillation frequencies.
-            # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
-            # oscillations and responding only to the time-averaged energy-density (envelope).
-            # This envelope drives the force calculations, computed directly from wave functions.
-            # Applies superposition principle for multiple wave-centers, with signed charge sign.
-            # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
-            # Also avoids instability from real-time EMS calculations of moving wave-centers.
+            # SIGNED ENVELOPE: Combined Wolff-LaFreniere (hybrid near/far)
+            # Single-WC phasor magnitude:
+            #   C_n = -A·sin(kr)/r,  S_n = -A·(1-cos(kr))/r
+            #   |phasor|² = A²[sin²(kr) + (1-cos(kr))²]/r² = A²·2(1-cos(kr))/r²
+            #   |phasor|  = A · 2|sin(kr/2)| / r
             #
-            # Derives the time-averaged amplitude envelope directly from the
-            # weighted partial standing wave phasor components (C_n, S_n):
-            #   |phasor| = √((w+1)²·sinc² + (w-1)²·cosc²)
-            #   envelope = charge_sign × A_eff × |phasor|
+            # Key difference from Wolff-original: sinc zeros at r=nλ (not nλ/2).
+            #   sin(kr/2) has zeros at kr/2=nπ → r=nλ.
+            #   Lock-in wells are at λ spacing. First barrier at λ from WC.
             #
-            # Behavior by regime (automatic from the weight function, no separate branches):
-            #   Center (r=0)        | w=1.0 | |phasor|=2              | Peak standing wave
-            #   Near  (r < 1.25λ)   | w≈1.0 | 2·|sin(kr)|/kr         | Sinc oscillation → lock-in wells
-            #   Transition           | 0→1   | blended                 | Smooth rolloff
-            #   Far   (r >> 1.25λ)  | w≈0.0 | 1/kr (smooth, no sinc) | Coulomb placeholder (1/r)
+            # Near-field: 2|sin(kr/2)|/r — lock-in wells at λ intervals
+            # Far-field: smooth 2/r (blended, no sinc barriers)
+            # Center: 2·|sin(kr/2)|/r → k (finite, sinc limit)
             #
-            # Far-field: sin²+cos² = 1 (quadrature cancellation) → smooth 1/kr.
-            #   Standing wave has no quadrature (S_n=0 when w=1) → sinc oscillation survives.
-            #   Traveling wave has both components in quadrature → oscillation cancels.
-            #   Coulomb direction from charge_sign superposition:
-            #   same sign → constructive → high E → repulsion gradient.
-            #   opposite  → destructive → low E  → attraction gradient.
-            #
-            # NOTE: charge_sign is IMPOSED (cos(phase_offset) = ±1), not
-            # emergent from wave interference. True Coulomb from spin-based
-            # charge is deferred to Block 2 / M4 vector field. The signed
-            # envelope is a placeholder that gives correct force direction
-            # and 1/r² scaling while we solve near-field particle formation.
-            # ================================================================
+            # NOTE: charge_sign is IMPOSED. M4.
             charge_sign = ti.cos(source_offset)
-
             if r_grid < 0.5:  # CENTER VOXEL: analytical limit
-                # w→1: (w+1)·sinc→2, (w-1)·cosc→0 → |phasor|=2
-                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * 2.0)
+                # 2|sin(kr/2)|/r → 2·(k/2) = k
+                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * k_grid)
             else:
-                # Single-WC phasor magnitude from weighted partial standing wave
-                sinc_term = ti.sin(spatial_phase) / spatial_phase  # sin(kr)/kr
-                cosc_term = ti.cos(spatial_phase) / spatial_phase  # cos(kr)/kr
-                phasor_mag = ti.sqrt(
-                    ((weight + 1.0) * sinc_term) ** 2 + ((weight - 1.0) * cosc_term) ** 2
-                )
-                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * phasor_mag)
+                # Near-field: 2|sin(kr/2)|/r (lock-in wells at λ intervals)
+                sinc_env = 2.0 * ti.abs(ti.sin(spatial_phase / 2.0)) / r_grid
+                # Far-field: smooth envelope (matches sinc peak 2/r, no barriers)
+                smooth_env = 2.0 / r_grid
+                # Blend: weight transitions sinc → smooth at ~1.25λ
+                transition = 1.25  # wavelengths
+                w_blend = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+                envelope_val = w_blend * sinc_env + (1.0 - w_blend) * smooth_env
+
+                trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * envelope_val)
+
+            # # ================================================================
+            # # WEIGHTED PARTIAL STANDING WAVE
+            # # ================================================================
+            # # Superposition of in-wave + out-wave, where the in-wave fades with distance
+            # # Physical motivation:
+            # #   Near the source, the wave reflects off the core creating a standing wave pattern.
+            # #   As you move away, the reflected wave weakens, transitioning to a pure traveling wave.
+            # #
+            # # 2 counter-propagating waves with a spatial blending function:
+            # #   ψ(r,t) = A · [w·sin(kr+(ωt+φ)) + sin(kr-(ωt+φ))] / kr
+            # #
+            # #   Cardinal sine term: sin(kr)/kr → 1 as r→0
+            # #       self-normalizes to 1 at origin regardless of wavelength
+            # #
+            # #   Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
+            # #       Equation = 1 / (1 + (r/(λ*transition))²), smooth Lorentzian rolloff
+            # #       weight ≈ 1 near center → standing wave (fixed nodes)
+            # #       weight → 0 far away → pure outgoing traveling wave
+            # #
+            # #   Equation components:
+            # #       In-Wave: weight(r,λ) · sin(kr + ωt + φ) / kr (nodes move inward)
+            # #       Out-Wave: sin(kr - ωt - φ) / kr (nodes move outward)
+            # #
+            # #   Standing limit (weight=1, no singularity at r=0):
+            # #     [sin(kr-(ωt+φ)) + sin(kr+(ωt+φ))] / kr
+            # #       → 2·sin(kr)·cos(ωt+φ) / kr
+            # #       → 2·cos(ωt+φ) as kr→0  (sinc envelope, fixed nodes at kr=nπ)
+            # #
+            # #   How it works:
+            # #   ┌────────────────────────┬───────────┬────────────────────────────────────────────────────────────────────────────────────┐
+            # #   │         Region         │ Weight(r) │                                       Result                                       │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Center (kr ≈ 0)        │ ≈ 1       │ 2·sin(kr)·cos(ωt+φ) / kr — pure standing wave, sinc envelope, fixed nodes at kr = nπ │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Transition             │ 0 < w < 1 │ Partially standing — nodes drift slowly outward                                    │
+            # #   ├────────────────────────┼───────────┼────────────────────────────────────────────────────────────────────────────────────┤
+            # #   │ Far (kr >> transition) │ ≈ 0       │ sin(kr-(ωt+φ)) / kr — pure traveling wave, nodes move freely                         │
+            # #   └────────────────────────┴───────────┴────────────────────────────────────────────────────────────────────────────────────┘
+            # # ================================================================
+            # # In-wave weight: controls standing → traveling transition
+            # # Transition extra quarter-wavelength extends the standing zone to include the 1st quadrature lobe
+            # # Sharp rolloff (power=8): weight ≈ 1 within 1.25λ, drops near-instantly after
+            # transition = 1 + 1 / 4  # number of wavelengths (λ)
+            # weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+
+            # # Weighted partial standing wave
+            # oscillator = ti.select(
+            #     r_grid < 0.5,  # center voxel: analytical limit
+            #     2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt+φ)
+            #     (
+            #         weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
+            #         + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
+            #     )
+            #     / spatial_phase,  # combined wave with in-wave weighting and 1/r decay
+            # )
+
+            # wave_field.displacement_am[i, j, k] += (
+            #     base_amplitude_am * wave_field.scale_factor * oscillator
+            # )
+
+            # # PHASOR SUPERPOSITION: weighted partial standing wave form
+            # # ψ = A · [weight·sin(kr+ωt) + sin(kr-ωt)] / (kr)
+            # # Accumulate cos(ωt) and sin(ωt) coefficients
+            # # ψ_n = A · [(w+1)·sin(kr)·cos(ωt+φ) + (w-1)·cos(kr)·sin(ωt+φ)] / kr
+            # # Decompose into P·cos(ωt) + Q·sin(ωt) for exact peak amplitude
+            # A_eff = base_amplitude_am * wave_field.scale_factor
+            # C_n = ti.select(
+            #     r_grid < 0.5,
+            #     2.0 * A_eff,  # center limit: (w+1)·sin(kr)/kr → 2
+            #     A_eff * (weight + 1.0) * ti.sin(spatial_phase) / spatial_phase,
+            # )
+            # S_n = ti.select(
+            #     r_grid < 0.5,
+            #     0.0,  # center limit: (w-1)·cos(kr)/kr → 0 (w=1 at center)
+            #     A_eff * (weight - 1.0) * ti.cos(spatial_phase) / spatial_phase,
+            # )
+            # # Rotate by source_offset to align all WCs to shared cos(ωt)/sin(ωt) basis
+            # cos_phi = ti.cos(source_offset)
+            # sin_phi = ti.sin(source_offset)
+            # phasor_P += C_n * cos_phi + S_n * sin_phi
+            # phasor_Q += -C_n * sin_phi + S_n * cos_phi
+
+            # # SIGNED ENVELOPE: weighted partial standing wave form
+            # # Particles don't respond to 10²⁵ Hz oscillation frequencies.
+            # # Particle's mass (inertia) acts as a low-pass filter, averaging out the rapid
+            # # oscillations and responding only to the time-averaged energy-density (envelope).
+            # # This envelope drives the force calculations, computed directly from wave functions.
+            # # Applies superposition principle for multiple wave-centers, with signed charge sign.
+            # # Avoids computationally expensive real-time tracking methods (RMS, zero-crossing).
+            # # Also avoids instability from real-time EMS calculations of moving wave-centers.
+            # #
+            # # Derives the time-averaged amplitude envelope directly from the
+            # # weighted partial standing wave phasor components (C_n, S_n):
+            # #   |phasor| = √((w+1)²·sinc² + (w-1)²·cosc²)
+            # #   envelope = charge_sign × A_eff × |phasor|
+            # #
+            # # Behavior by regime (automatic from the weight function, no separate branches):
+            # #   Center (r=0)        | w=1.0 | |phasor|=2              | Peak standing wave
+            # #   Near  (r < 1.25λ)   | w≈1.0 | 2·|sin(kr)|/kr         | Sinc oscillation → lock-in wells
+            # #   Transition           | 0→1   | blended                 | Smooth rolloff
+            # #   Far   (r >> 1.25λ)  | w≈0.0 | 1/kr (smooth, no sinc) | Coulomb placeholder (1/r)
+            # #
+            # # Far-field: sin²+cos² = 1 (quadrature cancellation) → smooth 1/kr.
+            # #   Standing wave has no quadrature (S_n=0 when w=1) → sinc oscillation survives.
+            # #   Traveling wave has both components in quadrature → oscillation cancels.
+            # #   Coulomb direction from charge_sign superposition:
+            # #   same sign → constructive → high E → repulsion gradient.
+            # #   opposite  → destructive → low E  → attraction gradient.
+            # #
+            # # NOTE: charge_sign is IMPOSED (cos(phase_offset) = ±1), not
+            # # emergent from wave interference. True Coulomb from spin-based
+            # # charge is deferred to M4 vector field. The signed
+            # # envelope is a placeholder that gives correct force direction
+            # # and 1/r² scaling while we solve near-field particle formation.
+            # # ================================================================
+            # charge_sign = ti.cos(source_offset)
+            # if r_grid < 0.5:  # CENTER VOXEL: analytical limit, avoid singularity
+            #     # w→1: (w+1)·sinc→2, (w-1)·cosc→0 → |phasor|=2
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * 2.0)
+            # else:
+            #     # Single-WC phasor magnitude from weighted partial standing wave
+            #     sinc_term = ti.sin(spatial_phase) / spatial_phase  # sin(kr)/kr
+            #     cosc_term = ti.cos(spatial_phase) / spatial_phase  # cos(kr)/kr
+            #     phasor_mag = ti.sqrt(
+            #         ((weight + 1.0) * sinc_term) ** 2 + ((weight - 1.0) * cosc_term) ** 2
+            #     )
+            #     trackers.amp_local_envelope_am[i, j, k] += charge_sign * (A_eff * phasor_mag)
 
         # Phasor RMS: exact amplitude from superposition, no EMA needed
         # peak = √(P² + Q²), RMS = peak / √2
@@ -536,24 +649,26 @@ def propagate_wave(
         trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
 
         # ================================================================
-        # LOCAL ENERGY PER VOXEL: E = ρ · V · (f · A)² in aJ (attojoules)
+        # LOCAL ENERGY PER VOXEL: E = ρ·V·(f·A)² in aJ (attojoules)
         # F = -∇E (force = negative energy gradient, computed in xforce_motion)
         # ================================================================
         # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
         # Internal units: qg·am²/rs² × 1000 → aJ
         dx_am = wave_field.dx_am
         #
-        # BLOCK 1 (M3): Energy from signed envelope.
+        # LAYER 3 (M3 SCALAR FIELD): Energy from signed envelope.
         #   Near-field: sinc structure from wave interference (lock-in, annihilation).
         #   Far-field: smooth 1/r with imposed charge sign (±1 placeholder).
         #   Limitation: far-field Coulomb direction uses imposed charge, not emergent
         #   from wave physics. Coherent monochromatic interference always produces
         #   cos(k·Δr) oscillation in the phasor cross-term — no single-frequency
         #   wave equation avoids this (Phase 1 conclusion, all 10 models tested).
+        #   uses: amp_local_envelope_am
         #
-        # BLOCK 2 (M4): Coulomb from spin-based charge (L→T conversion).
+        # LAYER 4 (M4 VECTOR FIELD): Coulomb from spin-based charge (L→T conversion).
         #   Vector field (E = E_L + E_T) needed for emergent charge direction.
         #   Carry-over approaches: 3D flux, variable λ(r), non-linear Ψ³, K=10 scale.
+        #   to use: amp_local_phasorrms_am
         #
         amp_am = trackers.amp_local_envelope_am[i, j, k]
         trackers.energy_local_aJ[i, j, k] = (

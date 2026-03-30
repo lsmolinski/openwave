@@ -96,7 +96,7 @@ GRADIENT_WEIGHT_FALLOFF = 2  # exponent for 1/d^n weighting
 # Velocity damping: fraction of velocity retained per timestep
 # 1.0 = no damping, 0.99 = light damping, 0.95 = moderate damping
 # Physically: models energy dissipation via radiation (photon emission)
-VELOCITY_DAMPING = 0.995
+VELOCITY_DAMPING = 0.999
 
 
 @ti.kernel

@@ -11,7 +11,7 @@
 - ✅ Parameter sweep: force vs separation from 2λ to 10λ (`sweep_force_vs_separation.py`)
 - ✅ Validate 1/r² force scaling — interaction energy E_int ∝ |Z₁|·|Z₂| ∝ 1/r gives F ∝ 1/r² (confirmed numerically)
 
-## ✅ [PHASE 1: EXPLORING WAVE EQUATIONS](01_EXPLORING.md)
+## ✅ [PHASE 1: EXPLORING WAVE EQUATIONS](1_EXPLORING.md)
 
 - [ ] Resolve far-field oscillatory force (MAIN BLOCKER — sinc nodes in out-wave)
   - ✅ Implemented F = -∇E as standard force computation (replaces A·∇A chain rule expansion)
@@ -29,7 +29,7 @@
 
 > **All linear scalar candidates exhausted (10/10 ruled out, including Phase 1a signed disturbance).** Three remaining paths (1b, 1c, 1d). Paths C and D are deeply connected — non-linear toroidal dynamics naturally produce vector patterns whose directional properties may carry charge information. They may converge into a single solution.
 
-### ✅ [Phase 1a: Signed Disturbance (forced charge sign)](01a_signed.md#phase-1a-signed-disturbance-forced-charge-sign) — RULED OUT
+### ✅ [Phase 1a: Signed Disturbance (forced charge sign)](1a_signed.md#phase-1a-signed-disturbance-forced-charge-sign) — RULED OUT
 
 - ✅ Implemented signed disturbance model in 1D sandbox (equation #6): A₀ + q·δ(r) with `BASE_AMPLITUDE_RATIO`
 - ✅ Tested δ(r) = 1/(1+kr) and 1/√(1+(kr)²) — smooth, 1/r far-field decay
@@ -37,7 +37,7 @@
 - ❌ Opposite charge attraction: 0/9 — asymmetric energy landscape, Newton's 3rd law violated
 - ❌ **Charge sign is NOT emergent** — q = cos(phase) acts as a ±1 label on smooth potential, equivalent to previously ruled-out imposed-sign approach. Not genuine force emergence from wave interference
 
-### ✅ [Phase 1b: Base Wave + WC Energy Redistribution](01b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
+### ✅ [Phase 1b: Base Wave + WC Energy Redistribution](1b_base_disturbance.md#phase-1b-base-wave--wc-energy-redistribution)
 
 - Step 1 — Base wave modeling (`wave_engine_1D_v3.py`):
   - ✅ Implement 5 base wave candidate models: uniform, standing, stochastic, quadrature, laplacian
@@ -64,7 +64,7 @@
 
 > **Phase 1b CONCLUSION**: the base wave exists (standing wave, physically validated). WCs must interact with it through **elastic disturbance** (changing wave character, not reflecting). The L→T spin conversion is the only charge-sensitive mechanism found — it needs true vector displacement (Phase 1c) and variable λ in the energy equation (Phase 1d) to fully work. Carry-forward tasks: energy redistribution, far-field drainage, force emergence, Coulomb validation — all require Phase 1d/1c capabilities.
 
-### ✅ [Phase 1c: Vector Wave Force](01c_vector_wave.md#phase-1c-vector-wave-force)
+### ✅ [Phase 1c: Vector Wave Force](1c_vector_wave.md#phase-1c-vector-wave-force)
 
 > **From Phase 1b**: L→T spin conversion (Option G) is the ONLY charge-sensitive mechanism found (10 models tested). Quadrature phasor proxy showed charge discrimination but is limited — needs true independent L/T displacement.
 >
@@ -109,7 +109,7 @@ Steps 4-5 — merged into Phase 1d:
 - [ ] Variable λ(r) from Yee & Hauger shells + LaFreniere core phase shift → electric force
 - [ ] Combined vector displacement + variable λ → full force decomposition (electric from ∇λ, magnetic from spin T, gravitational from deficit)
 
-### ✅ [Phase 1d: Non-Linear Wave Equations](01d_non_linear.md#phase-1d-non-linear-wave-equations)
+### ✅ [Phase 1d: Non-Linear Wave Equations](1d_non_linear.md#phase-1d-non-linear-wave-equations)
 
 > **From Phase 1c**: spin → magnetic (not electric). Variable λ(r) → electric force candidate. Converges with Phase 1c vector infrastructure.
 
@@ -138,11 +138,11 @@ Carry-Over to Phase 2:
 - [ ] Explore whether sinc lock-in + charge discrimination IS the unified force (near-field = strong, far-field = Coulomb envelope)
 - [ ] Variable ρ(x), Ψ³ non-linearity, combined vector + variable λ (deferred from Phase 1d)
 
-## 🔶 [PHASE 2: ENERGY LAYERS](02_ENERGY_LAYERS.md)
+## 🔶 [PHASE 2: ENERGY LAYERS](2_ENERGY_LAYERS.md)
 
-Follows the energy layers hierarchy from [00_OVERVIEW.md](00_OVERVIEW.md). See [02_ENERGY_LAYERS.md](02_ENERGY_LAYERS.md) for strategy, context sources, and open questions.
+Follows the energy layers hierarchy from [0_OVERVIEW.md](0_OVERVIEW.md). See [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md) for strategy, context sources, and open questions.
 
-### 🔶 LAYERS 1-3: [PARTICLE EMERGENCE](02L3_particle_emergence.md) from Near-Field Standing Waves (M3 Scalar)
+### 🔶 LAYERS 1-3: [PARTICLE EMERGENCE](2L3_particle_emergence.md) from Near-Field Standing Waves (M3 Scalar)
 
 M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
 
@@ -183,7 +183,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 
 ### 🚧 LAYER 4: [ELECTROMAGNETISM EMERGENCE](02L4_electromagnetism_emergence.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
-M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [02_ENERGY_LAYERS.md](02_ENERGY_LAYERS.md) for context sources and references to load when starting this phase.
+M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md) for context sources and references to load when starting this phase.
 
 #### Layer 4a-b: Charge emergence (from non-dual spin)
 
@@ -230,7 +230,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] Compare with 10⁻⁴² EM-to-gravitational ratio
 - [ ] Validate against Smoliński's Scilab reference values
 
-### 🚧 LAYER 6: [EMERGENT WAVES](02L6_emergent_waves.md)
+### 🚧 LAYER 6: [EMERGENT WAVES](2L6_emergent_waves.md)
 
 #### Layer 6a: Electromagnetics Waves
 
@@ -260,7 +260,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## [PHASE 3: TIME DYNAMICS](03_TIME_DYNAMICS.md)
+## [PHASE 3: TIME DYNAMICS](3_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
