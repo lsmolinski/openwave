@@ -90,7 +90,9 @@ def tetrahedron_10(univ_edge, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0)):
     return [[cx + p[0], cy + p[1], cz + p[2]] for p in (R @ np.array(local_positions).T).T]
 
 
-def generate_K_positions(K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=0.0):
+def generate_K_positions(
+    univ_edge, K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=0.0
+):
     """Generate K WC positions in a compact geometry at λ spacing.
 
     Uses simple symmetric arrangements. Not all are the natural EWT geometry
@@ -194,7 +196,7 @@ def generate_K_positions(K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturba
 
 
 POSITIONS = generate_K_positions(
-    K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
+    UNIVERSE_EDGE, K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
 )
 PHASES = [180] * K  # all same phase (electron-like)
 
@@ -225,7 +227,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 2,
         "WARP_MESH": 150,
         "PARTICLE_SHELL": True,
-        "TIMESTEP": 5.0,
+        "TIMESTEP": 15.0,
         "PAUSED": False,
     },
     "color_defaults": {

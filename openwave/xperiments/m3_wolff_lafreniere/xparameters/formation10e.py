@@ -51,7 +51,7 @@ K = 10
 PERTURBATION = 0.1  # fraction of λ (0.0 = perfect, 0.3 = 30% random displacement)
 
 POSITIONS = generate_K_positions(
-    K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
+    UNIVERSE_EDGE, K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
 )
 PHASES = [180] * K  # all same phase (electron-like)
 

@@ -116,6 +116,16 @@ def compute_force_vector(
     For R=1: identical to standard central difference (single shell).
     Units: aJ/am = N (no conversion needed).
 
+    ┌───────┬────────┬────────────┐
+    │ Shell │ Weight │ Percentage │
+    ├───────┼────────┼────────────┤
+    │ d=1   │ 1.0    │ 73.5%      │
+    ├───────┼────────┼────────────┤
+    │ d=2   │ 0.25   │ 18.4%      │
+    ├───────┼────────┼────────────┤
+    │ d=3   │ 0.111  │ 8.2%       │
+    └───────┴────────┴────────────┘
+
     Scale correction: amplitude boost from scale_factor makes energy S² too
     large, so F_physical = F_computed / S².
 

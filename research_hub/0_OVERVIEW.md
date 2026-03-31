@@ -56,7 +56,7 @@ Everything builds bottom-up. Each layer enables the next:
 ================================================================
 
 ================================================================
- ✅ LAYER 1: FUNDAMENTAL ENERGY WAVE & TIME EMERGENCE
+ ✅ LAYER 1: QUANTUM ENERGY WAVE & TIME EMERGENCE
 ================================================================
  L1a. ENERGY WAVE (base wave)                                          [M3 scalar]
     └── energy source: wave carries energy from displacement amplitude & frequency
@@ -123,7 +123,7 @@ Everything builds bottom-up. Each layer enables the next:
     └── thermal standing wave modulation
 
 ================================================================
- 🚧 LAYER 7: COMPOSITE PARTICLES EMERGENCE
+ 🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE
 ================================================================
  L7a. STRONG FORCE (electric at sub-λ distance between K=10 standalone particles)
     └── K=10 near-fields overlap → combined standing waves, larger volume
