@@ -54,7 +54,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 2,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
         "WARP_MESH": 500,  # Visual warp mesh effect intensity
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
-        "TIMESTEP": 20.0,  # Simulation timestep in rontoseconds (10-27s)
+        "TIMESTEP": 15.0,  # Simulation timestep in rontoseconds (10-27s)
         "PAUSED": False,  # Pause/Start simulation toggle
     },
     "color_defaults": {

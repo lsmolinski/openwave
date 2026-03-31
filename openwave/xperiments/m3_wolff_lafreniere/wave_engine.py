@@ -446,7 +446,7 @@ def propagate_wave(
                 sinc_env = 2.0 * ti.abs(ti.sin(spatial_phase / 2.0)) / r_grid
                 # Far-field: smooth envelope (matches sinc peak 2/r, no barriers)
                 smooth_env = 2.0 / r_grid
-                # Blend: weight transitions sinc → smooth at ~1.25λ
+                # Blend: weight transitions sinc → smooth at transition
                 transition = 1.25  # wavelengths
                 w_blend = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
                 envelope_val = w_blend * sinc_env + (1.0 - w_blend) * smooth_env

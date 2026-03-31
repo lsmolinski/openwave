@@ -267,7 +267,7 @@ def display_controls(state):
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
-        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 30.0)
+        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
             if sub.button(">> PROPAGATE EWAVE >>"):
