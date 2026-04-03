@@ -103,17 +103,20 @@ OpenWave provides complementary ways to explore wave mechanics:
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_1a_quantum_energy_wave.gif" width="260px" alt="Quantum Energy Wave">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_1a_quantum_energy_wave.gif" width="220px" alt="Quantum Energy Wave">
         <br><sub>Energy Wave</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_1b_medium_disturbance.gif" width="260px" alt="Medium Disturbance">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_1b_medium_disturbance.gif" width="220px" alt="Medium Disturbance">
         <br><sub>Medium Disturbance</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_1d_longitudinal_transverse_waves.gif" width="260px" alt="L & T Waves">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_1d_longitudinal_transverse_waves.gif" width="220px" alt="L & T Waves">
         <br><sub>Longitudinal & Transverse Waves</sub>
+        <br><br>
       </td>
     </tr>
     <!-- ═══ LAYER 2 ═══ -->
@@ -125,13 +128,15 @@ OpenWave provides complementary ways to explore wave mechanics:
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_2a_standing_waves.gif" width="260px" alt="Standing Waves">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_2a_standing_waves.gif" width="220px" alt="Standing Waves">
         <br><sub>Standing Waves</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_2b_wave_interference.gif" width="260px" alt="Wave Interference">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_2b_wave_interference.gif" width="220px" alt="Wave Interference">
         <br><sub>Wave Interference</sub>
+        <br><br>
       </td>
       <td style="border: none"></td>
     </tr>
@@ -144,17 +149,20 @@ OpenWave provides complementary ways to explore wave mechanics:
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_3a_particle_annihilation.gif" width="260px" alt="Particle Annihilation">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_3a_particle_annihilation.gif" width="220px" alt="Particle Annihilation">
         <br><sub>Particle Annihilation</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_3c_particle_formation_K03.gif" width="260px" alt="K=3 Formation">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_3c_particle_formation_K03.gif" width="220px" alt="K=3 Formation">
         <br><sub>Particle Formation K=3</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_3d_particle_formation_K10.gif" width="260px" alt="K=10 Electron">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_3d_particle_formation_K10.gif" width="220px" alt="K=10 Electron">
         <br><sub>Particle Formation K=10</sub>
+        <br><br>
       </td>
     </tr>
     <!-- ═══ LAYER 4 ═══ -->
@@ -166,13 +174,15 @@ OpenWave provides complementary ways to explore wave mechanics:
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_4a_attractive_forces.gif" width="260px" alt="Attractive Forces">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_4a_attractive_forces.gif" width="220px" alt="Attractive Forces">
         <br><sub>Attractive Forces</sub>
+        <br><br>
       </td>
-      <td style="text-align: center; border: none; padding-bottom: 30px">
-        <img src="images/layers/LAYER_4b_repulsive_forces.gif" width="260px" alt="Repulsive Forces">
+      <td style="text-align: center; border: none">
+        <img src="images/layers/LAYER_4b_repulsive_forces.gif" width="220px" alt="Repulsive Forces">
         <br><sub>Repulsive Forces</sub>
+        <br><br>
       </td>
       <td style="border: none"></td>
     </tr>
