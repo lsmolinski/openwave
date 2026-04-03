@@ -21,11 +21,14 @@ The platform implements a proposed mathematical framework through various comple
 
 ### Research Goals
 
+> *"To computer simulate the creation of particles, atoms and matter with classical physics, illustrating that the universe operates under a single set of classical laws."*
+> — [EWT OpenWave Project](https://energywavetheory.com/project/)
+
 OpenWave aims to:
 
 - Model matter, force unification and energy phenomena through wave-dynamics
 - Simulate particle emergence from standing wave patterns in fields
-- Validate wave-mechanics against known physics
+- Validate wave-mechanics against known physics (particle energies, force laws, decay rates)
 - Provide computational and visualization tools for wave-dynamics models
 
 **Scientific Status:** OpenWave is a research tool for computational exploration using lattice field theory methodology to investigate alternative field equations and their predictions.
@@ -322,6 +325,7 @@ Prior to using and contributing to OpenWave, it is recommended to study and fami
 ### EWT Resources
 
 - Main Entry Point: [EWT Website](https://energywavetheory.com)
+- OpenWave Project Page: [EWT Project Phases](https://energywavetheory.com/project/)
 - Research Papers: [Publications](https://www.researchgate.net/profile/Jeff-Yee-3)
 - Explainer Videos: [Video Channel](https://www.youtube.com/@EnergyWaveTheory)
 - Literature: [eBooks](https://www.amazon.com/gp/product/B078RYP7XD)
