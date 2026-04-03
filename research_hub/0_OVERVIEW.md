@@ -135,7 +135,6 @@ Everything builds bottom-up. Each layer enables the next:
     └── neutron: proton + e⁻ at center (charge neutralized)
     └── nuclei: composite particles bound by strong force
     └── atoms: nuclei + electrons (Coulomb + magnetic = orbital force)
-
 ```
 
 ## KEY CONCEPTS
@@ -276,7 +275,7 @@ Everything emerges from disturbances in this wave field:
 
 All of these are proposed concepts within Energy Wave Theory. OpenWave's goal is to **numerically validate** them through computational analysis and rendered simulations — starting with force emergence from wave interference, then extending to matter formation, photon emission, and thermal dynamics.
 
-## The Spacetime Medium & The Fundamental Energy Wave
+## The Spacetime Medium & The Quantum Energy Wave
 
 An unknown but fluid-like substance permeates all of space and penetrates all matter. This medium vibrates in harmonic oscillations, forming waves that travel at the speed of light (c). The medium has measurable properties:
 
