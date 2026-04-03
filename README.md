@@ -104,19 +104,25 @@ OpenWave provides complementary ways to explore wave mechanics:
     </tr>
     <tr>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_1a_quantum_energy_wave.gif" width="220px" alt="Quantum Energy Wave">
-        <br><sub>Energy Wave</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_1a_quantum_energy_wave.gif" width="250px" alt="Quantum Energy Wave">
+          <br><sub>Energy Wave</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_1b_medium_disturbance.gif" width="220px" alt="Medium Disturbance">
-        <br><sub>Medium Disturbance</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_1b_medium_disturbance.gif" width="250px" alt="Medium Disturbance">
+          <br><sub>Medium Disturbance</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_1d_longitudinal_transverse_waves.gif" width="220px" alt="L & T Waves">
-        <br><sub>Longitudinal & Transverse Waves</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_1d_longitudinal_transverse_waves.gif" width="250px" alt="L & T Waves">
+          <br><sub>Longitudinal & Transverse Waves</sub>
+          <br><br>
+        </div>
       </td>
     </tr>
     <!-- ═══ LAYER 2 ═══ -->
@@ -129,14 +135,18 @@ OpenWave provides complementary ways to explore wave mechanics:
     </tr>
     <tr>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_2a_standing_waves.gif" width="220px" alt="Standing Waves">
-        <br><sub>Standing Waves</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_2a_standing_waves.gif" width="250px" alt="Standing Waves">
+          <br><sub>Standing Waves</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_2b_wave_interference.gif" width="220px" alt="Wave Interference">
-        <br><sub>Wave Interference</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_2b_wave_interference.gif" width="250px" alt="Wave Interference">
+          <br><sub>Wave Interference</sub>
+          <br><br>
+        </div>
       </td>
       <td style="border: none"></td>
     </tr>
@@ -150,19 +160,25 @@ OpenWave provides complementary ways to explore wave mechanics:
     </tr>
     <tr>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_3a_particle_annihilation.gif" width="220px" alt="Particle Annihilation">
-        <br><sub>Particle Annihilation</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_3a_particle_annihilation.gif" width="250px" alt="Particle Annihilation">
+          <br><sub>Particle Annihilation</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_3c_particle_formation_K03.gif" width="220px" alt="K=3 Formation">
-        <br><sub>Particle Formation K=3</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_3c_particle_formation_K03.gif" width="250px" alt="K=3 Formation">
+          <br><sub>Particle Formation K=3</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_3d_particle_formation_K10.gif" width="220px" alt="K=10 Electron">
-        <br><sub>Particle Formation K=10</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_3d_particle_formation_K10.gif" width="250px" alt="K=10 Electron">
+          <br><sub>Particle Formation K=10</sub>
+          <br><br>
+        </div>
       </td>
     </tr>
     <!-- ═══ LAYER 4 ═══ -->
@@ -175,14 +191,18 @@ OpenWave provides complementary ways to explore wave mechanics:
     </tr>
     <tr>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_4a_attractive_forces.gif" width="220px" alt="Attractive Forces">
-        <br><sub>Attractive Forces</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_4a_attractive_forces.gif" width="250px" alt="Attractive Forces">
+          <br><sub>Attractive Forces</sub>
+          <br><br>
+        </div>
       </td>
       <td style="text-align: center; border: none">
-        <img src="images/layers/LAYER_4b_repulsive_forces.gif" width="220px" alt="Repulsive Forces">
-        <br><sub>Repulsive Forces</sub>
-        <br><br>
+        <div align = "center">
+          <img src="images/layers/LAYER_4b_repulsive_forces.gif" width="250px" alt="Repulsive Forces">
+          <br><sub>Repulsive Forces</sub>
+          <br><br>
+        </div>
       </td>
       <td style="border: none"></td>
     </tr>
