@@ -228,6 +228,8 @@ OpenWave provides complementary ways to explore wave mechanics:
           <br><br>
         </div>
       </td>
+      <td style="border: none"></td>
+      <td style="border: none"></td>
     </tr>
     <!-- ═══ LAYER 6 ═══ -->
     <tr>
@@ -245,6 +247,8 @@ OpenWave provides complementary ways to explore wave mechanics:
           <br><br>
         </div>
       </td>
+      <td style="border: none"></td>
+      <td style="border: none"></td>
     </tr>
     <!-- ═══ LAYER 7 ═══ -->
     <tr>
@@ -262,6 +266,8 @@ OpenWave provides complementary ways to explore wave mechanics:
           <br><br>
         </div>
       </td>
+      <td style="border: none"></td>
+      <td style="border: none"></td>
     </tr>
   </table>
 </div>
