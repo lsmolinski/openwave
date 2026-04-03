@@ -325,7 +325,7 @@ Prior to using and contributing to OpenWave, it is recommended to study and fami
 ### EWT Resources
 
 - Main Entry Point: [EWT Website](https://energywavetheory.com)
-- OpenWave Project Page: [EWT Project Phases](https://energywavetheory.com/project/)
+- OpenWave Project Page: [EWT Project](https://energywavetheory.com/project/)
 - Research Papers: [Publications](https://www.researchgate.net/profile/Jeff-Yee-3)
 - Explainer Videos: [Video Channel](https://www.youtube.com/@EnergyWaveTheory)
 - Literature: [eBooks](https://www.amazon.com/gp/product/B078RYP7XD)
