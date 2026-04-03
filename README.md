@@ -204,7 +204,13 @@ OpenWave provides complementary ways to explore wave mechanics:
           <br><br>
         </div>
       </td>
-      <td style="border: none"></td>
+      <td style="text-align: center; border: none">
+        <div align = "center">
+          <br><sub>WORK-IN-PROGRESS</sub>
+          <br><sub>LAYER</sub>
+          <br><br>
+        </div>
+      </td>
     </tr>
     <!-- ═══ LAYER 5 ═══ -->
     <tr>
@@ -212,6 +218,15 @@ OpenWave provides complementary ways to explore wave mechanics:
         <b>🚧 LAYER 5: GRAVITY EMERGENCE</b>
         <br><br>Spin energy conversion (Longitudinal to Transverse) creates a longitudinal amplitude deficit — a "shadow" in the wave field. This energy drainage produces a net inward force: gravity. The 10^-42 ratio between electromagnetic and gravitational force emerges from the accumulated spin deficit over K wave centers.
         <br><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; border: none">
+        <div align = "center">
+          <br><sub>WORK-IN-PROGRESS</sub>
+          <br><sub>LAYER</sub>
+          <br><br>
+        </div>
       </td>
     </tr>
     <!-- ═══ LAYER 6 ═══ -->
@@ -222,12 +237,30 @@ OpenWave provides complementary ways to explore wave mechanics:
         <br><br>
       </td>
     </tr>
+    <tr>
+      <td style="text-align: center; border: none">
+        <div align = "center">
+          <br><sub>WORK-IN-PROGRESS</sub>
+          <br><sub>LAYER</sub>
+          <br><br>
+        </div>
+      </td>
+    </tr>
     <!-- ═══ LAYER 7 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
         <b>🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE</b>
         <br><br>Standalone particles combine through the strong force (electric + magnetic at sub-wavelength distances, ~137x Coulomb). Protons form from 4 electrons + 1 positron in tetrahedral arrangement. Neutrons add an electron at center. Nuclei, atoms, and molecules build up through Coulomb + magnetic orbital forces.
         <br><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; border: none">
+        <div align = "center">
+          <br><sub>WORK-IN-PROGRESS</sub>
+          <br><sub>LAYER</sub>
+          <br><br>
+        </div>
       </td>
     </tr>
   </table>
