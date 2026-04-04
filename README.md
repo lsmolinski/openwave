@@ -56,7 +56,7 @@ OpenWave provides computational and visualization tools to explore, demonstrate,
 - Models experimental wave-field configurations for parametric studies
 - Supports hypothesis testing and comparative analysis against theoretical predictions
 
-## Computational Approaches
+## Computational Methods
 
 OpenWave provides complementary ways to explore wave mechanics:
 
@@ -76,8 +76,6 @@ OpenWave provides complementary ways to explore wave mechanics:
 ## Explore ENERGY LAYERS that might be the source of matter & forces
 
 ```text
-================================================================
- ❓ LAYER 0: ψαλλ ιτ ςηατεωερ υοθ ςαντ, ςε δον'τ κνος υετ
 ================================================================
  ✅ LAYER 1: QUANTUM ENERGY WAVE & TIME EMERGENCE
 ================================================================
