@@ -76,21 +76,21 @@ OpenWave provides complementary ways to explore wave mechanics:
 ## Explore ENERGY LAYERS that might be the source of matter & forces
 
 ```text
-================================================================
- ✅ LAYER 1: QUANTUM ENERGY WAVE & TIME EMERGENCE
-================================================================
+========================================================
+ ✅ LAYER 1: ENERGY WAVE & TIME EMERGENCE
+========================================================
  ✅ LAYER 2: WAVE CENTERS & STANDING WAVES
-================================================================
+========================================================
  ✅ LAYER 3: STANDALONE PARTICLE EMERGENCE
-================================================================
+========================================================
  🚧 LAYER 4: ELECTROMAGNETISM EMERGENCE
-================================================================
+========================================================
  🚧 LAYER 5: GRAVITY EMERGENCE
-================================================================
+========================================================
  🚧 LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
-================================================================
+========================================================
  🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE
-================================================================
+========================================================
 ```
 
 <div align = "center" style="text-align: center">
@@ -98,7 +98,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 1 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>✅ LAYER 1: QUANTUM ENERGY WAVE & TIME EMERGENCE</b>
+        <b>✅ LAYER 1: Energy Wave & Time Emergence</b>
         <br><br>An energy wave fills all of space — the source of matter, forces, and time itself. Waves arrive from all directions creating an isotropic field. Time emerges as the fundamental wave cycle: frequency IS the rate of change. Where wavelength is shorter, change happens faster; where longer, slower.
         <br><br>
       </td>
@@ -106,7 +106,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <tr>
       <td style="text-align: center; border: none">
         <div align = "center">
-          <img src="images/layers/LAYER_1a_quantum_energy_wave.gif" width="250px" alt="Quantum Energy Wave">
+          <img src="images/layers/LAYER_1a_energy_wave.gif" width="250px" alt="Energy Wave">
           <br><sub>Energy Wave</sub>
           <br><br>
         </div>
@@ -129,7 +129,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 2 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>✅ LAYER 2: WAVE CENTERS & STANDING WAVES</b>
+        <b>✅ LAYER 2: Wave Centers & Standing Waves</b>
         <br><br>Wave centers are localized disturbances that elastically change the energy wave. The disturbance creates spherical standing waves near the center (the particle itself) and propagates traveling waves outward (the force field). A single wave center is a fundamental particle (K=1 neutrino).
         <br><br>
       </td>
@@ -154,7 +154,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 3 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>✅ LAYER 3: STANDALONE PARTICLE EMERGENCE</b>
+        <b>✅ LAYER 3: Standalone Particle Emergence</b>
         <br><br>Same-phase wave centers lock into standing wave energy wells, forming stable multi-WC structures. Opposite-phase wave centers annihilate through wave cancellation. K=10 (electron/positron) is the first stable standalone particle — a 1-3-6 tetrahedral arrangement where all WCs sit near energy nodes.
         <br><br>
       </td>
@@ -185,7 +185,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 4 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 4: ELECTROMAGNETISM EMERGENCE</b>
+        <b>🚧 LAYER 4: Electromagnetism Emergence</b>
         <br><br>Non-dual tetrahedral geometry (K=10) forces spin — continuous WC rotation that converts longitudinal to transverse waves. Spin creates charge (electric force), the Bohr magneton (magnetic force), and the traveling wave pattern beyond particle radius that IS the electromagnetic field. Coulomb and magnetic forces emerge from wave interference.
         <br><br>
       </td>
@@ -216,7 +216,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 5 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 5: GRAVITY EMERGENCE</b>
+        <b>🚧 LAYER 5: Gravity Emergence</b>
         <br><br>Spin energy conversion (Longitudinal to Transverse) creates a longitudinal amplitude deficit — a "shadow" in the wave field. This energy drainage produces a net inward force: gravity. The 10^-42 ratio between electromagnetic and gravitational force emerges from the accumulated spin deficit over K wave centers.
         <br><br>
       </td>
@@ -235,7 +235,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 6 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)</b>
+        <b>🚧 LAYER 6: Emergent Waves (Photon & Thermal Energy)</b>
         <br><br>Photons are traveling wave packets — discrete disturbances propagating through the medium that carry energy and apply force upon absorption. Thermal energy is encoded in standing wave amplitude or frequency modulation within particle structure, rather than bulk kinetic motion.
         <br><br>
       </td>
@@ -254,7 +254,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 7 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE</b>
+        <b>🚧 LAYER 7: Composite Particle Emergence</b>
         <br><br>Standalone particles combine through the strong force (electric + magnetic at sub-wavelength distances, ~137x Coulomb). Protons form from 4 electrons + 1 positron in tetrahedral arrangement. Neutrons add an electron at center. Nuclei, atoms, and molecules build up through Coulomb + magnetic orbital forces.
         <br><br>
       </td>
