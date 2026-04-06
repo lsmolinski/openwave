@@ -56,41 +56,41 @@ OpenWave provides computational and visualization tools to explore, demonstrate,
 - Models experimental wave-field configurations for parametric studies
 - Supports hypothesis testing and comparative analysis against theoretical predictions
 
-## Computational Methods
+### COMPUTATIONAL METHODS
 
 OpenWave provides complementary ways to explore wave mechanics:
 
-### Scalar and Vector Field Methods (Research Oriented)
+#### Scalar and Vector Field Methods (Research Oriented)
 
 - 3D wave-field using partial differential equations (PDEs) and other wave functions
 - Similar methodology to lattice QCD (quantum chromodynamics)
 - Scalable for matter formation and force simulations
 - Indexed by spatial coordinates with field properties at each voxel
 
-### Granule-Motion Method (Education Oriented)
+#### Granule-Motion Method (Education Oriented)
 
 - Discrete particle visualization with phase-shifted oscillations
 - Intuitive for understanding wave mechanics
 - Ideal for education and visualization
 
-## Explore ENERGY LAYERS that might be the source of matter & forces
+## ENERGY LAYERS: Explore what might be the source of matter & forces
 
 ```text
-========================================================
+============================================================
  ✅ LAYER 1: ENERGY WAVE & TIME EMERGENCE
-========================================================
+============================================================
  ✅ LAYER 2: WAVE CENTERS & STANDING WAVES
-========================================================
+============================================================
  ✅ LAYER 3: STANDALONE PARTICLE EMERGENCE
-========================================================
- 🚧 LAYER 4: ELECTROMAGNETISM EMERGENCE
-========================================================
- 🚧 LAYER 5: GRAVITY EMERGENCE
-========================================================
- 🚧 LAYER 6: EMERGENT WAVES (PHOTON & THERMAL ENERGY)
-========================================================
- 🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE
-========================================================
+============================================================
+ 🚧 LAYER 4 (WIP): ELECTROMAGNETISM EMERGENCE
+============================================================
+ 🚧 LAYER 5 (WIP): GRAVITY EMERGENCE
+============================================================
+ 🚧 LAYER 6 (WIP): EMERGENT WAVES (Photon & Thermal Energy)
+============================================================
+ 🚧 LAYER 7 (WIP): COMPOSITE PARTICLE EMERGENCE
+============================================================
 ```
 
 <div align = "center" style="text-align: center">
@@ -185,7 +185,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 4 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 4: Electromagnetism Emergence</b>
+        <b>🚧 LAYER 4 (WIP): Electromagnetism Emergence</b>
         <br><br>Non-dual tetrahedral geometry (K=10) forces spin — continuous WC rotation that converts longitudinal to transverse waves. Spin creates charge (electric force), the Bohr magneton (magnetic force), and the traveling wave pattern beyond particle radius that IS the electromagnetic field. Coulomb and magnetic forces emerge from wave interference.
         <br><br>
       </td>
@@ -216,7 +216,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 5 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 5: Gravity Emergence</b>
+        <b>🚧 LAYER 5 (WIP): Gravity Emergence</b>
         <br><br>Spin energy conversion (Longitudinal to Transverse) creates a longitudinal amplitude deficit — a "shadow" in the wave field. This energy drainage produces a net inward force: gravity. The 10^-42 ratio between electromagnetic and gravitational force emerges from the accumulated spin deficit over K wave centers.
         <br><br>
       </td>
@@ -235,7 +235,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 6 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 6: Emergent Waves (Photon & Thermal Energy)</b>
+        <b>🚧 LAYER 6 (WIP): Emergent Waves (Photon & Thermal Energy)</b>
         <br><br>Photons are traveling wave packets — discrete disturbances propagating through the medium that carry energy and apply force upon absorption. Thermal energy is encoded in standing wave amplitude or frequency modulation within particle structure, rather than bulk kinetic motion.
         <br><br>
       </td>
@@ -254,7 +254,7 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 7 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>🚧 LAYER 7: Composite Particle Emergence</b>
+        <b>🚧 LAYER 7 (WIP): Composite Particle Emergence</b>
         <br><br>Standalone particles combine through the strong force (electric + magnetic at sub-wavelength distances, ~137x Coulomb). Protons form from 4 electrons + 1 positron in tetrahedral arrangement. Neutrons add an electron at center. Nuclei, atoms, and molecules build up through Coulomb + magnetic orbital forces.
         <br><br>
       </td>
@@ -273,9 +273,31 @@ OpenWave provides complementary ways to explore wave mechanics:
   </table>
 </div>
 
-## Scientific Background
+## SCIENTIFIC BACKGROUND
 
 OpenWave implements [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory"), a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT). Key points:
+
+### The Spacetime Medium
+
+EWT proposes a fluid-like medium permeating all space, vibrating at extremely high frequencies. OpenWave uses these measurable properties as simulation constants:
+
+| Property | Value | Simulation Units |
+| --- | --- | --- |
+| Medium density | 3.86 × 10²² kg/m³ | 38.6 qg/am³ |
+| Wave speed (c) | 2.998 × 10⁸ m/s | 0.3 am/rs |
+| Fundamental amplitude | 9.22 × 10⁻¹⁹ m | 0.92 am |
+| Fundamental frequency | 1.05 × 10²⁵ Hz | 0.0105 rHz |
+| Fundamental wavelength | 2.85 × 10⁻¹⁷ m | 28.5 am |
+
+### Particle Hierarchy — From Waves to Matter
+
+| Scale | Structure | Example | K (wave centers) |
+| --- | --- | --- | --- |
+| Fundamental particle | 1 wave center | Neutrino | 1 |
+| Standalone particle | K wave centers locked at standing wave nodes | Electron / Positron | 10 |
+| Composite particle | Multiple standalone particles at nodes | Proton (4e⁻ + 1e⁺) | — |
+| Atom | Composite particles + orbital electrons | Hydrogen, Helium | — |
+| Molecule | Bonded atoms | H₂O | — |
 
 ### Computational Approach
 
@@ -314,7 +336,7 @@ Current capabilities (Released):
 - ✅ Demonstrates wave interference, standing waves, propagation
 - ✅ Helps students understand wave-field thinking
 
-## Theoretical Source
+## THEORETICAL SOURCE
 
 OpenWave is a programmatic computing and rendering package based on the [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") mathematical framework.
 
@@ -342,7 +364,7 @@ The [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory"
 
 **Theoretical Classification:** EWT is a deterministic wave mechanics framework that provides mechanistic explanations for quantum phenomena through classical wave-field dynamics.
 
-## Installation Instructions
+## INSTALLATION INSTRUCTIONS
 
 For development installation refer to [Contribution Guide](CONTRIBUTING.md)
 
@@ -363,7 +385,7 @@ For development installation refer to [Contribution Guide](CONTRIBUTING.md)
 - Recommended: Anaconda Package Distribution
 - Install from: <https://www.anaconda.com>
 
-## Usage
+## USAGE
 
 ### Play with the /xperiments module
 
@@ -414,7 +436,7 @@ XPERIMENTS are virtual lab scripts where you can explore wave mechanics and simu
   </table>
 </div>
 
-## Instrumentation Framework
+## INSTRUMENTATION FRAMEWORK
 
 Xperiments support configurable instrumentation and probe integration for real-time data acquisition and numerical analysis. The framework provides zero-overhead data collection that can be toggled on or off per simulation.
 
