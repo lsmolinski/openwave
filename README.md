@@ -482,7 +482,7 @@ Xperiments support configurable instrumentation and probe integration for real-t
   </table>
 </div>
 
-## Wanna Know What's Under-the-Hood?
+## What's Under-the-Hood
 
 Check OpenWave's [System Architecture](SYS_ARCH.md)
 
