@@ -170,14 +170,14 @@ OpenWave provides complementary ways to explore wave mechanics:
       <td style="text-align: center; border: none">
         <div align = "center">
           <img src="images/layers/LAYER_3c_particle_formation_K03.gif" width="250px" alt="K=3 Formation">
-          <br><sub>Particle Formation K=3</sub>
+          <br><sub>Particle Formation: K=3</sub>
           <br><br>
         </div>
       </td>
       <td style="text-align: center; border: none">
         <div align = "center">
           <img src="images/layers/LAYER_3d_particle_formation_K10.gif" width="250px" alt="K=10 Electron">
-          <br><sub>Particle Formation K=10</sub>
+          <br><sub>Particle Formation: K=10</sub>
           <br><br>
         </div>
       </td>
