@@ -21,9 +21,6 @@ The platform implements a proposed mathematical framework through various comple
 
 ### Research Goals
 
-> *"To computer simulate the creation of particles, atoms and matter with classical physics, illustrating that the universe operates under a single set of classical laws."*
-> — [EWT OpenWave Project](https://energywavetheory.com/project/)
-
 OpenWave aims to:
 
 - Model matter, force unification and energy phenomena through wave-dynamics
@@ -275,29 +272,11 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ## SCIENTIFIC BACKGROUND
 
-OpenWave implements [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory"), a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT). Key points:
+OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT). Key points:
 
 ### The Spacetime Medium
 
-EWT proposes a fluid-like medium permeating all space, vibrating at extremely high frequencies. OpenWave uses these measurable properties as simulation constants:
-
-| Property | Value | Simulation Units |
-| --- | --- | --- |
-| Medium density | 3.86 × 10²² kg/m³ | 38.6 qg/am³ |
-| Wave speed (c) | 2.998 × 10⁸ m/s | 0.3 am/rs |
-| Fundamental amplitude | 9.22 × 10⁻¹⁹ m | 0.92 am |
-| Fundamental frequency | 1.05 × 10²⁵ Hz | 0.0105 rHz |
-| Fundamental wavelength | 2.85 × 10⁻¹⁷ m | 28.5 am |
-
-### Particle Hierarchy — From Waves to Matter
-
-| Scale | Structure | Example | K (wave centers) |
-| --- | --- | --- | --- |
-| Fundamental particle | 1 wave center | Neutrino | 1 |
-| Standalone particle | K wave centers locked at standing wave nodes | Electron / Positron | 10 |
-| Composite particle | Multiple standalone particles at nodes | Proton (4e⁻ + 1e⁺) | — |
-| Atom | Composite particles + orbital electrons | Hydrogen, Helium | — |
-| Molecule | Bonded atoms | H₂O | — |
+OpenWave proposes a fluid-like medium permeating all space, vibrating at extremely high frequencies.
 
 ### Computational Approach
 
@@ -312,7 +291,7 @@ EWT proposes a fluid-like medium permeating all space, vibrating at extremely hi
 - Lattice QCD is the standard computational method for QFT (Nobel Prize 2004, 2008)
 - OpenWave uses similar lattice methodology but with different field equations
 - Research question: Can classical wave-field dynamics reproduce quantum-like phenomena?
-- EWT provides testable predictions that can be validated against experimental data
+- Provides testable predictions that can be validated against experimental data
 
 ### Goal: Computational Utility
 
