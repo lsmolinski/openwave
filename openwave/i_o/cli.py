@@ -41,7 +41,7 @@ def _get_version():
 
 # Hardcoded welcome entry
 WELCOME_URL = "https://github.com/openwave-labs/openwave/blob/main/WELCOME.md"
-WELCOME_ENTRY = ("README FIRST: WELCOME TO OPENWAVE XPERIMENTS", WELCOME_URL)
+WELCOME_ENTRY = ("README FIRST: Welcome to OpenWave XPERIMENTS", WELCOME_URL)
 
 
 def get_experiments_list():
@@ -203,7 +203,7 @@ def show_menu_interactive(experiments):
     # Build menu options with blank lines between items for readability
     menu_options = []
     for display_name, _ in experiments:
-        menu_options.append(f"  {display_name}")
+        menu_options.append(f"  • {display_name}")
         menu_options.append(None)  # Spacing between items
 
     menu_options.append("  ─── EXIT ───")
