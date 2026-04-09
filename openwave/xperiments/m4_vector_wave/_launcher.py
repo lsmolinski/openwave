@@ -284,7 +284,7 @@ def display_wave_menu(state):
     with render.gui.sub_window("WAVE MENU", 0.00, 0.73, 0.15, 0.15) as sub:
         if sub.checkbox("Displacement", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
-        if sub.checkbox("Amplitude (RMS)", state.WAVE_MENU == 2):
+        if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
@@ -295,7 +295,7 @@ def display_wave_menu(state):
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.67, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
-        if state.WAVE_MENU == 2:  # Amplitude (RMS) on ironbow gradient
+        if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.67, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
