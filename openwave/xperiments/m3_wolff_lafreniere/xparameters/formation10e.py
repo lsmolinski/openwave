@@ -61,7 +61,7 @@ XPARAMETERS = {
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {
-        "INITIAL_POSITION": [0.36, 1.20, 0.75],
+        "INITIAL_POSITION": [0.94, 0.91, 0.69],
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
@@ -79,7 +79,7 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 2,
+        "SHOW_FLUX_MESH": 3,
         "WARP_MESH": 150,
         "PARTICLE_SHELL": True,
         "TIMESTEP": 5.0,
