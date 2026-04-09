@@ -11,9 +11,6 @@ PHYSICS: At ~1λ separation, there is one barrier at λ/2 between the WCs and r=
   the r=0 well captures them for annihilation.
 """
 
-from openwave.common import constants
-
-EWAVE_LENGTH = constants.EWAVE_LENGTH  # m, ~2.854e-17 m
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
 

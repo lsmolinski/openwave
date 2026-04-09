@@ -18,7 +18,6 @@ Each K places WCs at λ/2 spacing in the simplest possible geometry:
   K=10: 1-3-6 tetrahedron (STABLE — the electron)
 """
 
-import numpy as np
 from openwave.common import constants
 from openwave.xperiments.m3_wolff_lafreniere.xparameters.formation02 import generate_K_positions
 
