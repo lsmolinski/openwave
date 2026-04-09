@@ -562,7 +562,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "attraction1"
+    default_xperiment = selected_xperiment_arg or "annihilation1"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

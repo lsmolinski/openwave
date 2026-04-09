@@ -50,17 +50,17 @@ K = 10
 PERTURBATION = 0.1  # fraction of λ (0.0 = perfect, 0.3 = 30% random displacement)
 
 POSITIONS = generate_K_positions(
-    UNIVERSE_EDGE, K, center=(0.5, 0.5, 0.5), rotation=(0, 0, 0), perturbation=PERTURBATION
+    UNIVERSE_EDGE, K, center=(0.5, 0.5, 0.5), rotation=(45, 45, 45), perturbation=PERTURBATION
 )
-PHASES = [180] * K  # all same phase (electron-like)
+PHASES = [0] * K  # all same phase (electron-like)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Electron (K={K})",
+        "X_NAME": f"  /Positron (K={K})",
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {
-        "INITIAL_POSITION": [0.94, 0.91, 0.69],
+        "INITIAL_POSITION": [0.29, 1.28, 0.22],  # [x, y, z] in normalized coordinates
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
@@ -70,7 +70,7 @@ XPARAMETERS = {
         "COUNT": K,
         "POSITION": POSITIONS,
         "PHASE_OFFSETS_DEG": PHASES,
-        "APPLY_MOTION": True,
+        "APPLY_MOTION": False,
     },
     "ui_defaults": {
         "SHOW_AXIS": False,
@@ -78,9 +78,10 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 3,
+        "SHOW_FLUX_MESH": 1,
         "WARP_MESH": 150,
         "PARTICLE_SHELL": True,
+        "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "TIMESTEP": 5.0,
         "PAUSED": False,
     },

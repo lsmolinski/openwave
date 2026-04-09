@@ -34,7 +34,7 @@ LOCK_SPACING = EWAVE_LENGTH / UNIVERSE_EDGE
 # ════════════════════════════════════════════════════════════════════════════
 # SELECT K VALUE HERE
 # ════════════════════════════════════════════════════════════════════════════
-K = 10
+K = 3
 # K = 2    # Line — EXPECT: STABLE
 # K = 3    # Triangle — EXPECT: unstable
 # K = 4    # Tetrahedron (4) — EXPECT: unstable
@@ -56,11 +56,11 @@ PHASES = [180] * K  # all same phase (electron-like)
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"  /Electron (K={K})",
+        "X_NAME": f"  /Particle (K={K})",
         "DESCRIPTION": f"K={K} stability test — {'STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {
-        "INITIAL_POSITION": [0.94, 0.91, 0.69],
+        "INITIAL_POSITION": [0.36, 1.20, 0.75],
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
@@ -70,7 +70,7 @@ XPARAMETERS = {
         "COUNT": K,
         "POSITION": POSITIONS,
         "PHASE_OFFSETS_DEG": PHASES,
-        "APPLY_MOTION": True,
+        "APPLY_MOTION": False,
     },
     "ui_defaults": {
         "SHOW_AXIS": False,
@@ -78,15 +78,16 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 3,
+        "SHOW_FLUX_MESH": 1,
         "WARP_MESH": 150,
         "PARTICLE_SHELL": True,
+        "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "TIMESTEP": 5.0,
         "PAUSED": False,
     },
     "color_defaults": {
         "COLOR_THEME": "OCEAN",
-        "WAVE_MENU": 4,
+        "WAVE_MENU": 1,
     },
     "analytics": {
         "INSTRUMENTATION": False,
