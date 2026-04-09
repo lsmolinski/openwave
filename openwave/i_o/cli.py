@@ -12,6 +12,10 @@ import subprocess
 import webbrowser
 from pathlib import Path
 
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+
 # Conditional import for simple_term_menu (not available on Windows)
 try:
     from simple_term_menu import TerminalMenu
@@ -19,6 +23,21 @@ try:
     HAS_INTERACTIVE_MENU = True
 except (ImportError, NotImplementedError):
     HAS_INTERACTIVE_MENU = False
+
+console = Console()
+
+
+def _get_version():
+    """Get the package version string."""
+    try:
+        from openwave import __version__
+
+        return __version__
+    except ImportError:
+        from importlib.metadata import version
+
+        return version("OPENWAVE")
+
 
 # Hardcoded welcome entry
 WELCOME_URL = "https://github.com/openwave-labs/openwave/blob/main/WELCOME.md"
@@ -109,28 +128,26 @@ def show_menu_simple(experiments):
     Returns:
         tuple: (display_name, file_path) of the selected xperiment
     """
-    # Get version from source (works with editable installs)
-    try:
-        from openwave import __version__
+    pkg_version = _get_version()
 
-        pkg_version = __version__
-    except ImportError:
-        # Fallback to metadata if __version__ not available
-        from importlib.metadata import version
-
-        pkg_version = version("OPENWAVE")
-
-    print("\n" + "=" * 64)
-    print(f"OPENWAVE (v{pkg_version}) - Available XPERIMENTS")
-    print("=" * 64 + "\n")
+    console.print()
+    console.print(
+        Panel(
+            Text(f"OPENWAVE  v{pkg_version}", justify="center", style="bold"),
+            subtitle="Available XPERIMENTS",
+            border_style="green",
+            width=64,
+        )
+    )
+    console.print()
 
     # Display numbered list of experiments with spacing
     for idx, (display_name, _) in enumerate(experiments, 1):
-        print(f"  {idx}. {display_name}")
-        print()
+        console.print(f"  [bold]{idx}.[/bold] {display_name}")
+        console.print()
 
-    print(f"  {len(experiments) + 1}. EXIT")
-    print("=" * 64)
+    console.print(f"  [dim]{len(experiments) + 1}. EXIT[/dim]")
+    console.print()
 
     while True:
         try:
@@ -169,16 +186,19 @@ def show_menu_interactive(experiments):
         # Fallback to simple menu if interactive menu not available
         return show_menu_simple(experiments)
 
-    # Get version from source (works with editable installs)
-    try:
-        from openwave import __version__
+    pkg_version = _get_version()
 
-        pkg_version = __version__
-    except ImportError:
-        # Fallback to metadata if __version__ not available
-        from importlib.metadata import version
-
-        pkg_version = version("OPENWAVE")
+    # Build plain-text banner — TerminalMenu miscounts ANSI escapes as visible chars
+    w = 64
+    heading = f"OPENWAVE  v{pkg_version}"
+    subtitle = "↑/↓ navigate  ·  ENTER to select XPERIMENT"
+    title_str = (
+        "\n"
+        f"  ╭{'─' * (w - 2)}╮\n"
+        f"  │{heading:^{w - 2}}│\n"
+        f"  ╰{'─' * (w - 2)}╯\n"
+        f"  {subtitle:^{w}}\n"
+    )
 
     # Build menu options with blank lines between items for readability
     menu_options = []
@@ -189,18 +209,9 @@ def show_menu_interactive(experiments):
     menu_options.append("  ─── EXIT ───")
     exit_idx = len(menu_options) - 1
 
-    # Build title with proper formatting
-    title_lines = [
-        "",
-        "=" * 64,
-        f"OPENWAVE (v{pkg_version}) - Available XPERIMENTS",
-        "(↑/↓ navigate, ENTER selects)",
-        "=" * 64,
-    ]
-
     terminal_menu = TerminalMenu(
         menu_options,
-        title="\n".join(title_lines),
+        title=title_str,
         menu_cursor="▶ ",
         menu_cursor_style=("fg_green", "bold"),
         menu_highlight_style=("bg_green", "fg_black"),
@@ -232,17 +243,25 @@ def run_experiment(display_name, file_path):
     """
     # Handle welcome URL specially
     if file_path == WELCOME_URL:
-        print(f"\n{'=' * 64}")
-        print("Opening welcome in your default browser...")
-        print(f"{'=' * 64}\n")
+        console.print()
+        console.print(
+            Panel("Opening welcome in your default browser...", border_style="cyan", width=64)
+        )
+        console.print()
         webbrowser.open(WELCOME_URL)
-        print("Done!")
+        console.print("[green]Done![/green]")
         return 0
 
-    print(f"\n{'=' * 64}")
-    print(f"Running XPERIMENT:")
-    print(f"{display_name}")
-    print(f"{'=' * 64}\n")
+    console.print()
+    console.print(
+        Panel(
+            f"[bold]{display_name}[/bold]",
+            title="Running XPERIMENT",
+            border_style="cyan",
+            width=64,
+        )
+    )
+    console.print()
 
     try:
         # Run the xperiment using subprocess
@@ -280,9 +299,16 @@ def main():
     returncode = run_experiment(display_name, file_path)
 
     # Exit after xperiment closes
-    print(f"\n{'=' * 64}")
-    print(f"XPERIMENT closed (exit code: {returncode})")
-    print(f"{'=' * 64}\n")
+    style = "green" if returncode == 0 else "red"
+    console.print()
+    console.print(
+        Panel(
+            f"XPERIMENT closed (exit code: {returncode})",
+            border_style=style,
+            width=64,
+        )
+    )
+    console.print()
 
     sys.exit(returncode)
 
