@@ -124,11 +124,12 @@ def show_menu_simple(experiments):
     print(f"OPENWAVE (v{pkg_version}) - Available XPERIMENTS")
     print("=" * 64 + "\n")
 
-    # Display numbered list of experiments
+    # Display numbered list of experiments with spacing
     for idx, (display_name, _) in enumerate(experiments, 1):
-        print(f"{idx}. {display_name}")
+        print(f"  {idx}. {display_name}")
+        print()
 
-    print(f"\n{len(experiments) + 1}. EXIT")
+    print(f"  {len(experiments) + 1}. EXIT")
     print("=" * 64)
 
     while True:
@@ -179,11 +180,14 @@ def show_menu_interactive(experiments):
 
         pkg_version = version("OPENWAVE")
 
-    # Build menu options - all entries are selectable experiments
-    menu_options = [display_name for display_name, _ in experiments]
-    menu_options.append(None)  # Blank line separator
-    menu_options.append("─── EXIT ───")
-    exit_idx = len(experiments) + 1
+    # Build menu options with blank lines between items for readability
+    menu_options = []
+    for display_name, _ in experiments:
+        menu_options.append(f"  {display_name}")
+        menu_options.append(None)  # Spacing between items
+
+    menu_options.append("  ─── EXIT ───")
+    exit_idx = len(menu_options) - 1
 
     # Build title with proper formatting
     title_lines = [
@@ -197,7 +201,7 @@ def show_menu_interactive(experiments):
     terminal_menu = TerminalMenu(
         menu_options,
         title="\n".join(title_lines),
-        menu_cursor="  ",
+        menu_cursor="▶ ",
         menu_cursor_style=("fg_green", "bold"),
         menu_highlight_style=("bg_green", "fg_black"),
         cycle_cursor=True,
@@ -210,7 +214,9 @@ def show_menu_interactive(experiments):
         print("Exiting...")
         sys.exit(0)
 
-    return experiments[choice_idx]
+    # Map from spaced menu index back to experiments index
+    experiment_idx = choice_idx // 2
+    return experiments[experiment_idx]
 
 
 def run_experiment(display_name, file_path):
