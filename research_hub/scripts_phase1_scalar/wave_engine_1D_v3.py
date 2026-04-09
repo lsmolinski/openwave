@@ -67,6 +67,17 @@ def snap_to_grid(pos):
 
 
 # ================================================================
+# Initial State Toggles — what's active at startup
+# ================================================================
+# Set these before running to control the initial simulation state.
+# Each can be toggled interactively via UI checkboxes during the sim.
+
+INIT_BASE_WAVE = True  # Base wave field ON/OFF at startup
+INIT_WC1 = False  # Wave Center 1 (positron, phase=0) ON/OFF at startup
+INIT_WC2 = False  # Wave Center 2 (electron, phase=π) ON/OFF at startup
+
+
+# ================================================================
 # Wave Center Configuration
 # ================================================================
 # WC wave equation: #5 Weighted Partial Standing Wave (from v2)
@@ -84,18 +95,24 @@ DISP_SCALE = 1  # y-axis scale for displacement
 class WaveCenter:
     """A single wave center with position, phase offset, and amplitude."""
 
-    def __init__(self, x_am: float, phase: float = 0.0, amplitude: float = A0_am):
+    def __init__(
+        self, x_am: float, phase: float = 0.0, amplitude: float = A0_am, active: bool = True
+    ):
         self.x_am = x_am  # position on x-axis (am)
         self.phase = phase  # source_offset: 0 = positron, π = electron
         self.amplitude = amplitude  # base amplitude (am)
+        self.active = active  # whether this WC contributes to the field
 
 
 # Default: 2 opposite-charge WCs separated by 4λ
 wc_separation = 4 * lam_am
 wave_centers = [
-    WaveCenter(x_am=snap_to_grid(-wc_separation / 2), phase=0.0),  # positron
-    WaveCenter(x_am=snap_to_grid(+wc_separation / 2), phase=np.pi),  # electron
+    WaveCenter(x_am=snap_to_grid(-wc_separation / 2), phase=0.0, active=INIT_WC1),  # positron
+    WaveCenter(x_am=snap_to_grid(+wc_separation / 2), phase=np.pi, active=INIT_WC2),  # electron
 ]
+
+# Runtime toggle state (used by UI and compute functions)
+base_wave_active = INIT_BASE_WAVE
 
 
 # ================================================================
@@ -117,7 +134,7 @@ wave_centers = [
 # "elastic_phase"  = position-dependent phase/λ warp (Option F)
 # "elastic_spin"   = L→T mode conversion, two-component displacement (Option G)
 
-WC_DISTURBANCE = "elastic_spin"
+WC_DISTURBANCE = "absorber"
 
 # --- Multiplicative (Option A) parameters ---
 MULT_GAIN = 5.0  # concentration strength
@@ -181,7 +198,7 @@ def _compute_weight(r_am):
 # dual_uniform  = Dual-Channel Uniform:      two π-apart uniform waves, zero net energy
 # dual_standing = Dual-Channel Standing:     two π-apart standing waves, zero net energy
 
-BASE_WAVE_MODE = "quadrature"
+BASE_WAVE_MODE = "laplacian"
 
 BASE_WAVE_NAMES = {
     "uniform": "Uniform Oscillation",
@@ -209,8 +226,9 @@ DUAL_SPATIAL_OFFSET = np.pi / 2
 DUAL_TEMPORAL_OFFSET = np.pi / 2
 
 # --- Laplacian parameters ---
-LAPLACIAN_WARMUP_PERIODS = 20  # warmup in wave periods before animation
-LAPLACIAN_INIT = "standing"  # "gaussian" pulse or "standing" analytical
+LAPLACIAN_WARMUP_PERIODS = 0  # 0 = see propagation from start, >0 = skip to steady state
+LAPLACIAN_INIT = "gaussian"  # "gaussian" pulse or "standing" analytical
+LAPLACIAN_SPEED = 100  # sub-steps per frame (1 = real-time, 10 = 10× faster, 100 = fast)
 
 
 # ================================================================
@@ -246,12 +264,10 @@ _lap = {
     "dt": 0.0,
     "t": 0.0,
     "rms": None,
+    "rms2": np.zeros(N_POINTS),  # EMA of ψ² for smooth RMS tracking
     "initialized": False,
     "steps_per_frame": 1,
     "steps_per_period": 1,
-    # Live RMS tracking: peak |ψ| over current period
-    "peak_tracker": np.zeros(N_POINTS),
-    "peak_steps": 0,
 }
 
 
@@ -277,8 +293,7 @@ def _lap_init():
     spp = max(1, int(period_rs / dt))
     _lap["steps_per_period"] = spp
     _lap["steps_per_frame"] = max(1, spp // 50)
-    _lap["peak_tracker"][:] = 0.0
-    _lap["peak_steps"] = 0
+    _lap["rms2"][:] = _lap["psi"] ** 2  # initialize EMA with initial displacement²
     _lap["initialized"] = True
 
 
@@ -288,7 +303,10 @@ def _lap_step(n=1):
         _lap_init()
     psi, psi_old, dt = _lap["psi"], _lap["psi_old"], _lap["dt"]
     c2dt2 = (c_am_rs * dt) ** 2
-    pt, spp = _lap["peak_tracker"], _lap["steps_per_period"]
+    rms2 = _lap["rms2"]
+    # EMA smoothing: α controls adaptation speed (same approach as M2 wave engine)
+    # Lower α = smoother/slower response, higher = faster/noisier
+    alpha_rms = 0.0001
     for _ in range(n):
         # 3-point Laplacian on interior
         lap = np.empty_like(psi)
@@ -299,28 +317,23 @@ def _lap_step(n=1):
         psi_old[:] = psi
         psi[:] = psi_new
         _lap["t"] += dt
-        # Live RMS: track peak |ψ| and update RMS every full period
-        np.maximum(pt, np.abs(psi), out=pt)
-        _lap["peak_steps"] += 1
-        if _lap["peak_steps"] >= spp:
-            _lap["rms"] = pt / np.sqrt(2.0)
-            pt[:] = 0.0
-            _lap["peak_steps"] = 0
+        # EMA RMS: rms² = α·ψ² + (1-α)·rms²_old, then rms = √(rms²)
+        rms2[:] = alpha_rms * psi**2 + (1.0 - alpha_rms) * rms2
+    _lap["rms"] = np.sqrt(rms2)
 
 
 def _lap_warmup():
     """Warm up Laplacian simulation to reach steady-state RMS."""
     if not _lap["initialized"]:
         _lap_init()
+    if LAPLACIAN_WARMUP_PERIODS == 0:
+        # No warmup: start from initial state, EMA RMS builds up during animation
+        _lap["rms"] = np.sqrt(_lap["rms2"])
+        return
     dt = _lap["dt"]
-    # Measure RMS: track peak |ψ| at each point over one full period
+    # Warmup: run N periods so EMA RMS converges to steady state
     spp = max(1, int(period_rs / dt))
     _lap_step(LAPLACIAN_WARMUP_PERIODS * spp)
-    peak = np.zeros(N_POINTS)
-    for _ in range(spp):
-        _lap_step(1)
-        np.maximum(peak, np.abs(_lap["psi"]), out=peak)
-    _lap["rms"] = peak / np.sqrt(2.0)
 
 
 # ================================================================
@@ -332,6 +345,9 @@ def _lap_warmup():
 
 def _base_phasor(x):
     """Base wave phasor coefficients (P, Q) for current mode."""
+    if not base_wave_active:
+        return np.zeros_like(x), np.zeros_like(x)
+
     if BASE_WAVE_MODE == "uniform":
         return A0_am * np.ones_like(x), np.zeros_like(x)
 
@@ -724,6 +740,13 @@ def _compute_dual_channel_rms(x, active_wcs):
     return rms_combined
 
 
+def _get_active_wcs(wcs=None):
+    """Return only the active wave centers from the list."""
+    if wcs is None:
+        wcs = wave_centers
+    return [wc for wc in wcs if wc.active]
+
+
 def compute_combined_rms(x, active_wcs=None):
     """Compute RMS from base wave + WC disturbance for current mode.
 
@@ -733,7 +756,7 @@ def compute_combined_rms(x, active_wcs=None):
     Dual-channel: dual_channel (Step 2d)
     """
     if active_wcs is None:
-        active_wcs = wave_centers
+        active_wcs = _get_active_wcs()
 
     if not active_wcs:
         return compute_base_rms(x)
@@ -765,30 +788,58 @@ def compute_combined_rms(x, active_wcs=None):
 
 
 def compute_combined_displacement(x, t, active_wcs=None):
-    """Compute total displacement: base wave + WC waves (eq #5).
+    """Compute total displacement: base wave + WC disturbance.
 
-    ψ_total(x,t) = ψ_base(x,t) + Σ ψ_wc_n(x,t)
-    where each WC contributes a weighted partial standing wave centered at its position.
+    The displacement depends on the disturbance mode:
+    - "additive": WCs emit their own waves on top of base (eq #5)
+    - "absorber": WCs suppress base wave locally (Dirichlet-like boundary)
+    - "multiplicative", "scattering": WCs reshape the base wave envelope
+    - "elastic_*": WCs modify wave character (phase, amplitude, spin)
+    For non-additive modes, the displacement shows the base wave
+    modified by the WC disturbance — WCs don't emit their own waves.
     """
     if active_wcs is None:
-        active_wcs = wave_centers
+        active_wcs = _get_active_wcs()
 
     psi = compute_base_displacement(x, t)
 
-    for wc in active_wcs:
-        r = np.abs(x - wc.x_am)
-        kr = k * r
-        w = _compute_weight(r)
-        wt_phi = omega * t + wc.phase
+    if WC_DISTURBANCE == "additive":
+        # WCs emit their own waves (weighted partial standing wave)
+        for wc in active_wcs:
+            r = np.abs(x - wc.x_am)
+            kr = k * r
+            w = _compute_weight(r)
+            wt_phi = omega * t + wc.phase
 
-        with np.errstate(divide="ignore", invalid="ignore"):
-            wave = np.where(
-                kr < 1e-10,
-                2.0 * np.cos(wt_phi),
-                (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
-            )
+            with np.errstate(divide="ignore", invalid="ignore"):
+                wave = np.where(
+                    kr < 1e-10,
+                    2.0 * np.cos(wt_phi),
+                    (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
+                )
 
-        psi += wc.amplitude * wave
+            psi += wc.amplitude * wave
+
+    elif WC_DISTURBANCE == "absorber":
+        # WCs suppress displacement locally (boundary condition)
+        for wc in active_wcs:
+            r = np.abs(x - wc.x_am)
+            radius = ABSORBER_RADIUS_LAM * lam_am
+            profile = np.exp(-(r**2) / (2.0 * (radius / 2.0) ** 2))
+            psi *= 1.0 - profile
+
+    elif WC_DISTURBANCE == "multiplicative":
+        # WCs concentrate/deplete the base wave amplitude
+        R = np.ones_like(x)
+        for wc in active_wcs:
+            r = np.abs(x - wc.x_am)
+            q = np.cos(wc.phase)
+            delta = 1.0 / np.sqrt(1.0 + (k * r) ** 2)
+            R += MULT_GAIN * q * delta
+        psi *= R
+
+    # For elastic modes, the displacement IS the base wave —
+    # the disturbance only affects the phasor/RMS (energy landscape)
 
     return psi
 
@@ -798,7 +849,11 @@ def compute_base_displacement(x, t):
 
     Models A–D are analytical; Model E returns current Laplacian field state.
     This is the base wave ONLY — no WC contribution.
+    Returns zeros if base_wave_active is False.
     """
+    if not base_wave_active:
+        return np.zeros_like(x)
+
     if BASE_WAVE_MODE == "uniform":
         # Uniform: every point oscillates together, no spatial structure
         return A0_am * np.cos(omega * t) * np.ones_like(x)
@@ -844,7 +899,11 @@ def compute_base_rms(x):
     For dual-channel: each channel has energy, but they cancel in displacement.
     Per-channel energy sum = A₀²/2 + A₀²/2 = A₀² → RMS = A₀/√2 (flat).
     For Laplacian: measured empirically from simulation.
+    Returns zeros if base_wave_active is False.
     """
+    if not base_wave_active:
+        return np.zeros_like(x)
+
     if BASE_WAVE_MODE == "uniform":
         # Uniform: peak = A₀ everywhere, RMS = A₀/√2
         return (A0_am / np.sqrt(2.0)) * np.ones_like(x)
@@ -937,14 +996,23 @@ def plot_sandbox():
 
     state = {"paused": START_PAUSED, "frame": 0}
 
-    # Track active WCs and base wave
-    wc_active = [True] * len(wave_centers)
-    base_active = [True]  # mutable list so inner functions can modify
+    # Track active WCs and base wave — initialized from startup toggles
+    wc_active = [wc.active for wc in wave_centers]
+    base_active = [base_wave_active]  # mutable list so inner functions can modify
 
     def get_active_centers():
-        return [wc for wc, active in zip(wave_centers, wc_active) if active]
+        # Sync WC active flags with UI state
+        for wc, active in zip(wave_centers, wc_active):
+            wc.active = active
+        return [wc for wc in wave_centers if wc.active]
+
+    def _sync_globals():
+        """Keep global flags in sync with UI toggle state."""
+        global base_wave_active
+        base_wave_active = base_active[0]
 
     def recompute_static():
+        _sync_globals()
         active = get_active_centers()
         if base_active[0] and active:
             rms = compute_combined_rms(x_am, active)
@@ -1219,6 +1287,10 @@ def plot_sandbox():
                 txt.get_bbox_patch().set_edgecolor("#666666")
                 txt.get_bbox_patch().set_alpha(0.2)
 
+    # Apply initial toggle styles (respect INIT_* flags)
+    update_base_text_style()
+    update_wc_text_style()
+
     # --- Phase Offset Toggle ---
     phase_state = {"opposite": True}
     phase_txt = fig.text(
@@ -1444,6 +1516,12 @@ def plot_sandbox():
 
     def update_plot(frame):
         t_rs = (frame / ANIMATION_FRAMES) * period_rs
+
+        # Advance Laplacian PDE by LAPLACIAN_SPEED sub-steps per frame
+        if BASE_WAVE_MODE == "laplacian" and base_active[0] and not state["paused"]:
+            _lap_step(_lap["steps_per_frame"] * LAPLACIAN_SPEED)
+            refresh_static()  # RMS/energy/force evolve with the Laplacian field
+
         active = get_active_centers()
         if base_active[0] and active:
             psi = compute_combined_displacement(x_am, t_rs, active)

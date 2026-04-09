@@ -58,6 +58,16 @@ The product form is a **modulated traveling wave**: the particle (envelope) shap
 - **Sinc lock-in** — energy wells from wave nodes. Direct consequence of wave equation.
 - **Annihilation** — opposite-phase cancellation. Direct consequence of superposition.
 
+### Why analytical equations, not PDE solvers
+
+Validated in 1D sandbox (`wave_engine_1D_v3.py`, Laplacian mode + absorber disturbance):
+
+**PDE/Laplacian solvers cannot simulate wave-center disturbance in a wave field.** A wave center modeled as a Dirichlet boundary condition (ψ=0 reflective point) is invisible to the isotropic field — the wave passes through without creating standing waves around it. The PDE solver treats the boundary as a passive constraint, not an active disturbance that reorganizes the wave structure.
+
+This approach also cannot simulate the in-wave + out-wave superposition that creates the standing wave particle. The in-wave (Huygens reconstruction from the universe) and out-wave (re-emitted from the WC) must be explicitly modeled as counter-propagating analytical solutions — the PDE solver only propagates what's already in the field.
+
+The Combined Wolff-LaFreniere analytical solution solves this: Wolff's phase term `sin(kr)/r` (in-wave/out-wave standing wave) combined with LaFreniere's quadrature term `(1-cos(kr))/r` (traveling wave component) creates the standing wave field with energy wells that trap other standing waves at wave nodes — the mechanism for particle formation from wave interference.
+
 ### What's a modeling choice (not derived)
 
 1. **The wave equation form** — Combined W-L selected empirically (best K=10 stability at perfect placement). Physical justification for this specific combination not yet established.
