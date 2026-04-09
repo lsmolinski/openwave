@@ -1,4 +1,4 @@
 """
-X3/ [WIP] TIME-DYNAMICS Xperiment: Time as a function of medium disturbance
+[WIP] X3/ TIME-DYNAMICS Xperiment: Time as a function of medium disturbance
 ==============================
 """
