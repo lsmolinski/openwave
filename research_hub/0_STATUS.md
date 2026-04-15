@@ -165,7 +165,7 @@ Both may be needed: Duda's topology handles charge quantization and far-field Co
 1. **Zitterbewegung** — electron trembling motion at 2mc²/ℏ, must emerge naturally
 1. **Faber's 4D approach** automatically produces Zitterbewegung from curvature coupling
 
-### Quick Tests Planned (scripts_lagrangian/)
+### Quick Tests Planned (scripts_phase2_lagrangian/)
 
 8 numpy research scripts, no M4 refactor needed. Decision strategy: run all tests first, then select the winning equation/approach to implement in M4.
 

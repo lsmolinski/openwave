@@ -2,8 +2,46 @@
 
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
 
-Numerical results from the 8 Lagrangian framework experiments in `scripts_lagrangian/`.
+Numerical results from the 8 Lagrangian framework experiments in `scripts_phase2_lagrangian/`.
 See [2a_lagrangian_eval.md](2a_lagrangian_eval.md) for experiment specifications.
+
+---
+
+## NEXT SESSION KICKOFF
+
+**First action**: open `scripts_phase2_lagrangian/exp1_sine_gordon_1d.py` and complete the implementation (skeleton already in place — TODO comments mark what's missing). Reference the Setup section in this doc (1.2) before tweaking parameters.
+
+**Sequence for the day**:
+
+1. Implement and run **Experiment 1** (Sine-Gordon 1D) — build intuition with a simple, well-understood soliton system
+2. Fill in this doc's Experiment 1 sections: Setup → Results → Numerical Evidence → Comparison to Expected → Conclusion
+3. Update Summary Dashboard status (🚧 → 🔶 → ✅/❌)
+4. Move to **Experiments 2 + 3** (hedgehog energy + topological charge) — the highest-value test pair, validates Coulomb from topology vs our sinc problem
+
+**Recommended order reminder**: Exp 1 → Exp 2+3 → Exp 5 → Exp 8 → Exp 4 → Exp 6 → Exp 7
+
+**Pre-reading if time**: Bush 2015 review "Pilot-wave hydrodynamics" (referenced in 2a) for intuition on classical wave-particle quantum-like behavior.
+
+---
+
+## HOW TO USE THIS DOC
+
+**For each experiment**:
+
+1. **Before running** — fill in section `N.2 Setup` with grid parameters, initial conditions, etc.
+2. **Run the script** in `scripts_phase2_lagrangian/expN_*.py`
+3. **Capture output** in section `N.3 Results` (raw numbers, behaviors observed)
+4. **Save evidence** in section `N.4 Numerical Evidence` (plots, tables, key measurements)
+5. **Fill comparison table** `N.5 Comparison to Expected` (predicted vs measured)
+6. **Write conclusion** in `N.6 Conclusion` (passed / failed / inconclusive, why)
+7. **Note follow-ups** in `N.7 Next Steps` (tweaks, related experiments, open questions)
+8. **Update Summary Dashboard** status emoji at the top
+
+**After all experiments**:
+
+- Fill in `OVERALL CONCLUSIONS` section
+- Complete the comparison matrix (Topology vs Nonlinearity vs Standing Waves)
+- Make recommendation for `What to Implement in M4/M5`
 
 ---
 
@@ -29,7 +67,7 @@ See [2a_lagrangian_eval.md](2a_lagrangian_eval.md) for experiment specifications
 ## EXPERIMENT 1: Sine-Gordon 1D Solitons
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp1_sine_gordon_1d.py`
+**Script**: `scripts_phase2_lagrangian/exp1_sine_gordon_1d.py`
 **Date run**: -
 
 ### 1.1 Hypothesis
@@ -77,7 +115,7 @@ The Sine-Gordon equation `∂²φ/∂t² - c²∂²φ/∂x² + (m²c²/ℏ²)·s
 ## EXPERIMENT 2: Hedgehog Energy vs Distance
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp2_hedgehog_energy.py`
+**Script**: `scripts_phase2_lagrangian/exp2_hedgehog_energy.py`
 **Date run**: -
 
 ### 2.1 Hypothesis
@@ -122,7 +160,7 @@ Two hedgehog defects in a 3D director field produce a clean 1/r Coulomb potentia
 ## EXPERIMENT 3: Topological Charge Quantization
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp3_topological_charge.py` (or function inside Experiment 2)
+**Script**: `scripts_phase2_lagrangian/exp3_topological_charge.py` (or function inside Experiment 2)
 **Date run**: -
 
 ### 3.1 Hypothesis
@@ -163,7 +201,7 @@ The winding number integral `Q = (1/4π) ∮_S (∂_u n × ∂_v n) · n du dv` 
 ## EXPERIMENT 4: Klein-Gordon from Twist Dynamics
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp4_klein_gordon.py`
+**Script**: `scripts_phase2_lagrangian/exp4_klein_gordon.py`
 **Date run**: -
 
 ### 4.1 Hypothesis
@@ -207,7 +245,7 @@ In the uniaxial limit, evolving the twist degree of freedom from the Landau-de G
 ## EXPERIMENT 5: Lagrangian Derivation (Combined W-L from a Lagrangian?)
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp5_lagrangian_derivation.py` (sympy verification)
+**Script**: `scripts_phase2_lagrangian/exp5_lagrangian_derivation.py` (sympy verification)
 **Date run**: -
 
 ### 5.1 Hypothesis
@@ -246,7 +284,7 @@ OpenWave's empirically-selected Combined Wolff-LaFreniere wave equation `ψ = 2A
 ## EXPERIMENT 6: Three Lepton Families from Biaxial Hedgehog
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp6_lepton_families.py`
+**Script**: `scripts_phase2_lagrangian/exp6_lepton_families.py`
 **Date run**: -
 
 ### 6.1 Hypothesis
@@ -285,7 +323,7 @@ A biaxial nematic hedgehog with 3 distinguishable axes produces 3 hedgehog types
 ## EXPERIMENT 7: Close's Nonlinear Vector Wave Equation
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp7_close_vector_wave.py`
+**Script**: `scripts_phase2_lagrangian/exp7_close_vector_wave.py`
 **Date run**: -
 
 ### 7.1 Hypothesis
@@ -326,7 +364,7 @@ Close's nonlinear vector wave equation for spin density (from "Plane Wave Soluti
 ## EXPERIMENT 8: Smolinski's Non-linear Ψ³ (Direct K-Selectivity Test)
 
 **Status**: 🚧 Pending
-**Script**: `scripts_lagrangian/exp8_smolinski_psi3.py`
+**Script**: `scripts_phase2_lagrangian/exp8_smolinski_psi3.py`
 **Date run**: -
 
 ### 8.1 Hypothesis
