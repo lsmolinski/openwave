@@ -2,6 +2,15 @@
 
 Standalone numpy research scripts for evaluating Lagrangian-based wave equations.
 
+## Why "Sandbox"
+
+OpenWave uses two layers of experimentation:
+
+- **Sandbox** (`research_hub/sandbox_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
+- **Production** (`openwave/xperiments/m*/`) — Taichi-based 3D rendering and simulation on the official OpenWave platform. GPU-accelerated, full grid infrastructure, visualization, force & motion. This is the final product where validated equations run at scale.
+
+**Sandbox = explore fast, fail cheap. Production = implement validated winners.**
+
 ## Purpose
 
 Validate (or rule out) candidate Lagrangians before committing to any architecture change in M3/M4. These scripts test the core ideas quickly without requiring GPU acceleration or production engine refactors.
@@ -38,7 +47,7 @@ Each script is self-contained:
 - Output: numbers, plots (matplotlib), or both
 - No production dependencies
 
-Reference: `../scripts_phase1_vector/` and `../scripts_phase1_scalar/` for the established pattern.
+Reference: `../sandbox_phase1_vector/` and `../sandbox_phase1_scalar/` for the established pattern.
 
 ## Recommended Order
 

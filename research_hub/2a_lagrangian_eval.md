@@ -44,7 +44,7 @@ So OpenWave's M3 results (lock-in, K=10 tetrahedron, annihilation) stay valid as
 
 ### The Approach
 
-We will implement 8 numpy research scripts in `research_hub/scripts_phase2_lagrangian/` (same pattern as Phase 1 vector/scalar scripts) to test the core ideas before committing to any architecture change. None of these tests require refactoring M3 or M4 — they're standalone exploration scripts that can validate (or rule out) the Lagrangian framework quickly.
+We will implement 8 numpy research scripts in `research_hub/sandbox_phase2_lagrangian/` (same pattern as Phase 1 vector/scalar scripts) to test the core ideas before committing to any architecture change. None of these tests require refactoring M3 or M4 — they're standalone exploration scripts that can validate (or rule out) the Lagrangian framework quickly.
 
 See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section below for the full test plan.
 
@@ -564,7 +564,7 @@ Reference: coupled pendula visualization https://www.youtube.com/watch?v=nl5Qq5k
 
 **Why this matters**: Sine-Gordon is the simplest equation that produces all of: stable particles (kinks), pair creation/annihilation, and special relativity. It's the closest 1D analog to what we want in 3D. If we can reproduce this, we have a solid foundation for the 3D hedgehog tests.
 
-**Infrastructure**: standalone numpy script in `scripts_phase2_lagrangian/`, ~200 lines. 1D grid, simple PDE evolution. No M3/M4 refactor.
+**Infrastructure**: standalone numpy script in `sandbox_phase2_lagrangian/`, ~200 lines. 1D grid, simple PDE evolution. No M3/M4 refactor.
 
 ### Test 2: Hedgehog Energy vs Distance (Coulomb verification)
 
@@ -660,7 +660,7 @@ Duda's approach: same topology, different axis orientation → different mass.
 
 ## Implementation Feasibility
 
-All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `scripts_phase1_vector/`, `scripts_phase1_scalar/`). Scripts go in `research_hub/scripts_phase2_lagrangian/`.
+All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `sandbox_phase1_vector/`, `sandbox_phase1_scalar/`). Scripts go in `research_hub/sandbox_phase2_lagrangian/`.
 
 | Test | Approach | Effort | M4 refactor? |
 | --- | --- | --- | --- |
@@ -945,7 +945,7 @@ Right now, wave_engine.py has 5 wave equations chosen empirically — and most o
 
 **The key tension**: our current wave_engine.py uses **analytical phasor precomputation** (fast, exact, GPU-friendly). A non-linear Lagrangian (ψ³ or LdG) would require **time-domain PDE evolution** (like M2's Laplacian mode) because superposition doesn't hold for non-linear equations. That's not a refactor — it's a different computation strategy. We already have both patterns in the codebase (M2 = PDE evolution, M3 = analytical phasor).
 
-So the Lagrangian tests in `scripts_phase2_lagrangian/` would first validate *which* Lagrangian is right, and only then would we port the winning equation into wave_engine.py — potentially as a new method (M5) rather than modifying M3.
+So the Lagrangian tests in `sandbox_phase2_lagrangian/` would first validate *which* Lagrangian is right, and only then would we port the winning equation into wave_engine.py — potentially as a new method (M5) rather than modifying M3.
 
 ---
 
@@ -1000,7 +1000,7 @@ Our M2 base wave oscillates at f₀. Duda's vacuum doesn't oscillate — the osc
 
 ### Practical Implication
 
-All 5 Lagrangian tests (scripts_phase2_lagrangian/) require a background vacuum field. They're inherently M2-like (field exists, defects are disturbances), not M3-like (no background). The scripts will initialize a uniform director field `n(x) = ẑ` as the vacuum, then create hedgehog defects as deformations.
+All 5 Lagrangian tests (sandbox_phase2_lagrangian/) require a background vacuum field. They're inherently M2-like (field exists, defects are disturbances), not M3-like (no background). The scripts will initialize a uniform director field `n(x) = ẑ` as the vacuum, then create hedgehog defects as deformations.
 
 This does NOT invalidate M3's results — lock-in, annihilation, K=10 stability are real near-field wave physics demonstrated in M3. But it suggests the far-field (Coulomb, charge quantization) may need a fundamentally different architecture: one where particles are topological features of a background field, not self-contained wave emitters.
 
@@ -1020,7 +1020,7 @@ Duda's model requires a **vector field** (director `n(x)` = unit vector at every
 
 **For full biaxial model** (Test 6, three lepton families): needs 6 independent components per voxel (symmetric 3x3 matrix). M4 stores 3 — but our 6-phasor model (R_x, R_y, R_z, Φ_x, Φ_y, Φ_z) already stores 6 numbers per voxel encoding an ellipsoidal shape. That IS the order parameter tensor Q_ij.
 
-**For numpy research scripts** (scripts_phase2_lagrangian/): infrastructure doesn't matter — we allocate whatever arrays we need. But for eventual GPU implementation (M5 on Taichi), it would extend M4's vector grid infrastructure.
+**For numpy research scripts** (sandbox_phase2_lagrangian/): infrastructure doesn't matter — we allocate whatever arrays we need. But for eventual GPU implementation (M5 on Taichi), it would extend M4's vector grid infrastructure.
 
 #### Future M5 Method, or an upgrade to M4
 
@@ -1152,7 +1152,7 @@ Key equation (from Close's paper):
 
 **Success criterion**: spherical harmonic initial condition evolves into a localized, stable, particle-like structure (soliton/breather) rather than dispersing. If so, this is particle formation from wave dynamics — exactly what OpenWave demonstrates with standing waves, but now derived from a formal Lagrangian.
 
-**Infrastructure**: requires vector field (M4-like), time-domain PDE evolution (M2-like), nonlinear terms. Standalone numpy script in `scripts_phase2_lagrangian/`, ~300-400 lines. No M4 refactor needed.
+**Infrastructure**: requires vector field (M4-like), time-domain PDE evolution (M2-like), nonlinear terms. Standalone numpy script in `sandbox_phase2_lagrangian/`, ~300-400 lines. No M4 refactor needed.
 
 ### Test 8: Smolinski's Non-linear Soliton Wave Equation (Direct K-Selectivity Test)
 
@@ -1221,7 +1221,7 @@ Tests to run:
 - Should `Ψ` be real scalar, or do we need complex (to match NLS form)? Start with real, test complex if real fails
 - Does the K boundary condition (from Sec 8.1.2) need to be explicitly imposed, or does it emerge from the dynamics?
 
-**Infrastructure**: standalone numpy script in `scripts_phase2_lagrangian/`, ~300 lines. Time-domain PDE evolution (like M2 Laplacian mode) on a 3D scalar grid. No M3/M4 refactor.
+**Infrastructure**: standalone numpy script in `sandbox_phase2_lagrangian/`, ~300 lines. Time-domain PDE evolution (like M2 Laplacian mode) on a 3D scalar grid. No M3/M4 refactor.
 
 #### Smolinski's F Functional is a Placeholder
 

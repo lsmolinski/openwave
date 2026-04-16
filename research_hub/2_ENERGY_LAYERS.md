@@ -75,7 +75,7 @@ Additional references (in `/references/`):
 Phase 1c vector wave research (validated infrastructure):
 
 - [1c_vector_wave.md](1c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
-- Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
+- Scripts: `sandbox_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
 ### 🚧 LAYER 5: Gravity Emergence
 
