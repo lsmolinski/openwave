@@ -563,7 +563,7 @@ Smolinski H  = ½(∂ₜψ)² + ½c²|∇ψ|² + (κ/4)·ψ⁴
 
 **Two successes and one important anomaly.**
 
-- ✅ **Smolinski's Ψ³ equation is a textbook Lagrangian derivation.** Starting from `L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴` and applying Euler-Lagrange gives exactly `∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0`. Noether's theorem confirms energy conservation via `H = T + V` with `V = (κ/4)·ψ⁴`. This validates Experiment 8's (pending) K-selectivity test at the mathematical level — Smolinski's term is well-founded in Lagrangian field theory
+- ✅ **Smolinski's Ψ³ equation is a textbook Lagrangian derivation.** Starting from `L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴` and applying Euler-Lagrange gives exactly `∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0`. Noether's theorem confirms energy conservation via `H = T + V` with `V = (κ/4)·ψ⁴`. Smolinski's term is well-founded in Lagrangian field theory. (Note: Exp 8 subsequently falsified the *K-selectivity* claim — the Ψ³ term is mathematically valid but doesn't produce geometric selectivity on its own.)
 - ✅ **The M4-implemented Combined W-L (sum form, `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)`) IS a free-wave solution.** At w=1 (pure standing wave limit) it reduces to `2A·sin(kr)·cos(ωt+φ)/(kr)`, a textbook exact solution. M4's analytical physics is self-consistent with the free-wave Lagrangian
 - ❌ **The documented product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution.** This is the most important finding. The formula decomposes into a valid outgoing-spherical-wave piece `A·sin(kr−ωt−φ)/r` plus a spurious time-oscillating 1/r piece `A·sin(ωt+φ)/r` that has no radial wave structure. The LaFreniere quadrature term `(1−cos(kr))/r` was introduced for empirical reasons (radiation pressure, standing-to-traveling transition) and is **not** a homogeneous solution of the wave equation
 
@@ -985,7 +985,7 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 - **Standing waves remain valid** for near-field physics — M3's lock-in, annihilation, K-degeneracy-at-perfect-placement are real phenomena, just not sufficient alone
 - The combination **topology + nonlinearity + standing waves** covers all phenomena; no single ingredient does
 
-### Winning Approach for M5
+## WINNING APPROACH FOR M5
 
 **M5 / LAGRANGIAN-WAVE METHOD** implements the union:
 
@@ -1006,7 +1006,7 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 1. **Do K=10 WCs emerge as topological defects, not just standing-wave lock-in patterns?** In M3 we placed K=10 WCs by hand; in M5 we'd place K=10 *topological charges*. Whether this gives perturbation-robust K=10 uniqueness is the headline test
 2. **What is the right Skyrme coefficient?** Too small → defects collapse; too large → defects stretch without interacting. There's a physically meaningful range that has to be found by scan
 3. **Does the biaxial LdG potential, with Skyrme added, actually give the lepton mass ratios?** Exp 6.1 (deferred) is the test
-4. **Can Close's actual published equation beat our Mexican-hat proxy?** If yes, it's a competing M5 physics engine
+4. **Does Close's nonlinear equation combined with topology produce stable, physically meaningful dynamics?** Exp 7 v2 confirmed Close's equation is a valid transverse vector-wave equation but saw no soliton from harmonic seeds (as his framework predicts). The real test is combining Close's Eq. 19 with a topologically-seeded hedgehog defect — does the defect propagate, oscillate, radiate waves as Close's plane-wave-bispinor framework would predict? This is an M5 test, not a sandbox test
 5. **How does the M3 near-field lock-in behave once topology is present?** Expected: the existing sinc lock-in persists (waves between defects don't know about topology locally), but the far-field becomes Coulomb (Exp 2). Need to verify
 6. **Is there a "minimum K" below which topology dominates and above which standing waves dominate?** This could be the K=10 transition — too few defects give no topology; too many give standing-wave saturation
 
@@ -1014,9 +1014,9 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 
 - **Implement M5.0 scaffold** per [3c_path_to_m5.md](3c_path_to_m5.md) — mirror M4's Taichi structure, add `psi_old/psi/psi_new` triple buffer, port M2's 6-point Laplacian
 - **Implement `seed_vacuum` and `seed_hedgehog` kernels** as the first new physics (the M5.1 milestone) — direct port of Exps 2 and 3 to Taichi
+- **Implement Close's Eq. 19** (`∂²Q = −c²·∇×∇×Q`) as M5.2 wave dynamics — port from Exp 7 v2 (curl, divergence, curl-curl operators are already validated)
 - **Validate M5.0 linear limit** against M2's free-wave physics and Exp 4's Klein-Gordon dispersion — this is the "physics invariant test" for M5
 - **Optional: write Exp 6.1** (full Q-tensor dynamics) as a continued sandbox investigation if lepton masses become critical
-- **Optional: acquire Close 2025 paper** and port the exact equation into Exp 7.1
 
 ---
 
@@ -1030,6 +1030,6 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 | 2026-04-17 | Exp 4 | Klein-Gordon dispersion ω²=c²k²+m² confirmed (R²=0.999982) |
 | 2026-04-17 | Exp 5 | Smolinski Ψ³ + Noether derived; Combined W-L product form falsified as free-wave solution |
 | 2026-04-17 | Exp 6 | E(K) scaling validated; full biaxial Q-tensor derivation deferred |
-| 2026-04-17 | Exp 7 | Close's proxy equation — no soliton emergence from Y_l^m seeds |
+| 2026-04-17 | Exp 7 | v1: Mexican-hat proxy — no soliton emergence. v2: Close's actual Eqs. 19 & 21 implemented after obtaining the paper — harmonic seeds disperse as Close's framework predicts (particles = plane-wave bispinors, not static solitons); Eq. 19 is now a candidate M5 base wave dynamics layer |
 | 2026-04-17 | Exp 8 | Smolinski Ψ³ K-selectivity hypothesis falsified |
 | 2026-04-17 | Overall | Phase 3 sandbox complete — recommendation to M5: topology + Klein-Gordon + Skyrme |

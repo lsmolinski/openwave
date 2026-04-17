@@ -85,15 +85,16 @@ The M5 leapfrog step becomes:
 ψ_new = 2·ψ − ψ_old + dt²·[c²·∇²ψ − ∂V/∂ψ]
 ```
 
-The specific `V(ψ)` is determined by which sandbox experiment wins:
+The specific `V(ψ)` is selected from sandbox results:
 
-| If the winner is… | Potential term | Source |
+| Candidate | Potential term | Status |
 | --- | --- | --- |
-| Sine-Gordon family | `V(φ) = (m²c⁴/ℏ²)(1 − cos φ)` → `∂V/∂φ = (m²c⁴/ℏ²) sin(φ)` | Exp 1 (validated ✅) |
-| Smolinski Ψ³ | `V(ψ) = (k/4)·ψ⁴` → `∂V/∂ψ = k·ψ³` | Exp 8 (pending) |
-| Landau-de Gennes | `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr M²)²` | Exp 2, 4, 6 (pending) |
-| Close's elastic solid | nonlinear spin-density equation (exact form TBD) | Exp 7 (pending) |
-| Mixed / composite | linear combination with tuned coefficients | informed by Exp 5 |
+| Sine-Gordon family | `V(φ) = (m²c⁴/ℏ²)(1 − cos φ)` → `∂V/∂φ = (m²c⁴/ℏ²) sin(φ)` | ✅ validated (Exp 1) — useful for 1D analogs, not 3D hedgehogs |
+| Smolinski Ψ³ | `V(ψ) = (k/4)·ψ⁴` → `∂V/∂ψ = k·ψ³` | ❌ falsified for K-selectivity (Exp 8); usable only as in-configuration stabilizer |
+| Landau-de Gennes | `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr M²)²` | ⚠️ mechanism validated (Exp 6); specific parameters deferred to M5.6 |
+| Close's elastic solid | Eq. 19 `∂²Q = −c²·∇×∇×Q` + optional Eq. 21 nonlinear terms `−u·∇s + w×s` | ✅ validated (Exp 7 v2) — **selected as M5's base wave dynamics layer** |
+| Klein-Gordon mass term | `V(ψ) = ½m²·ψ²` → `∂V/∂ψ = m²·ψ` | ✅ validated (Exp 4) — **selected as M5's perturbation-mass mechanism** |
+| Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5) |
 
 ### 2. True independent vector components (no radial constraint)
 
@@ -217,79 +218,104 @@ M5 (target):
 
 ---
 
-## DEPENDENCY ON SANDBOX EXPERIMENTS
+## SANDBOX VERDICTS (all 8 experiments complete)
 
-M5 implementation is **gated** on sandbox results. The following decisions need numerical evidence before we commit to an architecture:
+Phase 3 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisions for M5 are now resolved:
 
-| Decision | Needed from |
-| --- | --- |
-| Does nonlinearity alone give K-selectivity? | Exp 8 (Smolinski Ψ³) |
-| Does topology alone give clean 1/r Coulomb? | Exp 2 (hedgehog energy vs distance) |
-| Does topology give integer charge quantization under perturbation? | Exp 3 (winding-number integral) |
-| Does the biaxial-hedgehog mass hierarchy match lepton ratios? | Exp 6 |
-| Does Close's nonlinear vector equation produce localized solitons? | Exp 7 |
-| Can our Combined W-L be derived from a Lagrangian, or must we replace it? | Exp 5 |
-| Does the PDE evolution produce Klein-Gordon dispersion? | Exp 4 |
-| Is leapfrog + nonlinear potential stable with Lorentz-correct kinematics? | Exp 1 ✅ (validated 2026-04-16) |
+| Decision | Resolution | Source |
+| --- | --- | --- |
+| Does nonlinearity alone give K-selectivity? | ❌ **No** — Smolinski Ψ³ produces breathing oscillation only, no K-dependence | Exp 8 |
+| Does topology alone give clean 1/r Coulomb? | ✅ **Yes** — R² = 0.993 post-relax, no sinc | Exp 2 |
+| Does topology give integer charge quantization under perturbation? | ✅ **Yes** — Q = ±1 surface-independent, robust to 50% noise | Exp 3 |
+| Does the biaxial-hedgehog mass hierarchy match lepton ratios? | ⚠️ Mechanism validated (E ∝ K linear); specific ratios achievable by choice of K, not derived. Full Q-tensor derivation = Exp 6.1 (deferred) | Exp 6 |
+| Does Close's nonlinear vector equation produce localized solitons? | ⚠️ No static solitons from harmonic seeds — but Close's framework doesn't actually require them. Close's Eq. 19 IS a valid transverse vector wave equation for M5's base dynamics | Exp 7 v2 |
+| Can our Combined W-L be derived from a Lagrangian, or must we replace it? | ⚠️ The M4 code's sum form IS a free-wave solution. **The documented product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT** — it has a quadrature residual. M5 keeps the sum form, discards the product form | Exp 5 |
+| Does the PDE evolution produce Klein-Gordon dispersion? | ✅ **Yes** — ω² = c²k² + m² validated to R² = 0.999982 across 9 modes | Exp 4 |
+| Is leapfrog + nonlinear potential stable with Lorentz-correct kinematics? | ✅ **Yes** — kink v = 0.4997c (input 0.5c), width L/γ matched, energy drift 1.5e-6 | Exp 1 |
 
-Exp 1 is done and confirms the core M5 evolution loop (leapfrog + nonlinear sin(φ) potential + topologically protected kink solitons, energy drift 1.5e-6 over 100 time units). Remaining experiments select the specific `V(ψ)` and field type.
+**Headline finding**: topology (Exps 1, 2, 3) is load-bearing; pure nonlinearity (Exps 7, 8) is insufficient on its own; Klein-Gordon wave dynamics (Exp 4) are the correct perturbative layer. Full context in [3b_lagrangian_experiments.md § OVERALL CONCLUSIONS](3b_lagrangian_experiments.md#overall-conclusions).
 
 ---
 
-## IMPLEMENTATION PHASES
+## IMPLEMENTATION PHASES (post-sandbox, ready to start)
 
-Once the sandbox winner is selected:
+The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's vector wave equation + M3 near-field physics + Skyrme stabilizer + (eventually) LdG biaxial potential**. Phases below are scoped accordingly.
 
-### Phase M5.0 — Scaffold (independent of winner)
+### Phase M5.0 — Scaffold
 
 - [ ] Create `openwave/xperiments/m5_lagrangian_wave/` directory (mirror m4 structure)
-- [ ] Copy M4's `WaveField`, `WaveCenter`, `WaveTrackers` data classes; extend with `psi_prev`, `psi_new` buffers
+- [ ] Copy M4's `WaveField`, `WaveCenter`, `WaveTrackers` data classes; extend with `psi_prev`, `psi_new` buffers for leapfrog
 - [ ] Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (all unchanged)
-- [ ] Copy M2's `compute_laplacianL` stencil (vectorize to 3 components)
-- [ ] Verify linear limit: with `V(ψ) = 0`, M5 reproduces M2 behavior (sanity test before adding nonlinearity)
+- [ ] Port M2's 6-point Laplacian stencil (`compute_laplacianL` at `m2_laplace_propagation/wave_engine.py:527–562`) for the scalar-component case, then generalize to a 3-vector field for Close's `Q`
+- [ ] Implement curl, divergence, and `curl(curl())` via `∇(∇·F) − ∇²F` (per Exp 7's implementation)
+- [ ] **Physics invariant test**: with `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` for a quadratic potential. Fail this → there's a bug in the core loop
 
-### Phase M5.1 — Port the winning equation
+### Phase M5.1 — Port topology (from Exps 2, 3)
 
-- [ ] Implement the selected `V'(ψ)` term in the leapfrog kernel
-- [ ] Implement the corresponding topological IC (`charge_hedgehog` or `charge_kink` or `charge_spherical_harmonic`)
-- [ ] Validate against the sandbox result (same grid, same parameters, same measured quantities)
+- [ ] Implement `seed_vacuum()` — fill grid with ground-state `n = ẑ`
+- [ ] Implement `seed_hedgehog(center, sign)` — port Exp 2's weighted superposition + renormalization
+- [ ] Implement Frank elastic energy `H = (K/2) · ∫ |∇n|² d³r` on the vector field
+- [ ] Implement gradient-descent relaxation (tangent projection + unit-length renormalization + soft core pinning) — directly from Exp 2
+- [ ] Validate: reproduce Exp 2's hedgehog-pair 1/d Coulomb on Taichi. Target R² > 0.99 across a separation sweep
+- [ ] Implement `winding_number(center, radius)` tracker — port Exp 3's trilinear-sphere-sample + finite-difference surface integral
 
-### Phase M5.2 — Hamiltonian energy + force
+### Phase M5.2 — Wave dynamics (Close's Eq. 19 + Klein-Gordon)
 
-- [ ] Replace `E = ρV(fA)²` with Hamiltonian density `H = T + V(ψ)`
-- [ ] Verify `F = −∇E` still gives the expected particle behavior (same mechanism as M4, new energy source)
-- [ ] Compare energy conservation to M4 baseline
+- [ ] Implement time-stepping leapfrog for `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` — Close's Eq. 19, generalized to include a mass term
+- [ ] Validate: reproduce Exp 4's Klein-Gordon dispersion on the GPU. FFT-extract ω(k), fit ω² = c²k² + m²
+- [ ] Validate: reproduce Exp 7's transverse wave dispersion (dipole/quadrupole seeds disperse as transverse elastic-solid waves)
+- [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag
 
-### Phase M5.3 — Topology diagnostics
+### Phase M5.3 — Hamiltonian energy + force
 
-- [ ] Winding-number tracker (ported from Experiment 3)
-- [ ] Surface-independence verification in production
-- [ ] GUI integration: show Q alongside amplitude, frequency, energy
+- [ ] Replace M4's postulated `E = ρV(fA)²` with the Hamiltonian density `H = ½|∂ₜψ|² + ½c²|∇ψ|² + V(ψ)` derived from the Lagrangian (matches Exp 5's Noether result)
+- [ ] Verify `F = −∇E` still produces the expected particle motion — the mechanism survives, the energy source changes
+- [ ] Cross-check: Exps 2 and 4 measured Hamiltonian energies; M5 must reproduce them
 
-### Phase M5.4 — Multi-defect + K-selectivity re-test
+### Phase M5.4 — Multi-defect K=10 test (the headline goal)
 
-- [ ] Seed K=10 hedgehog arrangement, measure stability under perturbation
-- [ ] Compare to M3 Combined W-L baseline (does topology break the tie between K values?)
-- [ ] Far-field Coulomb validation (does the sinc barrier disappear?)
+- [ ] Seed K=10 hedgehog arrangement on M5 (1-3-6 tetrahedron geometry, per EWT)
+- [ ] Measure stability under perturbation — does topology give perturbation-robust K=10 uniqueness?
+- [ ] Compare to M3 Combined W-L baseline: does the sinc far-field barrier disappear when topology is active?
+- [ ] Measure far-field force on a test particle: does clean 1/d² Coulomb emerge? (Integrate Exp 2's E(d) result with 2-defect M3 motion dynamics)
+- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If K=10 is uniquely stable here, we've done it
 
-### Phase M5.5 — Composite (if needed)
+### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
 
-- [ ] If no single winner solves everything, combine: topology (charge quantization) + nonlinearity (K-selectivity) + standing-wave lock-in (near-field interactions)
-- [ ] This is the "future M5" version Duda's framework implies — explicitly additive, not replacement
+- [ ] Per-Derrick's theorem, a bare topological defect in 3D is unstable to scale change. Add a Skyrme higher-derivative term `(∂_μ s × ∂^μ s)²` to stabilize
+- [ ] Scan Skyrme coefficient to find physically meaningful range
+- [ ] Rerun M5.4 with Skyrme term; compare stability
+
+### Phase M5.6 — Biaxial LdG (deferred long-term)
+
+- [ ] Full 3×3 Q-tensor dynamics with LdG potential `V(Q) = a·Tr(Q²) − b·Tr(Q³) + c·(Tr Q²)²`
+- [ ] Goal: three distinct lepton energy scales emerge from a single set of (a, b, c) LdG parameters
+- [ ] This is the "electron, muon, tau from biaxial geometry" experiment — a significant undertaking beyond initial M5
+
+### What M5 does NOT implement
+
+From the sandbox findings, these are ruled out or de-prioritized:
+
+- **The documented Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r`** — Exp 5 showed this isn't a free-wave solution. M5 uses the M4 *sum form* `A·[sin(kr+ωt+φ) + sin(kr−ωt−φ)]/(kr)` if analytical standing waves are needed
+- **Smolinski's Ψ³ as primary K-selectivity mechanism** — Exp 8 falsified. Ψ³ may still be a stabilizer *inside* a topologically protected configuration, but M5 does not rely on it for geometric selectivity
+- **Seeded-soliton emergence from spherical harmonics as a physics mechanism** — Exp 7 v2 confirmed Close's framework doesn't predict this. Particles in M5 = topological defects (from seed), not emergent solitons from wave seeds
 
 ---
 
 ## STATUS
 
 - [x] Architecture analysis complete (this document)
-- [x] Sandbox Experiment 1 validated ✅ (Sine-Gordon 1D, leapfrog + nonlinear potential + topological stability)
-- [ ] Sandbox Experiments 2–8 (in progress, see `3b_lagrangian_experiments.md`)
-- [ ] Sandbox winner selected (TBD after experiments complete)
-- [ ] M5.0 scaffold
-- [ ] M5.1 winning-equation port
-- [ ] M5.2 Hamiltonian energy
-- [ ] M5.3 topology diagnostics
-- [ ] M5.4 multi-defect validation
-- [ ] M5.5 composite (conditional)
+- [x] **All 8 sandbox experiments complete** — see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md):
+  - ✅ Exp 1 (Sine-Gordon kinks), ✅ Exp 2 (Hedgehog Coulomb), ✅ Exp 3 (Winding quantization), ✅ Exp 4 (Klein-Gordon dispersion)
+  - ⚠️ Exp 5 (Lagrangian derivation — W-L product form falsified), ⚠️ Exp 6 (lepton mechanism; specific ratios deferred), ⚠️ Exp 7 v2 (Close's actual equations implemented)
+  - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
+- [x] **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 19 + M3 near-field + Skyrme stabilizer
+- [ ] M5.0 — Scaffold (Taichi structure, triple buffer, Laplacian, curl/div operators)
+- [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
+- [ ] M5.2 — Wave dynamics from Close's Eq. 19 + Klein-Gordon mass term, validate Exp 4 dispersion
+- [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
+- [ ] M5.4 — **Headline test**: K=10 hedgehog stability under perturbation + far-field Coulomb recovery
+- [ ] M5.5 — Skyrme stabilizer (conditional on M5.4)
+- [ ] M5.6 — Biaxial LdG Q-tensor (long-term; for lepton mass derivation)
 
-**Next action**: continue sandbox experiments per `3b_lagrangian_experiments.md`. M5 implementation begins once a winning combination is identified.
+**Next action**: begin **M5.0 scaffold**. The sandbox is done; the recipe is known. Move to production implementation on the Taichi engine.

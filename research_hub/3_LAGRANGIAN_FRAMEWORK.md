@@ -1,6 +1,8 @@
-# LAGRANGIAN FRAMEWORK
+# PHASE 3 — LAGRANGIAN FRAMEWORK
 
-A research sub-project evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
+A research phase evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
+
+> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md). For the M5 implementation plan see [3c_path_to_m5.md](3c_path_to_m5.md). For the conceptual walk-through see [3a_concept_review.md](3a_concept_review.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
 
 ---
 

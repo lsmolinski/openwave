@@ -2,6 +2,8 @@
 
 A conceptual walk-through of the Lagrangian / topological framework from Rodrigo's intuitive-build-up perspective. This document captures where the EWT / M1-M2-M3 physical picture has to bend to accommodate Duda's vacuum + defect framing, and where it stays the same.
 
+**Status** (2026-04-17): the 8 sandbox experiments of Phase 3 are now complete. Every conceptual claim below that had a testable prediction has been checked numerically. The consolidated "empirical validation" scorecard is in the **[EMPIRICAL VALIDATION](#empirical-validation--what-the-sandbox-experiments-confirmed)** section near the end of this document. Core findings in one line: **topology is load-bearing, Klein-Gordon-like wave dynamics validate the mass-gap mechanism, pure scalar/vector nonlinearity without topology is insufficient**.
+
 Related reading:
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
@@ -104,36 +106,53 @@ Layers 1 and 2 are correct. Layer 3 is the one the Lagrangian framework reframes
 ## CORRECTED CONCEPTUAL LAYERING
 
 ```text
-Layer 0 — Vacuum (static)
+Layer 0 — Vacuum (static)                                [✅ Exps 2, 3, 4, 7]
     The elastic medium in its ground state. Not moving. Not flowing.
     What sits everywhere when "nothing is happening".
     In Duda's language: the MINIMUM of V(ψ), where all directors
     align peacefully.
+    Validated: all experiments that seeded a vacuum (n = ẑ or Q = 0)
+    confirmed it as a stable background.
 
-Layer 1 — Topological defects (static structure)
+Layer 1 — Topological defects (static structure)         [✅ Exps 1, 2, 3]
     Places where the vacuum's orientation CANNOT be smoothly returned
-to the ground state. These are the WCs. Charge, spin, and identity
+    to the ground state. These are the WCs. Charge, spin, and identity
     come from here. Still no motion.
+    Validated: Exp 2 gave clean 1/d Coulomb between hedgehog + anti-
+    hedgehog (R²=0.993, no sinc); Exp 3 confirmed winding number
+    Q = ±1 is an integer, surface-independent, robust to 50% noise;
+    Exp 1 showed 1D kink analogs carry stored mass energy (8·mc²).
 
-Layer 2 — Perturbations around the vacuum (small, linear)
+Layer 2 — Perturbations around the vacuum (small, linear) [✅ Exp 4, partial Exp 7]
     Disturb the vacuum a little and it oscillates around the minimum.
     These oscillations propagate — that's a wave. Small perturbations
     satisfy Klein-Gordon:  (∂² − c²∇² + m²)ψ = 0.
     This is where waves come from in the Lagrangian picture.
+    Validated: Exp 4 confirmed ω² = c²k² + m² to R² = 0.999982 across
+    9 modes; Exp 7 (v2) confirmed Close's Eq. 19 gives transverse
+    elastic-solid wave propagation — both are consistent with Layer 2.
 
-Layer 3 — Non-perturbative dynamics (defect self-motion)
+Layer 3 — Non-perturbative dynamics (defect self-motion)  [⚠️ hinted, not directly tested]
     A defect is a LARGE, topologically protected perturbation. It has
     mass (stored energy, E = 8·m·c² for Sine-Gordon kinks — validated
     numerically in Experiment 1). Via the curvature of V(ψ) at the
     defect, it "trembles" at ω = 2mc²/ℏ on its own.
     This is the time-crystal mechanism — the defect oscillates without
     anyone pushing it.
+    Validated: Exp 1 measured exactly E = 8·mc² for the static kink
+    (0.06% off), and the mass-gap mechanism is confirmed at linear
+    order by Exp 4. The full time-crystal Zitterbewegung oscillation
+    requires a driven defect simulation, not done in sandbox.
 
-Layer 4 — Radiation, standing waves, bound states
+Layer 4 — Radiation, standing waves, bound states         [⚠️ partial]
     Oscillating defects shake the surrounding vacuum → emit waves
     outward. When two defects are near each other, their emitted waves
     interfere → standing-wave patterns in the space between them.
     This is orbit quantization (hydrogen, Couder droplets).
+    Validated: Exp 2 showed two defects interact at a distance via the
+    intervening field (the 1/d Coulomb is a manifestation of this).
+    Standing-wave lock-in between multiple defects wasn't directly
+    tested — reserved for M5 multi-defect runs.
 ```
 
 ---
@@ -324,7 +343,7 @@ When M5 is built ([3c_path_to_m5.md](3c_path_to_m5.md)), we must pick: *what doe
 - **Option B (pure LdG / Duda)**: ψ = director n(x) directly (3D unit vector). Model only the orientation, not the underlying ellipse.
 - **Option C (Close / elastic solid)**: ψ = spin density (local rotation axis). Evolves under Close's nonlinear vector wave equation.
 
-Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Experiments 4, 5, 7, 8 will help decide which option M5 commits to for its full physics. The `3c_path_to_m5.md` doc deliberately leaves this open — it's exactly the "sandbox winner" decision the 8 experiments are designed to settle.
+Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Exps 4–8 have now run: Exp 4 confirmed Klein-Gordon dispersion on a scalar ψ (Option A/B-neutral); Exp 7 v2 confirmed Close's vector-Q approach works as transverse elastic-solid dynamics (Option C). **The resolved M5 recipe** (per [3b § Winning Approach for M5](3b_lagrangian_experiments.md#winning-approach-for-m5) and [3c](3c_path_to_m5.md)) uses **Option B (director) for topology** (from Exps 2, 3) combined with **Option C (Close's Eq. 19) for wave dynamics** on top — both layers validated in the sandbox.
 
 ### The fundamental reframe
 
@@ -336,11 +355,58 @@ Displacement is one valid choice. Orientation is another. Angle is another. What
 
 ---
 
+## EMPIRICAL VALIDATION — WHAT THE SANDBOX EXPERIMENTS CONFIRMED
+
+With all 8 Phase 3 sandbox experiments complete (see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) for full write-ups), we can now mark each conceptual claim in this document with its experimental status.
+
+### Claim-by-claim scorecard
+
+| Conceptual claim | Status | Validating experiment(s) |
+| --- | --- | --- |
+| Vacuum is a stable ground state (Layer 0) | ✅ Confirmed | All experiments — `n = ẑ` / `Q = 0` remains stable |
+| Topological defects are real, with integer charge (Layer 1) | ✅ Strongly confirmed | Exp 3 (Q = ±1, robust to 50% noise) |
+| Defects produce far-field Coulomb 1/d interaction | ✅ Strongly confirmed | Exp 2 (R² = 0.993, no sinc) |
+| Defects carry stored mass-energy | ✅ Confirmed | Exp 1 (kink energy = 8·mc², 0.06% off) |
+| Defects exhibit relativistic kinematics (Lorentz contraction) | ✅ Confirmed | Exp 1 (measured v = 0.4997c at input 0.5c; width = L/γ) |
+| Perturbations of vacuum give massive Klein-Gordon waves (Layer 2) | ✅ Confirmed | Exp 4 (ω² = c²k² + m² to R² = 0.999982) |
+| Mass emerges from the curvature of V(ψ) | ✅ Confirmed at linear order | Exp 4 (quadratic potential → mass gap observed) |
+| Close's vector wave equation = transverse elastic-solid wave | ✅ Confirmed | Exp 7 v2 (Eq. 19 implementation gives dispersing transverse waves) |
+| Smolinski's Ψ³ is derived from a quartic Lagrangian | ✅ Confirmed (sympy) | Exp 5 Test 2 |
+| Noether gives energy conservation `H = T + V` | ✅ Confirmed (sympy) | Exp 5 Test 3 |
+| Combined W-L product form (docs) is a free-wave solution | ❌ Falsified | Exp 5 Test 1d — residual `−A·c²k²·sin(ωt+φ)/r ≠ 0` |
+| Nonlinearity alone can produce K-selectivity | ❌ Falsified | Exp 8 (K=1, 2, 4, 6, 8 all behave the same under Ψ³) |
+| Biaxial geometry can produce three distinct energy scales | ⚠️ Mechanism confirmed, specific ratios deferred | Exp 6 (E ∝ K linear; lepton ratios reproduced by construction, not derived) |
+| Close's equation supports soliton emergence from harmonic seeds | ⚠️ Not confirmed — but Close's framework doesn't actually require it | Exp 7 v2 (particles in Close's picture = plane-wave bispinors, not solitons) |
+| Time-crystal Zitterbewegung emerges naturally | ⚠️ Hinted, not directly tested | Mass-gap mechanism (Layer 3) validated by Exp 4 at linear order |
+| Standing-wave lock-in between multiple defects (Layer 4) | 🚧 Reserved for M5 | Not in sandbox scope |
+
+### What the pattern of results tells us
+
+1. **Topology (Layer 1) is the most strongly validated ingredient.** Exps 1, 2, 3 each decisively confirmed different aspects (stability, Coulomb, quantization). Topology is the *load-bearing structural element* of the whole framework
+2. **Klein-Gordon wave dynamics (Layer 2) are also cleanly validated** — but this is mostly textbook physics we reproduced numerically to make sure our leapfrog PDE solver is correct. The interesting step is that the *mass gap from a potential* (not assumed, not imposed) emerges automatically
+3. **Nonlinearity alone is NOT sufficient** — Exp 8 killed the "Smolinski Ψ³ gives K-selectivity" hypothesis cleanly, and Exp 7 v2 showed that a nonlinear vector equation without topology also doesn't spontaneously localize from harmonic seeds. This constrains M5: it must have topology, not just nonlinearity
+4. **Documentation integrity check**: Exp 5 caught a concrete error — the product form of Combined W-L in our docs does not actually satisfy the free-wave equation. The code's sum form is correct; the docs needed updating
+
+### Updated conceptual layering (after the sandbox)
+
+The corrected layering in [CORRECTED CONCEPTUAL LAYERING](#corrected-conceptual-layering) above now has inline `[✅ Exp N]` markers showing which experiments validated each layer. Layers 0, 1, 2 are empirically solid; Layer 3 (time-crystal) is hinted at by Layer 2 + Exp 1; Layer 4 (standing waves between defects) is reserved for M5 multi-defect runs on the production engine.
+
+### Refinements to the mental model
+
+The one conceptual shift that came from the experiments (vs. just validating what we expected):
+
+- **"Combined W-L is an exact free-wave solution"** — what the M3/M4 docs claimed — was wrong. The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` contains a quadrature piece `(1−cos(kr))/r·sin(ωt+φ)` that is NOT a free-wave solution. The M4 code's equivalent sum form IS a solution; they're not algebraically identical. For M5, we keep the sum form and discard the claim that the product form is Lagrangian-derived. See [0_WAVE_EQUATION.md § M3: The Quest for the Wave Equation](0_WAVE_EQUATION.md#m3-the-quest-for-the-wave-equation-vs-lagrangian-mechanics) and [3b § Experiment 5](3b_lagrangian_experiments.md#experiment-5-lagrangian-derivation-combined-w-l-from-a-lagrangian) for the full reasoning
+
+This is exactly the kind of finding the Lagrangian framework was designed to surface: when you formalize the equation's origin, latent inconsistencies in empirical modeling choices show up.
+
+---
+
 ## KEY TAKEAWAYS
 
-1. **Vacuum first, waves second.** The elastic medium at rest is the starting point; waves are *oscillations of* the vacuum, not something that *flows through* it.
-2. **Defects are features of the field, not external objects.** A WC is a topologically protected configuration of the vacuum, not a particle-with-stuff-attached.
-3. **Waves emerge from disturbing the vacuum** — via external perturbation, defect motion, or intrinsic time-crystal trembling.
-4. **Standing waves are interference patterns between defect emissions** — the same mechanism as musical instruments or Couder droplets. M3's lock-in physics is preserved in this role.
-5. **Energy sources are explainable**, not assumed. The time-crystal mechanism tells us *why* electrons oscillate at ω = 2mc²/ℏ instead of assuming a universal base wave.
-6. **ψ is not always a displacement.** In M1-M4 it is; in the Lagrangian framework it can be a displacement, an orientation, an angle, or a rotation axis. The granules are always underneath; ψ is a coarse-grained observable chosen by the Lagrangian. "Vacuum at rest" is a statement at the ψ level, not the granule level — granules never truly rest.
+1. **Vacuum first, waves second.** The elastic medium at rest is the starting point; waves are *oscillations of* the vacuum, not something that *flows through* it. **[✅ Exp 4: Klein-Gordon dispersion emerges from perturbing a quadratic-potential vacuum]**
+2. **Defects are features of the field, not external objects.** A WC is a topologically protected configuration of the vacuum, not a particle-with-stuff-attached. **[✅ Exps 1, 2, 3: kinks, hedgehogs, winding numbers all validated as field configurations]**
+3. **Waves emerge from disturbing the vacuum** — via external perturbation, defect motion, or intrinsic time-crystal trembling. **[✅ Layer 2 confirmed in Exp 4, Layer 3 hinted at by Exp 1 mass measurement]**
+4. **Standing waves are interference patterns between defect emissions** — the same mechanism as musical instruments or Couder droplets. M3's lock-in physics is preserved in this role. **[🚧 Multi-defect lock-in reserved for M5 — not directly tested in sandbox]**
+5. **Energy sources are explainable**, not assumed. The time-crystal mechanism tells us *why* electrons oscillate at ω = 2mc²/ℏ instead of assuming a universal base wave. **[✅ Mass-gap mechanism validated at linear order by Exp 4 (`ω² = c²k² + m²`)]**
+6. **ψ is not always a displacement.** In M1-M4 it is; in the Lagrangian framework it can be a displacement, an orientation, an angle, or a rotation axis. The granules are always underneath; ψ is a coarse-grained observable chosen by the Lagrangian. "Vacuum at rest" is a statement at the ψ level, not the granule level — granules never truly rest. **[Framework-level claim — confirmed by which observables each experiment used: Exp 1 used angle φ, Exps 2/3 used director n̂, Exp 4 used scalar ψ, Exp 7 used vector Q]**
+7. **Topology is the load-bearing ingredient — nonlinearity alone is insufficient.** This was the emergent lesson from the full Phase 3 program. **[Pattern evident from Exps 2, 3 (✅ topology) + Exp 8 (❌ pure nonlinearity) + Exp 7 v2 (⚠️ nonlinear vector equation without topology)]**
