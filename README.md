@@ -272,11 +272,15 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ## SCIENTIFIC BACKGROUND
 
-OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT). Key points:
+OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT).
+
+OpenWave is a programmatic computing and rendering package built for experimentation with different scientific theories and models. More details on the key scientific sources and theoretical contributions can be found at [Scientific Sources](SCIENCE.md).
+
+Key points:
 
 ### The Spacetime Medium
 
-OpenWave proposes a fluid-like medium permeating all space, vibrating at extremely high frequencies.
+OpenWave proposes a fluid-like elastic medium permeating all space, vibrating at extremely high frequencies.
 
 ### Computational Approach
 
@@ -314,34 +318,6 @@ Current capabilities (Released):
 - ✅ Makes wave mechanics intuitive and visual
 - ✅ Demonstrates wave interference, standing waves, propagation
 - ✅ Helps students understand wave-field thinking
-
-## THEORETICAL SOURCE
-
-OpenWave is a programmatic computing and rendering package based on the [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") mathematical framework.
-
-Prior to using and contributing to OpenWave, it is recommended to study and familiarize yourself with this approach to subatomic physics from the following resources:
-
-### EWT Resources
-
-- Main Entry Point: [EWT Website](https://energywavetheory.com)
-- OpenWave Project Page: [EWT Project](https://energywavetheory.com/project/)
-- Research Papers: [Publications](https://www.researchgate.net/profile/Jeff-Yee-3)
-- Explainer Videos: [Video Channel](https://www.youtube.com/@EnergyWaveTheory)
-- Literature: [eBooks](https://www.amazon.com/gp/product/B078RYP7XD)
-
-### Pioneers and Origins
-
-The [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") is a deterministic quantum mechanics model proposed by [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics:
-
-**Historical Inspiration:**
-
-- Albert Einstein - [EPR Paradox, Determinism Debates](https://en.wikipedia.org/wiki/Einstein%E2%80%93Podolsky%E2%80%93Rosen_paradox)
-- Louis de Broglie - [Pilot Wave Theory Foundations](https://en.wikipedia.org/wiki/Pilot_wave_theory)
-- David Bohm - [Bohmian Mechanics](https://en.wikipedia.org/wiki/De_Broglie%E2%80%93Bohm_theory)
-- Milo Wolff - [Wave Structure of Matter](https://www.amazon.com/dp/0962778710) & [Schroedinger's Universe](https://www.amazon.com/Schroedingers-Universe-Origin-Natural-Laws-ebook/dp/B001MIZV3A)
-- Gabriel LaFreniere - [Matter is Made of Waves](https://github.com/openwave-labs/lafreniere)
-
-**Theoretical Classification:** EWT is a deterministic wave mechanics framework that provides mechanistic explanations for quantum phenomena through classical wave-field dynamics.
 
 ## INSTALLATION INSTRUCTIONS
 
