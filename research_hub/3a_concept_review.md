@@ -11,6 +11,84 @@ Related reading:
 
 ---
 
+## GLOSSARY — FIELD, VACUUM, SPACETIME, AETHER, GRANULES
+
+These five terms get used interchangeably in physics writing but mean different things. This is the disambiguation for OpenWave's vocabulary.
+
+### The ontological stack (bottom to top)
+
+```text
+╔══════════════════════════════════════════════════════════════╗
+║  FIELD  ψ(x,t), n(x,t), φ(x,t)                               ║
+║         ← MATHEMATICAL description / observable              ║
+║         (what we compute with in code)                       ║
+╠══════════════════════════════════════════════════════════════╣
+║  VACUUM                                                      ║
+║         ← STATE of the aether (field at its ground state)    ║
+║         not a substance — a condition                        ║
+╠══════════════════════════════════════════════════════════════╣
+║  SPACETIME  ≈  AETHER                                        ║
+║         ← the SUBSTANCE, viewed at large scales              ║
+║         (OpenWave rejects empty spacetime — spacetime IS     ║
+║          the aether)                                         ║
+╠══════════════════════════════════════════════════════════════╣
+║  GRANULES (Planck-scale)                                     ║
+║         ← PHYSICAL microphysics — discrete particles         ║
+║         Planck mass, oscillate, actually exist               ║
+║         Bottom of the ontology                               ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+### One-line definitions
+
+| Term | One-liner | Type |
+| --- | --- | --- |
+| **Granule** | A discrete Planck-scale particle. The actual "stuff" of the universe. Has mass (Planck mass), oscillates, can move. | Physical object |
+| **Aether** | The ensemble / sea of granules viewed as a substance. "The medium". | Substance |
+| **Spacetime** | The aether viewed at large scales — where geometry lives. In OpenWave, spacetime IS the aether, not a backdrop for it. | Substance (= aether) |
+| **Medium** | Synonym for aether. Used when emphasizing wave propagation. | Substance (= aether) |
+| **Vacuum** | The *state* of the aether when no particles are present. Ground state of the field's potential V(ψ). Not "empty space" — a condition of the aether. | State |
+| **Field** | The mathematical object we use to describe the aether's observable state. ψ(x,t), n(x,t), φ(x,t). A coarse-grained view of granule dynamics. | Mathematical construct |
+
+### The four key conceptual moves
+
+**1. Spacetime = aether.** Standard physics treats spacetime as an empty manifold; EWT / OpenWave treats it as the physical aether. Same thing at different vocabulary layers: physicists say "spacetime" for the geometry, we say "aether" when emphasizing the physical stuff, but they're the same substance.
+
+**2. Vacuum ≠ aether.** "Vacuum" is *not another substance* — it's a *state*. Specifically, the state where the aether is at the minimum of its potential V(ψ), with no particles / defects / excitations. The aether (granule sea) still exists in vacuum; it's just undisturbed.
+
+**3. Field ≠ aether.** The field ψ(x,t) is a *mathematical description* of the aether's state, not the aether itself. Different Lagrangians use different fields (scalar displacement, director, spin density, angle) — all observables of the same underlying granule ensemble. The aether is the *territory*; the field is the *map*.
+
+**4. Granules are the microphysics; aether is the macro.** Granules are discrete; the aether (viewed at length scales >> Planck) appears continuous. Same relationship as molecules → fluid, atoms → crystal. The coarse-graining gives you a field; the underlying reality is granular.
+
+### Where each term lives in OpenWave
+
+| Term | Where you see it in code / docs |
+| --- | --- |
+| **Granule** | M1 engine (`m1_granule_motion/`), `constants.py` (Planck mass, granule density), scientific source papers |
+| **Aether / Medium** | EWT papers (aether density ρ = 3.86×10²² kg/m³), README.md ("aether-like medium") |
+| **Spacetime** | README.md ("spacetime subatomic simulator"), docstrings ("@spacetime module"). Often used synonymously with aether |
+| **Vacuum** | Phase 3 / Lagrangian framework (`3_LAGRANGIAN_FRAMEWORK.md`, this doc) — the Duda / Close language |
+| **Field** | M2 engine (scalar ψ), M4 engine (vector ψ), sandbox experiments (director n, kink φ) |
+
+### Common confusions to watch out for
+
+- **"Vacuum" does NOT mean "nothing there".** The granules are still present; they're just in their ground-state configuration. Vacuum has density, stiffness, supports waves. Classical physics calls this "full aether"; modern QFT calls it "vacuum with nonzero expectation values".
+- **"Spacetime is curved" (GR) ↔ "the aether has a deformation" (OpenWave).** Same physics, different vocabulary. Einstein's "fields" are curvature of spacetime; EWT's fields are configurations of the aether.
+- **"Field ψ" vs "aether"** — ψ is not the aether. ψ is our *mathematical bookkeeping* about what the aether is doing. Change Lagrangian → ψ's meaning changes. The aether doesn't change.
+- **Granules vs. particles (electron, etc.)** — granules are the *microscopic* building blocks (Planck scale, ~10⁻³⁵ m). Particles like electrons (~10⁻¹⁵ m) are *composite topological structures* built from many granules. Don't confuse "granule" with "electron" — they're 20 orders of magnitude apart.
+
+### Short cheat sheet
+
+```text
+PHYSICAL SUBSTANCE:  granules → aether → spacetime (same thing, different scales)
+STATE OF SUBSTANCE:  vacuum (ground state) vs excited (contains particles/waves)
+MATHEMATICAL MAP:    field ψ, n, φ — varies by Lagrangian
+PARTICLES:           topological defects / excitations of the aether
+WAVES:               perturbations of the aether around the vacuum state
+```
+
+---
+
 ## THE INTUITIVE LAYERING — USER'S FIRST PASS
 
 Rodrigo's initial mental model, after working through the sandbox experiments:
