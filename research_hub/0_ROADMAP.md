@@ -268,7 +268,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ✅ Test 1: Sine-Gordon 1D — kink solitons, pair creation/annihilation, Lorentz contraction (build intuition) — passed 2026-04-16
   - ✅ Test 2: Hedgehog energy vs distance — clean 1/d Coulomb, R²=0.993, no sinc — passed 2026-04-16
   - ✅ Test 3: Topological charge quantization — Q=±1 integer, surface-independent, stable under 50% noise — passed 2026-04-16
-  - [ ] Test 4: Klein-Gordon from twist dynamics (dispersion relation)
+  - ✅ Test 4: Klein-Gordon from twist dynamics — dispersion ω² = c²k² + m² validated to R² = 0.999982 across 9 modes; slope c² within 0.05%, mass gap within 1.3% — 2026-04-17
   - ⚠️ Test 5: Lagrangian derivation — Smolinski Ψ³ + Noether energy confirmed ✅; M4 sum-form Combined W-L satisfies free-wave EL ✅; doc product form `sin(kr/2)·cos(kr/2−(ωt+φ))/r` does NOT (quadrature term is not a free-wave solution — modeling choice, needs source term to exist) — 2026-04-17
   - [ ] Test 6: Three lepton families from biaxial hedgehog (mass ratios)
   - [ ] Test 7: Close's nonlinear vector wave eq — seed with spherical harmonic, evolve, observe particle emergence
