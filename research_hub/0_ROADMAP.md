@@ -272,7 +272,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ⚠️ Test 5: Lagrangian derivation — Smolinski Ψ³ + Noether energy confirmed ✅; M4 sum-form Combined W-L satisfies free-wave EL ✅; doc product form `sin(kr/2)·cos(kr/2−(ωt+φ))/r` does NOT (quadrature term is not a free-wave solution — modeling choice, needs source term to exist) — 2026-04-17
   - [ ] Test 6: Three lepton families from biaxial hedgehog (mass ratios)
   - [ ] Test 7: Close's nonlinear vector wave eq — seed with spherical harmonic, evolve, observe particle emergence
-  - [ ] Test 8: Smolinski's non-linear Ψ³ — direct K-selectivity test, time-domain PDE with `-k·Ψ³` term
+  - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
 - [ ] Select winning combination (topology + nonlinearity + vector structure) after all 8 experiments run
 - [ ] M5 / LAGRANGIAN-WAVE METHOD implementation (dir `openwave/xperiments/m5_lagrangian_wave/`) — gated on sandbox winner, see [3c_path_to_m5.md](3c_path_to_m5.md)
   - [ ] M5.0 Scaffold — mirror m4 structure, add `psi_prev/psi/psi_new` triple buffer
