@@ -270,7 +270,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ✅ Test 3: Topological charge quantization — Q=±1 integer, surface-independent, stable under 50% noise — passed 2026-04-16
   - ✅ Test 4: Klein-Gordon from twist dynamics — dispersion ω² = c²k² + m² validated to R² = 0.999982 across 9 modes; slope c² within 0.05%, mass gap within 1.3% — 2026-04-17
   - ⚠️ Test 5: Lagrangian derivation — Smolinski Ψ³ + Noether energy confirmed ✅; M4 sum-form Combined W-L satisfies free-wave EL ✅; doc product form `sin(kr/2)·cos(kr/2−(ωt+φ))/r` does NOT (quadrature term is not a free-wave solution — modeling choice, needs source term to exist) — 2026-04-17
-  - [ ] Test 6: Three lepton families from biaxial hedgehog (mass ratios)
+  - ⚠️ Test 6: Three lepton families — E(K) scaling validated (R²=1.0). Three distinct K values reproduce lepton mass² ratios by construction (consistency check, not derivation). Full biaxial Q-tensor derivation deferred to Exp 6.1 — 2026-04-17
   - [ ] Test 7: Close's nonlinear vector wave eq — seed with spherical harmonic, evolve, observe particle emergence
   - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
 - [ ] Select winning combination (topology + nonlinearity + vector structure) after all 8 experiments run
