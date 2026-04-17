@@ -174,10 +174,10 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 - [ ] Characterize near-field → far-field transition boundary (particle radius K²λ)
   - [ ] Where do standing waves end and traveling waves begin?
 
-#### Lagrangian & Topological Evaluation — [2a_lagrangian_eval.md](2a_lagrangian_eval.md)
+#### Lagrangian & Topological Evaluation — [2a_lagrangian_eval.md](2a_lagrangian_eval.md) · [2b_lagrangian_experiments.md](2b_lagrangian_experiments.md) · [2c_path_to_m5.md](2c_path_to_m5.md)
 
 - [ ] Evaluate Lagrangian formulation for OpenWave (Duda / Close challenges)
-  - [ ] Test 1: Sine-Gordon 1D — kink solitons, pair creation/annihilation, Lorentz contraction (build intuition)
+  - ✅ Test 1: Sine-Gordon 1D — kink solitons, pair creation/annihilation, Lorentz contraction (build intuition) — passed 2026-04-16
   - [ ] Test 2: Hedgehog energy vs distance (Coulomb from topology, no sinc)
   - [ ] Test 3: Topological charge quantization (winding number integral)
   - [ ] Test 4: Klein-Gordon from twist dynamics (dispersion relation)
@@ -185,6 +185,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
   - [ ] Test 6: Three lepton families from biaxial hedgehog (mass ratios)
   - [ ] Test 7: Close's nonlinear vector wave eq — seed with spherical harmonic, evolve, observe particle emergence
   - [ ] Test 8: Smolinski's non-linear Ψ³ — direct K-selectivity test, time-domain PDE with `-k·Ψ³` term
+- [ ] M5 engine implementation (gated on experiment winner) — see [2c_path_to_m5.md](2c_path_to_m5.md)
 
 #### Wrap-Up Layers 1-3
 

@@ -116,7 +116,7 @@ Engineering improvements (not physics changes):
 
 ---
 
-## 🧪 LAGRANGIAN EVALUATION (Sub-Project) — see [2a_lagrangian_eval.md](2a_lagrangian_eval.md)
+## 🧪 LAGRANGIAN EVALUATION (Sub-Project) — see [2a_lagrangian_eval.md](2a_lagrangian_eval.md) · [2b_lagrangian_experiments.md](2b_lagrangian_experiments.md) · [2c_path_to_m5.md](2c_path_to_m5.md)
 
 A new research thread sparked by an email exchange in the "Models of Particles" group with two prominent researchers. The goal: evaluate whether a Lagrangian formulation could derive the correct wave equation from first principles instead of testing equations empirically.
 
@@ -201,7 +201,13 @@ This could be the unification: not "topology vs waves" but "topology IS the geom
 
 - Lagrangian model needs a **vector field → M4** (not M3 scalar) — director field requires 3+ components per voxel
 - Needs a **background vacuum field → M2-like philosophy** (not M3's "WCs emit into void")
-- Future **M5 method** would combine: M2 (background field) + M3 (near-field results) + M4 (vector infrastructure) + Duda's topology + time crystal dynamics + Close's Lagrangian
+- Future **M5 / LAGRANGIAN-WAVE METHOD** (dir `m5_lagrangian_wave/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [2c_path_to_m5.md](2c_path_to_m5.md)
+
+### Physical Intuition: Granule Ellipses Already Carry Topology
+
+OpenWave simulates Planck-scale granules oscillating in **elliptical trajectories around equilibrium**. M4's 6-phasor (3 amplitudes + 3 phases per voxel) fully describes each granule's ellipse: shape, orientation, timing. Crucially, the ellipse has a **natural orientation** (major axis + orbital-plane normal + handedness), and that orientation *is* the director field Duda's topological framework operates on. Close's 2025 "spin density vector" is exactly this: the normal to the local ellipse of elastic motion.
+
+This means **M4 is a superset of Duda's framework, not a peer of it** — the director field is a projection of M4's existing ellipse data, and topological charge is a new *diagnostic* on top of existing infrastructure, not a new data structure. See [0_WAVE_EQUATION.md § M4's Elliptical Motion and the Director Field](0_WAVE_EQUATION.md#m4s-elliptical-granule-motion-and-the-director-field) for the full explanation.
 
 ---
 
