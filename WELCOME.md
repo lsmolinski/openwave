@@ -49,11 +49,11 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 **In this model:**
 
-- Spacetime is computationally represented as oscillations at extremely high frequencies (~10^25Hz in EWT's framework)
+- Spacetime is computationally represented as oscillations at extremely high frequencies (~10^25Hz)
 - If you slow down the simulator frequency and increase the amp boost, you can observe WAVE PATTERNS (these waves are the effect of harmonic oscillations)
 - The wave patterns serve as the energy source for modeling all energy forms, forces, and matter development in the simulation
 - Now reduce the granule size and observe the wave pulse - this rhythm represents the model's fundamental time parameter (the wave's frequency defines the simulation's clock)
-- These waves are called ENERGY WAVES in EWT's framework - the computational primitives for this modeling approach
+- These waves are called ENERGY WAVES - the computational primitives for this modeling approach
 
 **What you're seeing:** A computational representation of wave mechanics as the foundation for physical phenomena.
 
@@ -65,7 +65,7 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 ### 2. Spherical Wave
 
-This xperiment demonstrates in a 3D view how a spherical longitudinal wave propagates through the granular simulation. In EWT's framework, longitudinal waves are the primary mode for modeling ENERGY WAVE propagation.
+This xperiment demonstrates in a 3D view how a spherical longitudinal wave propagates through the granular simulation. Longitudinal waves are the primary mode for modeling ENERGY WAVE propagation.
 
 **Educational value:** Helps visualize how waves spread through a medium and how energy transfers from one location to another.
 
@@ -77,7 +77,7 @@ This xperiment demonstrates in a 3D view how a spherical longitudinal wave propa
 
 ### 3. Standing Wave
 
-This xperiment demonstrates standing wave patterns that emerge from inward and outward wave interactions. In EWT's model, standing waves are proposed as the mechanism that gives matter its structure, from fundamental particles to atoms and molecules.
+This xperiment demonstrates standing wave patterns that emerge from inward and outward wave interactions. Standing waves are proposed as the mechanism that gives matter its structure, from fundamental particles to atoms and molecules.
 
 - **Observation:** Notice how stable patterns form when waves interfere constructively
 
@@ -148,17 +148,11 @@ To launch the Xperiments Selector Menu:
   </table>
 </div>
 
-## Scientific Background
+## OpenWave's Computational Implementation
 
-OpenWave implements [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory"), a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT). For more details on the theoretical framework, mathematical derivations, and research papers, refer to: [EWT Main Entry Point](https://energywavetheory.com).
-
-**Context:** EWT is a deterministic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory for describing physical observations.
-
-**OpenWave's Computational Implementation:**
-
-- **WAVE-FIELD Methods** uses lattice wave-field theory methodology (similar to lattice QCD) with EWT's field equations
+- **WAVE-FIELD Methods** uses lattice wave-field theory methodology (similar to lattice QCD) with other models field equations
 - **GRANULE-MOTION Method** provides particle-based visualizations for intuitive understanding
-- Both are computational frameworks for investigating EWT's mathematical predictions against experimentally observed physics
+- Both are computational frameworks for investigating mathematical predictions against experimentally observed physics
 
 ## OPENWAVE METHODS
 
