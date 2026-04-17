@@ -4,6 +4,8 @@ The ENERGY LAYERS hierarchy, EWT particle terminology, dual/non-dual geometry, a
 
 This document contains Phase 2 strategy, context sources, and open questions.
 
+> **🚧 TODO — Revision pending (from Phase 3 concept review)**: insert a **Layer 0: Vacuum at rest** before Layer 1, and refine Layer 1-3 semantics to align with the Lagrangian / topological framework. The current hierarchy assumes a pre-existing "base wave" (EWT view). The Lagrangian view treats the medium as a *static* ordered vacuum (ground state of V(ψ)) with waves arising as perturbations. See [3a_concept_review.md](3a_concept_review.md) for the full rationale and proposed updated hierarchy table. Scope: update this doc + [0_OVERVIEW.md](0_OVERVIEW.md) + [README.md](../README.md) once the M3 near-field work completes and the M5 / LAGRANGIAN-WAVE METHOD is under construction.
+
 ---
 
 ## WHERE WE STAND
@@ -75,7 +77,7 @@ Additional references (in `/references/`):
 Phase 1c vector wave research (validated infrastructure):
 
 - [1c_vector_wave.md](1c_vector_wave.md) — Steps 1-2 validated: 3D base wave, L/T decomposition, WC out-wave with spin, sinc = correct K=1 physics
-- Scripts: `scripts_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
+- Scripts: `sandbox_phase1_vector/step1_base_wave.py`, `step2_single_wc.py`, `step3_two_wc_force.py`
 
 ### 🚧 LAYER 5: Gravity Emergence
 

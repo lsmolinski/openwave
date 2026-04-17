@@ -260,7 +260,31 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## [PHASE 3: TIME DYNAMICS](3_TIME_DYNAMICS.md)
+## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3a_concept_review.md](3a_concept_review.md) · [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
+
+A research thread evaluating whether a Lagrangian / topological framework can replace OpenWave's empirical wave-equation search with a first-principles derivation, and produce charge quantization + far-field Coulomb that the M3 scalar method cannot. Sparked by email exchange with Jarek Duda (Jagiellonian) and Robert Close (Clark College) in the "Models of Particles" group.
+
+- ✅ 8 sandbox numerical experiments — validate the core Lagrangian / topological physics before any production engine refactor (COMPLETE 2026-04-17)
+  - ✅ Test 1: Sine-Gordon 1D — kink solitons, pair creation/annihilation, Lorentz contraction (build intuition) — passed 2026-04-16
+  - ✅ Test 2: Hedgehog energy vs distance — clean 1/d Coulomb, R²=0.993, no sinc — passed 2026-04-16
+  - ✅ Test 3: Topological charge quantization — Q=±1 integer, surface-independent, stable under 50% noise — passed 2026-04-16
+  - ✅ Test 4: Klein-Gordon from twist dynamics — dispersion ω² = c²k² + m² validated to R² = 0.999982 across 9 modes; slope c² within 0.05%, mass gap within 1.3% — 2026-04-17
+  - ⚠️ Test 5: Lagrangian derivation — Smolinski Ψ³ + Noether energy confirmed ✅; M4 sum-form Combined W-L satisfies free-wave EL ✅; doc product form `sin(kr/2)·cos(kr/2−(ωt+φ))/r` does NOT (quadrature term is not a free-wave solution — modeling choice, needs source term to exist) — 2026-04-17
+  - ⚠️ Test 6: Three lepton families — E(K) scaling validated (R²=1.0). Three distinct K values reproduce lepton mass² ratios by construction (consistency check, not derivation). Full biaxial Q-tensor derivation deferred to Exp 6.1 — 2026-04-17
+  - ⚠️ Test 7: Close's nonlinear vector wave eq — Close's ACTUAL Eq. 19 (linear) and Eq. 21 ("Equation of Everything") correctly implemented after obtaining the paper. Y_l^m seeds disperse (consistent with Close's framework — particles are plane-wave bispinors, not static solitons). Close's equation is a candidate base wave dynamics layer for M5 — 2026-04-17
+  - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
+- ✅ Winning combination selected (2026-04-17): topology (hedgehog + winding) + Klein-Gordon wave dynamics + Close's Eq. 19 as base vector wave + M3 near-field standing waves + Skyrme stabilizer. Full recipe in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5)
+- [ ] M5 / LAGRANGIAN-WAVE METHOD implementation (dir `openwave/xperiments/m5_lagrangian_wave/`) — ready to implement per [3c_path_to_m5.md](3c_path_to_m5.md)
+  - [ ] M5.0 Scaffold — mirror m4 structure, add `psi_prev/psi/psi_new` triple buffer, port M2's 6-point Laplacian, implement curl / div / curl-curl operators (validated in Exp 7 v2)
+  - [ ] M5.1 Port topology from Exps 2, 3 — `seed_vacuum`, `seed_hedgehog`, Frank energy, winding-number tracker
+  - [ ] M5.2 Wave dynamics — Close's Eq. 19 (`∂²Q = −c²·∇×∇×Q`) + Klein-Gordon mass term; validate against Exp 4 dispersion
+  - [ ] M5.3 Hamiltonian energy density `H = ½ψ̇² + ½c²(∇ψ)² + V(ψ)` replaces postulated `E = ρV(fA)²`
+  - [ ] M5.4 **Headline test**: multi-defect K=10 stability + far-field Coulomb recovery
+  - [ ] M5.5 Skyrme stabilizer (conditional on M5.4 showing defect collapse under Derrick's theorem)
+  - [ ] M5.6 Biaxial LdG Q-tensor (long-term, for lepton mass derivation; Exp 6.1 equivalent)
+- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3a_concept_review.md](3a_concept_review.md)
+
+## [PHASE 4: TIME DYNAMICS](4_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
