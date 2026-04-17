@@ -17,8 +17,8 @@ Validate (or rule out) candidate Lagrangians before committing to any architectu
 
 ## Spec & Results
 
-- **Spec**: [../2a_lagrangian_eval.md](../2a_lagrangian_eval.md) — full experiment specifications, hypotheses, success criteria
-- **Results**: [../2b_lagrangian_experiments.md](../2b_lagrangian_experiments.md) — running log of results, comparisons to expected, conclusions
+- **Spec**: [../3_LAGRANGIAN_FRAMEWORK.md](../3_LAGRANGIAN_FRAMEWORK.md) — full experiment specifications, hypotheses, success criteria
+- **Results**: [../3b_lagrangian_experiments.md](../3b_lagrangian_experiments.md) — running log of results, comparisons to expected, conclusions
 
 ## File Naming Convention
 
@@ -63,7 +63,7 @@ Reference: `../sandbox_phase1_vector/` and `../sandbox_phase1_scalar/` for the e
 
 For each experiment:
 
-1. Fill in `Setup` section in `2b_lagrangian_experiments.md` with parameters/grid before running
+1. Fill in `Setup` section in `3b_lagrangian_experiments.md` with parameters/grid before running
 2. Run script, capture output
 3. Fill in `Results` and `Numerical Evidence` sections
 4. Update `Comparison to Expected` table

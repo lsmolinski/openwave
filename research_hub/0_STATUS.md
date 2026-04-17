@@ -116,9 +116,11 @@ Engineering improvements (not physics changes):
 
 ---
 
-## 🧪 LAGRANGIAN EVALUATION (Sub-Project) — see [2a_lagrangian_eval.md](2a_lagrangian_eval.md) · [2b_lagrangian_experiments.md](2b_lagrangian_experiments.md) · [2c_path_to_m5.md](2c_path_to_m5.md)
+## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3a_concept_review.md](3a_concept_review.md) · [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
 
-A new research thread sparked by an email exchange in the "Models of Particles" group with two prominent researchers. The goal: evaluate whether a Lagrangian formulation could derive the correct wave equation from first principles instead of testing equations empirically.
+Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confirmed the core topological claims: Sine-Gordon kink stability + Lorentz contraction (Exp 1), clean 1/d Coulomb from hedgehog defects with R²=0.993 (Exp 2), integer-quantized topological charge Q=±1 surface-independent and stable under 50% noise (Exp 3). Sparked by an email exchange in the "Models of Particles" group with Jarek Duda (Jagiellonian) and Robert Close (Clark College). The goal: derive the correct wave equation from first principles (Lagrangian formulation) instead of testing equations empirically, and demonstrate charge quantization + far-field Coulomb that M3 scalar cannot produce.
+
+**Current status**: 3/8 sandbox experiments passed; remaining 5 (Exps 4, 5, 6, 7, 8) pending. Once complete, select winning combination → implement M5 / LAGRANGIAN-WAVE METHOD on the production Taichi engine. Conceptual framework review in [3a_concept_review.md](3a_concept_review.md) — notably includes the proposal to insert **Layer 0: Vacuum at rest** before Layer 1 in the Energy Layers hierarchy (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
 
 ### The Real Payoff
 
@@ -201,7 +203,7 @@ This could be the unification: not "topology vs waves" but "topology IS the geom
 
 - Lagrangian model needs a **vector field → M4** (not M3 scalar) — director field requires 3+ components per voxel
 - Needs a **background vacuum field → M2-like philosophy** (not M3's "WCs emit into void")
-- Future **M5 / LAGRANGIAN-WAVE METHOD** (dir `m5_lagrangian_wave/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [2c_path_to_m5.md](2c_path_to_m5.md)
+- Future **M5 / LAGRANGIAN-WAVE METHOD** (dir `m5_lagrangian_wave/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [3c_path_to_m5.md](3c_path_to_m5.md)
 
 ### Physical Intuition: Granule Ellipses Already Carry Topology
 

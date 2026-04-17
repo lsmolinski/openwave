@@ -1,4 +1,4 @@
-# LAGRANGIAN EVALUATION
+# LAGRANGIAN FRAMEWORK
 
 A research sub-project evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
 

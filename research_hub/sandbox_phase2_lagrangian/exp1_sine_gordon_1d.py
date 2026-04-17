@@ -15,8 +15,8 @@ Equation:
 This comes from the Lagrangian:
     L = ½(∂φ/∂t)² - ½c²(∂φ/∂x)² - (m²c⁴/ℏ²)·(1 - cos(φ))
 
-Spec: ../2a_lagrangian_eval.md  (Experiment 1 section)
-Results: ../2b_lagrangian_experiments.md  (Experiment 1 section)
+Spec: ../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 1 section)
+Results: ../3b_lagrangian_experiments.md  (Experiment 1 section)
 """
 
 from pathlib import Path

@@ -6,8 +6,8 @@ Implementation plan for **M5 / LAGRANGIAN-WAVE METHOD** (directory `openwave/xpe
 
 **Spec inputs**:
 
-- [2a_lagrangian_eval.md](2a_lagrangian_eval.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
-- [2b_lagrangian_experiments.md](2b_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
+- [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
+- [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
 - [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
 
 **Production code references**:
@@ -166,7 +166,7 @@ Duda's vacuum is **not** the same as M2's base wave. The distinction:
 | Time dependence | Built in (ω·t) | None — oscillations arise from the dynamics, not the ground state |
 | Mathematical role | Initial condition + driving term | Minimum of V(ψ) — the potential well |
 
-So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [2a_lagrangian_eval.md § Impact on Base Wave Architecture](2a_lagrangian_eval.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
+So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [3_LAGRANGIAN_FRAMEWORK.md § Impact on Base Wave Architecture](3_LAGRANGIAN_FRAMEWORK.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
 
 ### Concrete Consequence for M5 `seed_*` Kernels
 
@@ -184,7 +184,7 @@ This mirrors how the sandbox experiments seed their fields (a hedgehog is "unifo
 
 ### Why This Does NOT Invalidate M3's Results
 
-M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [2a_lagrangian_eval.md line 1005](2a_lagrangian_eval.md).
+M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [3_LAGRANGIAN_FRAMEWORK.md § Practical Implication](3_LAGRANGIAN_FRAMEWORK.md).
 
 ---
 
@@ -283,7 +283,7 @@ Once the sandbox winner is selected:
 
 - [x] Architecture analysis complete (this document)
 - [x] Sandbox Experiment 1 validated ✅ (Sine-Gordon 1D, leapfrog + nonlinear potential + topological stability)
-- [ ] Sandbox Experiments 2–8 (in progress, see `2b_lagrangian_experiments.md`)
+- [ ] Sandbox Experiments 2–8 (in progress, see `3b_lagrangian_experiments.md`)
 - [ ] Sandbox winner selected (TBD after experiments complete)
 - [ ] M5.0 scaffold
 - [ ] M5.1 winning-equation port
@@ -292,4 +292,4 @@ Once the sandbox winner is selected:
 - [ ] M5.4 multi-defect validation
 - [ ] M5.5 composite (conditional)
 
-**Next action**: continue sandbox experiments per `2b_lagrangian_experiments.md`. M5 implementation begins once a winning combination is identified.
+**Next action**: continue sandbox experiments per `3b_lagrangian_experiments.md`. M5 implementation begins once a winning combination is identified.

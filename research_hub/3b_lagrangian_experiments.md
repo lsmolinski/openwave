@@ -3,7 +3,7 @@
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
 
 Numerical results from the 8 Lagrangian framework experiments in `sandbox_phase2_lagrangian/`.
-See [2a_lagrangian_eval.md](2a_lagrangian_eval.md) for experiment specifications.
+See [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) for experiment specifications.
 
 ---
 
@@ -11,27 +11,10 @@ See [2a_lagrangian_eval.md](2a_lagrangian_eval.md) for experiment specifications
 
 OpenWave uses two layers of experimentation:
 
-- **Sandbox** (`research_hub/sandbox_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
-- **Production** (`openwave/xperiments/m*/`) — Taichi-based 3D rendering and simulation on the official OpenWave platform. GPU-accelerated, full grid infrastructure, visualization, force & motion. This is the final product where validated equations run at scale.
-
-**Sandbox = explore fast, fail cheap. Production = implement validated winners.**
-
-## NEXT SESSION KICKOFF
-
-**First action**: open `sandbox_phase2_lagrangian/exp1_sine_gordon_1d.py` and complete the implementation (skeleton already in place — TODO comments mark what's missing). Reference the Setup section in this doc (1.2) before tweaking parameters.
-
-**Sequence for the day**:
-
-1. Implement and run **Experiment 1** (Sine-Gordon 1D) — build intuition with a simple, well-understood soliton system
-2. Fill in this doc's Experiment 1 sections: Setup → Results → Numerical Evidence → Comparison to Expected → Conclusion
-3. Update Summary Dashboard status (🚧 → 🔶 → ✅/❌)
-4. Move to **Experiments 2 + 3** (hedgehog energy + topological charge) — the highest-value test pair, validates Coulomb from topology vs our sinc problem
-
-**Recommended order reminder**: Exp 1 → Exp 2+3 → Exp 5 → Exp 8 → Exp 4 → Exp 6 → Exp 7
-
-**Pre-reading if time**: Bush 2015 review "Pilot-wave hydrodynamics" (referenced in 2a) for intuition on classical wave-particle quantum-like behavior.
-
----
+- **Sandbox = explore fast, fail cheap.**
+  - (`research_hub/sandbox_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
+- **Production = implement validated winners.**
+  - (`openwave/xperiments/m*/`) — Taichi-based 3D rendering and simulation on the official OpenWave platform. GPU-accelerated, full grid infrastructure, visualization, force & motion. This is the final product where validated equations run at scale.
 
 ## HOW TO USE THIS DOC
 
@@ -50,7 +33,7 @@ OpenWave uses two layers of experimentation:
 
 - Fill in `OVERALL CONCLUSIONS` section
 - Complete the comparison matrix (Topology vs Nonlinearity vs Standing Waves)
-- Make recommendation for `What to Implement in M4/M5`
+- Make recommendation for `What to Implement in M5`
 
 ---
 
@@ -59,8 +42,8 @@ OpenWave uses two layers of experimentation:
 | # | Experiment | Status | Result | Date | Script |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Sine-Gordon 1D solitons | ✅ Passed | Kink stability, Lorentz contraction, pass-through all confirmed | 2026-04-16 | `exp1_sine_gordon_1d.py` |
-| 2 | Hedgehog energy vs distance | 🚧 Pending | - | - | - |
-| 3 | Topological charge quantization | 🚧 Pending | - | - | - |
+| 2 | Hedgehog energy vs distance | ✅ Passed | Clean 1/d Coulomb attraction, R²=0.993 post-relax, no sinc | 2026-04-16 | `exp2_hedgehog_energy.py` |
+| 3 | Topological charge quantization | ✅ Passed | Q=±1 integer across all sphere radii; stable up to 50% noise | 2026-04-16 | `exp3_topological_charge.py` |
 | 4 | Klein-Gordon from twist | 🚧 Pending | - | - | - |
 | 5 | Lagrangian derivation | 🚧 Pending | - | - | - |
 | 6 | Three lepton families | 🚧 Pending | - | - | - |
@@ -181,87 +164,198 @@ Plots in `sandbox_phase2_lagrangian/exp1_results/`:
 
 ## EXPERIMENT 2: Hedgehog Energy vs Distance
 
-**Status**: 🚧 Pending
+**Status**: ✅ Passed
 **Sandbox Script**: `sandbox_phase2_lagrangian/exp2_hedgehog_energy.py`
-**Date run**: -
+**Date run**: 2026-04-16
 
 ### 2.1 Hypothesis
 
-Two hedgehog defects in a 3D director field produce a clean 1/r Coulomb potential without sinc oscillation. Expected: `E(d) ≈ const + C/d` (matching Duda's `E(d) ≈ 1590 + 25.6/d` from arXiv:2108.07896 Fig. 2).
+Two hedgehog defects in a 3D director field produce a clean 1/r Coulomb potential without sinc oscillation. Expected: `E(d) ≈ const + C/d` (matching Duda's `E(d) ≈ 1590 + 25.6/d` from arXiv:2108.07896 Fig. 2). For opposite-sign defects (hedgehog + anti-hedgehog), the interaction is attractive: b < 0 in `E = a + b/d`.
 
 ### 2.2 Setup
 
-- 3D grid: [nx × ny × nz voxels]
-- Director field: `n(x) = (nx, ny, nz)` unit vector per voxel
-- Hedgehog 1 at r₁: `n = (x-r₁)/|x-r₁|`
-- Hedgehog 2 at r₂: `n = (x-r₂)/|x-r₂|` (or anti-hedgehog: `n = -(x-r₂)/|x-r₂|`)
-- Frank elastic energy: `H = K·Σ|∇n|²` (one-constant approximation)
-- Field relaxation: gradient descent until ΔE < ε
+- **Grid**: 48³ voxels (~110k), domain [−8, +8] each axis, dx ≈ 0.340
+- **Director**: unit vector `n(x) = (nx, ny, nz)` per voxel, |n|=1
+- **Vacuum state**: `n = ẑ` everywhere (ground state)
+- **Defect seeding**: weighted superposition of two hedgehogs + unit-normalization (proximity weights w₁ = 1/(r₁+0.5), w₂ = 1/(r₂+0.5)); far-field blended back to vacuum via Lorentzian w_vac
+- **Defect pair**: hedgehog at c₁=(−d/2, 0, 0) with sign=+1; anti-hedgehog at c₂=(+d/2, 0, 0) with sign=−1
+- **Frank elastic energy**: `H = (K/2) · ∫ |∇n|² d³r` with K=1 (one-constant approximation)
+- **Relaxation**: gradient descent `∂n/∂τ = ∇²n − (n·∇²n)·n` with tangent-space projection to preserve |n|=1, then unit renormalization per step
+- **Stability**: τ = 0.008 (below CFL limit τ_max = dx²/(2·3·K) ≈ 0.019), 60 steps
+- **Core pinning**: single closest voxel per defect held to ±ẑ (soft Dirichlet — prevents numerical decay of topology without creating sharp discontinuity)
+- **Separations tested**: d ∈ {2, 3, 4, 5, 6, 8}
 
 ### 2.3 Results
 
-[empty until run]
+| d | E_pre-relax | E_post-relax |
+| --- | --- | --- |
+| 2.0 | 147.91 | 83.46 |
+| 3.0 | 163.00 | 97.96 |
+| 4.0 | 173.78 | 107.62 |
+| 5.0 | 182.86 | 113.09 |
+| 6.0 | 190.04 | 117.71 |
+| 8.0 | 198.52 | 122.67 |
+
+**Monotonic increase with d** — energy rises smoothly toward a plateau at large d. No sinc oscillation, no direction flips. This is the hallmark of Coulomb interaction.
+
+**Relaxation behavior**: energy decreased monotonically from pre-relax to post-relax values at every separation (verified by convergence plot). The gradient descent is stable with the chosen τ and converges within ~60 steps.
 
 ### 2.4 Numerical Evidence
 
-[E(d) plot, fit to const + C/d, residuals]
+Plots in `sandbox_phase2_lagrangian/exp2_results/`:
+
+- `energy_vs_distance.png` — E(d) for both pre-relax and post-relax; 1/d fit overlaid
+- `relax_convergence.png` — energy-vs-step for all 6 separations (monotonic decrease)
+
+**Fits** to `E(d) = a + b/d`:
+
+| Dataset | a | b | R² | Interpretation |
+| --- | --- | --- | --- | --- |
+| Pre-relax | 210.90 | −132.88 | 0.964 | attractive (b < 0); energy rises from bound state (small d) toward 2·E_single (large d) |
+| Post-relax | 134.58 | −104.74 | **0.993** | **near-perfect 1/d** attraction after relaxation; topology preserved; gradient energy smoothed |
 
 ### 2.5 Comparison to Expected
 
 | Quantity | Predicted | Measured | Match? |
 | --- | --- | --- | --- |
-| Form of E(d) | const + C/d | - | - |
-| R² of 1/r fit | > 0.99 | - | - |
-| Sinc oscillation | none | - | - |
+| Form of E(d) | const + C/d (Coulomb) | const + C/d | ✅ |
+| Sign of interaction | attractive (opposite-sign defects) | b = −105 < 0 (post-relax) | ✅ |
+| R² of 1/r fit | > 0.99 | **0.993** (post-relax) | ✅ |
+| Sinc oscillation | none | none — monotonic rise with d | ✅ |
+| Energy scales linearly with 1/d | yes | R² = 0.993 linear | ✅ |
 
 ### 2.6 Conclusion
 
-[empty until run]
+**Experiment 2 validates the core topological-Coulomb claim.** Two opposite-sign hedgehog defects in a 3D director field with Frank elastic energy produce a clean 1/d attractive interaction, **R² = 0.993 to a pure `a + b/d` model** — no sinc barriers, no direction flips, no oscillatory structure.
+
+This is **exactly the behavior that M3 could not produce.** M3's Combined W-L wave equation gives sinc-barrier-laden far-field interactions where the force flips direction every λ/2. Here, the interaction is smooth and monotonic at every separation tested, from d = 2 to d = 8 (spanning 6 times the core size).
+
+**Why this works mathematically**: the Frank elastic energy `∫|∇n|² d³r` penalizes deformations of the director field. Two defects of opposite winding create a smooth "connecting texture" between them; the cost of that texture scales as 1/d in 3D (electric-field analog: the surface integral of the field energy between two point sources). There's no wave superposition, no phase-dependent interference, no sinc — the physics is entirely geometric.
+
+**Implications for OpenWave**:
+
+1. The far-field Coulomb problem **is solvable by topology** — this is the single most important result for K-selectivity
+2. The "Coulomb from topology" mechanism Duda proposed is numerically confirmed in our setup (not just a theoretical claim)
+3. M5 should implement a director field (vector structure already in M4's 6-phasor) with topological initial conditions (`seed_hedgehog`). The Frank elastic energy is the corresponding `V(ψ)` for M5's Hamiltonian
+4. The near-field K=10 standing-wave lock-in (M3 result) can now be added on top of this — topology handles far-field Coulomb, standing waves handle near-field orbit quantization. This is Duda's "both topology and standing waves" picture made concrete
+
+**Caveat**: this experiment measures the static Frank elastic energy of a fixed defect configuration. It doesn't test dynamics (moving defects, time-dependent field). Experiments 4 (Klein-Gordon from twist) and 7 (Close's nonlinear vector wave) will test the dynamical regime.
+
+**Caveat 2**: pre-relax energies already showed the 1/d trend (R² = 0.964); relaxation only sharpened it to 0.993. The smooth superposition-based seeding is doing most of the work. This is actually useful — it means the 1/d interaction is built into the hedgehog geometry itself, not an emergent property of long-time relaxation. A first-order implementation in M5 could skip expensive relaxation and still capture the correct Coulomb physics.
 
 ### 2.7 Next Steps
 
-[empty until run]
+- **Continue to Experiment 3** (topological charge quantization) — uses similar field setups ✅ already complete
+- **Future refinements**:
+  - Larger grid (96³ or 128³) to measure wider range of d and confirm asymptotic scaling
+  - Test same-sign defects (hedgehog + hedgehog) → should give repulsion (b > 0)
+  - Measure prefactor in physical units (relate K to OpenWave's medium density ρ and wave speed c)
+  - Test anisotropic Frank constants (K₁, K₂, K₃ splay/twist/bend) to see if interaction is still pure 1/d or develops angular dependence
 
 ---
 
 ## EXPERIMENT 3: Topological Charge Quantization
 
-**Status**: 🚧 Pending
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp3_topological_charge.py` (or function inside Experiment 2)
-**Date run**: -
+**Status**: ✅ Passed
+**Sandbox Script**: `sandbox_phase2_lagrangian/exp3_topological_charge.py`
+**Date run**: 2026-04-16
 
 ### 3.1 Hypothesis
 
-The winding number integral `Q = (1/4π) ∮_S (∂_u n × ∂_v n) · n du dv` returns integers (±1 for hedgehog/anti-hedgehog, 0 for vacuum) regardless of surface shape or field perturbation.
+The winding-number integral `Q = (1/4π) ∮_S n · (∂_θ n × ∂_φ n) dθ dφ` returns integers (±1 for hedgehog/anti-hedgehog, 0 for vacuum) regardless of surface shape, surface radius, or smooth field perturbation. This is the fundamental mechanism Duda invokes to solve OpenWave's charge quantization problem.
 
 ### 3.2 Setup
 
-- Use field configurations from Experiment 2
-- Discretize closed surfaces (spherical mesh) around defect centers
-- Compute Q for: clean hedgehog, perturbed hedgehog, vacuum region, two-defect configurations
-- Test surface independence: compute Q for spheres of different radii
+- **Grid**: 48³, domain [−8, +8], dx ≈ 0.340
+- **Director fields tested**:
+  - Clean hedgehog: `n(x) = (x − c)/|x − c|` with sign ±1
+  - Vacuum: `n = ẑ` everywhere
+  - Perturbed hedgehog: `n_pert = (n + ε·rand) / |n + ε·rand|` with ε ∈ {0, 0.05, 0.10, 0.20, 0.50, 1.00}
+  - Two-defect configuration: hedgehog at (−2, 0, 0) + anti-hedgehog at (+2, 0, 0)
+- **Winding computation**: spherical mesh (64 θ × 128 φ), trilinear interpolation of n(x) onto sphere, central-difference finite differences on (θ, φ), numerical surface integral
+- **Surface radii tested**: R ∈ {2, 3, 5, 7} grid units (from core of defect to ~¾ of domain half-width)
 
 ### 3.3 Results
 
-[empty until run]
+**Test 1 — Clean configurations** (Q vs surface radius):
+
+| R | Q(hedgehog) | Q(anti-hedgehog) | Q(vacuum) |
+| --- | --- | --- | --- |
+| 2.0 | +0.985 | −0.985 | +0.0000 |
+| 3.0 | +0.993 | −0.993 | +0.0000 |
+| 5.0 | +0.997 | −0.997 | +0.0000 |
+| 7.0 | +0.998 | −0.998 | +0.0000 |
+
+Accuracy improves monotonically with surface radius (larger spheres → more voxels, better trilinear sampling). All values unambiguously round to ±1 or 0.
+
+**Test 2 — Topological stability under perturbation** (R = 3):
+
+| noise ε | Q measured | round(Q) | Match expected (+1)? |
+| --- | --- | --- | --- |
+| 0.00 | +0.993 | +1 | ✅ |
+| 0.05 | +0.990 | +1 | ✅ |
+| 0.10 | +0.982 | +1 | ✅ |
+| 0.20 | +0.952 | +1 | ✅ |
+| 0.50 | +0.754 | +1 | ✅ |
+| 1.00 | +0.190 | 0 | ❌ (field is essentially random at this level) |
+
+**Q stays ≥ 0.95 up to 20% noise**, and still rounds correctly to +1 at 50% noise. Only breaks at 100% noise, where the field is effectively destroyed (no hedgehog structure remaining). This confirms the mechanism: topology is robust against smooth deformations but not against complete randomization.
+
+**Test 3 — Two-defect configuration** (hedgehog + anti-hedgehog at d=4):
+
+| Surface | Computed Q | Expected |
+| --- | --- | --- |
+| around c₁ = (−2, 0, 0), R = 1.3 | +0.958 | +1 |
+| around c₂ = (+2, 0, 0), R = 1.3 | −0.958 | −1 |
+| large sphere enclosing both, R = 5 | −0.000 | 0 |
+| sphere far from both defects, R = 1 | +0.000 | 0 |
+
+**Total charge conserved** (Q_total = 0 for the bound pair). **Surface independence** verified: Q depends only on which defects are enclosed, not on surface size or position (as long as the enclosure is correct).
 
 ### 3.4 Numerical Evidence
 
+Plots in `sandbox_phase2_lagrangian/exp3_results/`:
+
+- `winding_vs_radius.png` — three flat lines at Q = +1, −1, 0 for hedgehog, anti-hedgehog, vacuum respectively. Discretization error visible but bounded by 1.5% at R=2, falling to 0.2% at R=7
+- `winding_vs_noise.png` — Q stays near 1 for noise up to 20%, slowly degrades to 0.75 at 50% noise, collapses to 0.19 at 100% noise
+
 | Configuration | Surface radius | Computed Q | Expected | Match? |
 | --- | --- | --- | --- | --- |
-| Hedgehog | 2λ | - | +1 | - |
-| Hedgehog | 5λ | - | +1 | - |
-| Anti-hedgehog | 2λ | - | -1 | - |
-| Vacuum | 2λ | - | 0 | - |
-| Perturbed hedgehog (10% noise) | 2λ | - | +1 | - |
+| Hedgehog | 2 | +0.985 | +1 | ✅ |
+| Hedgehog | 3 | +0.993 | +1 | ✅ |
+| Hedgehog | 5 | +0.997 | +1 | ✅ |
+| Hedgehog | 7 | +0.998 | +1 | ✅ |
+| Anti-hedgehog | 2 | −0.985 | −1 | ✅ |
+| Anti-hedgehog | 7 | −0.998 | −1 | ✅ |
+| Vacuum | all | ≤ 1e-4 | 0 | ✅ |
+| Perturbed hedgehog (10%) | 3 | +0.982 | +1 | ✅ |
+| Perturbed hedgehog (20%) | 3 | +0.952 | +1 | ✅ |
+| Perturbed hedgehog (50%) | 3 | +0.754 | +1 (rounds correctly) | ✅ |
+| Two-defect pair total | 5 (enclosing both) | 0.000 | 0 | ✅ |
 
 ### 3.5 Conclusion
 
-[empty until run]
+**Experiment 3 validates topological charge as an integer-valued, robust conservation law** in exactly the way Duda invokes it. Key findings:
+
+1. **Surface independence** — Q is identical (to within ~1% discretization error) across all sphere radii from 2 to 7 grid units. This is the Gauss-Bonnet theorem in action: the winding number depends only on what's enclosed, not on how you draw the surface
+2. **Integer quantization** — all measurements unambiguously round to ±1 or 0. No "fractional charges", no drift, no sensitivity to mesh choice
+3. **Smooth perturbation robustness** — Q holds through 50% random noise. A perturbation that doesn't literally destroy the defect cannot change its topological charge — precisely the protection mechanism that guarantees electron stability in Duda's picture
+4. **Total charge conservation** — a hedgehog (+1) and anti-hedgehog (−1) together give Q_total = 0 when measured on a surface enclosing both. This is the "neutral bound pair" configuration — the analog of positronium
+5. **Mechanism matches expectation** — the winding-number integral, a purely geometric quantity, returns the integer topological charge with no free parameters. No fitting, no tuning: this is a mathematical identity, confirmed numerically
+
+**Implication for OpenWave**: Duda's challenge — "without charge quantization your electron explodes" — has a concrete numerical demonstration of its solution. Once we implement a director field in M5 and seed topological defects, charge will be an integer-valued conserved quantity by construction, with no need for the `cos(source_offset)` phase trick used in M3. This is the charge-quantization mechanism we've been missing.
+
+**Contrast with M3**: in M3, charge is imposed as ±1 by `cos(source_offset)` at each WC. It's a label, not an emergent property. If we perturb the system, there's no mechanism to keep charge at ±1 — it could numerically become 0.7 or 1.2 and the wave equation wouldn't care. Here, the topology *enforces* integrality: the same perturbations that would disrupt a wave-based charge leave the topological winding exactly ±1.
 
 ### 3.6 Next Steps
 
-[empty until run]
+- **Continue to Experiment 5** (Lagrangian derivation — can Combined W-L come from a Lagrangian?)
+- **Integration with M5 plan**: the winding-number kernel (`winding_number()` in the experiment script) ports directly to M5 as a new tracker alongside amplitude, frequency, and energy. Computing Q around each WC position becomes a per-frame diagnostic
+- **Future validation**:
+  - Test on an evolved (PDE-relaxed) field to confirm Q survives dynamical simulation
+  - Test non-spherical surfaces (cubes, ellipsoids) to further verify surface independence
+  - Measure Q for K=10 tetrahedron configurations (10 hedgehogs arranged tetrahedrally) — should give Q_total = +10 if all same sign, 0 if charge-neutral compound
+  - Measure angular-resolved Q(θ, φ) to check for direction-dependent defects
 
 ---
 
