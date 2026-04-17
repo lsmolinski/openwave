@@ -45,7 +45,7 @@ OpenWave uses two layers of experimentation:
 | 2 | Hedgehog energy vs distance | ✅ Passed | Clean 1/d Coulomb attraction, R²=0.993 post-relax, no sinc | 2026-04-16 | `exp2_hedgehog_energy.py` |
 | 3 | Topological charge quantization | ✅ Passed | Q=±1 integer across all sphere radii; stable up to 50% noise | 2026-04-16 | `exp3_topological_charge.py` |
 | 4 | Klein-Gordon from twist | 🚧 Pending | - | - | - |
-| 5 | Lagrangian derivation | 🚧 Pending | - | - | - |
+| 5 | Lagrangian derivation | ⚠️ Mixed | Smolinski Ψ³ + Noether confirmed; M4 sum-form W-L ✅; doc product form is NOT a free-wave solution (residual −c²k²·sin(ωt+φ)/r) | 2026-04-17 | `exp5_lagrangian_derivation.py` |
 | 6 | Three lepton families | 🚧 Pending | - | - | - |
 | 7 | Close's nonlinear vector wave eq | 🚧 Pending | - | - | - |
 | 8 | Smolinski's non-linear Ψ³ | 🚧 Pending | - | - | - |
@@ -405,9 +405,9 @@ In the uniaxial limit, evolving the twist degree of freedom from the Landau-de G
 
 ## EXPERIMENT 5: Lagrangian Derivation (Combined W-L from a Lagrangian?)
 
-**Status**: 🚧 Pending
+**Status**: ⚠️ Mixed — Smolinski Ψ³ and Noether confirmed; Combined W-L (doc form) is NOT a free-wave solution
 **Sandbox Script**: `sandbox_phase2_lagrangian/exp5_lagrangian_derivation.py` (sympy verification)
-**Date run**: -
+**Date run**: 2026-04-17
 
 ### 5.1 Hypothesis
 
@@ -415,30 +415,113 @@ OpenWave's empirically-selected Combined Wolff-LaFreniere wave equation `ψ = 2A
 
 ### 5.2 Setup
 
-- Pen-and-paper analysis + sympy verification
-- Standard wave Lagrangian: `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²`
-- Verify Combined W-L satisfies Euler-Lagrange equation
-- Verify Smolinski's `(∂²/∂t² - c²∇²)Ψ + k·Ψ³ = 0` derives from `L = ½(∂ψ/∂t)² - ½c²(∇ψ)² - k·ψ⁴/4`
-- Check conservation laws via Noether's theorem
+- Symbolic verification via `sympy`. No numerical simulation.
+- Four candidate forms of the Combined W-L tested against the d'Alembertian `□ψ = ∂²ₜψ − c²∇²ψ`:
+  - (1a) Pure outgoing wave: `ψ = A·sin(kr − ωt − φ)/r`
+  - (1b) Pure standing wave: `ψ = 2A·sin(kr)·cos(ωt+φ)/(kr)`
+  - (1c) Sum form (the M4 code): `ψ = A·[sin(kr+ωt+φ) + sin(kr−ωt−φ)]/(kr)`
+  - (1d) Product form (from 3b/3_LAGRANGIAN_FRAMEWORK docs): `ψ = 2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r`
+- Smolinski derivation: start from `L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴`, apply Euler-Lagrange, verify output matches `∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0`
+- Noether energy: compute Hamiltonian density `H = π·∂ₜψ − L` for both Lagrangians
 
 ### 5.3 Results
 
-[empty until run]
+| Candidate | □ψ with ω = c·k | Verdict |
+| --- | --- | --- |
+| (1a) Pure outgoing `sin(kr−ωt−φ)/r` | **0** | ✅ exact free-wave solution |
+| (1b) Pure standing `2·sin(kr)·cos(ωt+φ)/(kr)` | **0** | ✅ exact free-wave solution |
+| (1c) Sum form (M4 code) `[sin(kr+ωt+φ) + sin(kr−ωt−φ)]/(kr)` | **0** | ✅ exact; algebraically identical to (1b) |
+| (1d) Product form (3b doc) `sin(kr/2)·cos(kr/2−(ωt+φ))/r` | `−A·c²k²·sin(ωt+φ)/r ≠ 0` | ❌ NOT a free-wave solution |
+
+**Identity confirmation**: `(sum form) − (product standing form) = 0` — confirms (1b) and (1c) are the same equation written differently.
+
+**Surprise finding (1d)**: The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` does **not** satisfy the 3D free wave equation. Decomposing via `sin(a)·cos(b) = ½[sin(a+b) + sin(a−b)]`:
+
+```text
+2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r
+  = (A/r)·[sin(kr − ωt − φ) + sin(ωt + φ)]
+           ↑                    ↑
+           free-wave solution   NOT a solution —
+                                spatial part = 1/r but no k in sine
+                                (uniform time oscillation with 1/r envelope)
+```
+
+The second term `A·sin(ωt+φ)/r` has no radial wave structure (no `k` in the sine argument). Its Laplacian is `∇²(A·sin(ωt+φ)/r) = 0` everywhere except at the origin. Its time derivative is `−ω²·A·sin(ωt+φ)/r`. Their difference is `−c²k²·A·sin(ωt+φ)/r ≠ 0`, which is what sympy reports.
+
+Equivalently, this is the "Phase + Quadrature" decomposition from [2L3_particle_emergence.md](2L3_particle_emergence.md):
+
+```text
+Phase     C_n = A·sin(kr)/r          is a free-wave solution
+Quadrature S_n = A·(1−cos(kr))/r     is NOT a free-wave solution
+```
+
+So **the LaFreniere quadrature term (1−cos(kr))/r is a modeling choice** — it was introduced for specific physics (radiation pressure, standing-to-traveling transition), not derived as a homogeneous solution of the wave equation.
+
+**Smolinski Ψ³ derivation** (Test 2): sympy computed the Euler-Lagrange equation from `L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴` and it matches `∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0` exactly (difference = 0). ✅
+
+**Noether energy density** (Test 3): `H = π·∂ₜψ − L`:
+
+- Free wave: `H = ½(∂ₜψ)² + ½c²|∇ψ|²` (kinetic + gradient energy)
+- Smolinski: `H = ½(∂ₜψ)² + ½c²|∇ψ|² + (κ/4)·ψ⁴` (adds quartic potential)
+
+Both are standard `T + V` Hamiltonians. Canonical energy conservation is guaranteed by Noether's theorem (time translation symmetry). ✅
 
 ### 5.4 Numerical Evidence
 
-| Wave equation | Lagrangian | Verified? |
-| --- | --- | --- |
-| Combined W-L | `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²` | - |
-| Smolinski Ψ³ | `L_free - k·ψ⁴/4` | - |
+sympy output (raw):
 
-### 5.5 Conclusion
+```text
+□ψ_out (1a) with ω=ck       = 0
+□ψ_st  (1b) with ω=ck       = 0
+□ψ_sum (1c) with ω=ck       = 0
+□ψ_doc (1d) with ω=ck       = -A·c²·k²·sin(c·k·t + φ0)/r   ← residual
+(sum form) − (product form) = 0                            ← identity
 
-[empty until run]
+Smolinski derived EoM = ∂ₜ²ψ − c²∇²ψ + κ·ψ³    ← matches expected exactly
 
-### 5.6 Next Steps
+Free-wave H  = ½(∂ₜψ)² + ½c²|∇ψ|²
+Smolinski H  = ½(∂ₜψ)² + ½c²|∇ψ|² + (κ/4)·ψ⁴
+```
 
-[empty until run]
+### 5.5 Comparison to Expected
+
+| Claim | Expected | Measured | Match? |
+| --- | --- | --- | --- |
+| Combined W-L (sum form 1c, M4 code) satisfies free-wave EL | yes | yes | ✅ |
+| Combined W-L (product form 1d, docs) satisfies free-wave EL | yes (per docs) | **no — residual `−A·c²k²·sin(ωt+φ)/r`** | ❌ (docs contradicted) |
+| Forms (1b), (1c), (1d) are all equivalent | yes | (1b)=(1c) ✅; (1d) differs | ⚠️ partial |
+| Smolinski Ψ³ from `L = L_free − (κ/4)ψ⁴` | Smolinski equation | exact match | ✅ |
+| Noether `H = T + V` from Euler-Lagrange | standard `T + V` | standard `T + V` | ✅ |
+
+### 5.6 Conclusion
+
+**Two successes and one important anomaly.**
+
+- ✅ **Smolinski's Ψ³ equation is a textbook Lagrangian derivation.** Starting from `L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴` and applying Euler-Lagrange gives exactly `∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0`. Noether's theorem confirms energy conservation via `H = T + V` with `V = (κ/4)·ψ⁴`. This validates Experiment 8's (pending) K-selectivity test at the mathematical level — Smolinski's term is well-founded in Lagrangian field theory
+- ✅ **The M4-implemented Combined W-L (sum form, `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)`) IS a free-wave solution.** At w=1 (pure standing wave limit) it reduces to `2A·sin(kr)·cos(ωt+φ)/(kr)`, a textbook exact solution. M4's analytical physics is self-consistent with the free-wave Lagrangian
+- ❌ **The documented product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution.** This is the most important finding. The formula decomposes into a valid outgoing-spherical-wave piece `A·sin(kr−ωt−φ)/r` plus a spurious time-oscillating 1/r piece `A·sin(ωt+φ)/r` that has no radial wave structure. The LaFreniere quadrature term `(1−cos(kr))/r` was introduced for empirical reasons (radiation pressure, standing-to-traveling transition) and is **not** a homogeneous solution of the wave equation
+
+**Interpretation**: the Combined W-L in the empirical / docs form is best understood as the superposition of:
+
+1. A legitimate outgoing spherical wave (the Phase part, `A·sin(kr)/r · cos(ωt+φ)`)
+2. A forced oscillation (the Quadrature part, `A·(1−cos(kr))/r · sin(ωt+φ)`) that requires a source term to exist
+
+The Quadrature part would emerge naturally if the Lagrangian included a **source term** `J(x,t)·ψ` (like an external charge in electromagnetism), or from a non-linear potential where the quadrature emerges at second order. Neither is the free-wave Lagrangian alone.
+
+**Practical implication for M5**: we do NOT carry the Combined W-L product form into M5 as a "derived" solution. Instead:
+
+- M5 uses the **free-wave sum form** `A·[sin(kr+ωt+φ) + sin(kr−ωt−φ)]/(kr)` as the *linear* limit (V=0 case)
+- Nonlinear physics (topology, K-selectivity, annihilation) comes from the potential V(ψ) we add — which Exps 2, 3, 8 are testing
+- The LaFreniere quadrature term can be retained as a *phenomenological* piece if it turns out to encode useful radiation-pressure physics, but we cannot claim it's Lagrangian-derived from the pure free-wave action
+
+**Meta-takeaway**: this is exactly the kind of "inverted hierarchy" result the Lagrangian framework was meant to surface. In M3 we picked an equation empirically; the Lagrangian check reveals that the equation implicitly assumes a source term we never modeled. Fixing this is not a correction to M3 — it's motivation for M5.
+
+### 5.7 Next Steps
+
+- **Update `3_LAGRANGIAN_FRAMEWORK.md` line ~418** to correct the "Combined W-L IS an exact solution" claim — **done** (incorporated finding)
+- **Use the sum form, not the product form, when referring to M4's wave equation in any future documentation** — the product form may be a computational shortcut but misrepresents the physics
+- **Open question for Exp 8**: if we use Smolinski's nonlinear Ψ³ term as the potential in an M5 simulation, can we recover a spatial pattern that looks like the Combined W-L product form? I.e., is the product form the *static nonlinear solution* of Smolinski's equation? Worth testing
+- **Continue to Experiment 8** (Smolinski Ψ³ K-selectivity — recommended next) now that its Lagrangian validity is confirmed
 
 ---
 

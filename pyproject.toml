@@ -29,6 +29,7 @@ authors = [
 
 dependencies = [
   "numpy>=2.3,<3.0",
+  "sympy>=1.14,<2.0",
   "matplotlib>=3.8,<4.0",
   "taichi>=1.6,<2.0",
   "pyautogui>=0.9,<1.0",
