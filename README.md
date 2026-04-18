@@ -15,7 +15,7 @@
 
 ## What is OpenWave?
 
-OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through classical wave mechanics. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics, investigating whether particles and forces can emerge from wave-equations.
+OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through classical wave mechanics. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics and field topology, investigating whether particles and forces can emerge from wave-equations.
 
 The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD methods (similar to lattice gauge theory), VECTOR-FIELD methods, both for research simulations, and a GRANULE-MOTION method for educational visualization.
 
@@ -23,7 +23,7 @@ The platform implements a proposed mathematical framework through various comple
 
 OpenWave aims to:
 
-- Model matter, force unification and energy phenomena through wave-dynamics
+- Model matter, force unification and energy phenomena through wave-dynamics and topology
 - Simulate particle emergence from standing wave patterns in fields
 - Validate wave-mechanics against known physics (particle energies, force laws, decay rates)
 - Provide computational and visualization tools for wave-dynamics models
@@ -70,7 +70,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 - Intuitive for understanding wave mechanics
 - Ideal for education and visualization
 
-## ENERGY LAYERS: Explore what might be the source of matter & forces
+## ENERGY LAYERS: Explore potential sources of matter & forces
 
 ```text
 ============================================================
@@ -272,11 +272,9 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ## SCIENTIFIC BACKGROUND
 
-OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT).
+OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT), in a programmatic computing and rendering package built for experimentation with different scientific theories and models.
 
-OpenWave is a programmatic computing and rendering package built for experimentation with different scientific theories and models. More details on the key scientific sources and theoretical contributions can be found at [Scientific Sources](SCIENCE.md).
-
-Key points:
+More details on the key scientific sources and theoretical contributions can be found at [SCIENTIFIC SOURCES](SCIENCE.md). Key points include:
 
 ### The Spacetime Medium
 

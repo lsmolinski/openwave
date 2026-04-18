@@ -66,7 +66,7 @@ if WAVE_DIAGNOSTICS:
     )
 ```
 
-## Output Example
+## Example Output
 
 ### Startup Banner
 

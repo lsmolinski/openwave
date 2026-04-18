@@ -14,9 +14,9 @@ Prior to using and contributing to OpenWave, it is recommended to study and fami
 - Explainer Videos: [Video Channel](https://www.youtube.com/@EnergyWaveTheory)
 - Literature: [eBooks](https://www.amazon.com/gp/product/B078RYP7XD)
 
-## Pioneers and Origins
+The [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") is a deterministic quantum mechanics model proposed by [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics.
 
-The [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") is a deterministic quantum mechanics model proposed by [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics:
+## Pioneers and Origins
 
 **Historical Inspiration:**
 
