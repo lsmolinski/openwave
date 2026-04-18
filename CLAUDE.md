@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-OpenWave is an open-source subatomic physics simulator implementing Energy Wave Theory (EWT) to model the formation of matter and energy from energy wave interactions. The project simulates phenomena from spacetime emergence through particle formation to complex matter behavior.
+OpenWave is an open-source subatomic physics simulator to model the formation of matter and energy from energy wave interactions. The project simulates phenomena from spacetime emergence through particle formation to complex matter behavior.
 
 ### Project Goals
 
-To develop OpenWave, an open-source computer simulator with objectives described in the text below, based on the papers attached as 9 files, with special attention to the file `Relationship of the Speed of Light to Aether Density` where there is a Planck mass correction from previous papers (affecting granule mass), using the `06. Constants and Equations - Waves.pdf` as constants reference, built in phases. Simulation physics, constants, and equations will be drawn from the EWT research papers located at the `/scientific_source` folder. For performance on the granular physics simulations we'll be using the Taichi Lang python library.
+To develop OpenWave, an open-source computer simulator with objectives described in the text below, based on the papers attached as 9 files, with special attention to the file `Relationship of the Speed of Light to Aether Density` where there is a Planck mass correction from previous papers (affecting granule mass), using the `06. Constants and Equations - Waves.pdf` as constants reference, built in phases. Simulation physics, constants, and equations will be drawn from research papers located at the `/scientific_source` folder. For performance on the granular physics simulations we'll be using the Taichi Lang python library.
 
 ### What is OpenWave?
 
@@ -40,19 +40,9 @@ To develop OpenWave, an open-source computer simulator with objectives described
 
 ### Scientific Source Material
 
-The `/scientific_source` directory contains foundational EWT research papers:
+The `/research_hub` directory contains on-going research supporting OpenWave development.
 
-01. The Geometry of Spacetime and the Unification of Forces v2.3.pdf
-02. The Geometry of Particles and the Explanation of Their Creation and Decay v2.pdf
-03. The Physics of SubAtomic Particles.pdf
-04. Relationship of the Speed of Light to Aether Density (contains Planck mass correction)
-05. The Relationship of Planck Constants and Wave Constants v2.pdf
-06. Constants and Equations - Waves.pdf (primary constants reference)
-07. Constants and Equations - Classical.pdf
-08. Geometry - EWT.pdf
-09. Mechanics - EWT.pdf
-
-**Key Reference**: File `06. Constants and Equations - Waves.pdf` serves as the primary constants reference for the simulation, and `04. Relationship of the Speed of Light to Aether Density` contains important Planck mass corrections that affect granule mass calculations.
+The `/scientific_source` directory contains foundational papers.
 
 ## Physics Context
 
