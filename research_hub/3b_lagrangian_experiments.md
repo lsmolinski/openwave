@@ -452,8 +452,8 @@ Plot in `sandbox_phase2_lagrangian/exp4_results/dispersion.png`:
 **Implication for OpenWave**: any M5 field configuration with a quadratic vacuum potential (LdG V(M) has such a term, Smolinski's Lagrangian has one via the quartic truncation near Ψ=0) will automatically give its perturbations a mass. In particular:
 
 - The director-field perturbations in Exps 2-3 (hedgehog / anti-hedgehog) would carry mass if we add a LdG V(M) potential, giving Klein-Gordon waves as radiation from defects
-- The time-crystal oscillation frequency ω = 2mc²/ℏ (Duda's Zitterbewegung insight) is the rest-frequency side of this dispersion — the "mass gap" is what makes defects trembl
-- This is also the mechanism behind Smolinski's claim (his Ψ³ model near Ψ=0 linearizes to Klein-Gordon with mass from κ)
+- The time-crystal oscillation frequency ω = 2mc²/ℏ (Duda's Zitterbewegung insight) is the rest-frequency side of this dispersion — the "mass gap" is what makes defects tremble
+- This is also the mechanism behind Smolinski's claim (his Ψ³ model near Ψ=0 linearize to Klein-Gordon with mass from κ)
 
 **Caveat — what this experiment does NOT test**:
 
@@ -932,7 +932,7 @@ Plots in `sandbox_phase2_lagrangian/exp8_results/`:
 
 ### 8.7 Next Steps
 
-- **Skip progressive complexity levels 2-4** for now (κ(r), higher-order, geometric coupling). These might salvage K-selectivity in principle, but the clean Level 1 result shows the baseline Ψ³ is not sufficient. More complex nonlinearities would require *ad hoc* parameter tuning that defeats the "first-principles" motivation
+- **Skip progressive complexity levels 2-4** for now (κ(r), higher-order, geometric coupling). These might salvage K-selectivity in principle, but the clean Level 1 result shows the baseline Ψ³ is not sufficient. More complex nonlinearity would require *ad hoc* parameter tuning that defeats the "first-principles" motivation
 - **Focus on topology-based M5 design**: Exps 2 and 3 clearly demonstrated the mechanism. M5 should implement the hedgehog director field + Frank elastic energy + winding-number tracker as the core physics, with Ψ³ as an *optional* stabilizer (not the primary K-selectivity mechanism)
 - **Open sub-question for M5**: once we have topology-based K=10, does adding the Ψ³ term *improve* stability (complementary effect) or *degrade* it (defocusing fights topological binding)? Worth testing in M5 itself, not in the sandbox
 - **Continue to Experiment 4** (Klein-Gordon from twist dynamics — validates that perturbations of the director vacuum give massive dispersion; simpler than Exp 6 and Exp 7, and independent of our K-selectivity question)
