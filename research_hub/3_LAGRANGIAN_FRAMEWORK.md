@@ -247,8 +247,7 @@ Thanks, sure we need both topological type quantization (e.g. charge, spin), but
 
 While you assume oscillations, finally we need to derive them from deeper theory, explaining why e.g resting electron/neutrinos oscillate - as in original definition of time crystals, we automatically get such mechanism - toy model: <https://arxiv.org/pdf/2501.04036>
 
-5 concrete experiments we can set up:
-Hedgehog energy vs distance [...]
+5 concrete experiments we can set up.
 
 Indeed getting Coulomb for quantized charges should be the first step of particle models ... but this calculation is simplified, e.g. missing regularization leading to running coupling effect: <https://www.mdpi.com/2076-3417/16/2/1030>
 
