@@ -4,7 +4,7 @@
 
 This diagram illustrates the architecture of the OpenWave system, broken down into the following system modules:
 
-![ROADMAP](images/roadmap.png)
+![ROADMAP](images/modules.png)
 
 ## Scalability & Performance
 

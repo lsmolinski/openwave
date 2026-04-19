@@ -274,7 +274,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT), in a programmatic computing and rendering package built for experimentation with different scientific theories and models.
 
-More details on the key scientific sources and theoretical contributions can be found at [SCIENTIFIC SOURCES](SCIENCE.md). Key points include:
+Check **[SCIENTIFIC SOURCES](SCIENCE.md)** for more details on the key scientific sources and theoretical contributions. Key points include:
 
 ### The Spacetime Medium
 
@@ -435,23 +435,25 @@ Xperiments support configurable instrumentation and probe integration for real-t
   </table>
 </div>
 
-## What's Under-the-Hood
+## UNDER-THE-HOOD
 
-Check OpenWave's [System Architecture](SYS_ARCH.md)
+Check **[SYSTEM ARCHITECTURE](SYS_ARCH.md)** for more details on OpenWave's Package contents and architecture.
 
 <div align = "center" style="text-align: center">
   <table>
     <tr>
       <td style="text-align: center">
         <div align = "center">
-          <a href="SYS_ARCH.md"><img src="images/roadmap.png" width="300px" alt="system"></a>
+          <a href="SYS_ARCH.md"><img src="images/modules.png" width="300px" alt="system"></a>
         </div>
       </td>
     </tr>
   </table>
 </div>
 
-## Wanna Help Developing this Project?
+## WANNA HELP?
+
+### WITH DEVELOPMENT
 
 - Please read the [Contribution Guide](CONTRIBUTING.md)
 - See `/dev_docs` for coding standards and development guidelines
@@ -461,11 +463,11 @@ Check OpenWave's [System Architecture](SYS_ARCH.md)
   - [Markdown Style Guide](dev_docs/MARKDOWN_STYLE_GUIDE.md)
 - **This is the Way!** ... Real human power comes from collaboration.
 
-> ***"There is a way to break the laws of physics: Challenge the models used to create them."***
->
-> *OpenWave Team, 11/11/25*
+### WITH RESOURCES
 
-## License and Attribution
+- Support this project via [Buy Me a Coffee](https://buymeacoffee.com/openwave)
+
+## LICENSE & ATTRIBUTION
 
 OpenWave is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
 
@@ -491,3 +493,7 @@ All dependencies use licenses compatible with AGPL-3.0.
 ### Trademark
 
 "OpenWave" is a trademark of OpenWave Labs. See [TRADEMARK](TRADEMARK) for usage guidelines.
+
+> ***"There is a way to break the laws of physics: Challenge the models used to create them."***
+>
+> *OpenWave Team, 11/11/25*
