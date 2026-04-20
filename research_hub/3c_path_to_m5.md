@@ -92,7 +92,7 @@ The specific `V(ψ)` is selected from sandbox results:
 | Sine-Gordon family | `V(φ) = (m²c⁴/ℏ²)(1 − cos φ)` → `∂V/∂φ = (m²c⁴/ℏ²) sin(φ)` | ✅ validated (Exp 1) — useful for 1D analogs, not 3D hedgehogs |
 | Smolinski Ψ³ | `V(ψ) = (k/4)·ψ⁴` → `∂V/∂ψ = k·ψ³` | ❌ falsified for K-selectivity (Exp 8); usable only as in-configuration stabilizer |
 | Landau-de Gennes | `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr M²)²` | ⚠️ mechanism validated (Exp 6); specific parameters deferred to M5.6 |
-| Close's elastic solid | Eq. 19 `∂²Q = −c²·∇×∇×Q` + optional Eq. 21 nonlinear terms `−u·∇s + w×s` | ✅ validated (Exp 7 v2) — **selected as M5's base wave dynamics layer** |
+| Close's elastic solid | Eq. 19 `∂²Q = −c²·∇×∇×Q` (linear limit) + **Eq. 23** (particle equation, preserves `∇·s = 0`, Close's recommendation 2026-04-18) — optional Eq. 21 nonlinear terms `−u·∇s + w×s` for comparison | ✅ Eq. 19 validated (Exp 7 v2); Eq. 23 selected per Close's explicit guidance — **M5's base wave dynamics layer** |
 | Klein-Gordon mass term | `V(ψ) = ½m²·ψ²` → `∂V/∂ψ = m²·ψ` | ✅ validated (Exp 4) — **selected as M5's perturbation-mass mechanism** |
 | Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5) |
 
@@ -259,12 +259,16 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 - [ ] Validate: reproduce Exp 2's hedgehog-pair 1/d Coulomb on Taichi. Target R² > 0.99 across a separation sweep
 - [ ] Implement `winding_number(center, radius)` tracker — port Exp 3's trilinear-sphere-sample + finite-difference surface integral
 
-### Phase M5.2 — Wave dynamics (Close's Eq. 19 + Klein-Gordon)
+### Phase M5.2 — Wave dynamics (Close's Eq. 23 + Eq. 19 linear limit + Klein-Gordon)
 
-- [ ] Implement time-stepping leapfrog for `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` — Close's Eq. 19, generalized to include a mass term
+> **Refinement from Robert Close (2026-04-18)**: use **Eq. 23 as the particle equation**, not Eq. 21. Eq. 23 preserves `∇·s = 0` (zero divergence of spin density), which is a physical invariant Exp 7's Eq. 21 implementation did not enforce. Eq. 19 remains the linear free-wave limit.
+
+- [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
+- [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
 - [ ] Validate: reproduce Exp 4's Klein-Gordon dispersion on the GPU. FFT-extract ω(k), fit ω² = c²k² + m²
 - [ ] Validate: reproduce Exp 7's transverse wave dispersion (dipole/quadrupole seeds disperse as transverse elastic-solid waves)
-- [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag
+- [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag for comparison
+- [ ] **Resonance-hunt protocol** (per Close's recommendation): seed `Y_1^0` (electric-dipole harmonic) at amplitudes `A ∈ {0.25λ, 0.5λ, 1.0λ, 2.0λ}` (displacement-comparable-to-wavelength regime); measure localization lifetime. Particles in Close's framework are *unstable resonances* at specific amplitude/wavelength ratios, not static solitons. Success = extended-lifetime localization, not perfect stability
 
 ### Phase M5.3 — Hamiltonian energy + force
 
@@ -274,11 +278,14 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 
 ### Phase M5.4 — Multi-defect K=10 test (the headline goal)
 
+> **Refinement from Robert Close**: "Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions." Success criterion is therefore **long-lived resonance with measurable lifetime**, not perfect stability.
+
 - [ ] Seed K=10 hedgehog arrangement on M5 (1-3-6 tetrahedron geometry, per EWT)
-- [ ] Measure stability under perturbation — does topology give perturbation-robust K=10 uniqueness?
+- [ ] Measure stability under perturbation — does topology give perturbation-robust K=10 uniqueness, and what is its lifetime?
 - [ ] Compare to M3 Combined W-L baseline: does the sinc far-field barrier disappear when topology is active?
 - [ ] Measure far-field force on a test particle: does clean 1/d² Coulomb emerge? (Integrate Exp 2's E(d) result with 2-defect M3 motion dynamics)
-- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If K=10 is uniquely stable here, we've done it
+- [ ] **Success metric**: K=10 lifetime >> K≠10 lifetime under matched perturbation (ratio, not absolute stability)
+- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If K=10 is the longest-lived resonance, we've done it
 
 ### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
 
@@ -288,9 +295,38 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 
 ### Phase M5.6 — Biaxial LdG (deferred long-term)
 
-- [ ] Full 3×3 Q-tensor dynamics with LdG potential `V(Q) = a·Tr(Q²) − b·Tr(Q³) + c·(Tr Q²)²`
-- [ ] Goal: three distinct lepton energy scales emerge from a single set of (a, b, c) LdG parameters
+> **Refinement from Jarek Duda (2026-04-17)**: the lepton mass hierarchy is **not ad-hoc tuning** — it comes from the natural scale separation `0 < δ << 1 << g` where `δ ~ ℏ` (QM scale, twist eigenvalue), `1` (unity / matter scale, tilt eigenvalue), `g` (gravity scale, boost eigenvalue). The Exp 6 requirement for ~3477:1 axis ratio is *physically motivated* by this three-scale hierarchy. Additionally, "the main mass contributions of leptons come from LdG-like potential in regularization, it is the most difficult to include in simulation."
+>
+> **Follow-up refinement from Jarek Duda (2026-04-19)**: `(δ, g)` are **calibration parameters**, not ab-initio derivations: *"while these delta, g parameters describe Lagrangian contributions of QM and gravity, their exact choice seem to require numerical simulations."* No analytical form to pull from — M5.6 iterates them against observed physics. On regularization: the details are still an open research problem, but **Manfried Faber's scheme (slightly different potential, produces running-coupling effect) is the recommended starting point** — Faber et al., *Universe* 11 (2025) 113 (<https://www.mdpi.com/2218-1997/11/4/113>) and arxiv:2604.12021.
+
+- [ ] Full 3×3 Q-tensor dynamics with LdG potential `V(Q) = a·Tr(Q²) − b·Tr(Q³) + c·(Tr Q²)²` using traces of powers from original Landau-de Gennes theory
+- [ ] Parameterize eigenvalues as `D = diag(δ, 1, g)` and **calibrate (δ, g) numerically** against observed lepton-mass ratios; they are not derivable ab-initio per Jarek's 2026-04-19 guidance
+- [ ] **Port Manfried Faber's regularization scheme** as the baseline (arxiv:2604.12021 + Universe 11/2025/113). Faber's form uses a slightly different potential but demonstrably produces the **running-coupling effect** — adapt to LdG-with-Skyrme rather than reinventing. This derisks the "hardest numerical step" from blank-slate design to port + adapt
+- [ ] Implement the core-singularity handling carefully — soft core smoothing + adaptive time step near the defect, on top of Faber's regularization
+- [ ] Validate: recover running-coupling effect (charge strength varies with distance / energy scale) as an independent check that the regularization is correctly ported
+- [ ] Goal: three distinct lepton energy scales emerge from the calibrated `(δ, 1, g)` hierarchy plus the chosen LdG parameters `(a, b, c)`, with Faber's regularization active
 - [ ] This is the "electron, muon, tau from biaxial geometry" experiment — a significant undertaking beyond initial M5
+
+### Phase M5.7 — Cornell potential / quark confinement (new, per Jarek's guidance)
+
+> **Refinement from Jarek Duda (2026-04-17)**: after M5.4 succeeds, the next validation target is **recreation of the [Cornell potential](https://en.wikipedia.org/wiki/Cornell_potential)** for quarks. Quarks are excitations of a **quark string / topological vortex**; fractional charges add, on top of Coulomb, a **linear ~1 GeV/fm confinement energy** from the conflict produced by fractional charges. This is the topological analog of QCD confinement.
+
+- [ ] Seed a topological vortex string (1D defect line, not point hedgehog) connecting two fractional-charge end points
+- [ ] Measure the interaction energy `V(r)` as a function of end-point separation
+- [ ] Validate the Cornell form: `V(r) = −α/r + σ·r` with `σ ≈ 1 GeV/fm` (string tension)
+- [ ] Compare to QCD phenomenology (linear confinement, asymptotic freedom at small r)
+- [ ] **Why this matters**: it's the strong force / QCD analog in the Lagrangian-topological framework — demonstrating that the same ingredients that give lepton Coulomb (Exp 2) also give quark confinement when extended from point defects to string defects
+
+### Phase M5.8 — De Broglie clock / Zitterbewegung test (new, per Jarek's guidance)
+
+> **Refinement from Jarek Duda (2026-04-17)**: the 1+1D phi-4 kink toy-model (arxiv 2501.04036) validates the *mechanism*; for actual electron and neutrino, we need to run it in **full LdGS** (Landau-de Gennes + Skyrme) dynamics.
+
+- [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog)
+- [ ] Let it evolve under full M5 dynamics (no external driving)
+- [ ] Measure the intrinsic oscillation frequency of the defect core
+- [ ] Validate `ω = 2·m·c²/ℏ` (Zitterbewegung / de Broglie clock) — this is the mass-gap mechanism from Exp 4 extended to the full LdGS field
+- [ ] Compare electron (SO(2) ~ U(1), 2D rotation → de Broglie clock) vs neutrino (SO(3) ~ SU(2), 3D rotation → neutrino oscillations)
+- [ ] **Why this matters**: mass-driven oscillation is the origin of the wave-particle duality; validating it numerically in the full LdGS closes the loop from Exp 4 linear-order validation to full nonlinear particle dynamics
 
 ### What M5 does NOT implement
 
@@ -309,13 +345,56 @@ From the sandbox findings, these are ruled out or de-prioritized:
   - ✅ Exp 1 (Sine-Gordon kinks), ✅ Exp 2 (Hedgehog Coulomb), ✅ Exp 3 (Winding quantization), ✅ Exp 4 (Klein-Gordon dispersion)
   - ⚠️ Exp 5 (Lagrangian derivation — W-L product form falsified), ⚠️ Exp 6 (lepton mechanism; specific ratios deferred), ⚠️ Exp 7 v2 (Close's actual equations implemented)
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
-- [x] **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 19 + M3 near-field + Skyrme stabilizer
+- [x] **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
+- [x] **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
 - [ ] M5.0 — Scaffold (Taichi structure, triple buffer, Laplacian, curl/div operators)
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
-- [ ] M5.2 — Wave dynamics from Close's Eq. 19 + Klein-Gordon mass term, validate Exp 4 dispersion
+- [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
-- [ ] M5.4 — **Headline test**: K=10 hedgehog stability under perturbation + far-field Coulomb recovery
+- [ ] M5.4 — **Headline test**: K=10 hedgehog longest-lived resonance under perturbation + far-field Coulomb recovery
 - [ ] M5.5 — Skyrme stabilizer (conditional on M5.4)
-- [ ] M5.6 — Biaxial LdG Q-tensor (long-term; for lepton mass derivation)
+- [ ] M5.6 — Biaxial LdG Q-tensor with `(δ, 1, g)` hierarchy (long-term; for lepton mass derivation)
+- [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
+- [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: begin **M5.0 scaffold**. The sandbox is done; the recipe is known. Move to production implementation on the Taichi engine.
+**Next action**: begin **M5.0 scaffold**. The sandbox is done; the recipe is known; group feedback is integrated. Move to production implementation on the Taichi engine.
+
+---
+
+## GROUP FEEDBACK (2026-04-17/18) — REFINEMENTS TO M5 PLAN
+
+Replies from Jarek Duda, Jeff Yee, and Robert Close to the Apr 17 sandbox-summary email produced four targeted refinements to the M5 plan. Full email thread in [3_LAGRANGIAN_FRAMEWORK.md § EMAIL THREAD](3_LAGRANGIAN_FRAMEWORK.md#email-thread).
+
+### Refinement 1 — Use Close's Eq. 23 as the particle equation (Robert Close)
+
+Exp 7 implemented Close's Eq. 21 ("Equation of Everything"). Close's recommendation for the **particle equation** is actually **Eq. 23** — it preserves `∇·s = 0` (zero divergence of spin density). M5.2 adopts Eq. 23 as the particle equation, with Eq. 19 as the V=0 linear limit, and enforces the divergence constraint per time step.
+
+### Refinement 2 — Particles are resonances, not stable solitons (Robert Close)
+
+Close: *"Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions."* M5's success criterion is reframed: **long-lived resonance with measurable lifetime**, not perfect stability. M5.2 includes an amplitude-sweep protocol (`Y_1^0` seed at `A ∈ {0.25, 0.5, 1.0, 2.0}·λ`) to hunt for these resonances.
+
+### Refinement 3 — Lepton mass hierarchy from `0 < δ << 1 << g` axis lengths (Jarek Duda)
+
+The ~3477:1 biaxial ratio the sandbox required is **physically motivated**, not ad-hoc. Three naturally-separated physical scales map to the three axis eigenvalues: `δ ~ ℏ` (QM / twist), `1` (unity / tilt / matter), `g` (gravity / boost). M5.6 parameterizes the Q-tensor this way from the start. Jarek also flagged that **LdG regularization is the hardest numerical step** — a known challenge that M5.6 budgets accordingly.
+
+### Refinement 4 — New validation phases M5.7 and M5.8 (Jarek Duda)
+
+- **M5.7 — Cornell potential**: after M5.4 succeeds, extend from point hedgehogs to a **topological vortex string** with fractional-charge end points. Measure `V(r) = −α/r + σ·r` and confirm the `~1 GeV/fm` linear confinement coefficient. This is the QCD confinement analog in the Lagrangian-topological framework
+- **M5.8 — De Broglie clock / Zitterbewegung**: measure the intrinsic oscillation frequency of a single LdGS defect (electron: non-dual; neutrino: dual) and validate `ω = 2·m·c²/ℏ`. The 1+1D phi-4 toy (arxiv:2501.04036) showed the *mechanism*; M5.8 validates it in full LdGS for real particles
+
+### Refinement 5 — M3 near-field carries three force regimes (Jeff Yee)
+
+Jeff confirmed the M3 + topology coexistence decision and added a crucial scope expansion: M3's standing-wave lock-in is the mechanism for **three** force regimes, not just one — (a) intra-particle binding of K=1 WCs into standalone particles, (b) intra-nucleus strong force between K=10 particles, and (c) **orbital force** (electron-nucleus binding in atoms). This strengthens the rationale for keeping M3 physics intact in M5 — it's load-bearing well beyond the K=10 electron problem.
+
+### Summary impact table
+
+| Area | Change | Source |
+| --- | --- | --- |
+| M5.2 Wave dynamics | Close's **Eq. 23** (not Eq. 21) as particle equation; enforce `∇·s = 0`; amplitude-sweep resonance hunt | Robert |
+| M5.4 Headline test | Success criterion = long-lived resonance (lifetime ratio), not perfect stability | Robert |
+| M5.6 Biaxial LdG | Axis hierarchy `0 < δ << 1 << g` (physics-motivated); LdG regularization budgeted as hardest step | Jarek |
+| **New M5.7** | Cornell potential via topological vortex string; `V(r) = −α/r + σ·r` with `σ ≈ 1 GeV/fm` | Jarek |
+| **New M5.8** | De Broglie clock / Zitterbewegung test in full LdGS for electron + neutrino | Jarek |
+| M3 retention rationale | M3 near-field covers *three* force regimes: intra-particle, strong, and orbital | Jeff |
+| M5.6 `(δ, g)` treatment | Calibrated numerically (no ab-initio form exists); iterate against observed lepton-mass ratios | Jarek (2026-04-19) |
+| M5.6 regularization baseline | Port Manfried Faber's scheme (arxiv:2604.12021, Universe 11/2025/113) — slightly different potential but produces running-coupling effect; adapt rather than reinvent | Jarek (2026-04-19) |

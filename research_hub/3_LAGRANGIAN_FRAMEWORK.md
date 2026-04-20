@@ -10,7 +10,21 @@ A research phase evaluating whether a Lagrangian formulation could replace OpenW
 
 ### The Problem
 
-Even if OpenWave's M2 / Laplacian-Propagation Method already used a Lagrangian — implicitly. M2's PDE solver evolves `∂²ψ/∂t² = c²∇²ψ`, which IS the Euler-Lagrange equation of the simplest possible field Lagrangian: `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²` (the free wave Lagrangian, V=0). So we've already done Lagrangian field theory — just with the most basic version, and on a scalar field. M2 produced a self-stabilized standing-wave background, but the wave centers (modeled as Dirichlet ψ=0 boundary points) were invisible to the field — the wave passes through without reorganizing. Three structural limitations explain this: (1) the linear Lagrangian has no soliton solutions, (2) the scalar field has no topological structure (no winding numbers), (3) WCs as boundary conditions are passive constraints rather than active features built into the field. The new approach fixes all three: non-linear potentials V(ψ) create solitons, vector fields enable topology, and topological defects (hedgehogs) ARE part of the field configuration rather than imposed externally. See [`0_WAVE_EQUATION.md`](0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
+Even if OpenWave's M2 / Laplacian-Propagation Method already used a Lagrangian — implicitly. M2's PDE solver evolves `∂²ψ/∂t² = c²∇²ψ`, which IS the Euler-Lagrange equation of the simplest possible field Lagrangian: `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²` (the free wave Lagrangian, V=0). So we've already done Lagrangian field theory — just with the most basic version, and on a scalar field.
+
+M2 produced a self-stabilized standing-wave background, but the wave centers (modeled as Dirichlet ψ=0 boundary points) were invisible to the field — the wave passes through without reorganizing. Three structural limitations explain this:
+
+- (1) the linear Lagrangian has no soliton solutions,
+- (2) the scalar field has no topological structure (no winding numbers),
+- (3) WCs as boundary conditions are passive constraints rather than active features built into the field.
+
+The new approach fixes all three:
+
+- non-linear potentials V(ψ) create solitons,
+- vector fields enable topology,
+- and topological defects (hedgehogs) ARE part of the field configuration rather than imposed externally.
+
+See [`0_WAVE_EQUATION.md`](0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
 
 OpenWave's M3 scalar method tested 5 wave equation candidates empirically (Wolff, LaFreniere-Marcotte, Phase-warped, Combined W-L, Weighted PSW). The best candidate (Combined Wolff-LaFreniere) produces particle lock-in and K=10 tetrahedron stability at perfect placement, but fails under perturbation and cannot produce far-field Coulomb (sinc barriers flip the force direction every λ/2).
 
@@ -27,13 +41,13 @@ If a valid Lagrangian for OpenWave can be found, it would tell us:
 - **What conservation laws hold** — and which don't, under which conditions
 - **Connection to established physics** — QFT, GR, Standard Model formalisms
 
-This is exactly the gap Duda identified when he asked "show me your Lagrangian?"
+This is exactly the gap Duda identified when he asked OpenWave to commit to a canonical Lagrangian.
 
-### The Two Challenges from Duda
+### The Three Challenges from Dr Duda
 
-1. **"Show me your Lagrangian"** — we test wave equations empirically; we need to derive them from a variational principle
-1. **"Without charge quantization your electron explodes"** — our `cos(source_offset)` is imposed as ±1; topology forces integer charges naturally via Gauss-Bonnet
-1. **"Particles as topological defects, not standing waves?"** — defects (hedgehogs) protected by topology vs. our standing waves protected by interference
+1. **The Lagrangian request** — Dr. Duda asked for a canonical Lagrangian / PDE for OpenWave, arguing that empirical wave-equation testing is insufficient for cross-model collaboration; a first-principles variational derivation is needed
+1. **Charge quantization is required for particle stability** — without an integer-quantization mechanism, a charged particle would fragment rather than hold together. Our imposed `cos(source_offset) = ±1` label is not a physical mechanism; topology forces integer charges naturally via Gauss-Bonnet
+1. **Particles as topological defects, vs. standing-wave interference patterns** — Dr. Duda's framing contrasts topologically protected defects (hedgehogs in a director field) against our current standing-wave-interference model
 
 ### The Unification Insight
 
@@ -52,236 +66,192 @@ See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section be
 
 ---
 
-## EMAIL THREAD
+## EMAIL THREAD — SUMMARY
 
-On 4/7/2026 6:50 PM, jeffsyee wrote:
+The Lagrangian framework collaboration took place on the private "Models of Particles" Google Group with Dr. Jarek Duda (Jagiellonian University), Dr. Robert Close (Clark College, retired), and Jeff Yee between April 7–19, 2026. **Original verbatim replies have been paraphrased here to respect the private nature of the exchange, since this repository is open-source.** Attribution, dates, paper references, image links, and the full technical substance are preserved so the research thread remains reconstructable.
 
-Hello all — Jeff here. I’ve been following discussions in this group and wanted to share a project I’m involved in that may be of interest.
+### 2026-04-07 — Initial post (Jeff Yee)
 
-An open source simulation framework called OpenWave (developed by Rodrigo Griesi) models particle emergence and interactions using classical wave physics in an aether-like medium.
+Jeff introduced OpenWave to the group as an open-source classical-wave simulator of particle emergence in an aether-like medium, already supporting wave propagation, standing-wave formation, and attraction/repulsion/annihilation behaviors. Linked the overview video and the repository, and invited feedback from anyone working on similar models.
 
-It already supports wave propagation, standing wave formation, and early particle-like stability, along with interactions such as attraction/repulsion and annihilation behavior.
+- Overview video: <https://www.youtube.com/watch?v=m51-OQ4mJ_Q>
+- Repository: <https://github.com/openwave-labs/openwave>
 
-The goal is to provide a platform where different wave-based or aether-based models can be tested and explored through simulation.
+### 2026-04-07 — Dr. Duda's first reply
 
-If anyone here is working on similar ideas, it may be useful for running experiments or validating assumptions.
+Dr. Duda welcomed the outreach but argued that durable cross-model collaboration requires a common mathematical language. Specifically asked for OpenWave's Lagrangian / PDE so candidate forms could be discussed, and asked how the model resolves **charge quantization**. Raised the group's general position that **nuclei correspond to topological vortex knots** and asked whether OpenWave agrees.
 
-Overview video:
-<https://www.youtube.com/watch?v=m51-OQ4mJ_Q>
+### 2026-04-07 — Jeff's reply
 
-Repository:
-<https://github.com/openwave-labs/openwave>
+Jeff responded that OpenWave operates at the PDE / field-evolution level (scalar + vector approaches) but is not yet framed around a single canonical Lagrangian — convergence toward one is an explicit in-progress goal. On charge quantization, clarified that charge is not imposed as a discrete input; the working hypothesis is that it emerges from stable standing-wave phase-opposed configurations, with quantization as a stability constraint, though a rigorous derivation remains pending. Agreed the nuclei-as-vortices direction is worth exploring if stable configurations turn out to carry topological invariants.
 
-Would be very interested in feedback or thoughts from this group.
+### 2026-04-07 — Dr. Duda (pushing on the Lagrangian)
 
---
-You received this message because you are subscribed to the Google Groups "Models of particles" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to <models-of-particles+unsubscribe@googlegroups.com>.
-To view this discussion visit <https://groups.google.com/d/msgid/models-of-particles/718f73e8-4127-48a6-8d61-1c732015ab54n%40googlegroups.com>.
-For more options, visit <https://groups.google.com/d/optout>.
-
----
-On Apr 7, 2026, at 11:55 AM, Jarek Duda <dudajar@gmail.com> wrote:
-
-Hi Jeff,
-
-Thanks, looks very nice!
-
-Many people here have own models, simulations ... but without collaborations these are mostly single person models, dying with the author ...
-
-Maybe let's try to finally find some common language - could you show here you main Lagrangian/PDE so we can discuss its choice?
-
-How do you resolve some basic questions like charge quantization?
-
-Seems most people here agree e.g. that nuclei are knots of topological vortices - do you agree/disagree? Why?
-
-With best regards,
-Jarek
-
----
-On 4/7/2026 9:41 PM, Jeff Yee wrote:
-
-Jarek,
-
-Really appreciate the thoughtful questions.
-
-On the core formulation:
-OpenWave, designed by Rodrigo Griesi, already operates using PDE-based wave-field simulations (both scalar and vector field approaches, similar in spirit to lattice methods). The system evolves wave dynamics over a discretized grid and explores how structure emerges from these interactions.
-
-However, it is not yet built around a single canonical Lagrangian. The current approach is more exploratory - testing different wave-field formulations and observing which configurations produce stable, physically meaningful behavior. Converging toward a more formal underlying Lagrangian is definitely a goal, but still in progress.
-
-On charge quantization:
-Charge is not imposed as a discrete input in the model. The working hypothesis is that it emerges from stable standing wave configurations - particularly phase structure and symmetry.
-
-At a basic level, we are observing that standing wave systems tend to organize into phase-opposed configurations, which may correspond to what we interpret as positive and negative charge. In that sense, the ± symmetry could arise naturally from the allowed phase states of stable structures.
-
-Quantization would then follow from stability constraints - only certain configurations persist. That said, this is still early, and a rigorous derivation of charge quantization has not yet been completed.
-
-On nuclei as topological vortices:
-That’s a very interesting direction. OpenWave is currently modeling particles as standing wave structures rather than explicitly as topological knots or vortices. However, there may be overlap - especially if stable configurations end up having topological invariants. This is something that could be explored further within the framework.
-
-More broadly, I completely agree with your point about fragmentation. One of the motivations behind OpenWave being open source is to provide a shared simulation platform where different approaches (including vortex-based models) can be tested in a common environment.
-
-Jeff
-
----
-
-On Apr 7, 2026, at 7:51 PM, Jarek Duda <dudajar@gmail.com> wrote:
-
-Jeff,
-
-Thanks for the answer, but finally you need Lagrangian - we can discuss if have any candidates?
-
-Regarding charge quantization, standing wave is perfect for orbit quantization, but here you need quantized charges as vacuum excitations, with Coulomb interaction - how would you like to get it with standing waves?
-
-As for vortices, they rather need topological quantization - both obtained experimentally in liquid crystals together with Coulomb: <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs>
-
-Best,
-Jarek
+Dr. Duda reiterated that a Lagrangian is ultimately required and drew a sharp distinction: standing-wave orbit quantization is not the same mechanism as **charge quantization of vacuum excitations with Coulomb interaction**. Highlighted that topological charge quantization — experimentally obtained in liquid-crystal particle analogs together with Coulomb interaction — is the only charge-quantization mechanism he has seen that works. Reference: <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs>.
 
 ![alt text](images/triangulo.png)
 
----
-On 4/8/2026 6:12 AM, Jeff Yee wrote:
-Jarek,
+### 2026-04-08 — Jeff's reply
 
-Thanks, these are great points.
+Jeff acknowledged the Lagrangian point and deferred the Lagrangian-candidate discussion to Rodrigo as the implementation lead. Confirmed that charge magnitude and rigorous Coulomb derivation remain open problems for OpenWave, and recognized that stable configurations with topological invariants could be a useful connection point to Dr. Duda's framework.
 
-On the Lagrangian:
-I agree that ultimately a well-defined Lagrangian is needed to properly frame any theory and connect it to established formalisms. OpenWave currently operates at the PDE / field evolution level, exploring candidate wave-field dynamics and their emergent behavior.
+### 2026-04-07 — Dr. Duda (charge quantization is required for particle stability)
 
-Since Rodrigo Griesi is leading the implementation and formulation work, I’ll defer to him on current or candidate Lagrangian directions -  he’ll be able to speak to that more precisely.
-
-On charge quantization:
-Yes - this is a key challenge. Standing waves naturally give quantized modes, but that alone does not explain quantized charge or Coulomb coupling.
-
-The direction being explored is that stable configurations are constrained by phase relationships at nodes, leading to phase-opposed states that could correspond to positive and negative charge. Interaction effects would then arise from interference in the surrounding field.
-
-That said, deriving discrete charge magnitude and a Coulomb-like interaction rigorously is still an open problem.
-
-On vortices / topology:
-Thanks for sharing that reference - very interesting. OpenWave currently models particles as standing wave structures, but we have not yet framed them explicitly in terms of topological invariants or vortex solutions.
-
-That said, if stable configurations correspond to topologically protected structures, there could be a natural connection here. This is definitely an area worth exploring further as the model develops.
-
-More broadly, one of the goals of OpenWave is to provide a shared computational platform where different approaches - wave-based, topological, or otherwise - can be explored and compared in a common environment.
-
-Would be very interested to hear how others here are approaching charge and topology in their models.
-
-Jeff
-
----
-On Apr 7, 2026, at 9:51 PM, Jarek Duda <dudajar@gmail.com> wrote:
-
-Jeff,
-
-Without charge quantization you don't have particles, your charged e.g. electron would split into parts - literally exploding.
-
-The only charge quantization mechanisms I have seen e.g. in this mailing list are topological - used in liquid crystal analogs (e.g. in <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs> ), and easy to formalize Faber's way:
-
-define curvature of deeper field as electric field (generally dual F tensor), this way Gauss law counts topological charge of this deeper field - becoming <https://en.wikipedia.org/wiki/Gauss%E2%80%93Bonnet_theorem>
-
-If you don't have any, maybe consider this mechanism - a few persons here would gladly discuss, collaborate.
-
-Best,
-Jarek
+Dr. Duda argued that without charge quantization, a charged particle like the electron would fragment and dissipate. Noted that the only charge-quantization mechanisms he has seen are **topological** — used in liquid-crystal analogs and easy to formalize via Faber's approach: define the curvature of a deeper field as the electric field, which turns Gauss's law into the Gauss-Bonnet theorem, counting topological integer charges. References: liquid-crystal analogs (above) and <https://en.wikipedia.org/wiki/Gauss%E2%80%93Bonnet_theorem>. Offered to collaborate on this direction.
 
 ![alt text](images/electromagnetism.png)
 
+### 2026-04-08 — Jeff's acknowledgement
+
+Jeff thanked Dr. Duda and reiterated the open-source motivation for OpenWave as a shared testing platform for both wave-based and topological approaches.
+
+### 2026-04-07 — Dr. Duda's concrete entry point
+
+Dr. Duda proposed a concrete starting experiment: recreate the Coulomb interaction for quantized topological charges as in liquid crystals, by integrating the Hamiltonian for two charges at various separations (his paper, Figure 2: <https://arxiv.org/pdf/2108.07896>). Outlined his wider Lagrangian program:
+
+- **Landau–de Gennes** framework, with twists as the low-energy mode that behaves like quantum phase (Klein-Gordon-like equation, unifying EM and QM). Reference: <https://en.wikipedia.org/wiki/Landau%E2%80%93de_Gennes_theory>
+- Natural **4D extension via teleparallelism** — adding boosts produces a second set of Maxwell equations for gravity (gravitoelectromagnetism). References: <https://en.wikipedia.org/wiki/Teleparallelism>, <https://en.wikipedia.org/wiki/Gravitoelectromagnetism>
+- Beside point topological charges (elementary electric), **topological vortices** correspond to quark strings / gluon flux tubes (e.g. in string hadronization, <http://www.scholarpedia.org/article/Parton_shower_Monte_Carlo_event_generators#String_model>) — various-size knots correspond to various-size nuclei
+- Also issued an open challenge to Dr. Robert Close about his own charge-quantization mechanism
+
+### 2026-04-08 — Dr. Robert Close (introduces his equation)
+
+Dr. Close joined the thread, offering his **nonlinear vector wave equation for the evolution of spin density** (and the equivalent first-order Dirac equation) as a candidate, consistent with relativistic QM's dynamical operators. Defined spin density as the vector field whose curl equals twice the intrinsic (aether) momentum density. Linked his paper ("Plane Wave Solutions to a Proposed 'Equation of Everything'", *Foundations of Physics* 55:27, 2025, <https://doi.org/10.1007/s10701-025-00839-0>) and recommended starting from a spherical-harmonic linear wave solution and observing what evolves.
+
+### 2026-04-09 — Rodrigo (status update + proposed tests)
+
+Rodrigo replied with OpenWave's current status, open challenges, 5 proposed test ideas, and a compatibility assessment between standing waves and topological defects. (Full content in the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) sections below.)
+
+### 2026-04-09 — Dr. Duda (endorses the dual approach, adds new directions)
+
+Dr. Duda confirmed that **both topological quantization (charge, spin) and standing-wave quantization (orbits) are needed**, citing the Couder walking-droplet experiments as the classical macroscopic analog:
+
+- Fort, Couder et al. (2010): <http://www.pnas.org/content/107/41/17515.short>
+- Perrard, Couder et al. (2014): <https://www.nature.com/articles/ncomms4219>
+
+Argued that the oscillation of resting electrons and neutrinos should be **derived** from a deeper theory, not assumed — pointing to the **time-crystal mechanism** (toy model: <https://arxiv.org/pdf/2501.04036>). Endorsed the 5 proposed experiments. Noted that the simple Coulomb calculation is missing **regularization**, which produces the running-coupling effect (reference: <https://www.mdpi.com/2076-3417/16/2/1030>). Clarified that **Klein-Gordon is an effective theory** (probability-distribution level) — the deeper model should *average to* it; his Fig. 9 in arxiv:2108.07896 shows this derivation around the electron. Stated his Lagrangian choice: **Landau–de Gennes field with Skyrme-like kinetic term** (for Lorentz covariance), with an open question about the Higgs-like potential. Confirmed the **three-lepton-family mechanism**: in 3D, three distinguishable axes give three families of topological defects — each a hedgehog of one axis, same electric field but different mass; heavier ones can decay to the lightest by field rotation, matching electron/muon/tau.
+
+### 2026-04-09 — Dr. Duda (pedagogical path)
+
+Dr. Duda outlined a concrete learning sequence:
+
+1. **Walking-droplet hydrodynamical quantum analogs** for QM intuition — but these need to be combined with stable localized field configurations, e.g. topological defects as in the liquid-crystal analogs
+2. **Sine-Gordon equation** as the entry point for stable massive particles with pair creation/annihilation and special relativity (Wikipedia, with mechanical coupled-pendula demo: <https://www.youtube.com/watch?v=nl5Qq5kUbEE>)
+3. To combine defects with oscillation, **propulsion** is required (the electron's Zitterbewegung, <https://en.wikipedia.org/wiki/Zitterbewegung>, experimentally confirmed in Gerritsma et al., <https://link.springer.com/article/10.1007/s10701-008-9225-1>)
+4. **Faber's 4D approach** automatically generates this propulsion (<https://arxiv.org/pdf/2501.04036>)
+
+### 2026-04-17 — Rodrigo (sandbox complete, M5 plan drafted)
+
+Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / Lagrangian-Wave Method build plan was drafted based on the group's directions. Summary of results:
+
+- ✅ 4 Passed (Sine-Gordon kinks, Hedgehog Coulomb, Winding quantization, Klein-Gordon dispersion)
+- ⚠️ 3 Partial (Lagrangian derivation + docs correction, biaxial lepton mechanism, Close's vector wave equation)
+- ❌ 1 Failed (Smolinski Ψ³ K-selectivity)
+
+Proposed M5 recipe combined: topological hedgehog defects + Klein-Gordon wave dynamics + Close's Eq. 19 base vector wave + retained M3 near-field lock-in + Skyrme stabilizer + LdG biaxial potential. Asked three targeted questions — to Dr. Duda about the extreme biaxial eigenvalue hierarchy needed for lepton ratios (~3477:1), to Dr. Close about fidelity of the Eqs. 19 & 21 implementation and what test would best exercise his nonlinear terms, and to Jeff about any concern with keeping M3 near-field physics alongside topology in the same engine.
+
+Full tables, scorecards, and architectural summary are preserved in [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) and [3c_path_to_m5.md](3c_path_to_m5.md).
+
+### 2026-04-17 — Dr. Duda's substantive feedback
+
+Dr. Duda acknowledged that the sandbox results confirm his arxiv:2108.07896 calculations and identified two additional directions needed for a complete model:
+
+1. **Cornell potential recreation** for quarks — quarks as excitations of a topological vortex string, with fractional charges adding to the Coulomb term a linear ~1 GeV/fm confinement-energy contribution produced by the fractional-charge conflict. Reference: <https://en.wikipedia.org/wiki/Cornell_potential>
+2. **De Broglie clock** of electron / neutrino oscillation — the 1+1D toy model (<https://arxiv.org/pdf/2501.04036>) shows the mechanism, but needs to be extended to full LdGS (Landau–de Gennes + Skyrme) for electron and neutrino
+
+On the biaxial-hierarchy question specifically: the main mass contributions for leptons come from the LdG-like potential **in regularization**, and this is the hardest part to include in simulation. The large mass separations should come primarily from axis lengths `0 < δ ≪ 1 ≪ g`, where `δ ~ ℏ` corresponds to the QM scale and `g` to gravity. The exact potential shape should be chosen using traces of powers as in standard Landau–de Gennes theory.
+
+![alt text](images/qcd.png)
+
+![alt text](images/clock.png)
+
+*(Attached images, visual summary)*: (a) QCD quark strings / flux tubes modeled as Abrikosov vortex with the Cornell potential transitioning from Coulomb to linear confinement at ~1 GeV/fm; (b) electron / muon / tau and neutrino topological vortex loops, with the de Broglie clock visualized as SO(2)~U(1) 2D rotations and neutrino oscillations as SO(3)~SU(2) 3D rotations.
+
+### 2026-04-17 — Jeff's feedback
+
+Jeff said he was still digesting the full message but directly answered the M3-topology coexistence question: no concern — M3 is already solving for both near-field and far-field, and he expects the two mechanisms to eventually merge. Added an important scope note: the near-field standing waves that hold particles together also hold nucleons together as the **strong force**, and further extend beyond the nucleus as the **orbital force** in EWT. That third regime will matter once M5 reaches composite-particle and atomic-scale simulations.
+
+### 2026-04-18 — Dr. Close's feedback
+
+Dr. Close responded positively to the results and provided a crucial architectural pointer: in his paper, the most likely candidate for a **particle equation is Equation 23**, not Eq. 21 (the Dirac factorization). Eq. 23 preserves **zero divergence of spin density** (`∇·s = 0`). Even with the nonlinear term, he expected dispersion in most cases, but suggested that certain amplitudes of certain harmonic waves could produce longer-lived localized energy — an unstable particle or resonance. Recommended exploring a **wide range of amplitudes**, with `l = 1` as the most interesting harmonic mode, and maximum displacement comparable to the wavelength (or half / twice). Cautioned that truly stable non-radiating solutions likely require infinite-domain modeling.
+
+### 2026-04-19 — Rodrigo (integrating feedback)
+
+Rodrigo confirmed the M5 build-plan updates driven by the three replies:
+
+- Adopted Dr. Close's **Eq. 23** as the particle equation (replacing Eq. 21), with `∇·s = 0` enforced at each time step, and the `l = 1` amplitude-sweep protocol for M5.2 resonance-hunting. Success criterion reframed to long-lived resonance with measurable lifetime
+- Adopted the biaxial hierarchy `0 < δ ≪ 1 ≪ g` as the M5.6 lepton-mass parameterization. Added **M5.7** (Cornell potential via topological vortex string) and **M5.8** (de Broglie clock / Zitterbewegung validation) as new phases
+- Retained M3's near-field physics in M5 based on Jeff's note that it covers three force regimes (intra-particle, strong, orbital)
+
+Asked one targeted pre-implementation clarification to Dr. Close (exact interpretation of Eq. 23 — direct form vs. vector-potential `s = ∇×A` vs. divergence-cleaning projection; and whether the amplitude sweep should span the full `m ∈ {−1, 0, +1}` dipole family), plus an optional follow-up to Dr. Duda about whether an existing regularization scheme from his arxiv papers should be ported directly.
+
+### 2026-04-19 — Dr. Duda (follow-up on calibration and regularization)
+
+Dr. Duda clarified two points refining M5.6:
+
+1. The `δ, g` axis-length parameters describe QM and gravity contributions to the Lagrangian, but their **exact values require numerical simulation** — there is no analytical form to pull from; treat them as calibration parameters
+2. On regularization: the specific form is still an open research question, but **Manfried Faber's existing scheme (slightly different potential, demonstrably produces the running-coupling effect) is the recommended starting point**. Papers:
+    - *Universe* 11 (2025) 113: <https://www.mdpi.com/2218-1997/11/4/113>
+    - arXiv preprint: <https://arxiv.org/pdf/2604.12021>
+
+### Open questions (as of 2026-04-19)
+
+- Dr. Close's confirmation of the exact implementation form of Eq. 23 (direct / vector-potential / divergence-cleaning) — pending
+
 ---
-On 4/8/2026 6:51 PM, Jeff Yee wrote:
-Thanks, Jarek.
 
-Really appreciate you sharing this, it’s a very interesting direction and will definitely consider it. This is exactly why we built OpenWave as an open source framework - to make it easier for ideas like this to be tested and explored collaboratively, especially across wave-based models.
+## REPLY ANALYSIS — KEY INSIGHTS FOR M5 (2026-04-19)
 
-Jeff
+Three replies, three distinct action items for M5. These refinements are incorporated into [3c_path_to_m5.md](3c_path_to_m5.md) § "Group Feedback (2026-04-17/18)".
 
----
-On Apr 7, 2026, at 10:00 PM, Jarek Duda <dudajar@gmail.com> wrote:
-Great, Jeff,
+### From Jarek Duda
 
-Let us know if something, would gladly discuss - especially the choice of Lagrangian.
+1. **Cornell potential recreation for quarks** — concrete validation target beyond leptons. Quarks are excitations of a *quark string / topological vortex*; fractional charges add to Coulomb a **linear ~1 GeV/fm confinement energy** from the conflict produced by fractional charges. This is the topological analog of QCD confinement — the `V(r) = −α/r + σ·r` form — and becomes a **Phase M5.7 headline target** (composite-particle / strong-force validation on M5)
+2. **De Broglie clock (Zitterbewegung) in full LdGS** — the 1+1D phi-4 kink toy-model from arxiv 2501.04036 shows the mass-driven oscillation mechanism; for electron and neutrino we'd need to run it in full Landau-de Gennes + Skyrme dynamics. This is a direct validation target for Exp 6.1 / M5.6
+3. **LdG regularization is where lepton masses come from, and it is the hardest part to include** — flags the specific numerical challenge: implementing the singular / divergent parts of V(Q) without destabilizing the leapfrog PDE
+4. **Biaxial hierarchy has a physical origin**: masses differ via axis lengths `0 < δ << 1 << g`, where `δ ~ ℏ` (QM scale) and `g` (gravity scale). **This is a physics-motivated explanation for the ~3477:1 ratio the sandbox required** — it's not ad-hoc tuning; it's the natural hierarchy of three widely-separated physical scales (QM, unity, gravity). Use traces of powers in original LdG theory to pick the exact potential shape
+5. **Validation**: Jarek explicitly endorsed that our sandbox results confirm his arxiv:2108.07896 calculations
 
-You can start with recreating EM for quantized topological charges like in liquid crystals - e.g. integrating Hamiltonian for two charges in various distances leads to Coulomb potential (fig. 2 in <https://arxiv.org/pdf/2108.07896> ), you could also simulate dynamically.
+### From Jeff Yee
 
-While many of us agree here, we disagree what to do next - e.g. I believe we should distinguish twists of these vectors, as in basic liquid crystal model: <https://en.wikipedia.org/wiki/Landau%E2%80%93de_Gennes_theory>  - these low energy twists behave like quantum phase, e.g. getting Klein-Gordon-like equation, unifying EM+QM.
+1. **M3 + topology coexistence is fine** — direct confirmation of the M5 architectural choice; Jeff expects the near-field and far-field mechanisms to eventually converge
+2. **Orbital force insight (new scope)**: the same standing waves that bind K=1 neutrinos into electrons, and later bind quarks into nucleons (strong force), **also extend beyond the nucleus as the orbital force** (electron-nucleus binding in atoms). This is a unified standing-wave mechanism spanning *three* force regimes: intra-particle (lock-in), intra-nucleus (strong), and atomic (orbital). Strong argument for **keeping M3's near-field physics intact in M5** — it's not a stopgap, it's the physics for composite particles and atoms
 
-Then it is natural to extend to 4D liquid crystal as in Einstein's teleparallelism ( <https://en.wikipedia.org/wiki/Teleparallelism> ) - adding boosts getting 2nd set of Maxwell equations for gravity as in GEM ( <https://en.wikipedia.org/wiki/Gravitoelectromagnetism> ).
+### From Robert Close
 
-Beside point-like topological charges corresponding to elementary electric, there are also topological vortices - in particle physics corresponding to quark string/gluon flux tube, e.g. decaying into particles in LHC string hadronization ( <http://www.scholarpedia.org/article/Parton_shower_Monte_Carlo_event_generators#String_model> ), so we just need to find particle-defect correspondence, e.g. various size knots - various size nuclei ...
+1. **Use Eq. 23, not Eq. 21, as the particle equation** — preserves zero divergence of spin density (∇·s = 0), which is a physical invariant our current Exp 7 implementation doesn't enforce. **Direct M5 architectural refinement**: M5.2 should implement Eq. 23 for particle dynamics, keep Eq. 19 as the free-field linear limit, and enforce ∇·s = 0 at each leapfrog step
+2. **Expect dispersion, search for resonances** — even with the nonlinear term, most initial conditions will disperse. The particle-like solutions are **unstable resonances at specific amplitude/wavelength combinations**, not generic solitons. This reframes the search: we're hunting for resonances, not static solitons
+3. **Concrete amplitude-sweep recipe**: probably `l = 1` harmonic wave, maximum displacement comparable to wavelength (or half / twice). **This becomes a concrete M5.2+ test protocol**: sweep amplitude `A ∈ {0.25λ, 0.5λ, 1.0λ, 2.0λ}` with `(l, m) = (1, 0)` seed and look for extended-lifetime localization
+4. **Infinite-domain caveat**: fully stable non-radiating solutions may require infinite-domain modeling. Implication for M5: we expect to see *long-lived resonances* (measured lifetime) rather than stable fixed points, even in the best case — set our M5.4 success criterion accordingly (lifetime thresholds, not perfect stability)
 
-Let me know if you agree/disagree here?
+### Compact M5 Plan Refinements (applied to 3c)
 
-Best,
-Jarek
+| Area | Change | Source |
+| --- | --- | --- |
+| M5.2 Wave dynamics | Implement Close's **Eq. 23** as particle equation; enforce `∇·s = 0` per step; Eq. 19 as linear limit | Robert |
+| M5.2 Validation | Add amplitude-sweep protocol: Y_1^0 seed at A ∈ {0.25, 0.5, 1.0, 2.0}·λ; measure resonance lifetime | Robert |
+| M5.4 Headline test | Success criterion = long-lived resonance (measured lifetime), not perfect stability | Robert |
+| M5.6 Biaxial LdG | Axis hierarchy `0 < δ << 1 << g` with δ~ℏ is the physics-motivated source of lepton-mass separation — implement this way, not as free tuning | Jarek |
+| **New M5.7** (Cornell / quark confinement) | After M5.4 succeeds: seed fractional-charge topological vortex string; measure `V(r) = −α/r + σ·r` with `σ ≈ 1 GeV/fm` | Jarek |
+| **New M5.8** (de Broglie clock) | Drive a single defect; measure intrinsic oscillation frequency; compare to `ω = 2mc²/ℏ` (Zitterbewegung) for electron and neutrino | Jarek |
+| M5 retention of M3 | M3 near-field standing waves stay because they carry *three* force regimes: intra-particle, strong (intra-nucleus), and orbital (atomic) | Jeff |
 
-Robert, have you maybe finally got charge quantization - explained why your electron doesn't explode?
+### Follow-up from Jarek Duda (2026-04-19) — on δ, g calibration and regularization scheme
 
----
+In response to our follow-up question about δ, g values and LdG regularization, Jarek clarified two points that refine M5.6:
 
-On Apr 8, 2026, Robert Close <robert.close@classicalmatter.org> wrote:
+1. **δ, g require numerical simulation, not ab-initio derivation.** Jarek clarified that while these axis-length parameters describe the Lagrangian contributions of QM and gravity respectively, their exact values can only be determined by numerical simulation — there is no closed-form analytical derivation. **M5 implication**: treat (δ, g) as **calibration parameters** — the plan in M5.6 was already aimed this way; Jarek confirms there is no pre-solved analytical form to pull from. We will iterate them against observed lepton-mass ratios and other measurable physics
+2. **LdG regularization — port Manfried Faber's scheme as the starting point.** Jarek noted that while the specific regularization form is still an open research question, Manfried Faber has already worked out a scheme for a closely-related (slightly simpler) potential that demonstrably produces the running-coupling effect. Jarek pointed to Faber's two papers:
+    - Manfried Faber et al., *Universe* 11 (2025) 113: <https://www.mdpi.com/2218-1997/11/4/113>
+    - arxiv preprint: <https://arxiv.org/pdf/2604.12021>
 
-Jeff,
+   Faber's scheme uses a simpler potential than full biaxial LdG but produces the **running-coupling effect** — the same phenomenon Jarek flagged in his April 9 reply as what our simple Coulomb calculation would be missing. **M5 implication**: M5.6 imports Faber's regularization approach as the baseline, adapts it to LdG-with-Skyrme, and uses running-coupling recovery as a validation target. This converts the "hardest numerical step" from "invent something new" to "port + adapt an existing working scheme"
 
-Thank you for sharing this tool. I think it could be quite useful. I have proposed a simple nonlinear vector wave equation (and equivalent first-order Dirac equation) for the evolution of spin density, consistent with the dynamical operators of relativistic quantum mechanics. Spin density, in classical and quantum physics, is the vector field whose curl is equal to twice the intrinsic (i.e. aether) momentum density. I don't know when I'll find time to work on solutions, so I invite you and others to try. This paper describes the theory:
-Plane Wave Solutions to a Proposed "Equation of Everything" - Foundations of Physics
-<https://doi.org/10.1007/s10701-025-00839-0>
-
-I suggest starting with a spherical harmonic linear wave solution and see what evolves.
-
-Best regards,
-
-Robert Close
-
----
-
-On 4/9/2026, Rodrigo Griesi replied with OpenWave status, open challenges, 5 proposed tests, and compatibility assessment (see INITIAL ANALYSIS below for full content).
-
----
-
-On Apr 9, 2026, Jarek Duda <dudajar@gmail.com> wrote:
-
-Hi Rodrigo,
-
-Thanks, sure we need both topological type quantization (e.g. charge, spin), but also different standing wave type - especially for orbit quantization, see e.g. <http://www.pnas.org/content/107/41/17515.short> , <https://www.nature.com/articles/ncomms4219>
-
-While you assume oscillations, finally we need to derive them from deeper theory, explaining why e.g resting electron/neutrinos oscillate - as in original definition of time crystals, we automatically get such mechanism - toy model: <https://arxiv.org/pdf/2501.04036>
-
-5 concrete experiments we can set up.
-
-Indeed getting Coulomb for quantized charges should be the first step of particle models ... but this calculation is simplified, e.g. missing regularization leading to running coupling effect: <https://www.mdpi.com/2076-3417/16/2/1030>
-
-Klein-Gordon is effective, e.g. having probability distribution of particles - we should search for deeper model averaging e.g. to Klein-Gordon, e.g. Fig. 9 in <https://arxiv.org/pdf/2108.07896> has such derivation around electron.
-
-Lagrangian should be assumed, comparing its consequences with known physics - I assume Landau-de Gennes field with Skyrme-like kinetic term for Lorentz covariance, but there are open questions e.g. how to choose its Higgs-like potential.
-
-Indeed in 3D with 3 distinguishable axes we have 3 families of topological defects, e.g. elementary charge as hedgehog of one of 3 axes - same electric field, different mass, can decay to the lightest (by field rotation) - like 3 leptons.
-
-With best regards,
-Jarek
+**Net status after Jarek's follow-up**: the precise regularization form remains an open research question, but we now have a concrete starting point (Faber's two papers) rather than starting from scratch. This derisks M5.6 meaningfully.
 
 ---
 
-On Apr 9, 2026, Rodrigo Griesi replied acknowledging the new territory, committing to study the theory and work through simulations.
-
----
-
-On Apr 9, 2026, Jarek Duda <dudajar@gmail.com> wrote:
-
-Hi Rodrigo,
-
-Sure, for intuitions about QM study walking droplet hydrodynamical quantum analogs ... which need to be combined with particles: stable localized field configurations, e.g. topological like in these liquid crystal particle analogs - e.g. preventing electron from exploding.
-
-<https://en.wikipedia.org/wiki/Sine-Gordon_equation> is a good starting point for such stable massive particles, with pair creation/annihilation and entire special relativity ... having mechanical models as lattice of coupled pendula: <https://www.youtube.com/watch?v=nl5Qq5kUbEE>
-
-To combine them, we need to get propulsion of its oscillations - for electron: <https://en.wikipedia.org/wiki/Zitterbewegung> , direct experimental confirmation: <https://link.springer.com/article/10.1007/s10701-008-9225-1> ... this Faber's approach in 4D automatically gives such propulsion: <https://arxiv.org/pdf/2501.04036>
-
-Best,
-Jarek
-
----
-
-## DUDA'S FIRST REPLY — KEY INSIGHTS
+## DR DUDA'S FIRST REPLY — KEY INSIGHTS
 
 ### 1. Both Topological AND Standing Wave Quantization Are Needed
 
@@ -304,7 +274,7 @@ Duda points out that we *assume* oscillations (our wave centers oscillate at fre
 
 ### 3. Coulomb Calculation Needs Regularization
 
-Duda confirms hedgehog energy vs distance is "the first step" but warns the simple calculation is missing **regularization** leading to the **running coupling effect** — the effective charge strength changes with distance (energy scale). This is a known QFT phenomenon (the fine-structure constant α is not truly constant — it "runs" with energy).
+Duda frames the hedgehog energy vs distance calculation as the natural first step but warns the simple calculation is missing **regularization** leading to the **running coupling effect** — the effective charge strength changes with distance (energy scale). This is a known QFT phenomenon (the fine-structure constant α is not truly constant — it "runs" with energy).
 
 **Connection to OpenWave**: our energy `E = ρV(fA)²` with variable λ(r) from Yee & Hauger shells already has a form of regularization (the wavelength changes near the core, modifying the effective coupling). The running coupling may be the topological equivalent of our variable-λ(r) profile.
 
@@ -324,7 +294,7 @@ Duda confirms the mechanism: 3 distinguishable axes in 3D → 3 families of topo
 
 ---
 
-## DUDA'S SECOND REPLY — KEY INSIGHTS
+## DR DUDA'S SECOND REPLY — KEY INSIGHTS
 
 ### 7. Sine-Gordon Equation as Starting Point
 
@@ -336,7 +306,7 @@ Duda recommends the **Sine-Gordon equation** as the entry point for stable massi
 
 This equation is remarkable because it produces:
 
-- **Soliton (kink) solutions**: stable, localized, particle-like structures that maintain their shape during propagation — exactly the "stable localized field configurations" Duda says we need
+- **Soliton (kink) solutions**: stable, localized, particle-like structures that maintain their shape during propagation — the kind of stable localized field configurations Duda identifies as the essential ingredient
 - **Pair creation/annihilation**: kink + anti-kink collisions can annihilate or create new pairs — directly analogous to our electron-positron annihilation simulations
 - **Entire special relativity**: solitons experience Lorentz contraction and time dilation naturally — relativistic behavior emerges from the wave equation, not imposed
 - **Mechanical model**: a lattice of coupled pendula reproduces Sine-Gordon physics visually (Duda's YouTube link) — the closest macroscopic analog to what we simulate
@@ -364,7 +334,7 @@ Our f₀ is the medium's fundamental frequency. The electron's Zitterbewegung fr
 
 ### 9. Faber's 4D Approach → Automatic Propulsion
 
-Duda says Faber's approach (his own 4D extension to teleparallelism, arXiv:2501.04036) "automatically gives such propulsion" — meaning the Zitterbewegung oscillation emerges naturally from the 4D field dynamics without being imposed. The kink in the phi-4 field oscillates because of the curvature coupling, and this oscillation IS the electron's trembling motion.
+Duda points to Faber's approach (his own 4D extension to teleparallelism, arXiv:2501.04036) as automatically producing this propulsion — the Zitterbewegung oscillation emerges naturally from the 4D field dynamics without being imposed. The kink in the phi-4 field oscillates because of the curvature coupling, and this oscillation IS the electron's trembling motion.
 
 ### Duda's Recommended Learning Path
 
@@ -388,23 +358,9 @@ This maps to a test sequence for OpenWave:
 
 ---
 
-## INITIAL ANALYSIS
+## Dr Duda's Three Challenges to OpenWave
 
-### Who is Jaroslaw Duda?
-
-Dr. Jaroslaw Duda is a computer scientist and mathematician at Jagiellonian University, Krakow. He is the inventor of **Asymmetric Numeral Systems (ANS)** — a family of entropy coding methods now foundational in data compression (used in zstd, Apple LZFSE, JPEG XL, Google Draco, Linux kernel). Beyond information theory, he works on particle physics models based on liquid crystal analogs and topological field theory.
-
-- Wikipedia: <https://en.wikipedia.org/wiki/Jaros%C5%82aw_Duda_(computer_scientist)>
-- Key physics paper: <https://arxiv.org/pdf/2108.07896> (Coulomb from topological charges in liquid crystal framework)
-- Liquid crystal particle analogs: <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs>
-
-OpenWave does NOT use ANS (it's data compression, unrelated to physics simulation). However, if we ever need to compress large voxel/time-series datasets, ANS-based compressors (zstd) would be ideal.
-
----
-
-## Duda's Three Challenges to OpenWave
-
-### Challenge 1: "Show me your Lagrangian"
+### Challenge 1: The Lagrangian request
 
 **The problem**: OpenWave currently operates at the PDE / field evolution level, testing candidate wave equations empirically (5 wave equations tested in M3, selected by best K=10 stability). We do NOT have a canonical Lagrangian from which our wave equations are derived.
 
@@ -418,7 +374,7 @@ OpenWave does NOT use ANS (it's data compression, unrelated to physics simulatio
 
 **Our current state**: the Combined Wolff-LaFreniere equation `ψ = 2A·sin(kr/2)·cos(kr/2-(ωt+φ))/r` was selected empirically for K=10 tetrahedron stability. Its phase component (`A·sin(kr)/r`) *is* a free-wave solution — it's equivalent to a pure standing wave `2A·sin(kr)·cos(ωt+φ)/(kr)`, which decomposes into in-wave + out-wave spherical solutions of `∂²ψ/∂t² = c²∇²ψ`. **But its quadrature component `A·(1-cos(kr))/r·sin(ωt+φ)` is NOT a free-wave solution** — verified by sympy in Experiment 5. The full Combined W-L produces a residual `-A·c²k²·sin(ωt+φ)/r ≠ 0` when substituted into the d'Alembertian, meaning the formula implicitly includes an external source term or comes from a non-trivial Lagrangian we have yet to identify. This is an important empirical fact: the LaFreniere quadrature piece is a modeling choice, not a free-field solution. Boundary conditions, source terms, and nonlinear extensions are also modeling choices, not derived from a Lagrangian.
 
-### Challenge 2: "Without charge quantization your electron explodes"
+### Challenge 2: Charge quantization is required for particle stability
 
 **The problem**: in our model, `charge_sign = cos(source_offset)` is imposed as ±1. Nothing in the wave physics FORCES charge to be integer-valued. A standing wave configuration could in principle have any phase offset (not just 0 or π), which would give fractional charge. There's no topological protection preventing the particle from dissipating.
 
@@ -431,7 +387,7 @@ OpenWave does NOT use ANS (it's data compression, unrelated to physics simulatio
 
 **Our current state**: charge is imposed via source_offset (0 = positron, π = electron). Phase 1 confirmed charge is NOT emergent from wave interference in the scalar model. Phase 1c found L→T spin conversion distinguishes charges but doesn't quantize them. This is an unsolved fundamental problem.
 
-### Challenge 3: "Particles as topological defects, not standing waves?"
+### Challenge 3: Particles as topological defects vs. standing waves
 
 **The problem**: Duda argues particles should be understood as topological defects (hedgehogs, vortices) in a field, similar to defects in liquid crystals — not as standing wave configurations.
 
@@ -448,7 +404,7 @@ OpenWave does NOT use ANS (it's data compression, unrelated to physics simulatio
 
 ---
 
-## Duda's Framework — The Mathematics
+## Dr Duda's Framework — The Mathematics
 
 ### The Field: Director Field n(x)
 
@@ -705,11 +661,11 @@ All 8 tests are **doable without refactoring M4 or M3**. The director field / li
 
 ---
 
-## DUDA EXPLICITLY CONFIRMS: Both Topology AND Standing Waves Needed
+## Dr DUDA EXPLICITLY CONFIRMS: Both Topology AND Standing Waves Needed
 
-A critical clarification from Duda's first reply (line 194):
+A critical clarification from Duda's first reply:
 
-> *"Thanks, sure we need both topological type quantization (e.g. charge, spin), but also different standing wave type - especially for orbit quantization, see e.g. [Fort/Couder 2010, Perrard 2014]"*
+Duda explicitly agreed that both topological-type quantization (for charge and spin) AND standing-wave-type quantization (for orbits) are needed — pointing to the Fort/Couder (2010) and Perrard (2014) bouncing-droplet experiments as the evidence for the standing-wave side.
 
 This is not "topology REPLACES standing waves" — it's "topology PLUS standing waves." Two different physical phenomena requiring two different mechanisms:
 
@@ -722,7 +678,7 @@ Duda points to the Couder droplet experiments (Fort 2010, Perrard 2014) as the p
 
 **Why this matters for OpenWave**: this validates our entire approach so far. The standing wave physics we've been demonstrating (lock-in wells, sinc nodes, K=10 tetrahedron) IS doing useful work — it's the right mechanism for one of the two quantization types. We just need to ADD the topological layer to handle charge.
 
-> Duda's message (paraphrased): "Your standing waves are correct for what they explain. You just need to add topology for what they CAN'T explain."
+> Duda's message (paraphrased): OpenWave's standing-wave physics is valid for what it explains (orbits); topology needs to be added on top to handle what it cannot (integer charge and spin).
 
 This is additive, not replacement. OpenWave's current M3 results stay valid. The Lagrangian sub-project is about extending — not abandoning — the standing wave foundation.
 
@@ -821,7 +777,7 @@ If this works, M3's K=10 tetrahedron lock-in physics would carry over directly t
 
 ## References
 
-Duda's papers and references:
+Dr Duda's papers and references:
 
 - Duda, J. (2021). "Four-dimensional understanding of quantum mechanics and Bell violation." <https://arxiv.org/pdf/2108.07896> — core paper: Coulomb from topological charges (Fig. 2), Klein-Gordon derivation around electron (Fig. 9), LdGS Lagrangian
 - Duda, J. (2025). "Time crystal phi-4 kinks by curvature coupling as toy model for mechanism of oscillations propelled by mass." <https://arxiv.org/pdf/2501.04036> — derives WHY resting particles oscillate (time crystal mechanism), phi-4 potential with curvature coupling
@@ -839,7 +795,7 @@ Sine-Gordon, Zitterbewegung, and soliton physics (cited by Duda, second reply):
 - Zitterbewegung (electron trembling motion): <https://en.wikipedia.org/wiki/Zitterbewegung> — electron oscillates at 2mc²/h even at rest
 - Zitterbewegung experimental confirmation: <https://link.springer.com/article/10.1007/s10701-008-9225-1>
 
-Robert Close:
+Dr Robert Close:
 
 - Close, R.A. (2025). "Plane Wave Solutions to a Proposed 'Equation of Everything'." Foundations of Physics 55, 27. <https://doi.org/10.1007/s10701-025-00839-0> — Dirac equation from classical elastic solid waves, Lagrangian with classical interpretation, nonlinear vector wave equation for spin density
 
@@ -1134,7 +1090,7 @@ Both are valid candidates. They may address different aspects: Duda's topology h
 
 ### Test 7: Close's Nonlinear Vector Wave Equation
 
-Close explicitly invites others to solve his equation: *"I don't know when I'll find time to work on solutions, so I invite you and others to try."* His suggestion: *"starting with a spherical harmonic linear wave solution and see what evolves."*
+Close explicitly invites others to solve his equation, noting that he does not expect to have time to work on solutions himself and suggests starting from a spherical-harmonic linear wave solution and observing what evolves.
 
 ```text
 Setup:
