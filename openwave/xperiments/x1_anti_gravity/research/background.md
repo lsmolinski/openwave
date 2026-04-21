@@ -1,6 +1,6 @@
 # ANTI-GRAVITY Xperiment
 
-I read the paper a couple of times, and I believe we could create this Xperiment right now, making use of the already developed infrastructure and adding a few more modules to OpenWave.
+We could create this Xperiment right now, making use of the already developed infrastructure and adding a few more modules to OpenWave.
 
 The key insight: we don't need to simulate Earth's gravitational field using 10^50 planet atoms (intractable for any computer). Instead, we directly apply the Gravitational Force Field that results in the acceleration constant g = 9.80665 m/s² — the same approach your paper uses in Eq. 2.3.5 where E_g = m_p × g × h.
 

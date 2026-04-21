@@ -80,7 +80,7 @@ This document compares and contrasts the **wave equation** (used in OpenWave) an
 ### Order of Time Derivative (CRITICAL DIFFERENCE)
 
 | Equation | Time Derivative | Order | Meaning |
-|----------|----------------|-------|---------|
+| -------- | --------------- | ----- | ------- |
 | **Wave** | ∂²ψ/∂t² | 2nd order | Acceleration, oscillation |
 | **Heat** | ∂u/∂t | 1st order | Rate of change, relaxation |
 
@@ -492,7 +492,7 @@ Much more restrictive! (scales as dx² not dx)
 ### Key Numerical Differences
 
 | Aspect | Wave Equation | Heat Equation |
-|--------|---------------|---------------|
+| ------ | ------------- | ------------- |
 | **Time levels** | 2 (ψ, ψ_old) | 1 (u) |
 | **Stability (explicit)** | dt < dx/c | dt < dx²/(2α) |
 | **Stiffness** | Not stiff | Stiff (small dt) |
@@ -647,7 +647,7 @@ def propagate_wave():
 ## Summary Table
 
 | Property | Wave Equation | Heat Equation |
-|----------|---------------|---------------|
+| -------- | ------------- | ------------- |
 | **Time derivative** | 2nd order (∂²/∂t²) | 1st order (∂/∂t) |
 | **Solutions** | Oscillatory, propagating | Decaying, diffusing |
 | **Speed** | Finite (c) | Infinite |

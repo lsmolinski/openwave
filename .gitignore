@@ -214,3 +214,6 @@ imgui.ini
 
 # Video export directory
 /openwave/video_export
+
+# AI Agents
+.claude/worktrees/charming-shaw-8044b7/
