@@ -2,7 +2,7 @@
 
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
 
-Numerical results from the 8 Lagrangian framework experiments in `sandbox_phase2_lagrangian/`.
+Numerical results from the 8 Lagrangian framework experiments in `sandbox_phase3_lagrangian/`.
 See [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) for experiment specifications.
 
 ---
@@ -21,7 +21,7 @@ OpenWave uses two layers of experimentation:
 **For each experiment**:
 
 1. **Before running** — fill in section `N.2 Setup` with grid parameters, initial conditions, etc.
-2. **Run the sandbox script** in `sandbox_phase2_lagrangian/expN_*.py`
+2. **Run the sandbox script** in `sandbox_phase3_lagrangian/expN_*.py`
 3. **Capture output** in section `N.3 Results` (raw numbers, behaviors observed)
 4. **Save evidence** in section `N.4 Numerical Evidence` (plots, tables, key measurements)
 5. **Fill comparison table** `N.5 Comparison to Expected` (predicted vs measured)
@@ -59,7 +59,7 @@ OpenWave uses two layers of experimentation:
 ## ✅ EXPERIMENT 1: Sine-Gordon 1D Solitons
 
 **Status**: ✅ Passed
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp1_sine_gordon_1d.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp1_sine_gordon_1d.py`
 **Date run**: 2026-04-16
 
 ### 1.1 Hypothesis
@@ -110,7 +110,7 @@ The Sine-Gordon equation `∂²φ/∂t² - c²∂²φ/∂x² + (m²c⁴/ℏ²)·
 
 ### 1.4 Numerical Evidence
 
-Plots in `sandbox_phase2_lagrangian/exp1_results/`:
+Plots in `sandbox_phase3_lagrangian/exp1_results/`:
 
 - `test1_static_kink.png` — snapshots (10 time slices overlap into single curve) + energy-vs-time (flat line)
 - `test2_moving_kink.png` — snapshots (11 kink positions from -20 to +30) + position-vs-time (linear, matches prediction)
@@ -165,7 +165,7 @@ Plots in `sandbox_phase2_lagrangian/exp1_results/`:
 ## EXPERIMENT 2: Hedgehog Energy vs Distance
 
 **Status**: ✅ Passed
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp2_hedgehog_energy.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp2_hedgehog_energy.py`
 **Date run**: 2026-04-16
 
 ### 2.1 Hypothesis
@@ -202,7 +202,7 @@ Two hedgehog defects in a 3D director field produce a clean 1/r Coulomb potentia
 
 ### 2.4 Numerical Evidence
 
-Plots in `sandbox_phase2_lagrangian/exp2_results/`:
+Plots in `sandbox_phase3_lagrangian/exp2_results/`:
 
 - `energy_vs_distance.png` — E(d) for both pre-relax and post-relax; 1/d fit overlaid
 - `relax_convergence.png` — energy-vs-step for all 6 separations (monotonic decrease)
@@ -257,7 +257,7 @@ This is **exactly the behavior that M3 could not produce.** M3's Combined W-L wa
 ## EXPERIMENT 3: Topological Charge Quantization
 
 **Status**: ✅ Passed
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp3_topological_charge.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp3_topological_charge.py`
 **Date run**: 2026-04-16
 
 ### 3.1 Hypothesis
@@ -314,7 +314,7 @@ Accuracy improves monotonically with surface radius (larger spheres → more vox
 
 ### 3.4 Numerical Evidence
 
-Plots in `sandbox_phase2_lagrangian/exp3_results/`:
+Plots in `sandbox_phase3_lagrangian/exp3_results/`:
 
 - `winding_vs_radius.png` — three flat lines at Q = +1, −1, 0 for hedgehog, anti-hedgehog, vacuum respectively. Discretization error visible but bounded by 1.5% at R=2, falling to 0.2% at R=7
 - `winding_vs_noise.png` — Q stays near 1 for noise up to 20%, slowly degrades to 0.75 at 50% noise, collapses to 0.19 at 100% noise
@@ -362,7 +362,7 @@ Plots in `sandbox_phase2_lagrangian/exp3_results/`:
 ## EXPERIMENT 4: Klein-Gordon from Twist Dynamics
 
 **Status**: ✅ Passed
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp4_klein_gordon.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp4_klein_gordon.py`
 **Date run**: 2026-04-17
 
 ### 4.1 Hypothesis
@@ -423,7 +423,7 @@ Perturbations of a uniaxial director vacuum obey the massive Klein-Gordon equati
 
 ### 4.4 Numerical Evidence
 
-Plot in `sandbox_phase2_lagrangian/exp4_results/dispersion.png`:
+Plot in `sandbox_phase3_lagrangian/exp4_results/dispersion.png`:
 
 - Left panel: ω vs. k. Massless curve is linear through origin; massive curve is a hyperbola that approaches the massless line at high k and has a finite intercept `ω(k=0) ≈ m = 0.7` (the mass gap / rest frequency)
 - Right panel: ω² vs. k². Both datasets fit straight lines with slope ≈ c² = 1, offset by m². Linearity R² = 0.999982 confirms the `ω² = c²k² + m²` relation across nearly two decades of k²
@@ -472,7 +472,7 @@ Plot in `sandbox_phase2_lagrangian/exp4_results/dispersion.png`:
 ## EXPERIMENT 5: Lagrangian Derivation (Combined W-L from a Lagrangian?)
 
 **Status**: ⚠️ Mixed — Smolinski Ψ³ and Noether confirmed; Combined W-L (doc form) is NOT a free-wave solution
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp5_lagrangian_derivation.py` (sympy verification)
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp5_lagrangian_derivation.py` (sympy verification)
 **Date run**: 2026-04-17
 
 ### 5.1 Hypothesis
@@ -594,7 +594,7 @@ The Quadrature part would emerge naturally if the Lagrangian included a **source
 ## EXPERIMENT 6: Three Lepton Families from Biaxial Hedgehog
 
 **Status**: ⚠️ Mechanism validated, mass-ratios not predicted (scoped down from full biaxial Q-tensor)
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp6_lepton_families.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp6_lepton_families.py`
 **Date run**: 2026-04-17
 
 ### 6.1 Hypothesis
@@ -654,7 +654,7 @@ Using K = (1e-6, 4.275e-2, 12.09) chosen to target the K ratios from Test B:
 
 ### 6.4 Numerical Evidence
 
-Plot in `sandbox_phase2_lagrangian/exp6_results/lepton_scales.png`:
+Plot in `sandbox_phase3_lagrangian/exp6_results/lepton_scales.png`:
 
 - Left: Test A linear scaling E(K) across five K values — perfectly straight line, R²=1
 - Right: Test C bar chart comparing log₁₀ of target mass² ratios vs measured E ratios — bars overlap exactly
@@ -705,7 +705,7 @@ Either is consistent with this experiment's scope. The experiment successfully r
 ## EXPERIMENT 7: Close's Nonlinear Vector Wave Equation
 
 **Status**: ⚠️ Close's exact equations ported; no soliton from harmonic seeds (consistent with Close's own framework — particles interpreted via Dirac first-order form, not static solitons)
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp7_close_vector_wave.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp7_close_vector_wave.py`
 **Date run**: 2026-04-17 (v2 — Close's actual equations, after obtaining the paper)
 
 ### 7.1 Hypothesis
@@ -781,7 +781,7 @@ The nonlinear case retains ~15% more peak amplitude than the linear — a small 
 
 ### 7.4 Numerical Evidence
 
-Plots in `sandbox_phase2_lagrangian/exp7_results/`:
+Plots in `sandbox_phase3_lagrangian/exp7_results/`:
 
 - `close_dynamics.png` — 6-panel grid (2 rows × 3 cols): linear vs nonlinear rows, columns for energy concentration, peak |Q|, total H. All three modes in each panel, color-coded. The linear and nonlinear rows look almost visually identical — confirming the near-degeneracy noted above
 - `close_final_field.png` — three 2D slices (xy, xz, yz) of `|Q|(x, t_final)` for the nonlinear Y_1^0 run. Shows an expanding transverse wave pattern with the dipole structure of the seed partially preserved
@@ -835,7 +835,7 @@ After properly reading the paper (not just proxying the equation class), the pic
 ## EXPERIMENT 8: Smolinski's Non-linear Ψ³ (Direct K-Selectivity Test)
 
 **Status**: ❌ Failed — hypothesis falsified (Level 1; higher levels deferred)
-**Sandbox Script**: `sandbox_phase2_lagrangian/exp8_smolinski_psi3.py`
+**Sandbox Script**: `sandbox_phase3_lagrangian/exp8_smolinski_psi3.py`
 **Date run**: 2026-04-17
 
 ### 8.1 Hypothesis
@@ -905,7 +905,7 @@ Adding `-κ·Ψ³` to the linear wave equation produces K-dependent stability �
 
 ### 8.5 Numerical Evidence
 
-Plots in `sandbox_phase2_lagrangian/exp8_results/`:
+Plots in `sandbox_phase3_lagrangian/exp8_results/`:
 
 - `peak_retention_heatmap.png` — 5×4 grid (K × κ) of peak retention values; scattered −0.23 to +0.22 with no K-preferred pattern
 - `peak_vs_time.png` — 5 panels (one per K), each showing mean WC peak amplitude over t ∈ [0, 3] for all 4 κ values. **The five panels are visually nearly indistinguishable.** κ=10 red curve shows breathing (dip and rebound); κ=0 blue curve shows monotonic dispersion
