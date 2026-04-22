@@ -68,7 +68,7 @@ See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section be
 
 ## EMAIL THREAD — SUMMARY
 
-The Lagrangian framework collaboration took place on the private "Models of Particles" Google Group with Dr. Jarek Duda (Jagiellonian University), Dr. Robert Close (Clark College, retired), and Jeff Yee between April 7–19, 2026. **Original verbatim replies have been paraphrased here to respect the private nature of the exchange, since this repository is open-source.** Attribution, dates, paper references, image links, and the full technical substance are preserved so the research thread remains reconstructable.
+The Lagrangian framework collaboration took place on the private "Models of Particles" Google Group with Dr. Jarek Duda (Jagiellonian University), Dr. Robert Close (Clark College, retired), and Jeff Yee between April 7–19, 2026. **Original verbatim replies have been paraphrased here to respect the private nature of the exchange, since this repository is open-source.** Attribution, dates, paper references, image links, and the full technical substance are preserved so the research thread remains.
 
 ### 2026-04-07 — Initial post (Jeff Yee)
 
