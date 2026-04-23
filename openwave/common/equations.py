@@ -1,8 +1,7 @@
 """
 OpenWave equations module.
 
-This module implements the core mathematical equations of OpenWave,
-sourced from EWT at https://energywavetheory.com/equations/
+This module implements the core mathematical equations of OpenWave.
 
 Energy Equations:
 - Energy wave equation (fundamental EWT equation)
@@ -28,9 +27,6 @@ Relativistic Wave Energy:
 
 Unit Converters:
 - Energy unit conversions (J, eV, kWh, cal)
-
-All equations are derived from the fundamental Energy Wave Equation
-and use EWT-specific constants from the constants module.
 """
 
 import numpy as np

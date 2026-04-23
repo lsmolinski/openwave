@@ -2,7 +2,7 @@
 XPERIMENT PARAMETERS
 
 K=2 through K=10 progressive particle formation test.
-Verifies EWT prediction: K=2..9 are UNSTABLE (decay/fly apart),
+Verifies prediction: K=2..9 are UNSTABLE (decay/fly apart),
 K=10 is the first stable standalone particle (electron tetrahedron).
 
 Switch K by uncommenting the desired configuration below.
@@ -41,7 +41,7 @@ K = 3
 # K = 5    # Trigonal bipyramid — EXPECT: unstable
 # K = 6    # Octahedron — EXPECT: unstable
 # K = 7    # Pentagonal bipyramid — EXPECT: unstable
-# K = 8    # Cube (dual tetra) — EXPECT: STABLE (neutral in EWT)
+# K = 8    # Cube (dual tetra) — EXPECT: STABLE (neutral)
 # K = 9    # Tricapped prism — EXPECT: unstable
 # K = 10   # 1-3-6 tetrahedron — EXPECT: STABLE (electron)
 

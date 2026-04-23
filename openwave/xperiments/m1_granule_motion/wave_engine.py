@@ -215,7 +215,7 @@ def oscillate_granules(
         Ensures total energy flux through spherical shells remains constant
 
     Implementation uses r_min = 1λ per source based on:
-        - EWT neutrino boundary specification at r = 1λ
+        - Neutrino boundary specification at r = 1λ
         - EM theory transition to radiative fields around λ
         - Prevents singularity at r → 0
         - Ensures numerical stability

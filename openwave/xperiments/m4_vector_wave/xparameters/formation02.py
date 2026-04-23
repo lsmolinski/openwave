@@ -2,7 +2,7 @@
 XPERIMENT PARAMETERS
 
 K=2 through K=10 progressive particle formation test.
-Verifies EWT prediction: K=2..9 are UNSTABLE (decay/fly apart),
+Verifies prediction: K=2..9 are UNSTABLE (decay/fly apart),
 K=10 is the first stable standalone particle (electron tetrahedron).
 
 Switch K by uncommenting the desired configuration below.
@@ -40,7 +40,7 @@ K = 2
 # K = 5    # Trigonal bipyramid — EXPECT: unstable
 # K = 6    # Octahedron — EXPECT: unstable
 # K = 7    # Pentagonal bipyramid — EXPECT: unstable
-# K = 8    # Cube (dual tetra) — EXPECT: STABLE (neutral in EWT)
+# K = 8    # Cube (dual tetra) — EXPECT: STABLE (neutral)
 # K = 9    # Tricapped prism — EXPECT: unstable
 # K = 10   # 1-3-6 tetrahedron — EXPECT: STABLE (electron)
 
@@ -95,7 +95,7 @@ def generate_K_positions(
 ):
     """Generate K WC positions in a compact geometry at λ spacing.
 
-    Uses simple symmetric arrangements. Not all are the natural EWT geometry
+    Uses simple symmetric arrangements. Not all are the natural geometry
     (only K=10 has the 1-3-6 tetrahedron), but they test whether arbitrary
     K-body arrangements are stable or decay.
     """
@@ -152,7 +152,7 @@ def generate_K_positions(
         positions.append([cx, cy, cz - s / 2])
 
     elif K == 8:
-        # Cube: 8 vertices (dual tetrahedra in EWT — K=8 muon neutrino)
+        # Cube: 8 vertices (dual tetrahedra — K=8 muon neutrino)
         d = s / 2
         positions = [
             [cx + d, cy + d, cz + d],

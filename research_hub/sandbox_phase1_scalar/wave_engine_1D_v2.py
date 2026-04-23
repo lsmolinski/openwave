@@ -25,7 +25,7 @@ from openwave.common import colormap, constants
 
 
 # ================================================================
-# Physical Constants (EWT)
+# Physical Constants
 # ================================================================
 
 A0_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # amplitude in am

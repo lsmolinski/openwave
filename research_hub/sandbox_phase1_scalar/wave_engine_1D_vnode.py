@@ -30,7 +30,7 @@ from openwave.common import colormap, constants
 
 
 # ================================================================
-# Physical Constants (EWT)
+# Physical Constants
 # ================================================================
 
 A0_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # amplitude in am
@@ -150,10 +150,10 @@ def compute_combined_rms(x):
 
             # Eq #5: weighted partial standing wave phasor coefficients
             with np.errstate(divide="ignore", invalid="ignore"):
-                C_n = np.where(kr < 1e-10, 2.0 * wc.amplitude,
-                               wc.amplitude * (w + 1.0) * np.sin(kr) / kr)
-                S_n = np.where(kr < 1e-10, 0.0,
-                               wc.amplitude * (w - 1.0) * np.cos(kr) / kr)
+                C_n = np.where(
+                    kr < 1e-10, 2.0 * wc.amplitude, wc.amplitude * (w + 1.0) * np.sin(kr) / kr
+                )
+                S_n = np.where(kr < 1e-10, 0.0, wc.amplitude * (w - 1.0) * np.cos(kr) / kr)
 
             # Rotate by phase (always 0 in node-locking, but kept general)
             cos_phi = np.cos(wc.phase)
@@ -177,8 +177,11 @@ def compute_combined_displacement(x, t):
             wt_phi = omega * t + wc.phase
 
             with np.errstate(divide="ignore", invalid="ignore"):
-                wave = np.where(kr < 1e-10, 2.0 * np.cos(wt_phi),
-                                (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr)
+                wave = np.where(
+                    kr < 1e-10,
+                    2.0 * np.cos(wt_phi),
+                    (w * np.sin(kr + wt_phi) + np.sin(kr - wt_phi)) / kr,
+                )
 
             psi += wc.amplitude * wave
 
@@ -504,8 +507,14 @@ def plot_sandbox():
     fig = plt.figure(figsize=(16, 9), facecolor=colormap.DARK_GRAY[1])
 
     gs = fig.add_gridspec(
-        3, 1, height_ratios=[3, 1, 1], hspace=0.30,
-        top=0.91, bottom=0.10, left=0.06, right=0.98,
+        3,
+        1,
+        height_ratios=[3, 1, 1],
+        hspace=0.30,
+        top=0.91,
+        bottom=0.10,
+        left=0.06,
+        right=0.98,
     )
 
     ax1 = fig.add_subplot(gs[0, 0])
@@ -517,7 +526,9 @@ def plot_sandbox():
     wc_label = "Node-Locking" if WC_ENABLED else "Base Only"
     fig.suptitle(
         f"OPENWAVE — Phase 1b  [{mode_name} + {wc_label}]",
-        fontsize=16, family="Monospace", y=0.98,
+        fontsize=16,
+        family="Monospace",
+        y=0.98,
     )
 
     # Mode info
@@ -529,24 +540,40 @@ def plot_sandbox():
         parity = "ODD (opposite)" if sep_nodes % 2 == 1 else "EVEN (same)"
         info_parts.append(f"WC sep: {sep_nodes} nodes ({sep_nodes/2:.1f}λ) = {parity}")
     fig.text(
-        0.50, 0.935, "  |  ".join(info_parts),
-        fontsize=10, family="Monospace", ha="center", va="center", color="#AAAAAA",
+        0.50,
+        0.935,
+        "  |  ".join(info_parts),
+        fontsize=10,
+        family="Monospace",
+        ha="center",
+        va="center",
+        color="#AAAAAA",
     )
     # Store reference for updates
     info_text = fig.texts[-1]
 
     # --- Panel 1: Displacement + RMS ---
     (line_psi,) = ax1.plot(
-        [], [], color=colormap.viridis_palette[2][1],
-        linewidth=1.5, alpha=0.8, label="ψ(x,t)",
+        [],
+        [],
+        color=colormap.viridis_palette[2][1],
+        linewidth=1.5,
+        alpha=0.8,
+        label="ψ(x,t)",
     )
     (line_rms_pos,) = ax1.plot(
-        x_am, rms, color=colormap.viridis_palette[4][1],
-        linewidth=2, label="RMS envelope",
+        x_am,
+        rms,
+        color=colormap.viridis_palette[4][1],
+        linewidth=2,
+        label="RMS envelope",
     )
     (line_rms_neg,) = ax1.plot(
-        x_am, -rms, color=colormap.viridis_palette[4][1],
-        linewidth=2, alpha=0.5,
+        x_am,
+        -rms,
+        color=colormap.viridis_palette[4][1],
+        linewidth=2,
+        alpha=0.5,
     )
 
     # Node markers on panel 1 (standing wave energy zeros)
@@ -583,14 +610,22 @@ def plot_sandbox():
     ax1.grid(True, alpha=0.2)
 
     time_text = ax1.text(
-        0.02, 0.95, "", transform=ax1.transAxes,
-        fontsize=10, family="Monospace", verticalalignment="top",
+        0.02,
+        0.95,
+        "",
+        transform=ax1.transAxes,
+        fontsize=10,
+        family="Monospace",
+        verticalalignment="top",
     )
 
     # --- Panel 2: Energy Density ---
     (line_energy,) = ax2.plot(
-        x_am, energy, color=colormap.viridis_palette[3][1],
-        linewidth=1.5, label="E(x) = ρV(fA)² [J]",
+        x_am,
+        energy,
+        color=colormap.viridis_palette[3][1],
+        linewidth=1.5,
+        label="E(x) = ρV(fA)² [J]",
     )
     fill_energy = [ax2.fill_between(x_am, energy, color=colormap.viridis_palette[3][1], alpha=0.5)]
     ax2.set_xlim(x_am.min(), x_am.max())
@@ -602,18 +637,40 @@ def plot_sandbox():
     ax2.set_ylim(0, e_max * 1.2)
 
     energy_info = ax2.text(
-        0.5, 0.90, "", transform=ax2.transAxes, fontsize=10,
-        family="Monospace", fontweight="bold", ha="center", va="top", color="#AAAAAA",
+        0.5,
+        0.90,
+        "",
+        transform=ax2.transAxes,
+        fontsize=10,
+        family="Monospace",
+        fontweight="bold",
+        ha="center",
+        va="top",
+        color="#AAAAAA",
     )
 
     # --- Panel 3: Force Field ---
     (line_force,) = ax3.plot(x_am, force, color="w", linewidth=1, alpha=0.8)
-    fill_force_r = [ax3.fill_between(
-        x_am, force, where=(force > 0), color="#FF4444", alpha=0.3, label="→ Right (+)",
-    )]
-    fill_force_l = [ax3.fill_between(
-        x_am, force, where=(force < 0), color="#4488FF", alpha=0.3, label="← Left (−)",
-    )]
+    fill_force_r = [
+        ax3.fill_between(
+            x_am,
+            force,
+            where=(force > 0),
+            color="#FF4444",
+            alpha=0.3,
+            label="→ Right (+)",
+        )
+    ]
+    fill_force_l = [
+        ax3.fill_between(
+            x_am,
+            force,
+            where=(force < 0),
+            color="#4488FF",
+            alpha=0.3,
+            label="← Left (−)",
+        )
+    ]
     ax3.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     ax3.set_xlim(x_am.min(), x_am.max())
     ax3.set_xlabel("X (am)", family="Monospace")
@@ -629,25 +686,41 @@ def plot_sandbox():
     if WC_ENABLED:
         for wc in wave_centers:
             txt = ax3.text(
-                wc.x_am, 0.97, "",
+                wc.x_am,
+                0.97,
+                "",
                 transform=blended_transform_factory(ax3.transData, ax3.transAxes),
-                fontsize=9, family="Monospace", fontweight="bold",
-                ha="center", va="top",
+                fontsize=9,
+                family="Monospace",
+                fontweight="bold",
+                ha="center",
+                va="top",
                 bbox=dict(facecolor=colormap.DARK_GRAY[1], edgecolor="none", pad=2),
             )
             wc_force_texts.append(txt)
 
     # Coulomb / node-locking result text
     result_text = ax3.text(
-        0.5, 0.02, "", transform=ax3.transAxes, fontsize=9, family="Monospace",
-        ha="center", va="bottom", color="#FFCC00",
+        0.5,
+        0.02,
+        "",
+        transform=ax3.transAxes,
+        fontsize=9,
+        family="Monospace",
+        ha="center",
+        va="bottom",
+        color="#FFCC00",
         bbox=dict(facecolor="#222222", edgecolor="#FFCC00", boxstyle="round,pad=0.3", alpha=0.7),
     )
 
     # --- Separation Slider (node steps) ---
     slider_sep = Slider(
-        ax_slider, "WC Separation (nodes, λ/2 each)", 1, 30,
-        valinit=wc_sep_nodes, valstep=1,
+        ax_slider,
+        "WC Separation (nodes, λ/2 each)",
+        1,
+        30,
+        valinit=wc_sep_nodes,
+        valstep=1,
         color=colormap.viridis_palette[3][1],
     )
 
@@ -667,7 +740,10 @@ def plot_sandbox():
         line_energy.set_ydata(new_energy)
         fill_energy[0].remove()
         fill_energy[0] = ax2.fill_between(
-            x_am, new_energy, color=colormap.viridis_palette[3][1], alpha=0.5,
+            x_am,
+            new_energy,
+            color=colormap.viridis_palette[3][1],
+            alpha=0.5,
         )
         em = np.max(new_energy) if np.max(new_energy) > 0 else 1e-10
         ax2.set_ylim(0, em * 1.2)
@@ -676,10 +752,18 @@ def plot_sandbox():
         fill_force_r[0].remove()
         fill_force_l[0].remove()
         fill_force_r[0] = ax3.fill_between(
-            x_am, new_force, where=(new_force > 0), color="#FF4444", alpha=0.3,
+            x_am,
+            new_force,
+            where=(new_force > 0),
+            color="#FF4444",
+            alpha=0.3,
         )
         fill_force_l[0] = ax3.fill_between(
-            x_am, new_force, where=(new_force < 0), color="#4488FF", alpha=0.3,
+            x_am,
+            new_force,
+            where=(new_force < 0),
+            color="#4488FF",
+            alpha=0.3,
         )
         fm = np.max(np.abs(new_force)) if np.max(np.abs(new_force)) > 0 else 1e-10
         ax3.set_ylim(-fm * 1.3, fm * 1.3)
@@ -718,9 +802,7 @@ def plot_sandbox():
 
             # Update info text
             info_parts_new = [f"{mode_name}"]
-            info_parts_new.append(
-                f"WC sep: {sep_nodes} nodes ({sep_nodes/2:.1f}λ) = {parity}"
-            )
+            info_parts_new.append(f"WC sep: {sep_nodes} nodes ({sep_nodes/2:.1f}λ) = {parity}")
             info_text.set_text("  |  ".join(info_parts_new))
 
             # Force annotations
@@ -729,7 +811,9 @@ def plot_sandbox():
                 txt.set_x(wc.x_am)
                 f_val = f_left if i == 0 else f_right
                 if is_attract:
-                    label = f">>> Attract\n{f_val:.2e} N" if i == 0 else f"Attract <<<\n{f_val:.2e} N"
+                    label = (
+                        f">>> Attract\n{f_val:.2e} N" if i == 0 else f"Attract <<<\n{f_val:.2e} N"
+                    )
                     txt.set_color("#88FF00")
                 elif is_repel:
                     label = f"<<< Repel\n{f_val:.2e} N" if i == 0 else f"Repel >>>\n{f_val:.2e} N"
@@ -794,8 +878,11 @@ def plot_sandbox():
     fig.canvas.mpl_connect("key_press_event", on_key)
 
     anim = FuncAnimation(
-        fig, animate, frames=ANIMATION_FRAMES,
-        interval=ANIMATION_INTERVAL, blit=False,
+        fig,
+        animate,
+        frames=ANIMATION_FRAMES,
+        interval=ANIMATION_INTERVAL,
+        blit=False,
     )
 
     # Initial static draw

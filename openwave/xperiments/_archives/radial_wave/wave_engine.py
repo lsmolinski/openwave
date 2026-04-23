@@ -70,7 +70,7 @@ def oscillate_granules_tocenter(
         - A decreases as 1/r (amplitude falls off with distance from wave source)
 
     Implementation uses r_min = 1λ (one wavelength from wave source) based on:
-        - EWT neutrino boundary specification at r = 1λ
+        - Neutrino boundary specification at r = 1λ
         - EM theory transition to radiative fields around λ
         - Prevents singularity at r → 0
         - Ensures numerical stability and physical wave behavior
@@ -109,7 +109,7 @@ def oscillate_granules_tocenter(
 
         # Amplitude falloff for spherical wave energy conservation: A(r) = A₀(r₀/r)
         # Prevents division by zero and non-physical amplitudes very close to wave source
-        # Uses r_min = 1λ based on EWT neutrino boundary and EM near-field physics
+        # Uses r_min = 1λ based on neutrino boundary and EM near-field physics
         r_safe = ti.max(r, r_reference * 1)  # minimum 1 wavelength from wave source
         amplitude_falloff = r_reference / r_safe
 

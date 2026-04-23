@@ -1,8 +1,7 @@
 """
 OpenWave constants module.
 
-This module provides fundamental constants for OpenWave simulations,
-sourced from EWT at https://energywavetheory.com/equations/
+This module provides fundamental constants for OpenWave simulations.
 
 All values use SI units (kg, m, s) for consistency.
 """
