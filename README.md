@@ -74,9 +74,9 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ```text
 ============================================================
- ✅ LAYER 1: ENERGY WAVE & TIME EMERGENCE
+ ✅ LAYER 1: VACUUM FIELD (GROUND STATE)
 ============================================================
- ✅ LAYER 2: WAVE CENTERS & STANDING WAVES
+ ✅ LAYER 2: WAVE CENTERS, WAVES & TIME EMERGENCE
 ============================================================
  ✅ LAYER 3: STANDALONE PARTICLE EMERGENCE
 ============================================================
@@ -95,8 +95,8 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 1 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>✅ LAYER 1: Energy Wave & Time Emergence</b>
-        <br><br>An energy wave fills all of space — the source of matter, forces, and time itself. Waves arrive from all directions creating an isotropic field. Time emerges as the fundamental wave cycle: frequency IS the rate of change. Where wavelength is shorter, change happens faster; where longer, slower.
+        <b>✅ LAYER 1: Vacuum Field (Ground State)</b>
+        <br><br>The vacuum is the static, ordered ground state of the medium — not empty, not pre-oscillating, but a configuration at the minimum of the field's potential V(ψ). It is the source of matter, forces, and time itself: the substrate on which everything else is built — the medium that supports wave perturbations and hosts topological defects (particles). Waves do not pre-exist here; they emerge in Layer 2 when defects start shaking the vacuum.
         <br><br>
       </td>
     </tr>
@@ -126,8 +126,8 @@ OpenWave provides complementary ways to explore wave mechanics:
     <!-- ═══ LAYER 2 ═══ -->
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
-        <b>✅ LAYER 2: Wave Centers & Standing Waves</b>
-        <br><br>Wave centers are localized disturbances that elastically change the energy wave. The disturbance creates spherical standing waves near the center (the particle itself) and propagates traveling waves outward (the force field). A single wave center is a fundamental particle (K=1 neutrino).
+        <b>✅ LAYER 2: Wave Centers, Waves & Time Emergence</b>
+        <br><br>Wave centers are topological defects seeded into the vacuum — localized configurations whose winding number is conserved by topology. Each defect stores field energy equal to its rest mass (E = mc²) and oscillates intrinsically at ω = 2mc²/ℏ (the de Broglie clock / time-crystal mechanism). These oscillations shake the surrounding vacuum, emitting perturbation waves whose period IS the local time unit — time emerges from the defect's wave cycle, not from a universal clock. Spherical standing waves form near the center (the particle itself) and traveling waves propagate outward (the force field). A single wave center is a fundamental particle (K=1 neutrino).
         <br><br>
       </td>
     </tr>
@@ -272,74 +272,34 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ## SCIENTIFIC BACKGROUND
 
-OpenWave implements a proposed deterministic subatomic wave mechanics framework that provides an alternative mathematical formalism to quantum field theory (QFT), in a programmatic computing and rendering package built for experimentation with different scientific theories and models.
+OpenWave is a shared simulation platform for exploring classical wave-field dynamics and topological field theory as computational approaches to particle emergence. The current research direction combines **topological defects** (static structure giving integer charge and spin) with **wave dynamics** (Klein-Gordon-like perturbations around a vacuum field, plus standing-wave interference for orbit quantization) — drawing directly from the frameworks contributed by the collaborators below.
 
-Check **[SCIENTIFIC SOURCES](SCIENCE.md)** for more details on the key scientific sources and theoretical contributions. Key points include:
+### Historical Pioneers
 
-### The Spacetime Medium
+- Albert Einstein — [EPR Paradox, Determinism Debates](https://en.wikipedia.org/wiki/Einstein%E2%80%93Podolsky%E2%80%93Rosen_paradox)
+- Louis de Broglie — [Pilot Wave Theory Foundations](https://en.wikipedia.org/wiki/Pilot_wave_theory)
+- David Bohm — [Bohmian Mechanics](https://en.wikipedia.org/wiki/De_Broglie%E2%80%93Bohm_theory)
+- Milo Wolff — [Wave Structure of Matter](https://www.amazon.com/dp/0962778710) & [Schroedinger's Universe](https://www.amazon.com/Schroedingers-Universe-Origin-Natural-Laws-ebook/dp/B001MIZV3A)
+- Gabriel LaFreniere — [Matter is Made of Waves](https://github.com/openwave-labs/lafreniere)
 
-OpenWave proposes a fluid-like elastic medium permeating all space, vibrating at extremely high frequencies.
+### Major Theoretical Contributions
+
+| Contributor | Framework | Contribution |
+| --- | --- | --- |
+| [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) | [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") | A proposed deterministic quantum mechanics model that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics. Primary physics advisor and collaborator on OpenWave since its inception. |
+| [Dr. Jarek Duda](https://en.wikipedia.org/wiki/Jaros%C5%82aw_Duda_(computer_scientist)) | [Liquid-Crystal Particle Analogs](https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs "Topological Field Framework") | A Landau-de Gennes field framework modeling particles as topological defects with integer-quantized charge. Proposes unifying electromagnetism, quantum mechanics, and gravity through a single vector order parameter, with mass and Zitterbewegung derived from a time-crystal mechanism (see [arXiv:2108.07896](https://arxiv.org/pdf/2108.07896), [arXiv:2501.04036](https://arxiv.org/pdf/2501.04036)). |
+| [Dr. Robert Close](https://www.classicalmatter.org) | ["Equation of Everything" (Foundations of Physics 2025)](https://doi.org/10.1007/s10701-025-00839-0 "Classical Wave Mechanics") | A classical elastic-solid framework that derives the Dirac equation from a nonlinear vector wave equation for spin density, giving every term a concrete physical interpretation in the underlying medium. |
 
 ### Computational Approach
 
-- **QFT Standard Method:** Lattice gauge theory - discretizes spacetime into a grid with quantum field values at each point
-- **OpenWave Wave-Field Mechanics** - discretizes spacetime into a grid with classical wave-field values at each voxel
-- **OpenWave Granule-Motion** - educational visualization of wave mechanics
-- **Both QFT and OpenWave:** Produce predictions about particle behavior, forces and interactions from field dynamics
+OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with different field equations. Multiple complementary methods (scalar, vector, director-field, granule-motion) allow cross-validation of mechanisms and direct comparison between candidate Lagrangians.
 
-### Scientific Context
+### Open Research Questions
 
-- Quantum field theory is the experimentally validated standard framework
-- Lattice QCD is the standard computational method for QFT (Nobel Prize 2004, 2008)
-- OpenWave uses similar lattice methodology but with different field equations
-- Research question: Can classical wave-field dynamics reproduce quantum-like phenomena?
-- Provides testable predictions that can be validated against experimental data
-
-### Goal: Computational Utility
-
-OpenWave serves two distinct purposes depending on implementation level:
-
-**At Research Levels:**
-
-Research questions to investigate:
-
-- 🔬 Can wave-field dynamics reproduce experimentally observed particle properties?
-- 🔬 Can standing wave patterns model matter formation (electrons, nuclei, atoms, molecules)?
-- 🔬 Can fundamental forces (electric, magnetic, gravitational, nuclear) emerge from wave-field gradients?
-- 🔬 Can computational predictions be validated against experimental data?
-- 🔬 Can this approach provide computationally efficient alternatives for specific simulations?
-
-**At Education Levels:**
-
-Current capabilities (Released):
-
-- ✅ Makes wave mechanics intuitive and visual
-- ✅ Demonstrates wave interference, standing waves, propagation
-- ✅ Helps students understand wave-field thinking
-
-## SCIENTIFIC SOURCE
-
-OpenWave is a programmatic computing and rendering package built for experimentation with different scientific theories and models, some of them are detailed below.
-
-### Pioneers and Origins
-
----
-
-**Historical Inspiration:**
-
-- Albert Einstein - [EPR Paradox, Determinism Debates](https://en.wikipedia.org/wiki/Einstein%E2%80%93Podolsky%E2%80%93Rosen_paradox)
-- Louis de Broglie - [Pilot Wave Theory Foundations](https://en.wikipedia.org/wiki/Pilot_wave_theory)
-- David Bohm - [Bohmian Mechanics](https://en.wikipedia.org/wiki/De_Broglie%E2%80%93Bohm_theory)
-- Milo Wolff - [Wave Structure of Matter](https://www.amazon.com/dp/0962778710) & [Schroedinger's Universe](https://www.amazon.com/Schroedingers-Universe-Origin-Natural-Laws-ebook/dp/B001MIZV3A)
-- Gabriel LaFreniere - [Matter is Made of Waves](https://github.com/openwave-labs/lafreniere)
-
-### Major Scientific Model Contributions
-
----
-
-- [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory): [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") a proposed deterministic quantum mechanics model that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics.
-- [Dr. Jarek Duda](https://en.wikipedia.org/wiki/Jaros%C5%82aw_Duda_(computer_scientist)):
-- Dr. Robert Close:
+- Can topological defects in a vacuum field reproduce particle charge quantization, integer winding, and far-field Coulomb interaction?
+- Can Klein-Gordon-like dynamics around the vacuum give rise to mass, relativistic kinematics, and intrinsic (time-crystal) oscillation?
+- Can standing-wave interference between defect emissions produce orbit quantization (electron shells, composite particles)?
+- Can the same framework recover Coulomb, strong, and gravitational forces at their respective scales?
 
 ## INSTALLATION INSTRUCTIONS
 
