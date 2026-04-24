@@ -949,9 +949,9 @@ But M2 has its own limitation (validated in 1D): PDE/Laplacian solvers with Diri
 The key difference from our M1/M2 base wave: Duda's vacuum is a **static ordered state**, not an oscillating wave field. The hierarchy is:
 
 1. **Vacuum** (ordered director field, static) — the ground state
-1. **Waves** (perturbations of vacuum) — propagating disturbances, satisfy Klein-Gordon
 1. **Particles** (topological defects) — non-perturbative, large deformations, protected by topology
 1. **Particle oscillations** (time crystal) — mass-driven kink oscillation, derived from phi-4 potential
+1. **Waves** (perturbations of vacuum) — propagating disturbances, satisfy Klein-Gordon
 
 Our M2 base wave oscillates at f₀. Duda's vacuum doesn't oscillate — the oscillations are a *consequence* of the defect's mass interacting with the field potential (time crystal mechanism). This is more fundamental: it explains WHY particles oscillate rather than assuming it.
 
