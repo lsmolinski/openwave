@@ -142,14 +142,14 @@ def propagate_wave(self, dt: ti.f32, SIM_SPEED: ti.f32):
             # Result: [am] = [am] - [am] + [am] ✓
             self.psiL_new_am[i, j, k] = (
                 2.0 * self.psiL_am[i, j, k]
-                - self.psiL_old_am[i, j, k]
+                - self.psiL_prev_am[i, j, k]
                 + (c_slo_am * dt)**2 * laplacian_am
             )
 
     # Swap time levels for next iteration
     # Python tuple swap: (old, current, new) ← (current, new, old)
-    self.psiL_old_am, self.psiL_am, self.psiL_new_am = \
-        self.psiL_am, self.psiL_new_am, self.psiL_old_am
+    self.psiL_prev_am, self.psiL_am, self.psiL_new_am = \
+        self.psiL_am, self.psiL_new_am, self.psiL_prev_am
 ```
 
 ```python

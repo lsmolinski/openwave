@@ -115,11 +115,11 @@ class WaveField:
         # Longitudinal wave scalar field (ψl)
         self.psiL_new_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t+dt
         self.psiL_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t
-        self.psiL_old_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t-dt
+        self.psiL_prev_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψl at t-dt
         # Transverse wave scalar field (ψt)
         self.psiT_new_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψt at t+dt
         self.psiT_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψt at t
-        self.psiT_old_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψt at t-dt
+        self.psiT_prev_am = ti.field(dtype=ti.f32, shape=self.grid_size)  # am, ψt at t-dt
 
         # TODO: Implement DERIVED SCALAR FIELDS
         # wavelength, period, phase, energy, momentum

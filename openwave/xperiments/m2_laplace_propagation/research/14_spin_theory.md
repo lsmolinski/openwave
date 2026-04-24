@@ -147,7 +147,7 @@ This would explain:
 ```python
 # Already stored in L1_field_grid.py:
 psiL_am      # current longitudinal displacement
-psiL_old_am  # previous timestep displacement
+psiL_prev_am  # previous timestep displacement
 ampL_local_rms_am        # envelope tracker for L
 ampT_local_rms_am        # envelope tracker for T (to be added)
 ```
@@ -170,7 +170,7 @@ Where:
 **Solution**: Use velocity to determine which half of the cycle we're in!
 
 ```text
-velocity_L = (psiL_am - psiL_old_am) / dt
+velocity_L = (psiL_am - psiL_prev_am) / dt
 
 - If velocity_L < 0: θ in [0, π]     → sin(θ) positive  → dispT positive
 - If velocity_L > 0: θ in [π, 2π]   → sin(θ) negative → dispT negative
@@ -183,7 +183,7 @@ velocity_L = (psiL_am - psiL_old_am) / dt
 def compute_dispT(i: ti.i32, j: ti.i32, k: ti.i32) -> ti.f32:
     """Compute transverse displacement from longitudinal + velocity."""
     dispL = psiL_am[i, j, k]
-    dispL_old = psiL_old_am[i, j, k]
+    dispL_old = psiL_prev_am[i, j, k]
     ampL = ampL_local_rms_am[i, j, k]
     ampT = ampT_local_rms_am[i, j, k]
 
@@ -226,12 +226,12 @@ def apply_wave_center_spin(cx: ti.i32, cy: ti.i32, cz: ti.i32,
 **Why This Works**:
 
 1. The PDE propagates `psiL_am` (longitudinal) — unchanged, no extra cost
-1. We already store `psiL_old_am` — velocity is free!
+1. We already store `psiL_prev_am` — velocity is free!
 1. Amplitude trackers (`ampL_local_rms_am`, `ampT_local_rms_am`) update periodically
 1. At WC, we modify the **envelope ratio**, not the displacement
 1. When we need dispT (for visualization or physics), compute on-demand from:
    - `psiL_am` (current)
-   - `psiL_old_am` (previous) → gives velocity sign
+   - `psiL_prev_am` (previous) → gives velocity sign
    - `ampL_local_rms_am`, `ampT_local_rms_am` (envelopes)
 
 **Cost**: Only computed when needed (visualization, WC physics), NOT every voxel every timestep!

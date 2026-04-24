@@ -233,7 +233,7 @@ def compute_wave_direction_velocity(self):
     for i, j, k in self.psiL_am:
         if 0 < i < self.nx-1 and 0 < j < self.ny-1 and 0 < k < self.nz-1:
             # Time derivative (wave velocity)
-            v_wave = (self.psiL_am[i,j,k] - self.psiL_old_am[i,j,k]) / dt
+            v_wave = (self.psiL_am[i,j,k] - self.psiL_prev_am[i,j,k]) / dt
 
             # Gradient of velocity gives acceleration direction
             # (This is less direct, energy flux method is better)
@@ -305,7 +305,7 @@ def compute_total_energy() -> ti.f32:
 
     for i, j, k in self.psiL_am:
         # Velocity (time derivative of amplitude)
-        v = (self.psiL_am[i,j,k] - self.psiL_old_am[i,j,k]) / dt
+        v = (self.psiL_am[i,j,k] - self.psiL_prev_am[i,j,k]) / dt
 
         # Kinetic energy density
         E_k = 0.5 * ρ * v**2
@@ -736,7 +736,7 @@ def compute_wave_type(self):
             psi = self.psiL_am[i,j,k] * constants.ATTOMETER  # meters
 
             # Velocity (time derivative approximation)
-            v_wave_am = (self.psiL_am[i,j,k] - self.psiL_old_am[i,j,k]) / dt
+            v_wave_am = (self.psiL_am[i,j,k] - self.psiL_prev_am[i,j,k]) / dt
             v_wave = v_wave_am * constants.ATTOMETER  # m/s
 
             # Kinetic energy density
@@ -779,7 +779,7 @@ def compute_wave_type_node_motion(self, dt: ti.f32):
         if 0 < i < self.nx-1 and 0 < j < self.ny-1 and 0 < k < self.nz-1:
             # Check if current voxel is near a node (zero crossing)
             psi_now = self.psiL_am[i,j,k]
-            psi_old = self.psiL_old_am[i,j,k]
+            psi_old = self.psiL_prev_am[i,j,k]
 
             # Zero crossing detection
             if psi_now * psi_old < 0:  # Sign change (crossed zero)

@@ -544,7 +544,7 @@ class WaveField:
 
         # SCALAR FIELDS (values in attometers where applicable)
         # Wave equation fields (leap-frog scheme requires three time levels)
-        self.psiL_old_am = ti.field(dtype=ti.f32, shape=(nx, ny, nz))  # am (ψ at t-dt)
+        self.psiL_prev_am = ti.field(dtype=ti.f32, shape=(nx, ny, nz))  # am (ψ at t-dt)
         self.psiL_am = ti.field(dtype=ti.f32, shape=(nx, ny, nz))  # am (ψ at t, instantaneous)
         self.psiL_new_am = ti.field(dtype=ti.f32, shape=(nx, ny, nz))  # am (ψ at t+dt)
         self.amp_local_peak_am = ti.field(dtype=ti.f32, shape=(nx, ny, nz))  # am (envelope A = max|ψ|)

@@ -165,7 +165,7 @@ The 90° phase shift is computed using velocity (time derivative):
 
 ```python
 # Velocity via finite difference
-delta_psiL = psiL - psiL_old
+delta_psiL = psiL - psiL_prev
 
 # Phase-shifted psiL: velocity normalized by ω
 # For psiL = A·cos(ωt):
@@ -189,10 +189,10 @@ def interact_wc_spinUP(wave_field, dt_rs):
 
     # Read current and previous longitudinal displacement
     psiL = wave_field.psiL_am[wc1x, wc1y, wc1z]
-    psiL_old = wave_field.psiL_old_am[wc1x, wc1y, wc1z]
+    psiL_prev = wave_field.psiL_prev_am[wc1x, wc1y, wc1z]
 
     # STEP 1: Compute phase-shifted psiL (+90°)
-    delta_psiL = psiL - psiL_old
+    delta_psiL = psiL - psiL_prev
     psiL_shifted = -delta_psiL / (omega_rs * dt_rs)  # +sin(ωt)
 
     # STEP 2: Create transverse component
@@ -322,7 +322,7 @@ psiT = ti.math.clamp(psiT, -max_psiT, max_psiT)
 ### To Achieve 90° Phase
 
 1. **Investigate timing** — when exactly are values being read/written?
-2. **Try psiT from psiL_old** — one timestep behind might give phase offset
+2. **Try psiT from psiL_prev** — one timestep behind might give phase offset
 3. **Compute psiT independently** — not derived from psiL at same instant
 4. **Consider accumulator approach** — track psiT phase separately
 

@@ -78,7 +78,7 @@ def charge_full(
             * wave_field.scale_factor
             * ti.cos(omega_rs * 0 - k_grid * r_grid)
         )  # t0
-        disp_old = (
+        disp_prev = (
             base_amplitude_am
             * boost
             * wave_field.scale_factor
@@ -87,7 +87,7 @@ def charge_full(
 
         # Apply both displacements (in attometers)
         wave_field.psiL_am[i, j, k] = disp  # at t=0
-        wave_field.psiL_old_am[i, j, k] = disp_old  # at t=-dt
+        wave_field.psiL_prev_am[i, j, k] = disp_prev  # at t=-dt
 
 
 @ti.kernel
@@ -100,7 +100,7 @@ def charge_gaussian(
 
     Creates a spherical displacement pattern with Gaussian envelope, normalized
     to contain the total energy of the universe. The wave starts at rest
-    (zero initial velocity) by setting displacement_old = displacement.
+    (zero initial velocity) by setting displacement_prev = displacement.
 
     Args:
         wave_field: WaveField instance containing displacement arrays and grid info
@@ -141,11 +141,11 @@ def charge_gaussian(
 
         wave_field.psiT_am[i, j, k] = A_am * gaussian
 
-    # Set old displacement equal to current (zero initial velocity: ∂ψ/∂t = 0)
+    # Set prev displacement equal to current (zero initial velocity: ∂ψ/∂t = 0)
     for i, j, k in ti.ndrange(
         (1, wave_field.nx - 1), (1, wave_field.ny - 1), (1, wave_field.nz - 1)
     ):
-        wave_field.psiT_old_am[i, j, k] = wave_field.psiT_am[i, j, k]
+        wave_field.psiT_prev_am[i, j, k] = wave_field.psiT_am[i, j, k]
 
 
 @ti.kernel
@@ -197,11 +197,11 @@ def charge_falloff(
         # Creates rings of positive/negative displacement
         # Signed value: positive = expansion, negative = compression
         disp = amplitude_am_at_r * ti.cos(omega_rs * 0 - k_grid * r_grid)  # t0 initial condition
-        disp_old = amplitude_am_at_r * ti.cos(omega_rs * -dt_rs - k_grid * r_grid)
+        disp_prev = amplitude_am_at_r * ti.cos(omega_rs * -dt_rs - k_grid * r_grid)
 
         # Apply both displacements (in attometers)
         wave_field.psiL_am[i, j, k] = disp  # at t=0
-        wave_field.psiL_old_am[i, j, k] = disp_old  # at t=-dt
+        wave_field.psiL_prev_am[i, j, k] = disp_prev  # at t=-dt
 
 
 @ti.kernel
@@ -250,11 +250,11 @@ def charge_1lambda(
         # Creates rings of positive/negative displacement
         # Signed value: positive = expansion, negative = compression
         disp = amplitude_am_at_r * ti.cos(omega_rs * 0 - k_grid * r_grid)  # t0 initial condition
-        disp_old = amplitude_am_at_r * ti.cos(omega_rs * -dt_rs - k_grid * r_grid)
+        disp_prev = amplitude_am_at_r * ti.cos(omega_rs * -dt_rs - k_grid * r_grid)
 
         # Apply both displacements (in attometers)
         wave_field.psiL_am[i, j, k] = disp  # at t=0
-        wave_field.psiL_old_am[i, j, k] = disp_old  # at t=-dt
+        wave_field.psiL_prev_am[i, j, k] = disp_prev  # at t=-dt
 
 
 # ================================================================
@@ -456,7 +456,7 @@ def charge_oscillator_wall(
     overwriting. This prevents energy loss when propagated wave amplitude
     exceeds charger amplitude, and allows natural wave superposition.
 
-    Formula: ψ_new = ψ_old + A·cos(ωt) * boost
+    Formula: ψ_new = ψ_prev + A·cos(ωt) * boost
 
     Sources are placed 1 voxel interior from walls to avoid conflict with
     Neumann BC ghost cell updates.
@@ -616,7 +616,7 @@ def propagate_wave(
     Energy conservation from leap-frog method.
 
     Discrete Form (Leap-Frog/Verlet):
-        ψ_new = 2ψ - ψ_old + (c·dt)²·∇²ψ
+        ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ
         where ∇²ψ = (neighbors_sum - 6·center) / dx²
 
     Boundary Conditions:
@@ -644,18 +644,18 @@ def propagate_wave(
         laplacianT_am = compute_laplacianT(wave_field, i, j, k)
 
         # Leap-Frog update
-        # Standard form: ψ_new = 2ψ - ψ_old + (c·dt)²·∇²ψ
+        # Standard form: ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ
         # Propagate Longitudinal Wave Component
         wave_field.psiL_new_am[i, j, k] = (
             2.0 * wave_field.psiL_am[i, j, k]
-            - wave_field.psiL_old_am[i, j, k]
+            - wave_field.psiL_prev_am[i, j, k]
             + (c_amrs * dt_rs) ** 2 * laplacianL_am
         )
 
         # Propagate Transverse Wave Component
         wave_field.psiT_new_am[i, j, k] = (
             2.0 * wave_field.psiT_am[i, j, k]
-            - wave_field.psiT_old_am[i, j, k]
+            - wave_field.psiT_prev_am[i, j, k]
             + (c_amrs * dt_rs) ** 2 * laplacianT_am
         )
 
@@ -704,7 +704,7 @@ def propagate_wave(
         # Used for: energy calculation, force gradients, visualization scaling
         # Physics: particles respond to time-averaged energy density, not
         # instantaneous displacement (inertia acts as low-pass filter at ~10²⁵ Hz)
-        # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
+        # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_prev, then rms = √(rms²)
         # α controls adaptation speed: higher = faster response, lower = smoother
         # 2 polarities tracked: longitudinal & transverse
         # Longitudinal RMS amplitude
@@ -725,7 +725,7 @@ def propagate_wave(
         # Detect positive-going zero crossing (negative → positive transition)
         # Period = time between consecutive positive zero crossings
         # More robust than peak detection since it's amplitude-independent
-        # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
+        # EMA smoothing: f_new = α * f_measured + (1 - α) * f_prev
         # α controls adaptation speed: higher = faster response, lower = smoother
         prev_disp = wave_field.psiL_am[i, j, k]
         curr_disp = wave_field.psiL_new_am[i, j, k]
@@ -740,11 +740,11 @@ def propagate_wave(
                 )
             trackers.last_crossing[i, j, k] = elapsed_t_rs
 
-    # Swap time levels: old ← current, current ← new
+    # Swap time levels: prev ← current, current ← new
     for i, j, k in ti.ndrange(nx, ny, nz):
-        wave_field.psiL_old_am[i, j, k] = wave_field.psiL_am[i, j, k]
+        wave_field.psiL_prev_am[i, j, k] = wave_field.psiL_am[i, j, k]
         wave_field.psiL_am[i, j, k] = wave_field.psiL_new_am[i, j, k]
-        wave_field.psiT_old_am[i, j, k] = wave_field.psiT_am[i, j, k]
+        wave_field.psiT_prev_am[i, j, k] = wave_field.psiT_am[i, j, k]
         wave_field.psiT_am[i, j, k] = wave_field.psiT_new_am[i, j, k]
 
     # TODO: Testing Wave Center Interaction with Energy Waves
@@ -1003,7 +1003,7 @@ def interact_wc_spinUP(wave_field: ti.template(), dt_rs: ti.f32):  # type: ignor
         - Velocity: ∂psiL/∂t = -A·ω·sin(ωt)
         - Normalized: velocity/ω = -A·sin(ωt) = A·cos(ωt + 90°)  ← +90° shifted!
 
-    So (psiL - psiL_old)/(ω·dt) gives the +90° phase-shifted wave.
+    So (psiL - psiL_prev)/(ω·dt) gives the +90° phase-shifted wave.
     This creates a DISTURBANCE in the longitudinal wave from the spin interaction.
 
     ENERGY CONSERVATION:
@@ -1023,13 +1023,13 @@ def interact_wc_spinUP(wave_field: ti.template(), dt_rs: ti.f32):  # type: ignor
 
     # Current and previous longitudinal displacement at WC
     psiL = wave_field.psiL_am[wc1x, wc1y, wc1z]
-    psiL_old = wave_field.psiL_old_am[wc1x, wc1y, wc1z]
+    psiL_prev = wave_field.psiL_prev_am[wc1x, wc1y, wc1z]
 
     # ================================================================
     # STEP 1: Compute phase-shifted psiL (+90° leading)
     # ================================================================
     # Velocity via finite difference
-    delta_psiL = psiL - psiL_old
+    delta_psiL = psiL - psiL_prev
 
     # Phase-shifted psiL: -velocity/ω = -delta_psiL / (ω·dt)
     # delta_psiL ≈ -ω·dt·sin(ωt) for cos input, so:
@@ -1090,7 +1090,7 @@ def interact_wc_spinUP2(wave_field: ti.template(), dt_rs: ti.f32):  # type: igno
         - Velocity: ∂psiL/∂t = -A·ω·sin(ωt)
         - Normalized: velocity/ω = -A·sin(ωt) = A·cos(ωt + 90°)  ← +90° shifted!
 
-    So (psiL - psiL_old)/(ω·dt) gives the +90° phase-shifted wave.
+    So (psiL - psiL_prev)/(ω·dt) gives the +90° phase-shifted wave.
     This creates a DISTURBANCE in the longitudinal wave from the spin interaction.
 
     ENERGY CONSERVATION:
@@ -1110,13 +1110,13 @@ def interact_wc_spinUP2(wave_field: ti.template(), dt_rs: ti.f32):  # type: igno
 
     # Current and previous longitudinal displacement at WC
     psiL = wave_field.psiL_am[wc2x, wc2y, wc2z]
-    psiL_old = wave_field.psiL_old_am[wc2x, wc2y, wc2z]
+    psiL_prev = wave_field.psiL_prev_am[wc2x, wc2y, wc2z]
 
     # ================================================================
     # STEP 1: Compute phase-shifted psiL (+90° leading)
     # ================================================================
     # Velocity via finite difference
-    delta_psiL = psiL - psiL_old
+    delta_psiL = psiL - psiL_prev
 
     # Phase-shifted psiL: -velocity/ω = -delta_psiL / (ω·dt)
     # delta_psiL ≈ -ω·dt·sin(ωt) for cos input, so:
@@ -1177,7 +1177,7 @@ def interact_wc_spinDOWN(wave_field: ti.template(), dt_rs: ti.f32):  # type: ign
         - Velocity: ∂psiL/∂t = -A·ω·sin(ωt)
         - Negative normalized: -velocity/ω = A·sin(ωt) = A·cos(ωt - 90°)  ← -90° shifted!
 
-    So -(psiL - psiL_old)/(ω·dt) gives the -90° phase-shifted wave.
+    So -(psiL - psiL_prev)/(ω·dt) gives the -90° phase-shifted wave.
     This creates a DISTURBANCE in the longitudinal wave (opposite to spinUP).
 
     ENERGY CONSERVATION:
@@ -1201,13 +1201,13 @@ def interact_wc_spinDOWN(wave_field: ti.template(), dt_rs: ti.f32):  # type: ign
 
     # Current and previous longitudinal displacement at WC
     psiL = wave_field.psiL_am[wc2x, wc2y, wc2z]
-    psiL_old = wave_field.psiL_old_am[wc2x, wc2y, wc2z]
+    psiL_prev = wave_field.psiL_prev_am[wc2x, wc2y, wc2z]
 
     # ================================================================
     # STEP 1: Compute phase-shifted psiL (-90° lagging)
     # ================================================================
     # Velocity via finite difference
-    delta_psiL = psiL - psiL_old
+    delta_psiL = psiL - psiL_prev
 
     # Phase-shifted psiL: -velocity/ω = -delta_psiL / (ω·dt)
     # Transforms A·cos(ωt) → A·sin(ωt) = A·cos(ωt - 90°)
@@ -1408,7 +1408,7 @@ def interact_wc_dirichlet(wave_field: ti.template()):  # type: ignore
         dist_sq = (i - wc1x) ** 2 + (j - wc1y) ** 2 + (k - wc1z) ** 2
         # Only process voxels on inner surface of sphere (r = radius-1)
         if dist_sq <= wc_radius_sq:
-            wave_field.psiL_old_am[i, j, k] = 0.0
+            wave_field.psiL_prev_am[i, j, k] = 0.0
             wave_field.psiL_am[i, j, k] = 0.0
             wave_field.psiL_new_am[i, j, k] = 0.0
 
