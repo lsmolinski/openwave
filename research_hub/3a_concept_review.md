@@ -8,7 +8,7 @@ Related reading:
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
 - [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) — numerical experiment results
-- [3c_path_to_m5.md](3c_path_to_m5.md) — M5 / Lagrangian-Wave Method implementation plan
+- [3c_path_to_m5.md](3c_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
 - [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
 
 ---
@@ -419,17 +419,33 @@ This is exactly the kind of finding the Lagrangian framework was designed to sur
 
 Clarifications that emerged from the collaboration with Dr. Duda, Dr. Close, and Jeff Yee after the sandbox was complete. Kept in Q&A form because the questions are ones any new contributor or reader will naturally ask when encountering the M5 paradigm for the first time.
 
-### Is M5 still a "wave" method? The naming question
+### The naming of M5 — why "Lagrangian-Field Method"
 
-**Question**: given that particles in M5 are topological defects (not waves or standing-wave interference patterns as in M2/M3/M4), is "Lagrangian-Wave Method" still the correct name?
+**Question**: given that particles in M5 are topological defects (not waves or standing-wave interference patterns as in M2/M3/M4), what is the correct name for the method?
 
-**Answer — yes, with a caveat.** Waves are still the *dynamical content* of M5:
+**Answer — Lagrangian-Field Method.**
+
+The name went through two iterations before landing:
+
+1. **First working title: "Lagrangian-Wave Method"** (parallel to M4 "Vector-Wave Method"). Justified initially because waves remain the dynamical content (Klein-Gordon perturbations, Close's Eq. 23, M3-style near-field standing-wave lock-in). The "Wave" half felt defensible because the engine still solves wave equations and OpenWave's identity is wave-based
+2. **Final name: "Lagrangian-Field Method"** (adopted 2026-04-19). The "Wave" was removed because it under-sells what the engine actually does. The method is a **full Lagrangian field-theory simulator**, of which wave propagation is only one of several outputs. In M5, particles ARE topological defects (not waves), the engine maintains field configurations with topology (not just oscillations), and the module solves a single unified PDE that generates wave dynamics *and* preserves topology *and* enforces constraints *and* tracks topological charge — all from one Lagrangian
+
+Waves still matter — they are the dynamical content:
 
 - Klein-Gordon perturbations of the vacuum (Exp 4 validated)
 - Close's Eq. 23 transverse vector wave for spin density (M5.2)
 - M3's retained near-field standing-wave lock-in (orbit quantization, Couder-droplet analog)
 
-So the "Wave" half of the name is defensible. But the **particle itself** is no longer a wave in M5 — it's a topological defect. That's the paradigm break from M2/M3/M4, where particles *were* waves/interference patterns. The "Lagrangian" prefix captures this formalism shift; the "Wave" half keeps the link to OpenWave's identity and to the real physical wave physics that remains the engine of the dynamics. Name retained.
+But waves are **one of two channels** M5 runs, and particle identity comes from the other channel (topology). Calling the method "Lagrangian-Field" accurately reflects that both channels are first-class, unified by the Lagrangian.
+
+**Consequences of the rename** (all applied):
+
+- Method name everywhere in docs: **LAGRANGIAN-FIELD METHOD**
+- Production directory: `openwave/xperiments/m5_lagrangian_field/` (was `m5_lagrangian_wave/`)
+- Engine module: `lagrangian_engine.py` (was `wave_engine.py` in M1–M4)
+- The naming distinction between `wave_engine.py` (M1–M4: analytical wave superposition, no topology) and `lagrangian_engine.py` (M5+: Lagrangian field theory with topology + waves) marks the architectural boundary between the two paradigms in the repo
+
+**What is NOT renamed**: the parent project stays **OpenWave**. "Wave" is in the project identity; "Lagrangian-Field" is the specific method within it. One method's name does not override the brand.
 
 ### The defect-wave relationship — better analogies
 
@@ -673,7 +689,7 @@ Contrast with M3:
 - **M3**: solves a linear wave equation *analytically* (sum of `sin(kr − ωt)/r` per source). No potential, no topology — just linear superposition. Only the wave channel
 - **M5**: solves a *nonlinear PDE* with `V(ψ)` via leapfrog time-stepping. The potential gives the topology channel for free
 
-**Naming implication**: because the Lagrangian is the core object M5 solves, and because "wave equation" is now only part of what the engine does, `wave_engine.py` probably becomes `lagrangian_engine.py` in M5's directory (`xperiments/m5_lagrangian_wave/`). The name reflects what the module actually is: a Lagrangian-based field engine that generates wave dynamics + topology together. *[Added to M5.0 scaffold decision in `3c_path_to_m5.md`.]*
+**Naming implication**: because the Lagrangian is the core object M5 solves, and because "wave equation" is now only part of what the engine does, `wave_engine.py` probably becomes `lagrangian_engine.py` in M5's directory (`xperiments/m5_lagrangian_field/`). The name reflects what the module actually is: a Lagrangian-based field engine that generates wave dynamics + topology together. *[Added to M5.0 scaffold decision in `3c_path_to_m5.md`.]*
 
 **Why the rename is accurate — what the M5 engine module actually does**, line by line:
 

@@ -987,7 +987,7 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 
 ## WINNING APPROACH FOR M5
 
-**M5 / LAGRANGIAN-WAVE METHOD** implements the union:
+**M5 / LAGRANGIAN-FIELD METHOD** implements the union:
 
 1. **Background vacuum + topological defects** (from Exps 2, 3) — primary mechanism for charge, spin, far-field Coulomb
 2. **Klein-Gordon-like wave dynamics** (from Exp 4) around the vacuum — propagating perturbations have the right relativistic dispersion and mass gap

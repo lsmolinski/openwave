@@ -142,7 +142,7 @@ Dr. Duda outlined a concrete learning sequence:
 
 ### 2026-04-17 — Rodrigo (sandbox complete, M5 plan drafted)
 
-Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / Lagrangian-Wave Method build plan was drafted based on the group's directions. Summary of results:
+Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / Lagrangian-Field Method build plan was drafted based on the group's directions. Summary of results:
 
 - ✅ 4 Passed (Sine-Gordon kinks, Hedgehog Coulomb, Winding quantization, Klein-Gordon dispersion)
 - ⚠️ 3 Partial (Lagrangian derivation + docs correction, biaxial lepton mechanism, Close's vector wave equation)

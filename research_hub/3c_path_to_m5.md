@@ -1,8 +1,8 @@
-# PATH TO M5 — LAGRANGIAN-WAVE METHOD
+# PATH TO M5 — LAGRANGIAN-FIELD METHOD
 
-Implementation plan for **M5 / LAGRANGIAN-WAVE METHOD** (directory `openwave/xperiments/m5_lagrangian_wave/`), the production wave engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
+Implementation plan for **M5 / LAGRANGIAN-FIELD METHOD** (directory `openwave/xperiments/m5_lagrangian_field/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
 
-**Naming**: the method name follows the existing OpenWave convention — *adjective + Wave + Method* (parallels M4 *Vector-Wave Method*). "Lagrangian" refers to the formalism (L = T − V, Euler-Lagrange equations, action principle) used to derive the wave equation being solved; "Wave" because it remains a wave engine; "Method" because this is one specific simulator implementation within the broader Lagrangian framework.
+**Naming**: **M5 / LAGRANGIAN-FIELD METHOD** (renamed 2026-04-19 from the earlier "Lagrangian-Wave Method" working title). The rename reflects what the method actually does: it is a full **Lagrangian field-theory** simulator, not just a wave engine. "Lagrangian" refers to the variational formalism (L = T − V, Euler-Lagrange equations, action principle) from which the equation of motion is derived; "Field" because the engine integrates a unified PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)` — two channels, one equation. The module that implements this is `lagrangian_engine.py` (not `wave_engine.py`) for the same reason. See [3a § What wave equation does M5 solve?](3a_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the full rationale — particularly the 7-item breakdown of what the engine does (only one item is strictly wave propagation). The name distinguishes M5 from M1–M4's "Wave Method" naming (those really are wave engines; M5 is a field-theory engine).
 
 **Spec inputs**:
 
@@ -243,7 +243,7 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 
 ### Phase M5.0 — Scaffold
 
-- [ ] Create `openwave/xperiments/m5_lagrangian_wave/` directory (mirror m4 structure)
+- [ ] Create `openwave/xperiments/m5_lagrangian_field/` directory (mirror m4 structure)
 - [ ] **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py` for M5. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py` (they really are wave engines, no topology layer). See [3a § What wave equation does M5 solve?](3a_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the reasoning
 - [ ] Copy M4's `WaveField`, `WaveCenter`, `WaveTrackers` data classes; extend with `psi_prev`, `psi_new` buffers for leapfrog
 - [ ] Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (all unchanged)

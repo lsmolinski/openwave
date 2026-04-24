@@ -211,7 +211,7 @@ This could be the unification: not "topology vs waves" but "topology IS the geom
 
 - Lagrangian model needs a **vector field → M4** (not M3 scalar) — director field requires 3+ components per voxel
 - Needs a **background vacuum field → M2-like philosophy** (not M3's "WCs emit into void")
-- Future **M5 / LAGRANGIAN-WAVE METHOD** (dir `m5_lagrangian_wave/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [3c_path_to_m5.md](3c_path_to_m5.md)
+- Future **M5 / LAGRANGIAN-FIELD METHOD** (dir `m5_lagrangian_field/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [3c_path_to_m5.md](3c_path_to_m5.md)
 
 ### Physical Intuition: Granule Ellipses Already Carry Topology
 
