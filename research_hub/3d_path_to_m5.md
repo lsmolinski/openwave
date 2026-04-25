@@ -336,6 +336,8 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 ### Phase M5.8 — De Broglie clock / Zitterbewegung test (new, per Jarek's guidance)
 
 > **Refinement from Jarek Duda (2026-04-17)**: the 1+1D phi-4 kink toy-model (arxiv 2501.04036) validates the *mechanism*; for actual electron and neutrino, we need to run it in **full LdGS** (Landau-de Gennes + Skyrme) dynamics.
+>
+> **Conceptual background**: the full mechanism (why defects oscillate, why the oscillation is rotational not linear, how mass + spin + de Broglie wavelength all derive from one rotation) is documented in [3c_topological_defect.md](3c_topological_defect.md). This phase is the empirical-validation step that confirms M5's specific implementation reproduces the experimentally-established Zitterbewegung frequency.
 
 - [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog)
 - [ ] Let it evolve under full M5 dynamics (no external driving)

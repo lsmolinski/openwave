@@ -2,7 +2,7 @@
 
 A research phase evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
 
-> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md). For the M5 implementation plan see [3c_path_to_m5.md](3c_path_to_m5.md). For the conceptual walk-through see [3b_concept_review.md](3b_concept_review.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
+> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md). For the conceptual walk-through and Q&A see [3b_concept_review.md](3b_concept_review.md). For the topology / time-crystal / Zitterbewegung deep-dive see [3c_topological_defect.md](3c_topological_defect.md). For the M5 implementation plan see [3d_path_to_m5.md](3d_path_to_m5.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
 
 ---
 
@@ -150,7 +150,7 @@ Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / 
 
 Proposed M5 recipe combined: topological hedgehog defects + Klein-Gordon wave dynamics + Close's Eq. 19 base vector wave + retained M3 near-field lock-in + Skyrme stabilizer + LdG biaxial potential. Asked three targeted questions — to Dr. Duda about the extreme biaxial eigenvalue hierarchy needed for lepton ratios (~3477:1), to Dr. Close about fidelity of the Eqs. 19 & 21 implementation and what test would best exercise his nonlinear terms, and to Jeff about any concern with keeping M3 near-field physics alongside topology in the same engine.
 
-Full tables, scorecards, and architectural summary are preserved in [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) and [3c_path_to_m5.md](3c_path_to_m5.md).
+Full tables, scorecards, and architectural summary are preserved in [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) and [3d_path_to_m5.md](3d_path_to_m5.md).
 
 ### 2026-04-17 — Dr. Duda's substantive feedback
 
@@ -202,7 +202,7 @@ Dr. Duda clarified two points refining M5.6:
 
 ## REPLY ANALYSIS — KEY INSIGHTS FOR M5 (2026-04-19)
 
-Three replies, three distinct action items for M5. These refinements are incorporated into [3c_path_to_m5.md](3c_path_to_m5.md) § "Group Feedback (2026-04-17/18)".
+Three replies, three distinct action items for M5. These refinements are incorporated into [3d_path_to_m5.md](3d_path_to_m5.md) § "Group Feedback (2026-04-17/18)".
 
 ### From Jarek Duda
 

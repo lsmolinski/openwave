@@ -2,7 +2,7 @@
 
 Standalone numpy research scripts for evaluating Lagrangian-based wave equations.
 
-> **📍 Status** (2026-04-17): all 8 sandbox experiments are complete. See [../3a_lagrangian_experiments.md](../3a_lagrangian_experiments.md) for results. The recommended-order workflow below is kept as historical record; no further sandbox work is planned (optional deferred: Exp 6.1 full biaxial Q-tensor). Next phase: M5 production implementation per [../3c_path_to_m5.md](../3c_path_to_m5.md).
+> **📍 Status** (2026-04-17): all 8 sandbox experiments are complete. See [../3a_lagrangian_experiments.md](../3a_lagrangian_experiments.md) for results. The recommended-order workflow below is kept as historical record; no further sandbox work is planned (optional deferred: Exp 6.1 full biaxial Q-tensor). Next phase: M5 production implementation per [../3d_path_to_m5.md](../3d_path_to_m5.md).
 >
 > Note: directory name still `sandbox_phase3_lagrangian/` for backward compatibility (the content originated as a Phase-2 sub-project before being promoted to Phase 3 on 2026-04-17).
 

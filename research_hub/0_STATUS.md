@@ -116,7 +116,7 @@ Engineering improvements (not physics changes):
 
 ---
 
-## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3b_concept_review.md](3b_concept_review.md) · [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
+## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) · [3b_concept_review.md](3b_concept_review.md) · [3c_topological_defect.md](3c_topological_defect.md) · [3d_path_to_m5.md](3d_path_to_m5.md)
 
 Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confirmed the core topological claims: Sine-Gordon kink stability + Lorentz contraction (Exp 1), clean 1/d Coulomb from hedgehog defects with R²=0.993 (Exp 2), integer-quantized topological charge Q=±1 surface-independent and stable under 50% noise (Exp 3). Sparked by an email exchange in the "Models of Particles" group with Jarek Duda (Jagiellonian) and Robert Close (Clark College). The goal: derive the correct wave equation from first principles (Lagrangian formulation) instead of testing equations empirically, and demonstrate charge quantization + far-field Coulomb that M3 scalar cannot produce.
 
@@ -128,7 +128,7 @@ Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confir
 
 **Documentation correction from Exp 5**: the docs' Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution — its quadrature term leaves a residual `−c²k²·sin(ωt+φ)/r ≠ 0`. The M4 code's equivalent *sum form* `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)` IS valid. M5 uses the sum form.
 
-**Next phase**: **M5.0 scaffold** per [3c_path_to_m5.md](3c_path_to_m5.md). Full Overall Conclusions in [3a § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3b_concept_review.md](3b_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
+**Next phase**: **M5.0 scaffold** per [3d_path_to_m5.md](3d_path_to_m5.md). Full Overall Conclusions in [3a § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3b_concept_review.md](3b_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
 
 ### The Real Payoff
 
@@ -211,7 +211,7 @@ This could be the unification: not "topology vs waves" but "topology IS the geom
 
 - Lagrangian model needs a **vector field → M4** (not M3 scalar) — director field requires 3+ components per voxel
 - Needs a **background vacuum field → M2-like philosophy** (not M3's "WCs emit into void")
-- Future **M5 / LAGRANGIAN-FIELD METHOD** (dir `m5_lagrangian_field/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [3c_path_to_m5.md](3c_path_to_m5.md)
+- Future **M5 / LAGRANGIAN-FIELD METHOD** (dir `m5_lagrangian_field/`) would combine: M2 (leapfrog PDE infrastructure) + M3 (near-field results) + M4 (vector infrastructure + elliptical granule trajectories) + Duda's topology + time crystal dynamics + Close's Lagrangian. Full plan in [3d_path_to_m5.md](3d_path_to_m5.md)
 
 ### Physical Intuition: Granule Ellipses Already Carry Topology
 

@@ -277,7 +277,7 @@ This is important:
 
 ### Why This Matters for M5
 
-The direct-line implication for M5 design ([3c_path_to_m5.md](3c_path_to_m5.md)):
+The direct-line implication for M5 design ([3d_path_to_m5.md](3d_path_to_m5.md)):
 
 1. **No new vector infrastructure needed.** M4's (ψ_x, ψ_y, ψ_z) displacement and 6-phasor trackers already supply everything the director needs
 2. **The winding-number tracker is a new kernel, not a new data structure.** It reads from existing ellipse data

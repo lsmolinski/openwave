@@ -8,7 +8,8 @@ Related reading:
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
 - [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — numerical experiment results
-- [3c_path_to_m5.md](3c_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
+- [3c_topological_defect.md](3c_topological_defect.md) — topology / time-crystal / Zitterbewegung deep dive (mechanism by which defects oscillate)
+- [3d_path_to_m5.md](3d_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
 - [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
 
 ---
@@ -351,13 +352,13 @@ FIELD LEVEL:      "at rest" = all granule ellipses aligned the same way
 
 ### Why this matters for M5 design
 
-When M5 is built ([3c_path_to_m5.md](3c_path_to_m5.md)), we must pick: *what does ψ physically represent in our production engine?*
+When M5 is built ([3d_path_to_m5.md](3d_path_to_m5.md)), we must pick: *what does ψ physically represent in our production engine?*
 
 - **Option A (closest to M4)**: ψ = granule displacement (3D vector). The director is derived as the major axis of each voxel's elliptical trajectory (computed from phase/amplitude trackers).
 - **Option B (pure LdG / Duda)**: ψ = director n(x) directly (3D unit vector). Model only the orientation, not the underlying ellipse.
 - **Option C (Close / elastic solid)**: ψ = spin density (local rotation axis). Evolves under Close's nonlinear vector wave equation.
 
-Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Exps 4–8 have now run: Exp 4 confirmed Klein-Gordon dispersion on a scalar ψ (Option A/B-neutral); Exp 7 v2 confirmed Close's vector-Q approach works as transverse elastic-solid dynamics (Option C). **The resolved M5 recipe** (per [3a § Winning Approach for M5](3a_lagrangian_experiments.md#winning-approach-for-m5) and [3c](3c_path_to_m5.md)) uses **Option B (director) for topology** (from Exps 2, 3) combined with **Option C (Close's Eq. 19) for wave dynamics** on top — both layers validated in the sandbox.
+Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Exps 4–8 have now run: Exp 4 confirmed Klein-Gordon dispersion on a scalar ψ (Option A/B-neutral); Exp 7 v2 confirmed Close's vector-Q approach works as transverse elastic-solid dynamics (Option C). **The resolved M5 recipe** (per [3a § Winning Approach for M5](3a_lagrangian_experiments.md#winning-approach-for-m5) and [3c](3d_path_to_m5.md)) uses **Option B (director) for topology** (from Exps 2, 3) combined with **Option C (Close's Eq. 19) for wave dynamics** on top — both layers validated in the sandbox.
 
 ### The fundamental reframe
 
@@ -490,6 +491,8 @@ This is a meaningful conceptual shift from EWT, but it's **more fundamental, not
 This is exactly what EWT's `E = ρV(fA)²` captures phenomenologically; M5 derives it from the Lagrangian instead of postulating it.
 
 ### What is the time-crystal concept?
+
+> **Note**: this Q&A entry is a short summary. For the full deep-dive — including the rotational-vs-linear oscillation distinction, the connection to M4's elliptical granule motion, the de Broglie wavelength as helix pitch, and the explicit derivation of `ω = 2mc²/ℏ` — see [3c_topological_defect.md](3c_topological_defect.md).
 
 **Frank Wilczek's 2012 proposal**: a system whose **ground state spontaneously breaks time-translation symmetry** — meaning it oscillates periodically even at minimum energy, without being driven. Just as a crystal breaks *spatial* translation symmetry (atoms at periodic positions rather than uniformly distributed), a time-crystal breaks *temporal* translation symmetry (periodic in time without external driving).
 
@@ -671,7 +674,7 @@ This equation does **two things at once**, not in sequence:
 
 **So the Lagrangian models more than waves alone — it generates the topology too**, through the structure of the potential `V(ψ)`. Landau–de Gennes + Skyrme-stabilized variants give the vacuum manifold the right geometry for hedgehogs and vortex lines to exist as stable minima (or local minima of the defect sector).
 
-**Concrete ingredient list for M5.2's Lagrangian** (per [3c_path_to_m5.md § M5.2](3c_path_to_m5.md)):
+**Concrete ingredient list for M5.2's Lagrangian** (per [3d_path_to_m5.md § M5.2](3d_path_to_m5.md)):
 
 | Term | Physics role | What it produces |
 | --- | --- | --- |
@@ -689,7 +692,7 @@ Contrast with M3:
 - **M3**: solves a linear wave equation *analytically* (sum of `sin(kr − ωt)/r` per source). No potential, no topology — just linear superposition. Only the wave channel
 - **M5**: solves a *nonlinear PDE* with `V(ψ)` via leapfrog time-stepping. The potential gives the topology channel for free
 
-**Naming implication**: because the Lagrangian is the core object M5 solves, and because "wave equation" is now only part of what the engine does, `wave_engine.py` probably becomes `lagrangian_engine.py` in M5's directory (`xperiments/m5_lagrangian_field/`). The name reflects what the module actually is: a Lagrangian-based field engine that generates wave dynamics + topology together. *[Added to M5.0 scaffold decision in `3c_path_to_m5.md`.]*
+**Naming implication**: because the Lagrangian is the core object M5 solves, and because "wave equation" is now only part of what the engine does, `wave_engine.py` probably becomes `lagrangian_engine.py` in M5's directory (`xperiments/m5_lagrangian_field/`). The name reflects what the module actually is: a Lagrangian-based field engine that generates wave dynamics + topology together. *[Added to M5.0 scaffold decision in `3d_path_to_m5.md`.]*
 
 **Why the rename is accurate — what the M5 engine module actually does**, line by line:
 
@@ -954,7 +957,7 @@ OpenWave's distinguishing feature, after this evolution, is being an **integrate
 
 This is different from QCD-only simulators (which jump straight to quark/gluon dynamics without lepton context), liquid-crystal simulators (which model defects but not the full particle hierarchy), or QED simulators (which model atoms without nucleons-from-quarks). OpenWave's integration spans the whole hierarchy, with cross-layer validation that catches inconsistencies between scales.
 
-The full roadmap including post-M5.8 composite layers is captured in [3c_path_to_m5.md § Layered Validation Roadmap](3c_path_to_m5.md#layered-validation-roadmap--vacuum-to-atoms).
+The full roadmap including post-M5.8 composite layers is captured in [3d_path_to_m5.md § Layered Validation Roadmap](3d_path_to_m5.md#layered-validation-roadmap--vacuum-to-atoms).
 
 ### What about forces, EM waves, and heat? (matter is the foundation, not the goal)
 
@@ -998,7 +1001,91 @@ OpenWave is not "an alternative QFT simulator" or "a liquid-crystal modeling too
 
 That positioning is what makes OpenWave both scientifically interesting (deeper-than-QFT first-principles framework) AND practically valuable (gating step for SABER's tech development). The matter layers we've been validating in M5.0–M5.8 are the necessary prerequisite for the force/EM/heat outputs that come in Phase 4–6+.
 
-Full roadmap with output-domain dependency chains in [3c_path_to_m5.md § Beyond matter — forces, EM waves, heat](3c_path_to_m5.md#beyond-matter--forces-em-waves-heat-the-saber-design-parameter-outputs).
+Full roadmap with output-domain dependency chains in [3d_path_to_m5.md § Beyond matter — forces, EM waves, heat](3d_path_to_m5.md#beyond-matter--forces-em-waves-heat-the-saber-design-parameter-outputs).
+
+### What about M3's wave phase offset? How does annihilation work in M5?
+
+A natural mechanism question for anyone moving from M3 to M5: in M3, every wave center had a `source_offset ∈ {0, π}` parameter. It set the charge sign (`cos(source_offset)` → ±1) AND it drove annihilation (opposite-phase WCs at zero separation → waves perfectly cancel → both disappear). What happens to that parameter — and to annihilation — in M5?
+
+#### Phase did two jobs in M3; M5 splits them
+
+M3's `source_offset` was overloaded — one parameter doing two physically distinct things at once:
+
+| Job | M3 mechanism | M5 mechanism |
+| --- | --- | --- |
+| Charge sign | `cos(source_offset)` ∈ {+1, −1} | **Winding-number sign** `Q ∈ {+1, −1}` (topological invariant) |
+| Annihilation | Destructive wave interference at zero separation | **Topological cancellation**: `Q + (−Q) = 0` allows the field to relax to vacuum |
+
+In M3 these were coupled. In M5 they decouple cleanly into two independent physical mechanisms.
+
+#### Charge sign comes from winding-number sign, not phase
+
+A hedgehog `n(x) = +(x − c)/|x − c|` has `Q = +1`. An anti-hedgehog `n(x) = −(x − c)/|x − c|` has `Q = −1`. The "anti-" of antiparticles is **inverted winding direction of the director field**, not a phase shift on emitted waves. There is no "wave with π phase offset" defining a positron — the positron IS a different topological configuration of the field.
+
+This is more fundamental than M3: in M3 you could in principle set `source_offset = 0.7π` and end up with nonsensical fractional charge. In M5 you literally cannot — winding number must be an integer (you cannot continuously deform a field to wrap around a sphere "0.7 times"; the sphere either wraps once or it doesn't). Charge quantization is geometric, not parametric.
+
+#### Annihilation comes from topology cancellation, not wave cancellation
+
+When a hedgehog (Q = +1) and an anti-hedgehog (Q = −1) approach each other and merge:
+
+1. Combined winding-number integral over a surface enclosing both is `Q_total = +1 + (−1) = 0`
+2. A configuration with Q = 0 IS the vacuum (topologically indistinguishable from "no defects")
+3. The field can smoothly relax from "two opposite defects close together" to "vacuum" — a continuous deformation that is **topologically allowed precisely because the total winding is zero**
+4. As the field relaxes to vacuum, the stored field energy (`E_electron + E_positron = 2·m_e·c² ≈ 1 MeV`) releases as outgoing perturbations of the surrounding vacuum — emitted as Klein-Gordon waves (the gamma photons, ~511 keV each)
+
+**Key reframe**: in M5, the destructive wave interference at the moment of annihilation is a **consequence**, not the **cause**. The cause is topological cancellation; once topology no longer forbids unwinding, the stored energy releases as waves.
+
+In M3 the picture was inverted: wave cancellation WAS the cause, and "annihilation" was just the wave-mechanical event of two waves perfectly destructively interfering. M3's picture happened to give the right phenomenology (waves do cancel at the merger point, gamma photons do come out), but for the wrong reason — making it impossible to predict cases where topology should forbid annihilation (same-winding pairs that can't relax even when overlapped).
+
+#### Where wave phase still matters in M5
+
+Phase has not disappeared from M5. It just has a much narrower scope:
+
+| Role | M3 | M5 |
+| --- | --- | --- |
+| Charge sign | ✅ via `cos(source_offset)` | ❌ replaced by winding-number sign |
+| Annihilation cause | ✅ destructive wave interference | ❌ replaced by topological cancellation |
+| Standing-wave lock-in (orbital, strong) | ✅ same-phase WCs lock at λ/2 wells | ✅ **STILL THIS** — phase of emitted waves controls interference |
+| Coherence between defect emissions | implicit | explicit — phase coherence between two defects' Zitterbewegung-driven emissions |
+| `source_offset` as a free parameter | ✅ set by hand per WC | ❌ not a free parameter — phase is *derived* from the defect's intrinsic dynamics |
+
+**Key shift**: in M5, the phase of emitted waves is no longer a hand-set label. It's *derived* from the defect's intrinsic time-crystal oscillation:
+
+- The defect oscillates intrinsically at `ω = 2mc²/ℏ` (Zitterbewegung)
+- That oscillation shakes the surrounding vacuum
+- The shaking emits waves at frequency `ω`
+- The phase at any field point is `ω·t − k·r` from the defect's location and oscillation state
+
+So phase is an **output of the field dynamics**, not an input parameter. Two defects in the same orientation and oscillation state emit coherent (in-phase) waves; two defects in opposite orientation emit anti-phase waves. The wave-phase relationship between two defects falls out of their topological + dynamical states.
+
+#### What replaces M3's `source_offset` parameter in M5 code
+
+M3's `WaveCenter` had a `source_offset ∈ {0, π}` field. M5's `seed_*` kernels split the work into multiple independent state variables:
+
+| What M3 used `source_offset` for | M5 equivalent |
+| --- | --- |
+| Charge sign | `winding_sign ∈ {+1, −1}` — set by `seed_hedgehog(center, sign=+1)` vs `sign=−1` |
+| Phase of emitted wave | Not stored — emerges from the defect's intrinsic Zitterbewegung. The phase at any field point is computed dynamically |
+| Initial phase of intrinsic oscillation (if needed) | Optional `initial_oscillation_phase` parameter on the seed kernel — only governing the time-crystal cycle, NOT charge |
+| Annihilation behavior | Determined by topology: opposite winding numbers → annihilation is topologically allowed when they meet; same winding → topologically forbidden (no annihilation, just elastic scattering or repulsion) |
+
+#### One-line summary
+
+> In M3: "Phase IS charge. Particles annihilate when their waves cancel."
+>
+> In M5: "Topology IS charge. Particles annihilate when their *windings* cancel — releasing stored field energy as waves. Wave phase is a *dynamical consequence*, not a fundamental input."
+
+This is yet another instance of M5 making things more fundamental: M3's phase parameter was doing too much work (charge labeling + annihilation + phase coherence all at once), and the inability to derive it from physics was a sign it was over-specified. In M5, each function gets its own mechanism: charge from topology, annihilation from topological cancellation, phase from intrinsic time-crystal dynamics.
+
+#### M5.4 testable prediction
+
+When M5.4 simulates a hedgehog + anti-hedgehog pair approaching each other:
+
+1. **Far separation (d ≫ λ_C)**: feel each other through topological 1/d Coulomb attraction. Phase interference is washed out by time-averaging
+2. **Closing in (d ~ λ_C)**: phase coherence of emitted waves matters. May lock into a positronium-like bound state at sub-λ separations (standing-wave wells)
+3. **Touching (d → 0)**: winding numbers overlap. `Q_total = 0` → topologically allowed to relax to vacuum. The combined field unwinds; stored 2·m_e·c² ≈ 1 MeV releases as outgoing waves (two gamma photons at 511 keV each, by momentum conservation)
+
+Step 3 is where destructive wave interference at the merger point becomes *visible* — the field amplitude at the merger location goes through zero as the unwinding completes, and the wave packet released matches exactly what you'd expect for two 511 keV photons. The M3 "destructive wave interference" picture appears as a **symptom** of the topological event, not the cause. M5.4 can directly observe this distinction by looking at whether annihilation happens for *same-winding* pairs forced together (M5: should NOT happen, topology forbids; M3: would happen if waves could be made to cancel) — which is the cleanest test of which mechanism actually drives annihilation.
 
 ### The full chain, cleanly
 
