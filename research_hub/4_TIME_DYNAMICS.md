@@ -76,7 +76,7 @@ This creates a direct link to Smoliński's gravitational push-out/buoyancy model
 
 **#hackingenergy** — by understanding how time works and its relationship to energy, we can hack energy itself.
 
-**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces in the 1D sandbox, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in Phase 3 (see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
+**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces in the 1D sandbox, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in Phase 3 (see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
 
 ---
 

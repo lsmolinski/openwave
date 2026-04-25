@@ -260,7 +260,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3a_concept_review.md](3a_concept_review.md) · [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
+## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3b_concept_review.md](3b_concept_review.md) · [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
 
 A research thread evaluating whether a Lagrangian / topological framework can replace OpenWave's empirical wave-equation search with a first-principles derivation, and produce charge quantization + far-field Coulomb that the M3 scalar method cannot. Sparked by email exchange with Jarek Duda (Jagiellonian) and Robert Close (Clark College) in the "Models of Particles" group.
 
@@ -273,7 +273,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ⚠️ Test 6: Three lepton families — E(K) scaling validated (R²=1.0). Three distinct K values reproduce lepton mass² ratios by construction (consistency check, not derivation). Full biaxial Q-tensor derivation deferred to Exp 6.1 — 2026-04-17
   - ⚠️ Test 7: Close's nonlinear vector wave eq — Close's ACTUAL Eq. 19 (linear) and Eq. 21 ("Equation of Everything") correctly implemented after obtaining the paper. Y_l^m seeds disperse (consistent with Close's framework — particles are plane-wave bispinors, not static solitons). Close's equation is a candidate base wave dynamics layer for M5 — 2026-04-17
   - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
-- ✅ Winning combination selected (2026-04-17): topology (hedgehog + winding) + Klein-Gordon wave dynamics + Close's Eq. 19 as base vector wave + M3 near-field standing waves + Skyrme stabilizer. Full recipe in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5)
+- ✅ Winning combination selected (2026-04-17): topology (hedgehog + winding) + Klein-Gordon wave dynamics + Close's Eq. 19 as base vector wave + M3 near-field standing waves + Skyrme stabilizer. Full recipe in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5)
 - [ ] M5 / LAGRANGIAN-FIELD METHOD implementation (dir `openwave/xperiments/m5_lagrangian_field/`) — ready to implement per [3c_path_to_m5.md](3c_path_to_m5.md)
   - [ ] M5.0 Scaffold — mirror m4 structure, add `psi_prev/psi/psi_new` triple buffer, port M2's 6-point Laplacian, implement curl / div / curl-curl operators (validated in Exp 7 v2)
   - [ ] M5.1 Port topology from Exps 2, 3 — `seed_vacuum`, `seed_hedgehog`, Frank energy, winding-number tracker
@@ -282,7 +282,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - [ ] M5.4 **Headline test**: multi-defect K=10 stability + far-field Coulomb recovery
   - [ ] M5.5 Skyrme stabilizer (conditional on M5.4 showing defect collapse under Derrick's theorem)
   - [ ] M5.6 Biaxial LdG Q-tensor (long-term, for lepton mass derivation; Exp 6.1 equivalent)
-- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3a_concept_review.md](3a_concept_review.md)
+- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3b_concept_review.md](3b_concept_review.md)
 
 ## [PHASE 4: TIME DYNAMICS](4_TIME_DYNAMICS.md)
 

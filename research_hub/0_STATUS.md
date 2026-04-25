@@ -116,7 +116,7 @@ Engineering improvements (not physics changes):
 
 ---
 
-## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3a_concept_review.md](3a_concept_review.md) · [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
+## 🔶 PHASE 3: LAGRANGIAN FRAMEWORK — see [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) · [3b_concept_review.md](3b_concept_review.md) · [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) · [3c_path_to_m5.md](3c_path_to_m5.md)
 
 Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confirmed the core topological claims: Sine-Gordon kink stability + Lorentz contraction (Exp 1), clean 1/d Coulomb from hedgehog defects with R²=0.993 (Exp 2), integer-quantized topological charge Q=±1 surface-independent and stable under 50% noise (Exp 3). Sparked by an email exchange in the "Models of Particles" group with Jarek Duda (Jagiellonian) and Robert Close (Clark College). The goal: derive the correct wave equation from first principles (Lagrangian formulation) instead of testing equations empirically, and demonstrate charge quantization + far-field Coulomb that M3 scalar cannot produce.
 
@@ -124,11 +124,11 @@ Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confir
 
 **Net verdict**: topology is the load-bearing ingredient (Exps 2, 3 confirmed charge quantization and far-field Coulomb); pure nonlinearity alone is insufficient (Exp 8 falsified Smolinski Ψ³ K-selectivity); Close's actual vector wave equation (Exp 7 v2) gives valid massless transverse wave dynamics consistent with his Dirac-equation factoring; Klein-Gordon dispersion `ω² = c²k² + m²` validated to R² = 0.999982 (Exp 4, the mass-from-potential mechanism).
 
-**Winning M5 recipe** (detailed in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5)): topology from Exps 2/3 + Klein-Gordon from Exp 4 + Close's Eq. 19 from Exp 7 v2 + M3 near-field standing-wave lock-in + Skyrme stabilizer + (long-term) LdG biaxial potential for lepton masses.
+**Winning M5 recipe** (detailed in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5)): topology from Exps 2/3 + Klein-Gordon from Exp 4 + Close's Eq. 19 from Exp 7 v2 + M3 near-field standing-wave lock-in + Skyrme stabilizer + (long-term) LdG biaxial potential for lepton masses.
 
 **Documentation correction from Exp 5**: the docs' Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution — its quadrature term leaves a residual `−c²k²·sin(ωt+φ)/r ≠ 0`. The M4 code's equivalent *sum form* `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)` IS valid. M5 uses the sum form.
 
-**Next phase**: **M5.0 scaffold** per [3c_path_to_m5.md](3c_path_to_m5.md). Full Overall Conclusions in [3b § OVERALL CONCLUSIONS](3b_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3a_concept_review.md](3a_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
+**Next phase**: **M5.0 scaffold** per [3c_path_to_m5.md](3c_path_to_m5.md). Full Overall Conclusions in [3a § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3b_concept_review.md](3b_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
 
 ### The Real Payoff
 

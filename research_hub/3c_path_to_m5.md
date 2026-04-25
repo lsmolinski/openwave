@@ -277,16 +277,31 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 - [ ] Verify `F = −∇E` still produces the expected particle motion — the mechanism survives, the energy source changes
 - [ ] Cross-check: Exps 2 and 4 measured Hamiltonian energies; M5 must reproduce them
 
-### Phase M5.4 — Multi-defect K=10 test (the headline goal)
+### Phase M5.4 — Electron stability + dynamic Coulomb recovery (the headline goal)
 
-> **Refinement from Robert Close**: "Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions." Success criterion is therefore **long-lived resonance with measurable lifetime**, not perfect stability.
+> **Paradigm shift from EWT (2026-04-19)**: the electron is NOT a K=10 tetrahedron of constituents in M5. Per Dr. Duda's framework, the electron is a **single biaxial hedgehog** — one topological defect with a specific axis choice (the δ ~ ℏ axis of the LdG order parameter). Muon and tau are single hedgehogs on the other two axes (unity and g scales respectively, tested in M5.6). EWT's "K" as a combinatorial parameter does not apply at the lepton scale. K re-emerges only as a *descriptive count* for composite-particle configurations (quarks in nucleons, nucleons in nuclei, electrons in atomic orbitals) — best-practice labeling for those deferred until M5.7+.
+>
+> **Refinement from Robert Close (2026-04-18)**: "Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions." Success criterion is therefore **long-lived resonance with measurable lifetime**, not perfect stability.
 
-- [ ] Seed K=10 hedgehog arrangement on M5 (1-3-6 tetrahedron geometry, per EWT)
-- [ ] Measure stability under perturbation — does topology give perturbation-robust K=10 uniqueness, and what is its lifetime?
+**Single-particle stability test (electron as a defect)**:
+
+- [ ] Seed a single biaxial hedgehog with the electron-axis choice (δ ~ ℏ)
+- [ ] Evolve the field under the full Lagrangian (Close's Eq. 23 + KG mass term + LdG biaxial potential + Frank elastic + Skyrme if needed)
+- [ ] Measure defect stability under perturbation: is the hedgehog a long-lived resonance? What's its measurable lifetime?
+- [ ] Compare to variants (different axis choices, topological-vortex-loop alternatives for neutrino): does the δ-axis hedgehog have a measurably longer lifetime than alternatives, as a proxy for "electron is the lightest stable charged lepton"?
+
+**Pair-interaction test (dynamic Coulomb + annihilation)**:
+
+- [ ] Seed a hedgehog + anti-hedgehog pair (electron + positron) at various separations
 - [ ] Compare to M3 Combined W-L baseline: does the sinc far-field barrier disappear when topology is active?
-- [ ] Measure far-field force on a test particle: does clean 1/d² Coulomb emerge? (Integrate Exp 2's E(d) result with 2-defect M3 motion dynamics)
-- [ ] **Success metric**: K=10 lifetime >> K≠10 lifetime under matched perturbation (ratio, not absolute stability)
-- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If K=10 is the longest-lived resonance, we've done it
+- [ ] Measure far-field force *dynamically* (not just statically as in Exp 2): does clean 1/d² Coulomb emerge as the pair moves toward each other?
+- [ ] Test annihilation: when the pair closes to near-zero separation, do the winding numbers cancel and the stored energy radiate outward as Klein-Gordon waves?
+
+**Success metrics**:
+
+- [ ] Single biaxial hedgehog (electron-axis) is a long-lived resonance under moderate perturbation (lifetime substantially longer than decoy variants)
+- [ ] Hedgehog + anti-hedgehog pair dynamics reproduce 1/d² Coulomb attraction + annihilation
+- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If the single biaxial hedgehog is a long-lived electron-like resonance AND the e⁺/e⁻ pair reproduces Coulomb + annihilation dynamically, the loop is closed
 
 ### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
 
@@ -352,7 +367,7 @@ From the sandbox findings, these are ruled out or de-prioritized:
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
-- [ ] M5.4 — **Headline test**: K=10 hedgehog longest-lived resonance under perturbation + far-field Coulomb recovery
+- [ ] M5.4 — **Headline test**: single biaxial hedgehog (electron) is a long-lived resonance; hedgehog + anti-hedgehog pair reproduces dynamic 1/d² Coulomb + annihilation
 - [ ] M5.5 — Skyrme stabilizer (conditional on M5.4)
 - [ ] M5.6 — Biaxial LdG Q-tensor with `(δ, 1, g)` hierarchy (long-term; for lepton mass derivation)
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
@@ -386,6 +401,8 @@ The ~3477:1 biaxial ratio the sandbox required is **physically motivated**, not 
 ### Refinement 5 — M3 near-field carries three force regimes (Jeff Yee)
 
 Jeff confirmed the M3 + topology coexistence decision and added a crucial scope expansion: M3's standing-wave lock-in is the mechanism for **three** force regimes, not just one — (a) intra-particle binding of K=1 WCs into standalone particles, (b) intra-nucleus strong force between K=10 particles, and (c) **orbital force** (electron-nucleus binding in atoms). This strengthens the rationale for keeping M3 physics intact in M5 — it's load-bearing well beyond the K=10 electron problem.
+
+> **Note on vocabulary (2026-04-19)**: Jeff's regime enumeration uses EWT's K-count vocabulary (K=1 = neutrino, K=10 = electron) as was standard before the Duda framework was adopted. In the M5 paradigm, the mapping shifts: (a) single-particle stability is *not* a wave lock-in problem in M5 (the particle is a single defect, held together by topology, not by K=1-to-K=10 wave interference); (b) intra-nucleus strong force is between *quarks* (single defects of a different type) bound into nucleons, not between electrons; (c) orbital force unchanged — electrons around nuclei. Jeff's underlying point stands: M3's near-field physics is load-bearing for composite-particle and atomic-scale dynamics in M5.
 
 ### Summary impact table
 

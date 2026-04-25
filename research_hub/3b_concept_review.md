@@ -7,7 +7,7 @@ A conceptual walk-through of the Lagrangian / topological framework from Rodrigo
 Related reading:
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
-- [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) — numerical experiment results
+- [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — numerical experiment results
 - [3c_path_to_m5.md](3c_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
 - [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
 
@@ -357,7 +357,7 @@ When M5 is built ([3c_path_to_m5.md](3c_path_to_m5.md)), we must pick: *what doe
 - **Option B (pure LdG / Duda)**: ψ = director n(x) directly (3D unit vector). Model only the orientation, not the underlying ellipse.
 - **Option C (Close / elastic solid)**: ψ = spin density (local rotation axis). Evolves under Close's nonlinear vector wave equation.
 
-Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Exps 4–8 have now run: Exp 4 confirmed Klein-Gordon dispersion on a scalar ψ (Option A/B-neutral); Exp 7 v2 confirmed Close's vector-Q approach works as transverse elastic-solid dynamics (Option C). **The resolved M5 recipe** (per [3b § Winning Approach for M5](3b_lagrangian_experiments.md#winning-approach-for-m5) and [3c](3c_path_to_m5.md)) uses **Option B (director) for topology** (from Exps 2, 3) combined with **Option C (Close's Eq. 19) for wave dynamics** on top — both layers validated in the sandbox.
+Experiments 2 and 3 used **Option B** (director only) — which is why they worked cleanly for topology. Exps 4–8 have now run: Exp 4 confirmed Klein-Gordon dispersion on a scalar ψ (Option A/B-neutral); Exp 7 v2 confirmed Close's vector-Q approach works as transverse elastic-solid dynamics (Option C). **The resolved M5 recipe** (per [3a § Winning Approach for M5](3a_lagrangian_experiments.md#winning-approach-for-m5) and [3c](3c_path_to_m5.md)) uses **Option B (director) for topology** (from Exps 2, 3) combined with **Option C (Close's Eq. 19) for wave dynamics** on top — both layers validated in the sandbox.
 
 ### The fundamental reframe
 
@@ -371,7 +371,7 @@ Displacement is one valid choice. Orientation is another. Angle is another. What
 
 ## EMPIRICAL VALIDATION — WHAT THE SANDBOX EXPERIMENTS CONFIRMED
 
-With all 8 Phase 3 sandbox experiments complete (see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) for full write-ups), we can now mark each conceptual claim in this document with its experimental status.
+With all 8 Phase 3 sandbox experiments complete (see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) for full write-ups), we can now mark each conceptual claim in this document with its experimental status.
 
 ### Claim-by-claim scorecard
 
@@ -409,7 +409,7 @@ The corrected layering in [CORRECTED CONCEPTUAL LAYERING](#corrected-conceptual-
 
 The one conceptual shift that came from the experiments (vs. just validating what we expected):
 
-- **"Combined W-L is an exact free-wave solution"** — what the M3/M4 docs claimed — was wrong. The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` contains a quadrature piece `(1−cos(kr))/r·sin(ωt+φ)` that is NOT a free-wave solution. The M4 code's equivalent sum form IS a solution; they're not algebraically identical. For M5, we keep the sum form and discard the claim that the product form is Lagrangian-derived. See [0_WAVE_EQUATION.md § M3: The Quest for the Wave Equation](0_WAVE_EQUATION.md#m3-the-quest-for-the-wave-equation-vs-lagrangian-mechanics) and [3b § Experiment 5](3b_lagrangian_experiments.md#experiment-5-lagrangian-derivation-combined-w-l-from-a-lagrangian) for the full reasoning
+- **"Combined W-L is an exact free-wave solution"** — what the M3/M4 docs claimed — was wrong. The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` contains a quadrature piece `(1−cos(kr))/r·sin(ωt+φ)` that is NOT a free-wave solution. The M4 code's equivalent sum form IS a solution; they're not algebraically identical. For M5, we keep the sum form and discard the claim that the product form is Lagrangian-derived. See [0_WAVE_EQUATION.md § M3: The Quest for the Wave Equation](0_WAVE_EQUATION.md#m3-the-quest-for-the-wave-equation-vs-lagrangian-mechanics) and [3a § Experiment 5](3a_lagrangian_experiments.md#experiment-5-lagrangian-derivation-combined-w-l-from-a-lagrangian) for the full reasoning
 
 This is exactly the kind of finding the Lagrangian framework was designed to surface: when you formalize the equation's origin, latent inconsistencies in empirical modeling choices show up.
 
@@ -520,7 +520,7 @@ In M5, a defect does not have an externally tracked position like M3/M4's wave c
 - Result: attraction (opposite winding) or repulsion (same winding) — the 1/d Coulomb from Exp 2, now *dynamic* instead of just a static energy measurement
 - Kink + anti-kink in 1D: pass-through in pure Sine-Gordon (Exp 1 confirmed — integrable case)
 - Hedgehog + anti-hedgehog in 3D: approach → annihilation (winding numbers cancel, energy radiates outward as waves)
-- Same-sign defects in 3D: repulsion, but can be bound into K=10 configurations if the Skyrme stabilizer is active (M5.5)
+- Same-sign defects in 3D: repulsion individually, but can be bound into composite configurations (e.g. quarks in nucleons) if the Skyrme stabilizer is active (M5.5)
 
 #### Intrinsic motion on top of drift
 
@@ -590,7 +590,7 @@ In the near-field regime, the sinc interference does NOT average out — you are
 
 - Strong force (quarks at sub-wavelength separations)
 - Atomic orbitals (discrete shells at specific radii)
-- K=10 tetrahedron structure (multiple defects arranged at mutual standing-wave nodes)
+- Composite-particle structure (multi-defect arrangements like quarks-in-nucleons or electrons-in-atomic-orbitals, with constituents at mutual standing-wave nodes)
 
 So **near-field lock-in comes from the wave-interference channel** (M3's physics, still load-bearing). It doesn't contaminate the far field because the sinc is washed out by time-averaging once `d >> λ_Z`, while the topological `1/d` survives everywhere.
 
@@ -610,7 +610,7 @@ So **near-field lock-in comes from the wave-interference channel** (M3's physics
 | Aspect | M3 / M4 view | M5 view |
 | --- | --- | --- |
 | Particle identity | Standing-wave interference pattern | Topological defect (winding number ≠ 0) |
-| Stability mechanism | Constructive interference at nodes (fragile — K=10 breaks under perturbation) | Topology forbids unwinding — perturbation-robust by construction (Exp 3: Q stable to 50% noise) |
+| Stability mechanism | Constructive interference at nodes (fragile — multi-defect tetrahedron arrangements break under perturbation per Phase 1 results) | Topology forbids unwinding — perturbation-robust by construction (Exp 3: Q stable to 50% noise) |
 | Role of waves | Waves *are* the particle (interference = existence) | Waves are the particle's dynamical *content* — intrinsic Zitterbewegung + emitted perturbations + mutual interference with neighbors |
 | Role of topology | Absent | *Structural backbone* — the invariant that makes a particle persist at all |
 
@@ -641,7 +641,7 @@ Mathematically this is the exact same structure as Coulomb's law with winding nu
 Three reframing points worth stating plainly first — these are where the M5 paradigm has landed after all the sandbox work + group-feedback exchanges:
 
 1. **There are no particles, only defects in the field.** The "hard ball bouncing around" mental picture is M1's classical intuition, not M5. What we call an "electron" is a specific *configuration* of the director field (winding-number-1 hedgehog), same as what we call a "knot" is a specific configuration of a rope. The defect has no separate existence apart from the medium — it IS the medium in a twisted state
-2. **Composite matter = groups of defects locked-in by wave interference.** Multi-defect configurations (K=10 electron tetrahedron, quark bound states in nucleons, electron-nucleus orbitals in atoms) are held together by standing-wave interference between the defects' emitted waves. Same mechanism at different scales: strong force at sub-λ separations, orbital force at atomic separations. This is exactly M3's standing-wave physics, retained in M5 for the near-field role
+2. **Composite matter = groups of defects locked-in by wave interference.** Multi-defect configurations (quarks bound into nucleons via the strong force, nucleons bound into nuclei, electrons bound around nuclei in atomic orbitals) are held together by standing-wave interference between the defects' emitted waves. Same mechanism at different scales: strong force at sub-λ separations, orbital force at atomic separations. This is exactly M3's standing-wave physics, retained in M5 for the near-field role. **Note**: in this M5 framing the *electron itself* is NOT a multi-defect composite (no K=10 tetrahedron) — the electron is a single biaxial hedgehog, per Duda's framework. Composites start at the nucleon scale and above
 3. **Electric force = static elastic tension between winding textures, not waves.** The medium wants to return to rest (vacuum ground state); the topological constraint prevents that; the stored tension in the director field between two defects is the `1/d` Coulomb. It is genuinely electrostatic, not a wave phenomenon. The sinc does exist in the emitted-wave channel but gets averaged away at `d >> λ_Z`
 
 Given these, two natural technical questions follow.
@@ -751,6 +751,210 @@ The "force mechanism" is folded entirely into the Lagrangian. That's what makes 
 | What the PDE solver integrates | ONE Lagrangian-derived PDE — `∂²_tψ = c²∇²ψ − ∂V/∂ψ` — that simultaneously handles wave dynamics AND preserves topology |
 | Is force `F = −∇E`? | Yes, at the field level automatically (Lagrangian EoM does it on every voxel). No explicit force-integration step on defects. Force-on-particle is an *output diagnostic* |
 | Engine module name | Likely `lagrangian_engine.py` (not `wave_engine.py`) — the module solves a Lagrangian, of which wave propagation is one consequence |
+
+### Does M5 use EWT's K parameter?
+
+**No. K is dropped at the lepton scale in M5, and re-emerges only as a descriptive count for composite-particle configurations.**
+
+EWT used `K` as a combinatorial parameter — the count of K=1 fundamental wave centers packed into a standing-wave configuration. K=1 was the neutrino, K=10 was the electron (1-3-6 tetrahedron of K=1 constituents), K=28 the muon, K=50 the tau. Different K values gave different particle masses; mass scaled with K.
+
+Duda's framework — the basis for M5 — does not work this way. There is no combinatorial count.
+
+| Concept | EWT (K-based) | M5 (Duda-based) |
+| --- | --- | --- |
+| Neutrino | K=1 (single wave center) | A topological vortex loop (closed-loop defect, different topology class than hedgehogs) |
+| Electron | K=10 (1-3-6 tetrahedron of K=1 constituents) | A **single biaxial hedgehog** with axis choice = δ (the ℏ-scale eigenvalue of the LdG order parameter) |
+| Muon | K=28 | A single biaxial hedgehog with axis choice = unity scale |
+| Tau | K=50 | A single biaxial hedgehog with axis choice = g (gravity scale) |
+| Three lepton families | Three different K values | Three different axis choices `(δ, 1, g)` of the same Q-tensor (M5.6) |
+| What sets the mass | K (combinatorial count) + standing-wave radius | Stored Frank elastic energy + LdG regularization, function of axis choice |
+
+**The mechanism shift is real**:
+
+- EWT framing: the electron exists *because* 10 K=1 wave centers lock together via standing-wave interference at specific tetrahedral positions. The electron's stability is a wave-interference phenomenon
+- M5 framing: the electron exists *because* the LdG order parameter has a topologically protected single-hedgehog configuration on the δ axis. The electron's stability is a topological phenomenon
+
+These are different physical claims, not just different vocabulary.
+
+**Where K legitimately re-emerges in M5**:
+
+K survives as a *descriptive count* for composite-particle configurations:
+
+- A nucleon ≈ 3 quarks (K_quark = 3) bound by strong-force standing-wave lock-in
+- A nucleus has Z protons + N neutrons (K_nucleon = Z + N)
+- An atom has Z electrons in orbital shells (K_electron = Z)
+
+This K is an *emergent count of pre-existing single-defect particles bound by wave interference*, not a fundamental Lagrangian parameter. Best-practice labeling for these counts (`K_quark`, `K_nucleon`, etc.) is deferred until M5.7+ when composite-particle simulations actually run.
+
+**What this means for M5 implementation**:
+
+- **No K parameter in single-defect kernels.** `seed_hedgehog(center, axis, sign)` takes an *axis choice* (δ / unity / g), not a K count. Mass is determined by axis + LdG regularization
+- **M5.4 headline test reframes** from "K=10 hedgehog stability" to **"electron stability"** = single biaxial hedgehog (δ-axis). Lifetime is the success metric, comparing the δ-axis hedgehog to alternative defect configurations (other axes, vortex loops)
+- **Multi-defect composite tests** (quarks → nucleons, etc.) are scenarios in M5.7+ rather than the headline test
+- **Sandbox results stay as-is**: the `K=1, 2, 4, 6, 8` parameter sweeps in Exps 6 and 8 were testing EWT's K-selectivity hypothesis numerically; that's part of the historical record (sandbox phase). The sweeps validated that nonlinearity alone does not produce K-selectivity, which is exactly what M5 needs to see — topology, not K, generates particle identity. Updating the sandbox docs is not needed; the historical K vocabulary there reflects what was tested at the time
+
+**One-line summary**: in M5, the electron is one defect, not ten — and that simplification is exactly the empirical conclusion the sandbox + group feedback drove the project to.
+
+#### Clarification: "single defect" does not mean "large defect"
+
+A natural follow-up question after dropping K is: *"so the electron is now a large defect that does the work of the old 10-defect tetrahedron?"*
+
+**No.** That mental model carries over the wrong intuition. A topological defect is characterized by its **winding number** (an integer geometric count), not by its spatial extent.
+
+| Extent | What it is for an M5 electron |
+| --- | --- |
+| Topological "size" | Q = ±1 — an integer, not a length. This IS the electron's identity |
+| Core (where the field is most deformed) | Small — order of the Compton wavelength `λ_C ≈ ℏ/(mc) ≈ 10⁻¹² m` |
+| Tail / far-field reach | Formally infinite (a hedgehog's 1/r director texture never truly vanishes — the source of Coulomb) |
+
+| Aspect | EWT K=10 view | M5 single-defect view |
+| --- | --- | --- |
+| Number of constituents | 10 wave centers | 1 |
+| Spatial extent | Tetrahedron of finite radius (1-3-6 geometry, K²λ ≈ 100λ across) | Smooth director texture: small core + infinite 1/r tail |
+| What holds it together | Standing-wave interference between the 10 constituents | Topology — winding number cannot smoothly unwind |
+| Internal structure | Discrete (10 sub-particles in a geometric arrangement) | Continuous field deformation (no sub-parts) |
+
+**The right framing**: the electron in M5 is not a *large* defect; it is a **single, indivisible** defect — *atomic* in the original Greek sense of indivisible. There is no internal geometric arrangement of constituents spanning a 100λ radius. The defect is just one continuous field configuration with one integer winding number.
+
+This is also why the muon and tau are NOT "even larger defects" — they share the **same topology** (Q = ±1 hedgehog, single defect) but live on a *different LdG axis* (`(δ, 1, g)` axis hierarchy from M5.6). They differ from the electron in axis-eigenvalue choice, not in size or constituent count.
+
+**Common-mistake checklist**:
+
+- ❌ "An electron is now a *large* defect" — implies size matters; in M5 what matters is winding, not size
+- ❌ "An electron is now a *small* defect" — also misleading; the topological tail extends arbitrarily far
+- ✅ "An electron is now a *single, indivisible* defect — one continuous field deformation with winding number ±1"
+- ✅ "Composite (EWT) → atomic (M5)" — the conceptual shift in one phrase
+
+### Where do quarks, protons, nuclei, and atoms fit?
+
+The previous Q&A established that an electron is a single point-defect (hedgehog). Quarks and protons sit at a **different topological class** — they are not point defects, they are endpoints of **string-like defects**. This is where Dr. Duda's "topological vortex / quark string" framework comes in (M5.7 Cornell-potential phase), and it slots cleanly above the lepton layer in the M5 hierarchy.
+
+#### The two topological classes of defect in 3D
+
+| Defect class | Locus | Winding around | Particle role |
+| --- | --- | --- | --- |
+| **Point defect (hedgehog)** | 0-dimensional (a point) | A surrounding sphere → Q = ±1 integer | **Leptons** — electron, muon, tau (single hedgehogs on different LdG axes) |
+| **Loop defect (closed vortex)** | 1-dimensional, closed | Linking number / SO(3) ring topology | **Neutrinos** — e/μ/τ flavors as SO(3)~SU(2) rotation variants (per Duda's images, 2026-04-17) |
+| **Line defect (open vortex string)** | 1-dimensional, open | A surrounding loop → Q = ±1 (per endpoint, fractional share) | **Quark strings** — the gluon flux tube; endpoints = quarks |
+
+Different *topology classes* give different *particle classes*. EWT's single-K-count parameter cannot capture this — the actual mathematics of liquid-crystal defects can.
+
+#### Where quarks come from — endpoints of a vortex string
+
+A vortex string is a 1D defect line in the director field. Walking around a closed loop linked through the string, the director winds 2π → integer winding. The string itself = the **gluon flux tube** of QCD, a linear concentration of stored field energy.
+
+A free string endpoint = a **quark**. Its key properties fall out of the topology:
+
+- **Fractional charge** (±1/3, ±2/3): a complete string carries integer total winding (Q = ±1). Each endpoint of the string carries a *fractional share*. For a 3-endpoint configuration (a baryon), each endpoint carries 1/3 of the topological charge → 3 × (1/3) = 1 unit total. This is where quark fractional charges come from in the topological framework
+- **Cannot exist alone — color confinement**: a free quark would require a "dangling" string with one fixed endpoint and one infinite-length end. As you try to pull the endpoint away, more string gets created → energy grows linearly with distance → confinement. Quarks are mathematically forbidden from being isolated
+- **Color charge** = which axis the local director winds around. The three QCD "colors" (R/G/B) correspond to three axis choices in the LdG framework — the same axis hierarchy that gives leptons their three-family structure (`δ`, `1`, `g`), but applied to string endpoints rather than point defects
+
+#### The Cornell potential — M5.7 directly tests this
+
+For two endpoints (a quark + antiquark, "meson" configuration) at separation `r`:
+
+```text
+V(r) = −α/r  +  σ·r
+       ↑       ↑
+       Coulomb-like  Linear confinement
+       (topology     (string tension —
+        gives 1/d)   every fm of new
+                     separation needs a
+                     fm of new string)
+```
+
+- α ≈ fine-structure scale (running coupling, connects to Faber's regularization in M5.6)
+- σ ≈ **1 GeV/fm** (the QCD string tension; mainstream particle-physics phenomenology)
+
+**M5.7 directly validates this**: seed a vortex string with two fractional-charge endpoints, sweep separation from short (Coulomb regime) to long (linear regime), measure `V(r)`, confirm `V(r) = −α/r + σ·r` with the correct σ.
+
+#### Where protons come from — 3-quark Y-string
+
+A proton is `uud`: 2 up quarks + 1 down quark. In the M5 / Duda framework:
+
+- **3 string endpoints** (the 3 quarks) at 3 vertices of a small spatial region
+- **3 strings** connecting them in a **Y-shape** (or triangle, depending on configuration)
+- Strings carry the gluon flux between quarks; the Y-vertex is where strings join
+
+**Proton mass breakdown** (matches mainstream particle physics):
+
+| Source | Contribution |
+| --- | --- |
+| Constituent quark masses (u + u + d ≈ 2 + 2 + 5 MeV) | ~10 MeV |
+| Stored field energy in strings + confined quark kinetic energy | ~928 MeV |
+| **Total proton mass** | **~938 MeV** |
+
+The famous "most of the proton's mass is NOT from quarks" answer falls naturally out of the M5 picture: most of the mass is **stored topological elastic energy in the gluon flux tubes** (the strings).
+
+**Color neutrality**: 3 quarks at 3 different "color" axes (R + G + B) sum to zero net color → "white" → confinement-allowed bound state. Same color × 3 would not satisfy the topological constraint and could not bind.
+
+#### The full hierarchy of M5 physics, end to end
+
+```text
+LAYER 0 — VACUUM (LdG ground state, static)
+    ↓ topological defect injected (M5.1 seed_hedgehog)
+LAYER 1 — LEPTONS (single point defects)
+    • Point hedgehog Q=±1 (different LdG axes → e/μ/τ via M5.6)
+    • Closed vortex loop → neutrinos (SO(3) variants)
+    • Validated by Exps 1, 2, 3 + M5.4 (electron stability) + M5.6 (lepton families)
+    ↓ vortex-string defect injected (M5.7)
+LAYER 2 — MESONS (vortex string + 2 endpoints)
+    • Quark-antiquark pair: V(r) = −α/r + σ·r (Cornell potential)
+    • Validates M5.7: σ ≈ 1 GeV/fm
+    ↓ 3-string Y-configuration (post-M5.8)
+LAYER 3 — NUCLEONS (3 quark endpoints in baryon configuration)
+    • Proton (uud), neutron (udd) — color-neutral 3-quark composites
+    • Mass dominated by string energy (~928 of ~938 MeV)
+    • Bound by string tension + standing-wave interference
+    ↓ multiple nucleons + residual strong force (post-M5.8)
+LAYER 4 — NUCLEI
+    • Multi-nucleon composites bound by residual strong force
+    • Z protons + N neutrons
+    ↓ electrons attracted to nucleus (post-M5.8)
+LAYER 5 — ATOMS
+    • Z electrons (single hedgehogs) in standing-wave orbital shells
+    • Orbital force from M3-style interference at atomic scale
+    ↓ atoms bond (post-M5.8)
+LAYER 6+ — MOLECULES, BULK MATTER
+```
+
+#### Where each force lives in this hierarchy
+
+| Force | What it binds | Channel | M5 phase that tests it |
+| --- | --- | --- | --- |
+| Electric (Coulomb) | Charged single defects at far-field | Topology (1/d Frank elastic) | ✅ Exp 2 validated; M5.4 dynamic |
+| Strong — confinement | Quarks within a nucleon | String tension (vortex line energy ~σ·r) | M5.7 |
+| Strong — residual | Nucleons within a nucleus | Wave-interference + string residue | Post-M5.8 (Layer 4) |
+| Orbital | Electrons around nuclei in atoms | Wave-interference (M3 retained) | Post-M5.8 (Layer 5) |
+| Magnetic | Spinning defects | Wave (transverse from L→T) + topology (curl of tilt) | Phase 4 |
+| Gravitational | Mass-bearing defects | Density deficit / 4D boost-axis topology | Phase 5+ |
+
+#### Where K legitimately re-emerges (composite descriptive counts only)
+
+Now that we have the hierarchy, K's appropriate role is clear: **as a count of pre-existing single defects bound at higher layers, not as a fundamental Lagrangian parameter**.
+
+| Composite | Descriptive count |
+| --- | --- |
+| Meson | K_quark = 2 (quark + antiquark) |
+| Nucleon (proton, neutron) | K_quark = 3 |
+| Nucleus | K_nucleon = Z + N |
+| Atom | K_electron = Z |
+| Molecule | K_atom = however many |
+
+Each K here is an *emergent count of pre-existing defects bound by waves*. Best-practice naming (`K_quark`, `K_nucleon`, etc.) deferred until the simulations actually run.
+
+#### Why this is OpenWave's unique value proposition
+
+OpenWave's distinguishing feature, after this evolution, is being an **integrated simulator able to demonstrate each layer based on previously validated primitives** in a single platform:
+
+- Layer 0 (vacuum) → demonstrated by `seed_vacuum` and field stability
+- Layer 1 (leptons) → demonstrated by single-defect stability + lepton-mass hierarchy + lepton interactions
+- Layer 2 (mesons) → demonstrated by vortex-string Cornell potential
+- Layer 3+ (nucleons, nuclei, atoms) → built from validated lower layers
+
+This is different from QCD-only simulators (which jump straight to quark/gluon dynamics without lepton context), liquid-crystal simulators (which model defects but not the full particle hierarchy), or QED simulators (which model atoms without nucleons-from-quarks). OpenWave's integration spans the whole hierarchy, with cross-layer validation that catches inconsistencies between scales.
+
+The full roadmap including post-M5.8 composite layers is captured in [3c_path_to_m5.md § Layered Validation Roadmap](3c_path_to_m5.md#layered-validation-roadmap--vacuum-to-atoms).
 
 ### The full chain, cleanly
 
