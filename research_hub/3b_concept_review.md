@@ -956,6 +956,50 @@ This is different from QCD-only simulators (which jump straight to quark/gluon d
 
 The full roadmap including post-M5.8 composite layers is captured in [3c_path_to_m5.md § Layered Validation Roadmap](3c_path_to_m5.md#layered-validation-roadmap--vacuum-to-atoms).
 
+### What about forces, EM waves, and heat? (matter is the foundation, not the goal)
+
+A natural extension of the matter hierarchy: **OpenWave's full scope is broader than just simulating particles**. The matter-particle layers (Layer 0 vacuum → Layer 5 atoms) are the *foundation*; they exist to support four primary output domains the simulator must compute:
+
+| Output domain | What M5 must compute | Why it matters |
+| --- | --- | --- |
+| **MATTER** | Particle emergence (leptons, quarks, nucleons, atoms) | Foundation — every other output is measured against it |
+| **FORCES** | Electric, strong, magnetic, gravitational — all derived from a single Lagrangian | Forces are how matter *interfaces* with engineering. Quantitative force-law predictions at the device scale |
+| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Most engineering interaction with matter is through EM. RF/microwave/optical interaction is core to device design |
+| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); thermal-EM coupling; blackbody emergence | Thermal mechanics drives most energy-conversion technology |
+
+**Why all four are co-equal goals**: a simulator that does only matter is a particle-physics tool — accurate but not actionable for technology. A simulator that does matter + forces + EM + heat from one Lagrangian is a **design-parameter generator** — and that's what's required for downstream applied technology.
+
+#### The SABER connection
+
+The reason for the broader scope is OpenWave's role in a larger applied-technology programme: **SABER (SubAtomic Based Energy Research)**, the sister project. SABER develops devices — most prominently ocean-heat → electricity conversion — that require reliable subatomic predictions of force, EM, and heat behavior. OpenWave provides those predictions from first principles; SABER engineers them into devices.
+
+The relationship:
+
+```text
+OpenWave (this repo)          SABER (sister repo)
+─────────────────────         ─────────────────────
+Classical field theory        Device design
++ topology + waves            + experimental prototypes
++ heat mechanics              + commercialization
+↓                             ↑
+First-principles outputs:     Consumes outputs:
+• Force law tables            • Predicts device performance
+• EM dispersion / coupling    • Validates against simulation
+• Thermal-coupling models     • Refines design parameters
+```
+
+SABER cannot proceed past prototypes without the design parameters M5+ produces. M5's matter physics is therefore the *gating step* for SABER's applied work. Conversely, SABER's design demands shape what OpenWave needs to compute — the four output domains are not arbitrary; they are exactly what physical engineering of subatomic-based technology requires.
+
+#### What this means for OpenWave's identity
+
+OpenWave is not "an alternative QFT simulator" or "a liquid-crystal modeling tool" or "a wave-mechanics demo platform." It is, specifically:
+
+> An **integrated classical-field simulator that produces engineering design parameters** — force tables, EM-coupling functions, thermal-conversion coefficients — from a single Lagrangian field-theory foundation, validated layer by layer from the vacuum up.
+
+That positioning is what makes OpenWave both scientifically interesting (deeper-than-QFT first-principles framework) AND practically valuable (gating step for SABER's tech development). The matter layers we've been validating in M5.0–M5.8 are the necessary prerequisite for the force/EM/heat outputs that come in Phase 4–6+.
+
+Full roadmap with output-domain dependency chains in [3c_path_to_m5.md § Beyond matter — forces, EM waves, heat](3c_path_to_m5.md#beyond-matter--forces-em-waves-heat-the-saber-design-parameter-outputs).
+
 ### The full chain, cleanly
 
 Every layer of M5's physics either has a sandbox validation or a scheduled M5 test. Nothing is assumed.

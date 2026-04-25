@@ -21,14 +21,23 @@ The platform implements a proposed mathematical framework through various comple
 
 ### Research Goals
 
+OpenWave aims to demonstrate, in one integrated simulator, the full chain of subatomic physics that downstream applied technology requires. Four primary domains:
+
+- **MATTER** — particle emergence (leptons, quarks, nucleons, atoms) from topological defects + wave dynamics in a Lagrangian field
+- **FORCES** — electric (topology), strong (string tension + standing waves), magnetic (transverse wave from spin), gravitational (density deficit / 4D boost-axis topology), unified in one classical-field framework
+- **ELECTROMAGNETIC WAVES** — photons, EM radiation, propagation through the vacuum medium
+- **HEAT** — thermal-energy mechanics at the wave / spin-coherence level (not just bulk kinetic temperature)
+
+The first domain (matter) is the foundation; the other three are what the simulator is designed to compute *outputs* for. Each produces measurable design parameters.
+
 OpenWave aims to:
 
-- Model matter, force unification and energy phenomena through wave-dynamics and topology
-- Simulate particle emergence from standing wave patterns in fields
-- Validate wave-mechanics against known physics (particle energies, force laws, decay rates)
-- Provide computational and visualization tools for wave-dynamics models
+- Model matter, force unification, EM-wave dynamics, and heat phenomena through wave-dynamics and topology in one integrated simulator
+- Simulate particle emergence from topological defects + standing wave patterns in fields
+- Validate against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling)
+- Provide computational and visualization tools that yield **engineering design parameters** for tech development
 
-**Scientific Status:** OpenWave is a research tool for computational exploration using lattice field theory methodology to investigate alternative field equations and their predictions.
+**Scientific Status:** OpenWave is a research tool for computational exploration using lattice field theory methodology to investigate alternative field equations and their predictions, with explicit downstream applied-technology output.
 
 ![demo2 clip](images/demo2.gif)
 

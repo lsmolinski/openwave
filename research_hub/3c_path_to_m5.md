@@ -2,12 +2,12 @@
 
 Implementation plan for **M5 / LAGRANGIAN-FIELD METHOD** (directory `openwave/xperiments/m5_lagrangian_field/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
 
-**Naming**: **M5 / LAGRANGIAN-FIELD METHOD** (renamed 2026-04-19 from the earlier "Lagrangian-Wave Method" working title). The rename reflects what the method actually does: it is a full **Lagrangian field-theory** simulator, not just a wave engine. "Lagrangian" refers to the variational formalism (L = T − V, Euler-Lagrange equations, action principle) from which the equation of motion is derived; "Field" because the engine integrates a unified PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)` — two channels, one equation. The module that implements this is `lagrangian_engine.py` (not `wave_engine.py`) for the same reason. See [3a § What wave equation does M5 solve?](3a_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the full rationale — particularly the 7-item breakdown of what the engine does (only one item is strictly wave propagation). The name distinguishes M5 from M1–M4's "Wave Method" naming (those really are wave engines; M5 is a field-theory engine).
+**Naming**: **M5 / LAGRANGIAN-FIELD METHOD** (renamed 2026-04-19 from the earlier "Lagrangian-Wave Method" working title). The rename reflects what the method actually does: it is a full **Lagrangian field-theory** simulator, not just a wave engine. "Lagrangian" refers to the variational formalism (L = T − V, Euler-Lagrange equations, action principle) from which the equation of motion is derived; "Field" because the engine integrates a unified PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)` — two channels, one equation. The module that implements this is `lagrangian_engine.py` (not `wave_engine.py`) for the same reason. See [3b § What wave equation does M5 solve?](3b_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the full rationale — particularly the 7-item breakdown of what the engine does (only one item is strictly wave propagation). The name distinguishes M5 from M1–M4's "Wave Method" naming (those really are wave engines; M5 is a field-theory engine).
 
 **Spec inputs**:
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
-- [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
+- [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
 - [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
 
 **Production code references**:
@@ -94,7 +94,7 @@ The specific `V(ψ)` is selected from sandbox results:
 | Landau-de Gennes | `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr M²)²` | ⚠️ mechanism validated (Exp 6); specific parameters deferred to M5.6 |
 | Close's elastic solid | Eq. 19 `∂²Q = −c²·∇×∇×Q` (linear limit) + **Eq. 23** (particle equation, preserves `∇·s = 0`, Close's recommendation 2026-04-18) — optional Eq. 21 nonlinear terms `−u·∇s + w×s` for comparison | ✅ Eq. 19 validated (Exp 7 v2); Eq. 23 selected per Close's explicit guidance — **M5's base wave dynamics layer** |
 | Klein-Gordon mass term | `V(ψ) = ½m²·ψ²` → `∂V/∂ψ = m²·ψ` | ✅ validated (Exp 4) — **selected as M5's perturbation-mass mechanism** |
-| Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3b § Winning Approach](3b_lagrangian_experiments.md#winning-approach-for-m5) |
+| Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5) |
 
 ### 2. True independent vector components (no radial constraint)
 
@@ -233,7 +233,7 @@ Phase 3 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisio
 | Does the PDE evolution produce Klein-Gordon dispersion? | ✅ **Yes** — ω² = c²k² + m² validated to R² = 0.999982 across 9 modes | Exp 4 |
 | Is leapfrog + nonlinear potential stable with Lorentz-correct kinematics? | ✅ **Yes** — kink v = 0.4997c (input 0.5c), width L/γ matched, energy drift 1.5e-6 | Exp 1 |
 
-**Headline finding**: topology (Exps 1, 2, 3) is load-bearing; pure nonlinearity (Exps 7, 8) is insufficient on its own; Klein-Gordon wave dynamics (Exp 4) are the correct perturbative layer. Full context in [3b_lagrangian_experiments.md § OVERALL CONCLUSIONS](3b_lagrangian_experiments.md#overall-conclusions).
+**Headline finding**: topology (Exps 1, 2, 3) is load-bearing; pure nonlinearity (Exps 7, 8) is insufficient on its own; Klein-Gordon wave dynamics (Exp 4) are the correct perturbative layer. Full context in [3a_lagrangian_experiments.md § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions).
 
 ---
 
@@ -244,7 +244,7 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 ### Phase M5.0 — Scaffold
 
 - [ ] Create `openwave/xperiments/m5_lagrangian_field/` directory (mirror m4 structure)
-- [ ] **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py` for M5. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py` (they really are wave engines, no topology layer). See [3a § What wave equation does M5 solve?](3a_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the reasoning
+- [ ] **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py` for M5. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py` (they really are wave engines, no topology layer). See [3b § What wave equation does M5 solve?](3b_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the reasoning
 - [ ] Copy M4's `WaveField`, `WaveCenter`, `WaveTrackers` data classes; extend with `psi_prev`, `psi_new` buffers for leapfrog
 - [ ] Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (all unchanged)
 - [ ] Port M2's 6-point Laplacian stencil (`compute_laplacianL` at `m2_laplace_propagation/wave_engine.py:527–562`) for the scalar-component case, then generalize to a 3-vector field for Close's `Q`
@@ -354,10 +354,116 @@ From the sandbox findings, these are ruled out or de-prioritized:
 
 ---
 
+## LAYERED VALIDATION ROADMAP — VACUUM TO ATOMS
+
+**OpenWave's distinguishing value**: an **integrated simulator that demonstrates each layer of physics built from previously validated primitives** in a single platform — vacuum → leptons → mesons → nucleons → nuclei → atoms. Each layer depends on the layer below being already validated; cross-layer dependency checks catch inconsistencies between scales that single-layer simulators (QCD-only, atomic-only, liquid-crystal-only) cannot. This integrated cross-scale validation is what makes OpenWave unique.
+
+The full physics hierarchy maps cleanly onto M5 phases:
+
+| Layer | Physics primitive | M5 phase that validates it | Status |
+| --- | --- | --- | --- |
+| **0 — Vacuum** | LdG ground state, static field configuration | M5.0 (scaffold) + M5.1 (`seed_vacuum`) | 🚧 next |
+| **1a — Single point defect (lepton-axis δ)** | Hedgehog as single-defect electron | M5.4 single-particle test (electron stability) | 🚧 |
+| **1b — Lepton family hierarchy** | Three biaxial axes `(δ, 1, g)` → e/μ/τ from same Lagrangian | M5.6 (biaxial Q-tensor + Faber regularization) | 🚧 |
+| **1c — Closed vortex loop** | Neutrino topology variants (SO(3)~SU(2)) | M5.6 alternative seed + M5.8 (de Broglie clock) | 🚧 |
+| **1d — Two-defect interactions** | Dynamic Coulomb 1/d², annihilation | M5.4 pair test (e⁺/e⁻) | 🚧 |
+| **1e — Intrinsic oscillation** | Zitterbewegung at `ω = 2mc²/ℏ` | M5.8 | 🚧 |
+| **2 — Open vortex string + 2 endpoints** | Quark-antiquark (meson), Cornell potential `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm | M5.7 (Cornell potential) | 🚧 |
+| **3 — 3 string endpoints (baryon configuration)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites; mass dominated by string energy | **Post-M5.8 (Phase 6 candidate)** | not yet planned |
+| **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | **Post-M5.8 (Phase 6+ candidate)** | not yet planned |
+| **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus, M3-style interference at atomic scale | **Post-M5.8 (Phase 6++ candidate)** | not yet planned |
+| **6 — Molecules / bulk matter** | Multi-atom bonding | **Long-term** | not planned |
+
+### Layer-by-layer dependency chain
+
+Each higher layer requires the layer below to be working correctly:
+
+- **Layer 1** (lepton) requires Layer 0 (vacuum that supports topological defects) — checked by M5.0/M5.1 invariant tests
+- **Layer 2** (meson / vortex string) requires Layer 1 (defect machinery + force diagnostics) — checked by M5.7 Cornell-potential validation passing
+- **Layer 3** (nucleon) requires Layer 2 (validated string-tension physics + 3-endpoint Y-configuration handling) — gated on M5.7 success
+- **Layer 4** (nucleus) requires Layer 3 (working nucleon + residual-force model)
+- **Layer 5** (atom) requires Layer 4 (working nucleus) + Layer 1 (working electron) + the standing-wave near-field physics (already validated in M3, retained in M5)
+
+**The cross-layer integration is the unique value**: a successful Layer 5 (atom simulation) provides simultaneous validation that the lepton physics, string-string-tension physics, residual-force binding, and orbital-force standing-wave interference all work *together* — something a single-scale simulator cannot test by construction.
+
+### Beyond M5.8 — composite-particle roadmap (sketched, not yet planned)
+
+The current 9-phase plan (M5.0–M5.8) covers the vacuum, lepton, and meson layers (Layers 0–2). Layers 3–5 are major undertakings deferred to a future Phase 6+ scope. Sketched phases:
+
+| Phase candidate | Layer | Headline |
+| --- | --- | --- |
+| **M6.1 / Nucleon assembly** | Layer 3 | Seed 3-string Y-configuration with color-neutral axis assignment; verify proton/neutron forms a stable bound state with mass dominated by string energy |
+| **M6.2 / Color confinement test** | Layer 3 | Attempt to separate one quark from a 3-quark configuration; verify string tension prevents isolation (linear energy growth) |
+| **M6.3 / Nuclear binding** | Layer 4 | Two-nucleon and few-nucleon bound states; measure residual strong force; reproduce binding-energy curve |
+| **M6.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
+| **M6.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
+
+These are kept intentionally rough — concrete phase plans wait until M5.0–M5.8 establish the foundations.
+
+### Why the hierarchy matters for the project's positioning
+
+This integrated layered scope is what differentiates OpenWave from comparable simulators:
+
+| Simulator class | What it covers | What it misses |
+| --- | --- | --- |
+| **QCD lattice** (mainstream particle physics) | Quark/gluon dynamics, confinement, hadron masses | Leptons, atoms, vacuum-as-LdG-medium, classical interpretability |
+| **Liquid-crystal solvers** (LdG mathematics) | Topological defects, hedgehogs, disclinations | Particle-physics calibration, atom-scale dynamics, lepton families |
+| **QED / atomic simulators** | Atoms, molecules, EM | Quark structure, lepton ⊃ defect identity, vacuum mechanics |
+| **OpenWave (M5 → M6)** | All of the above, **integrated, classical-field-theoretic** | Calibration to high-precision data still in progress (validation against experimental ratios) |
+
+The integration is the value. Reading the layered table top-to-bottom is also a reading-order suggestion for new contributors: validated primitives at the top, frontier work at the bottom.
+
+For the conceptual companion to this roadmap, see [3b_concept_review.md § Where do quarks, protons, nuclei, and atoms fit?](3b_concept_review.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
+
+### Beyond matter — forces, EM waves, heat (the SABER design-parameter outputs)
+
+The matter-particle hierarchy above (Layers 0–6) is OpenWave's *foundational layer*. On top of validated matter primitives, the simulator must also compute four additional output classes that are the actual deliverables for downstream applied technology:
+
+| Output domain | What M5 must compute | Where it sits in the M5 plan | Why SABER needs it |
+| --- | --- | --- | --- |
+| **MATTER** (foundation) | Particle emergence (leptons → quarks → nucleons → atoms) via topological defects + wave dynamics | Layers 0–5+ above | Provides the substrate every other output is measured against |
+| **FORCES** | Electric (topology), strong (string tension + standing waves), magnetic (transverse waves from spin), gravitational (density deficit / 4D boost-axis topology) — all derived from a single Lagrangian | Validated cumulatively across M5.4 (electric), M5.7 (strong), Phase 4 (magnetic), Phase 5 (gravity) | SABER's energy-conversion designs need quantitative force-law predictions at the device scale |
+| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Phase 4 (alongside magnetic-force validation) | RF/microwave/optical interaction with media is core to multiple SABER mechanisms |
+| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); thermal-EM coupling; Wien's law / blackbody emergence | Phase 6 (long-term, after the matter layers are stable) | SABER's flagship goal — ocean-heat → electricity conversion — requires first-principles thermal mechanics |
+
+**Why these four are co-equal goals, not just "nice to have"**:
+
+- The matter hierarchy alone is not actionable for tech. You can simulate an electron beautifully and learn nothing about how to build a device
+- Force / EM / heat are what *interfaces* matter with engineering — every device exploits one or more of these to do useful work
+- A simulator that does only matter is a particle-physics tool. A simulator that does matter + forces + EM + heat from one Lagrangian is a **design-parameter generator** — and that's the unique value proposition for the integrated SABER programme
+
+### How matter layers feed forces / EM / heat outputs
+
+Each output domain depends on validated matter layers being in place. The dependency chain:
+
+| Output | Depends on matter Layer(s) | M5 phase chain |
+| --- | --- | --- |
+| Electric force (Coulomb 1/d²) | Layer 1 (single defects) | M5.1 + M5.4 |
+| Strong force / confinement | Layer 1 + Layer 2 (vortex strings) | M5.1 + M5.7 |
+| Magnetic force | Layer 1 + spin dynamics | Phase 4 (post-M5) |
+| Gravitational force | Layer 1 + density-deficit / 4D extension | Phase 5+ (post-M5) |
+| Photon / EM wave dynamics | Layer 1 + tilt-axis curl (Maxwell from director field) | Phase 4 (alongside magnetic) |
+| Thermal energy / heat | Layer 5 (atoms) + spin-coherence dynamics | Phase 6+ (post-M5, post-atoms) |
+
+Heat is *deepest* in the dependency chain because it requires simulated atoms to model thermal phenomena meaningfully (temperature is a statistical property of many-particle systems).
+
+### SABER as the applied-technology counterpart
+
+OpenWave (this repo) is the open-source scientific simulator. **SABER** (SubAtomic Based Energy Research) is the applied-technology programme that consumes OpenWave's predictions and engineers them into devices. The split:
+
+- **OpenWave**: classical-field theory + topology + waves + heat → first-principles physics outputs (forces, EM, heat tables; design parameters; validated invariants)
+- **SABER**: device design + experimental validation + commercialization (most prominently ocean-heat → electricity conversion, but also other tech using subatomic-scale predictions)
+
+The dependency runs OpenWave → SABER. SABER cannot proceed past prototypes without the design parameters M5+ produces. M5's matter physics is therefore the gating step for SABER's longer-term applied work.
+
+This is why M5's roadmap goes beyond "simulate the electron well" — it must reach all the way to producing actionable force-EM-heat outputs at engineering scales.
+
+---
+
 ## STATUS
 
 - [x] Architecture analysis complete (this document)
-- [x] **All 8 sandbox experiments complete** — see [3b_lagrangian_experiments.md](3b_lagrangian_experiments.md):
+- [x] **All 8 sandbox experiments complete** — see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md):
   - ✅ Exp 1 (Sine-Gordon kinks), ✅ Exp 2 (Hedgehog Coulomb), ✅ Exp 3 (Winding quantization), ✅ Exp 4 (Klein-Gordon dispersion)
   - ⚠️ Exp 5 (Lagrangian derivation — W-L product form falsified), ⚠️ Exp 6 (lepton mechanism; specific ratios deferred), ⚠️ Exp 7 v2 (Close's actual equations implemented)
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
