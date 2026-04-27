@@ -284,7 +284,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - [ ] M5.6 Biaxial LdG Q-tensor (long-term, for lepton mass derivation; Exp 6.1 equivalent)
 - [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3b_concept_review.md](3b_concept_review.md)
 
-## [PHASE 4: TIME DYNAMICS](4_TIME_DYNAMICS.md)
+## [PHASE 4: TIME DYNAMICS](5_TIME_DYNAMICS.md)
 
 - [ ] Implement variable λ per voxel (local dt)
 - [ ] Demonstrate time dilation from energy starvation mechanism
