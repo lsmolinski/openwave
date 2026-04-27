@@ -241,6 +241,124 @@ Phase 3 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisio
 
 The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's vector wave equation + M3 near-field physics + Skyrme stabilizer + (eventually) LdG biaxial potential**. Phases below are scoped accordingly.
 
+---
+
+## RESOLUTION & PERFORMANCE PLAN
+
+A separate, mandatory engineering plan that determines which phases run on the local M4 Max and which need rented GPU time. M2 / M3 hit a hard ceiling at ~350M voxels because they had to resolve the EWT base wave at `λ₀ = 2.85 × 10⁻¹⁷ m`. M5 changes this fundamentally.
+
+### Why M5's resolution budget is much friendlier than M2/M3's
+
+| Constraint | M2 / M3 | M5 |
+| --- | --- | --- |
+| Vacuum is | An oscillating base wave at `f₀ = 1.05 × 10²⁵ Hz` | A **static** ground state of `V(ψ)` (no oscillation in vacuum) |
+| Grid must resolve | `λ₀ = 2.85 × 10⁻¹⁷ m` (the EWT base wave) | `λ_C = ℏ/(mc)` of the **defect** (its Compton wavelength) |
+| Min `dx` (Nyquist ~10–12× / wavelength) | `~3 × 10⁻¹⁸ m` | `~3 × 10⁻¹⁴ m` for an electron — **10⁴× larger** |
+| Min `dt` (CFL `dt ≤ dx / (c·√3)`) | `~6 × 10⁻²⁷ s` | `~6 × 10⁻²³ s` for an electron — **10⁴× larger** |
+| Reachable particle on M4 Max | Below electron (couldn't reach electron radius) | Electron well in scope; muon tight; tau requires AMR |
+
+In one sentence: **M5 doesn't simulate the EWT vacuum's oscillations — there are none; the vacuum is a static ground state. Only the defect's intrinsic length scale needs to be resolved.**
+
+### Per-particle defect scales (the "what does M5 actually need to resolve" table)
+
+| Particle | Mass | Compton λ_C = ℏ/(mc) | Zitterbewegung ω = 2mc²/ℏ | T_Z = 2π/ω |
+| --- | --- | --- | --- | --- |
+| **Electron** | 0.511 MeV | **3.86 × 10⁻¹³ m** (~386 fm) | 1.55 × 10²¹ rad/s | 4.05 × 10⁻²¹ s |
+| **Muon** | 105.7 MeV | 1.87 × 10⁻¹⁵ m | 3.21 × 10²³ rad/s | 1.96 × 10⁻²³ s |
+| **Tau** | 1777 MeV | 1.11 × 10⁻¹⁶ m | 5.39 × 10²⁴ rad/s | 1.17 × 10⁻²⁴ s |
+| **Up quark** (constituent ~2.2 MeV) | 2.2 MeV | 8.97 × 10⁻¹⁴ m | 6.7 × 10²¹ rad/s | 9.4 × 10⁻²² s |
+| **Proton** (composite) | 938 MeV | 2.10 × 10⁻¹⁶ m | 2.85 × 10²⁴ rad/s | 2.20 × 10⁻²⁴ s |
+| **Neutrino** (~0.1 eV) | 0.1 eV | ~2 × 10⁻⁶ m | ~3 × 10¹⁴ rad/s | ~2 × 10⁻¹⁴ s |
+
+### Per-phase grid budgets (target on M4 Max 48 GB / 18.4 TFLOPS)
+
+| Phase | Particle | dx (≈λ_C/12) | Domain (≈8·λ_C) | N (per side) | Voxels | Memory* | Steps for 10 T_Z | Wall-clock estimate |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| M5.0 / M5.1 / M5.2 (KG dispersion, Coulomb) | n/a (geometric tests) | natural-units `1` | `64` | 256 | 17M | ~1 GB | n/a (relaxation, not Zitterbewegung) | minutes |
+| **M5.4** (electron stability, e⁺/e⁻ pair) | electron | 3.2e-14 m | 3.1e-12 m | 256–384 | 17M–57M | 1–4 GB | ~500k steps | **~12–24h** (uniform grid, no AMR) |
+| M5.7 (Cornell, light quarks) | u/d quark | ~7.5e-15 m (≈λ_C(u)/12) | ~7e-13 m | 96–128 | 1M–2M | <1 GB | ~50k–500k | hours |
+| M5.6 (muon, tau) | muon, tau | ~1.5e-16 m / ~9e-18 m | tight | uniform grid impractical | — | — | — | **needs AMR** |
+| M5.8 (Zitterbewegung table for all 7 particles) | all | per-particle `dx` | per-particle | varies | varies | varies | 100×T_Z | **needs AMR + cloud burst** |
+
+*Memory assumes Vector(3) for Q + 3 buffers (prev/curr/new) + winding/director field + Hamiltonian tracker, ~64 bytes/voxel.
+
+### Performance optimizations to bake into M5.0 from Day 1
+
+#### Tier 1 — architectural decisions (fix before any kernel is written)
+
+1. **Native `ti.Vector.field(3, ...)`** with single triple buffer (`psi_prev`, `psi`, `psi_new`) — halves memory traffic vs three independent scalar fields and lets Taichi vectorize 3-component operations
+2. **Unit system** — two complementary scalings to keep numerics in float32's sweet spot:
+    - **Inherit OpenWave's existing scaled SI** from `openwave/common/constants.py` (lines 10–29): spatial in **attometers** (`1e-18 m`, suffix `_am`) and temporal in **rontoseconds** (`1e-27 s`, suffixes `_rs`, `_amrs`, `_rHz`). Already proven to keep 6–7 significant digits at f32 across M2/M3/M4 — base wavelength `~28.5 am`, wave speed `~0.3 am/rs`, etc. M5 must **continue using these units** for all stored fields and all I/O — don't fork a parallel unit system, don't reinvent precision-protection
+    - **Add a separate, internal natural-unit kernel scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for *intra-kernel* arithmetic only. The defect's Compton wavelength is the Lagrangian's natural reference length (electron `λ_C ≈ 386,000 am` is no longer near-1.0 in attometers — leaving f32 sweet spot if used directly in CFL / dispersion / amplitude-sweep math). Conversion happens at kernel entry/exit; no field is ever stored in natural units
+    - **Net effect**: data layer stays in proven `_am` / `_rs` units (compatible with all OpenWave tooling, diagnostics, visualization); kernel arithmetic runs in natural units (CFL trivially `dt ≤ dx/√3`, amplitude sweeps `A ∈ {0.25, 0.5, 1, 2}` are O(1), Klein-Gordon mass term is O(1)). Both scalings are needed — neither alone covers M5's precision range across the lepton mass hierarchy `0 < δ ≪ 1 ≪ g`
+3. **AMR-ready storage layer** — even if M5.0 ships with a uniform grid, design the field-storage abstraction so a future swap to octree-based AMR (M5.6 / M5.8) doesn't require a rewrite. Don't bake in fixed `(nx, ny, nz)` everywhere
+4. **Domain size by defect physics**, not by EWT vacuum — far-field Coulomb cleanly captured at ~8·λ_C, so the box stays small
+
+#### Tier 2 — kernel-level performance hacks
+
+5. **Tile-and-reuse for the 6-point stencil** via Taichi `BlockLocal` / shared-memory loads. The Laplacian is bandwidth-bound, not flop-bound; tiling cuts global-memory traffic ~6×. Free 3–5× speedup
+6. **Symplectic / Verlet integrator** instead of vanilla leapfrog. Same cost per step, but ~2–4× larger usable `dt` while preserving energy conservation. **Critical for M5.8** (Zitterbewegung needs energy-clean integration over hundreds of periods)
+7. **Operator splitting**: `c²∇²ψ` (cheap, vectorized) and `−∂V/∂ψ` (potentially expensive nonlinear) in separate sub-steps. Each operator individually has better stability → larger overall `dt`
+8. **Float32 by default; float64 only for diagnostic snapshots**. 2× speedup + 2× memory headroom; the leapfrog is well-conditioned at f32 in our scale
+9. **Skip diagnostic trackers (Hamiltonian + winding) on most frames** — compute every Nth frame (N=10–100). They're observables, not load-bearing on the dynamics
+10. **Dirty-tile mask** (the M5 reincarnation of M4's "selective voxel" optimization). Voxels far from any defect are at exactly the vacuum value `ψ_vacuum`; the leapfrog update there is a no-op. Use a chunk-level mask (e.g. 16³ blocks) — skip blocks whose `‖ψ - ψ_vacuum‖` is below epsilon. Realistic 2–10× speedup for sparse single-defect scenarios. Note: unlike M4, this is an *optimization*, not a different physics — a "skipped" block must produce identical output to a computed one (modulo floating-point epsilon)
+
+#### Tier 3 — long-run techniques (deferred to M5.5+ as needed)
+
+11. **Adaptive Mesh Refinement (AMR)** — fine grid near the defect core, coarse grid in the far field. **The single biggest win for M5.6 (muon/tau) and M5.8 (full Zitterbewegung table)**. Cell size scales with local `λ_C`. Realistic 10²–10³× voxel reduction vs uniform fine-grid for a localized defect
+12. **Comoving frame for moving defects** — track the defect's center, evolve in its rest frame. Eliminates needing the grid to span the defect's full traveled distance
+13. **Multi-scale time stepping** — subcycle small-`dx` (defect core) at fine `dt`, subcycle coarse far-field at large `dt`. Pairs naturally with AMR
+14. **Spectral / pseudo-spectral solver for the linear part** (Klein-Gordon) — exact dispersion at any `dx`, FFT-based, ~10× larger usable `dx`. Worth evaluating as an alternative validator for M5.2
+15. **Absorbing boundaries / PML** (M2 has a partial start at `wave_engine.py:662–699`). Lets us shrink the domain without reflections — typically ~2× linear / ~8× volume reduction
+
+### Compute strategy — when to leave the M4 Max
+
+The M4 Max is excellent for M5.0–M5.4 (uniform grid, electron-scale runs). The 12–24 hour electron headline run is borderline (long jobs at high GPU utilization risk thermal events; ties up the dev machine for a day). **A laptop is not the right tool for multi-day production runs.**
+
+Per the existing analysis in [`dev_docs/distributed_computing/m4_max_vs_aws.md`](../dev_docs/distributed_computing/m4_max_vs_aws.md) and [`system_upgrade_options.md`](../dev_docs/distributed_computing/system_upgrade_options.md), key constraints:
+
+- **Taichi is single-GPU bound**. Multi-GPU AWS instances (`p3.8xlarge`, `p4d.24xlarge`) only use 1 of N GPUs without an MPI / domain-decomposition rewrite (~2–3 months engineering)
+- **Single-GPU AWS instances are barely faster than M4 Max** — V100 is ~1.16× M4 Max FP32 at $3.06/hr; A10G is ~2.3× at $1.01/hr. None are step-change improvements
+- **The right cloud play is parameter sweeps**, not single-run speedup. Run 100 amplitude/seed/coupling configurations in parallel on 100 cheap spot instances, finish in the wall-clock time of one
+- **The hardware step-change targets are M5 Ultra (2026, ~50–60 TFLOPS, 512 GB) or AMD MI300X (~163 TFLOPS, 192 GB, $15k+)** — both single-GPU, no code rewrite
+
+#### Decision tree per M5 phase
+
+| Phase | Workload | Recommended platform | Rationale |
+| --- | --- | --- | --- |
+| M5.0 / M5.1 / M5.2 / M5.3 | Small-grid validation, dispersion fits, Coulomb sweep | **M4 Max local** | Minutes-to-hours; tight dev loop is the limiting factor, not compute |
+| M5.4 (electron) — single run | 17M–57M voxels, ~500k steps, ~12–24h | **M4 Max overnight, with caveats** | Run when machine isn't needed; monitor for thermal throttling. Pre-validate on small grid first to catch bugs before long run |
+| M5.4 — parameter sweep (Y_1^0 amplitude, axis tuning, lifetime characterization) | 4–20 variations × ~6h each | **AWS spot fleet (`g5.xlarge` × N)** | Embarrassingly parallel; total wall-clock = single-run time. Spot pricing (~$0.30/hr discounted) makes a 20-config sweep ~$36 |
+| M5.5 (Skyrme) | Conditional; same scale as M5.4 | **Same as M5.4** | — |
+| M5.6 (muon, tau, biaxial LdG, Faber regularization) | AMR essential; without it `dx ~ 10⁻¹⁸ m`, voxels astronomical | **AWS A100 (`p4d.24xlarge` 1 GPU)** OR **wait for M5 Ultra (2026)** | Higher-mass particles need AMR + more memory. AMR development on M4 Max, production runs on cloud-or-future-Ultra |
+| M5.7 (Cornell potential) | 1D-line topology, lighter than M5.4 | **M4 Max local** | u/d quark scale (~few MeV) is friendlier than muon |
+| M5.8 (Zitterbewegung table for 7 particles) | AMR essential; long runs (≥10 T_Z each) for FFT freq extraction | **Cloud or M5 Ultra** | Each particle is a separate run; parallelize across cloud spot instances |
+
+#### Cloud burst recipe (for when local isn't enough)
+
+When a phase requires cloud compute, the playbook is:
+
+1. **Develop and validate on M4 Max** at small scale (256³ or smaller). Confirm correctness end-to-end
+2. **Containerize** the run (Taichi + CUDA backend on a Docker image; switch from `ti.metal` to `ti.cuda` is a single-line change)
+3. **Use AWS spot instances** for the heavy run. `g5.xlarge` (1× A10G, 24 GB, 31 TFLOPS) at spot pricing ~$0.30/hr is the price/performance sweet spot for OpenWave's single-GPU workloads
+4. **Persist results to S3**, pull diagnostics back to M4 Max for analysis. Don't try to render or interactively debug remotely
+5. **For parameter sweeps**: AWS Batch or Step Functions launches N spot instances simultaneously, each running one config. Total wall-clock = single-run time
+
+**Estimated cloud spend for the full M5 roadmap**: at spot pricing, the entire M5.4 + M5.7 + M5.8 production run sequence (including parameter sweeps and the 7-particle Zitterbewegung table) is **a few hundred to ~$2,000** total. Not a budget killer, but worth tracking as a separate cost line.
+
+#### Hardware upgrade decision points
+
+| Trigger | Action |
+| --- | --- |
+| M5.4 production runs become routine (multiple per week) | Evaluate Mac Studio M3 Ultra 80-core / 256–512 GB or wait for M5 Ultra |
+| M5.6 / M5.8 require routine production runs and AMR is implemented | Same — single-GPU step change is the right play, not multi-GPU |
+| Project moves to fluent multi-particle ensemble simulation (M6.x, M7.x) | Re-evaluate the multi-GPU rewrite; the 2–3 month MPI investment becomes economically viable when single-GPU runs become a regular bottleneck |
+| Need >48 GB memory specifically (not compute) | M4 Max 128 GB upgrade (~$4,000) is the cheapest unlock to ~1.5B voxels |
+
+> **Bottom line**: M5.0–M5.4 are M4-Max-feasible with the Tier 1+2 optimizations in place. M5.6 and M5.8 are the phases where AMR is mandatory and cloud burst (or an M5 Ultra) becomes the right tool. Plan for that pivot now so the AMR-ready storage layer is in M5.0's scaffold rather than a retrofit later.
+
+---
+
 ### Phase M5.0 — Scaffold
 
 - [ ] Create `openwave/xperiments/m5_lagrangian_field/` directory (mirror m4 structure)
@@ -249,6 +367,13 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 - [ ] Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (all unchanged)
 - [ ] Port M2's 6-point Laplacian stencil (`compute_laplacianL` at `m2_laplace_propagation/wave_engine.py:527–562`) for the scalar-component case, then generalize to a 3-vector field for Close's `Q`
 - [ ] Implement curl, divergence, and `curl(curl())` via `∇(∇·F) − ∇²F` (per Exp 7's implementation)
+- [ ] **Inherit `openwave/common/constants.py` scaled SI** (`_am` / `_rs` / `_rHz`) for ALL stored fields and I/O. This is OpenWave's production-validated f32-precision infrastructure (lines 10–29 of `constants.py`); M5 must not fork its own units
+- [ ] **Add a kernel-internal natural-unit scaling** (`c = 1`, `λ_C(electron) = 1`, `ℏ = 1`) for intra-kernel arithmetic only — convert at kernel entry/exit. Required because the electron's `λ_C ≈ 3.86e5 am` is no longer near-1.0 in attometers, which hurts CFL/dispersion math at f32. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written)
+- [ ] **Use native `ti.Vector.field(3, ...)`** with single triple buffer (`psi_prev`, `psi`, `psi_new`) — not three independent scalar fields. See Resolution & Performance Plan § Tier 1
+- [ ] **Design field-storage layer to be AMR-ready** (no fixed `(nx, ny, nz)` constants embedded in kernels). M5.0 ships uniform-grid; M5.6 / M5.8 retrofit AMR without a rewrite
+- [ ] **Implement chunk-level dirty-tile mask** (e.g. 16³ blocks) to skip vacuum regions. Mandatory for sparse single-defect runs (M5.4 onward)
+- [ ] **Symplectic / Verlet integrator** instead of vanilla leapfrog — required for M5.8 long-run energy conservation. See Resolution & Performance Plan § Tier 2
+- [ ] **Tile-and-reuse the 6-point Laplacian** via Taichi `BlockLocal` — bandwidth-bound stencil benefits 3–5× from tiling
 - [ ] **Physics invariant test**: with `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` for a quadratic potential. Fail this → there's a bug in the core loop
 
 ### Phase M5.1 — Port topology (from Exps 2, 3)
@@ -295,13 +420,19 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 - [ ] Seed a hedgehog + anti-hedgehog pair (electron + positron) at various separations
 - [ ] Compare to M3 Combined W-L baseline: does the sinc far-field barrier disappear when topology is active?
 - [ ] Measure far-field force *dynamically* (not just statically as in Exp 2): does clean 1/d² Coulomb emerge as the pair moves toward each other?
-- [ ] Test annihilation: when the pair closes to near-zero separation, do the winding numbers cancel and the stored energy radiate outward as Klein-Gordon waves?
+- [ ] Test annihilation: when the pair closes to near-zero separation, do the winding numbers cancel and the stored energy radiate outward as Klein-Gordon waves at ~511 keV each?
+
+**Mechanism-distinguishing tests (3b Q&A → M5.4 testing points)**:
+
+- [ ] **Topology-vs-wave annihilation test**: seed a *same-winding* pair (Q = +1 and Q = +1) and force them together. They must NOT annihilate (topology forbids `Q_total = +2 → 0` smoothly; only `Q + (−Q) = 0` is topologically allowed). This directly distinguishes M5's "annihilation = topological cancellation" from M3's "annihilation = wave cancellation" — same-winding pairs would annihilate in M3 if waves were forced to overlap, but cannot in M5
+- [ ] **Phase-as-derived test**: seed two electrons (same winding Q = −1) with *different* initial oscillation phases. Confirm both behave as electrons (same charge sign) regardless of phase choice. This validates that charge sign comes from winding only, not from emitted-wave phase (which is now a derived output, not a free parameter)
+- [ ] **Same-mass Zitterbewegung lock-in test (positronium)**: at sub-λ_C separations, e⁺/e⁻ should form standing-wave bound states from direct Zitterbewegung-frequency interference (matching frequencies → coherent standing waves at λ_Z/2 wells). Lifetime should match positronium's ~125 ps (para) and ~142 ns (ortho) — this validates that *same-mass* pairs DO use direct Zitterbewegung lock-in (in contrast to mass-mismatched pairs like hydrogen, see "Beyond M5.8" cross-mass-class note below)
 
 **Success metrics**:
 
 - [ ] Single biaxial hedgehog (electron-axis) is a long-lived resonance under moderate perturbation (lifetime substantially longer than decoy variants)
-- [ ] Hedgehog + anti-hedgehog pair dynamics reproduce 1/d² Coulomb attraction + annihilation
-- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If the single biaxial hedgehog is a long-lived electron-like resonance AND the e⁺/e⁻ pair reproduces Coulomb + annihilation dynamically, the loop is closed
+- [ ] Hedgehog + anti-hedgehog pair dynamics reproduce 1/d² Coulomb attraction + annihilation; same-winding pairs do NOT annihilate; e⁺/e⁻ standing-wave lock-in reproduces positronium lifetimes
+- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If the single biaxial hedgehog is a long-lived electron-like resonance AND the e⁺/e⁻ pair reproduces Coulomb + annihilation + positronium lock-in dynamically AND same-winding pairs cannot annihilate, the loop is closed
 
 ### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
 
@@ -339,12 +470,26 @@ The winning recipe is now known: **topology + Klein-Gordon dynamics + Close's ve
 >
 > **Conceptual background**: the full mechanism (why defects oscillate, why the oscillation is rotational not linear, how mass + spin + de Broglie wavelength all derive from one rotation) is documented in [3c_topological_defect.md](3c_topological_defect.md). This phase is the empirical-validation step that confirms M5's specific implementation reproduces the experimentally-established Zitterbewegung frequency.
 
-- [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog)
+- [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog / closed vortex loop)
 - [ ] Let it evolve under full M5 dynamics (no external driving)
-- [ ] Measure the intrinsic oscillation frequency of the defect core
+- [ ] Measure the intrinsic oscillation frequency of the defect core (FFT of director rotation at the core)
 - [ ] Validate `ω = 2·m·c²/ℏ` (Zitterbewegung / de Broglie clock) — this is the mass-gap mechanism from Exp 4 extended to the full LdGS field
 - [ ] Compare electron (SO(2) ~ U(1), 2D rotation → de Broglie clock) vs neutrino (SO(3) ~ SU(2), 3D rotation → neutrino oscillations)
-- [ ] **Why this matters**: mass-driven oscillation is the origin of the wave-particle duality; validating it numerically in the full LdGS closes the loop from Exp 4 linear-order validation to full nonlinear particle dynamics
+- [ ] Confirm oscillation is **rotational** (director rotates around an axis) rather than linear position-bouncing (per [3c § What the oscillation looks like](3c_topological_defect.md#what-the-oscillation-looks-like--rotation-not-translation))
+- [ ] **Mass → frequency table** (target values to validate; per [3c § Concrete particle table](3c_topological_defect.md#concrete-particle-table--masses-to-zitterbewegung-frequencies)):
+
+| Particle | Defect type | Target ω = 2mc²/ℏ |
+| --- | --- | --- |
+| Electron | Point hedgehog (δ axis) | 1.55 × 10²¹ rad/s |
+| Muon | Point hedgehog (1 axis) | 3.21 × 10²³ rad/s |
+| Tau | Point hedgehog (g axis) | 5.39 × 10²⁴ rad/s |
+| Neutrino | Closed vortex loop | ~10¹⁵ rad/s (sub-eV mass) |
+| Up quark | Vortex string endpoint | ~7 × 10²¹ rad/s |
+| Down quark | Vortex string endpoint | ~1.4 × 10²² rad/s |
+| Proton (composite) | 3-string Y-config | 2.85 × 10²⁴ rad/s |
+
+- [ ] **Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Measure each one's intrinsic frequency independently. Confirm each ticks at its own mass-derived `ω` (validates that frequency is set by *each* defect's stored energy, not a coupling between them)
+- [ ] **Why this matters**: mass-driven oscillation is the origin of the wave-particle duality; validating it numerically in the full LdGS closes the loop from Exp 4 linear-order validation to full nonlinear particle dynamics. Once the table above is reproduced, M5 has empirically derived particle masses from geometric defect parameters — the Standard Model's free-mass-parameter problem becomes a calibration problem instead
 
 ### What M5 does NOT implement
 
@@ -400,7 +545,40 @@ The current 9-phase plan (M5.0–M5.8) covers the vacuum, lepton, and meson laye
 | **M6.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
 | **M6.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
 
-These are kept intentionally rough — concrete phase plans wait until M5.0–M5.8 establish the foundations.
+#### Cross-mass-class machinery required for M6.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](3c_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
+
+Atom-scale simulations (M6.4 onward) need additional architectural capability beyond the same-mass-class physics validated by M5.4–M5.7. The reason: in hydrogen-like systems, the proton ticks at `ω_p ≈ 1836 × ω_e`, so direct e-p Zitterbewegung interference does NOT form coherent standing waves. Instead, three layered mechanisms must work together:
+
+- [ ] **Topological 1/d Coulomb** between e (Q=−1) and p (effective Q=+1) — provides the static potential well (already validated in M5.4)
+- [ ] **Electron self-de-Broglie standing waves** — the electron's Zitterbewegung (ω_e at 10²¹ rad/s) + translational drift produces de Broglie wavelength `λ_dB = h/(m_e v)`. Standing waves of the electron's *own* emission (interfering with reflections off the central proton's potential well) quantize discrete Bohr orbital shells at `n·λ_dB = 2π·r_n`
+- [ ] **Quasi-static heavy-center treatment** for the proton — because m_p ≫ m_e, the proton's intrinsic clock (10²⁴ rad/s) is invisible to the electron's slower 10²¹ rad/s response and time-averages out. M6.4's solver must treat the proton as a fixed Coulomb center on the electron's time scale (with proton dynamics on its own slower scale only when needed)
+
+This is structurally different from the same-mass cases: positronium (M5.4) and quark-quark binding (M5.7) DO use direct Zitterbewegung interference; hydrogen-like atoms (M6.4) cannot. The transition criterion is `ω_a ≈ ω_b` (frequency-matched, direct interference works) vs `|ω_a − ω_b| ≫ min(ω_a, ω_b)` (frequency-mismatched, requires the three-mechanism layering above).
+
+This testing-architecture distinction is **gating** for atom-scale simulations: M6.4 cannot succeed by simply scaling up M5.4's mechanism. The cross-mass machinery is a separate engineering effort.
+
+### Beyond M6 — thermal mechanics pathway (Phase 7+)
+
+A working hypothesis for the heat output domain: **per-defect amplitude excess above the topological ground state is the thermal degree of freedom**. Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation amplitude `A_0 ≈ ℏ/(mc)` (its Compton wavelength); any excess above `A_0` is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
+
+The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). The topological-defect deep dive in [3c_topological_defect.md](3c_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
+
+#### Phase 7 — Thermal mechanics from defect amplitude statistics (proposed)
+
+| Phase candidate | Layer / domain | Headline test |
+| --- | --- | --- |
+| **M7.1 / Single-defect amplitude excitation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. Excite its amplitude above ground state by adding perturbation energy. Measure: (a) does the defect reach a stable excited-amplitude state? (b) does it relax back to A_0 by emitting outgoing waves? (c) what's the relationship between amplitude excess and emission frequency? Validates the basic per-defect thermal-amplitude mechanism |
+| **M7.2 / Soliton-breather comparison** | Per-defect thermal | Compare M7.1's measured amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). If the framework is correct, these breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
+| **M7.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
+| **M7.4 / Specific heat reproduction** | Defect ensemble thermal | From M7.3 statistics, derive specific heat C_V(T). Validate against experimental measurements: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
+| **M7.5 / Blackbody spectrum** | Thermal-EM coupling | Measure emission spectrum from a thermalized defect ensemble. Validate Wien's displacement law and Stefan-Boltzmann scaling. The heat → light channel — physics that connects the matter / forces / EM / heat output domains |
+| **M7.6 / Phase-coherence transition** | Quantum thermal | At low T, do defect ensembles transition into phase-coherent ground states (analogous to superconductivity / BEC)? Reproduce critical temperatures for known materials. The cleanest "novel hypothesis" validation |
+
+These Phase 7 phases are deliberately speculative — they assume the per-defect amplitude framework holds and cascade from there. If M7.1 falsifies the hypothesis, the rest don't run as planned. But if M7.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
+
+Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
+
+These plans are kept intentionally rough — concrete phase work waits until M5.0–M5.8 establish the foundations.
 
 ### Why the hierarchy matters for the project's positioning
 
@@ -417,22 +595,22 @@ The integration is the value. Reading the layered table top-to-bottom is also a 
 
 For the conceptual companion to this roadmap, see [3b_concept_review.md § Where do quarks, protons, nuclei, and atoms fit?](3b_concept_review.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
 
-### Beyond matter — forces, EM waves, heat (the SABER design-parameter outputs)
+### Beyond matter — forces, EM waves, heat
 
-The matter-particle hierarchy above (Layers 0–6) is OpenWave's *foundational layer*. On top of validated matter primitives, the simulator must also compute four additional output classes that are the actual deliverables for downstream applied technology:
+The matter-particle hierarchy above (Layers 0–6) is OpenWave's *foundational layer*. On top of validated matter primitives, the simulator's full scope covers four output domains:
 
-| Output domain | What M5 must compute | Where it sits in the M5 plan | Why SABER needs it |
-| --- | --- | --- | --- |
-| **MATTER** (foundation) | Particle emergence (leptons → quarks → nucleons → atoms) via topological defects + wave dynamics | Layers 0–5+ above | Provides the substrate every other output is measured against |
-| **FORCES** | Electric (topology), strong (string tension + standing waves), magnetic (transverse waves from spin), gravitational (density deficit / 4D boost-axis topology) — all derived from a single Lagrangian | Validated cumulatively across M5.4 (electric), M5.7 (strong), Phase 4 (magnetic), Phase 5 (gravity) | SABER's energy-conversion designs need quantitative force-law predictions at the device scale |
-| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Phase 4 (alongside magnetic-force validation) | RF/microwave/optical interaction with media is core to multiple SABER mechanisms |
-| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); thermal-EM coupling; Wien's law / blackbody emergence | Phase 6 (long-term, after the matter layers are stable) | SABER's flagship goal — ocean-heat → electricity conversion — requires first-principles thermal mechanics |
+| Output domain | What M5+ must compute | Where it sits in the roadmap |
+| --- | --- | --- |
+| **MATTER** (foundation) | Particle emergence (leptons → quarks → nucleons → atoms) via topological defects + wave dynamics | Layers 0–5+ above |
+| **FORCES** | Electric (topology), strong (string tension + standing waves), magnetic (transverse waves from spin), gravitational (density deficit / 4D boost-axis topology) — all derived from a single Lagrangian | Validated cumulatively across M5.4 (electric), M5.7 (strong), Phase 4 (magnetic), Phase 5 (gravity) |
+| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Phase 4 (alongside magnetic-force validation) |
+| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); thermal-EM coupling; Wien's law / blackbody emergence | Phase 6+ (long-term, after the matter layers are stable) |
 
-**Why these four are co-equal goals, not just "nice to have"**:
+**Why these four are co-equal scientific goals**:
 
-- The matter hierarchy alone is not actionable for tech. You can simulate an electron beautifully and learn nothing about how to build a device
-- Force / EM / heat are what *interfaces* matter with engineering — every device exploits one or more of these to do useful work
-- A simulator that does only matter is a particle-physics tool. A simulator that does matter + forces + EM + heat from one Lagrangian is a **design-parameter generator** — and that's the unique value proposition for the integrated SABER programme
+- The matter hierarchy alone is incomplete physics. You can simulate an electron beautifully and still not understand how it interacts with surrounding fields, photons, or thermal environments
+- Force / EM / heat are how matter *interacts* with the rest of the world — these are the observable, measurable outputs against which a wave-mechanics simulator is validated
+- A simulator that does only matter is a particle-physics tool. A simulator that does matter + forces + EM + heat from one Lagrangian is a **complete classical-field-theoretic description** — that's the integrated value of OpenWave
 
 ### How matter layers feed forces / EM / heat outputs
 
@@ -449,16 +627,9 @@ Each output domain depends on validated matter layers being in place. The depend
 
 Heat is *deepest* in the dependency chain because it requires simulated atoms to model thermal phenomena meaningfully (temperature is a statistical property of many-particle systems).
 
-### SABER as the applied-technology counterpart
+### Applied-technology counterpart
 
-OpenWave (this repo) is the open-source scientific simulator. **SABER** (SubAtomic Based Energy Research) is the applied-technology programme that consumes OpenWave's predictions and engineers them into devices. The split:
-
-- **OpenWave**: classical-field theory + topology + waves + heat → first-principles physics outputs (forces, EM, heat tables; design parameters; validated invariants)
-- **SABER**: device design + experimental validation + commercialization (most prominently ocean-heat → electricity conversion, but also other tech using subatomic-scale predictions)
-
-The dependency runs OpenWave → SABER. SABER cannot proceed past prototypes without the design parameters M5+ produces. M5's matter physics is therefore the gating step for SABER's longer-term applied work.
-
-This is why M5's roadmap goes beyond "simulate the electron well" — it must reach all the way to producing actionable force-EM-heat outputs at engineering scales.
+The applied-technology counterpart of OpenWave's open-source physics work is the SABER project (private, separate repo at `OPENWAVE-LABS/SABER` / `neptunyalabs/SABER`). The split is intentional: OpenWave publishes scientific findings (open-source, eventually peer-reviewable); SABER develops engineering implementations (private, patentable). SABER consumes the physics outputs of M5+ matter / forces / EM / heat work. **OpenWave's scope is the science; SABER's scope is the engineering.** This document is OpenWave's roadmap and stops at the physics.
 
 ---
 

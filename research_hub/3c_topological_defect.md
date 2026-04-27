@@ -101,6 +101,194 @@ The total stored energy integrates to a finite, well-defined number. **That stor
 
 This is also where the energy for the defect's intrinsic oscillation comes from (next section): the stored field energy can't dissipate because topology forbids it, but it CAN be in motion — and so it ends up oscillating at exactly the frequency that converts the rest-mass energy into time-periodicity (`ω = 2mc²/ℏ`, Zitterbewegung).
 
+### Why different defects have different masses (and therefore different Zitterbewegung frequencies)
+
+Defects can have different masses for **three structurally distinct, all-geometric reasons**. Each gives a different stored field energy → different rest mass → different intrinsic clock frequency.
+
+#### 1. Different topology class
+
+Different *kinds* of defect (point, line, loop, knot) cost different amounts of integrated stored field energy because the geometric requirements of each configuration differ.
+
+| Topology class | Particle | Mass scale (rough) |
+| --- | --- | --- |
+| Point hedgehog (Q = ±1) | Charged lepton (e, μ, τ) | ~ MeV–GeV |
+| Closed vortex loop | Neutrino (ν_e, ν_μ, ν_τ) | sub-eV (very light) |
+| Open vortex string + 2 endpoints | Quark + antiquark (mesons) | ~few MeV constituent + string-energy contribution |
+| Knot / linked loops | Heavier composites (post-M5.8) | Higher |
+
+A closed-loop neutrino is much lighter than a point-hedgehog electron because the topological winding is "spread" over a 1D ring rather than concentrated in a point — geometrically less expensive. An open-string quark system is heavier than its endpoint masses suggest because the string itself stores ~1 GeV/fm of energy from its tension `σ`.
+
+#### 2. Different LdG axis (within one topology class — the lepton families)
+
+Within a single topology class (point hedgehog), three different masses can arise from one Lagrangian by choosing different **axes** of the LdG order parameter.
+
+The LdG order parameter Q has three eigenvalues with widely separated scales: `Q = diag(δ, 1, g)` with `0 < δ ≪ 1 ≪ g`. A hedgehog defect can wind around any of these three axes:
+
+| Axis | Eigenvalue | Stiffness | Particle |
+| --- | --- | --- | --- |
+| `δ` axis (ℏ scale) | Smallest | Weakest → lowest stored energy | **Electron** (lightest) |
+| `1` axis (unity scale) | Intermediate | Intermediate | **Muon** (~207× electron mass) |
+| `g` axis (gravity scale) | Largest | Strongest → highest stored energy | **Tau** (~3477× electron mass) |
+
+Same Lagrangian, same topology, different *axis* → different Frank elastic stiffness → different stored energy → different mass. Like the same drum head producing different frequencies if you change the tension.
+
+Validated mechanism in **Exp 6**: `E ∝ K` linearly to R² = 1.0; with `K_e : K_μ : K_τ ≈ 1 : 4.27×10⁴ : 1.21×10⁷` you reproduce observed lepton mass² ratios. Dr. Duda's 2026-04-17 reply confirmed this is physically motivated, not ad-hoc — the `0 < δ ≪ 1 ≪ g` hierarchy maps onto three widely-separated physical scales (QM, unity, gravity).
+
+#### 3. Different size / regularization within one class on one axis
+
+Within fixed topology + fixed axis, there's still a remaining degree of freedom: the defect's **core size** and **regularization scheme**. The mass `m·c² = ∫H d³x` balances two competing terms:
+
+- Gradient term `½c²(∇ψ)²` — wants the defect to spread out (sharper gradients = more energy)
+- Potential term `V(ψ)` — wants the defect to shrink (more volume off-minimum = more energy)
+
+The equilibrium core size depends on the potential `V(ψ)` and on how the singularity at the defect's mathematical center is regularized. **Faber's regularization scheme** (M5.6, per Jarek 2026-04-19) handles this and produces the running-coupling effect (effective mass / charge varies with energy scale). Different regularization choices → different masses.
+
+#### The mass → frequency chain
+
+Each defect's mass directly sets its Zitterbewegung frequency via a deterministic chain:
+
+```text
+geometric configuration (topology class, axis, regularization)
+       ↓ stored field energy = ∫ H d³x
+   rest mass m
+       ↓ ω = 2mc²/ℏ
+intrinsic Zitterbewegung frequency
+       ↓ combined with translational v
+de Broglie wavelength λ_dB = h/(mv)
+```
+
+Each link is a derivation, not a postulate.
+
+#### Concrete particle table — masses to Zitterbewegung frequencies
+
+| Particle | Topology | Axis | Mass | Zitterbewegung ω |
+| --- | --- | --- | --- | --- |
+| Neutrino (e/μ/τ) | Closed vortex loop | varies | sub-eV | ~10¹⁵ rad/s (very slow) |
+| Electron | Point hedgehog | δ axis | 0.511 MeV | 1.55 × 10²¹ rad/s |
+| Muon | Point hedgehog | 1 axis | 105.7 MeV | 3.21 × 10²³ rad/s |
+| Tau | Point hedgehog | g axis | 1776.8 MeV | 5.39 × 10²⁴ rad/s |
+| Up quark | Vortex string endpoint | varies | ~2.2 MeV | ~7 × 10²¹ rad/s (constituent) |
+| Down quark | Vortex string endpoint | varies | ~4.7 MeV | ~1.4 × 10²² rad/s (constituent) |
+| Proton | 3-string Y-config (uud) | varies | 938 MeV | 2.85 × 10²⁴ rad/s |
+
+Each Zitterbewegung frequency in the table is a direct readout of the defect's stored field energy. **M5.8 will measure these numerically** for at least the electron and a neutrino as the empirical validation step.
+
+#### The unification view
+
+Because every "different mass" comes from a *geometric* difference in the field configuration, the Zitterbewegung frequencies are all derivable from first principles once the geometry is fixed. M5 replaces "one mass per particle as a free Standard-Model parameter" (~12 fermion masses) with **"a small handful of geometric parameters"** (`δ`, `g`, the LdG potential coefficients `(a, b, c)`, the Skyrme coefficient, the regularization scale) — and the entire mass spectrum follows.
+
+Whether this actually delivers the observed mass spectrum from a small parameter set is exactly what numerical calibration of `(δ, g)` against data is for in M5.6. That's the open question the integrated phase tests.
+
+### How different-frequency Zitterbewegung emissions interfere — hydrogen vs positronium
+
+A natural consequence question: if the proton ticks 1836× faster than the electron, how do their emitted waves interfere in a hydrogen atom? The answer is non-obvious and has structural implications for M5's simulation strategy.
+
+#### The frequency mismatch in hydrogen is huge
+
+| Particle | Mass | ω = 2mc²/ℏ |
+| --- | --- | --- |
+| Electron | 0.511 MeV | 1.55 × 10²¹ rad/s |
+| Proton | 938 MeV | 2.85 × 10²⁴ rad/s |
+
+Ratio `ω_p / ω_e ≈ 1836`. The proton ticks 1836 times during one electron tick. Vastly larger than typical wave-interference setups handle cleanly.
+
+#### Two different-frequency oscillators produce beats, not standing waves
+
+When two coherent emissions of frequencies `ω_a` and `ω_b` superpose, trigonometry gives:
+
+```text
+ψ_total(t) ∝ cos((ω_a + ω_b)/2 · t) · cos((ω_a − ω_b)/2 · t)
+                 ↑                            ↑
+            fast carrier              slow beat envelope
+```
+
+This is a **beat pattern**. The field oscillates at the average frequency, with an envelope at the difference frequency. **No coherent standing wave at any single wavelength.**
+
+For e + p emissions specifically: ω_p ≫ ω_e, so the carrier and beat envelope are essentially the same fast frequency. The slow electron's clock is effectively invisible; the field is dominated by the proton's fast emission with a tiny modulation from the electron.
+
+#### Time-averaging argument: each particle responds on its own time scale
+
+Each particle responds to its environment on a time scale set by its own period:
+
+- During one electron Zitterbewegung period (`T_e ≈ 4 × 10⁻²¹ s`), the proton's emission has cycled 1836 times → time-averages to zero contribution to any standing-wave structure the electron can "see"
+- Conversely, during one proton period (`T_p ≈ T_e / 1836`), the electron has barely moved → from the proton's viewpoint the electron looks quasi-static
+
+**Net result**: e and p Zitterbewegung emissions cannot form a coherent standing wave between them. Their oscillation frequencies are too different. Each one's intrinsic clock is invisible to the other in time-averaged terms.
+
+This is **not a failure of M5** — it's a correct prediction. If e and p Zitterbewegung emissions DID lock together via direct interference, hydrogen wouldn't behave the way it actually does (the binding energy and orbital structure would be wrong by orders of magnitude).
+
+#### So what actually binds hydrogen?
+
+Three mechanisms, none of them direct Zitterbewegung-Zitterbewegung interference:
+
+1. **Topological 1/d Coulomb (the dominant attraction)**. Static topological attraction between the electron's Q = −1 winding and the proton's net Q = +1 (effective charge from its 3-quark interior). Not a wave phenomenon at all — the static Frank elastic energy of the director texture between the two defects, validated in Exp 2. Doesn't care about frequencies. Provides the Coulomb potential well.
+2. **The electron's own de Broglie wavelength quantizes orbits**. The electron, oscillating at ω_e and drifting at velocity v, has its own de Broglie wavelength `λ_dB = h / (m_e · v)`. Standing waves of *the electron's own emission* — interfering with reflections off the proton's vicinity (acting as a central potential well) — quantize into discrete orbital shells at radii where `n·λ_dB = 2π·r_n` (Bohr quantization). This is *self-interference of the electron's emission* mediated by the central potential, NOT direct interference with the proton's Zitterbewegung
+3. **The proton acts as a quasi-static central charge**. Because m_p ≫ m_e, the proton barely moves on the electron's time scales. From the electron's view, the proton is a fixed center providing the Coulomb potential well. The proton's own Zitterbewegung at 10²⁴ rad/s is completely invisible to the electron's slower 10²¹ rad/s response
+
+So hydrogen binding = static topological Coulomb + electron's self-de-Broglie standing wave + quasi-static heavy center treatment. Direct e-p Zitterbewegung interference plays no role in the hydrogen ground state.
+
+#### When does direct Zitterbewegung interference matter?
+
+It matters specifically for **same-mass interactions** where ω_a ≈ ω_b. Then the beat envelope vanishes, coherent standing waves form, and lock-in at half-wavelength wells emerges.
+
+| System | Constituents | Frequency match? | Direct Zitterbewegung lock-in? |
+| --- | --- | --- | --- |
+| **Hydrogen** (e + p) | 0.511 MeV + 938 MeV | No (1836× mismatch) | ❌ — bound via topology + electron's self-de-Broglie |
+| **Positronium** (e⁻ + e⁺) | 0.511 MeV both | Yes (exact) | ✅ — direct Zitterbewegung lock-in at λ_Z/2 wells (M3-validated mechanism, retained in M5) |
+| **Nucleon** (3 quarks: u + u + d) | 2.2 + 2.2 + 4.7 MeV | Approximately yes | ✅ — quarks lock-in via near-equal Zitterbewegung + string tension (M5.7) |
+| **Cooper pair** (e⁻ + e⁻) | 0.511 MeV both | Yes (exact) | ✅ — same mechanism, in superconductors |
+| **Atom outer shell** (electron + nucleus) | very different | No (≫ mismatch) | ❌ — same as hydrogen |
+
+The pattern: **same-mass-class interactions use direct Zitterbewegung interference; cross-mass-class interactions use de Broglie standing waves around a quasi-static center**. Same underlying physics (standing-wave interference in a topological field), but at different scales and with different roles for each particle.
+
+#### The clean rule
+
+> **Direct Zitterbewegung interference creates standing-wave lock-in only when the two defects have approximately the same intrinsic frequency** (i.e., approximately the same mass). For mass-mismatched pairs, the lighter particle's emissions interfere with itself (mediated by reflections off the heavier one acting as a static center), giving its own de Broglie wavelength as the relevant quantization scale.
+
+In hydrogen specifically: the electron's de Broglie wavelength (set by its kinetic energy in the Coulomb well) determines Bohr radii. The proton's intrinsic clock at 10²⁴ rad/s is essentially invisible to the electron's slower dynamics. Charge ≠ mass in M5 (charge = winding, mass = stored energy — these decouple), so the proton's effect on the electron is via charge (Coulomb pull) without its mass-driven clock entering directly.
+
+#### Consequence: strong force ≠ orbital force, structurally
+
+The frequency-match rule above directly implies that the **strong force** (binding quarks within a nucleon) and the **orbital force** (binding electrons around a nucleus) are NOT the same mechanism at different scales. They have *structurally different ingredient lists*.
+
+| Force | Constituents | Mass-class | Mechanism | Notes |
+| --- | --- | --- | --- | --- |
+| **STRONG** | 3 quarks within a nucleon (~2–5 MeV each) | Same-mass-class (similar Zitterbewegung ω) | **Wave interference (single channel)**, augmented by string tension | Direct Zitterbewegung-frequency standing-wave lock-in at sub-λ separations + linear confinement from the topological vortex string. *Both pieces operate at the same scale and on the same defect class*. One mechanism family |
+| **ORBITAL** | Electron ↔ nucleus (0.511 MeV ↔ 938+ MeV per nucleon) | Cross-mass-class (1836× frequency mismatch for hydrogen) | **Combination of three mechanisms layered together** | (1) Topological 1/d Coulomb (provides static well), (2) electron self-de-Broglie standing waves (quantizes Bohr orbital shells), (3) quasi-static heavy-center treatment for nucleus (its 10²⁴ rad/s clock is invisible to electron's slower 10²¹ rad/s response). *No single mechanism explains atoms* |
+
+**Why the strong force is "wave-primary"**:
+
+- 3 quarks of comparable mass → ω_a ≈ ω_b → coherent standing waves form
+- The waves emitted by each quark interfere with the others' emissions at λ_Z/2 wells
+- Same-phase quarks lock-in at standing-wave nodes (Wolff/LaFreniere/Couder mechanism, M3-validated)
+- The vortex-string topology adds the linear-confinement (`σ ≈ 1 GeV/fm`) component but is *secondary* to the wave-interference binding within the bound state
+
+**Why the orbital force is "layered, not wave-only"**:
+
+- Electron + nucleus have wildly different masses → Zitterbewegung frequencies don't match → no direct wave lock-in possible
+- Topological 1/d Coulomb provides the *attraction* (the well) but doesn't quantize orbits — without de Broglie waves, the electron would spiral classically into the nucleus (the "atomic collapse" problem in pre-quantum physics)
+- The electron's own emissions (at ω_e) interfere with reflections off the central potential well to form standing waves at the **electron's de Broglie wavelength** — *self-interference*, not cross-particle interference. This is what quantizes Bohr orbital shells
+- The heavy nucleus acts as a static potential center on the electron's time scale (its own clock is too fast to enter directly)
+
+Each of the three mechanisms is *necessary*; none is sufficient.
+
+**Why this distinction matters for OpenWave's framework**:
+
+- Strong force in M5 = an extension of M3's near-field standing-wave lock-in physics (which IS retained in M5) plus the M5.7 vortex-string contribution. **Same family** as M3's mechanism, just with topology adding the string piece
+- Orbital force in M5 = genuinely *new* combined-channel physics that M3 cannot produce. **Different family** from same-mass-class lock-in. M3 cannot reach atoms by scaling up; cross-mass-class machinery (M6.4 in the post-M5 sketch) is a separate engineering effort
+
+This is why Jeff's 2026-04-17 reply was important — he flagged that M3's near-field physics covers "three force regimes" (intra-particle, strong, orbital) in his EWT vocabulary. Looking at it through M5's mechanism lens, that's not strictly accurate: M3's wave-interference mechanism cleanly covers same-mass-class binding (intra-particle and strong, as Jeff noted), but **orbital binding requires the additional de-Broglie + quasi-static-center machinery on top of M3's near-field physics**. The standing-wave lock-in is one of three layered ingredients in atoms, not the whole story.
+
+#### Implications for M5's testing strategy
+
+This frequency-mismatch insight informs M5's roadmap progression:
+
+- **Same-mass tests are tractable first** — positronium (e⁺/e⁻ annihilation, M5.4), quark-quark binding (M5.7) — direct Zitterbewegung interference + topology
+- **Mass-mismatched composites are harder** — hydrogen-like simulation (post-M5.8, after M5.4 and M5.7 are validated) needs all three mechanisms layered: topological Coulomb + de Broglie standing wave + quasi-static heavy-center treatment
+- **Full atom simulation** (M6.4 in the post-M5 sketch) requires the cross-mass-class machinery to be working
+
+So the testing roadmap progresses from "easier" (same-mass pairs, direct Zitterbewegung physics) to "harder" (mass-mismatched composites where multiple mechanisms layer). This is a structural reason M5.4 (positronium-class) precedes the eventual atom-scale simulations.
+
 ### Winding number IS charge — quantized by counting, not postulated
 
 The **winding number** `Q` of a defect is an integer. For a hedgehog, walk around any surrounding sphere and count how many full unit-sphere "wraps" the directors execute. The count must be a whole number — you can't have "half a wrap" because you can't have half a continuous rotation around a topologically closed surface. This is **Gauss-Bonnet theorem** applied to the director field.
@@ -399,7 +587,7 @@ That's exactly what **M5.8** tests:
 | 4. Validate | Confirm `ω_measured ≈ 2mc²/ℏ` for the seeded mass |
 | 5. Generalize | Repeat for muon mass, tau mass; confirm scaling. Repeat for neutrino topology; confirm different mass produces different frequency |
 
-If M5.8 returns `ω = 2mc²/ℏ` for electron + neutrino with separate masses, the time-crystal mechanism is empirically validated as the origin of particle oscillation in OpenWave's framework. This closes the conceptual loop: the same mechanism that makes electrons trem­ble at 10²¹ Hz in the lab is reproducible from first principles on a Taichi GPU lattice.
+If M5.8 returns `ω = 2mc²/ℏ` for electron + neutrino with separate masses, the time-crystal mechanism is empirically validated as the origin of particle oscillation in OpenWave's framework. This closes the conceptual loop: the same mechanism that makes electrons tremble at 10²¹ Hz in the lab is reproducible from first principles on a Taichi GPU lattice.
 
 ---
 

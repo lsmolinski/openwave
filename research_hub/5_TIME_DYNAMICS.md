@@ -1,4 +1,4 @@
-# PHASE 3: TIME DYNAMICS
+# PHASE 4: TIME DYNAMICS
 
 Variable λ per voxel makes dt a local variable — simulation no longer uses uniform timesteps. Energy starvation mechanism: destructive interference drops amplitude → frequency increases (energy conservation) → local time speeds up.
 
@@ -56,17 +56,15 @@ Particle spin may be the "remote control" for time dynamics:
 
 - Spin modulates local frequency → controls local rate of change
 - Frequency modulation of subatomic waves = time dynamics
-- If we can promote controlled changes in λ (via interference, pulsing, or spin manipulation), this could redirect energy gradients and control force direction
+- Controlled changes in λ (via interference, pulsing, or spin manipulation) could redirect energy gradients
 
 ## Why This Matters: Every Energy Equation Has Time In It
 
-Every equation of energy contains a time variable. If time itself is a function of medium state (λ), then understanding that function opens doors to new technology everywhere — not just physics, but chemistry, biology, materials, and engineering. Controlling λ means controlling the rate at which energy transforms, reactions proceed, and forces act.
+Every equation of energy contains a time variable. If time itself is a function of medium state (λ), then understanding that function is fundamental to understanding energy at the wave level.
 
 The chain is simple: `λ → f → rate of change → time`
 
 The energy starvation mechanism is the most novel insight: destructive interference drops amplitude → energy conservation forces frequency up → that IS time dilation, emerging from wave mechanics rather than imposed by relativity.
-
-The connection to practical applications through thermal energy drain is what makes this not perpetual motion — you're redirecting energy gradients, not creating energy. The object cools down because thermal (standing wave) energy converts to directed kinetic force. Everything stays conserved.
 
 ## Connection to Medium Pressure and Gravity
 
@@ -74,9 +72,7 @@ Changing λ/frequency changes the rate at which granules cycle through their ell
 
 This creates a direct link to Smoliński's gravitational push-out/buoyancy model: if wave centers alter λ in their vicinity (time dilation near mass), they change the local granule velocity, which changes the local medium pressure/density. The pressure deficit around a massive body IS the gravitational field — and it emerges from λ modulation, not from a separate gravitational mechanism. Gravity, time dilation, and medium pressure become three descriptions of the same underlying phenomenon: **local λ variation**.
 
-**#hackingenergy** — by understanding how time works and its relationship to energy, we can hack energy itself.
-
-**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces in the 1D sandbox, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in Phase 3 (see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
+**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in Phase 3 (see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
 
 ---
 
@@ -153,30 +149,22 @@ This mechanism may underlie:
 - **Force and motion**: energy exchange between WCs creates energy gradients → F = -∇E. The resonance between WC standing waves produces the spatial energy redistribution that generates force. WCs don't push each other directly — they exchange energy through the medium via resonance
 - **Matter formation**: particles form when wave resonance creates stable standing wave structures. The natural frequency of the medium determines which configurations are stable — only those that resonate survive
 - **Electromagnetic radiation**: photons are resonance-mediated energy transfers between atoms. Wolff's coupled-oscillator picture: atom A shifts frequency up, atom B shifts down, the difference propagates as a traveling wave packet (photon)
-- **Thermal energy**: heat increases the steepness (A/λ) of standing waves within a particle. The particle naturally wants to return to its fundamental steepness (radiation) — this is thermal emission. When two bodies at different temperatures interact, their standing wave structures exchange energy through resonance until steepness equilibrium
+- **Thermal energy**: heat may be encoded in the steepness (A/λ) of standing waves within a particle. Particles naturally tend to return to a fundamental steepness (radiation) — this could be thermal emission. When two bodies at different temperatures interact, their standing wave structures exchange energy through resonance until steepness equilibrium
 
-### Thermal Energy as Steepness Variation
+### Thermal Energy as Steepness Variation (Hypothesis)
 
-Particles have a fundamental/natural steepness (A/λ ratio, and therefore frequency, local time, rate of change) at absolute zero. Heat is encoded as **increased steepness** — the particle stores more energy by increasing A/λ beyond its fundamental value:
+A precursor framing for what heat is at the wave level: particles may have a fundamental/natural steepness (A/λ ratio, and therefore frequency, local time, rate of change) at absolute zero, with heat encoded as **increased steepness**:
 
 - **0 K**: particle at fundamental steepness A₀/λ₀ — minimum energy state
-- **Higher temperature**: steepness increases (A/λ rises) — more energy stored in standing waves. Steepness conservation (A/λ = const) is broken by the external energy input
-- **Radiation**: the particle naturally wants to return to its fundamental steepness, releasing excess energy as traveling waves (photons). This is steepness relaxation
-- **Thermal equilibrium**: two bodies exchange steepness through resonance until their A/λ distributions match — this IS temperature equilibration
+- **Higher temperature**: steepness increases (A/λ rises) — more energy stored in standing waves. Steepness conservation (A/λ = const) is broken by external energy input
+- **Radiation**: the particle naturally returns to fundamental steepness, releasing excess energy as traveling waves (photons). Steepness relaxation
+- **Thermal equilibrium**: two bodies exchange steepness through resonance until their A/λ distributions match — temperature equilibration
 
 **How steepness increases**: when external energy enters the system (absorption, collision), the standing waves gain energy. Since `E = ρV·c²·(A/λ)²`, more energy means higher A/λ. Whether this manifests as higher A (amplitude growth at same λ) or lower λ (wavelength compression at same A) or both depends on the particle's boundary conditions and the mode of energy input.
 
 **Connection to energy starvation**: steepness conservation applies within an isolated system — when A drops at one location, λ drops proportionally (f increases, time speeds up), and vice versa. The total energy stays constant, only the A↔λ balance shifts. External energy input (heating) breaks this conservation by increasing steepness. External energy output (radiation) decreases it.
 
-### Connection to Force Mechanism and Energy Technology
-
-If energy exchange = wavelength exchange through resonance, then controlling resonance means controlling energy flow. This could:
-
-- **Influence energy gradients**: resonance can concentrate energy from one region and move it to another — creating the energy gradient that produces force (F = -∇E)
-- **Generate force**: directed resonance could create electricity (directed energy gradient) or counteract gravity (opposing the density-deficit gradient)
-- **Cool regions**: removing energy via resonance cools the source region — the energy isn't created, it's relocated. The source cools down as its standing wave energy converts to directed force
-
-This is not perpetual motion — it's energy redirection through resonance. The total energy is conserved, but its spatial distribution changes, creating gradients that produce force and motion.
+This hypothesis is the closest precursor to the per-defect amplitude-as-heat hypothesis articulated for the M5 / Lagrangian-Field framework — see [3c_topological_defect.md](3c_topological_defect.md) for the topological defect's intrinsic oscillation amplitude, and the M5 plan in [3d_path_to_m5.md](3d_path_to_m5.md) for the post-M5 thermal-mechanics validation phases.
 
 ---
 
@@ -227,68 +215,6 @@ Every form of motion affects wavelength:
 - **Acceleration**: radiates wave disturbances (electromagnetic radiation). Accelerating charges emit EM waves — this is λ disturbance radiation from changing velocity
 
 Not only particle velocity, but angular velocity (spin) impacts wavelength. And the acceleration of both linear and angular quantities produces radiating wavelength disturbances. The simulation must store velocity vectors and angular velocity to compute these λ effects.
-
-### Time as Potential Energy
-
-The energy stored in the wave field's frequency/wavelength distribution is **potential energy that can be converted into motion**. Time itself has elastic potential:
-
-- The wave field stores energy as standing waves — this energy is "un-manifested" in the sense that it doesn't produce net motion until a gradient exists
-- Creating a λ gradient (time gradient) creates an energy gradient → force → motion
-- The energy for motion comes FROM the wave field's temporal potential — the object's standing wave energy converts to directed kinetic energy
-- **Time is the elastic**: it has the elasticity needed to convert potential into motion. The wave steepness (A/λ) represents this stored potential
-
-The "time-oscillator" concept: a device that converts un-manifested fundamental energy-waves into physical forces by engineering λ gradients. Not creating energy — redirecting the wave field's existing temporal potential into directed motion.
-
-### Heat as Spin Dynamics
-
-Temperature might be related to **particle angular velocity / angular momentum**, not atomic vibration in the classical sense:
-
-- Particle spin produces wave disturbances on the wave field
-- These disturbances are intrinsically related to wavelength (and therefore time)
-- Higher spin rate = stronger magnetic moment = more energetic transverse wave emission = higher temperature
-- Heat transfer between bodies = spin-mediated wavelength exchange through resonance
-- These spin disturbances can be interfered with known wave disturbances (electrostatic, magnetic, electromagnetic waves)
-
-This connects heat to the same wavelength framework: thermal energy is spin-driven λ disturbance, not bulk kinetic motion. Controlling spin means controlling temperature.
-
-### Practical Path: Engineering λ Changes
-
-To create useful force/energy effects, search for ways to influence λ of the fundamental waves:
-
-- **Material structures**: the way matter and fundamental particles disturb the original waves depends on geometry — angle, distance, and arrangement create specific interference patterns
-- **Electromagnetic waves**: EM waves can superpose onto the fundamental energy wave field, creating desired λ modifications. Sound waves and mechanical positioning of material structures may also contribute
-- **Wave combination (superposition)**: the key tool — combining waves to engineer specific λ distributions. Methods: Laplacian propagation (physical) or analytical superposition (computational)
-- **The scalability question**: can we superpose envelopes (A(r), λ(r)) directly, or must we work with displacement? Envelope superposition is faster but may miss phase information. Displacement superposition is exact but expensive. Displacement, pressure, and density may be equivalent quantities for this purpose
-
-The conditions for a practical device: material structures positioned at specific angles and distances for wave interference, electromagnetic waves that trigger or combine with the fundamental wave field, and resonance that changes particle spin → λ disturbance → energy gradient → force.
-
-### Frame-Step Simulation Concept (time becomes a local variable)
-
-The simulation should not use uniform timesteps. Instead:
-
-- **Energy field computation**: from envelopes A(r) and λ(r), compute E(r) = ρV·c²·(A/λ)². Force from the energy gradient. Visualize with flux mesh (energy density gradient, not just amplitude)
-- **Frame count** replaces time steps — each frame represents one cycle of computation across all voxels
-- **Per-voxel dt**: within each frame, each voxel has its own time step determined by local λ/f. Where λ is shorter (higher f), faster change happens per frame. Where λ is longer (lower f), slower change happens
-- **Motion computation changes**: acceleration, velocity, and position integration all use voxel-specific dt. A particle's motion depends on the local time rate at its position
-
-This is a major architectural change — every equation that contains time becomes position-dependent. But it's the physically correct approach: time IS local, determined by the wave field state at each point.
-
-### Energy Gradient Control — The Curvature Matching Principle
-
-The goal is to find ways to move energy gradients around. Spin or time dynamics may be the control mechanism — frequency may be the key variable to manipulate.
-
-**Curvature matching**: when the curvature of space (amplitude envelope) matches the curvature of time (frequency distribution), an implicit channel opens. By changing the curvature of time (λ distribution), magnetic/gravitational waves can be aligned coherently with EM/ultrasound wave directions — creating the most efficient heat-to-motion engine.
-
-**Magnetic wave concentration (laser analogy)**: similar to how mirrors reflect visible light to produce lasers, find materials that reflect **magnetic waves** (transverse wave disturbances from particle spin). Concentrate and reshape the geometry of magnetic waves, as in laser production. Concentrated magnetic waves could curve the local λ field (spacetime) in a desired direction, changing the energy density distribution to generate forces.
-
-**Converting between energy forms**: all energy conversion is λ↔A exchange:
-
-- **Heat → EM radiation**: heat is always propagating into light (electromagnetic radiation) — thermal emission is the natural λ relaxation process. The question is how to **accelerate** this conversion
-- **Heat → electricity**: convert thermal standing wave energy into directed electron motion. Possibly through water molecules (responsive to microwaves, MRI magnetic fields — susceptible to magnetic fields and capable of capturing EM waves and converting to heat, and vice versa)
-- **E-waves → heat and heat → e-waves**: changing λ into A and vice versa. This is changing time. Understanding heat conversion is the key — modeling heat is the key
-- **Cavitation**: heat to light through water may involve cavitation — the collapse of vapor bubbles converting thermal energy into photon emission (sonoluminescence)
-
-Understanding heat is the key to unlocking energy conversion. Modeling heat at the wave level — as spin-driven λ disturbance rather than kinetic vibration — opens pathways that classical thermodynamics cannot see.
 
 ### Spacetime as Measurement, Not Reality
 
