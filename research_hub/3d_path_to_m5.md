@@ -595,6 +595,38 @@ The integration is the value. Reading the layered table top-to-bottom is also a 
 
 For the conceptual companion to this roadmap, see [3b_concept_review.md § Where do quarks, protons, nuclei, and atoms fit?](3b_concept_review.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
 
+### Beyond M5.8 — phase, Berry, and entanglement experiments
+
+A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [3c_topological_defect.md § The twist degree of freedom](3c_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
+
+These are exploratory targets, not committed milestones. They naturally slot in after M5.4 (electron stability) provides the validated single-defect substrate and M5.7 (Cornell potential, vortex strings) provides validated string-defect dynamics.
+
+| Phase candidate | Headline test | Layered on |
+| --- | --- | --- |
+| **Single-defect Berry phase** | Drive a single defect adiabatically along a closed loop in parameter space (e.g., rotate the LdG axis assignment). Measure the accumulated twist phase around the loop. Should equal the geometric solid angle × topological factor — the Berry phase formula falls out of the field's own dynamics, not as a postulate | M5.4 (single biaxial hedgehog stable) + M5.6 (axis-rotation machinery) |
+| **Hydrodynamic Aharonov-Bohm analog** | Seed a topological vortex string (M5.7 setup); send a plane wave past it; measure the phase shift on the far side as a function of impact parameter. Should reproduce the Berry-1980 hydrodynamic AB result and the recent 2026 reproduction (phys.org/news/2026-04-simulation-famous-quantum-effect-reveals.html) | M5.7 (vortex string seeding) |
+| **Two-defect concurrence analog** | Seed a positronium-like e⁺/e⁻ pair (M5.4 setup). Vary the initial conditions over a complete basis of "computational states." Measure the redistribution of geometric phases across initial states. Compare to the Orion sum rule prediction `(1/2π) Σ γ_n = 2m·ν_H` and the Wootters-concurrence-vs-phase pattern from the paper | M5.4 (e⁺/e⁻ pair test) |
+| **Topological sum rule test** | Implement the same "gate" (e.g. defect-pair SWAP-analog) via two M5 evolution paths from different topological classes. Measure the per-state Berry phases; verify the sum is the same (`2m·ν_H` invariant) but the redistribution differs. Direct analog of the SWAP₁ vs SWAP₂ comparison in the paper's Fig. 3 | M5.4 + post-M5 (gate-analog protocols defined) |
+| **CPT symmetry validation** | M5's Lagrangian is Hermitian and Lorentz-invariant by construction → must satisfy CPT (theorem). Verify numerically that pair creation and annihilation operate as CPT mirrors, that same-winding pairs are CPT-forbidden from annihilating (already a planned M5.4 test, here recognized as a CPT consequence), and that absorption / stimulated-emission analogs are CPT-paired (per Duda's 2026-04 deck on negative radiation pressure). Failure mode = a hidden T-symmetry-breaking term in the implementation | M5.4 (pair dynamics) + M7.x (thermal absorption / stimulated emission) |
+
+#### Why this matters for OpenWave
+
+These experiments do three things at once:
+
+- **Validate that M5's twist DoF correctly carries quantum-phase physics.** If the Berry phase falls out of the M5 dynamics with the standard geometric-phase formula, that's strong evidence the framework is structurally complete: charge (topology), mass (amplitude), AND quantum phase (twist) all derived from one Lagrangian
+- **Engage productively with the topology-and-entanglement literature.** The Orion paper sits in mainstream condensed-matter physics; M5 reproducing its predictions from a different starting point (classical-field-theoretic, topological defects) is the kind of cross-validation that makes the framework credible to physicists outside the wave-mechanics community
+- **Connect to hydrodynamic quantum analogs.** Berry's hydrodynamic Aharonov-Bohm (1980, recreated 2026) and the broader walking-droplet HQA literature have struggled with multi-particle entanglement as the missing piece. M5's defect framework — where multi-defect entanglement-like correlations are automatic from shared topology — may be the structural bridge. If validated, this connects HQA, EWT, LdG-topology, and standard QM into one coherent picture
+
+#### Open questions
+
+- Does the twist field in M5 produce **exactly 2π-quantized** Berry phase, or only approximately? (Quantization should be geometric, but needs numerical confirmation)
+- Does the two-defect Wootters concurrence analog quantitatively match the paper's predictions for entangling Hamiltonians, or only the qualitative pattern?
+- How does the result depend on the choice of LdG potential, regularization (Faber), and Skyrme coefficient? Are there parameter regimes where the topology-entanglement link breaks?
+- Do the standing-wave + topology + twist primitives also reproduce the **double-slit** and **Casimir** patterns Marc Fleury cites — i.e., is the framework consistent with the broader EM-fluid / standing-wave-electron literature beyond just the Orion paper?
+- For Bell-inequality experimental analogs: does the twist-field path-dependence reproduce the experimental phase-compensation patterns, supporting Marc's claim that "Bell completely disappears with phase modulation"?
+
+These are deferred research questions — concrete numerical work waits until M5.4 + M5.7 establish the defect substrate. Documented here so the framework is in scope; specific experiments will be planned when the prerequisites land.
+
 ### Beyond matter — forces, EM waves, heat
 
 The matter-particle hierarchy above (Layers 0–6) is OpenWave's *foundational layer*. On top of validated matter primitives, the simulator's full scope covers four output domains:

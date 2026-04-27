@@ -984,6 +984,61 @@ Full roadmap with output-domain dependency chains in [3d_path_to_m5.md § Beyond
 
 There is a separate applied-technology counterpart project (SABER) that consumes these physics outputs to develop devices. SABER lives in its own repo and is out of scope for this document.
 
+### How does OpenWave handle quantum phase, and what about entanglement?
+
+A natural question prompted by the 2026-04 thread on Models of Particles around the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795), where the corollary states that **nontrivial Hamiltonian topology is a necessary condition for quantum entanglement**. Dr. Duda asked the group: *"How do you see quantum phase in your model of particles?"*
+
+OpenWave's answer falls out of the Lagrangian-Field framework cleanly, with no new structure required.
+
+#### The director field has three degrees of freedom — phase is the third
+
+A topological defect in M5 has three independent observables (see [3c_topological_defect.md § The twist degree of freedom](3c_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)):
+
+| DoF | Channel | What it gives |
+| --- | --- | --- |
+| Topology (winding of director orientation) | `S²` of `SO(3)` | Charge `Q` (integer, geometric) |
+| Amplitude (oscillation magnitude) | radial above ground state | Mass / thermal content |
+| **Twist** (rotation phase around principal axis) | `S¹` of `SO(3)` | **Quantum phase** φ, and its winding = Berry phase |
+
+The twist DoF is the natural home for what's normally called the "quantum phase" — Dr. Duda's S¹-as-twist framing maps directly onto it. The framework already unifies the EM-charge and quantum-phase channels into one SO(3) order parameter; nothing extra is bolted on.
+
+#### Berry phase is a derived field-state quantity, not a postulate
+
+Move a defect along a closed loop in parameter space, and the twist field accumulates a winding around the loop — this winding IS the Berry / geometric phase. In M5 the Berry phase falls out of the same Lagrangian dynamics that produce charge and mass; it doesn't need to be added as a separate axiom. Marc Fleury's framing (same thread) — *"Berry phase IS the phase of A, the EM vector potential"* — is consistent with this: in M5, the twist gradient `∇φ` and the EM vector potential `A` are the two channels of the same underlying field rotation, and the formula `v_m = ℏ∇φ − qA` (Wikipedia, macroscopic quantum phenomena) connects them as expected.
+
+#### Entanglement-like correlations are automatic when defects share a field
+
+The Orion sum rule says: implementing the same gate via Hamiltonians from different topological classes (`ν_H ≠ 0`) redistributes geometric phases differently across initial states, and the difference is measurable via Wootters concurrence. Local Hamiltonians (`ν_H = 0`) cannot entangle.
+
+In M5, every defect has `ν_H ≠ 0` by construction — winding is the defect's defining feature. When two defects share a vector field, the twist along any path between them is **path-dependent** because the topology of the field between them is nontrivial. That path-dependence is mathematically the Aharonov-Bohm analog, and it produces non-local correlations between the two defects' quantum-phase content — i.e., entanglement-like behavior.
+
+So M5 does not need a separate "quantum entanglement" mechanism: it falls out of the topology + shared-field structure that the framework already has. Whether the resulting correlations match the quantitative predictions of standard QM (Wootters concurrence values, Bell-inequality violation patterns) is a research question for M5.4+ and beyond — but the *mechanism* is in place from day one.
+
+#### Marc Fleury's standing-wave framing aligns with M5
+
+Marc's separate framing in the same thread — Compton-scale standing waves around the electron, "phase of A" as quantum phase, Bell experiments' phase-compensation step doing the load-bearing work — is consistent with M5 at the wave-dynamics layer. Close's Eq. 23 (M5's particle wave equation) plus the topological hedgehog (M5's electron) produces exactly the standing-wave structure he describes around a single defect, and the twist DoF gives the "phase of A" interpretation directly. Mutual validation between the EM-fluid school and the LdG-topological school via M5's unified framework.
+
+#### Validation experiments
+
+Concrete experiments OpenWave can run to engage with the Orion–Akkermans + hydrodynamic-Berry-phase literature are listed in [3d_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](3d_path_to_m5.md). They include single-defect Berry-phase measurement, two-defect concurrence-analog tests, an Aharonov-Bohm hydrodynamic-analog reproduction (vortex string + plane wave), and the topological sum rule analog (same "gate" implemented via two different M5 paths, measure phase redistribution).
+
+### What is CPT symmetry, and does M5 have it?
+
+A follow-up question prompted by Dr. Duda's 2026-04 presentation on negative radiation pressure (which uses CPT symmetry as an active design principle).
+
+**CPT** = Charge conjugation × Parity flip × Time reversal. The CPT theorem states that any Lorentz-invariant local quantum field theory with a Hermitian Hamiltonian must satisfy CPT symmetry — i.e., the equations of motion are invariant under simultaneous application of all three operations. Microscopic CPT violation has been searched for extensively and never observed; it would imply Lorentz-invariance violation.
+
+**Does M5 have CPT?** Yes, by construction. M5's Lagrangian-Field method uses a Hermitian Lagrangian (the action `S = ∫L d⁴x` is real-valued) and is Lorentz-invariant (the Klein-Gordon mass term, Close's Eq. 23, the Skyrme stabilizer, and the LdG potential are all relativistically covariant). Therefore the M5 dynamics inherit CPT symmetry without needing it to be imposed separately.
+
+This has several useful consequences:
+
+- **Pair creation ↔ pair annihilation are CPT mirrors.** A hedgehog + anti-hedgehog forming from incoming traveling waves (creation) is the time-reverse of two counter-winding defects relaxing into outgoing traveling waves (annihilation). Same equation, opposite time direction
+- **Same-winding pairs are CPT-forbidden from annihilating.** This was already a planned M5.4 test (see [3d § M5.4 mechanism-distinguishing tests](3d_path_to_m5.md#phase-m54--electron-stability--dynamic-coulomb-recovery-the-headline-goal)) — under CPT, it's revealed as a topological-symmetry consequence rather than just a topological-counting argument
+- **Absorption ↔ stimulated emission are CPT mirrors.** Per Duda's deck and standard QED, the rate equations `∂N₂/∂t = B₁₂ ρ(ν) N₁` (absorption) and `∂N₂/∂t = −B₂₁ ρ(ν) N₂` (stimulated emission) are CPT-related. M7.x thermal phases will reproduce this structure if the framework is consistent
+- **Negative radiation pressure is CPT-allowed.** Whenever stimulated emission dominates over absorption (e.g., gain media, reverse-biased semiconductors, certain metamaterial regimes), the CPT-mirror operation produces a momentum transfer in the opposite direction from standard photon push — i.e., the radiation pulls the surface outward instead of pushing it inward. M5 should reproduce this regime when the appropriate population inversion is seeded
+
+These give M5 a natural validation surface beyond just charge / mass / pair-dynamics: any test of CPT-mirror behavior is simultaneously a test of M5's framework consistency. Specific experiment in [3d_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments — CPT symmetry validation](3d_path_to_m5.md).
+
 ### What about M3's wave phase offset? How does annihilation work in M5?
 
 A natural mechanism question for anyone moving from M3 to M5: in M3, every wave center had a `source_offset ∈ {0, π}` parameter. It set the charge sign (`cos(source_offset)` → ±1) AND it drove annihilation (opposite-phase WCs at zero separation → waves perfectly cancel → both disappear). What happens to that parameter — and to annihilation — in M5?
