@@ -567,14 +567,23 @@ The closest precursor framing in OpenWave is the steepness-conservation / energy
 
 | Phase candidate | Layer / domain | Headline test |
 | --- | --- | --- |
-| **M7.1 / Single-defect amplitude excitation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. Excite its amplitude above ground state by adding perturbation energy. Measure: (a) does the defect reach a stable excited-amplitude state? (b) does it relax back to A_0 by emitting outgoing waves? (c) what's the relationship between amplitude excess and emission frequency? Validates the basic per-defect thermal-amplitude mechanism |
+| **M7.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from the topological ground state — a real defect's instantaneous state is its rest-energy ground `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is now). Five sub-experiments share the same kink + Klein-Gordon background and instrumentation: **(7.1a) AM-up** — bump A above current; measure relaxation pathway, breather modes, emission spectrum. **(7.1b) AM-down** — pull A below current via destructive interference at the defect; measure whether the surrounding field refills the kink (the surroundings cool — the engineering operation). **(7.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(7.1d) FM-down** — slow ω below current via tuned interference; measure A rise and energy-source direction. **(7.1e) coupling cross-check** — validate `A/λ = const` holds at per-defect level under all four perturbation directions. The cheapest go/no-go check on the joint (A, ω) thermal hypothesis |
 | **M7.2 / Soliton-breather comparison** | Per-defect thermal | Compare M7.1's measured amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). If the framework is correct, these breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
 | **M7.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
 | **M7.4 / Specific heat reproduction** | Defect ensemble thermal | From M7.3 statistics, derive specific heat C_V(T). Validate against experimental measurements: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
 | **M7.5 / Blackbody spectrum** | Thermal-EM coupling | Measure emission spectrum from a thermalized defect ensemble. Validate Wien's displacement law and Stefan-Boltzmann scaling. The heat → light channel — physics that connects the matter / forces / EM / heat output domains |
 | **M7.6 / Phase-coherence transition** | Quantum thermal | At low T, do defect ensembles transition into phase-coherent ground states (analogous to superconductivity / BEC)? Reproduce critical temperatures for known materials. The cleanest "novel hypothesis" validation |
 
-These Phase 7 phases are deliberately speculative — they assume the per-defect amplitude framework holds and cascade from there. If M7.1 falsifies the hypothesis, the rest don't run as planned. But if M7.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
+These Phase 7 phases are deliberately speculative — they assume the joint (A, ω) framework holds and cascade from there. If M7.1 falsifies the hypothesis, the rest don't run as planned. But if M7.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
+
+**M7.1 four-outcome decision matrix**:
+
+| AM (7.1a + 7.1b) | FM (7.1c + 7.1d) + coupling (7.1e) | Interpretation |
+| --- | --- | --- |
+| ✅ | ✅ + `A/λ = const` validated | Joint (A, ω) hypothesis validated; proceed to M7.2 → M8 |
+| ✅ | ❌ | Revise: heat is amplitude-only; engineering pivots to AM-pure pathway; doc updates needed |
+| ❌ | ✅ | Revise: heat is frequency-only or coupling inverted; rethink the physics framing |
+| ❌ | ❌ | Hypothesis falsified at the per-defect level; redirect Phase 7 effort |
 
 Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
 
