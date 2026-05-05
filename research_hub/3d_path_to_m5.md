@@ -396,6 +396,12 @@ When a phase requires cloud compute, the playbook is:
 - [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag for comparison
 - [ ] **Resonance-hunt protocol** (per Close's recommendation): seed `Y_1^0` (electric-dipole harmonic) at amplitudes `A ∈ {0.25λ, 0.5λ, 1.0λ, 2.0λ}` (displacement-comparable-to-wavelength regime); measure localization lifetime. Particles in Close's framework are *unstable resonances* at specific amplitude/wavelength ratios, not static solitons. Success = extended-lifetime localization, not perfect stability
 
+> **Open implementation choices for M5.2** (Rodrigo's 2026-04-19 follow-up to Robert Close, awaiting clarification before final implementation):
+>
+> 1. **`∇·s = 0` enforcement method** — divergence-cleaning projection at each step, vs. vector-potential formulation `s = ∇×A` that makes zero-divergence automatic. Both options listed above; pick one once Robert weighs in
+> 2. **Dipole-family scope for the amplitude sweep** — `Y_1^0` (`l=1, m=0`) alone, or the full dipole family `Y_1^m` for `m ∈ {−1, 0, +1}`? Currently scoped to `m=0` only; expanding to full family triples runtime but probes the rotational symmetry of resonance behavior
+> 3. **Eq. 23 form** — direct implementation of Eq. 23 as written in *Foundations of Physics* 2025, vs. any implicit assumption Robert had in mind for how `∇·s = 0` interacts with the time-stepping. Confirm before porting
+
 ### Phase M5.3 — Hamiltonian energy + force
 
 - [ ] Replace M4's postulated `E = ρV(fA)²` with the Hamiltonian density `H = ½|∂ₜψ|² + ½c²|∇ψ|² + V(ψ)` derived from the Lagrangian (matches Exp 5's Noether result)
@@ -450,7 +456,7 @@ When a phase requires cloud compute, the playbook is:
 - [ ] Parameterize eigenvalues as `D = diag(δ, 1, g)` and **calibrate (δ, g) numerically** against observed lepton-mass ratios; they are not derivable ab-initio per Jarek's 2026-04-19 guidance
 - [ ] **Port Manfried Faber's regularization scheme** as the baseline (arxiv:2604.12021 + Universe 11/2025/113). Faber's form uses a slightly different potential but demonstrably produces the **running-coupling effect** — adapt to LdG-with-Skyrme rather than reinventing. This derisks the "hardest numerical step" from blank-slate design to port + adapt
 - [ ] Implement the core-singularity handling carefully — soft core smoothing + adaptive time step near the defect, on top of Faber's regularization
-- [ ] Validate: recover running-coupling effect (charge strength varies with distance / energy scale) as an independent check that the regularization is correctly ported
+- [ ] Validate: recover running-coupling effect (charge strength varies with distance / energy scale) as an independent check that the regularization is correctly ported. **This is the load-bearing test of the metric / magnitude leg of the framework**, complementing the topology leg validated in Phase 3 sandbox: topology counts charge in integer units, regularization fixes the *size* of each unit (elementary charge magnitude, electron mass, fm-scale defect core). See [3c § Topology counts; regularization gives magnitudes](3c_topological_defect.md#topology-counts-regularization-gives-magnitudes) for the methodological framing (Fleury–Duda 2026-04 thread)
 - [ ] Goal: three distinct lepton energy scales emerge from the calibrated `(δ, 1, g)` hierarchy plus the chosen LdG parameters `(a, b, c)`, with Faber's regularization active
 - [ ] This is the "electron, muon, tau from biaxial geometry" experiment — a significant undertaking beyond initial M5
 
@@ -469,6 +475,8 @@ When a phase requires cloud compute, the playbook is:
 > **Refinement from Jarek Duda (2026-04-17)**: the 1+1D phi-4 kink toy-model (arxiv 2501.04036) validates the *mechanism*; for actual electron and neutrino, we need to run it in **full LdGS** (Landau-de Gennes + Skyrme) dynamics.
 >
 > **Conceptual background**: the full mechanism (why defects oscillate, why the oscillation is rotational not linear, how mass + spin + de Broglie wavelength all derive from one rotation) is documented in [3c_topological_defect.md](3c_topological_defect.md). This phase is the empirical-validation step that confirms M5's specific implementation reproduces the experimentally-established Zitterbewegung frequency.
+>
+> **Why M5.8 is one of the two load-bearing legs**: per Duda's 2026-05 Models-of-Particles thread (Re: [Ap-Fi] What God wants and would help...), any viable single-particle field theory must satisfy **two requirements simultaneously**: (1) charge quantization via topology — the Gauss-Bonnet leg, validated in Phase 3 sandbox + M5.4; and (2) **clock propulsion** — the de Broglie clock at rest, the leg M5.8 validates. The 2008 Catillon and 2026 nonrelativistic-positronium measurements pin the experimental target. Full treatment in [3c § TWO-REQUIREMENT TEST](3c_topological_defect.md#two-requirement-test-for-any-viable-single-particle-field-theory).
 
 - [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog / closed vortex loop)
 - [ ] Let it evolve under full M5 dynamics (no external driving)
@@ -490,6 +498,18 @@ When a phase requires cloud compute, the playbook is:
 
 - [ ] **Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Measure each one's intrinsic frequency independently. Confirm each ticks at its own mass-derived `ω` (validates that frequency is set by *each* defect's stored energy, not a coupling between them)
 - [ ] **Why this matters**: mass-driven oscillation is the origin of the wave-particle duality; validating it numerically in the full LdGS closes the loop from Exp 4 linear-order validation to full nonlinear particle dynamics. Once the table above is reproduced, M5 has empirically derived particle masses from geometric defect parameters — the Standard Model's free-mass-parameter problem becomes a calibration problem instead
+
+#### Experimental anchors for M5.8
+
+The numerical M5.8 result must reproduce a real, measured frequency. Three experimental anchors define the validation target — full treatment in [3c § Zitterbewegung experimental anchors](3c_topological_defect.md#how-the-rotation-stores-energy):
+
+| Year | Experiment | Regime | Relevance to M5.8 |
+| --- | --- | --- | --- |
+| 2010 | Gerritsma et al. (trapped-ion simulation of Dirac dynamics) | Analog | First observation of a Zitterbewegung-class signal; analog rather than direct |
+| 2008 | Catillon, Cue, et al. (electron channeling clock) | 81 MeV electrons (relativistic) | Direct measurement of an electron clock, but at energies where the kinematic mass correction contributes alongside the rest-mass term |
+| **2026** | **Positronium de Broglie clock measurement, Nature Comm.** | **3 keV (nonrelativistic, e⁺e⁻ bound state)** | **Cleanest anchor**: kinetic energy far below the rest-mass scale, so the kinematic correction is negligible — the measurement is essentially `ω = 2mc²/ℏ` for the bound electron pair. Cross-anchors **M5.4** (e⁺/e⁻ pair dynamics, positronium lifetime) and **M5.8** (rest-mass Zitterbewegung) at the same composite-scale system. *Flagged by Jarek Duda, 2026-05* |
+
+The 2026 positronium measurement is the **highest-priority validation target** for M5.8 because it isolates the rest-mass clock that the LdGS dynamics is supposed to derive — no relativistic confound to interpret. If M5.4 reproduces positronium lifetime AND M5.8 reproduces the bound-state Zitterbewegung frequency, both phases are anchored to the same 2026 experimental dataset.
 
 ### What M5 does NOT implement
 
@@ -559,15 +579,20 @@ This testing-architecture distinction is **gating** for atom-scale simulations: 
 
 ### Beyond M6 — thermal mechanics pathway (Phase 7+)
 
-A working hypothesis for the heat output domain: **per-defect amplitude excess above the topological ground state is the thermal degree of freedom**. Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation amplitude `A_0 ≈ ℏ/(mc)` (its Compton wavelength); any excess above `A_0` is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
+A working hypothesis for the heat output domain: **the thermal degree of freedom is the joint amplitude+frequency `(A, ω)` excess of a topological defect's intrinsic Zitterbewegung above its ground-state values `(A₀, ω₀)`** — both components carry thermal content; they are coupled by **wave-steepness conservation** (`A/λ = const`), the same conservation principle articulated in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation `(A₀, ω₀)` with `A₀ ≈ ℏ/(mc)` (its Compton wavelength) and `ω₀ = 2mc²/ℏ` (the Zitterbewegung clock). Any excess on top of *either* component is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
+
+**Direct prediction at the boundary**: if all defects sit exactly at `(A₀, ω₀)` with zero thermal excess, the framework predicts the system temperature is exactly **0 Kelvin** (absolute zero). Conversely, the temperature observable is — by construction — the measurement of joint `(A, ω)` excess above ground state. This recovers absolute zero correctly and consistently with the third law of thermodynamics, BEC, and superconductivity (phase-coherent ground states are the zero-excess configuration). The framework being self-consistent at this boundary is a pre-numerical sanity check on the hypothesis itself — and one of the M7 phases below (M7.0) verifies it numerically.
 
 The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). The topological-defect deep dive in [3c_topological_defect.md](3c_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
 
-#### Phase 7 — Thermal mechanics from defect amplitude statistics (proposed)
+**Connection to Time Dynamics**: the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock — its rate of internal cycling. Modulating defect `ω` therefore corresponds to *locally engineering the rate of time at the subatomic scale*. The Phase 7 (A, ω) modulation experiments are simultaneously thermal-mechanics validation AND time-dynamics validation under different framings — same physical operation, two complementary scientific framings. See [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md) for the time-dynamics-side treatment.
+
+#### Phase 7 — Thermal mechanics from defect (A, ω) statistics (proposed)
 
 | Phase candidate | Layer / domain | Headline test |
 | --- | --- | --- |
-| **M7.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from the topological ground state — a real defect's instantaneous state is its rest-energy ground `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is now). Five sub-experiments share the same kink + Klein-Gordon background and instrumentation: **(7.1a) AM-up** — bump A above current; measure relaxation pathway, breather modes, emission spectrum. **(7.1b) AM-down** — pull A below current via destructive interference at the defect; measure whether the surrounding field refills the kink (the surroundings cool — the engineering operation). **(7.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(7.1d) FM-down** — slow ω below current via tuned interference; measure A rise and energy-source direction. **(7.1e) coupling cross-check** — validate `A/λ = const` holds at per-defect level under all four perturbation directions. The cheapest go/no-go check on the joint (A, ω) thermal hypothesis |
+| **M7.0 / Temperature observable + absolute-zero sanity check** | Per-defect thermal (definition + boundary case) | Define the temperature observable as a measurement of joint `(A, ω)` excess above ground-state `(A₀, ω₀)`. Implement it as a numerical probe operating on the M5.4 single-defect output. Verify the boundary case: a defect sitting at exactly `(A₀, ω₀)` with no perturbation reads `T = 0 K`. Verify monotonicity: small symmetric `(A − A₀, ω − ω₀)` excitation reads small positive `T`; larger excitation reads larger `T`. This is the cheapest pre-numerical sanity check on the framework — if M7.0 fails, the temperature definition itself is wrong and all downstream M7.x phases are meaningless. Establishes the temperature observable that M7.1 → M7.6 will all use |
+| **M7.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from the topological ground state — a real defect's instantaneous state is its rest-energy ground `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is now). Five sub-experiments share the same kink + Klein-Gordon background and instrumentation: **(7.1a) AM-up** — bump A above current; measure relaxation pathway, breather modes, emission spectrum. **(7.1b) AM-down** — pull A below current via destructive interference at the defect; measure whether the surrounding field refills the kink (a per-defect cooling event). **(7.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(7.1d) FM-down** — slow ω below current via tuned interference; measure A rise and energy-source direction. **(7.1e) coupling cross-check** — validate `A/λ = const` holds at per-defect level under all four perturbation directions. The cheapest go/no-go check on the joint (A, ω) thermal hypothesis |
 | **M7.2 / Soliton-breather comparison** | Per-defect thermal | Compare M7.1's measured amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). If the framework is correct, these breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
 | **M7.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
 | **M7.4 / Specific heat reproduction** | Defect ensemble thermal | From M7.3 statistics, derive specific heat C_V(T). Validate against experimental measurements: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
@@ -584,6 +609,15 @@ These Phase 7 phases are deliberately speculative — they assume the joint (A, 
 | ✅ | ❌ | Revise: heat is amplitude-only; engineering pivots to AM-pure pathway; doc updates needed |
 | ❌ | ✅ | Revise: heat is frequency-only or coupling inverted; rethink the physics framing |
 | ❌ | ❌ | Hypothesis falsified at the per-defect level; redirect Phase 7 effort |
+
+**Two-tier prerequisite distinction for M7.1**:
+
+| Test scope | Minimum prerequisites | Why |
+| --- | --- | --- |
+| **M7.1 internal validation** (tests the hypothesis at the field-theoretic level) | M5.4 (stable defect) + M5.2 (KG wave dynamics) | The "external wave" driving 7.1c/d can be a Klein-Gordon perturbation in the M5 medium itself. This is sufficient to test whether the defect responds to (A, ω) modulation as the hypothesis predicts |
+| **M7.1 full-lab-relevance** (tests with the same wave classes that downstream applications will use as engineering tools — EM, magnetic, acoustic, etc.) | M5.4 + Phase 4 (EM emergence) + Phase 5 (gravity, optional for non-gravitational drives) | Physical engineering applications use real-world wave classes. To predict their effect on defect modulation, the simulation drive must be the same class as the lab drive — which requires the lever-class phases to be validated first |
+
+The internal validation can run as soon as M5.4 lands; full lab-relevance results follow Phase 4 (EM-wave emergence). This is captured in the dependency chain: heat-substrate validation (M7.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites for engineering downstream — both must reach completion before applications that combine them can be predicted reliably from simulation.
 
 Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
 
@@ -651,6 +685,7 @@ The matter-particle hierarchy above (Layers 0–6) is OpenWave's *foundational l
 
 - The matter hierarchy alone is incomplete physics. You can simulate an electron beautifully and still not understand how it interacts with surrounding fields, photons, or thermal environments
 - Force / EM / heat are how matter *interacts* with the rest of the world — these are the observable, measurable outputs against which a wave-mechanics simulator is validated
+- Each output domain is its own validation target — not a derived consequence of M5 matter physics, but an *independent* phenomenon that requires its own emergent-physics chain. **Validating that EM waves emerge correctly (Phase 4) is a separate undertaking from validating particle masses (M5.8); validating gravity (Phase 5) is separate from both. Each downstream application that uses any of these as a tool — for resonance probing, for force coupling, for thermal modulation — depends on the corresponding output-domain phase landing first.** This is why the roadmap explicitly names them as parallel goals rather than collapsing them into "stuff M5 will eventually compute"
 - A simulator that does only matter is a particle-physics tool. A simulator that does matter + forces + EM + heat from one Lagrangian is a **complete classical-field-theoretic description** — that's the integrated value of OpenWave
 
 ### How matter layers feed forces / EM / heat outputs
