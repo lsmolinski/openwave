@@ -26,7 +26,9 @@ class WaveCenter:
     The phase offset models electrostatic charge (0 = electron, pi = positron).
     """
 
-    def __init__(self, grid_size, num_sources, sources_position, sources_offset_deg, init_velocity=None):
+    def __init__(
+        self, grid_size, num_sources, sources_position, sources_offset_deg, init_velocity=None
+    ):
         """
         Initialize the WaveCenter with given source positions and phase offsets.
 
@@ -35,6 +37,7 @@ class WaveCenter:
             num_sources: Number of wave center sources
             sources_position: List of normalized positions [(x, y, z), ...] in [0, 1]
             sources_offset_deg: List of phase offsets in degrees (0 = electron, 180 = positron)
+            init_velocity: Optional list of initial velocities [(vx, vy, vz), ...] in am/rs
         """
 
         self.num_sources = num_sources
