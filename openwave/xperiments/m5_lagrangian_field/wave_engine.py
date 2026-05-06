@@ -29,327 +29,36 @@ rho_qgam = constants.MEDIUM_DENSITY_QGAM  # qg/am³, for energy computation in s
 
 
 @ti.kernel
-def select_voxels(
-    wave_field: ti.template(),  # type: ignore
-    wave_center: ti.template(),  # type: ignore
-):
-    """
-    Select voxels for optimized wave computation (neighbor-only mode).
-
-    Populates wave_field.selected_voxels with the center + 6 neighbors
-    of each active wave center. Used for force gradient calculations
-    when flux mesh visualization is disabled.
-
-    Args:
-        wave_field: WaveField instance with selected_voxels buffer
-        wave_center: WaveCenter instance with source positions
-    """
-    # Reset counter
-    wave_field.num_selected_voxels[None] = 0
-
-    # 6-neighbor offsets: +x, -x, +y, -y, +z, -z (plus center = 0,0,0)
-    # Using static unrolling for performance
-    for wc_idx in range(wave_center.num_sources):
-        if wave_center.active[wc_idx] == 0:
-            continue
-
-        # Get wave center grid position
-        cx = wave_center.position_grid[wc_idx][0]
-        cy = wave_center.position_grid[wc_idx][1]
-        cz = wave_center.position_grid[wc_idx][2]
-
-        # Add center voxel (offset 0)
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector([cx, cy, cz])
-
-        # Add 6 neighbors with boundary clamping
-        # +x neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector(
-                [ti.min(cx + 1, wave_field.nx - 1), cy, cz]
-            )
-
-        # -x neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector([ti.max(cx - 1, 0), cy, cz])
-
-        # +y neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector(
-                [cx, ti.min(cy + 1, wave_field.ny - 1), cz]
-            )
-
-        # -y neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector([cx, ti.max(cy - 1, 0), cz])
-
-        # +z neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector(
-                [cx, cy, ti.min(cz + 1, wave_field.nz - 1)]
-            )
-
-        # -z neighbor
-        idx = ti.atomic_add(wave_field.num_selected_voxels[None], 1)
-        if idx < wave_field.max_selected_voxels:
-            wave_field.selected_voxels[idx] = ti.Vector([cx, cy, ti.max(cz - 1, 0)])
-
-
-@ti.func
-def compute_voxel_wave(
-    i: ti.i32,  # type: ignore
-    j: ti.i32,  # type: ignore
-    k: ti.i32,  # type: ignore
+def propagate_wave(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
-    k_grid: ti.f32,  # type: ignore
-    temporal_phase: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
 ):
     """
-    Compute wave displacement and envelope for a single voxel.
-
-    This function contains the core wave physics computation shared by both
-    full-grid and neighbor-only iteration modes.
-
-    Weighted Partial Standing Wave:
-        ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr · r̂
-
-    Components:
-        Out-wave: sin(kr - ωt - φ) / kr  (nodes move outward, always present)
-        In-wave:  w(r) · sin(kr + ωt + φ) / kr  (nodes move inward, fades with distance)
-
-    Weight function w(r,λ):
-        w = 1 / (1 + (r / (1.25λ))⁸)  — sharp Lorentzian rolloff
+    Compute wave displacement using Wolff-LaFreniere analytical wave equation.
 
     Physical Properties:
-        - Center (kr ≈ 0): pure standing wave, sinc → 2·cos(ωt+φ), finite at r=0
-        - Transition zone: partially standing, nodes drift outward
-        - Far field (r >> 1.25λ): pure traveling wave, 1/kr falloff
-        - Vector displacement along radial direction r̂ (longitudinal wave)
+        - Near center: standing wave behavior (finite amplitude at r=0)
+        - Far from center: transitions to traveling wave
+        - 1/r amplitude falloff (energy conserving, from Wolff)
+        - Electron core diameter = λ (full wavelength)
         - Superposition of multiple wave centers supported
 
     Wave Trackers Updated:
-        - amp_local_emarms_am: RMS amplitude via EMA on ψ² (for energy/force gradients)
+        - amp_local_emarms_am: RMS amplitude via EMA on ψ² (for visualization)
+        - amp_local_phasorrms_am: RMS amplitude via phasor components (for energy/force gradients)
         - freq_local_cross_rHz: Frequency via zero-crossing detection with EMA smoothing
 
-    Args:
-        i, j, k: Voxel grid indices
-        wave_field: WaveField instance
-        trackers: WaveTrackers instance
-        wave_center: WaveCenter instance
-        k_grid: Angular wave number (radians per grid index)
-        temporal_phase: Current temporal phase (ω·t)
-    """
-    # Reset before accumulation
-    prev_disp = wave_field.displacement_am[i, j, k]
-    wave_field.displacement_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
-
-    # Wavelength in grid units (for standing wave transition zone)
-    wavelength_grid = 2.0 * ti.math.pi / k_grid
-
-    # ================================================================
-    # WAVE PROPAGATION: Update voxels using wave functions
-    # ================================================================
-    # Loop over wave-centers (wave superposition principle causing interference)
-    for wc_idx in range(wave_center.num_sources):
-        # Skip inactive (annihilated) WCs
-        if wave_center.active[wc_idx] == 0:
-            continue
-
-        # Get direction from voxel to wave center (normalized vector)
-        dir_vec = [i, j, k] - wave_center.position_grid[wc_idx]
-        r_grid = dir_vec.norm() + 1e-10
-        direction = dir_vec / r_grid
-        # Center voxel: direction is zero (undefined for point source),
-        # use unit-z fallback so scalar oscillator reaches amplitude tracker
-        direction += ti.cast(r_grid < 0.5, ti.f32) * ti.Vector([0.0, 0.0, 1.0])
-
-        # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
-        spatial_phase = k_grid * r_grid
-
-        # Cache source-specific phase offset
-        source_offset = wave_center.offset[wc_idx]
-
-        # ================================================================
-        # WEIGHTED PARTIAL STANDING WAVE
-        # ================================================================
-        # Superposition of in-wave + out-wave, where the in-wave fades with distance
-        # Near the source: standing wave (in-wave + out-wave interfere)
-        # Far from source: pure traveling wave (in-wave fades)
-        #
-        # ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
-        #
-        # Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
-        # Standing limit (w=1, r→0): 2·cos(ωt + φ) via sinc normalization
-        # Traveling limit (w=0): sin(kr - ωt - φ) / kr
-        # ================================================================
-        # In-wave weight: sharp Lorentzian rolloff at 1.25λ
-        transition = 1 + 1 / 4  # number of wavelengths (λ)
-        weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
-
-        # Weighted partial standing wave oscillator
-        oscillator = ti.select(
-            r_grid < 0.5,  # center voxel: analytical limit
-            2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
-            (
-                weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
-                + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
-            )
-            / spatial_phase,  # 1/kr decay (sinc envelope)
-        )
-
-        # Accumulate this source's contribution (wave superposition)
-        wave_field.displacement_am[i, j, k] += (
-            base_amplitude_am * wave_field.scale_factor * oscillator
-        ) * direction
-
-    # TODO: consider precision rounding to ensure perfect cancellation
-    # Precision rounding to ensure wave cancellation
-    # Critical for opposing phase sources (180°) that should annihilate
-    # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
-    # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
-    # precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
-    # wave_field.displacement_am[i, j, k] = (
-    #     ti.round(wave_field.displacement_am[i, j, k] * precision) / precision
-    # )
-
-    curr_disp = wave_field.displacement_am[i, j, k]
-
-    # ================================================================
-    # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
-    # ================================================================
-    # # PEAK AMPLITUDE tracking
-    # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
-    # decay_factor_peak = ti.cast(0.999, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-    # trackers.ampL_local_peak_am[i, j, k] = (
-    #     trackers.ampL_local_peak_am[i, j, k] * decay_factor_peak
-    # )
-
-    # TODO: review EMS method for amplitude tracking (values compared to peak amp for force)
-    # TODO: review how vector displacement (has direction component) is handled in RMS calculation
-    # RMS AMPLITUDE tracking via EMA on ψ² (squared displacement)
-    # Running RMS: tracks √⟨ψ²⟩ - the energy-equivalent amplitude (Energy ∝ ψ²)
-    # Used for: energy calculation, force gradients, visualization scaling
-    # Physics: particles respond to time-averaged energy density, not
-    # instantaneous displacement (inertia acts as low-pass filter at ~10²⁵ Hz)
-    # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
-    # α controls adaptation speed: higher = faster response, lower = smoother
-    # RMS amplitude
-    disp2 = wave_field.displacement_am[i, j, k].norm() ** 2
-    current_rms2 = trackers.amp_local_emarms_am[i, j, k] ** 2
-    alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
-    new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
-    new_amp = ti.sqrt(new_rms2)
-
-    # Unconditional decay clears trails from moving sources
-    # Active regions counteract decay via EMA update from strong displacement
-    # Stale regions (waves propagated away) decay to zero over time
-    decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
-    trackers.amp_local_emarms_am[i, j, k] = new_amp * decay_factor
-
-    # TODO: review new frequency tracking method
-    # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
-    # Detect positive-going zero crossing (negative → positive transition)
-    # Period = time between consecutive positive zero crossings
-    # More robust than peak detection since it's amplitude-independent
-    # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
-    # α controls adaptation speed: higher = faster response, lower = smoother
-
-    # if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
-    #     period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
-    #     if period_rs > dt_rs * 2:  # Filter out spurious crossings
-    #         measured_freq = 1.0 / period_rs  # in rHz
-    #         current_freq = trackers.freq_local_cross_rHz[i, j, k]
-    #         alpha_freq = 0.05  # EMA smoothing factor for frequency
-    #         trackers.freq_local_cross_rHz[i, j, k] = (
-    #             alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
-    #         )
-    #     trackers.last_crossing[i, j, k] = elapsed_t_rs
-
-    # # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
-    # trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
-
-    trackers.freq_local_cross_rHz[i, j, k] = (
-        base_frequency_rHz  # TODO: fixed frequency for testing, replace with above method for dynamic frequency
-    )
-
-    # ================================================================
-    # LOCAL ENERGY PER VOXEL: E = ρ · V · (f · A)² in aJ (attojoules)
-    # F = -∇E (force = negative energy gradient, computed in force_motion)
-    # ================================================================
-    # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
-    # Internal units: qg·am²/rs² × 1000 → aJ
-    dx_am = wave_field.dx_am
-    amp_am = trackers.amp_local_emarms_am[i, j, k]
-    trackers.energy_local_aJ[i, j, k] = (
-        rho_qgam * dx_am**3 * (base_frequency_rHz * amp_am) ** 2 * constants.INTERNAL_ENERGY_TO_AJ
-    )
-
-
-@ti.kernel
-def propagate_wave_neighbors(
-    wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
-    wave_center: ti.template(),  # type: ignore
-    elapsed_t_rs: ti.f32,  # type: ignore
-    num_selected: ti.i32,  # type: ignore
-):
-    """
-    Compute wave displacement for selected neighbor voxels only (optimized mode).
-
-    Processes only the voxels selected by select_voxels() - the center + 6 neighbors
-    of each active wave center. Used for force gradient calculations when flux mesh
-    visualization is disabled.
-
-    Performance: ~7*N voxels instead of nx*ny*nz (massive gain for large grids).
-
-    Args:
-        wave_field: WaveField instance with selected_voxels populated
-        trackers: WaveTrackers instance for amplitude envelope
-        wave_center: WaveCenter instance with source positions
-        num_selected: Number of selected voxels to process
-    """
-    # Compute angular frequency (ω = 2πf) for temporal phase variation
-    omega_rs = (
-        2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
-    )  # angular frequency (rad/rs)
-
-    # Compute angular wave number (k = 2π/λ) for spatial phase variation
-    wavelength_grid = base_wavelength * wave_field.scale_factor / wave_field.dx
-    k_grid = 2.0 * ti.math.pi / wavelength_grid  # radians per grid index
-
-    # Temporal phase: φ = ω·t, oscillatory in time
-    temporal_phase = omega_rs * elapsed_t_rs
-
-    # Iterate only over selected voxels (neighbors of wave centers)
-    for sel_idx in range(num_selected):
-        i = wave_field.selected_voxels[sel_idx][0]
-        j = wave_field.selected_voxels[sel_idx][1]
-        k = wave_field.selected_voxels[sel_idx][2]
-        compute_voxel_wave(i, j, k, wave_field, trackers, wave_center, k_grid, temporal_phase)
-
-
-@ti.kernel
-def propagate_wave_full(
-    wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
-    wave_center: ti.template(),  # type: ignore
-    elapsed_t_rs: ti.f32,  # type: ignore
-):
-    """
-    Compute wave displacement using Wolff-LaFreniere analytical wave equation (full grid).
+    See research/01_wolff_lafreniere.md for full derivation and theory.
 
     Args:
         wave_field: WaveField instance containing displacement arrays and grid info
         trackers: WaveTrackers instance for tracking wave properties
         wave_center: WaveCenter instance with source positions and phase offsets
+        dt_rs: Timestep size (rs)
+        elapsed_t_rs: Elapsed simulation time (rs)
     """
     # Grid dimensions for boundary handling
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
@@ -366,9 +75,152 @@ def propagate_wave_full(
     # Temporal phase: φ = ω·t, oscillatory in time
     temporal_phase = omega_rs * elapsed_t_rs
 
-    # FULL GRID MODE: Compute all voxels (needed for flux mesh visualization)
+    # ================================================================
+    # WAVE PROPAGATION: Update voxels using wave functions
+    # ================================================================
+    # Update all voxels
     for i, j, k in ti.ndrange(nx, ny, nz):
-        compute_voxel_wave(i, j, k, wave_field, trackers, wave_center, k_grid, temporal_phase)
+        # Reset before accumulation
+        prev_disp = wave_field.displacement_am[i, j, k]
+        wave_field.displacement_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
+
+        # Loop over wave-centers (wave superposition principle causing interference)
+        for wc_idx in range(wave_center.num_sources):
+            # Skip inactive (annihilated) WCs
+            if wave_center.active[wc_idx] == 0:
+                continue
+
+            # Get direction from voxel to wave center (normalized vector)
+            dir_vec = [i, j, k] - wave_center.position_grid[wc_idx]
+            r_grid = dir_vec.norm() + 1e-10
+            direction = dir_vec / r_grid
+            # Center voxel: direction is zero (undefined for point source),
+            # use unit-z fallback so scalar oscillator reaches amplitude tracker
+            direction += ti.cast(r_grid < 0.5, ti.f32) * ti.Vector([0.0, 0.0, 1.0])
+
+            # Spatial phase: φ = k·r, creates spherical wave fronts, dimensionless, in radians
+            spatial_phase = k_grid * r_grid
+
+            # Cache source-specific phase offset
+            source_offset = wave_center.offset[wc_idx]
+
+            # ================================================================
+            # WEIGHTED PARTIAL STANDING WAVE
+            # ================================================================
+            # Superposition of in-wave + out-wave, where the in-wave fades with distance
+            # Near the source: standing wave (in-wave + out-wave interfere)
+            # Far from source: pure traveling wave (in-wave fades)
+            #
+            # ψ(r,t) = A · [w·sin(kr+ωt+φ) + sin(kr-ωt-φ)] / kr
+            #
+            # Weight(r,λ): smooth decay from 1 → 0, controls standing → traveling transition
+            # Standing limit (w=1, r→0): 2·cos(ωt + φ) via sinc normalization
+            # Traveling limit (w=0): sin(kr - ωt - φ) / kr
+            # ================================================================
+            # In-wave weight: sharp Lorentzian rolloff at 1.25λ
+            transition = 1 + 1 / 4  # number of wavelengths (λ)
+            weight = 1.0 / (1.0 + (r_grid / (transition * wavelength_grid)) ** 8)
+
+            # Weighted partial standing wave oscillator
+            oscillator = ti.select(
+                r_grid < 0.5,  # center voxel: analytical limit
+                2.0 * ti.cos(temporal_phase + source_offset),  # standing wave limit: 2·cos(ωt + φ)
+                (
+                    weight * ti.sin(spatial_phase + (temporal_phase + source_offset))  # in-wave
+                    + ti.sin(spatial_phase - (temporal_phase + source_offset))  # out-wave
+                )
+                / spatial_phase,  # 1/kr decay (sinc envelope)
+            )
+
+            # Accumulate this source's contribution (wave superposition)
+            wave_field.displacement_am[i, j, k] += (
+                base_amplitude_am * wave_field.scale_factor * oscillator
+            ) * direction
+
+        # TODO: consider precision rounding to ensure perfect cancellation
+        # Precision rounding to ensure wave cancellation
+        # Critical for opposing phase sources (180°) that should annihilate
+        # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
+        # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
+        # precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
+        # wave_field.displacement_am[i, j, k] = (
+        #     ti.round(wave_field.displacement_am[i, j, k] * precision) / precision
+        # )
+
+        curr_disp = wave_field.displacement_am[i, j, k]
+
+        # ================================================================
+        # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
+        # ================================================================
+        # # PEAK AMPLITUDE tracking
+        # ti.atomic_max(trackers.ampL_local_peak_am[i, j, k], curr_disp)
+        # decay_factor_peak = ti.cast(0.999, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
+        # trackers.ampL_local_peak_am[i, j, k] = (
+        #     trackers.ampL_local_peak_am[i, j, k] * decay_factor_peak
+        # )
+
+        # TODO: review EMS method for amplitude tracking (values compared to peak amp for force)
+        # TODO: review how vector displacement (has direction component) is handled in RMS calculation
+        # RMS AMPLITUDE tracking via EMA on ψ² (squared displacement)
+        # Running RMS: tracks √⟨ψ²⟩ - the energy-equivalent amplitude (Energy ∝ ψ²)
+        # Used for: energy calculation, force gradients, visualization scaling
+        # Physics: particles respond to time-averaged energy density, not
+        # instantaneous displacement (inertia acts as low-pass filter at ~10²⁵ Hz)
+        # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
+        # α controls adaptation speed: higher = faster response, lower = smoother
+        # RMS amplitude
+        disp2 = wave_field.displacement_am[i, j, k].norm() ** 2
+        current_rms2 = trackers.amp_local_emarms_am[i, j, k] ** 2
+        alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
+        new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
+        new_amp = ti.sqrt(new_rms2)
+
+        # Unconditional decay clears trails from moving sources
+        # Active regions counteract decay via EMA update from strong displacement
+        # Stale regions (waves propagated away) decay to zero over time
+        decay_factor = ti.cast(0.99, ti.f32)  # ~100 frames to ~37%, ~230 to ~10%
+        trackers.amp_local_emarms_am[i, j, k] = new_amp * decay_factor
+
+        # TODO: review new frequency tracking method
+        # FREQUENCY tracking, via zero-crossing detection with EMA smoothing
+        # Detect positive-going zero crossing (negative → positive transition)
+        # Period = time between consecutive positive zero crossings
+        # More robust than peak detection since it's amplitude-independent
+        # EMA smoothing: f_new = α * f_measured + (1 - α) * f_old
+        # α controls adaptation speed: higher = faster response, lower = smoother
+
+        # if prev_disp < 0.0 and curr_disp >= 0.0:  # Zero crossing detected
+        #     period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
+        #     if period_rs > dt_rs * 2:  # Filter out spurious crossings
+        #         measured_freq = 1.0 / period_rs  # in rHz
+        #         current_freq = trackers.freq_local_cross_rHz[i, j, k]
+        #         alpha_freq = 0.05  # EMA smoothing factor for frequency
+        #         trackers.freq_local_cross_rHz[i, j, k] = (
+        #             alpha_freq * measured_freq + (1.0 - alpha_freq) * current_freq
+        #         )
+        #     trackers.last_crossing[i, j, k] = elapsed_t_rs
+
+        # # Unconditional frequency decay (counteracted by zero-crossing updates in active regions)
+        # trackers.freq_local_cross_rHz[i, j, k] *= decay_factor
+
+        trackers.freq_local_cross_rHz[i, j, k] = (
+            base_frequency_rHz  # TODO: fixed frequency for testing, replace with above method for dynamic frequency
+        )
+
+        # ================================================================
+        # LOCAL ENERGY PER VOXEL: E = ρ · V · (f · A)² in aJ (attojoules)
+        # F = -∇E (force = negative energy gradient, computed in force_motion)
+        # ================================================================
+        # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
+        # Internal units: qg·am²/rs² × 1000 → aJ
+        dx_am = wave_field.dx_am
+        amp_am = trackers.amp_local_emarms_am[i, j, k]
+        trackers.energy_local_aJ[i, j, k] = (
+            rho_qgam
+            * dx_am**3
+            * (base_frequency_rHz * amp_am) ** 2
+            * constants.INTERNAL_ENERGY_TO_AJ
+        )
 
 
 # ================================================================
