@@ -96,7 +96,7 @@ GRADIENT_WEIGHT_FALLOFF = 2  # exponent for 1/d^n weighting
 # Velocity damping: fraction of velocity retained per timestep
 # 1.0 = no damping, 0.99 = light damping, 0.95 = moderate damping
 # Physically: models energy dissipation via radiation (photon emission)
-VELOCITY_DAMPING = 0.995
+VELOCITY_DAMPING = 0.999
 
 
 @ti.kernel
@@ -115,6 +115,16 @@ def compute_force_vector(
     a particle's own wave structure "feels" the surrounding energy landscape.
     For R=1: identical to standard central difference (single shell).
     Units: aJ/am = N (no conversion needed).
+
+    ┌───────┬────────┬────────────┐
+    │ Shell │ Weight │ Percentage │
+    ├───────┼────────┼────────────┤
+    │ d=1   │ 1.0    │ 73.5%      │
+    ├───────┼────────┼────────────┤
+    │ d=2   │ 0.25   │ 18.4%      │
+    ├───────┼────────┼────────────┤
+    │ d=3   │ 0.111  │ 8.2%       │
+    └───────┴────────┴────────────┘
 
     Scale correction: amplitude boost from scale_factor makes energy S² too
     large, so F_physical = F_computed / S².
@@ -332,12 +342,23 @@ def integrate_motion_leapfrog(
     """
     Integrate particle motion using Velocity Verlet (leapfrog) method.
 
-    Symplectic integrator — conserves energy in oscillatory systems,
-    preventing numerical drift that causes particles to escape lock-in wells.
+    Unlike Euler, leapfrog is symplectic — it conserves energy in oscillatory
+    systems, preventing numerical drift that causes particles to escape
+    lock-in wells. The method uses half-step velocity updates:
 
-    Leapfrog kick-drift-kick (combined across calls):
-      v += a * dt   (full kick)
-      x += v * dt   (drift with updated velocity)
+    1. v(t + dt/2) = v(t) + a(t) * dt/2       (half-step kick)
+    2. x(t + dt)   = x(t) + v(t + dt/2) * dt   (full-step drift)
+    3. compute a(t + dt) from new positions      (done externally)
+    4. v(t + dt)   = v(t + dt/2) + a(t + dt) * dt/2  (half-step kick)
+
+    Steps 1+2 are done here. Step 3 is the force computation (external).
+    Step 4 is done on the NEXT call (the first half-kick uses the NEW force).
+
+    In practice, we store v at half-steps and do:
+    v += a * dt   (full kick, combining two half-kicks across calls)
+    x += v * dt   (drift with updated velocity)
+
+    This is equivalent to standard leapfrog and is symplectic.
 
     Args:
         wave_field: WaveField instance (for dx voxel size)
@@ -362,7 +383,7 @@ def integrate_motion_leapfrog(
         a_y = (F_y / m_qg) * accel_conv_qg
         a_z = (F_z / m_qg) * accel_conv_qg
 
-        # Full velocity kick: v += a * dt
+        # Full velocity kick: v += a * dt (leapfrog: combines two half-kicks)
         wave_center.velocity_amrs[wc_idx][0] += a_x * dt_rs
         wave_center.velocity_amrs[wc_idx][1] += a_y * dt_rs
         wave_center.velocity_amrs[wc_idx][2] += a_z * dt_rs
@@ -385,7 +406,7 @@ def integrate_motion_leapfrog(
             wave_center.velocity_amrs[wc_idx][1] *= scale
             wave_center.velocity_amrs[wc_idx][2] *= scale
 
-        # Drift: x += v * dt
+        # Drift: x += v * dt (position update with kicked velocity)
         dx_am_step = wave_center.velocity_amrs[wc_idx][0] * dt_rs
         dy_am_step = wave_center.velocity_amrs[wc_idx][1] * dt_rs
         dz_am_step = wave_center.velocity_amrs[wc_idx][2] * dt_rs

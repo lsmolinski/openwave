@@ -278,7 +278,7 @@ def display_controls(state):
 def display_wave_menu(state):
     """Display wave properties selection menu."""
     with render.gui.sub_window("WAVE MENU", 0.00, 0.70, 0.15, 0.18) as sub:
-        if sub.checkbox("Displacement", state.WAVE_MENU == 1):
+        if sub.checkbox("Displacement (Scalar)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
         if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2

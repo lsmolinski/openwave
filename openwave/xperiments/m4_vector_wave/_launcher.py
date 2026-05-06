@@ -124,6 +124,7 @@ class SimulationState:
         self.NUM_SOURCES = 1
         self.SOURCES_POSITION = []
         self.SOURCES_OFFSET_DEG = []
+        self.INIT_VELOCITY = None
         self.APPLY_MOTION = True
 
         # UI control variables
@@ -166,6 +167,7 @@ class SimulationState:
         self.NUM_SOURCES = sources["COUNT"]
         self.SOURCES_POSITION = sources["POSITION"]
         self.SOURCES_OFFSET_DEG = sources["PHASE_OFFSETS_DEG"]
+        self.INIT_VELOCITY = sources.get("INIT_VELOCITY", None)
         self.APPLY_MOTION = sources["APPLY_MOTION"]
 
         # UI defaults
@@ -206,6 +208,7 @@ class SimulationState:
             self.NUM_SOURCES,
             self.SOURCES_POSITION,
             self.SOURCES_OFFSET_DEG,
+            self.INIT_VELOCITY,
         )
 
     def reset_sim(self):
@@ -282,7 +285,7 @@ def display_controls(state):
 def display_wave_menu(state):
     """Display wave properties selection menu."""
     with render.gui.sub_window("WAVE MENU", 0.00, 0.73, 0.15, 0.15) as sub:
-        if sub.checkbox("Displacement", state.WAVE_MENU == 1):
+        if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
         if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
