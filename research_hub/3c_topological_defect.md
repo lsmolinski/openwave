@@ -679,6 +679,71 @@ All four were *separate postulates* in EWT and quantum mechanics. In M5, they're
 
 ---
 
+## OUTGOING-WAVE L+T DECOMPOSITION — MAGNETISM AS THE TRANSVERSE CHANNEL
+
+The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (M7.7 / M7.8 / M7.9 in [3d_path_to_m5.md](3d_path_to_m5.md)) all build on it.
+
+### The decomposition
+
+The defect's rotational oscillation (intrinsic Zitterbewegung) drives **ellipsoidal granule motion** in the surrounding medium — already documented in `Connection to M4's elliptical granule motion` above. Each granule traces a small ellipse around its equilibrium position; the trajectories have radial AND tangential components. Equivalently, the defect's **outgoing wave-field carries two coupled components**:
+
+| Component | What the granules do | What the wave carries (mainstream physics) |
+| --- | --- | --- |
+| **Longitudinal (L)** | Radial displacement / pressure-like oscillation along the wave-propagation direction | Electric / scalar field (the static Coulomb 1/d² recovered in Exp 2) |
+| **Transverse (T)** | Tangential displacement perpendicular to the wave-propagation direction | **Magnetic field** (the magnetic-moment information) |
+
+The two components are *coupled through the same rotation* (they share a single ω = 2mc²/ℏ Zitterbewegung clock at the defect core), but they propagate as independent observable channels in the surrounding medium. M4's 6-phasor representation (3 amplitudes + 3 phases per voxel) is mathematically rich enough to carry both components on the existing infrastructure.
+
+### Why magnetism IS the T-component (not just correlated with it)
+
+Multiple framings in this document converge on the same conclusion:
+
+- **Topology asymmetry** (`Topology asymmetry — magnetism (S¹) vs. electric charge (S²)` above): magnetism is quantized by S¹-loop winding while electric charge is quantized by S²-surface winding. Different topology, same SO(3) parent. The S¹-loop manifests as transverse circulation of the field — i.e., the T-component
+- **Vorticity-as-magnetic-field** (`Magnetism as dynamical correction to Coulomb` above): in the EM-fluid analog, vorticity ∇ × v is mathematically identical to B. Vorticity is transverse circulation of the medium — i.e., T-component
+- **Kinematic correction to Coulomb** (Feynman / Barnett framing, same section): magnetism is the relativistic kinematic correction to the static Coulomb field of moving charges. The correction is transverse to the motion — i.e., T-component
+- **Outgoing-wave decomposition** (this section): the defect's emitted wave carries L + T components; the T-component is the magnetic-field information
+
+These framings are not in tension — they're **the same physics seen from different vantage points**. The S¹ topology dictates *that* magnetism exists as a quantized observable; the kinematic-correction view explains *why* it manifests under motion; the L+T decomposition is the *concrete propagating-wave structure* of the magnetic information at the per-defect level.
+
+### Why the T-component is normally invisible
+
+A standalone defect at rest has a non-zero outgoing T-component, but that component is **inertially invisible** to any nearby massive test particle. Two reasons:
+
+- **High ω averaging.** The T-component oscillates at the defect's Zitterbewegung frequency (~10²¹ rad/s for an electron — line 601 above). Even the lightest available test particle (an electron) has its own inertial mass averaging the response to zero at that frequency. The instantaneous T-field is non-zero at every moment, but the *force experienced by the test particle* time-averages to zero
+- **Direction averaging.** A defect at rest emits a spherically symmetric outgoing wave. The T-component, being tangential, has no preferred net direction across the full sphere — the angular average of the tangential field on a closed sphere is exactly zero (it's a divergence-free transverse field, ∇·T = 0)
+
+This is why an isolated electron at rest is electrically detectable (the L-component / Coulomb 1/d²) but **not measurably magnetic on its own**.
+
+### Three known conditions that manifest the T-component
+
+Macroscopic magnetism appears when one or more of the averagings above is broken:
+
+1. **Coherent alignment** in a material's structure → permanent magnets. Aligned domains break the direction averaging across the sphere; the T-components add coherently along the magnetization axis. The 10²¹ rad/s frequency averaging still happens at the per-defect level but the *coherent sum* yields a non-zero static magnetic field
+2. **Coherent motion** of charges in one direction → electromagnets. Moving charges' T-components add coherently in the lab frame (the kinematic-correction-to-Coulomb framing above). Equivalent to imposing a coherent direction on the otherwise-isotropic emission
+3. **Frequency downshift of the effective T-component oscillation** → exposes the field to the inertial-response regime where test particles can resolve it. This is a **falsifiable physics question** for Phase 4 — see [3d_path_to_m5.md § Phase 4 explicit goals](3d_path_to_m5.md#phase-4--explicit-goals-refined-2026-05) for the experimental design. If the high-ω averaging can be defeated by a heterodyne / mixing / low-pass operation on the wave field, magnetism becomes inertially observable at the downshifted frequency. If not, the averaging is fundamental and magnetism stays bound to the existing two manifesting conditions
+
+The third route is the new physics target Phase 4 must validate (or falsify); the first two are well-established empirical phenomena (permanent magnets and electromagnets) that any viable framework must reproduce — and this one does, by construction, from the L+T decomposition + coherent-summing argument.
+
+### Coupling to thermal excess (per-defect heat-magnetism wave-level link)
+
+If thermal excess is the joint (A, ω) excess of the defect's intrinsic oscillation (the Phase 7 thermal hypothesis), then thermal excess scales the *outgoing wave's amplitude* — and the outgoing wave's amplitude scales **both** the L-component AND the T-component. Therefore:
+
+> **Thermal excess scales the latent magnetic-component magnitude of the outgoing wave at the per-defect level.** Heat and magnetism are coupled at the wave level — they are different observable channels of one underlying outgoing-wave content.
+
+Mainstream phenomena consistent with this prediction:
+
+- **Curie temperature** — above some `T_c`, ferromagnets lose alignment. In the L+T framing, thermal randomization breaks the coherent T-component summing across the domain (the alignment manifesting condition fails)
+- **Magnetocaloric effect** — applied magnetic-field changes produce temperature changes at fixed pressure
+- **Pyromagnetic / thermomagnetic coefficients** — per-material temperature-magnetization coupling constants
+
+In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **M7.9 in [3d_path_to_m5.md](3d_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
+
+### Note on engineering operationalization
+
+Engineering primitives that exploit the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **private SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer the devices that exploit it. This document and the Phase 4 / Phase 7 plans in [3d_path_to_m5.md](3d_path_to_m5.md) cover only the physics side.
+
+---
+
 ## EXPLICIT FORMULA — WHERE `ω = 2mc²/ℏ` COMES FROM
 
 For Dr. Duda's φ⁴ time-crystal toy model (arxiv:2501.04036), the derivation proceeds as follows:
