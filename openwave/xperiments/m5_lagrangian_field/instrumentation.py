@@ -49,7 +49,7 @@ def plot_probe_wave_profile(wave_field):
 
     # Sample longitudinal displacement values
     for i in range(wave_field.nx):
-        displacements[i] = wave_field.displacement_am[i, py, pz]
+        displacements[i] = wave_field.psi_am[i, py, pz]
         displacements_T[i] = wave_field.velocity_am[i, py, pz]
 
     # Calculate distance from center in grid indices
@@ -119,7 +119,10 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
     # Capture probe values
-    displacement_am = wave_field.displacement_am[px, py, pz] / wave_field.scale_factor
+    # Local var keeps the "displacement_am" name (it's the physics observable being
+    # recorded; matches the CSV column header below). RHS reads from the renamed
+    # storage field psi_am.
+    displacement_am = wave_field.psi_am[px, py, pz] / wave_field.scale_factor
     amp_local_emarms_am = trackers.amp_local_emarms_am[px, py, pz] / wave_field.scale_factor
     freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
 

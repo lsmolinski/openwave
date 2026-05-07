@@ -81,8 +81,8 @@ def propagate_wave(
     # Update all voxels
     for i, j, k in ti.ndrange(nx, ny, nz):
         # Reset before accumulation
-        prev_disp = wave_field.displacement_am[i, j, k]
-        wave_field.displacement_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
+        prev_disp = wave_field.psi_am[i, j, k]
+        wave_field.psi_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
 
         # Loop over wave-centers (wave superposition principle causing interference)
         for wc_idx in range(wave_center.num_sources):
@@ -133,7 +133,7 @@ def propagate_wave(
             )
 
             # Accumulate this source's contribution (wave superposition)
-            wave_field.displacement_am[i, j, k] += (
+            wave_field.psi_am[i, j, k] += (
                 base_amplitude_am * wave_field.scale_factor * oscillator
             ) * direction
 
@@ -143,11 +143,11 @@ def propagate_wave(
         # Floating-point: (+1.250001) + (-1.249999) = 0.000002 (imperfect cancel)
         # With rounding: (+1.2500) + (-1.2500) = 0.0 (perfect cancel)
         # precision = ti.cast(1e4, ti.f32)  # round to 4 decimal places
-        # wave_field.displacement_am[i, j, k] = (
-        #     ti.round(wave_field.displacement_am[i, j, k] * precision) / precision
+        # wave_field.psi_am[i, j, k] = (
+        #     ti.round(wave_field.psi_am[i, j, k] * precision) / precision
         # )
 
-        curr_disp = wave_field.displacement_am[i, j, k]
+        curr_disp = wave_field.psi_am[i, j, k]
 
         # ================================================================
         # WAVE-TRACKERS: Update amplitude and frequency trackers for visualization and forces
@@ -169,7 +169,7 @@ def propagate_wave(
         # EMA on ψ²: rms² = α * ψ² + (1 - α) * rms²_old, then rms = √(rms²)
         # α controls adaptation speed: higher = faster response, lower = smoother
         # RMS amplitude
-        disp2 = wave_field.displacement_am[i, j, k].norm() ** 2
+        disp2 = wave_field.psi_am[i, j, k].norm() ** 2
         current_rms2 = trackers.amp_local_emarms_am[i, j, k] ** 2
         alpha_rms = 0.005  # EMA smoothing factor for RMS tracking
         new_rms2 = alpha_rms * disp2 + (1.0 - alpha_rms) * current_rms2
@@ -249,7 +249,7 @@ def sample_position_to_render(
         sj = render_idx % sampled_ny  # sampled col index
         i = si * stride
         j = sj * stride
-        displaced = amp_boost * wave_field.displacement_am[i, j, k] / wave_field.dx_am + ti.Vector(
+        displaced = amp_boost * wave_field.psi_am[i, j, k] / wave_field.dx_am + ti.Vector(
             [ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]
         )
         wave_field.position_render[render_idx] = displaced / max_dim
@@ -418,7 +418,7 @@ def update_flux_mesh_values(
     # Always update all planes (conditionals cause GPU branch divergence)
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample longitudinal displacement at this voxel
-        disp_value = wave_field.displacement_am[i, j, wave_field.fm_plane_z_idx].norm()
+        disp_value = wave_field.psi_am[i, j, wave_field.fm_plane_z_idx].norm()
         amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         energy_value = trackers.energy_local_aJ[i, j, wave_field.fm_plane_z_idx]
@@ -465,7 +465,7 @@ def update_flux_mesh_values(
     # ================================================================
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        disp_value = wave_field.displacement_am[i, wave_field.fm_plane_y_idx, k].norm()
+        disp_value = wave_field.psi_am[i, wave_field.fm_plane_y_idx, k].norm()
         amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         energy_value = trackers.energy_local_aJ[i, wave_field.fm_plane_y_idx, k]
@@ -512,7 +512,7 @@ def update_flux_mesh_values(
     # ================================================================
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
         # Sample longitudinal displacement at this voxel
-        disp_value = wave_field.displacement_am[wave_field.fm_plane_x_idx, j, k].norm()
+        disp_value = wave_field.psi_am[wave_field.fm_plane_x_idx, j, k].norm()
         amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         energy_value = trackers.energy_local_aJ[wave_field.fm_plane_x_idx, j, k]

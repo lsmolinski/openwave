@@ -1,9 +1,9 @@
 """
-WOLFF-LAFRENIERE Method Medium Data-Grid
+VECTOR-WAVE Method Medium Data-Grid
 
 Object Classes @spacetime module.
 
-WOLFF-LAFRENIERE propagates Wave Motion (ENERGY-WAVE).
+VECTOR-WAVE propagates Wave Motion (ENERGY-WAVE).
 Modeled as a wave-field that allows energy to transfer from one point to the next.
 """
 
