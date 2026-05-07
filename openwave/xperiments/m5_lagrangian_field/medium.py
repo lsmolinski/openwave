@@ -487,13 +487,16 @@ class Trackers:
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
-        # ENERGY FIELD for visualization and force calculations (stores energy per voxel)
-        self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, local energy
+        # DEPRECATED: per-voxel energy field — no kernel writes to it under M5.0d
+        # (compute_total_hamiltonian replaces it as a scalar reduction). Kept zero-
+        # valued only because xforce_motion.compute_force_vector still reads it.
+        # M5.0g replaces this with H_density_aJ (per-voxel Hamiltonian) and
+        # rewrites the force computation as F = −∇H.
+        self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, deprecated
 
-        # GLOBAL AVERAGES for visualization scaling & energy calculations
+        # GLOBAL AVERAGES for visualization scaling
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # average energy per voxel
 
         # Assign default values for visualization scaling
         # baseline to allow wave peaks to rise without color saturation
@@ -503,7 +506,6 @@ class Trackers:
         self.freq_global_avg_rHz[None] = (
             constants.EWAVE_FREQUENCY * constants.RONTOSECOND * scale_factor
         )
-        self.energy_global_avg_aJ[None] = constants.BASE_ENERGY_DENSITY_AJAM
 
 
 if __name__ == "__main__":
