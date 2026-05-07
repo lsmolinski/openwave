@@ -29,7 +29,7 @@ print("STABILITY ANALYSIS - WAVE EQUATION")
 print("=" * 64)
 
 # Wave propagation parameters
-c = constants.EWAVE_SPEED  # m/s, speed of light
+c = constants.WAVE_SPEED  # m/s, speed of light
 dx = wave_field.voxel_edge  # m, voxel edge length
 ewave_freq = constants.EWAVE_FREQUENCY  # Hz
 

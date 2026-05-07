@@ -1148,7 +1148,7 @@ The numerical values of EWT's medium constants survive; their **physical interpr
 | Constant | M1–M4 meaning | M5 meaning |
 | --- | --- | --- |
 | `MEDIUM_DENSITY` (ρ = 3.86×10²² kg/m³) | Aether density | Vacuum field density ← unchanged |
-| `EWAVE_SPEED` (c = 2.998×10⁸ m/s) | Base wave speed | Wave propagation speed (Klein-Gordon / Close Eq. 19/23) ← unchanged |
+| `WAVE_SPEED` (c = 2.998×10⁸ m/s) | Base wave speed | Wave propagation speed (Klein-Gordon / Close Eq. 19/23) ← unchanged |
 | `EWAVE_AMPLITUDE` (A ≈ 0.92 am) | Universal base wave amplitude | Characteristic defect-emitted perturbation amplitude |
 | `EWAVE_LENGTH` (λ ≈ 28.5 am) | Universal base wavelength | Defect core / Compton length scale (Yee & Hauger shells) |
 | `EWAVE_FREQUENCY` (f ≈ 10²⁵ Hz) | Assumed medium oscillation frequency | Derived time-crystal frequency of defects (`ω = 2mc²/ℏ` at this mass scale) |

@@ -728,7 +728,7 @@ def compute_ewt_electric_force(r, K=1, Oe=1.0, glambda=1.0):
     """
     coefficient = (
         4.0 * np.pi * MEDIUM_DENSITY * (K**7) * (EWAVE_AMPLITUDE**6)
-        * (EWAVE_SPEED**2) * Oe * glambda
+        * (WAVE_SPEED**2) * Oe * glambda
     ) / (3.0 * (EWAVE_LENGTH**2))
     return coefficient / (r**2)
 

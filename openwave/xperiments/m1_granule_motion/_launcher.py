@@ -297,7 +297,7 @@ def display_data_dashboard(state):
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
-        sub.text(f"eWAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"eWAVE Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
         sub.text(

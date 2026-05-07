@@ -303,7 +303,7 @@ dx = wavelength / points_per_wavelength
 
 # Spatial pattern design
 def design_wave_pattern(frequency):
-    wavelength = constants.EWAVE_SPEED / frequency
+    wavelength = constants.WAVE_SPEED / frequency
     return create_spatial_pattern(wavelength)
 ```
 

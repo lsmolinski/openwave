@@ -85,7 +85,7 @@ def data_dashboard():
 
         sub.text("")
         sub.text("--- ENERGY-WAVE ---")
-        sub.text(f"EWAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"EWAVE Speed (c): {constants.WAVE_SPEED:.1e} m/s")
         sub.text(f"EWAVE Wavelength (lambda): {constants.EWAVE_LENGTH:.1e} m")
         sub.text(f"EWAVE Frequency (f): {constants.EWAVE_FREQUENCY:.1e} Hz")
         sub.text(f"EWAVE Amplitude (A): {constants.EWAVE_AMPLITUDE:.1e} m")

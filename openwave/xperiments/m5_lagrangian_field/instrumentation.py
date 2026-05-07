@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import csv
 from pathlib import Path
 
-from openwave.common import colormap, constants
+from openwave.common import colormap
 
 
 # ================================================================
@@ -42,60 +42,37 @@ def plot_probe_wave_profile(wave_field):
     # Define probe position
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
-    # Extract displacement along x-axis at center (y, z)
+    # Extract displacement along x-axis at center (y, z).
+    # ψ is Vector(3); plot magnitude (|ψ|) — single scalar per voxel.
+    # M5.0d.3: removed broken references to `velocity_am` (field doesn't exist
+    # in M5) and to a "transverse" component (M5 doesn't decompose L/T at the
+    # storage layer — that lives in derived observables).
     x_indices = np.arange(wave_field.nx)
     displacements = np.zeros(wave_field.nx)
-    displacements_T = np.zeros(wave_field.nx)
 
-    # Sample longitudinal displacement values
     for i in range(wave_field.nx):
-        displacements[i] = wave_field.psi_am[i, py, pz]
-        displacements_T[i] = wave_field.velocity_am[i, py, pz]
+        displacements[i] = float(wave_field.psi_am[i, py, pz].norm())
 
-    # Calculate distance from center in grid indices
     distances = x_indices - px
 
-    # Create the plot
     plt.style.use("dark_background")
-    fig = plt.figure(figsize=(12, 6), facecolor=colormap.DARK_GRAY[1])
+    fig = plt.figure(figsize=(8, 5), facecolor=colormap.DARK_GRAY[1])
     fig.suptitle("OPENWAVE Analytics", fontsize=20, family="Monospace")
 
-    # Plot 1: Longitudinal Displacement vs distance from center
-    plt.subplot(1, 2, 1)
     plt.plot(
         distances,
         displacements,
         color=colormap.viridis_palette[2][1],
-        linewidth=4,
-        label="LONGITUDINAL",
+        linewidth=2,
+        label="|ψ| (am)",
     )
-    plt.axhline(y=0, color="k", linestyle="--", alpha=0.3)
+    plt.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     plt.axvline(x=0, color="r", linestyle="--", alpha=0.3)
-    plt.ylim(-1.0, 6.0)
-    plt.xlabel("Distance from Wave-Center (grid indices)", family="Monospace")
-    plt.ylabel("Displacement (attometers)", family="Monospace")
+    plt.xlabel("Distance from probe center (grid indices)", family="Monospace")
+    plt.ylabel("|ψ| (am)", family="Monospace")
     plt.title("WAVE PROFILE", family="Monospace")
     plt.grid(True, alpha=0.3)
     plt.legend()
-
-    # Plot 2: Transverse Displacement vs distance from center
-    plt.subplot(1, 2, 2)
-    plt.plot(
-        distances,
-        displacements_T,
-        color=colormap.ironbow_palette[2][1],
-        linewidth=4,
-        label="TRANSVERSE",
-    )
-    plt.axhline(y=0, color="k", linestyle="--", alpha=0.3)
-    plt.axvline(x=0, color="r", linestyle="--", alpha=0.3)
-    plt.ylim(-1.0, 6.0)
-    plt.xlabel("Distance from Wave-Center (grid indices)", family="Monospace")
-    plt.ylabel("Displacement (attometers)", family="Monospace")
-    plt.title("WAVE PROFILE", family="Monospace")
-    plt.grid(True, alpha=0.3)
-    plt.legend()
-
     plt.tight_layout()
 
     # Save to directory
@@ -119,12 +96,13 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
     # Capture probe values
-    # Local var keeps the "displacement_am" name (it's the physics observable being
-    # recorded; matches the CSV column header below). RHS reads from the renamed
-    # storage field psi_am.
-    displacement_am = wave_field.psi_am[px, py, pz] / wave_field.scale_factor
-    amp_local_emarms_am = trackers.amp_local_emarms_am[px, py, pz] / wave_field.scale_factor
-    freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
+    # ψ is a Vector(3); record its magnitude for a single CSV scalar column.
+    # M5.0d.3: scale_factor was removed — values are now recorded in their native
+    # storage units (am, rHz). M5.2+ may revisit signed-component logging once
+    # polarization conventions are settled.
+    displacement_am = float(wave_field.psi_am[px, py, pz].norm())
+    amp_local_emarms_am = float(trackers.amp_local_emarms_am[px, py, pz])
+    freq_local_cross_rHz = float(trackers.freq_local_cross_rHz[px, py, pz])
 
     # Add to buffer
     _timestep_buffer.append(
@@ -216,19 +194,23 @@ def plot_probe_values():
     if data is None:
         return
 
-    # Create the plot with 3 subplots (stacked vertically)
+    # M5.0d.3: dropped EWT-scaled reference axhlines (eWAVE_AMPLITUDE /
+    # eWAVE_FREQUENCY) — they don't apply to M5's variable-λ regime, where the
+    # reference scale is xperiment-driven (seed wavelength or defect λ_C).
+    # Also dropped the broken transverse subplot (data["displacements_T"] was
+    # never populated; M5 doesn't decompose L/T at the storage layer).
     plt.style.use("dark_background")
-    fig = plt.figure(figsize=(9, 9), facecolor=colormap.DARK_GRAY[1])
+    fig = plt.figure(figsize=(9, 7), facecolor=colormap.DARK_GRAY[1])
     fig.suptitle("OPENWAVE Analytics", fontsize=20, family="Monospace")
 
-    # Plot 1: Longitudinal Displacement and Amplitude (top)
-    plt.subplot(3, 1, 1)
+    # Plot 1: |ψ| Displacement + RMS Amplitude over time (top)
+    plt.subplot(2, 1, 1)
     plt.plot(
         data["timesteps"],
         data["displacements"],
         color=colormap.viridis_palette[2][1],
         linewidth=2,
-        label="DISPLACEMENT (am)",
+        label="|ψ| (am)",
     )
     plt.plot(
         data["timesteps"],
@@ -237,65 +219,21 @@ def plot_probe_values():
         linewidth=2,
         label="RMS AMPLITUDE (am)",
     )
-    plt.axhline(
-        y=constants.EWAVE_AMPLITUDE / constants.ATTOMETER,
-        color=colormap.viridis_palette[4][1],
-        linestyle="--",
-        alpha=0.5,
-        label="eWAVE AMPLITUDE (am)",
-    )
     plt.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     plt.xlabel("Timestep", family="Monospace")
     plt.ylabel("Displacement / Amplitude (am)", family="Monospace")
-    plt.title("(LONGITUDINAL) DISPLACEMENT & AMPLITUDE OVER TIME", family="Monospace")
+    plt.title("DISPLACEMENT & AMPLITUDE OVER TIME", family="Monospace")
     plt.grid(True, alpha=0.3)
     plt.legend()
 
-    # Plot 2: Transverse Displacement and Amplitude (middle)
-    plt.subplot(3, 1, 2)
-    plt.plot(
-        data["timesteps"],
-        data["displacements_T"],
-        color=colormap.ironbow_palette[2][1],
-        linewidth=2,
-        label="DISPLACEMENT (am)",
-    )
-    plt.plot(
-        data["timesteps"],
-        data["amplitudes"],
-        color=colormap.ironbow_palette[3][1],
-        linewidth=2,
-        label="RMS AMPLITUDE (am)",
-    )
-    plt.axhline(
-        y=constants.EWAVE_AMPLITUDE / constants.ATTOMETER,
-        color=colormap.ironbow_palette[4][1],
-        linestyle="--",
-        alpha=0.5,
-        label="eWAVE AMPLITUDE (am)",
-    )
-    plt.axhline(y=0, color="w", linestyle="--", alpha=0.3)
-    plt.xlabel("Timestep", family="Monospace")
-    plt.ylabel("Displacement / Amplitude (am)", family="Monospace")
-    plt.title("(TRANSVERSE) DISPLACEMENT & AMPLITUDE OVER TIME", family="Monospace")
-    plt.grid(True, alpha=0.3)
-    plt.legend()
-
-    # Plot 3: Frequency (bottom)
-    plt.subplot(3, 1, 3)
+    # Plot 2: Frequency over time (bottom)
+    plt.subplot(2, 1, 2)
     plt.plot(
         data["timesteps"],
         data["frequencies"],
         color=colormap.blueprint_palette[2][1],
         linewidth=2,
         label="FREQUENCY (rHz)",
-    )
-    plt.axhline(
-        y=constants.EWAVE_FREQUENCY * constants.RONTOSECOND,
-        color=colormap.blueprint_palette[1][1],
-        linestyle="--",
-        alpha=0.5,
-        label="eWAVE FREQUENCY (rHz)",
     )
     plt.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     plt.xlabel("Timestep", family="Monospace")

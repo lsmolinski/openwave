@@ -336,7 +336,7 @@ def display_data_dashboard(state):
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
-        sub.text(f"eWAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"eWAVE Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
         sub.text(
@@ -431,7 +431,7 @@ def compute_wave_oscillation(state):
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.energy_global_avg = state.trackers.energy_global_avg_aJ[None] * constants.ATTOJOULE  # J
-    state.wavelength_global_avg = constants.EWAVE_SPEED / (
+    state.wavelength_global_avg = constants.WAVE_SPEED / (
         state.freq_global_avg or 1
     )  # prevents 0 div
 

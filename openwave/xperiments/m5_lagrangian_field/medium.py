@@ -13,7 +13,7 @@ evolution uses a triple-buffer leapfrog scheme (psi_prev_am, psi_am, psi_new_am)
 
 import taichi as ti
 
-from openwave.common import colormap, constants, equations, utils
+from openwave.common import colormap, constants, utils
 
 
 @ti.data_oriented
@@ -105,24 +105,7 @@ class WaveField:
         self.universe_size_am = [size / constants.ATTOMETER for size in self.universe_size]
         self.max_universe_edge = max(self.nx * self.dx, self.ny * self.dx, self.nz * self.dx)
         self.max_universe_edge_am = self.max_universe_edge / constants.ATTOMETER
-        self.max_universe_edge_lambda = self.max_universe_edge / constants.EWAVE_LENGTH  # λ / edge
         self.universe_volume = self.voxel_count * self.voxel_volume
-
-        # Compute SCALE FACTOR
-        # Will be applied to wave amplitude & wavelength, preserving wave steepness
-        min_sampling = 12  # voxels per wavelength for adequate sampling (stable ~12)
-        self.scale_factor = max(
-            min_sampling / (constants.EWAVE_LENGTH / self.dx), 1
-        )  # linear scale factor, for computation tractability
-
-        # Compute simulation resolution
-        # Voxels per wavelength, should be >10 for adequate sampling (same for all axes)
-        self.ewave_res = constants.EWAVE_LENGTH / self.dx * self.scale_factor  # voxels / λ
-
-        # Compute grid nominal energy from energy-wave equation
-        self.nominal_energy = equations.compute_energy_wave_equation(self.universe_volume)  # J
-        self.nominal_energy_kWh = self.nominal_energy * utils.J2KWH  # KWh
-        self.nominal_energy_years = self.nominal_energy_kWh / (183230 * 1e9)  # years
 
         # ================================================================
         # DATA STRUCTURE & INITIALIZATION
@@ -472,7 +455,7 @@ class Trackers:
     per-voxel fields and grid-wide averages for visualization scaling.
     """
 
-    def __init__(self, grid_size, scale_factor):
+    def __init__(self, grid_size):
         """
         Initialize tracker fields for wave property monitoring.
 
@@ -494,18 +477,11 @@ class Trackers:
         # rewrites the force computation as F = −∇H.
         self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, deprecated
 
-        # GLOBAL AVERAGES for visualization scaling
+        # GLOBAL AVERAGES for visualization scaling — initialized to zero; the
+        # update_trackers_psi EMA + sample_avg_trackers fill these in during sim.
+        # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-
-        # Assign default values for visualization scaling
-        # baseline to allow wave peaks to rise without color saturation
-        self.amp_global_emarms_am[None] = (
-            constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
-        )
-        self.freq_global_avg_rHz[None] = (
-            constants.EWAVE_FREQUENCY * constants.RONTOSECOND * scale_factor
-        )
 
 
 if __name__ == "__main__":
@@ -539,17 +515,10 @@ if __name__ == "__main__":
     print(f"  Grid size: {wave_field.nx} x {wave_field.ny} x {wave_field.nz} voxels")
     print(f"  Voxel edge: {wave_field.dx:.2e} m (cubic - same for all axes)")
     print(f"  Voxel count: {wave_field.voxel_count:,}")
-    print(f"  Total energy: {wave_field.nominal_energy:.2e} J")
-
-    # Resolutions
-    print(f"\nGrid Linear Resolutions:")
-    print(f"  Energy-wave resolution: {wave_field.ewave_res:.2f} voxels per lambda")
-    if wave_field.ewave_res < 10:
-        print(f"  *** WARNING: Undersampling! ***")
-
-    print(
-        f"  Max universe resolution: {wave_field.max_universe_edge_lambda:.2f} lambda per max universe edge"
-    )
+    print(f"  Voxel edge (am): {wave_field.dx_am:.2f} am")
+    print(f"  Universe volume: {wave_field.universe_volume:.2e} m³")
+    print(f"  Note: voxels-per-wavelength resolution is now xperiment-driven")
+    print(f"        (declared via WAVE_SEED or defect Compton wavelength)")
 
     print("\n================================================================")
     print("END SMOKE TEST: DATA-GRID MODULE")

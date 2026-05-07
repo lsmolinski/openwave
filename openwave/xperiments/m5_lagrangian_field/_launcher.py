@@ -115,10 +115,14 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.amp_global_rms = constants.EWAVE_AMPLITUDE
-        self.freq_global_avg = constants.EWAVE_FREQUENCY
-        self.wavelength_global_avg = constants.EWAVE_LENGTH
+        # Field aggregates — populated by sample_avg_trackers; physical units.
+        self.amp_global_rms = 0.0  # m
+        self.freq_global_avg = 0.0  # Hz
+        self.wavelength_global_avg = 0.0  # m, derived from freq_global_avg
         self.hamiltonian_total_aJ = 0.0
+        # Resolution metric: voxels-per-wavelength (xperiment-driven).
+        # 0.0 means "no reference λ declared" → dashboard shows n/a
+        self.wave_res = 0.0
 
         # Current xperiment parameters
         self.X_NAME = ""
@@ -210,7 +214,17 @@ class SimulationState:
         self.wave_field = medium.WaveField(
             self.UNIVERSE_SIZE, self.TARGET_VOXELS, self.FLUX_MESH_PLANES
         )
-        self.trackers = medium.Trackers(self.wave_field.grid_size, self.wave_field.scale_factor)
+        self.trackers = medium.Trackers(self.wave_field.grid_size)
+
+        # Resolution metric: voxels-per-wavelength, declared by the active
+        # xperiment. Sources (in priority order):
+        #   1. WAVE_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
+        #   2. (M5.2+) defect Compton wavelength    — particle xperiments
+        #   3. None / 0.0                           — no reference (vacuum tests)
+        if self.WAVE_SEED is not None:
+            self.wave_res = float(self.WAVE_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
+        else:
+            self.wave_res = 0.0
 
         # Initialize wave-centers
         self.wave_center = particle.WaveCenter(
@@ -237,7 +251,7 @@ class SimulationState:
         """
         cfl_safety = 0.95
         self.c_amrs = (
-            constants.EWAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * self.SIM_SPEED
+            constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * self.SIM_SPEED
         )  # am/rs (slowed)
         # Tight CFL bound against physical c (= c_amrs / SIM_SPEED), with safety
         # factor — so cfl_factor saturates at (cfl_safety² / 3) at SIM_SPEED=1.
@@ -256,10 +270,11 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.amp_global_rms = constants.EWAVE_AMPLITUDE
-        self.freq_global_avg = constants.EWAVE_FREQUENCY
-        self.wavelength_global_avg = constants.EWAVE_LENGTH
+        self.amp_global_rms = 0.0
+        self.freq_global_avg = 0.0
+        self.wavelength_global_avg = 0.0
         self.hamiltonian_total_aJ = 0.0
+        self.wave_res = 0.0
         self.initialize_grid()
         self.compute_timestep()
         initialize_xperiment(self)
@@ -337,15 +352,15 @@ def display_wave_menu(state):
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+                sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+                sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("frequency", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
+                sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
         if state.WAVE_MENU == 4:  # Hamiltonian density on ironbow gradient (M5.0g)
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("hamiltonian", 0.00, 0.67, 0.08, 0.06) as sub:
@@ -372,32 +387,34 @@ def display_data_dashboard(state):
     clock_time = time.time() - state.clock_start_time
     sim_time_years = clock_time / (state.elapsed_t_rs * constants.RONTOSECOND or 1) / 31_536_000
 
-    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.38, 0.16, 0.62) as sub:
+    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.40, 0.16, 0.60) as sub:
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
-        sub.text(f"WAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"Wave Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(
-            f"Universe: {state.wave_field.max_universe_edge:.1e} m ({state.wave_field.max_universe_edge_lambda:.0f} waves)"
-        )
+        sub.text(f"Universe: {state.wave_field.max_universe_edge:.1e} m")
         sub.text(f"Voxel Count: {state.wave_field.voxel_count:,}")
         sub.text(
             f"Grid Size: {state.wave_field.nx} x {state.wave_field.ny} x {state.wave_field.nz}"
         )
         sub.text(f"Voxel Edge: {state.wave_field.dx:.2e} m")
 
-        sub.text("\n--- RESOLUTION (scaled-up) ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Scale-up Factor: {state.wave_field.scale_factor:.1f}x")
-        sub.text(f"Wave: {state.wave_field.ewave_res:.1f} voxels/wave (~12)")
-        if state.wave_field.ewave_res < 10:
-            sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
+        sub.text("\n--- RESOLUTION ---", color=colormap.LIGHT_BLUE[1])
+        # wave_res is xperiment-driven; 0.0 means no reference λ declared.
+        # Stable leapfrog needs ≥12 voxels/λ; <10 is undersampled.
+        if state.wave_res > 0:
+            sub.text(f"Wave: {state.wave_res:.1f} voxels/wave (>12)")
+            if state.wave_res < 10:
+                sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
+        else:
+            sub.text("Wave: n/a (no wave declared)")
 
         sub.text("\n--- WAVE-FIELD ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Amplitude: {state.amp_global_rms/state.wave_field.scale_factor:.1e} m")
-        sub.text(f"Frequency: {state.freq_global_avg*state.wave_field.scale_factor:.1e} Hz")
-        sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
+        sub.text(f"Amplitude: {state.amp_global_rms:.1e} m")
+        sub.text(f"Frequency: {state.freq_global_avg:.1e} Hz")
+        sub.text(f"Wavelength: {state.wavelength_global_avg:.1e} m")
 
         sub.text("\n--- TIME MICROSCOPE ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Sim Steps (frames): {state.frame:,}")
@@ -489,9 +506,7 @@ def compute_oscillation(state):
         )
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
-    state.wavelength_global_avg = constants.EWAVE_SPEED / (
-        state.freq_global_avg or 1
-    )  # prevents 0 div
+    state.wavelength_global_avg = constants.WAVE_SPEED / (state.freq_global_avg or 1)  # no 0 div
 
     if state.INSTRUMENTATION:
         instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)
@@ -526,9 +541,12 @@ def compute_force_motion(state):
             state.wave_center.velocity_amrs[wc_idx] = ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
 
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
-    # Detect and handle particle annihilation (opposite phase WCs meeting)
-    # Threshold: WCs can be at grid diagonal positions and dt_rs may cause larger jumps
-    annihilation_threshold = state.wave_field.ewave_res / 2.0  # in voxels
+    # Detect and handle particle annihilation (opposite phase WCs meeting).
+    # Threshold: WCs can be at grid diagonal positions and dt_rs may cause larger jumps.
+    # M5.0d.3: hardcoded to 6 voxels (was state.wave_field.ewave_res / 2). Defects
+    # don't physically have a single universal interaction radius; M5.2 will replace
+    # this with a per-defect-type Compton-wavelength-based threshold.
+    annihilation_threshold = 6.0  # in voxels
     force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
@@ -570,12 +588,9 @@ def render_elements(state):
             position = np.array(
                 [[wc_pos_screen[0], wc_pos_screen[1], wc_pos_screen[2]]], dtype=np.float32
             )
-            radius = (
-                constants.EWAVE_LENGTH
-                / state.wave_field.max_universe_edge
-                * state.wave_field.scale_factor
-                * 0.75  # adjusted for taichi particle rendering perspective projection
-            )
+            # Particle shell radius — fixed-fraction-of-universe-edge default.
+            # M5.2 replaces with per-defect-type Compton wavelength sizing.
+            radius = 0.02  # ~2% of normalized universe edge
             color = (
                 colormap.COLOR_PARTICLE[1]
                 if state.SOURCES_OFFSET_DEG[wc_idx] == 180
@@ -617,7 +632,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "annihilation1"
+    default_xperiment = selected_xperiment_arg or "_test_smoke"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

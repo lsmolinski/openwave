@@ -35,20 +35,20 @@ ATTOJOULE = 1e-18  # J/aj, attojoule energy scale
 INTERNAL_ENERGY_TO_AJ = 1000.0  # 1 qg·am²/rs² = 1000 aJ
 
 # ================================================================
-# WAVE-FIELD MEDIUM [EWT Constants]
+# WAVE-FIELD MEDIUM
 # ================================================================
-MEDIUM_DENSITY = 3.859764604e22  # kg / m^3, wave-medium density (ρ)
-EWAVE_SPEED = 2.99792458e8  # m / s, speed of light (c), c² = elasticity / density of medium
+MEDIUM_DENSITY = 3.859764604e22  # kg / m^3, EWT wave-medium density (ρ)
+WAVE_SPEED = 2.99792458e8  # m / s, speed of light (c), c² = elasticity / density of medium
 
 MEDIUM_DENSITY_QGAM = 38.59764604  # qg / am^3, wave-medium density (ρ) in quectogram units
-EWAVE_SPEED_AMRS = 0.299792458  # am / rs, speed of light (c) in attometer/rontosecond units
+WAVE_SPEED_AMRS = 0.299792458  # am / rs, speed of light (c) in attometer/rontosecond units
 
 # ================================================================
 # ENERGY-WAVE RHYTHM & SIZE [EWT Constants]
 # ================================================================
 EWAVE_AMPLITUDE = 9.215405708e-19  # m, energy-wave amplitude (A, equilibrium-to-peak)
-EWAVE_LENGTH = 2.854096501e-17  # m, energy-wave length (λ = EWAVE_SPEED / EWAVE_FREQUENCY)
-EWAVE_FREQUENCY = 1.050393558e25  # Hz, energy-wave frequency (f = EWAVE_SPEED / EWAVE_LENGTH)
+EWAVE_LENGTH = 2.854096501e-17  # m, energy-wave length (λ = WAVE_SPEED / EWAVE_FREQUENCY)
+EWAVE_FREQUENCY = 1.050393558e25  # Hz, energy-wave frequency (f = WAVE_SPEED / EWAVE_LENGTH)
 EWAVE_PERIOD = 9.520241169e-26  # s, energy-wave period (T = 1 / EWAVE_FREQUENCY)
 
 EWAVE_AMPLITUDE_AM = 0.9215405708  # am, energy-wave amplitude in attometer units

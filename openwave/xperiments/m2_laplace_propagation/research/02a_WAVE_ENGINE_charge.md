@@ -187,7 +187,7 @@ def charge_wolff_spherical_wave(
     """
     center_am = center / constants.ATTOMETER
     amp_local_peak_am = amplitude / constants.ATTOMETER
-    k = 2.0 * ti.math.pi * frequency / constants.EWAVE_SPEED
+    k = 2.0 * ti.math.pi * frequency / constants.WAVE_SPEED
 
     for i, j, k_idx in self.psiL_am:
         pos_am = self.get_position_am(i, j, k_idx)
@@ -225,7 +225,7 @@ universe_volume = wave_field.actual_universe_size[0] * \
 total_energy = equations.compute_energy_wave_equation(
     volume=universe_volume,
     density=constants.MEDIUM_DENSITY,
-    speed=constants.EWAVE_SPEED,
+    speed=constants.WAVE_SPEED,
     wavelength=constants.EWAVE_LENGTH,
     amplitude=constants.EWAVE_AMPLITUDE
 )

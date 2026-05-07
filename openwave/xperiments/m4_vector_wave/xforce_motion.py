@@ -44,7 +44,7 @@ ELEMENTARY_CHARGE = constants.ELEMENTARY_CHARGE  # C, e = 1.60e-19
 # EWT particle constants (for EWT force reference)
 MEDIUM_DENSITY = constants.MEDIUM_DENSITY  # kg/m³
 EWAVE_AMPLITUDE = constants.EWAVE_AMPLITUDE  # m
-EWAVE_SPEED = constants.EWAVE_SPEED  # m/s
+WAVE_SPEED = constants.WAVE_SPEED  # m/s
 EWAVE_LENGTH = constants.EWAVE_LENGTH  # m
 ELECTRON_K = constants.ELECTRON_K
 ELECTRON_OUTER_SHELL = constants.ELECTRON_OUTER_SHELL
@@ -74,7 +74,7 @@ def compute_ewt_electric_force(
         * MEDIUM_DENSITY
         * (K**7)
         * (EWAVE_AMPLITUDE**6)
-        * (EWAVE_SPEED**2)
+        * (WAVE_SPEED**2)
         * Oe
         * glambda
     ) / (3.0 * (EWAVE_LENGTH**2))

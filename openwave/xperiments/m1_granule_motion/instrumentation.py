@@ -6,7 +6,6 @@ This provides zero-overhead data collection that can be toggled on/off per xperi
 
 from openwave.common import constants
 
-
 # ================================================================
 # Instrumentation Functions (Zero-Overhead)
 # ================================================================
@@ -17,7 +16,7 @@ def print_initial_parameters():
     print("\n" + "=" * 64)
     print("INSTRUMENTATION ENABLED")
     print("=" * 64)
-    print(f"Expected Wave Speed (c):        {constants.EWAVE_SPEED:.6e} m/s")
+    print(f"Expected Wave Speed (c):        {constants.WAVE_SPEED:.6e} m/s")
     print(f"Expected Wavelength (λ):      {constants.EWAVE_LENGTH:.6e} m")
     print(f"Expected Frequency (f):       {constants.EWAVE_FREQUENCY:.6e} Hz")
     print(f"Expected Amplitude (A):         {constants.EWAVE_AMPLITUDE:.6e} m")
@@ -63,7 +62,7 @@ def print_wave_diagnostics(
     # For PSHO, just print confirmation that wave is running correctly
     print(f"\n=== WAVE DIAGNOSTICS (Frame {frame}, t={t:.3f}s) ===")
     print(f"✓ PSHO Running - Wave parameters guaranteed correct by construction:")
-    print(f"  Wave Speed:    c = {constants.EWAVE_SPEED:.6e} m/s")
+    print(f"  Wave Speed:    c = {constants.WAVE_SPEED:.6e} m/s")
     print(f"  Wavelength:    λ = {constants.EWAVE_LENGTH:.6e} m")
     print(f"  Frequency:     f = {constants.EWAVE_FREQUENCY:.6e} Hz")
     print(f"  Phase relation: φ = -kr ensures outward propagation")

@@ -17,7 +17,7 @@ from openwave.common import colormap, constants, equations, utils
 # Energy-Wave Oscillation Parameters
 # ================================================================
 base_amplitude_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # in am
-base_frequency = constants.EWAVE_SPEED / constants.EWAVE_LENGTH  # in Hz
+base_frequency = constants.WAVE_SPEED / constants.EWAVE_LENGTH  # in Hz
 base_wavelength_am = constants.EWAVE_LENGTH / constants.ATTOMETER  # in am
 
 # ================================================================

@@ -81,7 +81,7 @@ dt_frame = 1/60 ≈ 0.016 s
 **Key Parameters Tested**:
 
 - Voxel edge: dx from `WaveField.voxel_edge`
-- Wave speed: c = `constants.EWAVE_SPEED` = 2.998×10⁸ m/s
+- Wave speed: c = `constants.WAVE_SPEED` = 2.998×10⁸ m/s
 - SLO_MO factor: `config.SLO_MO` (configurable, typically ~10²⁵)
 - Frame rates: 60 FPS (dt = 0.0167s) and 30 FPS (dt = 0.0333s)
 
@@ -162,7 +162,7 @@ python openwave/validations/stability_analysis_wave.py
 1. **Apply SLO_MO to wave speed**, not timestep:
 
    ```python
-   c_slo = constants.EWAVE_SPEED / config.SLO_MO * SIM_SPEED
+   c_slo = constants.WAVE_SPEED / config.SLO_MO * SIM_SPEED
    ```
 
 2. **Use fixed timestep strategy**, not elapsed time:

@@ -24,7 +24,7 @@ from openwave.common import constants
 # Energy-Wave Oscillation Parameters
 # ================================================================
 amplitude_am = constants.EWAVE_AMPLITUDE / constants.ATTOMETER  # am, oscillation amplitude
-frequency = constants.EWAVE_SPEED / constants.EWAVE_LENGTH  # Hz, energy-wave frequency
+frequency = constants.WAVE_SPEED / constants.EWAVE_LENGTH  # Hz, energy-wave frequency
 
 
 # ================================================================
@@ -452,13 +452,13 @@ def probe_wave_diagnostics(
         wave_speed = distance_traveled_m / dt_real if dt_real > 0 else 0
 
         # Calculate error vs speed of light
-        speed_error = abs(wave_speed - constants.EWAVE_SPEED) / constants.EWAVE_SPEED * 100
+        speed_error = abs(wave_speed - constants.WAVE_SPEED) / constants.WAVE_SPEED * 100
 
         print(f"\n{'='*70}")
         print(f"WAVE SPEED MEASUREMENT #{_diagnostic_state['measurement_count']}")
         print(f"{'='*70}")
         print(f"Wave speed: {wave_speed:.3e} m/s")
-        print(f"Expected:   {constants.EWAVE_SPEED:.3e} m/s (speed of light)")
+        print(f"Expected:   {constants.WAVE_SPEED:.3e} m/s (speed of light)")
         print(f"Error:      {speed_error:.1f}%")
         print(f"Distance traveled: {distance_traveled_m:.3e} m ({distance_traveled_am:.1f} am)")
         print(f"Time elapsed (sim): {dt_sim:.3e} s (real: {dt_real:.3e} s)")
