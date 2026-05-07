@@ -24,6 +24,60 @@ rho_qgam = constants.MEDIUM_DENSITY_QGAM  # qg/am³, for energy computation in s
 
 
 # ================================================================
+# DIFFERENTIAL OPERATORS
+# ================================================================
+# 6-point Laplacian stencil for the vector field ψ. Acts component-wise on
+# psi_am (ti.Vector.field(3, ...)); Taichi handles Vector(3) arithmetic
+# natively, so the stencil applied to a Vector field returns a Vector field.
+#
+# Curl, divergence, and curl(curl) operators land in this section in M5.0e.
+
+
+@ti.func
+def compute_laplacian_psi(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """
+    Compute the vector Laplacian ∇²ψ at voxel [i, j, k] using a 6-point stencil.
+
+    Reads from `wave_field.psi_am` (the current-time buffer, ψ at t).
+    Returns a Vector(3) — the discrete Laplacian acts component-wise:
+        ∇²ψ = (∇²ψ_x, ∇²ψ_y, ∇²ψ_z)
+
+    Standard 2nd-order finite-difference stencil:
+        ∇²ψ ≈ (face_sum − 6·center) / dx²
+    where face_sum = ψ[i±1] + ψ[j±1] + ψ[k±1] (six face neighbors).
+
+    Note: the L/T (longitudinal vs transverse) decomposition of the field is a
+    property of the field configuration (radial vs tangential displacement),
+    NOT of the operator. M5's vector field handles both together; the L/T view
+    is computed post hoc by projecting ψ onto radial/tangential directions.
+
+    Args:
+        wave_field: WaveField instance (reads psi_am)
+        i, j, k: Voxel indices (must be interior: 0 < i < nx-1, etc. — caller
+            handles boundary skip)
+
+    Returns:
+        ∇²ψ as Vector(3) in units [am / am²] = [1/am]
+    """
+    face_sum = (
+        wave_field.psi_am[i + 1, j, k]
+        + wave_field.psi_am[i - 1, j, k]
+        + wave_field.psi_am[i, j + 1, k]
+        + wave_field.psi_am[i, j - 1, k]
+        + wave_field.psi_am[i, j, k + 1]
+        + wave_field.psi_am[i, j, k - 1]
+    )
+    center = wave_field.psi_am[i, j, k]
+    laplacian_psi_am = (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+    return laplacian_psi_am
+
+
+# ================================================================
 # WAVE PROPAGATION ENGINE
 # ================================================================
 
