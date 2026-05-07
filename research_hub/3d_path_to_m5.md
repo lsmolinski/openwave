@@ -284,6 +284,15 @@ In one sentence: **M5 doesn't simulate the EWT vacuum's oscillations — there a
 
 ### Performance optimizations to bake into M5.0 from Day 1
 
+> **Profile before optimizing.** Tier 2 + Tier 3 optimizations below are options, not commitments. Apply them only after a profiling pass identifies the actual bottleneck. The default sequence is:
+>
+> 1. Land **Tier 1** architectural decisions before any kernel is written (these are hard to retrofit).
+> 2. After the M5.0 scaffold + the gating physics-invariant test pass, run a **profiling pass**: instrument the leapfrog kernel, swap_buffers, Hamiltonian / tracker computations; measure per-frame wall time at production-relevant grid sizes (256³ baseline, then electron-scale ~384³); identify which operations dominate.
+> 3. Apply **Tier 2** optimizations selectively in the order that addresses the measured bottleneck — not the order they appear in this list. (E.g., if the Laplacian dominates, BlockLocal tiling first; if buffer swap dominates, replace `copy_from` with a single Taichi kernel; if trackers dominate, skip-N-frames first.)
+> 4. **Tier 3** is for production-scale runs (M5.5+); deferred until profiling shows the simpler tiers are insufficient.
+>
+> Premature optimization without profiling guidance is the historical failure mode of physics simulators — every optimization complicates the code; only those that target measured bottlenecks justify the complexity.
+
 #### Tier 1 — architectural decisions (fix before any kernel is written)
 
 1. **Native `ti.Vector.field(3, ...)`** with single triple buffer (`psi_prev`, `psi`, `psi_new`) — halves memory traffic vs three independent scalar fields and lets Taichi vectorize 3-component operations

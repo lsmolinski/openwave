@@ -78,7 +78,74 @@ def compute_laplacian_psi(
 
 
 # ================================================================
-# WAVE PROPAGATION ENGINE
+# ψ PROPAGATION ENGINE — LAGRANGIAN FIELD EVOLUTION
+# ================================================================
+# propagate_psi evolves the field ψ via leapfrog/Verlet integration of the
+# wave equation:
+#     ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ
+#
+# In M5.0d this lands with V(ψ) = 0 (free wave). The nonlinear potential term
+# −∂V/∂ψ is added in M5.2 (Close's Eq. 23 + Klein-Gordon mass term + LdG).
+#
+# Why "propagate_psi" not "propagate_wave": the operation is field evolution,
+# not wave-specific. Leapfrog also evolves topology (defect drift), gradient
+# descent for relaxation reuses the same buffers, etc. Naming follows what the
+# function operates on (the field ψ), not the method (leapfrog) or one of the
+# behaviors (wave propagation).
+#
+# Caller MUST call wave_field.swap_buffers() after this kernel returns, to
+# cycle the triple buffer: psi_prev ← psi, psi ← psi_new.
+
+
+@ti.kernel
+def propagate_psi(
+    wave_field: ti.template(),  # type: ignore
+    c_amrs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+):
+    """
+    Evolve ψ one timestep via leapfrog/Verlet integration.
+
+    Wave Equation (free wave, V=0):
+        ∂²ψ/∂t² = c²·∇²ψ
+
+    Discrete (leapfrog/Verlet):
+        ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+
+    Reads:  wave_field.psi_am, wave_field.psi_prev_am
+    Writes: wave_field.psi_new_am
+
+    Boundary: Dirichlet (ψ = 0 at edges) — interior voxels only.
+    The 6-point Laplacian needs a 1-cell halo, so the loop range is
+    (1, n−1) on each axis. Boundary voxels are never updated; they stay
+    at whatever value they were initialized with (0 by default).
+
+    CFL stability: dt ≤ dx / (c·√3) for 3D wave equation. Caller is
+    responsible for sizing dt below this bound (see _launcher CFL eval).
+
+    Args:
+        wave_field: WaveField instance (reads psi_am, psi_prev_am; writes psi_new_am)
+        c_amrs: wave speed in scaled units (am/rs); already includes any
+            slow-motion factor for visualization
+        dt_rs: timestep in rontoseconds, sized below the CFL bound
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    c_dt_squared = (c_amrs * dt_rs) ** 2
+
+    # Interior voxels only (Dirichlet BC; 6-point Laplacian needs 1-cell halo)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        laplacian_psi_am = compute_laplacian_psi(wave_field, i, j, k)
+
+        # Leapfrog/Verlet update: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+        wave_field.psi_new_am[i, j, k] = (
+            2.0 * wave_field.psi_am[i, j, k]
+            - wave_field.psi_prev_am[i, j, k]
+            + c_dt_squared * laplacian_psi_am
+        )
+
+
+# ================================================================
+# WAVE PROPAGATION ENGINE — LEGACY (M4 ANALYTICAL, TO BE DELETED IN M5.0d.2)
 # ================================================================
 
 
