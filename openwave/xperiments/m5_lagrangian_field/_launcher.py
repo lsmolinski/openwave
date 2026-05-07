@@ -22,7 +22,7 @@ from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m5_lagrangian_field.medium as medium
 import openwave.xperiments.m5_lagrangian_field.particle as particle
-import openwave.xperiments.m5_lagrangian_field.wave_engine as ewave
+import openwave.xperiments.m5_lagrangian_field.lagrangian_engine as lagrange
 import openwave.xperiments.m5_lagrangian_field.xforce_motion as force_motion
 import openwave.xperiments.m5_lagrangian_field.instrumentation as instrument
 
@@ -404,7 +404,7 @@ def initialize_xperiment(state):
 def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
-    ewave.propagate_wave(
+    lagrange.propagate_wave(
         state.wave_field,
         state.trackers,
         state.wave_center,
@@ -415,7 +415,7 @@ def compute_wave_oscillation(state):
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
-        ewave.sample_avg_trackers(state.wave_field, state.trackers)
+        lagrange.sample_avg_trackers(state.wave_field, state.trackers)
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.energy_global_avg = state.trackers.energy_global_avg_aJ[None] * constants.ATTOJOULE  # J
@@ -477,7 +477,7 @@ def render_elements(state):
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
-        ewave.update_flux_mesh_values(
+        lagrange.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
             state.WAVE_MENU,
@@ -531,7 +531,7 @@ def render_elements(state):
         sampled_nx = (nx + stride - 1) // stride
         sampled_ny = (ny + stride - 1) // stride
         num_render = min(sampled_nx * sampled_ny, max_particles)
-        ewave.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
+        lagrange.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
         pos_np = state.wave_field.position_render.to_numpy()[:num_render]
         render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
 
