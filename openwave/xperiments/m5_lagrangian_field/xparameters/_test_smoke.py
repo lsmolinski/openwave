@@ -35,7 +35,7 @@ XPARAMETERS = {
         "DESCRIPTION": "Seeded traveling plane wave — visual leapfrog verification",
     },
     "camera": {
-        "INITIAL_POSITION": [0.37, 1.45, 1.24],
+        "INITIAL_POSITION": [0.97, 1.44, 1.11],
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
@@ -54,8 +54,8 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": True,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 1,
-        "WARP_MESH": 50,
+        "SHOW_FLUX_MESH": 3,
+        "WARP_MESH": 40,
         "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,

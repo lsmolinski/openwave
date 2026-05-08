@@ -342,12 +342,16 @@ def display_wave_menu(state):
     with render.gui.sub_window("WAVE MENU", 0.00, 0.73, 0.15, 0.15) as sub:
         if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
+            state.wave_field.create_flux_mesh()
         if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
+            state.wave_field.create_flux_mesh()
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
+            state.wave_field.create_flux_mesh()
         if sub.checkbox("Hamiltonian (M5.0g)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
+            state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
