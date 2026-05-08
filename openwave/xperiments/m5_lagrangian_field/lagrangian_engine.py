@@ -201,63 +201,6 @@ def seed_dispersion_modes(
         wave_field.psi_prev_am[i, j, k] = sum_tprev * polarization
 
 
-@ti.kernel
-def project_modes_to_amplitudes(
-    wave_field: ti.template(),  # type: ignore
-    mode_indices: ti.template(),  # type: ignore
-    polarization: ti.template(),  # type: ignore
-    out_amplitudes: ti.template(),  # type: ignore
-):
-    """
-    Project ψ onto each Dirichlet-eigenmode shape, returning per-mode scalar
-    amplitudes — the M5.0h time-series extraction kernel.
-
-    For each mode m, computes the un-normalized inner product
-
-        out[m] = Σ_{i,j,k} (ψ(i,j,k) · ê_pol) · shape_m(i,j,k)
-
-    where shape_m is defined identically to seed_dispersion_modes. Caller
-    divides by ((N−1)/2)³ — the orthonormality factor of three independent
-    1D Dirichlet sin bases — to recover A_m.
-
-    Used by the m5_0h_dispersion test to record per-mode amplitudes each
-    step → temporal FFT → measured ω_m → fit against discrete dispersion.
-
-    Args:
-        wave_field: WaveField (reads psi_am)
-        mode_indices: ti.field shape (n_modes, 3) of i32
-        polarization: ti.types.vector(3, ti.f32) — same ê used at seeding
-        out_amplitudes: ti.field shape (n_modes,) of f32 — written
-    """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
-    nm1_x = ti.cast(nx - 1, ti.f32)
-    nm1_y = ti.cast(ny - 1, ti.f32)
-    nm1_z = ti.cast(nz - 1, ti.f32)
-    n_modes = out_amplitudes.shape[0]
-
-    # Zero accumulators
-    for m in range(n_modes):
-        out_amplitudes[m] = ti.cast(0.0, ti.f32)
-
-    # Atomic-add accumulate. 5 atomics per voxel × ~64³ voxels = ~1.3M atomics
-    # per call — tractable for a once-per-step extraction kernel at small grids.
-    for i, j, k in ti.ndrange(nx, ny, nz):
-        psi_proj = wave_field.psi_am[i, j, k].dot(polarization)
-        x = ti.cast(i, ti.f32)
-        y = ti.cast(j, ti.f32)
-        z = ti.cast(k, ti.f32)
-        for m in range(n_modes):
-            n_x_m = ti.cast(mode_indices[m, 0], ti.f32)
-            n_y_m = ti.cast(mode_indices[m, 1], ti.f32)
-            n_z_m = ti.cast(mode_indices[m, 2], ti.f32)
-            shape = (
-                ti.sin(n_x_m * ti.math.pi * x / nm1_x)
-                * ti.sin(n_y_m * ti.math.pi * y / nm1_y)
-                * ti.sin(n_z_m * ti.math.pi * z / nm1_z)
-            )
-            ti.atomic_add(out_amplitudes[m], psi_proj * shape)
-
-
 # ================================================================
 # DIFFERENTIAL OPERATORS
 # ================================================================
@@ -792,6 +735,15 @@ def sample_position_to_render(
 # - Samples ~3N² voxels instead of N³ (e.g., 3% for 100³ grid)
 # - Assumes isotropic field distribution (valid for most wave scenarios)
 # - Acceptable accuracy vs massive performance gain
+#
+# AUTO-REDUCE CAVEAT (M5.0h, 2026-05-08): Taichi's "implicit sum reduction"
+# pattern (`s = 0; for ... in ti.ndrange: s += ...`) lowers to atomic_add on
+# the Metal backend and hits the same contention wall as explicit atomic_add.
+# At 63³ × ~5 reductions/step the test pinned the GPU at 100% and stalled
+# at ~25 steps/min. Workaround used in m5_0h_dispersion: replace the global
+# inner product with sparse point sampling (one voxel read per mode of
+# interest, FFT recovers ω from the mixed time series). Don't assume "auto-
+# reduction" sidesteps this on Metal — it doesn't.
 # ================================================================
 
 # Cached slice buffers (initialized on first call) — one per axis × per observable

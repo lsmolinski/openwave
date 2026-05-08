@@ -452,9 +452,10 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - ✅ Naming convention captured per Rodrigo's 2026-05-08 review: the quantity is **energy** (aJ); the `_H` suffix tags the *formula* used (Hamiltonian). Future formulas would parallel: `_L` for Lagrangian density, `_K` for kinetic-only. Renamed `compute_hamiltonian_density` → `compute_energy_density_H`, `compute_total_hamiltonian` → `compute_energy_total_H`, `H_density_aJ` → `energy_density_H_aJ`, `H_global_avg_aJ` → `energy_global_H_avg_aJ`, `hamiltonian_total_aJ` → `energy_total_H_aJ`
 - ✅ Smoke-tested end-to-end: `annihilation1` (ψ=0): all energy fields zero, no forces; `_test_smoke` (Gaussian packet): non-trivial energy_density_H_aJ peak ~5e-3, total ~8e3 aJ, forces non-zero where ∇H ≠ 0
 
-#### M5.0h — Physics invariant test (gating) 🚧 next
+#### M5.0h — Physics invariant test (gating) ✅
 
-- [ ] **Physics invariant test**: with `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` for a quadratic potential. Fail this → there's a bug in the core loop. **Gates** progression to M5.1
+- ✅ **Physics invariant test (V=0)** — leapfrog reproduces the discrete dispersion within ±0.5% on `c²` recovery across all 5 modes (voxels/λ_x ∈ {31, 21, 16, 10, 8}). Klein-Gordon `+ m²` flavor deferred to M5.2 where it lands alongside the actual mass term. **Implementation** at `openwave/xperiments/m5_lagrangian_field/research/m5_0h_dispersion.py` (headless, ~30s on Metal); plot at `research/plots/m5_0h_dispersion.png`. New engine kernel `seed_dispersion_modes` for multi-mode standing-wave initial conditions
+- ✅ **Two persisted lessons from M5.0h** — (a) Taichi Metal lowers `s += …` auto-reduction to atomic_add and stalls on full-grid reductions just like the M2 `3-PLANE SAMPLING` block warned. Workaround: sparse point sampling at mode antinodes, FFT recovers ω from the mixed time series. (b) Discrete-scheme dispersion fits MUST invert the FULL space+time relation (`sin(ω·dt/2) = (c·dt/2)·√K`), not the spatial-only `ω² = c²·K` — the difference is a `(k·dx)²` systematic bias that grew to ~1.5% on `c²` at 7.8 voxels/λ. Both lessons captured in `lagrangian_engine.py` (the AUTO-REDUCE CAVEAT block) and in the auto-memory store (`feedback_taichi_metal_atomics.md`, `feedback_dispersion_validation.md`)
 
 #### M5.0i — Performance profiling + Tier 2 optimizations as needed
 
@@ -824,7 +825,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
 - ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
 - ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
-- [~] M5.0 — Scaffold 🔶 **9/11 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f, M5.0g ✅ as of 2026-05-08; M5.0h physics-invariant gating test 🚧 next; M5.0i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
+- [~] M5.0 — Scaffold 🔶 **10/11 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f, M5.0g, M5.0h ✅ as of 2026-05-08; M5.0i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; M5.0h dispersion gating test PASSES (±0.5% c² recovery across 5 modes, full leapfrog space+time formula); `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
@@ -834,7 +835,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.0h** — physics-invariant gating test. With `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` (for a quadratic potential). FFT-extract `ω(k)` from a multi-mode standing-wave seed; fit; assert `c²` recovered to within stencil-discrete tolerance. Failure here = bug in the core loop; gates progression to M5.1. After M5.0h, M5.0i (profiling + Tier 2 optimizations) closes out the scaffold.
+**Next action**: **M5.0i** — performance profiling on production grids (256³ baseline, 384³ electron-scale). Time per-step kernels individually (`propagate_psi`, `swap_buffers`, `update_trackers_psi`, `compute_energy_density_H`, `sample_avg_trackers`); apply Tier 2 optimizations selectively in measured-bottleneck order. Closes out the M5.0 scaffold.
 
 ---
 
