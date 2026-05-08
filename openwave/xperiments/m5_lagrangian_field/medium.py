@@ -1,30 +1,49 @@
 """
-WOLFF-LAFRENIERE Method Medium Data-Grid
+LAGRANGIAN-FIELD Method Medium Data-Grid
 
 Object Classes @spacetime module.
 
-WOLFF-LAFRENIERE propagates Wave Motion (ENERGY-WAVE).
-Modeled as a wave-field that allows energy to transfer from one point to the next.
+LAGRANGIAN-FIELD evolves the field ψ via a Lagrangian-derived PDE:
+    ∂²_t ψ = c²·∇²ψ − ∂V/∂ψ
+
+The field stores granule displacement (M3/M4 conceptual continuity) but is named ψ
+to reflect its M5 role as the configuration variable of the Lagrangian. Time
+evolution uses a triple-buffer leapfrog scheme (psi_prev_am, psi_am, psi_new_am).
 """
 
 import taichi as ti
 
-from openwave.common import colormap, constants, equations, utils
+from openwave.common import colormap, constants, utils
 
 
 @ti.data_oriented
 class WaveField:
     """
-    Wave field simulation using cell-centered grid with attometer scaling.
+    Lagrangian wave field on a cell-centered grid with attometer scaling.
 
-    This class implements WOLFF-LAFRENIERE propagation with:
+    Triple-buffer leapfrog convention:
+        psi_prev_am — ψ at t−dt (history buffer; read by stencil)
+        psi_am      — ψ at t    (current buffer; read by stencil)
+        psi_new_am  — ψ at t+dt (output buffer; written by leapfrog kernel)
+
+    After each leapfrog step, swap_buffers() cycles: prev ← curr, curr ← new.
+    psi_new_am is overwritten by the next step.
+
+    AMR-readiness convention:
+        Kernels MUST read grid dimensions via wave_field.nx / .ny / .nz attributes
+        (or the .grid_size tuple). Do NOT bake fixed (nx, ny, nz) constants into
+        @ti.kernel signatures — that would prevent the M5.6 / M5.8 AMR retrofit
+        from swapping in an octree-based field-storage layer without rewriting
+        kernels. Field access via wave_field.psi_am[i, j, k] is the canonical pattern.
+
+    This class:
     - Cell-centered cubic grid
     - Attometer scaling for numerical precision (f32 fields)
     - Computed positions from indices (memory efficient)
     - Wave properties stored at each voxel
     - Asymmetric universe support (nx ≠ ny ≠ nz allowed)
 
-    Initialization Strategy (mirrors GRANULE Method):
+    Initialization Strategy:
     1. User specifies init_universe_size [x, y, z] in meters (can be asymmetric)
     2. Compute universe volume and target voxel count
     3. Calculate cubic voxel size: dx = (volume / target_voxels)^(1/3)
@@ -86,24 +105,7 @@ class WaveField:
         self.universe_size_am = [size / constants.ATTOMETER for size in self.universe_size]
         self.max_universe_edge = max(self.nx * self.dx, self.ny * self.dx, self.nz * self.dx)
         self.max_universe_edge_am = self.max_universe_edge / constants.ATTOMETER
-        self.max_universe_edge_lambda = self.max_universe_edge / constants.EWAVE_LENGTH  # λ / edge
         self.universe_volume = self.voxel_count * self.voxel_volume
-
-        # Compute SCALE FACTOR
-        # Will be applied to wave amplitude & wavelength, preserving wave steepness
-        min_sampling = 12  # voxels per wavelength for adequate sampling (stable ~12)
-        self.scale_factor = max(
-            min_sampling / (constants.EWAVE_LENGTH / self.dx), 1
-        )  # linear scale factor, for computation tractability
-
-        # Compute simulation resolution
-        # Voxels per wavelength, should be >10 for adequate sampling (same for all axes)
-        self.ewave_res = constants.EWAVE_LENGTH / self.dx * self.scale_factor  # voxels / λ
-
-        # Compute grid nominal energy from energy-wave equation
-        self.nominal_energy = equations.compute_energy_wave_equation(self.universe_volume)  # J
-        self.nominal_energy_kWh = self.nominal_energy * utils.J2KWH  # KWh
-        self.nominal_energy_years = self.nominal_energy_kWh / (183230 * 1e9)  # years
 
         # ================================================================
         # DATA STRUCTURE & INITIALIZATION
@@ -111,8 +113,17 @@ class WaveField:
         # PROPAGATED VECTOR FIELDS (values in attometers for f32 precision)
         # This avoids catastrophic cancellation in difference calculations
         # Scales 1e-17 m values to ~10 am, well within f32 range
-        # Wave displacement vector field (ψ)
-        self.displacement_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ
+        #
+        # Triple-buffer leapfrog scheme:
+        #     psi_prev_am — ψ at t−dt (history; read-only during step)
+        #     psi_am      — ψ at t    (current; read-only during step + 6-point Laplacian)
+        #     psi_new_am  — ψ at t+dt (output; written by leapfrog kernel)
+        # After each step, swap_buffers() cycles prev ← curr, curr ← new.
+        self.psi_am = ti.Vector.field(
+            3, dtype=ti.f32, shape=self.grid_size
+        )  # am, ψ at t (current)
+        self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t−dt
+        self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
@@ -183,15 +194,23 @@ class WaveField:
 
         self.create_flux_mesh()
 
-        # ================================================================
-        # Voxel Selection: for optimized neighbor-only wave computation
-        # ================================================================
-        # When flux mesh visualization is off, we only need wave values at
-        # the 6 neighbors + center of each wave center (for force gradients).
-        # Max selected = 7 voxels per wave center (can have duplicates if WCs are close)
-        self.max_selected_voxels = 7 * 64  # support up to 64 wave centers
-        self.selected_voxels = ti.Vector.field(3, dtype=ti.i32, shape=self.max_selected_voxels)
-        self.num_selected_voxels = ti.field(dtype=ti.i32, shape=())
+    def swap_buffers(self):
+        """
+        Cyclic shift of the triple-buffer leapfrog state.
+
+        Called once per timestep, AFTER the leapfrog kernel has written psi_new_am.
+        Shift:
+            psi_prev_am ← psi_am      (the just-completed step's "current" becomes "previous")
+            psi_am      ← psi_new_am  (the just-completed step's "next" becomes "current")
+            psi_new_am  is left as-is — it will be overwritten by the next leapfrog step
+
+        Implementation note: uses Taichi's field.copy_from() for simplicity (full-grid
+        copy, O(N) per step). At 256³ grid this is ~50 MB × 2 copies = ~100 MB / step,
+        sub-millisecond on M-series unified memory. Optimization for later (M5.0i+):
+        rotating-pointer scheme that reuses three field handles without copies.
+        """
+        self.psi_prev_am.copy_from(self.psi_am)
+        self.psi_am.copy_from(self.psi_new_am)
 
     @ti.kernel
     def populate_grid_lines(self):
@@ -436,7 +455,7 @@ class Trackers:
     per-voxel fields and grid-wide averages for visualization scaling.
     """
 
-    def __init__(self, grid_size, scale_factor):
+    def __init__(self, grid_size):
         """
         Initialize tracker fields for wave property monitoring.
 
@@ -451,23 +470,18 @@ class Trackers:
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
-        # ENERGY FIELD for visualization and force calculations (stores energy per voxel)
-        self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, local energy
+        # DEPRECATED: per-voxel energy field — no kernel writes to it under M5.0d
+        # (compute_total_hamiltonian replaces it as a scalar reduction). Kept zero-
+        # valued only because xforce_motion.compute_force_vector still reads it.
+        # M5.0g replaces this with H_density_aJ (per-voxel Hamiltonian) and
+        # rewrites the force computation as F = −∇H.
+        self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, deprecated
 
-        # GLOBAL AVERAGES for visualization scaling & energy calculations
+        # GLOBAL AVERAGES for visualization scaling — initialized to zero; the
+        # update_trackers_psi EMA + sample_avg_trackers fill these in during sim.
+        # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # average energy per voxel
-
-        # Assign default values for visualization scaling
-        # baseline to allow wave peaks to rise without color saturation
-        self.amp_global_emarms_am[None] = (
-            constants.EWAVE_AMPLITUDE / constants.ATTOMETER * scale_factor
-        )
-        self.freq_global_avg_rHz[None] = (
-            constants.EWAVE_FREQUENCY * constants.RONTOSECOND * scale_factor
-        )
-        self.energy_global_avg_aJ[None] = constants.BASE_ENERGY_DENSITY_AJAM
 
 
 if __name__ == "__main__":
@@ -501,17 +515,10 @@ if __name__ == "__main__":
     print(f"  Grid size: {wave_field.nx} x {wave_field.ny} x {wave_field.nz} voxels")
     print(f"  Voxel edge: {wave_field.dx:.2e} m (cubic - same for all axes)")
     print(f"  Voxel count: {wave_field.voxel_count:,}")
-    print(f"  Total energy: {wave_field.nominal_energy:.2e} J")
-
-    # Resolutions
-    print(f"\nGrid Linear Resolutions:")
-    print(f"  Energy-wave resolution: {wave_field.ewave_res:.2f} voxels per lambda")
-    if wave_field.ewave_res < 10:
-        print(f"  *** WARNING: Undersampling! ***")
-
-    print(
-        f"  Max universe resolution: {wave_field.max_universe_edge_lambda:.2f} lambda per max universe edge"
-    )
+    print(f"  Voxel edge (am): {wave_field.dx_am:.2f} am")
+    print(f"  Universe volume: {wave_field.universe_volume:.2e} m³")
+    print(f"  Note: voxels-per-wavelength resolution is now xperiment-driven")
+    print(f"        (declared via WAVE_SEED or defect Compton wavelength)")
 
     print("\n================================================================")
     print("END SMOKE TEST: DATA-GRID MODULE")

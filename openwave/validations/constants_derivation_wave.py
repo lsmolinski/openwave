@@ -14,7 +14,6 @@ import numpy as np
 
 import openwave.common.constants as constants
 
-
 # ================================================================
 # SPACETIME DENSITY DERIVATIONS
 # ================================================================
@@ -43,7 +42,7 @@ def derive_density_wave():
         * np.pi
         * constants.ELECTRON_K**11
         * constants.EWAVE_AMPLITUDE**7
-        * constants.EWAVE_SPEED
+        * constants.WAVE_SPEED
         * constants.ELECTRON_OUTER_SHELL
     )
     calculated_density = numerator / denominator
@@ -115,7 +114,7 @@ def derive_density_planck():
     """
     # Direct calculation based on Eq. 1.3
     calculated_density = (
-        (2 * constants.PLANCK_CONSTANT) / (constants.PLANCK_CHARGE**2 * constants.EWAVE_SPEED)
+        (2 * constants.PLANCK_CONSTANT) / (constants.PLANCK_CHARGE**2 * constants.WAVE_SPEED)
     ) * (1 / ((4 / 3) * np.pi * constants.ELECTRON_RADIUS**2))
 
     # Return the calculated value to show the relationship

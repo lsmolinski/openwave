@@ -9,7 +9,7 @@ Implement harmonic oscillation for the 8 lattice vertices to inject energy into 
 **Physics**: Each vertex oscillates harmonically along its direction vector to lattice center, with:
 
 - Amplitude: `EWAVE_AMPLITUDE = 9.215e-19 m`
-- Frequency: `EWAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz` (slowed by factor 1e25)
+- Frequency: `WAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz` (slowed by factor 1e25)
 - Motion: `displacement(t) = A·cos(2πft)` along radial direction
 
 **Two-Phase Implementation**:
@@ -240,7 +240,7 @@ Propagate vertex oscillations through the entire lattice using spring-mass dynam
 
 **Wavelength Validation**:
 
-- Driving frequency: f = EWAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz (slowed by factor 1e25 → ~1 Hz visible)
+- Driving frequency: f = WAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz (slowed by factor 1e25 → ~1 Hz visible)
 - Expected wavelength: λ = c / f ≈ 2.854e-17 m (EWAVE_LENGTH constant)
 - Measurement: Sample granule positions along propagation axis, find spatial period
 - Relationship: λ = v / f, so if v ≈ c and f is correct → λ should match EWAVE_LENGTH
@@ -332,7 +332,7 @@ Two approaches to handle vertices (wave makers) vs propagating granules:
 - Verify wave propagates from vertices
 - Check energy conservation (should be stable over time)
 - Tune substep count for stability vs performance
-- **Measure wave speed**: Compare emergent propagation velocity to expected `c = EWAVE_SPEED`
+- **Measure wave speed**: Compare emergent propagation velocity to expected `c = WAVE_SPEED`
 - **Measure wavelength**: Track spatial period of oscillation, compare to `λ = EWAVE_LENGTH`
   - Method: Sample positions along radial line from vertex, measure distance between peaks
   - Expected: λ ≈ 2.854e-17 m (from constants)

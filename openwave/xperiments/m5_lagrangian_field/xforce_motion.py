@@ -43,8 +43,8 @@ ELEMENTARY_CHARGE = constants.ELEMENTARY_CHARGE  # C, e = 1.60e-19
 
 # EWT particle constants (for EWT force reference)
 MEDIUM_DENSITY = constants.MEDIUM_DENSITY  # kg/m³
+WAVE_SPEED = constants.WAVE_SPEED  # m/s
 EWAVE_AMPLITUDE = constants.EWAVE_AMPLITUDE  # m
-EWAVE_SPEED = constants.EWAVE_SPEED  # m/s
 EWAVE_LENGTH = constants.EWAVE_LENGTH  # m
 ELECTRON_K = constants.ELECTRON_K
 ELECTRON_OUTER_SHELL = constants.ELECTRON_OUTER_SHELL
@@ -74,7 +74,7 @@ def compute_ewt_electric_force(
         * MEDIUM_DENSITY
         * (K**7)
         * (EWAVE_AMPLITUDE**6)
-        * (EWAVE_SPEED**2)
+        * (WAVE_SPEED**2)
         * Oe
         * glambda
     ) / (3.0 * (EWAVE_LENGTH**2))
@@ -126,8 +126,13 @@ def compute_force_vector(
     │ d=3   │ 0.111  │ 8.2%       │
     └───────┴────────┴────────────┘
 
-    Scale correction: amplitude boost from scale_factor makes energy S² too
-    large, so F_physical = F_computed / S².
+    M5.0d.3: scale_factor was removed from WaveField; the S² correction below
+    is hardcoded to 1.0 as a placeholder. This kernel produces meaningless
+    forces under M5 anyway because trackers.energy_local_aJ is no longer
+    populated (the EWT-formula energy field was retired in favor of the
+    per-voxel Hamiltonian, which lands in M5.0g). Force computation will be
+    rewritten as F = −∇H in M5.0g; until then this runs but feeds zeros to
+    integrate_motion_leapfrog, so wave-centers don't move under force.
 
     Args:
         wave_field: WaveField instance containing grid info
@@ -136,9 +141,9 @@ def compute_force_vector(
     """
     dx_am = wave_field.dx_am
 
-    # Scale factor correction: energy scales as S² from amplitude boost
-    S = wave_field.scale_factor
-    S2 = S * S
+    # Placeholder — scale_factor was retired in M5.0d.3; S² hardcoded to 1.
+    # M5.0g rewrites this kernel entirely against per-voxel Hamiltonian density.
+    S2 = ti.cast(1.0, ti.f32)
 
     # Precompute weights: 1/d^GRADIENT_WEIGHT_FALLOFF for each shell d = 1..R
     # Physical basis: particle energy density ∝ |ψ|² ∝ 1/r²

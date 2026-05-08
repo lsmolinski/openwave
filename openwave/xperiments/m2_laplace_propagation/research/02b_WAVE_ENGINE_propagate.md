@@ -118,7 +118,7 @@ def propagate_wave(self, dt: ti.f32, SIM_SPEED: ti.f32):
             With SLO_MO = 1.05×10²⁵: dt_critical ≈ 0.121 s > dt_frame ✓ STABLE
     """
     # Speed of light (apply SLO_MO factor, then SIM_SPEED for human-visible waves)
-    c_slo = ti.f32(constants.EWAVE_SPEED / config.SLO_MO) * SIM_SPEED  # m/s
+    c_slo = ti.f32(constants.WAVE_SPEED / config.SLO_MO) * SIM_SPEED  # m/s
 
     # Convert c to attometers/second for consistent units
     c_slo_am = c_slo / constants.ATTOMETER  # am/s
@@ -175,7 +175,7 @@ def compute_wave_direction(self):
     Energy flux: S = -c² × ψ × ∇ψ
     Direction: normalized S
     """
-    c = ti.f32(constants.EWAVE_SPEED)
+    c = ti.f32(constants.WAVE_SPEED)
 
     for i, j, k in self.psiL_am:
         if 0 < i < self.nx-1 and 0 < j < self.ny-1 and 0 < k < self.nz-1:
@@ -241,7 +241,7 @@ def update_timestep(self, dt: ti.f32, SIM_SPEED: ti.f32):
 
 Where:
 
-- `c_slo = (EWAVE_SPEED / SLO_MO) × SIM_SPEED` (m/s, slowed + boosted)
+- `c_slo = (WAVE_SPEED / SLO_MO) × SIM_SPEED` (m/s, slowed + boosted)
 - `c_slo_am = c_slo / ATTOMETER` (wave speed in am/s)
 - `dt` ~ 1/60 s (0.016 seconds for 60 FPS)
 - `SIM_SPEED` ~ 1.0 (default, no boost) or higher for faster visualization
@@ -481,7 +481,7 @@ def propagate_huygens(dt: ti.f32):
     Note: This is less commonly used for regular grids because
     the wave equation (PDE) naturally implements Huygens' principle.
     """
-    c = ti.f32(constants.EWAVE_SPEED)
+    c = ti.f32(constants.WAVE_SPEED)
     propagation_distance = c * dt
 
     for i, j, k in self.psiL_am:

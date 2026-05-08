@@ -559,7 +559,7 @@ class BCCNeighbors:
         # Natural frequency for wave propagation at speed of light
         # For wave speed c in lattice with spacing L: f_n = c / (2L)
         # where λ_lattice ≈ 2L (minimum resolvable wavelength in discrete lattice)
-        self.compute_natural_frequency = constants.EWAVE_SPEED / (2 * self.rest_length)  # Hz
+        self.compute_natural_frequency = constants.WAVE_SPEED / (2 * self.rest_length)  # Hz
 
         # Connection topology: [granule_idx] -> [8 possible neighbors]
         # Value -1 indicates no connection (for boundary granules)

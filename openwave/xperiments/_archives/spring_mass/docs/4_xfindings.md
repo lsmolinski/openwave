@@ -9,12 +9,12 @@
 
 ### Wave Source
 
-- frequency: f = EWAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz (slowed by factor 1e25 → ~1 Hz visible)
+- frequency: f = WAVE_SPEED / EWAVE_LENGTH ≈ 1.05e25 Hz (slowed by factor 1e25 → ~1 Hz visible)
 - RESULT: I noticed natural _frequency is showing a slight discrepancy from the injected frequency
 
 ### Main Parameters to MATCH (considering the SLO_MO factor)
 
-- Measure wavespeed: Compare emergent propagation velocity to expected c = EWAVE_SPEED
+- Measure wavespeed: Compare emergent propagation velocity to expected c = WAVE_SPEED
   - RESULT: we need a way to measure that in the script (converted from SLO_MO)
 
 - Measure wavelength: Track spatial period of oscillation, compare to λ = EWAVE_LENGTH (λ = c / f)

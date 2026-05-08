@@ -274,14 +274,27 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ⚠️ Test 7: Close's nonlinear vector wave eq — Close's ACTUAL Eq. 19 (linear) and Eq. 21 ("Equation of Everything") correctly implemented after obtaining the paper. Y_l^m seeds disperse (consistent with Close's framework — particles are plane-wave bispinors, not static solitons). Close's equation is a candidate base wave dynamics layer for M5 — 2026-04-17
   - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
 - ✅ Winning combination selected (2026-04-17): topology (hedgehog + winding) + Klein-Gordon wave dynamics + Close's Eq. 19 as base vector wave + M3 near-field standing waves + Skyrme stabilizer. Full recipe in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5)
-- [ ] M5 / LAGRANGIAN-FIELD METHOD implementation (dir `openwave/xperiments/m5_lagrangian_field/`) — ready to implement per [3d_path_to_m5.md](3d_path_to_m5.md)
-  - [ ] M5.0 Scaffold — mirror m4 structure, add `psi_prev/psi/psi_new` triple buffer, port M2's 6-point Laplacian, implement curl / div / curl-curl operators (validated in Exp 7 v2)
+- 🔶 M5 / LAGRANGIAN-FIELD METHOD implementation (dir `openwave/xperiments/m5_lagrangian_field/`) — see [3d_path_to_m5.md](3d_path_to_m5.md) for full sub-phase plan
+  - 🔶 **M5.0 Scaffold** — 6/9 sub-phases complete as of 2026-05-07
+    - ✅ M5.0a Module rename + alias (`wave_engine.py` → `lagrangian_engine.py`, `ewave` → `lagrange`)
+    - ✅ M5.0b Triple buffer (`psi_prev_am` / `psi_am` / `psi_new_am`) + AMR-ready field-storage abstraction
+    - ✅ M5.0c Vector Laplacian via 6-point stencil (port + simplify from M2)
+    - ✅ M5.0d.1 Leapfrog kernel `propagate_psi` + standing-wave eigenmode test
+    - ✅ M5.0d.2 CFL evaluation + plane-wave seed (Gaussian-windowed packet) + tracker EMA + Hamiltonian dashboard + delete legacy M4 `propagate_wave`
+    - ✅ M5.0d.3 Drop `scale_factor` / `ewave_res` / EWT-default constants; introduce xperiment-driven `wave_res`
+    - 🚧 M5.0e Curl, divergence, curl-curl operators (next — needed by M5.1 winding tracker + M5.2 Close Eq. 19 linear limit)
+    - [ ] M5.0f Natural-unit kernel scaling (`c=1, λ_C=1, ℏ=1` intra-kernel)
+    - [ ] M5.0g Per-voxel Hamiltonian density + force-computation switch (F = −∇H replaces M4's `F = −∇(ρV(fA)²)`)
+    - [ ] M5.0h Physics invariant test (gating: V=0 must reproduce Exp 4 KG dispersion)
+    - [ ] M5.0i Performance profiling + Tier 2 optimizations (rotating-pointer swap_buffers, merged trackers, BlockLocal Laplacian, Symplectic/Verlet, dirty-tile mask)
   - [ ] M5.1 Port topology from Exps 2, 3 — `seed_vacuum`, `seed_hedgehog`, Frank energy, winding-number tracker
-  - [ ] M5.2 Wave dynamics — Close's Eq. 19 (`∂²Q = −c²·∇×∇×Q`) + Klein-Gordon mass term; validate against Exp 4 dispersion
+  - [ ] M5.2 Wave dynamics — **Close's Eq. 23** as the particle equation (preserves `∇·s = 0`, per Close's 2026-04-18 guidance) + Eq. 19 as V=0 linear limit + Klein-Gordon mass term; validate against Exp 4 dispersion; resonance-hunt amplitude sweep
   - [ ] M5.3 Hamiltonian energy density `H = ½ψ̇² + ½c²(∇ψ)² + V(ψ)` replaces postulated `E = ρV(fA)²`
-  - [ ] M5.4 **Headline test**: multi-defect K=10 stability + far-field Coulomb recovery
+  - [ ] M5.4 **Headline test**: single biaxial hedgehog (electron) is a long-lived resonance; hedgehog + anti-hedgehog pair reproduces dynamic 1/d² Coulomb + annihilation. Single-defect framing per Dr. Duda's lepton-axis hierarchy (electron ≠ K=10 tetrahedron in M5)
   - [ ] M5.5 Skyrme stabilizer (conditional on M5.4 showing defect collapse under Derrick's theorem)
-  - [ ] M5.6 Biaxial LdG Q-tensor (long-term, for lepton mass derivation; Exp 6.1 equivalent)
+  - [ ] M5.6 Biaxial LdG Q-tensor with `(δ, 1, g)` axis hierarchy (long-term, for lepton mass derivation; Exp 6.1 equivalent)
+  - [ ] M5.7 Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm) — per Dr. Duda's 2026-04-17 guidance
+  - [ ] M5.8 De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ` for electron + neutrino) — per Dr. Duda's 2026-04-17 guidance
 - [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3b_concept_review.md](3b_concept_review.md)
 
 ## [PHASE 4: TIME DYNAMICS](5_TIME_DYNAMICS.md)

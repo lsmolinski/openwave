@@ -363,7 +363,7 @@ def compute_wave_mode(self):
     - wave_mode[i,j,k] = 0.0:  Pure transverse
     - wave_mode[i,j,k] ∈ (0,1): Mixed mode
     """
-    c = ti.f32(constants.EWAVE_SPEED)
+    c = ti.f32(constants.WAVE_SPEED)
 
     for i, j, k in self.psiL_am:
         if 0 < i < self.nx-1 and 0 < j < self.ny-1 and 0 < k < self.nz-1:
@@ -467,7 +467,7 @@ def compute_wave_components(self):
     - transverse_amplitude[i,j,k]: Magnitude of transverse component
     - longitudinal_fraction[i,j,k]: Fraction of energy in longitudinal mode
     """
-    c = ti.f32(constants.EWAVE_SPEED)
+    c = ti.f32(constants.WAVE_SPEED)
 
     for i, j, k in self.psiL_am:
         if 0 < i < self.nx-1 and 0 < j < self.ny-1 and 0 < k < self.nz-1:
@@ -960,7 +960,7 @@ def measure_frequency(self, current_time: ti.f32):
     Note: Frequency-centric approach - f is measured, λ is computed.
     With SLO_MO: Wave frequencies are slowed by SLO_MO factor.
     """
-    c_slo = ti.f32(constants.EWAVE_SPEED / config.SLO_MO)  # m/s, slowed wave speed
+    c_slo = ti.f32(constants.WAVE_SPEED / config.SLO_MO)  # m/s, slowed wave speed
 
     for i, j, k in self.psiL_am:
         # Check if displacement is at a peak (|ψ| ≈ A)

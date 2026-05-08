@@ -40,7 +40,7 @@ from openwave.common import constants, utils
 def compute_energy_wave_equation(
     volume,
     density=constants.MEDIUM_DENSITY,
-    speed=constants.EWAVE_SPEED,
+    speed=constants.WAVE_SPEED,
     wavelength=constants.EWAVE_LENGTH,
     amplitude=constants.EWAVE_AMPLITUDE,
 ):
@@ -88,7 +88,7 @@ def compute_particle_energy(K):
         * np.pi
         * (K**5)
         * (constants.EWAVE_AMPLITUDE**6)
-        * (constants.EWAVE_SPEED**2)
+        * (constants.WAVE_SPEED**2)
     ) / (constants.EWAVE_LENGTH**3)
     energy = coefficient * summation
     return energy
@@ -113,7 +113,7 @@ def compute_particle_rest_mass(K):
     Returns:
         float: Particle rest mass in kilograms
     """
-    rest_mass = compute_particle_energy(K) / (constants.EWAVE_SPEED**2)
+    rest_mass = compute_particle_energy(K) / (constants.WAVE_SPEED**2)
     return rest_mass
 
 
@@ -146,7 +146,7 @@ def compute_photon_energy(
         * constants.MEDIUM_DENSITY
         * (Ke**7)
         * (constants.EWAVE_AMPLITUDE**6)
-        * (constants.EWAVE_SPEED**2)
+        * (constants.WAVE_SPEED**2)
         * Oe
     ) / (3 * (constants.EWAVE_LENGTH**2))
 
@@ -173,7 +173,7 @@ def compute_photon_frequency(delta, r, r0, Ke=constants.ELECTRON_K):
         float: Photon frequency f in Hz
     """
     # Calculate the coefficient
-    coefficient = (3 * constants.EWAVE_LENGTH * constants.EWAVE_SPEED) / (
+    coefficient = (3 * constants.EWAVE_LENGTH * constants.WAVE_SPEED) / (
         16 * (Ke**4) * constants.EWAVE_AMPLITUDE
     )
 
@@ -228,7 +228,7 @@ def compute_fine_structure_constant_classical():
     e = constants.ELEMENTARY_CHARGE
     epsilon_0 = constants.ELECTRIC_CONSTANT
     hbar = constants.PLANCK_CONSTANT_REDUCED
-    c = constants.EWAVE_SPEED
+    c = constants.WAVE_SPEED
 
     alpha = (e**2) / (4 * np.pi * epsilon_0 * hbar * c)
     return alpha
@@ -323,7 +323,7 @@ def compute_electric_force(
         * constants.MEDIUM_DENSITY
         * (Ke**7)
         * (constants.EWAVE_AMPLITUDE**6)
-        * (constants.EWAVE_SPEED**2)
+        * (constants.WAVE_SPEED**2)
         * Oe
         * glambda
     ) / (3 * (constants.EWAVE_LENGTH**2))
@@ -403,7 +403,7 @@ def compute_gravitational_force(
     """
     # Calculate the coefficient
     coefficient = (
-        constants.MEDIUM_DENSITY * (constants.EWAVE_LENGTH**2) * (constants.EWAVE_SPEED**2) * Oe
+        constants.MEDIUM_DENSITY * (constants.EWAVE_LENGTH**2) * (constants.WAVE_SPEED**2) * Oe
     ) / (2 * (Ke**31))
 
     # Amplitude factor
@@ -447,7 +447,7 @@ def compute_strong_force(
         * constants.MEDIUM_DENSITY
         * (Ke**11)
         * (constants.EWAVE_AMPLITUDE**7)
-        * (constants.EWAVE_SPEED**2)
+        * (constants.WAVE_SPEED**2)
         * Oe
         * glambda
     ) / (9 * (constants.EWAVE_LENGTH**3))
@@ -481,7 +481,7 @@ def compute_orbital_force(Q, r, Ke=constants.ELECTRON_K, glambda=constants.ELECT
         * constants.MEDIUM_DENSITY
         * (Ke**17)
         * (constants.EWAVE_AMPLITUDE**8)
-        * (constants.EWAVE_SPEED**2)
+        * (constants.WAVE_SPEED**2)
         * Oe
     ) / (27 * np.pi * (constants.EWAVE_LENGTH**3))
 
@@ -515,7 +515,7 @@ def compute_longitudinal_in_wave_energy(K, v, wavelength=None, amplitude=None):
     if amplitude is None:
         amplitude = constants.EWAVE_AMPLITUDE
 
-    c = constants.EWAVE_SPEED
+    c = constants.WAVE_SPEED
     rho = constants.MEDIUM_DENSITY
     Ke = constants.ELECTRON_K
 
@@ -575,7 +575,7 @@ def compute_longitudinal_out_wave_energy(
     if amplitude is None:
         amplitude = constants.EWAVE_AMPLITUDE
 
-    c = constants.EWAVE_SPEED
+    c = constants.WAVE_SPEED
     rho = constants.MEDIUM_DENSITY
     Ke = constants.ELECTRON_K
 
@@ -643,7 +643,7 @@ def compute_magnetic_out_wave_energy(
     if amplitude is None:
         amplitude = constants.EWAVE_AMPLITUDE
 
-    c = constants.EWAVE_SPEED
+    c = constants.WAVE_SPEED
     rho = constants.MEDIUM_DENSITY
     Ke = constants.ELECTRON_K
     alpha_e = constants.FINE_STRUCTURE
@@ -761,7 +761,7 @@ if __name__ == "__main__":
     # Verify relationship: c = λf
     calculated_speed = abs(photon_lambda * photon_f)
     print(f"\nVerification: |λf| = {calculated_speed:.2e} m/s")
-    print(f"Speed of light c = {constants.EWAVE_SPEED:.2e} m/s")
+    print(f"Speed of light c = {constants.WAVE_SPEED:.2e} m/s")
 
     # Electromagnetic spectrum context
     print(f"\nElectromagnetic Spectrum Context:")
@@ -786,7 +786,7 @@ if __name__ == "__main__":
     # Compare with known Lyman series (n→1 transitions in hydrogen)
     print(f"\nComparison with Hydrogen Lyman Series:")
     print(
-        f"  Lyman alpha (n=2→1): {constants.EWAVE_SPEED/constants.H_LYMAN_ALPHA_FREQUENCY*1e9:.1f} nm, 10.2 eV (observed)"
+        f"  Lyman alpha (n=2→1): {constants.WAVE_SPEED/constants.H_LYMAN_ALPHA_FREQUENCY*1e9:.1f} nm, 10.2 eV (observed)"
     )
     print(f"  Our calculation: {wavelength_nm:.1f} nm, {abs(photon_E * utils.J2EV):.1f} eV")
 
@@ -930,7 +930,7 @@ if __name__ == "__main__":
 
     # Test at different velocities
     K_electron = 10
-    c = constants.EWAVE_SPEED  # Speed of light
+    c = constants.WAVE_SPEED  # Speed of light
     velocities = [0, 0.1 * c, 0.5 * c, 0.9 * c, 0.99 * c]  # Various fractions of c
 
     print(f"\nElectron (K={K_electron}) energy at different velocities:")

@@ -22,7 +22,7 @@ from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m5_lagrangian_field.medium as medium
 import openwave.xperiments.m5_lagrangian_field.particle as particle
-import openwave.xperiments.m5_lagrangian_field.wave_engine as ewave
+import openwave.xperiments.m5_lagrangian_field.lagrangian_engine as lagrange
 import openwave.xperiments.m5_lagrangian_field.xforce_motion as force_motion
 import openwave.xperiments.m5_lagrangian_field.instrumentation as instrument
 
@@ -109,12 +109,20 @@ class SimulationState:
     def __init__(self):
         self.wave_field = None
         self.trackers = None
+        self.c_amrs = 0.0
+        self.dt_rs = 0.0
+        self.cfl_factor = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.amp_global_rms = constants.EWAVE_AMPLITUDE
-        self.freq_global_avg = constants.EWAVE_FREQUENCY
-        self.wavelength_global_avg = constants.EWAVE_LENGTH
+        # Field aggregates — populated by sample_avg_trackers; physical units.
+        self.amp_global_rms = 0.0  # m
+        self.freq_global_avg = 0.0  # Hz
+        self.wavelength_global_avg = 0.0  # m, derived from freq_global_avg
+        self.hamiltonian_total_aJ = 0.0
+        # Resolution metric: voxels-per-wavelength (xperiment-driven).
+        # 0.0 means "no reference λ declared" → dashboard shows n/a
+        self.wave_res = 0.0
 
         # Current xperiment parameters
         self.X_NAME = ""
@@ -137,7 +145,7 @@ class SimulationState:
         self.WARP_MESH = 300
         self.PARTICLE_SHELL = False
         self.SHOW_GRANULES = False
-        self.TIMESTEP = 0.0
+        self.SIM_SPEED = 1.0
         self.PAUSED = False
 
         # Color control variables
@@ -148,6 +156,9 @@ class SimulationState:
         self.INSTRUMENTATION = False
         self.EXPORT_VIDEO = False
         self.VIDEO_FRAMES = 24
+
+        # Optional wave seed (test xperiment only)
+        self.WAVE_SEED = None
 
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
@@ -181,7 +192,7 @@ class SimulationState:
         self.WARP_MESH = ui["WARP_MESH"]
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
-        self.TIMESTEP = ui["TIMESTEP"]
+        self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
         self.PAUSED = ui["PAUSED"]
 
         # Color defaults
@@ -195,12 +206,25 @@ class SimulationState:
         self.EXPORT_VIDEO = diag["EXPORT_VIDEO"]
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
 
+        # Optional wave seed (only present in _test_smoke xperiment)
+        self.WAVE_SEED = params.get("wave_seed", None)
+
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
         self.wave_field = medium.WaveField(
             self.UNIVERSE_SIZE, self.TARGET_VOXELS, self.FLUX_MESH_PLANES
         )
-        self.trackers = medium.Trackers(self.wave_field.grid_size, self.wave_field.scale_factor)
+        self.trackers = medium.Trackers(self.wave_field.grid_size)
+
+        # Resolution metric: voxels-per-wavelength, declared by the active
+        # xperiment. Sources (in priority order):
+        #   1. WAVE_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
+        #   2. (M5.2+) defect Compton wavelength    — particle xperiments
+        #   3. None / 0.0                           — no reference (vacuum tests)
+        if self.WAVE_SEED is not None:
+            self.wave_res = float(self.WAVE_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
+        else:
+            self.wave_res = 0.0
 
         # Initialize wave-centers
         self.wave_center = particle.WaveCenter(
@@ -211,17 +235,48 @@ class SimulationState:
             self.INIT_VELOCITY,
         )
 
+    def compute_timestep(self):
+        """Compute timestep from the 3D CFL stability bound.
+
+        CFL condition for the leapfrog wave-equation solver:
+            dt ≤ dx / (c · √3)
+
+        We size dt at 95% of the bound — sitting exactly at 1/3 puts us on
+        the marginal-stability boundary, where f32 rounding alone is enough
+        to cross into amplification. cfl_factor = (SIM_SPEED · 0.95)² / 3,
+        so at SIM_SPEED = 1 the factor is ≈ 0.301 (well under 1/3 ≈ 0.333).
+
+        SIM_SPEED ∈ (0, 1] is a slow-motion knob that scales the effective
+        wave speed for visualization without affecting stability.
+        """
+        cfl_safety = 0.95
+        self.c_amrs = (
+            constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * self.SIM_SPEED
+        )  # am/rs (slowed)
+        # Tight CFL bound against physical c (= c_amrs / SIM_SPEED), with safety
+        # factor — so cfl_factor saturates at (cfl_safety² / 3) at SIM_SPEED=1.
+        self.dt_rs = (
+            self.wave_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
+        )  # rs
+        self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
+
     def reset_sim(self):
         """Reset simulation state."""
         self.wave_field = None
         self.trackers = None
+        self.c_amrs = 0.0
+        self.dt_rs = 0.0
+        self.cfl_factor = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        self.amp_global_rms = constants.EWAVE_AMPLITUDE
-        self.freq_global_avg = constants.EWAVE_FREQUENCY
-        self.wavelength_global_avg = constants.EWAVE_LENGTH
+        self.amp_global_rms = 0.0
+        self.freq_global_avg = 0.0
+        self.wavelength_global_avg = 0.0
+        self.hamiltonian_total_aJ = 0.0
+        self.wave_res = 0.0
         self.initialize_grid()
+        self.compute_timestep()
         initialize_xperiment(self)
 
 
@@ -270,10 +325,10 @@ def display_controls(state):
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
-        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
+        state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
-            if sub.button(">> PROPAGATE EWAVE >>"):
+            if sub.button(">> PROPAGATE WAVE >>"):
                 state.PAUSED = False
         else:
             if sub.button("Pause"):
@@ -291,25 +346,25 @@ def display_wave_menu(state):
             state.WAVE_MENU = 2
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
-        if sub.checkbox("ENERGY (Field)", state.WAVE_MENU == 4):
+        if sub.checkbox("Hamiltonian (M5.0g)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+                sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+                sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("frequency", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
-        if state.WAVE_MENU == 4:  # Energy on ironbow gradient
+                sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
+        if state.WAVE_MENU == 4:  # Hamiltonian density on ironbow gradient (M5.0g)
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("energy", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.energy_global_avg*2:.0e}J")
+            with render.gui.sub_window("hamiltonian", 0.00, 0.67, 0.08, 0.06) as sub:
+                sub.text(f"total: {state.hamiltonian_total_aJ:.2e} aJ")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -318,7 +373,7 @@ def display_level_specs(state, level_bar_vertices):
     with render.gui.sub_window("LAGRANGIAN-FIELD METHOD (M5)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Vector Field")
-        sub.text("Coupling: Lagrangian Field")
+        sub.text("Coupling: Non-linear Lagrangian")
         sub.text("Propagation: PDE Solver")
         sub.text("Boundary: Dirichlet Condition")
         if sub.button("Wave Notation Guide"):
@@ -332,39 +387,52 @@ def display_data_dashboard(state):
     clock_time = time.time() - state.clock_start_time
     sim_time_years = clock_time / (state.elapsed_t_rs * constants.RONTOSECOND or 1) / 31_536_000
 
-    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.45, 0.16, 0.55) as sub:
+    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.40, 0.16, 0.60) as sub:
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
-        sub.text(f"eWAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"Wave Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(
-            f"Universe: {state.wave_field.max_universe_edge:.1e} m ({state.wave_field.max_universe_edge_lambda:.0f} waves)"
-        )
+        sub.text(f"Universe: {state.wave_field.max_universe_edge:.1e} m")
         sub.text(f"Voxel Count: {state.wave_field.voxel_count:,}")
         sub.text(
             f"Grid Size: {state.wave_field.nx} x {state.wave_field.ny} x {state.wave_field.nz}"
         )
         sub.text(f"Voxel Edge: {state.wave_field.dx:.2e} m")
 
-        sub.text("\n--- RESOLUTION (scaled-up) ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Scale-up Factor: {state.wave_field.scale_factor:.1f}x")
-        sub.text(f"eWave: {state.wave_field.ewave_res:.1f} voxels/wave (~12)")
-        if state.wave_field.ewave_res < 10:
-            sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
+        sub.text("\n--- RESOLUTION ---", color=colormap.LIGHT_BLUE[1])
+        # wave_res is xperiment-driven; 0.0 means no reference λ declared.
+        # Stable leapfrog needs ≥12 voxels/λ; <10 is undersampled.
+        if state.wave_res > 0:
+            sub.text(f"Wave: {state.wave_res:.1f} voxels/wave (>12)")
+            if state.wave_res < 10:
+                sub.text(f"*** WARNING: Undersampling! ***", color=(1.0, 0.0, 0.0))
+        else:
+            sub.text("Wave: n/a (no wave declared)")
 
-        sub.text("\n--- ENERGY-WAVE ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Amplitude: {state.amp_global_rms/state.wave_field.scale_factor:.1e} m")
-        sub.text(f"Frequency: {state.freq_global_avg*state.wave_field.scale_factor:.1e} Hz")
-        sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
+        sub.text("\n--- WAVE-FIELD ---", color=colormap.LIGHT_BLUE[1])
+        sub.text(f"Amplitude: {state.amp_global_rms:.1e} m")
+        sub.text(f"Frequency: {state.freq_global_avg:.1e} Hz")
+        sub.text(f"Wavelength: {state.wavelength_global_avg:.1e} m")
 
         sub.text("\n--- TIME MICROSCOPE ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Timestep: {state.TIMESTEP:.2f} rs")
         sub.text(f"Sim Steps (frames): {state.frame:,}")
         sub.text(f"Sim Time: {state.elapsed_t_rs:,.0f} rs")
         sub.text(f"Clock Time: {clock_time:.2f} s")
         sub.text(f"(1s sim time takes {sim_time_years:.0e}y)")
+
+        sub.text("\n--- CFL TIMESTEP ---", color=colormap.LIGHT_BLUE[1])
+        sub.text(f"c_amrs: {state.c_amrs:.3f} am/rs")
+        sub.text(
+            f"dt_rs: {state.dt_rs:.3f} rs",
+            color=(1.0, 1.0, 1.0) if state.cfl_factor <= (1 / 3) else (1.0, 0.0, 0.0),
+        )
+        sub.text(
+            f"CFL Factor: {state.cfl_factor:.3f} (target < 1/3)",
+            color=(1.0, 1.0, 1.0) if state.cfl_factor <= (1 / 3) else (1.0, 0.0, 0.0),
+        )
+        sub.text(f"Hamiltonian: {state.hamiltonian_total_aJ:.3e} aJ")
 
 
 # ================================================================
@@ -395,33 +463,50 @@ def initialize_xperiment(state):
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
+    # Optional initial-condition seed for test xperiments
+    if state.WAVE_SEED is not None:
+        seed = state.WAVE_SEED
+        polarization = ti.Vector(seed["POLARIZATION"], dt=ti.f32)
+        lagrange.seed_wave(
+            state.wave_field,
+            state.c_amrs,
+            state.dt_rs,
+            seed["AMPLITUDE_AM"],
+            seed["VOXELS_PER_WAVELENGTH"],
+            polarization,
+            seed["DIRECTION_AXIS"],
+        )
+
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
         print("INSTRUMENTATION ENABLED")
         print("=" * 64)
 
 
-def compute_wave_oscillation(state):
-    """Compute wave propagation, reflection, superposition and update tracker averages."""
+def compute_oscillation(state):
+    """Step ψ one timestep via leapfrog, then update trackers and global aggregates."""
 
-    ewave.propagate_wave(
-        state.wave_field,
-        state.trackers,
-        state.wave_center,
-        state.TIMESTEP,
-        state.elapsed_t_rs,
-    )
+    # ψ PROPAGATION =======================================
+    # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+    lagrange.propagate_psi(state.wave_field, state.c_amrs, state.dt_rs)
+    # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
+    state.wave_field.swap_buffers()
+
+    # FIELD-OBSERVABLE TRACKERS (per-voxel amp / freq from ψ) ==============
+    lagrange.update_trackers_psi(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead
     if state.frame % 60 == 0 or state.frame == 10:
-        ewave.sample_avg_trackers(state.wave_field, state.trackers)
+        lagrange.sample_avg_trackers(state.wave_field, state.trackers)
+        # Total Hamiltonian (≈conserved) — compute on the same cadence to avoid
+        # the GPU→CPU round-trip on every frame
+        state.hamiltonian_total_aJ = lagrange.compute_total_hamiltonian(
+            state.wave_field, state.c_amrs, state.dt_rs
+        )
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
-    state.energy_global_avg = state.trackers.energy_global_avg_aJ[None] * constants.ATTOJOULE  # J
-    state.wavelength_global_avg = constants.EWAVE_SPEED / (
-        state.freq_global_avg or 1
-    )  # prevents 0 div
+    state.wavelength_global_avg = constants.WAVE_SPEED / (state.freq_global_avg or 1)  # no 0 div
 
     if state.INSTRUMENTATION:
         instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)
@@ -436,12 +521,6 @@ def compute_force_motion(state):
     Physics:
     - Force = -grad(E) where E = rho * V * (f * A)^2
     - Motion: Euler integration of F = m * a
-
-    Phases:
-    - Phase 1 (SMOKE_TEST=True): Hardcoded force for testing motion integration
-    - Phase 3+ (SMOKE_TEST=False): Force computed from energy gradient
-
-    See research/02_force_motion.md for detailed documentation.
     """
 
     # Compute force from energy gradient, then integrate motion
@@ -454,7 +533,7 @@ def compute_force_motion(state):
         force_motion.integrate_motion_leapfrog(
             state.wave_field,
             state.wave_center,
-            state.TIMESTEP,
+            state.dt_rs,
         )
     else:
         # Zero-out velocities if not integrating force to motion
@@ -462,9 +541,12 @@ def compute_force_motion(state):
             state.wave_center.velocity_amrs[wc_idx] = ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
 
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
-    # Detect and handle particle annihilation (opposite phase WCs meeting)
-    # Threshold: WCs can be at grid diagonal positions and TIMESTEP may cause larger jumps
-    annihilation_threshold = state.wave_field.ewave_res / 2.0  # in voxels
+    # Detect and handle particle annihilation (opposite phase WCs meeting).
+    # Threshold: WCs can be at grid diagonal positions and dt_rs may cause larger jumps.
+    # M5.0d.3: hardcoded to 6 voxels (was state.wave_field.ewave_res / 2). Defects
+    # don't physically have a single universal interaction radius; M5.2 will replace
+    # this with a per-defect-type Compton-wavelength-based threshold.
+    annihilation_threshold = 6.0  # in voxels
     force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
@@ -477,7 +559,7 @@ def render_elements(state):
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
-        ewave.update_flux_mesh_values(
+        lagrange.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
             state.WAVE_MENU,
@@ -506,12 +588,9 @@ def render_elements(state):
             position = np.array(
                 [[wc_pos_screen[0], wc_pos_screen[1], wc_pos_screen[2]]], dtype=np.float32
             )
-            radius = (
-                constants.EWAVE_LENGTH
-                / state.wave_field.max_universe_edge
-                * state.wave_field.scale_factor
-                * 0.75  # adjusted for taichi particle rendering perspective projection
-            )
+            # Particle shell radius — fixed-fraction-of-universe-edge default.
+            # M5.2 replaces with per-defect-type Compton wavelength sizing.
+            radius = 0.02  # ~2% of normalized universe edge
             color = (
                 colormap.COLOR_PARTICLE[1]
                 if state.SOURCES_OFFSET_DEG[wc_idx] == 180
@@ -531,7 +610,7 @@ def render_elements(state):
         sampled_nx = (nx + stride - 1) // stride
         sampled_ny = (ny + stride - 1) // stride
         num_render = min(sampled_nx * sampled_ny, max_particles)
-        ewave.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
+        lagrange.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
         pos_np = state.wave_field.position_render.to_numpy()[:num_render]
         render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
 
@@ -553,7 +632,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "annihilation1"
+    default_xperiment = selected_xperiment_arg or "_test_smoke"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
@@ -564,6 +643,7 @@ def main():
 
     state.apply_xparameters(params)
     state.initialize_grid()
+    state.compute_timestep()
     initialize_xperiment(state)
 
     # Initialize GGUI rendering
@@ -596,10 +676,12 @@ def main():
             os.execv(sys.executable, [sys.executable, __file__, new_xperiment])
 
         if not state.PAUSED:
+            # Recompute CFL-bound timestep (responds to SIM_SPEED slider)
+            state.compute_timestep()
             # Run simulation step and update time
-            compute_wave_oscillation(state)
+            compute_oscillation(state)
             compute_force_motion(state)
-            state.elapsed_t_rs += state.TIMESTEP  # Accumulate simulation time
+            state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1
 
         # Render scene elements

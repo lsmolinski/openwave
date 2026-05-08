@@ -207,7 +207,7 @@ class SimulationState:
         SIM_SPEED scales wave velocity for visualization control.
         """
         self.c_amrs = (
-            constants.EWAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * self.SIM_SPEED
+            constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * self.SIM_SPEED
         )  # am/rs
         self.dt_rs = self.wave_field.dx_am / (self.c_amrs / self.SIM_SPEED * (3**0.5))  # rs
         self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
@@ -349,7 +349,7 @@ def display_data_dashboard(state):
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
-        sub.text(f"eWAVE Speed (c): {constants.EWAVE_SPEED:.1e} m/s")
+        sub.text(f"eWAVE Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
         sub.text(
@@ -517,7 +517,7 @@ def compute_wave_oscillation(state):
         state.trackers.ampT_global_emarms_am[None] * constants.ATTOMETER
     )  # in m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND
-    state.wavelength_global_avg = constants.EWAVE_SPEED / (
+    state.wavelength_global_avg = constants.WAVE_SPEED / (
         state.freq_global_avg or 1
     )  # prevents 0 div
     state.energy_global = (
