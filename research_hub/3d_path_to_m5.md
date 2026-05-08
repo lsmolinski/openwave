@@ -424,10 +424,21 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 - ✅ DIFFERENTIAL OPERATORS section header documents all four operators with their halo requirements and downstream consumers (single source of truth for the vector-calculus toolkit)
 - ✅ Analytical verification: divergence on `ψ=(x, 2y, 3z)` → 6.000 (max err 3e-5); curl on rigid-rotation `ψ=(−y, x, 0)` → (0, 0, 2) (max err 3e-6); curl on constant field → 0 (1e-9 noise floor); curl-curl identity on Gaussian seed → relative error 2.8e-6
 
-#### M5.0f — Natural-unit kernel scaling 🚧 next
+#### M5.0f — Storage-units decision + natural-units deferral ✅ (decision recorded 2026-05-08)
 
-- [ ] **Inherit `openwave/common/constants.py` scaled SI** (`_am` / `_rs` / `_rHz`) for ALL stored fields and I/O — already in place from M5.0b; this sub-phase is about the *kernel-internal* second scaling
-- [ ] **Add a kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for intra-kernel arithmetic only — convert at kernel entry/exit. Required because the electron's `λ_C ≈ 3.86e5 am` is no longer near-1.0 in attometers, which hurts CFL/dispersion math at f32. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written)
+This sub-phase was originally scoped as "add kernel-internal natural-unit scaling (c=1, λ_C=1, ℏ=1) at kernel entry/exit". After investigating both halves of the question (storage units AND kernel-internal scaling), the conclusion is that **neither change is needed in M5.0**. M5.0f therefore lands as a **decision-record sub-phase** — no code refactor — capturing the rationale so the question isn't re-litigated later.
+
+- ✅ **Storage units stay `_am` / `_rs` / `_rHz`** (no refactor):
+  - The leapfrog kernel is **dimensionally self-balancing**: `(c·dt)²` carries length² and `∇²ψ` carries 1/length², so the product magnitude is `~0.08·ψ` regardless of dx units. f32 stability holds in any (am, fm, pm) storage choice — the precision argument originally motivating a switch turned out not to apply to linear kernels
+  - **No "particle-physics best practice"** justifies a full pair: `fm` is the standard length unit (Fermi), but `ys` is not — particle physicists use either `zs` (zeptosecond) or natural units (ℏ/GeV ≈ 6.6e-25 s) for time. A genuinely standard pair `(fm, zs)` would force `c = 300` instead of `0.3`, propagating into every CFL / dispersion / kernel formula — refactor cost without precision benefit
+  - **Cross-method consistency** with M2/M3/M4 is real value (shared validations, port comparisons, instrumentation)
+  - The "storage values look large" observation (e.g. `dx = 200000 am` at electron scale) is a **dashboard formatting** concern, not a correctness one. Adaptive SI-prefix display in the launcher (planned as a small follow-up: `200000 am` → `200 fm` at render time only) handles it without touching storage
+- ✅ **Kernel-internal natural-unit scaling deferred to M5.2** (where it actually pays off):
+  - The original motivation for `(c=1, λ_C=1, ℏ=1)` scaling was f32 precision in linear kernels at electron scale. As shown above, that's a non-issue
+  - The *real* value of natural units is in **non-linear physics couplings**: Klein-Gordon mass term `−m²·ψ`, Close's Eq. 23 nonlinear terms `−u·∇s + w×s`, LdG biaxial potential — these have explicit dimensional coefficients that read like the published equations only when written in natural units
+  - These kernels first appear in **M5.2**. Apply natural-unit scaling there, locally to those specific kernels (entry/exit conversion). Linear kernels (leapfrog, divergence, curl, Laplacian) **never** need natural units — they're dimensionally self-balancing
+  - This is "lazy natural units": apply only where it helps, skip where it doesn't. Avoids premature complexity (boundary conversion code with no precision win) in M5.0
+- 🚧 (optional follow-up, not blocking) — small UI improvement: adaptive SI-prefix display helper in `_launcher.py` so universe edge / voxel edge / wavelength / amplitude render in the natural prefix for their magnitude (`fm`, `am`, `pm`, etc.) instead of raw scientific notation. Storage stays in `_am` / `_rs` / `_rHz`; only the display formatting changes. ~20 lines of code, can ship anytime as a polish PR
 
 #### M5.0g — Per-voxel Hamiltonian density + force-computation switch
 
@@ -460,6 +471,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
 - [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
+- [ ] **Add kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for the new nonlinear-physics kernels added in M5.2 only — Klein-Gordon mass term, Close Eq. 23 nonlinear couplings `−u·∇s + w×s`, LdG biaxial potential. Convert at kernel entry/exit. Linear kernels from M5.0 (leapfrog, divergence, curl, Laplacian) are dimensionally self-balancing and stay in storage units (`_am` / `_rs`) — no conversion. Rationale: natural units make the dimensional coefficients in nonlinear couplings read as O(1) (textbook-form), where mismatched powers of `λ_C` in storage units would push f32. This was originally scoped as M5.0f but deferred here because linear kernels don't need it. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written) and the M5.0f decision-record above
 - [ ] Validate: reproduce Exp 4's Klein-Gordon dispersion on the GPU. FFT-extract ω(k), fit ω² = c²k² + m²
 - [ ] Validate: reproduce Exp 7's transverse wave dispersion (dipole/quadrupole seeds disperse as transverse elastic-solid waves)
 - [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag for comparison
@@ -806,7 +818,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
 - ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
 - ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
-- [~] M5.0 — Scaffold 🔶 **7/9 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e ✅ as of 2026-05-08; M5.0f natural-unit kernel scaling 🚧 next; M5.0g–i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + Hamiltonian dashboard + plane-wave seed all working in the GUI; `scale_factor` legacy retired
+- [~] M5.0 — Scaffold 🔶 **8/9 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f ✅ as of 2026-05-08; M5.0g per-voxel Hamiltonian + F=−∇H 🚧 next; M5.0h–i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + Hamiltonian dashboard + plane-wave seed all working in the GUI; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling deferred to M5.2 alongside the nonlinear physics that benefits from it
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
@@ -816,7 +828,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.0f** — kernel-internal natural-unit scaling (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for intra-kernel arithmetic only, with conversion at kernel entry/exit. Required because the electron's `λ_C ≈ 3.86e5 am` is no longer near-1.0 in attometers, which hurts CFL/dispersion math at f32. Stored fields stay in the validated `_am` / `_rs` / `_rHz` units. Then M5.0g (per-voxel Hamiltonian + F=−∇H), M5.0h (physics-invariant test gate), M5.0i (profiling + Tier 2 optimizations) close out the scaffold.
+**Next action**: **M5.0g** — add per-voxel Hamiltonian density field `H_density_aJ` to `Trackers`, populated alongside `propagate_psi`; rewrite `xforce_motion.compute_force_vector` from M4's `F = −∇(ρV(fA)²)` to **`F = −∇H`** using the new field; add `V(ψ)` function-call hook so M5.2 can plug in nonlinear potentials (Klein-Gordon mass + Close Eq. 23 + LdG) cleanly. Removes the deprecated `Trackers.energy_local_aJ` once `H_density_aJ` is wired. Then M5.0h (physics-invariant test gate: V=0 must reproduce Exp 4 KG dispersion), M5.0i (profiling + Tier 2 optimizations) close out the scaffold.
 
 ---
 

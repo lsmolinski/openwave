@@ -283,12 +283,12 @@ A research thread evaluating whether a Lagrangian / topological framework can re
     - ✅ M5.0d.2 CFL evaluation + plane-wave seed (Gaussian-windowed packet) + tracker EMA + Hamiltonian dashboard + delete legacy M4 `propagate_wave`
     - ✅ M5.0d.3 Drop `scale_factor` / `ewave_res` / EWT-default constants; introduce xperiment-driven `wave_res`
     - ✅ M5.0e Curl, divergence, curl-curl operators (`∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ` identity form, 2-cell halo) — analytical checks pass on linear / rigid-rotation / Gaussian fields
-    - 🚧 M5.0f Natural-unit kernel scaling (`c=1, λ_C=1, ℏ=1` intra-kernel) — next
-    - [ ] M5.0g Per-voxel Hamiltonian density + force-computation switch (F = −∇H replaces M4's `F = −∇(ρV(fA)²)`)
+    - ✅ M5.0f Storage-units decision + natural-units deferral (decision-record sub-phase, no code refactor): storage stays `_am` / `_rs` / `_rHz` for M2/M3/M4 consistency; kernel-internal natural-unit scaling deferred to M5.2 where it lands alongside the nonlinear physics (Klein-Gordon, Close Eq. 23, LdG) that benefits from textbook-readable couplings
+    - 🚧 M5.0g Per-voxel Hamiltonian density + force-computation switch (F = −∇H replaces M4's `F = −∇(ρV(fA)²)`) — next
     - [ ] M5.0h Physics invariant test (gating: V=0 must reproduce Exp 4 KG dispersion)
     - [ ] M5.0i Performance profiling + Tier 2 optimizations (rotating-pointer swap_buffers, merged trackers, BlockLocal Laplacian, Symplectic/Verlet, dirty-tile mask)
   - [ ] M5.1 Port topology from Exps 2, 3 — `seed_vacuum`, `seed_hedgehog`, Frank energy, winding-number tracker
-  - [ ] M5.2 Wave dynamics — **Close's Eq. 23** as the particle equation (preserves `∇·s = 0`, per Close's 2026-04-18 guidance) + Eq. 19 as V=0 linear limit + Klein-Gordon mass term; validate against Exp 4 dispersion; resonance-hunt amplitude sweep
+  - [ ] M5.2 Wave dynamics — **Close's Eq. 23** as the particle equation (preserves `∇·s = 0`, per Close's 2026-04-18 guidance) + Eq. 19 as V=0 linear limit + Klein-Gordon mass term; validate against Exp 4 dispersion; resonance-hunt amplitude sweep. Kernel-internal natural-unit scaling (`c=1, λ_C=1, ℏ=1`) lands here for the nonlinear couplings (deferred from M5.0f — linear kernels are dimensionally self-balancing and don't need it)
   - [ ] M5.3 Hamiltonian energy density `H = ½ψ̇² + ½c²(∇ψ)² + V(ψ)` replaces postulated `E = ρV(fA)²`
   - [ ] M5.4 **Headline test**: single biaxial hedgehog (electron) is a long-lived resonance; hedgehog + anti-hedgehog pair reproduces dynamic 1/d² Coulomb + annihilation. Single-defect framing per Dr. Duda's lepton-axis hierarchy (electron ≠ K=10 tetrahedron in M5)
   - [ ] M5.5 Skyrme stabilizer (conditional on M5.4 showing defect collapse under Derrick's theorem)
