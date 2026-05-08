@@ -10,7 +10,7 @@ zero (free wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
 
 Module layout (top-to-bottom):
     DIFFERENTIAL OPERATORS    — Laplacian; M5.0e adds curl/div/curl-curl
-    INITIAL-CONDITION SEEDING — seed_gaussian (test/UI verification)
+    INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes
     ψ PROPAGATION ENGINE      — propagate_psi (leapfrog/Verlet)
     FIELD OBSERVABLES         — update_trackers_psi (amp/freq EMA)
     ENERGY DENSITY (HAMILTONIAN) — compute_energy_density_H
@@ -132,6 +132,130 @@ def seed_gaussian(
         wave_field.psi_prev_am[i, j, k] = (
             amplitude_am * ti.sin(phase + phase_dt) * envelope_prev * polarization
         )
+
+
+@ti.kernel
+def seed_dispersion_modes(
+    wave_field: ti.template(),  # type: ignore
+    mode_indices: ti.template(),  # type: ignore
+    mode_amplitudes: ti.template(),  # type: ignore
+    mode_cos_omega_dt: ti.template(),  # type: ignore
+    polarization: ti.template(),  # type: ignore
+):
+    """
+    Seed psi_am (t=0) and psi_prev_am (t=−dt) with a superposition of
+    standing-wave Dirichlet eigenmodes — the M5.0h dispersion-relation
+    regression test.
+
+    Each mode m ∈ [0, n_modes) is a 3D Dirichlet eigenmode of the discrete
+    Laplacian on the cell-centered grid:
+
+        shape_m(i,j,k) = sin(n_x π i/(N−1)) · sin(n_y π j/(N−1)) · sin(n_z π k/(N−1))
+
+    where (n_x, n_y, n_z) = mode_indices[m]. With ψ=0 at i ∈ {0, N−1}
+    (and same for j, k), these are exact eigenmodes of the 6-point
+    Laplacian with eigenvalue
+        λ_m = −(c²/dx²) · 2 · Σ_α (1 − cos(n_α π / (N−1)))
+    so each mode oscillates at its own ω_m given by the discrete leapfrog
+    dispersion relation (validated by this very test).
+
+    For a *standing* wave with zero initial velocity:
+        ψ(x, t) = Σ_m A_m · cos(ω_m t) · shape_m(x) · ê_pol
+        ψ(x, 0)   = Σ_m A_m · shape_m · ê_pol
+        ψ(x, −dt) = Σ_m A_m · cos(ω_m·dt) · shape_m · ê_pol
+
+    Caller pre-computes cos(ω_m·dt) per mode and passes via mode_cos_omega_dt.
+
+    Args:
+        wave_field: WaveField (writes psi_am, psi_prev_am)
+        mode_indices: ti.field shape (n_modes, 3) of i32 — (n_x, n_y, n_z) per mode
+        mode_amplitudes: ti.field shape (n_modes,) of f32 — A_m peak amplitude (am)
+        mode_cos_omega_dt: ti.field shape (n_modes,) of f32 — cos(ω_m·dt) for ψ_prev
+        polarization: ti.types.vector(3, ti.f32) — displacement direction ê
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nm1_x = ti.cast(nx - 1, ti.f32)
+    nm1_y = ti.cast(ny - 1, ti.f32)
+    nm1_z = ti.cast(nz - 1, ti.f32)
+    n_modes = mode_amplitudes.shape[0]
+
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        sum_t0 = ti.cast(0.0, ti.f32)
+        sum_tprev = ti.cast(0.0, ti.f32)
+        x = ti.cast(i, ti.f32)
+        y = ti.cast(j, ti.f32)
+        z = ti.cast(k, ti.f32)
+        for m in range(n_modes):
+            n_x_m = ti.cast(mode_indices[m, 0], ti.f32)
+            n_y_m = ti.cast(mode_indices[m, 1], ti.f32)
+            n_z_m = ti.cast(mode_indices[m, 2], ti.f32)
+            shape = (
+                ti.sin(n_x_m * ti.math.pi * x / nm1_x)
+                * ti.sin(n_y_m * ti.math.pi * y / nm1_y)
+                * ti.sin(n_z_m * ti.math.pi * z / nm1_z)
+            )
+            amp = mode_amplitudes[m]
+            sum_t0 += amp * shape
+            sum_tprev += amp * mode_cos_omega_dt[m] * shape
+        wave_field.psi_am[i, j, k] = sum_t0 * polarization
+        wave_field.psi_prev_am[i, j, k] = sum_tprev * polarization
+
+
+@ti.kernel
+def project_modes_to_amplitudes(
+    wave_field: ti.template(),  # type: ignore
+    mode_indices: ti.template(),  # type: ignore
+    polarization: ti.template(),  # type: ignore
+    out_amplitudes: ti.template(),  # type: ignore
+):
+    """
+    Project ψ onto each Dirichlet-eigenmode shape, returning per-mode scalar
+    amplitudes — the M5.0h time-series extraction kernel.
+
+    For each mode m, computes the un-normalized inner product
+
+        out[m] = Σ_{i,j,k} (ψ(i,j,k) · ê_pol) · shape_m(i,j,k)
+
+    where shape_m is defined identically to seed_dispersion_modes. Caller
+    divides by ((N−1)/2)³ — the orthonormality factor of three independent
+    1D Dirichlet sin bases — to recover A_m.
+
+    Used by the m5_0h_dispersion test to record per-mode amplitudes each
+    step → temporal FFT → measured ω_m → fit against discrete dispersion.
+
+    Args:
+        wave_field: WaveField (reads psi_am)
+        mode_indices: ti.field shape (n_modes, 3) of i32
+        polarization: ti.types.vector(3, ti.f32) — same ê used at seeding
+        out_amplitudes: ti.field shape (n_modes,) of f32 — written
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nm1_x = ti.cast(nx - 1, ti.f32)
+    nm1_y = ti.cast(ny - 1, ti.f32)
+    nm1_z = ti.cast(nz - 1, ti.f32)
+    n_modes = out_amplitudes.shape[0]
+
+    # Zero accumulators
+    for m in range(n_modes):
+        out_amplitudes[m] = ti.cast(0.0, ti.f32)
+
+    # Atomic-add accumulate. 5 atomics per voxel × ~64³ voxels = ~1.3M atomics
+    # per call — tractable for a once-per-step extraction kernel at small grids.
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        psi_proj = wave_field.psi_am[i, j, k].dot(polarization)
+        x = ti.cast(i, ti.f32)
+        y = ti.cast(j, ti.f32)
+        z = ti.cast(k, ti.f32)
+        for m in range(n_modes):
+            n_x_m = ti.cast(mode_indices[m, 0], ti.f32)
+            n_y_m = ti.cast(mode_indices[m, 1], ti.f32)
+            n_z_m = ti.cast(mode_indices[m, 2], ti.f32)
+            shape = (
+                ti.sin(n_x_m * ti.math.pi * x / nm1_x)
+                * ti.sin(n_y_m * ti.math.pi * y / nm1_y)
+                * ti.sin(n_z_m * ti.math.pi * z / nm1_z)
+            )
+            ti.atomic_add(out_amplitudes[m], psi_proj * shape)
 
 
 # ================================================================
