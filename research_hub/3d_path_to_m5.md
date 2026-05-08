@@ -411,7 +411,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 
 - ✅ Drop `scale_factor`, `ewave_res`, `max_universe_edge_lambda`, `nominal_energy*` from `WaveField` (M2-era constructs that assumed a single fixed reference wavelength — EWT's 28 am energy-wave). M5 has variable λ
 - ✅ `Trackers.__init__` no longer takes `scale_factor`; globals init to zero; EMA + sample_avg_trackers populate them during sim
-- ✅ Introduce `state.wave_res` (xperiment-driven, populated from `WAVE_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
+- ✅ Introduce `state.wave_res` (xperiment-driven, populated from `TEST_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
 - ✅ Strip all `scale_factor` arithmetic from launcher dashboard; `instrumentation.py` cleaned of EWT-scaled axhline references and the broken transverse subplot
 - ✅ `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇E), so the placeholder is intentional dead-end code until then
 - ✅ `annihilation_threshold` hardcoded to 6 voxels (M5.2 will replace with per-defect Compton-wavelength threshold); particle shell radius set to fixed 0.02 of normalized universe edge

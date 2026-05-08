@@ -10,7 +10,7 @@ zero (free wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
 
 Module layout (top-to-bottom):
     DIFFERENTIAL OPERATORS    — Laplacian; M5.0e adds curl/div/curl-curl
-    INITIAL-CONDITION SEEDING — seed_wave (test/UI verification)
+    INITIAL-CONDITION SEEDING — seed_gaussian (test/UI verification)
     ψ PROPAGATION ENGINE      — propagate_psi (leapfrog/Verlet)
     FIELD OBSERVABLES         — update_trackers_psi (amp/freq EMA)
     ENERGY DENSITY (HAMILTONIAN) — compute_energy_density_H
@@ -34,7 +34,7 @@ from openwave.common import colormap
 
 
 @ti.kernel
-def seed_wave(
+def seed_gaussian(
     wave_field: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore

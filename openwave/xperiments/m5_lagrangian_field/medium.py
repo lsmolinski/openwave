@@ -494,7 +494,9 @@ class Trackers:
         # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_H_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (per voxel)
+        self.energy_global_H_avg_aJ = ti.field(
+            dtype=ti.f32, shape=()
+        )  # mean energy density (per voxel)
 
 
 if __name__ == "__main__":
@@ -531,7 +533,7 @@ if __name__ == "__main__":
     print(f"  Voxel edge (am): {wave_field.dx_am:.2f} am")
     print(f"  Universe volume: {wave_field.universe_volume:.2e} m³")
     print(f"  Note: voxels-per-wavelength resolution is now xperiment-driven")
-    print(f"        (declared via WAVE_SEED or defect Compton wavelength)")
+    print(f"        (declared via TEST_SEED or defect Compton wavelength)")
 
     print("\n================================================================")
     print("END SMOKE TEST: DATA-GRID MODULE")

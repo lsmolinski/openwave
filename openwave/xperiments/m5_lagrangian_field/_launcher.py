@@ -167,7 +167,7 @@ class SimulationState:
         self.VIDEO_FRAMES = 24
 
         # Optional wave seed (test xperiment only)
-        self.WAVE_SEED = None
+        self.TEST_SEED = None
 
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
@@ -216,7 +216,7 @@ class SimulationState:
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
 
         # Optional wave seed (only present in _test_smoke xperiment)
-        self.WAVE_SEED = params.get("wave_seed", None)
+        self.TEST_SEED = params.get("test_seed", None)
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -227,11 +227,11 @@ class SimulationState:
 
         # Resolution metric: voxels-per-wavelength, declared by the active
         # xperiment. Sources (in priority order):
-        #   1. WAVE_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
+        #   1. TEST_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
         #   2. (M5.2+) defect Compton wavelength    — particle xperiments
         #   3. None / 0.0                           — no reference (vacuum tests)
-        if self.WAVE_SEED is not None:
-            self.wave_res = float(self.WAVE_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
+        if self.TEST_SEED is not None:
+            self.wave_res = float(self.TEST_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
         else:
             self.wave_res = 0.0
 
@@ -486,10 +486,10 @@ def initialize_xperiment(state):
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
     # Optional initial-condition seed for test xperiments
-    if state.WAVE_SEED is not None:
-        seed = state.WAVE_SEED
+    if state.TEST_SEED is not None:
+        seed = state.TEST_SEED
         polarization = ti.Vector(seed["POLARIZATION"], dt=ti.f32)
-        lagrange.seed_wave(
+        lagrange.seed_gaussian(
             state.wave_field,
             state.c_amrs,
             state.dt_rs,
