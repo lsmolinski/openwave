@@ -1,32 +1,40 @@
 """
 FORCE & MOTION MODULE
 
-Implements force calculation from energy gradients and particle motion integration.
+Force calculation from the energy-density gradient + wave-center motion
+integration.
 
-Physics Foundation:
-- Energy per voxel: E = ρ · V · (f · A)²  (EWT energy equation)
-- Force: F = -∇E  (negative gradient of energy density)
-- Motion: Euler integration of F = m · a
+Physics Foundation (M5.0g):
+- Per-voxel energy density (Hamiltonian formula):
+    H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
+  populated by lagrangian_engine.compute_energy_density_H into
+  trackers.energy_density_H_aJ
+- Force: F = −∇E sampled at the wave-center's grid position
+  (E here is the energy density field computed via the Hamiltonian formula —
+  see naming convention in medium.py:Trackers. The physics statement F = −∇E
+  is canonical regardless of which formula is used to derive E.)
+- Motion: leapfrog (velocity Verlet) integration of F = m·a
+
+This replaces M4's postulated `E = ρ·V·(f·A)²` energy formula and the
+hardcoded EWT particle constants. The energy density (Hamiltonian) is
+derived from the Lagrangian (matches Exp 5's Noether result), so M5's
+force law is now first-principles rather than a postulate.
 
 Units:
-- Energy: aJ (attojoules, 1 aJ = 1e-18 J)
-- Force: Newtons (1 aJ/am = 1 N, no conversion needed)
+- Energy density: aJ per voxel (1 aJ = 1e-18 J)
+- Force: Newtons (1 aJ/am = 1 N — no conversion needed)
 - Mass: qg (quectograms, 1 qg = 1e-33 kg, for f32 precision on GPU)
 - Velocity: am/rs (OpenWave scaled units for f32 precision)
 - Position: grid indices (float)
 - Time: rontoseconds (rs)
 
 Conversion factors:
-- 1 aJ / 1 am = 1e-18 J / 1e-18 m = 1 N  (energy gradient → force)
-- a_amrs2 = (F_N / m_qg) * 1e-3            (N/qg → am/rs²)
-- c = 0.3 am/rs                             (speed of light)
-
-See research/02_force_motion.md for detailed documentation.
+- 1 aJ / 1 am = 1 N                     (energy gradient → force)
+- a_amrs2 = (F_N / m_qg) * 1e-3          (N/qg → am/rs²)
+- c = 0.3 am/rs                          (speed of light)
 """
 
 import taichi as ti
-
-import numpy as np
 
 from openwave.common import constants
 
@@ -37,60 +45,18 @@ ATTOMETER = constants.ATTOMETER  # m/am = 1e-18
 RONTOSECOND = constants.RONTOSECOND  # s/rs = 1e-27
 QUECTOGRAM = constants.QUECTOGRAM  # kg/qg = 1e-33
 
-# Coulomb force constants (for reference comparisons)
-COULOMB_CONSTANT = constants.COULOMB_CONSTANT  # N·m²/C², k = 8.99e9
-ELEMENTARY_CHARGE = constants.ELEMENTARY_CHARGE  # C, e = 1.60e-19
-
-# EWT particle constants (for EWT force reference)
-MEDIUM_DENSITY = constants.MEDIUM_DENSITY  # kg/m³
-WAVE_SPEED = constants.WAVE_SPEED  # m/s
-EWAVE_AMPLITUDE = constants.EWAVE_AMPLITUDE  # m
-EWAVE_LENGTH = constants.EWAVE_LENGTH  # m
-ELECTRON_K = constants.ELECTRON_K
-ELECTRON_OUTER_SHELL = constants.ELECTRON_OUTER_SHELL
-ELECTRON_ORBITAL_G = constants.ELECTRON_ORBITAL_G
-
-
-def compute_ewt_electric_force(
-    r: float, K: int = 1, Oe: float = 1.0, glambda: float = 1.0
-) -> float:
-    """
-    Compute EWT electric force between two particles (reference/validation).
-
-    F_e = (4πρ K^7 A^6 c² Oe / 3λ²) × gλ × (Q1×Q2 / r²)
-
-    Args:
-        r: Distance between particles in meters
-        K: Wave center count (1 for neutrino, 10 for electron)
-        Oe: Outer shell multiplier (1.0 for K=1, ~2.14 for electron)
-        glambda: Orbital g-factor (1.0 for K=1, ~0.99 for electron)
-
-    Returns:
-        Force in Newtons
-    """
-    coefficient = (
-        4.0
-        * np.pi
-        * MEDIUM_DENSITY
-        * (K**7)
-        * (EWAVE_AMPLITUDE**6)
-        * (WAVE_SPEED**2)
-        * Oe
-        * glambda
-    ) / (3.0 * (EWAVE_LENGTH**2))
-
-    return coefficient / (r**2)
-
 
 # ================================================================
-# Force from Energy Gradient: F = -∇E
+# Force from Energy-Density Gradient: F = −∇E
 # ================================================================
 
-# Gradient sampling: number of voxel shells and weight exponent
-# GRADIENT_SAMPLE_RADIUS = 1: standard central difference (single shell)
-# GRADIENT_SAMPLE_RADIUS > 1: weighted multi-shell gradient (better well resolution)
-# GRADIENT_WEIGHT_FALLOFF = 2: weights as 1/d² (particle energy density ∝ A² ∝ 1/r²)
-GRADIENT_SAMPLE_RADIUS = 3  # voxels (increased from 1 for better lock-in well resolution)
+# Gradient sampling: number of voxel shells and weight exponent.
+# GRADIENT_SAMPLE_RADIUS = 1: standard central difference (single shell).
+# GRADIENT_SAMPLE_RADIUS > 1: weighted multi-shell gradient (better well
+#   resolution near the defect core, where the energy-density gradient is steep).
+# GRADIENT_WEIGHT_FALLOFF = 2: weights as 1/d² (matches energy-density radial
+#   falloff ∝ |ψ|² ∝ 1/r² for a free-wave defect).
+GRADIENT_SAMPLE_RADIUS = 3  # voxels
 GRADIENT_WEIGHT_FALLOFF = 2  # exponent for 1/d^n weighting
 
 # Velocity damping: fraction of velocity retained per timestep
@@ -106,15 +72,16 @@ def compute_force_vector(
     wave_center: ti.template(),  # type: ignore
 ):
     """
-    Compute force on each wave center from energy gradient.
+    Compute force on each wave-center from the energy-density gradient.
 
-    F = -∇E where E is the local energy field (energy_local_aJ).
-    Uses weighted central differences: multiple sample shells within
-    GRADIENT_SAMPLE_RADIUS, weighted by 1/d² (particle energy density
-    falloff ∝ A² ∝ 1/r²). Closer voxels contribute more, matching how
-    a particle's own wave structure "feels" the surrounding energy landscape.
-    For R=1: identical to standard central difference (single shell).
-    Units: aJ/am = N (no conversion needed).
+    F = −∇E where E is `trackers.energy_density_H_aJ` (per-voxel energy density
+    populated each step by lagrangian_engine.compute_energy_density_H). The `_H`
+    suffix on the field name tags the formula used (Hamiltonian); the physics
+    statement F = −∇E is independent of the formula choice. Uses a weighted
+    multi-shell
+    central difference: shells d = 1..R with weights `1/d²`, normalized.
+    R=1 reduces to standard central difference; R>1 averages multiple shells
+    around the defect core for better well-resolution near the WC.
 
     ┌───────┬────────┬────────────┐
     │ Shell │ Weight │ Percentage │
@@ -126,27 +93,20 @@ def compute_force_vector(
     │ d=3   │ 0.111  │ 8.2%       │
     └───────┴────────┴────────────┘
 
-    M5.0d.3: scale_factor was removed from WaveField; the S² correction below
-    is hardcoded to 1.0 as a placeholder. This kernel produces meaningless
-    forces under M5 anyway because trackers.energy_local_aJ is no longer
-    populated (the EWT-formula energy field was retired in favor of the
-    per-voxel Hamiltonian, which lands in M5.0g). Force computation will be
-    rewritten as F = −∇H in M5.0g; until then this runs but feeds zeros to
-    integrate_motion_leapfrog, so wave-centers don't move under force.
+    Units: energy_density_H_aJ is in aJ/voxel; the gradient over `2·d·dx_am`
+    gives aJ/am = N. No scale correction needed (M5.0d.3 retired the M4
+    scale_factor).
 
     Args:
-        wave_field: WaveField instance containing grid info
-        trackers: Trackers instance with energy_local_aJ field
-        wave_center: WaveCenter instance to store computed forces
+        wave_field: WaveField instance (used for dx_am and grid dims)
+        trackers: Trackers instance — reads `energy_density_H_aJ` (populated
+            by lagrangian_engine.compute_energy_density_H before this kernel)
+        wave_center: WaveCenter instance — writes computed forces into
+            `wave_center.force[wc_idx]`
     """
     dx_am = wave_field.dx_am
 
-    # Placeholder — scale_factor was retired in M5.0d.3; S² hardcoded to 1.
-    # M5.0g rewrites this kernel entirely against per-voxel Hamiltonian density.
-    S2 = ti.cast(1.0, ti.f32)
-
     # Precompute weights: 1/d^GRADIENT_WEIGHT_FALLOFF for each shell d = 1..R
-    # Physical basis: particle energy density ∝ |ψ|² ∝ 1/r²
     w_sum = ti.cast(0.0, ti.f32)
     for d in ti.static(range(1, GRADIENT_SAMPLE_RADIUS + 1)):
         w_sum += 1.0 / ti.cast(d**GRADIENT_WEIGHT_FALLOFF, ti.f32)
@@ -171,7 +131,7 @@ def compute_force_vector(
         ny = wave_field.ny
         nz = wave_field.nz
 
-        # Boundary check
+        # Boundary check (need d voxels of halo on each side)
         if (
             i > GRADIENT_SAMPLE_RADIUS
             and i < nx - GRADIENT_SAMPLE_RADIUS
@@ -180,8 +140,7 @@ def compute_force_vector(
             and k > GRADIENT_SAMPLE_RADIUS
             and k < nz - GRADIENT_SAMPLE_RADIUS
         ):
-            # Weighted gradient: Σ w(d) · (E[+d] - E[-d]) / (2·d·dx) / Σ w(d)
-            # w(d) = 1/d^GRADIENT_WEIGHT_FALLOFF (energy density weighting)
+            # Weighted multi-shell central gradient of energy_density_H_aJ
             grad_x = ti.cast(0.0, ti.f32)
             grad_y = ti.cast(0.0, ti.f32)
             grad_z = ti.cast(0.0, ti.f32)
@@ -193,32 +152,32 @@ def compute_force_vector(
                 grad_x += (
                     w
                     * (
-                        trackers.energy_local_aJ[i + d, j, k]
-                        - trackers.energy_local_aJ[i - d, j, k]
+                        trackers.energy_density_H_aJ[i + d, j, k]
+                        - trackers.energy_density_H_aJ[i - d, j, k]
                     )
                     / dist
                 )
                 grad_y += (
                     w
                     * (
-                        trackers.energy_local_aJ[i, j + d, k]
-                        - trackers.energy_local_aJ[i, j - d, k]
+                        trackers.energy_density_H_aJ[i, j + d, k]
+                        - trackers.energy_density_H_aJ[i, j - d, k]
                     )
                     / dist
                 )
                 grad_z += (
                     w
                     * (
-                        trackers.energy_local_aJ[i, j, k + d]
-                        - trackers.energy_local_aJ[i, j, k - d]
+                        trackers.energy_density_H_aJ[i, j, k + d]
+                        - trackers.energy_density_H_aJ[i, j, k - d]
                     )
                     / dist
                 )
 
-            # F = -∇E / S² (aJ/am = N, with scale correction)
-            F_x = -grad_x / (w_sum * S2)
-            F_y = -grad_y / (w_sum * S2)
-            F_z = -grad_z / (w_sum * S2)
+            # F = -∇E (aJ/am = N — no conversion factor needed)
+            F_x = -grad_x / w_sum
+            F_y = -grad_y / w_sum
+            F_z = -grad_z / w_sum
 
         wave_center.force[wc_idx][0] = F_x
         wave_center.force[wc_idx][1] = F_y

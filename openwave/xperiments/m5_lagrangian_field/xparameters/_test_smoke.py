@@ -22,7 +22,7 @@ UNIVERSE_EDGE = 1e-15  # m
 TARGET_VOXELS = 100_000_000
 
 # Wave seed parameters (consumed by _launcher when xperiment name == "_test_smoke")
-WAVE_SEED = {
+TEST_SEED = {
     "AMPLITUDE_AM": 5.0,  # peak displacement, am
     "VOXELS_PER_WAVELENGTH": 60.0,  # spatial period in voxels (≥12 for stable f32)
     "POLARIZATION": [0.0, 1.0, 0.0],  # transverse: ê_y for x-propagating wave
@@ -52,7 +52,7 @@ XPARAMETERS = {
         "SHOW_AXIS": False,
         "TICK_SPACING": 0.25,
         "SHOW_GRID": False,
-        "SHOW_EDGES": True,
+        "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 3,
         "WARP_MESH": 40,
@@ -70,5 +70,5 @@ XPARAMETERS = {
         "EXPORT_VIDEO": False,
         "VIDEO_FRAMES": 24,
     },
-    "wave_seed": WAVE_SEED,
+    "test_seed": TEST_SEED,
 }
