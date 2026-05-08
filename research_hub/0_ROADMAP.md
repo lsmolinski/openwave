@@ -282,8 +282,8 @@ A research thread evaluating whether a Lagrangian / topological framework can re
     - ✅ M5.0d.1 Leapfrog kernel `propagate_psi` + standing-wave eigenmode test
     - ✅ M5.0d.2 CFL evaluation + plane-wave seed (Gaussian-windowed packet) + tracker EMA + Hamiltonian dashboard + delete legacy M4 `propagate_wave`
     - ✅ M5.0d.3 Drop `scale_factor` / `ewave_res` / EWT-default constants; introduce xperiment-driven `wave_res`
-    - 🚧 M5.0e Curl, divergence, curl-curl operators (next — needed by M5.1 winding tracker + M5.2 Close Eq. 19 linear limit)
-    - [ ] M5.0f Natural-unit kernel scaling (`c=1, λ_C=1, ℏ=1` intra-kernel)
+    - ✅ M5.0e Curl, divergence, curl-curl operators (`∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ` identity form, 2-cell halo) — analytical checks pass on linear / rigid-rotation / Gaussian fields
+    - 🚧 M5.0f Natural-unit kernel scaling (`c=1, λ_C=1, ℏ=1` intra-kernel) — next
     - [ ] M5.0g Per-voxel Hamiltonian density + force-computation switch (F = −∇H replaces M4's `F = −∇(ρV(fA)²)`)
     - [ ] M5.0h Physics invariant test (gating: V=0 must reproduce Exp 4 KG dispersion)
     - [ ] M5.0i Performance profiling + Tier 2 optimizations (rotating-pointer swap_buffers, merged trackers, BlockLocal Laplacian, Symplectic/Verlet, dirty-tile mask)

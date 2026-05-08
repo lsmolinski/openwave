@@ -137,11 +137,27 @@ def seed_wave(
 # ================================================================
 # DIFFERENTIAL OPERATORS
 # ================================================================
-# 6-point Laplacian stencil for the vector field ψ. Acts component-wise on
-# psi_am (ti.Vector.field(3, ...)); Taichi handles Vector(3) arithmetic
-# natively, so the stencil applied to a Vector field returns a Vector field.
+# Vector calculus on the Vector(3) field ψ stored in psi_am. All operators
+# are 2nd-order central-difference @ti.func kernels — caller is responsible
+# for skipping boundary voxels (each operator's halo requirement is noted in
+# its docstring).
 #
-# Curl, divergence, and curl(curl) operators land in this section in M5.0e.
+#   compute_laplacian_psi   — ∇²ψ          → Vector(3); 1-cell halo
+#   compute_divergence_psi  — ∇·ψ          → scalar;    1-cell halo
+#   compute_curl_psi        — ∇×ψ          → Vector(3); 1-cell halo
+#   compute_curl_curl_psi   — ∇×(∇×ψ)      → Vector(3); 2-cell halo (uses identity)
+#
+# The curl-curl is implemented via the vector identity
+#       ∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ
+# rather than applying compute_curl twice. Two reasons:
+#   1. Reuses validated Laplacian — only the gradient-of-divergence part is
+#      new code, easier to verify
+#   2. 2-cell halo (vs. 4-cell for nested curl) keeps the loop range tight
+#      and matches Exp 7 v2's implementation (the reference)
+#
+# Why @ti.func not @ti.kernel: these are inner-loop primitives meant to be
+# called from kernels that iterate over voxels (propagate_psi, future force
+# kernels, divergence-cleaning projections, etc.), not standalone passes.
 
 
 @ti.func
@@ -186,6 +202,160 @@ def compute_laplacian_psi(
     center = wave_field.psi_am[i, j, k]
     laplacian_psi_am = (face_sum - 6.0 * center) / (wave_field.dx_am**2)
     return laplacian_psi_am
+
+
+@ti.func
+def compute_divergence_psi(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """
+    Compute the scalar divergence ∇·ψ at voxel [i, j, k].
+
+    Standard 2nd-order central-difference stencil:
+        ∇·ψ ≈ (∂_x ψ_x + ∂_y ψ_y + ∂_z ψ_z)
+            = [ ψ_x[i+1] − ψ_x[i−1]
+              + ψ_y[j+1] − ψ_y[j−1]
+              + ψ_z[k+1] − ψ_z[k−1] ] / (2·dx)
+
+    Used by:
+      - M5.1 winding-number tracker (∇·n on the director field is an
+        observable near hedgehog defects)
+      - M5.2 Close Eq. 23 — the constraint ∇·s = 0 must be enforced;
+        divergence-cleaning projection reads this each step
+      - M5.0e curl_curl identity ∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ
+
+    Args:
+        wave_field: WaveField instance (reads psi_am)
+        i, j, k: Voxel indices (must be interior: 0 < i < nx-1, etc. —
+            caller handles boundary skip; 1-cell halo)
+
+    Returns:
+        ∇·ψ as ti.f32 scalar in units [am / am] = [dimensionless]
+    """
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    dpsi_x_dx = (
+        wave_field.psi_am[i + 1, j, k][0] - wave_field.psi_am[i - 1, j, k][0]
+    ) * inv_2dx
+    dpsi_y_dy = (
+        wave_field.psi_am[i, j + 1, k][1] - wave_field.psi_am[i, j - 1, k][1]
+    ) * inv_2dx
+    dpsi_z_dz = (
+        wave_field.psi_am[i, j, k + 1][2] - wave_field.psi_am[i, j, k - 1][2]
+    ) * inv_2dx
+    return dpsi_x_dx + dpsi_y_dy + dpsi_z_dz
+
+
+@ti.func
+def compute_curl_psi(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """
+    Compute the vector curl ∇×ψ at voxel [i, j, k].
+
+    Standard 2nd-order central-difference stencil:
+        (∇×ψ)_x = ∂_y ψ_z − ∂_z ψ_y
+        (∇×ψ)_y = ∂_z ψ_x − ∂_x ψ_z
+        (∇×ψ)_z = ∂_x ψ_y − ∂_y ψ_x
+
+    Used by:
+      - M5.2 Close Eq. 19 linear limit  ∂²_t Q = −c² · ∇×(∇×Q)
+      - Spin-density observables (s = curl of velocity field analog)
+      - Magnetic-channel diagnostics in M7+ (transverse component extraction)
+
+    Args:
+        wave_field: WaveField instance (reads psi_am)
+        i, j, k: Voxel indices (must be interior: 0 < i < nx-1, etc. —
+            caller handles boundary skip; 1-cell halo)
+
+    Returns:
+        ∇×ψ as Vector(3) in units [am / am] = [dimensionless]
+    """
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    # ∂_y ψ_z, ∂_z ψ_y
+    dpsi_z_dy = (
+        wave_field.psi_am[i, j + 1, k][2] - wave_field.psi_am[i, j - 1, k][2]
+    ) * inv_2dx
+    dpsi_y_dz = (
+        wave_field.psi_am[i, j, k + 1][1] - wave_field.psi_am[i, j, k - 1][1]
+    ) * inv_2dx
+    # ∂_z ψ_x, ∂_x ψ_z
+    dpsi_x_dz = (
+        wave_field.psi_am[i, j, k + 1][0] - wave_field.psi_am[i, j, k - 1][0]
+    ) * inv_2dx
+    dpsi_z_dx = (
+        wave_field.psi_am[i + 1, j, k][2] - wave_field.psi_am[i - 1, j, k][2]
+    ) * inv_2dx
+    # ∂_x ψ_y, ∂_y ψ_x
+    dpsi_y_dx = (
+        wave_field.psi_am[i + 1, j, k][1] - wave_field.psi_am[i - 1, j, k][1]
+    ) * inv_2dx
+    dpsi_x_dy = (
+        wave_field.psi_am[i, j + 1, k][0] - wave_field.psi_am[i, j - 1, k][0]
+    ) * inv_2dx
+    return ti.Vector(
+        [
+            dpsi_z_dy - dpsi_y_dz,
+            dpsi_x_dz - dpsi_z_dx,
+            dpsi_y_dx - dpsi_x_dy,
+        ]
+    )
+
+
+@ti.func
+def compute_curl_curl_psi(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """
+    Compute ∇×(∇×ψ) at voxel [i, j, k] via the vector identity
+        ∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ
+
+    The gradient of divergence is computed by central-differencing
+    compute_divergence_psi at the six face neighbors — that's what makes
+    this a 2-cell halo operator (each face neighbor itself needs a 1-cell
+    halo for its own divergence stencil, so [i±2, j, k] etc. are read).
+
+    The Laplacian piece reuses the validated compute_laplacian_psi.
+
+    Used by M5.2 Close Eq. 19 linear limit  ∂²_t Q = −c² · ∇×(∇×Q).
+
+    Args:
+        wave_field: WaveField instance (reads psi_am)
+        i, j, k: Voxel indices (must be interior with 2-cell halo:
+            1 < i < nx-2, etc. — caller handles boundary skip)
+
+    Returns:
+        ∇×(∇×ψ) as Vector(3) in units [am / am²] = [1/am]
+    """
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+
+    # ∇(∇·ψ): central-difference the divergence at the six face neighbors
+    div_xp = compute_divergence_psi(wave_field, i + 1, j, k)
+    div_xm = compute_divergence_psi(wave_field, i - 1, j, k)
+    div_yp = compute_divergence_psi(wave_field, i, j + 1, k)
+    div_ym = compute_divergence_psi(wave_field, i, j - 1, k)
+    div_zp = compute_divergence_psi(wave_field, i, j, k + 1)
+    div_zm = compute_divergence_psi(wave_field, i, j, k - 1)
+
+    grad_div = ti.Vector(
+        [
+            (div_xp - div_xm) * inv_2dx,
+            (div_yp - div_ym) * inv_2dx,
+            (div_zp - div_zm) * inv_2dx,
+        ]
+    )
+
+    laplacian = compute_laplacian_psi(wave_field, i, j, k)
+
+    return grad_div - laplacian
 
 
 # ================================================================

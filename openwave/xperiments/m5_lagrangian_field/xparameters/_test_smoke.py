@@ -52,7 +52,7 @@ XPARAMETERS = {
         "SHOW_AXIS": False,
         "TICK_SPACING": 0.25,
         "SHOW_GRID": False,
-        "SHOW_EDGES": True,
+        "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 3,
         "WARP_MESH": 40,

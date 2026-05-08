@@ -376,52 +376,55 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 
 #### M5.0a — Module rename + alias ✅ (commit `bdd96dd` 2026-05-06)
 
-- [x] Create `openwave/xperiments/m5_lagrangian_field/` directory (cloned M4 + M3 features merged)
-- [x] **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py`. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py`. See [3b § What wave equation does M5 solve?](3b_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e)
-- [x] Module alias `ewave` → `lagrange` across launcher (the engine evolves the field ψ via the Lagrangian, not "the energy-wave"; alias rename improves call-site readability)
+- ✅ Create `openwave/xperiments/m5_lagrangian_field/` directory (cloned M4 + M3 features merged)
+- ✅ **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py`. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py`. See [3b § What wave equation does M5 solve?](3b_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e)
+- ✅ Module alias `ewave` → `lagrange` across launcher (the engine evolves the field ψ via the Lagrangian, not "the energy-wave"; alias rename improves call-site readability)
 
 #### M5.0b — Triple buffer + AMR-ready field-storage abstraction ✅ (commit `c832e90` 2026-05-06)
 
-- [x] Copy M4's `WaveField` / `WaveCenter` / `WaveTrackers` data classes; **extend with `psi_prev_am` and `psi_new_am`** Vector(3) buffers for leapfrog (also rename `displacement_am` → `psi_am`)
-- [x] **Use native `ti.Vector.field(3, ...)`** with single triple buffer — not three independent scalar fields. See Resolution & Performance Plan § Tier 1
-- [x] **`swap_buffers()`** method on WaveField cycles `prev ← curr, curr ← new` after each leapfrog step
-- [x] **AMR-readiness convention**: kernels must read grid dims via `wave_field.nx / .ny / .nz` attributes — never bake fixed `(nx, ny, nz)` constants into kernel signatures. Documented in WaveField docstring; M5.0 ships uniform-grid, M5.6 / M5.8 retrofit AMR without a rewrite
-- [x] Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (unchanged behavior)
+- ✅ Copy M4's `WaveField` / `WaveCenter` / `WaveTrackers` data classes; **extend with `psi_prev_am` and `psi_new_am`** Vector(3) buffers for leapfrog (also rename `displacement_am` → `psi_am`)
+- ✅ **Use native `ti.Vector.field(3, ...)`** with single triple buffer — not three independent scalar fields. See Resolution & Performance Plan § Tier 1
+- ✅ **`swap_buffers()`** method on WaveField cycles `prev ← curr, curr ← new` after each leapfrog step
+- ✅ **AMR-readiness convention**: kernels must read grid dims via `wave_field.nx / .ny / .nz` attributes — never bake fixed `(nx, ny, nz)` constants into kernel signatures. Documented in WaveField docstring; M5.0 ships uniform-grid, M5.6 / M5.8 retrofit AMR without a rewrite
+- ✅ Copy M4's flux-mesh visualization, granule rendering, 3-plane sampling (unchanged behavior)
 
 #### M5.0c — Vector Laplacian (port + simplify from M2) ✅ (commit `5606dd5` 2026-05-06)
 
-- [x] Port M2's 6-point Laplacian stencil (`compute_laplacianL` at `m2_laplace_propagation/wave_engine.py:527–562`); simplify to a single Vector(3) operator. Taichi handles Vector(3) arithmetic natively, so the stencil applied component-wise IS the vector Laplacian — no need for separate L/T paths like M2 had
+- ✅ Port M2's 6-point Laplacian stencil (`compute_laplacianL` at `m2_laplace_propagation/wave_engine.py:527–562`); simplify to a single Vector(3) operator. Taichi handles Vector(3) arithmetic natively, so the stencil applied component-wise IS the vector Laplacian — no need for separate L/T paths like M2 had
 
 #### M5.0d.1 — Leapfrog kernel + standing-wave eigenmode test ✅ (commit `6df9a1b` 2026-05-06)
 
-- [x] Implement `propagate_psi` kernel: leapfrog/Verlet update `ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ` (V=0 free wave; V terms land in M5.2)
-- [x] Standing-wave eigenmode test (V=0 reproduces continuum dispersion at low k; 2.26% deviation at 12 voxels/λ matches discrete-stencil prediction)
+- ✅ Implement `propagate_psi` kernel: leapfrog/Verlet update `ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ` (V=0 free wave; V terms land in M5.2)
+- ✅ Standing-wave eigenmode test (V=0 reproduces continuum dispersion at low k; 2.26% deviation at 12 voxels/λ matches discrete-stencil prediction)
 
 #### M5.0d.2 — CFL eval + plane-wave seed + tracker EMA + Hamiltonian dashboard ✅ (committed 2026-05-07)
 
-- [x] CFL evaluation in `_launcher.compute_timestep()` — mirror M2 pattern; `dt = dx · 0.95 / (c · √3)`; display `cfl_factor` in dashboard with red coloring if `> 1/3`
-- [x] `seed_wave` kernel — Gaussian-windowed wave packet (3-axis envelope, σ = N/6) that satisfies Dirichlet BC by construction. Drives `_test_smoke` xperiment for visual verification in the GUI
-- [x] Switch launcher main loop from M4's analytical `propagate_wave` → leapfrog `propagate_psi` + `swap_buffers()`
-- [x] `update_trackers_psi` kernel — EMA on `|ψ|²` for amplitude; zero-crossing detection on `ψ_z` for frequency
-- [x] `compute_total_hamiltonian` (3-plane-sampled estimator: `H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)`, V=0 in M5.0d). Full-grid atomic reduction was the original implementation but stalled the GUI at 100M voxels; switched to 3-plane sampling (codebase-consistent with `sample_avg_trackers`)
-- [x] **Delete legacy code**: M4 analytical `propagate_wave` kernel + module-level EWT base constants
-- [x] First successful UI render of leapfrog-driven wave propagation
+- ✅ CFL evaluation in `_launcher.compute_timestep()` — mirror M2 pattern; `dt = dx · 0.95 / (c · √3)`; display `cfl_factor` in dashboard with red coloring if `> 1/3`
+- ✅ `seed_wave` kernel — Gaussian-windowed wave packet (3-axis envelope, σ = N/6) that satisfies Dirichlet BC by construction. Drives `_test_smoke` xperiment for visual verification in the GUI
+- ✅ Switch launcher main loop from M4's analytical `propagate_wave` → leapfrog `propagate_psi` + `swap_buffers()`
+- ✅ `update_trackers_psi` kernel — EMA on `|ψ|²` for amplitude; zero-crossing detection on `ψ_z` for frequency
+- ✅ `compute_total_hamiltonian` (3-plane-sampled estimator: `H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)`, V=0 in M5.0d). Full-grid atomic reduction was the original implementation but stalled the GUI at 100M voxels; switched to 3-plane sampling (codebase-consistent with `sample_avg_trackers`)
+- ✅ **Delete legacy code**: M4 analytical `propagate_wave` kernel + module-level EWT base constants
+- ✅ First successful UI render of leapfrog-driven wave propagation
 
 #### M5.0d.3 — Drop `scale_factor` / `ewave_res` / EWT-default cleanup ✅ (committed 2026-05-07)
 
-- [x] Drop `scale_factor`, `ewave_res`, `max_universe_edge_lambda`, `nominal_energy*` from `WaveField` (M2-era constructs that assumed a single fixed reference wavelength — EWT's 28 am energy-wave). M5 has variable λ
-- [x] `Trackers.__init__` no longer takes `scale_factor`; globals init to zero; EMA + sample_avg_trackers populate them during sim
-- [x] Introduce `state.wave_res` (xperiment-driven, populated from `WAVE_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
-- [x] Strip all `scale_factor` arithmetic from launcher dashboard; `instrumentation.py` cleaned of EWT-scaled axhline references and the broken transverse subplot
-- [x] `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇H), so the placeholder is intentional dead-end code until then
-- [x] `annihilation_threshold` hardcoded to 6 voxels (M5.2 will replace with per-defect Compton-wavelength threshold); particle shell radius set to fixed 0.02 of normalized universe edge
+- ✅ Drop `scale_factor`, `ewave_res`, `max_universe_edge_lambda`, `nominal_energy*` from `WaveField` (M2-era constructs that assumed a single fixed reference wavelength — EWT's 28 am energy-wave). M5 has variable λ
+- ✅ `Trackers.__init__` no longer takes `scale_factor`; globals init to zero; EMA + sample_avg_trackers populate them during sim
+- ✅ Introduce `state.wave_res` (xperiment-driven, populated from `WAVE_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
+- ✅ Strip all `scale_factor` arithmetic from launcher dashboard; `instrumentation.py` cleaned of EWT-scaled axhline references and the broken transverse subplot
+- ✅ `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇H), so the placeholder is intentional dead-end code until then
+- ✅ `annihilation_threshold` hardcoded to 6 voxels (M5.2 will replace with per-defect Compton-wavelength threshold); particle shell radius set to fixed 0.02 of normalized universe edge
 
-#### M5.0e — Curl, divergence, curl-curl operators 🚧 next
+#### M5.0e — Curl, divergence, curl-curl operators ✅ (committed 2026-05-08)
 
-- [ ] Implement `compute_curl_psi`, `compute_divergence_psi`, `compute_curl_curl_psi` kernels in `lagrangian_engine.py`'s DIFFERENTIAL OPERATORS section (alongside the existing Laplacian). `curl(curl())` via `∇(∇·F) − ∇²F` matches Exp 7's implementation; needed by M5.2 (Close's Eq. 19 linear-limit `∂²_tQ = −c²·∇×∇×Q`) and M5.1 (winding tracker uses divergence on the director field)
-- [ ] Smoke-test each operator against an analytical input (e.g. plane wave, dipole field) before consuming it in M5.2
+- ✅ `compute_divergence_psi` `@ti.func` — central-difference scalar divergence, 1-cell halo. Used by M5.1 winding tracker, M5.2 `∇·s = 0` constraint, and the curl-curl identity below
+- ✅ `compute_curl_psi` `@ti.func` — central-difference Vector(3) curl, 1-cell halo. Foundation for M5.2 Eq. 19 linear limit and spin-density observables
+- ✅ `compute_curl_curl_psi` `@ti.func` — implemented via the vector identity `∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ` rather than nested curl. Reuses validated Laplacian, only the gradient-of-divergence is new code, 2-cell halo (vs. 4-cell for nested curl), matches Exp 7 v2's implementation
+- ✅ DIFFERENTIAL OPERATORS section header documents all four operators with their halo requirements and downstream consumers (single source of truth for the vector-calculus toolkit)
+- ✅ Analytical verification: divergence on `ψ=(x, 2y, 3z)` → 6.000 (max err 3e-5); curl on rigid-rotation `ψ=(−y, x, 0)` → (0, 0, 2) (max err 3e-6); curl on constant field → 0 (1e-9 noise floor); curl-curl identity on Gaussian seed → relative error 2.8e-6
 
-#### M5.0f — Natural-unit kernel scaling
+#### M5.0f — Natural-unit kernel scaling 🚧 next
 
 - [ ] **Inherit `openwave/common/constants.py` scaled SI** (`_am` / `_rs` / `_rHz`) for ALL stored fields and I/O — already in place from M5.0b; this sub-phase is about the *kernel-internal* second scaling
 - [ ] **Add a kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for intra-kernel arithmetic only — convert at kernel entry/exit. Required because the electron's `λ_C ≈ 3.86e5 am` is no longer near-1.0 in attometers, which hurts CFL/dispersion math at f32. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written)
@@ -796,14 +799,14 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 
 ## STATUS
 
-- [x] Architecture analysis complete (this document)
-- [x] **All 8 sandbox experiments complete** — see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md):
+- ✅ Architecture analysis complete (this document)
+- ✅ **All 8 sandbox experiments complete** — see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md):
   - ✅ Exp 1 (Sine-Gordon kinks), ✅ Exp 2 (Hedgehog Coulomb), ✅ Exp 3 (Winding quantization), ✅ Exp 4 (Klein-Gordon dispersion)
   - ⚠️ Exp 5 (Lagrangian derivation — W-L product form falsified), ⚠️ Exp 6 (lepton mechanism; specific ratios deferred), ⚠️ Exp 7 v2 (Close's actual equations implemented)
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
-- [x] **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
-- [x] **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
-- [~] M5.0 — Scaffold 🔶 **6/9 sub-phases complete** (M5.0a–c, M5.0d.1–3 ✅ as of 2026-05-07; M5.0e curl/div/curl-curl operators 🚧 next; M5.0f–i pending). Leapfrog kernel is wired and runs in the GUI; CFL bound + Hamiltonian dashboard + plane-wave seed all working; `scale_factor` legacy retired
+- ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
+- ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
+- [~] M5.0 — Scaffold 🔶 **7/9 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e ✅ as of 2026-05-08; M5.0f natural-unit kernel scaling 🚧 next; M5.0g–i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + Hamiltonian dashboard + plane-wave seed all working in the GUI; `scale_factor` legacy retired
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
@@ -813,7 +816,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.0e** — implement curl, divergence, and curl-curl vector operators in `lagrangian_engine.py`. These are the last differential operators needed before M5.2 (Close's Eq. 19 linear limit `∂²_tQ = −c²·∇×∇×Q`) and M5.1 (winding tracker uses divergence on the director field). Then M5.0f (natural-unit kernel scaling), M5.0g (per-voxel Hamiltonian + F=−∇H), M5.0h (physics-invariant test gate), M5.0i (profiling + Tier 2 optimizations) close out the scaffold.
+**Next action**: **M5.0f** — kernel-internal natural-unit scaling (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for intra-kernel arithmetic only, with conversion at kernel entry/exit. Required because the electron's `λ_C ≈ 3.86e5 am` is no longer near-1.0 in attometers, which hurts CFL/dispersion math at f32. Stored fields stay in the validated `_am` / `_rs` / `_rHz` units. Then M5.0g (per-voxel Hamiltonian + F=−∇H), M5.0h (physics-invariant test gate), M5.0i (profiling + Tier 2 optimizations) close out the scaffold.
 
 ---
 
