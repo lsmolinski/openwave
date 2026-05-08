@@ -413,7 +413,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 - ✅ `Trackers.__init__` no longer takes `scale_factor`; globals init to zero; EMA + sample_avg_trackers populate them during sim
 - ✅ Introduce `state.wave_res` (xperiment-driven, populated from `WAVE_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
 - ✅ Strip all `scale_factor` arithmetic from launcher dashboard; `instrumentation.py` cleaned of EWT-scaled axhline references and the broken transverse subplot
-- ✅ `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇H), so the placeholder is intentional dead-end code until then
+- ✅ `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇E), so the placeholder is intentional dead-end code until then
 - ✅ `annihilation_threshold` hardcoded to 6 voxels (M5.2 will replace with per-defect Compton-wavelength threshold); particle shell radius set to fixed 0.02 of normalized universe edge
 
 #### M5.0e — Curl, divergence, curl-curl operators ✅ (committed 2026-05-08)
@@ -440,14 +440,19 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
   - This is "lazy natural units": apply only where it helps, skip where it doesn't. Avoids premature complexity (boundary conversion code with no precision win) in M5.0
 - 🚧 (optional follow-up, not blocking) — small UI improvement: adaptive SI-prefix display helper in `_launcher.py` so universe edge / voxel edge / wavelength / amplitude render in the natural prefix for their magnitude (`fm`, `am`, `pm`, etc.) instead of raw scientific notation. Storage stays in `_am` / `_rs` / `_rHz`; only the display formatting changes. ~20 lines of code, can ship anytime as a polish PR
 
-#### M5.0g — Per-voxel Hamiltonian density + force-computation switch
+#### M5.0g — Per-voxel energy density (Hamiltonian) + force-computation switch ✅ (committed 2026-05-08)
 
-- [ ] Add per-voxel field `H_density_aJ` to `Trackers`; populate from `propagate_psi` (or its merged-tracker variant per the M5.0i optimization) using the same Hamiltonian formula M5.0d.2 already validated as a 3-plane scalar
-- [ ] Rewrite `xforce_motion.compute_force_vector` from M4's `F = −∇(ρV(fA)²)` (with hardcoded EWT constants + the placeholder `S²=1`) to **`F = −∇H`** using the new per-voxel field
-- [ ] Add `V(ψ)` function-call hook so M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG terms cleanly without re-touching the energy/force layer
-- [ ] Remove the deprecated `Trackers.energy_local_aJ` field once `H_density_aJ` is wired
+- ✅ Per-voxel field `trackers.energy_density_H_aJ` (replaces deprecated `energy_local_aJ`); populated each step by `lagrangian_engine.compute_energy_density_H`
+- ✅ Mean per-voxel cache `trackers.energy_global_H_avg_aJ` (filled by `compute_energy_total_H`; matches M4's `_global_avg_` semantics; used as the flux-mesh colormap range for WAVE_MENU=4)
+- ✅ Grid-total scalar `state.energy_total_H_aJ` (= mean × voxel_count) on the dashboard
+- ✅ Rewrote `xforce_motion.compute_force_vector` as **`F = −∇E`** sampling `energy_density_H_aJ` (the `_H` suffix tags how E is computed; the physics statement F=−∇E is canonical regardless of formula). Dropped the placeholder `S²=1`, all hardcoded EWT particle constants (`EWAVE_AMPLITUDE`, `EWAVE_LENGTH`, `MEDIUM_DENSITY`, `ELECTRON_K`/`OUTER_SHELL`/`ORBITAL_G`, `COULOMB_CONSTANT`, `ELEMENTARY_CHARGE`, `WAVE_SPEED`), the `compute_ewt_electric_force` reference function, and the `numpy` import that only it needed
+- ✅ `V_psi(psi)` `@ti.func` hook — returns 0 in M5.0g; M5.2 swaps in Klein-Gordon mass + Close Eq. 23 + LdG terms (alongside the kernel-internal natural-unit scaling deferred from M5.0f). Both the potential value AND its functional form will land here
+- ✅ `compute_energy_total_H` refactored to 3-plane-sample the new per-voxel field (instead of recomputing kinetic+gradient per voxel three times) — three lightweight `_energy_slice_*` slice-copy kernels
+- ✅ Flux-mesh `WAVE_MENU == 4` activated to render `energy_density_H_aJ` (was a placeholder rendering `|ψ|`)
+- ✅ Naming convention captured per Rodrigo's 2026-05-08 review: the quantity is **energy** (aJ); the `_H` suffix tags the *formula* used (Hamiltonian). Future formulas would parallel: `_L` for Lagrangian density, `_K` for kinetic-only. Renamed `compute_hamiltonian_density` → `compute_energy_density_H`, `compute_total_hamiltonian` → `compute_energy_total_H`, `H_density_aJ` → `energy_density_H_aJ`, `H_global_avg_aJ` → `energy_global_H_avg_aJ`, `hamiltonian_total_aJ` → `energy_total_H_aJ`
+- ✅ Smoke-tested end-to-end: `annihilation1` (ψ=0): all energy fields zero, no forces; `_test_smoke` (Gaussian packet): non-trivial energy_density_H_aJ peak ~5e-3, total ~8e3 aJ, forces non-zero where ∇H ≠ 0
 
-#### M5.0h — Physics invariant test (gating)
+#### M5.0h — Physics invariant test (gating) 🚧 next
 
 - [ ] **Physics invariant test**: with `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` for a quadratic potential. Fail this → there's a bug in the core loop. **Gates** progression to M5.1
 
@@ -472,6 +477,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
 - [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
 - [ ] **Add kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for the new nonlinear-physics kernels added in M5.2 only — Klein-Gordon mass term, Close Eq. 23 nonlinear couplings `−u·∇s + w×s`, LdG biaxial potential. Convert at kernel entry/exit. Linear kernels from M5.0 (leapfrog, divergence, curl, Laplacian) are dimensionally self-balancing and stay in storage units (`_am` / `_rs`) — no conversion. Rationale: natural units make the dimensional coefficients in nonlinear couplings read as O(1) (textbook-form), where mismatched powers of `λ_C` in storage units would push f32. This was originally scoped as M5.0f but deferred here because linear kernels don't need it. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written) and the M5.0f decision-record above
+- [ ] **Apply physical-energy-scaling factor to `compute_energy_density_H`** (deferred from M5.0g): the kernel currently writes raw `(am/rs)²` per voxel and the field is named `_aJ` aspirationally. Multiply by `ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ` (matching M4's `E = ρ·V·(f·A)²` conversion) so the kinetic + gradient + V(ψ) terms add in the same physical units. M5.0g defers this because: (a) `F = −∇E` only depends on the gradient (relative scaling survives), (b) M5.0h Klein-Gordon dispersion test checks `ω(k)` not absolute E. But M5.2 needs the V(ψ) couplings to add in real units against the kinetic term — physical scaling becomes load-bearing. Once landed, drop the dashboard `(rel.)` labels in `_launcher.py` (search for "M5.2" in the launcher) and restore `J / J/m³` units
 - [ ] Validate: reproduce Exp 4's Klein-Gordon dispersion on the GPU. FFT-extract ω(k), fit ω² = c²k² + m²
 - [ ] Validate: reproduce Exp 7's transverse wave dispersion (dipole/quadrupole seeds disperse as transverse elastic-solid waves)
 - [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag for comparison
@@ -818,7 +824,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
 - ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
 - ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
-- [~] M5.0 — Scaffold 🔶 **8/9 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f ✅ as of 2026-05-08; M5.0g per-voxel Hamiltonian + F=−∇H 🚧 next; M5.0h–i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + Hamiltonian dashboard + plane-wave seed all working in the GUI; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling deferred to M5.2 alongside the nonlinear physics that benefits from it
+- [~] M5.0 — Scaffold 🔶 **9/11 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f, M5.0g ✅ as of 2026-05-08; M5.0h physics-invariant gating test 🚧 next; M5.0i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
@@ -828,7 +834,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.0g** — add per-voxel Hamiltonian density field `H_density_aJ` to `Trackers`, populated alongside `propagate_psi`; rewrite `xforce_motion.compute_force_vector` from M4's `F = −∇(ρV(fA)²)` to **`F = −∇H`** using the new field; add `V(ψ)` function-call hook so M5.2 can plug in nonlinear potentials (Klein-Gordon mass + Close Eq. 23 + LdG) cleanly. Removes the deprecated `Trackers.energy_local_aJ` once `H_density_aJ` is wired. Then M5.0h (physics-invariant test gate: V=0 must reproduce Exp 4 KG dispersion), M5.0i (profiling + Tier 2 optimizations) close out the scaffold.
+**Next action**: **M5.0h** — physics-invariant gating test. With `V(ψ) = 0`, M5 must reproduce M2's free-wave behavior AND Exp 4's Klein-Gordon dispersion `ω² = c²k² + m²` (for a quadratic potential). FFT-extract `ω(k)` from a multi-mode standing-wave seed; fit; assert `c²` recovered to within stencil-discrete tolerance. Failure here = bug in the core loop; gates progression to M5.1. After M5.0h, M5.0i (profiling + Tier 2 optimizations) closes out the scaffold.
 
 ---
 

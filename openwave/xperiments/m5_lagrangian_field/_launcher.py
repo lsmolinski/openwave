@@ -115,11 +115,20 @@ class SimulationState:
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
-        # Field aggregates — populated by sample_avg_trackers; physical units.
+        # Field aggregates — populated by sample_avg_trackers; physical units
+        # except for the energy attrs (see notes below).
         self.amp_global_rms = 0.0  # m
         self.freq_global_avg = 0.0  # Hz
         self.wavelength_global_avg = 0.0  # m, derived from freq_global_avg
-        self.hamiltonian_total_aJ = 0.0
+        # Energy attrs — currently in SCALED units (per-voxel (am/rs)² ×
+        # ATTOJOULE), not true J. The kernel that populates them
+        # (compute_energy_density_H) doesn't yet apply the physical scaling
+        # factor (ρ_medium × voxel_volume × INTERNAL_ENERGY_TO_AJ). Useful as
+        # *relative* observables for trends and force-gradient sourcing
+        # (F = −∇E only cares about gradients). REVIEW IN M5.2 when nonlinear
+        # V(ψ) couplings land alongside the physical-scaling factor.
+        self.energy_global_H_avg = 0.0  # per-voxel mean in scaled "(rel.)" units
+        self.energy_total_H = 0.0  # mean × voxel_count, scaled "(rel.)" units
         # Resolution metric: voxels-per-wavelength (xperiment-driven).
         # 0.0 means "no reference λ declared" → dashboard shows n/a
         self.wave_res = 0.0
@@ -273,7 +282,8 @@ class SimulationState:
         self.amp_global_rms = 0.0
         self.freq_global_avg = 0.0
         self.wavelength_global_avg = 0.0
-        self.hamiltonian_total_aJ = 0.0
+        self.energy_global_H_avg = 0.0
+        self.energy_total_H = 0.0
         self.wave_res = 0.0
         self.initialize_grid()
         self.compute_timestep()
@@ -349,7 +359,7 @@ def display_wave_menu(state):
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("Hamiltonian (M5.0g)", state.WAVE_MENU == 4):
+        if sub.checkbox("ENERGY (Density)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
             state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
@@ -365,10 +375,15 @@ def display_wave_menu(state):
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("frequency", 0.00, 0.67, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
-        if state.WAVE_MENU == 4:  # Hamiltonian density on ironbow gradient (M5.0g)
+        if state.WAVE_MENU == 4:  # Energy density (Hamiltonian) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("hamiltonian", 0.00, 0.67, 0.08, 0.06) as sub:
-                sub.text(f"total: {state.hamiltonian_total_aJ:.2e} aJ")
+            with render.gui.sub_window("energy", 0.00, 0.67, 0.08, 0.06) as sub:
+                # Unit label "rel." — value is per-voxel mean × 4 (matches the
+                # colormap range max in update_flux_mesh_values). Underlying field
+                # is in scaled (am/rs)² units, not physical J/m³ — REVIEW IN M5.2
+                # when physical-scaling factor (ρ × voxel_volume × correction)
+                # is wired into compute_energy_density_H.
+                sub.text(f"0      {state.energy_global_H_avg*4:.0e}rel.")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -416,9 +431,13 @@ def display_data_dashboard(state):
             sub.text("Wave: n/a (no wave declared)")
 
         sub.text("\n--- WAVE-FIELD ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Amplitude: {state.amp_global_rms:.1e} m")
-        sub.text(f"Frequency: {state.freq_global_avg:.1e} Hz")
-        sub.text(f"Wavelength: {state.wavelength_global_avg:.1e} m")
+        sub.text(f"Amplitude (avg): {state.amp_global_rms:.1e} m")
+        sub.text(f"Frequency (avg): {state.freq_global_avg:.1e} Hz")
+        sub.text(f"Wavelength (avg): {state.wavelength_global_avg:.1e} m")
+        # Unit label "rel." — energy_total_H is `mean × voxel_count × ATTOJOULE`
+        # but the mean is in scaled (am/rs)² units, not actual aJ — so the value
+        # isn't physically J. REVIEW IN M5.2 when physical-scaling factor lands.
+        sub.text(f"Total ENERGY (H): {state.energy_total_H:.1e} rel.")
 
         sub.text("\n--- TIME MICROSCOPE ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Sim Steps (frames): {state.frame:,}")
@@ -436,7 +455,6 @@ def display_data_dashboard(state):
             f"CFL Factor: {state.cfl_factor:.3f} (target < 1/3)",
             color=(1.0, 1.0, 1.0) if state.cfl_factor <= (1 / 3) else (1.0, 0.0, 0.0),
         )
-        sub.text(f"Hamiltonian: {state.hamiltonian_total_aJ:.3e} aJ")
 
 
 # ================================================================
@@ -499,18 +517,27 @@ def compute_oscillation(state):
     # FIELD-OBSERVABLE TRACKERS (per-voxel amp / freq from ψ) ==============
     lagrange.update_trackers_psi(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
+    # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ========================================
+    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  written into trackers.energy_density_H_aJ.
+    # Consumed this same frame by xforce_motion (F = −∇E) and the flux-mesh
+    # WAVE_MENU=4 visualization. M5.0i: candidate to merge into propagate_psi
+    # for a ~25% per-step bandwidth saving.
+    lagrange.compute_energy_density_H(state.wave_field, state.trackers, state.c_amrs, state.dt_rs)
+
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
-    # Frame skip reduces GPU->CPU transfer overhead
+    # Frame skip reduces GPU->CPU transfer overhead.
+    # sample_avg_trackers populates amp / freq / energy global aggregates in
+    # one 3-plane sampling pass; we derive the grid-total energy here as the
+    # trivial product mean × voxel_count (no extra Taichi work needed).
     if state.frame % 60 == 0 or state.frame == 10:
         lagrange.sample_avg_trackers(state.wave_field, state.trackers)
-        # Total Hamiltonian (≈conserved) — compute on the same cadence to avoid
-        # the GPU→CPU round-trip on every frame
-        state.hamiltonian_total_aJ = lagrange.compute_total_hamiltonian(
-            state.wave_field, state.c_amrs, state.dt_rs
-        )
+        state.energy_total_H = (
+            state.trackers.energy_global_H_avg_aJ[None] * state.wave_field.voxel_count
+        ) * constants.ATTOJOULE  # J
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.wavelength_global_avg = constants.WAVE_SPEED / (state.freq_global_avg or 1)  # no 0 div
+    state.energy_global_H_avg = state.trackers.energy_global_H_avg_aJ[None] * constants.ATTOJOULE
 
     if state.INSTRUMENTATION:
         instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)

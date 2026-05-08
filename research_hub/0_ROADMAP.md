@@ -275,7 +275,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - ❌ Test 8: Smolinski's non-linear Ψ³ — K-selectivity hypothesis **FALSIFIED** at Level 1. Ψ³ produces breathing oscillation but no K-dependent geometric stabilization. Nonlinearity alone is insufficient; topology (Exp 2/3) is required for K-selectivity — 2026-04-17
 - ✅ Winning combination selected (2026-04-17): topology (hedgehog + winding) + Klein-Gordon wave dynamics + Close's Eq. 19 as base vector wave + M3 near-field standing waves + Skyrme stabilizer. Full recipe in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5)
 - 🔶 M5 / LAGRANGIAN-FIELD METHOD implementation (dir `openwave/xperiments/m5_lagrangian_field/`) — see [3d_path_to_m5.md](3d_path_to_m5.md) for full sub-phase plan
-  - 🔶 **M5.0 Scaffold** — 6/9 sub-phases complete as of 2026-05-07
+  - 🔶 **M5.0 Scaffold** — 9/11 sub-phases complete as of 2026-05-08
     - ✅ M5.0a Module rename + alias (`wave_engine.py` → `lagrangian_engine.py`, `ewave` → `lagrange`)
     - ✅ M5.0b Triple buffer (`psi_prev_am` / `psi_am` / `psi_new_am`) + AMR-ready field-storage abstraction
     - ✅ M5.0c Vector Laplacian via 6-point stencil (port + simplify from M2)
@@ -284,8 +284,8 @@ A research thread evaluating whether a Lagrangian / topological framework can re
     - ✅ M5.0d.3 Drop `scale_factor` / `ewave_res` / EWT-default constants; introduce xperiment-driven `wave_res`
     - ✅ M5.0e Curl, divergence, curl-curl operators (`∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ` identity form, 2-cell halo) — analytical checks pass on linear / rigid-rotation / Gaussian fields
     - ✅ M5.0f Storage-units decision + natural-units deferral (decision-record sub-phase, no code refactor): storage stays `_am` / `_rs` / `_rHz` for M2/M3/M4 consistency; kernel-internal natural-unit scaling deferred to M5.2 where it lands alongside the nonlinear physics (Klein-Gordon, Close Eq. 23, LdG) that benefits from textbook-readable couplings
-    - 🚧 M5.0g Per-voxel Hamiltonian density + force-computation switch (F = −∇H replaces M4's `F = −∇(ρV(fA)²)`) — next
-    - [ ] M5.0h Physics invariant test (gating: V=0 must reproduce Exp 4 KG dispersion)
+    - ✅ M5.0g Per-voxel energy density (Hamiltonian) + force-computation switch (F = −∇E replaces M4's postulated `E = ρV(fA)²` formula); naming convention adopted: quantity is *energy*, `_H` suffix tags the Hamiltonian formula (parallels `_L` Lagrangian, `_K` kinetic in future); V_psi hook in place for M5.2 nonlinear couplings
+    - 🚧 M5.0h Physics invariant test (gating: V=0 must reproduce Exp 4 KG dispersion) — next
     - [ ] M5.0i Performance profiling + Tier 2 optimizations (rotating-pointer swap_buffers, merged trackers, BlockLocal Laplacian, Symplectic/Verlet, dirty-tile mask)
   - [ ] M5.1 Port topology from Exps 2, 3 — `seed_vacuum`, `seed_hedgehog`, Frank energy, winding-number tracker
   - [ ] M5.2 Wave dynamics — **Close's Eq. 23** as the particle equation (preserves `∇·s = 0`, per Close's 2026-04-18 guidance) + Eq. 19 as V=0 linear limit + Klein-Gordon mass term; validate against Exp 4 dispersion; resonance-hunt amplitude sweep. Kernel-internal natural-unit scaling (`c=1, λ_C=1, ℏ=1`) lands here for the nonlinear couplings (deferred from M5.0f — linear kernels are dimensionally self-balancing and don't need it)

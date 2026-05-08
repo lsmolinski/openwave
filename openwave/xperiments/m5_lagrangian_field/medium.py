@@ -470,18 +470,31 @@ class Trackers:
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
-        # DEPRECATED: per-voxel energy field — no kernel writes to it under M5.0d
-        # (compute_total_hamiltonian replaces it as a scalar reduction). Kept zero-
-        # valued only because xforce_motion.compute_force_vector still reads it.
-        # M5.0g replaces this with H_density_aJ (per-voxel Hamiltonian) and
-        # rewrites the force computation as F = −∇H.
-        self.energy_local_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ, deprecated
+        # Per-voxel ENERGY density (computed via the Hamiltonian formula):
+        #     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
+        # Naming convention: the quantity is energy; the "_H" suffix denotes
+        # the formula used (Hamiltonian). Future formulas (e.g. Lagrangian
+        # density `_L`, kinetic-only `_K`) would parallel this pattern.
+        # Populated each step by lagrangian_engine.compute_energy_density_H.
+        # Consumed by:
+        #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
+        #     postulated F = −∇E with E = ρV(fA)² formula). The energy E here
+        #     is computed via the Hamiltonian formula (hence _H suffix), but
+        #     the physics statement F = −∇E is canonical regardless of how E
+        #     is derived.
+        #   - lagrangian_engine.compute_energy_total_H  →  3-plane-sampled
+        #     grid-total scalar for the dashboard
+        #   - launcher WAVE_MENU=4 flux-mesh visualization
+        # In M5.0g the V(ψ) term is zero; M5.2 plugs in Klein-Gordon mass +
+        # Close Eq. 23 + LdG via the V_psi hook in lagrangian_engine.
+        self.energy_density_H_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
 
         # GLOBAL AVERAGES for visualization scaling — initialized to zero; the
         # update_trackers_psi EMA + sample_avg_trackers fill these in during sim.
         # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
+        self.energy_global_H_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (per voxel)
 
 
 if __name__ == "__main__":

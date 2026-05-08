@@ -121,7 +121,7 @@ class SimulationState:
         self.ampT_global_rms = 0.0
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
-        self.energy_global = 0.0
+        self.energy_total = 0.0
         self.charge_level = 0.0
         self.charging = True
         self.damping = False
@@ -226,7 +226,7 @@ class SimulationState:
         self.ampT_global_rms = 0.0
         self.freq_global_avg = constants.EWAVE_FREQUENCY
         self.wavelength_global_avg = constants.EWAVE_LENGTH
-        self.energy_global = 0.0
+        self.energy_total = 0.0
         self.charge_level = 0.0
         self.charging = True
         self.damping = False
@@ -373,7 +373,7 @@ def display_data_dashboard(state):
         sub.text(f"Frequency: {state.freq_global_avg*state.wave_field.scale_factor:.1e} Hz")
         sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
         sub.text(
-            f"GLOBAL ENERGY: {state.energy_global:.1e} J",
+            f"Total ENERGY: {state.energy_total:.1e} J",
             color=(
                 colormap.ORANGE[1]
                 if state.charging
@@ -520,13 +520,13 @@ def compute_wave_oscillation(state):
     state.wavelength_global_avg = constants.WAVE_SPEED / (
         state.freq_global_avg or 1
     )  # prevents 0 div
-    state.energy_global = (
+    state.energy_total = (
         constants.MEDIUM_DENSITY
         * state.wave_field.universe_volume
         * state.freq_global_avg**2
         * (state.ampL_global_rms**2 + state.ampT_global_rms**2)
     )
-    state.charge_level = state.energy_global / state.wave_field.nominal_energy
+    state.charge_level = state.energy_total / state.wave_field.nominal_energy
     state.charging = state.charge_level < 0.80  # stop charging, seeks energy stabilization
     state.damping = state.charge_level > 1.20  # start damping, seeks energy stabilization
 
