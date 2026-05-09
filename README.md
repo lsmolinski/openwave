@@ -42,8 +42,6 @@ OpenWave aims to:
 **Scientific Status:** OpenWave is a research tool for computational exploration. It uses lattice-discretization methodology (similar in spirit to lattice QCD's tooling, with classical field equations rather than quantized operators) to investigate alternative field-theoretic models and their predictions. Applied-research outputs are conditional on the framework's predictions matching experiment — see the [Scientific Position](#scientific-position) section for the falsifiability framing.
 
 ![demo1 clip](images/demo1.gif)
-![demo2 clip](images/demo2.gif)
-![demo3 clip](images/demo3.gif)
 
 ## Core Scope
 
@@ -83,6 +81,8 @@ OpenWave provides complementary ways to explore wave mechanics:
 - Intuitive for understanding wave mechanics
 - Ideal for education and visualization
 
+![demo2 clip](images/demo2.gif)
+
 ## SCIENTIFIC BACKGROUND
 
 OpenWave is a shared simulation platform for exploring classical wave-field dynamics with topological defects as a computational approach to particle emergence. The current research direction combines **topological defects** (static structure giving integer charge and spin) with **wave dynamics** (Klein-Gordon-like perturbations around a vacuum field, plus standing-wave interference for orbit quantization) — drawing directly from the frameworks contributed by the collaborators below.
@@ -119,6 +119,8 @@ OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated
 - Can Klein-Gordon-like dynamics around the vacuum give rise to mass, relativistic kinematics, and intrinsic (time-crystal) oscillation?
 - Can standing-wave interference between defect emissions produce orbit quantization (electron shells, composite particles)?
 - Can the same framework recover Coulomb, strong, and gravitational forces at their respective scales?
+
+![demo3 clip](images/demo3.gif)
 
 ## INSTALLATION INSTRUCTIONS
 
