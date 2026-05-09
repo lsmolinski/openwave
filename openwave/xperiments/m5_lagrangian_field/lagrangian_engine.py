@@ -10,7 +10,7 @@ zero (free wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
 
 Module layout (top-to-bottom):
     DIFFERENTIAL OPERATORS    — Laplacian; M5.0e adds curl/div/curl-curl
-    INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes
+    INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes, seed_vacuum, seed_hedgehog
     ψ PROPAGATION ENGINE      — propagate_psi (leapfrog/Verlet)
     FIELD OBSERVABLES         — update_trackers_psi (amp/freq EMA)
     ENERGY DENSITY (HAMILTONIAN) — compute_energy_density_H
@@ -133,6 +133,15 @@ def seed_gaussian(
             amplitude_am * ti.sin(phase + phase_dt) * envelope_prev * polarization
         )
 
+        # Initialize psi_new_am to the t=0 value too — required for BC consistency
+        # so the first swap_buffers doesn't clobber boundary voxels (psi_new_am's
+        # default is zero; without this write, psi_am's boundary becomes 0 after
+        # the first swap regardless of what the seed put there). See propagate_psi
+        # docstring "BC consistency requirement" for the full rationale.
+        wave_field.psi_new_am[i, j, k] = (
+            amplitude_am * ti.sin(phase) * envelope_3d * polarization
+        )
+
 
 @ti.kernel
 def seed_dispersion_modes(
@@ -199,6 +208,148 @@ def seed_dispersion_modes(
             sum_tprev += amp * mode_cos_omega_dt[m] * shape
         wave_field.psi_am[i, j, k] = sum_t0 * polarization
         wave_field.psi_prev_am[i, j, k] = sum_tprev * polarization
+        # BC consistency: write psi_new_am too. See propagate_psi docstring.
+        wave_field.psi_new_am[i, j, k] = sum_t0 * polarization
+
+
+@ti.kernel
+def seed_vacuum(
+    wave_field: ti.template(),  # type: ignore
+):
+    """
+    Fill ψ with the topological-vacuum ground state n = ẑ at every voxel.
+
+    In M5.1+ the same ψ field plays a director role: a unit-length Vector(3)
+    whose direction at each voxel encodes the local orientation of the medium.
+    Vacuum = uniform orientation = no defects. This kernel writes the
+    canonical vacuum (n = ẑ) into both the current and previous buffers,
+    giving a static initial condition with zero implied velocity if any
+    subsequent leapfrog step is ever taken.
+
+    The vacuum is the substrate on which topological defects (particles)
+    will be seeded by `seed_hedgehog` — far from any defect, the field returns
+    to this configuration via the w_vac blend in that kernel.
+
+    Args:
+        wave_field: WaveField (writes psi_am, psi_prev_am)
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    z_hat = ti.Vector([0.0, 0.0, 1.0])
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        wave_field.psi_am[i, j, k] = z_hat
+        wave_field.psi_prev_am[i, j, k] = z_hat
+        # BC consistency: write psi_new_am too so the first swap_buffers
+        # doesn't clobber the boundary. See propagate_psi docstring.
+        wave_field.psi_new_am[i, j, k] = z_hat
+
+
+@ti.kernel
+def seed_hedgehog(
+    wave_field: ti.template(),  # type: ignore
+    centers_voxel: ti.template(),  # type: ignore
+    signs: ti.template(),  # type: ignore
+    domain_quarter_voxels: ti.f32,  # type: ignore
+    n_defects: ti.i32,  # type: ignore
+):
+    """
+    Seed N topological hedgehog defects via weighted superposition + renormalization.
+
+    Direct port of Exp 2's `seed_hedgehog_pair` (validated in
+    `research_hub/sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`),
+    generalized from a hardcoded pair to an N-defect array. Same math; same
+    weighting choices; same soft-core handling.
+
+    Per voxel (x = (i, j, k)):
+        1. For each defect d at center c[d] with sign s[d] ∈ {±1}:
+              r[d]      = |x − c[d]|                            distance
+              r_safe    = max(r[d], 0.2 · dx)                   soft-core
+              n_radial  = s[d] · (x − c[d]) / r_safe            unit radial
+              w_defect  = 1 / (r[d] + 0.5)                      proximity weight (~1/r tail)
+              n_combined += w_defect · n_radial
+              r_nearest = min(r_nearest, r[d])
+        2. Vacuum-blend weight (uses nearest-defect distance):
+              w_vac = 1 / (1 + (r_nearest / D/4)⁴)
+            ≈ 1 inside ~D/4 of any defect; → 0 far away (returns to vacuum)
+        3. Final blend: n = w_vac · n_combined + (1 − w_vac) · ẑ
+        4. Renormalize: n / |n|  (with epsilon guard for the singular-defect
+           voxel where the radial directions cancel)
+
+    The seeded field is written to BOTH psi_am and psi_prev_am so a leapfrog
+    step run on this initial condition starts with zero velocity. M5.1's
+    primary use is static gradient-descent relaxation (no leapfrog); this
+    is for forward-compatibility with M5.2+ dynamic tests.
+
+    Args:
+        wave_field: WaveField (writes psi_am, psi_prev_am)
+        centers_voxel: ti.field shape (n_defects, 3) of i32 — centers in voxel coords
+        signs: ti.field shape (n_defects,) of i32 — +1 outward / −1 inward per defect
+        domain_quarter_voxels: f32 — D/4 in voxel units (sets w_vac falloff radius)
+        n_defects: i32 — number of active defects in the centers/signs arrays
+
+    Caveats:
+        - The 0.2·dx soft-core is a numerical workaround for the topological
+          singularity at the defect center; M5.5 (Skyrme stabilizer) and
+          M5.6 (LdG biaxial) replace this with proper field-theoretic
+          regularization. Don't trust the field's behavior at the
+          single-voxel core for any physics test before M5.5.
+        - The weighted superposition is NOT a topologically-clean seed —
+          two opposite-sign hedgehogs blended this way may have winding
+          number that integrates to a non-integer until gradient-descent
+          relaxation (M5.1 tasks 4) settles them onto the topological
+          minimum. The integer winding is RECOVERED post-relaxation.
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    z_hat = ti.Vector([0.0, 0.0, 1.0])
+    soft_core_voxels = ti.cast(0.2, ti.f32)  # match Exp 2's 0.2 · DX softening
+    proximity_floor = ti.cast(0.5, ti.f32)  # match Exp 2's "r + 0.5"
+
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        x = ti.cast(i, ti.f32)
+        y = ti.cast(j, ti.f32)
+        z = ti.cast(k, ti.f32)
+
+        n_combined = ti.Vector([0.0, 0.0, 0.0])
+        r_nearest = ti.cast(1e10, ti.f32)
+
+        for d in range(n_defects):
+            cx = ti.cast(centers_voxel[d, 0], ti.f32)
+            cy = ti.cast(centers_voxel[d, 1], ti.f32)
+            cz = ti.cast(centers_voxel[d, 2], ti.f32)
+            sgn = ti.cast(signs[d], ti.f32)
+
+            ddx = x - cx
+            ddy = y - cy
+            ddz = z - cz
+            r = ti.sqrt(ddx * ddx + ddy * ddy + ddz * ddz)
+            r_safe = ti.max(r, soft_core_voxels)
+
+            n_radial = ti.Vector(
+                [
+                    sgn * ddx / r_safe,
+                    sgn * ddy / r_safe,
+                    sgn * ddz / r_safe,
+                ]
+            )
+
+            w_defect = 1.0 / (r + proximity_floor)
+            n_combined += w_defect * n_radial
+
+            r_nearest = ti.min(r_nearest, r)
+
+        # Vacuum blend: ~1 within D/4, falls as r⁻⁴ far away
+        ratio = r_nearest / domain_quarter_voxels
+        w_vac = 1.0 / (1.0 + ratio * ratio * ratio * ratio)
+
+        n_blended = w_vac * n_combined + (1.0 - w_vac) * z_hat
+
+        # Renormalize to unit length (ε in denominator avoids /0 at the core)
+        norm = n_blended.norm() + 1e-12
+        n_unit = n_blended / norm
+
+        wave_field.psi_am[i, j, k] = n_unit
+        wave_field.psi_prev_am[i, j, k] = n_unit
+        # BC consistency: write psi_new_am too. See propagate_psi docstring.
+        wave_field.psi_new_am[i, j, k] = n_unit
 
 
 # ================================================================
@@ -445,10 +596,23 @@ def propagate_psi(
     Reads:  wave_field.psi_am, wave_field.psi_prev_am
     Writes: wave_field.psi_new_am
 
-    Boundary: Dirichlet (ψ = 0 at edges) — interior voxels only.
-    The 6-point Laplacian needs a 1-cell halo, so the loop range is
-    (1, n−1) on each axis. Boundary voxels are never updated; they stay
-    at whatever value they were initialized with (0 by default).
+    Boundary: fixed-value Dirichlet — boundary voxels are never updated;
+    they stay at whatever value the active seeder wrote. The interpretation
+    of that value depends on the seeder:
+      - M5.0 wave seeders (seed_gaussian, seed_dispersion_modes) leave
+        boundaries at ψ ≈ 0 (zero-displacement BC; quiet wave boundary)
+      - M5.1+ topology seeders (seed_vacuum, seed_hedgehog) leave boundaries
+        at ψ = ẑ (vacuum-director BC; far-field defect reference)
+    Both are valid Dirichlet BCs at different fixed values. The propagator
+    is agnostic — it just iterates (1, n−1) on each axis (the 6-point
+    Laplacian's 1-cell halo requirement) and never touches the boundary.
+
+    BC consistency requirement: ALL THREE BUFFERS (psi_prev_am, psi_am,
+    psi_new_am) must hold the same boundary value before the first call.
+    psi_new_am's boundary is never written by the propagator, so swap_buffers'
+    `psi_am.copy_from(psi_new_am)` would otherwise clobber the seeded
+    boundary value with psi_new_am's default zero. Seeders fix this by
+    writing all three buffers; verified bug 2026-05-09 with seed_hedgehog.
 
     CFL stability: dt ≤ dx / (c·√3) for 3D wave equation. Caller is
     responsible for sizing dt below this bound (see _launcher CFL eval).

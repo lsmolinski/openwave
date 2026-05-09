@@ -168,6 +168,8 @@ class SimulationState:
 
         # Optional wave seed (test xperiment only)
         self.TEST_SEED = None
+        # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
+        self.TOPOLOGY_SEED = None
 
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
@@ -217,6 +219,8 @@ class SimulationState:
 
         # Optional wave seed (only present in _test_smoke xperiment)
         self.TEST_SEED = params.get("test_seed", None)
+        # Optional topology seed (only present in _test_topology xperiment, M5.1+)
+        self.TOPOLOGY_SEED = params.get("topology_seed", None)
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -499,6 +503,52 @@ def initialize_xperiment(state):
             seed["DIRECTION_AXIS"],
         )
 
+    # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
+    if state.TOPOLOGY_SEED is not None:
+        topo = state.TOPOLOGY_SEED
+        seed_mode = topo.get("MODE", "vacuum")  # "vacuum" or "hedgehog"
+
+        if seed_mode == "vacuum":
+            lagrange.seed_vacuum(state.wave_field)
+            print("[M5.1] seeded vacuum (n = ẑ everywhere)")
+
+        elif seed_mode == "hedgehog":
+            # Defects are specified in normalized [0,1] domain coordinates;
+            # convert to voxel coords and bundle into ti.fields for the kernel.
+            defects = topo["DEFECTS"]  # list of {"CENTER": [x,y,z], "SIGN": ±1}
+            n_defects = len(defects)
+            wf = state.wave_field
+
+            centers_np = np.zeros((n_defects, 3), dtype=np.int32)
+            signs_np = np.zeros(n_defects, dtype=np.int32)
+            for d, defect in enumerate(defects):
+                cx_norm, cy_norm, cz_norm = defect["CENTER"]
+                centers_np[d, 0] = int(round(cx_norm * (wf.nx - 1)))
+                centers_np[d, 1] = int(round(cy_norm * (wf.ny - 1)))
+                centers_np[d, 2] = int(round(cz_norm * (wf.nz - 1)))
+                signs_np[d] = int(defect["SIGN"])
+
+            centers_field = ti.field(dtype=ti.i32, shape=(n_defects, 3))
+            signs_field = ti.field(dtype=ti.i32, shape=(n_defects,))
+            centers_field.from_numpy(centers_np)
+            signs_field.from_numpy(signs_np)
+
+            # D/4 in voxel units — w_vac falloff radius for the vacuum blend.
+            # Default from Exp 2 is one quarter of the largest grid extent.
+            domain_quarter_fraction = topo.get("DOMAIN_QUARTER_FRACTION", 0.25)
+            domain_quarter_voxels = float(domain_quarter_fraction * max(wf.nx, wf.ny, wf.nz))
+
+            lagrange.seed_hedgehog(
+                wf, centers_field, signs_field, domain_quarter_voxels, n_defects
+            )
+            print(
+                f"[M5.1] seeded {n_defects} hedgehog defect(s); "
+                f"D/4 = {domain_quarter_voxels:.1f} voxels"
+            )
+
+        else:
+            print(f"[M5.1] WARNING: unknown TOPOLOGY_SEED mode: {seed_mode!r}")
+
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
         print("INSTRUMENTATION ENABLED")
@@ -663,7 +713,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_test_smoke"
+    default_xperiment = selected_xperiment_arg or "_test3_smoke"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
