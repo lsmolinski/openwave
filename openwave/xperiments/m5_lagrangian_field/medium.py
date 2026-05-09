@@ -52,7 +52,13 @@ class WaveField:
     6. Initialize scalar and vector fields with attometer scaling for f32 precision
     """
 
-    def __init__(self, init_universe_size, target_voxels, flux_mesh_planes=[0.5, 0.5, 0.5]):
+    def __init__(
+        self,
+        init_universe_size,
+        target_voxels,
+        flux_mesh_planes=[0.5, 0.5, 0.5],
+        viz_stride=4,
+    ):
         """
         Initialize WaveField from universe size with automatic voxel sizing.
 
@@ -193,6 +199,46 @@ class WaveField:
         self.fm_plane_z_idx = int(flux_mesh_planes[2] * self.nz)  # z index of flux mesh plane
 
         self.create_flux_mesh()
+
+        # ================================================================
+        # Director Glyphs (M5.1): line-segment visualization of n̂ = ψ/|ψ|
+        # ================================================================
+        # The flux mesh renders one scalar per voxel (magnitude or signed
+        # component); for a director field, the *direction* is the structure
+        # we need to see. Director glyphs draw a line segment from each
+        # sampled voxel to voxel + L·n̂, with color = signed-component RGB
+        # so opposite directions look opposite (red↔cyan, green↔magenta,
+        # blue↔yellow). Design doc: research_hub/3e_director_glyph_rendering.md.
+        #
+        # Same 3-plane sampling pattern as flux_mesh, sampled every VIZ_STRIDE
+        # voxels. VIZ_STRIDE is the consolidated xparameter that ALSO drives
+        # the SHOW_GRANULES sampling stride — same density for both overlays
+        # so granules and glyphs visually align (granules show medium motion
+        # at each sample point; glyphs show director orientation at the same
+        # point). Round-up `(n + stride - 1) // stride` mirrors the granule
+        # indexing in _launcher.py so last-row coverage matches.
+        self.GLYPH_STRIDE = viz_stride
+        nx_s = max(1, (self.nx + viz_stride - 1) // viz_stride)
+        ny_s = max(1, (self.ny + viz_stride - 1) // viz_stride)
+        nz_s = max(1, (self.nz + viz_stride - 1) // viz_stride)
+        self.glyph_nx_s = nx_s
+        self.glyph_ny_s = ny_s
+        self.glyph_nz_s = nz_s
+        self.n_glyphs = nx_s * ny_s + nx_s * nz_s + ny_s * nz_s
+        # Two vertices per line segment (start + end); GGUI renders consecutive
+        # vertex pairs as a line.
+        self.director_glyph_vertices = ti.Vector.field(
+            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
+        )
+        # Per-vertex color matches the line endpoints. Both endpoints get the
+        # same color so each glyph reads as a uniform-colored line.
+        self.director_glyph_colors = ti.Vector.field(
+            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
+        )
+        # Flat-array offsets into the (2·n_glyphs) buffer per plane:
+        self.glyph_offset_xy = 0
+        self.glyph_offset_xz = nx_s * ny_s
+        self.glyph_offset_yz = nx_s * ny_s + nx_s * nz_s
 
     def swap_buffers(self):
         """
