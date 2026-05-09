@@ -152,6 +152,10 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
+        self.SHOW_DIRECTORS = 0  # M5.1: director-glyph overlay (0=off, 1=XY, 2=+XZ, 3=all)
+        self.VIZ_STRIDE = (
+            4  # M5.1: shared sampling stride for directors AND granules (every Nth voxel)
+        )
         self.PARTICLE_SHELL = False
         self.SHOW_GRANULES = False
         self.SIM_SPEED = 1.0
@@ -201,6 +205,8 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
+        self.SHOW_DIRECTORS = ui.get("SHOW_DIRECTORS", 0)
+        self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
@@ -225,7 +231,10 @@ class SimulationState:
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
         self.wave_field = medium.WaveField(
-            self.UNIVERSE_SIZE, self.TARGET_VOXELS, self.FLUX_MESH_PLANES
+            self.UNIVERSE_SIZE,
+            self.TARGET_VOXELS,
+            self.FLUX_MESH_PLANES,
+            viz_stride=self.VIZ_STRIDE,
         )
         self.trackers = medium.Trackers(self.wave_field.grid_size)
 
@@ -337,6 +346,7 @@ def display_controls(state):
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
+        state.SHOW_DIRECTORS = sub.slider_int("Directors", state.SHOW_DIRECTORS, 0, 3)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
@@ -648,6 +658,18 @@ def render_elements(state):
         )
         flux_mesh.render_flux_mesh(render.scene, state.wave_field, state.SHOW_FLUX_MESH)
 
+    # M5.1 director-glyph overlay — line segments showing n̂ orientation,
+    # signed-component RGB so opposite directions are visually opposite.
+    # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
+    if state.SHOW_DIRECTORS > 0:
+        glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
+        lagrange.update_director_glyphs(state.wave_field, glyph_length, state.SHOW_DIRECTORS)
+        render.scene.lines(
+            state.wave_field.director_glyph_vertices,
+            per_vertex_color=state.wave_field.director_glyph_colors,
+            width=2.0,
+        )
+
     if state.PARTICLE_SHELL:
         # Convert wave-centers positions from [ijk] to [screen_normalization]
         # Use position_float for smooth rendering (position_grid is integer, causes jumpy motion)
@@ -683,14 +705,15 @@ def render_elements(state):
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)
     if state.SHOW_GRANULES and state.SHOW_FLUX_MESH > 0:
-        max_particles = 401
         granule_radius = 0.001  # in screen space (relative to max universe edge and scale factor)
         amp_boost = state.WARP_MESH  # Boost granule displacement for better visibility
         nx, ny = state.wave_field.nx, state.wave_field.ny
-        stride = max(1, int(np.ceil(np.sqrt(nx * ny / max_particles))))
+        # Shared VIZ_STRIDE drives both granules and director glyphs — same density,
+        # so granules visually align with the underlying glyphs (M5.1 consolidation).
+        stride = max(1, state.VIZ_STRIDE)
         sampled_nx = (nx + stride - 1) // stride
         sampled_ny = (ny + stride - 1) // stride
-        num_render = min(sampled_nx * sampled_ny, max_particles)
+        num_render = sampled_nx * sampled_ny
         lagrange.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
         pos_np = state.wave_field.position_render.to_numpy()[:num_render]
         render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
@@ -713,7 +736,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_test3_smoke"
+    default_xperiment = selected_xperiment_arg or "_test4_topology"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

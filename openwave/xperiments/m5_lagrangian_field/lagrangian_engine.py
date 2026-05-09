@@ -16,6 +16,7 @@ Module layout (top-to-bottom):
     ENERGY DENSITY (HAMILTONIAN) — compute_energy_density_H
     POSITION RENDER           — sample_position_to_render (granule viz)
     3-PLANE SAMPLING          — sample_avg_trackers (cheap global means)
+    DIRECTOR GLYPHS           — update_director_glyphs (M5.1 director viz)
     FLUX MESH UPDATING        — update_flux_mesh_values (color mapping)
 """
 
@@ -138,9 +139,7 @@ def seed_gaussian(
         # default is zero; without this write, psi_am's boundary becomes 0 after
         # the first swap regardless of what the seed put there). See propagate_psi
         # docstring "BC consistency requirement" for the full rationale.
-        wave_field.psi_new_am[i, j, k] = (
-            amplitude_am * ti.sin(phase) * envelope_3d * polarization
-        )
+        wave_field.psi_new_am[i, j, k] = amplitude_am * ti.sin(phase) * envelope_3d * polarization
 
 
 @ti.kernel
@@ -1046,6 +1045,194 @@ def sample_avg_trackers(
     # voxel_count to get the grid total.
     total_energy = xy_energy.sum() + xz_energy.sum() + yz_energy.sum()
     trackers.energy_global_H_avg_aJ[None] = float(total_energy / n_samples)
+
+
+# ================================================================
+# DIRECTOR-GLYPH RENDERING (M5.1)
+# ================================================================
+# The flux mesh maps every voxel to ONE scalar (color + Z-warp). For a
+# director field where |ψ|=1 by construction, scalar magnitude is uninformative
+# (always 1 except at singular cores). To see TOPOLOGY, we need to render
+# the *direction* — which is what director glyphs do.
+#
+# Each glyph is a line segment from voxel position to voxel + L · n̂, with
+# both endpoints sharing a color computed from the signed components:
+#     color = (n̂ + 1) / 2     ∈ [0, 1]³
+#
+# This signed-component RGB has a useful property: opposite directions get
+# RGB-complementary colors (red↔cyan, green↔magenta, blue↔yellow). A +1
+# hedgehog shows red on the +x face and cyan on the −x face; a −1 hedgehog
+# inverts the pattern. Combined with the line offset (glyphs reach further
+# in the n̂ direction), polarity is unambiguous without arrowheads.
+#
+# Sampling pattern: same 3-plane convention as flux_mesh — XY at fm_plane_z,
+# XZ at fm_plane_y, YZ at fm_plane_x. At GLYPH_STRIDE=4 with a 64³ grid,
+# total glyph count is ~768 segments; renders in well under 1 ms.
+#
+# Design doc: research_hub/3e_director_glyph_rendering.md.
+
+
+@ti.kernel
+def update_director_glyphs(
+    wave_field: ti.template(),  # type: ignore
+    length: ti.f32,  # type: ignore
+    show_level: ti.i32,  # type: ignore
+):
+    """
+    Update the director-glyph line-segment field by sampling ψ on the
+    three flux-mesh planes (XY, XZ, YZ) at GLYPH_STRIDE.
+
+    Per glyph, writes:
+      - vertices[2k+0] = voxel position (normalized [0,1] camera space)
+      - vertices[2k+1] = voxel position + length · n̂
+      - colors[2k+0]   = colors[2k+1] = colormap palette of (1 − n̂[2]) ∈ [0, 2]
+        scalar represents "twist away from vacuum": 0 at n=ẑ (vacuum), 1 at
+        equatorial directors, 2 at the −ẑ pole. With dark-to-bright palettes
+        (blueprint default; ironbow alt) the vacuum BLENDS into the black GUI
+        background — only the defect-twisted region stands out visually.
+
+    `show_level` mirrors SHOW_FLUX_MESH semantics for progressive plane reveal:
+        0 → all planes off (degenerate glyphs; nothing renders)
+        1 → XY plane only
+        2 → XY + XZ planes
+        3 → XY + XZ + YZ planes (all)
+    Off-planes get degenerate glyphs (start == end, color = 0) which GGUI
+    renders as invisible 0-length line segments.
+
+    Boundary handling: 1e-12 epsilon in n̂ denominator avoids /0 at vacuum
+    voxels where ψ ≈ 0 (none in M5.1's seeded fields, but guarding anyway).
+
+    Args:
+        wave_field: WaveField (reads psi_am; writes director_glyph_vertices /
+            director_glyph_colors)
+        length: glyph length in normalized camera coords (e.g. 0.02 for ~2%
+            of the universe edge)
+        show_level: 0..3, parallel to SHOW_FLUX_MESH (0 off, 1 XY, 2 +XZ, 3 all)
+    """
+    nx = wave_field.nx
+    ny = wave_field.ny
+    nz = wave_field.nz
+    stride = wave_field.GLYPH_STRIDE
+    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
+
+    # Use the pre-computed round-up sampled counts (matches granule sampling
+    # pattern in _launcher.py — last partial row is included).
+    nx_s = wave_field.glyph_nx_s
+    ny_s = wave_field.glyph_ny_s
+    nz_s = wave_field.glyph_nz_s
+
+    z_plane_idx = wave_field.fm_plane_z_idx
+    y_plane_idx = wave_field.fm_plane_y_idx
+    x_plane_idx = wave_field.fm_plane_x_idx
+
+    zero_v = ti.Vector([0.0, 0.0, 0.0])
+
+    # ----- XY plane at z = fm_plane_z_idx -----
+    for si, sj in ti.ndrange(nx_s, ny_s):
+        idx = (wave_field.glyph_offset_xy + si * ny_s + sj) * 2
+        if show_level >= 1:
+            # Clamp to grid extent — round-up sampling can give
+            # (nx_s − 1) * stride > nx − 1 for some grid/stride combos.
+            i = ti.min(si * stride, nx - 1)
+            j = ti.min(sj * stride, ny - 1)
+            psi = wave_field.psi_am[i, j, z_plane_idx]
+            norm = psi.norm() + 1e-12
+            n_hat = psi / norm
+
+            pos = ti.Vector(
+                [
+                    ti.cast(i, ti.f32) / max_dim,
+                    ti.cast(j, ti.f32) / max_dim,
+                    ti.cast(z_plane_idx, ti.f32) / max_dim,
+                ]
+            )
+            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
+            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
+            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
+            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
+            # CHANGE THIS LINE to test palettes (both start dark, end bright):
+            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
+            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
+            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_colors[idx + 0] = color
+            wave_field.director_glyph_colors[idx + 1] = color
+        else:
+            wave_field.director_glyph_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_colors[idx + 0] = zero_v
+            wave_field.director_glyph_colors[idx + 1] = zero_v
+
+    # ----- XZ plane at y = fm_plane_y_idx -----
+    for si, sk in ti.ndrange(nx_s, nz_s):
+        idx = (wave_field.glyph_offset_xz + si * nz_s + sk) * 2
+        if show_level >= 2:
+            i = ti.min(si * stride, nx - 1)
+            k = ti.min(sk * stride, nz - 1)
+            psi = wave_field.psi_am[i, y_plane_idx, k]
+            norm = psi.norm() + 1e-12
+            n_hat = psi / norm
+
+            pos = ti.Vector(
+                [
+                    ti.cast(i, ti.f32) / max_dim,
+                    ti.cast(y_plane_idx, ti.f32) / max_dim,
+                    ti.cast(k, ti.f32) / max_dim,
+                ]
+            )
+            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
+            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
+            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
+            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
+            # CHANGE THIS LINE to test palettes (both start dark, end bright):
+            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
+            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
+            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_colors[idx + 0] = color
+            wave_field.director_glyph_colors[idx + 1] = color
+        else:
+            wave_field.director_glyph_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_colors[idx + 0] = zero_v
+            wave_field.director_glyph_colors[idx + 1] = zero_v
+
+    # ----- YZ plane at x = fm_plane_x_idx -----
+    for sj, sk in ti.ndrange(ny_s, nz_s):
+        idx = (wave_field.glyph_offset_yz + sj * nz_s + sk) * 2
+        if show_level >= 3:
+            j = ti.min(sj * stride, ny - 1)
+            k = ti.min(sk * stride, nz - 1)
+            psi = wave_field.psi_am[x_plane_idx, j, k]
+            norm = psi.norm() + 1e-12
+            n_hat = psi / norm
+
+            pos = ti.Vector(
+                [
+                    ti.cast(x_plane_idx, ti.f32) / max_dim,
+                    ti.cast(j, ti.f32) / max_dim,
+                    ti.cast(k, ti.f32) / max_dim,
+                ]
+            )
+            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
+            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
+            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
+            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
+            # CHANGE THIS LINE to test palettes (both start dark, end bright):
+            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
+            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
+            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_colors[idx + 0] = color
+            wave_field.director_glyph_colors[idx + 1] = color
+        else:
+            wave_field.director_glyph_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_colors[idx + 0] = zero_v
+            wave_field.director_glyph_colors[idx + 1] = zero_v
 
 
 # ================================================================

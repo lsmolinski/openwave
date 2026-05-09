@@ -1,6 +1,6 @@
-# Director-Glyph Rendering — Design Note
+# Director-Glyph Rendering — Design + As-Shipped Notes
 
-**Status**: design-stage (2026-05-08), to be implemented as part of M5.1 alongside `seed_hedgehog`.
+**Status**: ✅ **shipped 2026-05-09** as part of M5.1 task 4. This doc was design-stage (2026-05-08); the as-shipped variant differs in a few details documented in the "AS-SHIPPED CHANGES" section at the end.
 
 **Purpose**: visualize the **vector orientation** of ψ at each voxel — the structure that carries topology — distinct from `flux_mesh` which renders only scalar projections (magnitude, energy density). Without this, you can compute a winding number but you can't *see* a hedgehog. Critical for M5.1 validation (does the relaxed seed actually look like a hedgehog?) and persists through M5.4 (multi-defect dynamics) and M5.8 (Zitterbewegung at the defect core).
 
@@ -176,3 +176,44 @@ Order within M5.1:
 4. Implement winding_number tracker (task #6) — topological confirmation
 
 Renderer between #4 and #5 is ideal: visually catching a bad relaxation before running the (slower) Coulomb sweep saves time when the seed has bugs.
+
+---
+
+## AS-SHIPPED CHANGES (2026-05-09)
+
+The renderer landed AFTER the seeders but BEFORE Frank energy / relaxation — earlier in the sequence than the design doc proposed. This was the right call: visually verifying the seeders found the BC-bleed bug (see "Bonus discovery" below) much faster than headless tests would have.
+
+| Aspect | Designed | As-shipped |
+| --- | --- | --- |
+| Color encoding | signed-component RGB `(n̂ + 1) / 2` (red ↔ cyan, green ↔ magenta, blue ↔ yellow) | Colormap palette of `(1 − n_z)` ∈ [0, 2]; default `get_blueprint_color` for whole-domain visibility, `get_ironbow_color` swap-line alternative for defect-only focus |
+| Why color changed | Designed for arrow-direction unambiguity | Vacuum maps to dark / blends with black GUI background → defect stands out; bright = max twist away from vacuum. Cleaner readability than the multi-axis RGB |
+| UI control | `SHOW_DIRECTORS` checkbox (boolean) | `SHOW_DIRECTORS` slider 0..3 mirroring `SHOW_FLUX_MESH` (0=off, 1=XY, 2=+XZ, 3=all three planes) — progressive plane reveal |
+| Stride | hard-coded `GLYPH_STRIDE = 4` | xparameter `VIZ_STRIDE` (default 4) **shared with `SHOW_GRANULES`** so granule spheres render at the same sample points as glyphs (combined orientation+motion view) |
+| Index rounding | `nx // stride` (round down — last partial row dropped) | `(nx + stride − 1) // stride` (round up, matches granule indexing); `i = ti.min(si * stride, nx − 1)` clamp prevents out-of-bounds |
+| Boolean comparison gotcha | n/a | Initial impl had `show_xy = show_level >= 1` then `if show_xy:` inside parallel ndrange — silently failed on Metal (only level=3 activated all branches). Fix: inline `if show_level >= N:` directly. Worth being aware of for similar Taichi patterns |
+
+### Bonus discovery: BC-bleed bug
+
+While verifying the glyphs, the user spotted that on first PROPAGATE WAVE click, an inward-traveling wave appeared from every boundary face. Diagnosis: `psi_new_am` boundary was never written by anyone (propagator skips boundary; was zero by Taichi default). First `swap_buffers` clobbered the seeded `n = ẑ` at boundary with that zero, and the discontinuity radiated inward.
+
+**Latent in M5.0 too**, but invisible because `seed_gaussian`'s envelope decay and `seed_dispersion_modes`'s sin-mode shape both happen to leave boundaries at ψ ≈ 0, matching `psi_new_am`'s default of 0 by accident. M5.1 was the first time we wanted ψ ≠ 0 at boundary.
+
+Fix applied to all 4 seeders: write all three buffers (`psi_prev_am`, `psi_am`, `psi_new_am`) at every voxel. `propagate_psi` docstring now explicitly states "fixed-value Dirichlet — boundary value depends on active seeder" and includes the BC-consistency requirement. Captured in the `feedback_triple_buffer_bc.md` auto-memory.
+
+### Files actually touched
+
+| File | Change |
+| --- | --- |
+| `lagrangian_engine.py` | added `update_director_glyphs` kernel (3-plane sample, palette color, level gating); updated all 4 seeders to write `psi_new_am`; updated `propagate_psi` docstring with fixed-value Dirichlet semantics |
+| `medium.py` | `WaveField.__init__` accepts `viz_stride=4`; allocates `director_glyph_vertices/colors` fields with round-up indexing; stores `glyph_offset_xy/xz/yz` |
+| `_launcher.py` | `SimulationState.SHOW_DIRECTORS` (int 0..3) + `VIZ_STRIDE` (int) attrs; `apply_xparameters` reads both with defaults; `display_controls` slider; `render_elements` calls `update_director_glyphs` and `scene.lines`; granule rendering uses `state.VIZ_STRIDE` (consolidated from prior `max_particles=401` derivation) |
+| `xparameters/_test4_topology.py` | renamed from `_test_topology.py`; sets `SHOW_DIRECTORS: 3`, `VIZ_STRIDE: 1` (high-density default for visual quality), `SHOW_FLUX_MESH: 0` (directors are M5.1's primary view) |
+
+### What still works as designed
+
+- 3-plane sampling on the existing flux-mesh planes ✅
+- Line-segment glyph: voxel position → voxel + L · n̂ ✅
+- Same color for both vertices (uniform-colored line per glyph) ✅
+- 1e-12 epsilon in n̂ denominator avoids /0 at vacuum-degenerate voxels ✅
+- M5.4+ "glyphs only near defects" (Option C) still deferred ✅
+- Arrowheads still skipped (line-offset encodes direction) ✅
