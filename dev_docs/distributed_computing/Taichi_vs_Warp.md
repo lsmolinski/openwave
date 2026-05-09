@@ -89,7 +89,7 @@ Performance Comparison
 | Metric              | Taichi                       | NVIDIA Warp            | Winner           |
 |---------------------|------------------------------|------------------------|------------------|
 | Raw CUDA Speed      | ~95-98% of native CUDA       | ~100% of native CUDA   | Warp (marginal)  |
-| Multi-platform      | ✅ All major GPUs             | ❌ NVIDIA only          | Taichi           |
+| Multi-platform      | ✅ All major GPUs            | ❌ NVIDIA only         | Taichi           |
 | Memory Bandwidth    | Excellent (coalesced access) | Excellent              | Tie              |
 | Compilation Time    | Fast JIT                     | Fast JIT               | Tie              |
 | Ease of Development | Higher abstractions          | Lower-level control    | Taichi           |
@@ -166,15 +166,7 @@ specialized tool (14x speedup for qubit simulations).
 However, your OpenWave project simulates Energy Wave Theory (classical wave mechanics at Planck scale), not quantum computing, so
 cuQuantum is irrelevant.
 
-2. SABER Project Integration
-
-Based on your project instructions mentioning SABER:
-
-- If SABER involves ML/AI training with physics gradients → Consider Warp for SABER components
-- If SABER is pure simulation/analysis → Stick with Taichi throughout
-- Hybrid approach: Taichi for OpenWave, Warp for future ML experiments
-
-3. Performance Bottlenecks
+2. Performance Bottlenecks
 
 From your codebase analysis:
 
@@ -228,8 +220,7 @@ Action Items:
 1. Continue with Taichi for OpenWave core
 2. Optimize existing bottlenecks (kernel fusion, spatial hashing)
 3. Monitor Taichi autodiff improvements for potential future needs
-4. Evaluate Warp for SABER if ML/AI training becomes a focus
-5. Document cross-platform testing to justify Taichi choice
+4. Document cross-platform testing to justify Taichi choice
 
 ---
 Performance Optimization Path (Taichi-based)

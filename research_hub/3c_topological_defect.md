@@ -73,11 +73,15 @@ A topological defect is **a place where the director field is twisted in a way i
 | **Kink (1D)** | Director rotates by 2π across a line, separating two different vacuum states | 1D analog used in Sine-Gordon (Exp 1); the simplest topologically protected configuration |
 | **Closed vortex loop** | Director winds along a closed loop (a ring) | Neutrino flavor — SO(3)~SU(2) variants |
 | **Open vortex string** | A 1D defect line with two endpoints | Quark string / gluon flux tube; endpoints = quarks (M5.7) |
-| **Knot / linked loops** | More complex topology with linking numbers | Higher-mass composites — one frontier for the post-M5.8 roadmap |
+| **Skyrmion** | Hedgehog-class defect stabilized at finite size by a Skyrme higher-derivative term `(∂_μ s × ∂^μ s)²` (prevents Derrick-collapse) | Stabilized version of the lepton hedgehog (M5.5 stabilizer phase). **Lab-existence anchor**: 2026 direct laser creation of isolated skyrmions in a real medium — Liu et al., *Nature Physics* (2026), [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) |
+| **Hopfion** | Closed-loop topology with **non-trivial Hopf invariant** (the loop is *linked* with itself or other loops); generalization of "closed vortex loop" to knotted/linked configurations | Forward-looking candidate for **excited neutrino oscillation states** (the standard closed vortex loop = ground-state neutrino; the hopfion = a knotted variant with extra topological complexity, possibly mapping to neutrino mass-eigenstate / flavor-eigenstate distinction). Also a candidate for higher-mass composites in the post-M5.8 frontier. **Lab-existence anchor**: same Liu et al., *Nature Physics* (2026) — first direct laser creation of isolated hopfions in a real medium |
+| **Knot / linked loops** (generic) | More complex topologies with linking numbers, beyond the Hopfion class | Higher-mass composites — frontier for the post-M5.8 roadmap |
 
 All of these are *the same kind of mathematical object* — a topologically protected field configuration. They differ in geometric realization (point, line, loop, knot) and in which axis of the field the winding lives on.
 
-**Common informal names** for the same thing across literatures: *kink* (1D field theory), *hedgehog* (liquid crystals + nematic LdG), *vortex* (fluid dynamics + superconductors), *knot* (broader topology / DNA), *whirlpool* (everyday analogy), *soliton* (generic nonlinear field theory). They overlap heavily — a hedgehog is the 3D analog of a 2D vortex, which is a 2D analog of a 1D kink. M5's documentation uses these terms relatively interchangeably; the specific class matters more than the name.
+**Common informal names** for the same thing across literatures: *kink* (1D field theory), *hedgehog* (liquid crystals + nematic LdG), *vortex* (fluid dynamics + superconductors), *skyrmion* (Skyrme-stabilized hedgehog in nuclear / liquid-crystal / magnetic literature), *hopfion* (knotted/linked closed loop with non-zero Hopf invariant), *knot* (broader topology / DNA), *whirlpool* (everyday analogy), *soliton* (generic nonlinear field theory). They overlap heavily — a hedgehog is the 3D analog of a 2D vortex, which is a 2D analog of a 1D kink; a skyrmion is a hedgehog with the Skyrme stabilizer attached; a hopfion is a closed vortex loop with a non-trivial Hopf invariant. M5's documentation uses these terms relatively interchangeably; the specific class matters more than the name.
+
+**Experimental existence proof for the hopfion + skyrmion families** (2026): Liu et al. demonstrated **direct laser creation of isolated hopfions and skyrmions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). This is a **structure-existence anchor** complementary to the de Broglie clock anchors (Catillon 2008, positronium 2026) — together they cover both the structural side (these defects can be created in nature) and the dynamical side (the resulting clock matches `2mc²/ℏ`). Cross-referenced in [3d_path_to_m5.md § Phase M5.5](3d_path_to_m5.md#phase-m55--skyrme-stabilizer-if-m54-reveals-defect-collapse) where the Skyrme stabilizer phase becomes the OpenWave numerical complement to Liu et al.'s lab observation.
 
 ### Why "twisted" can't be undone — the topological constraint
 
@@ -118,9 +122,11 @@ Different *kinds* of defect (point, line, loop, knot) cost different amounts of 
 | Topology class | Particle | Mass scale (rough) |
 | --- | --- | --- |
 | Point hedgehog (Q = ±1) | Charged lepton (e, μ, τ) | ~ MeV–GeV |
-| Closed vortex loop | Neutrino (ν_e, ν_μ, ν_τ) | sub-eV (very light) |
+| Skyrmion (stabilized hedgehog) | Same lepton family with Skyrme stabilization (M5.5) | Same ~ MeV–GeV scale, finite-core |
+| Closed vortex loop | Neutrino (ν_e, ν_μ, ν_τ ground states) | sub-eV (very light) |
+| Hopfion (knotted/linked loop) | **Forward-looking**: candidate for excited neutrino oscillation states / mass-eigenstate vs flavor-eigenstate distinction | Sub-eV to MeV range, post-M5.8 |
 | Open vortex string + 2 endpoints | Quark + antiquark (mesons) | ~few MeV constituent + string-energy contribution |
-| Knot / linked loops | Heavier composites (post-M5.8) | Higher |
+| Knot / linked loops (generic) | Heavier composites (post-M5.8) | Higher |
 
 A closed-loop neutrino is much lighter than a point-hedgehog electron because the topological winding is "spread" over a 1D ring rather than concentrated in a point — geometrically less expensive. An open-string quark system is heavier than its endpoint masses suggest because the string itself stores ~1 GeV/fm of energy from its tension `σ`.
 
@@ -740,7 +746,7 @@ In mainstream physics these are separate empirical phenomena requiring separate 
 
 ### Note on engineering operationalization
 
-Engineering primitives that exploit the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **private SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer the devices that exploit it. This document and the Phase 4 / Phase 7 plans in [3d_path_to_m5.md](3d_path_to_m5.md) cover only the physics side.
+Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [3d_path_to_m5.md](3d_path_to_m5.md) cover only the physics side.
 
 ---
 

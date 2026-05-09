@@ -982,7 +982,7 @@ That positioning is what makes OpenWave scientifically interesting (a deeper-tha
 
 Full roadmap with output-domain dependency chains in [3d_path_to_m5.md § Beyond matter — forces, EM waves, heat](3d_path_to_m5.md#beyond-matter--forces-em-waves-heat).
 
-There is a separate applied-technology counterpart project (SABER) that consumes these physics outputs to develop devices. SABER lives in its own repo and is out of scope for this document.
+There is a separate applied-technology counterpart project (SABER) that consumes these physics outputs to develop new tech. SABER lives in its own repo and is out of scope for this document.
 
 ### How does OpenWave handle quantum phase, and what about entanglement?
 

@@ -15,7 +15,9 @@
 
 ## What is OpenWave?
 
-OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through classical wave mechanics. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics and field topology, investigating whether particles and forces can emerge from wave-equations.
+OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through **classical field theory enriched with topology and nonlinearity** — the scientific tradition of de Broglie–Bohm pilot waves, wave structure of matter, and modern topological-soliton models. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics, topological defects, and nonlinear potentials, investigating whether particles and forces can emerge from a deterministic field equation rather than being postulated.
+
+OpenWave is a computational test of a specific, well-defined scientific question: *can a classical Lagrangian field theory, when augmented with topology and the right nonlinear potentials, quantitatively reproduce specific particle-scale phenomena (Coulomb interaction, lepton mass spectrum, Zitterbewegung, quark confinement, annihilation)?* — with concrete pass/fail criteria for each phenomenon. See the [Scientific Position](#scientific-position) section below.
 
 The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD methods (similar to lattice gauge theory), VECTOR-FIELD methods, both for research simulations, and a GRANULE-MOTION method for educational visualization.
 
@@ -282,6 +284,12 @@ OpenWave provides complementary ways to explore wave mechanics:
 ## SCIENTIFIC BACKGROUND
 
 OpenWave is a shared simulation platform for exploring classical wave-field dynamics and topological field theory as computational approaches to particle emergence. The current research direction combines **topological defects** (static structure giving integer charge and spin) with **wave dynamics** (Klein-Gordon-like perturbations around a vacuum field, plus standing-wave interference for orbit quantization) — drawing directly from the frameworks contributed by the collaborators below.
+
+### Scientific Position
+
+OpenWave belongs to the **classical-field-theory-with-topology-and-nonlinearity tradition** — the scientific lineage of de Broglie–Bohm pilot waves, wave structure of matter, 4D extension, Landau–de Gennes topological-defect model, and classical elastic-solid framework. Its experimental sibling is the **hydrodynamic quantum analogs** program (Bush, Couder — silicone-oil walking droplets that reproduce single-slit interference, tunneling, orbital quantization, Zeeman-like splitting in classical fluid dynamics).
+
+The shared insight: a sufficiently rich classical field, with the right nonlinearity and the right topology, can reproduce phenomena historically attributed to quantum behavior — without operators, Hilbert space, or probability amplitudes.
 
 ### Historical Pioneers
 

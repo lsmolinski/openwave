@@ -319,9 +319,9 @@ This is exactly what we're trying to create — but the IN/OUT transformation at
 
 Key insight from the Wolff image: The standing wave pattern shows amplitude peaks at λ intervals with a 1/r envelope — exactly what we need to create. The IN→OUT transformation at the center (with 720° phase shift / spin) is the mechanism that creates this pattern.
 
-## Connection to SABER Project: Heat as Wave Oscillations
+## Heat as Wave Oscillations
 
-From `SABER/feasibility.md`, our hypothesis about heat:
+Our hypothesis about heat:
 
 > Heat is NOT molecular vibration (particle kinetic energy), but rather:
 >
@@ -530,7 +530,7 @@ For our simulation:
 
 ## Unified Picture: Spin, Standing Waves, and Gravity
 
-Combining Wolff, SABER, and Smoliński:
+Combining Wolff, and Smoliński:
 
 ```text
 INCOMING LONGITUDINAL WAVES
