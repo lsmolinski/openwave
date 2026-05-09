@@ -23,14 +23,14 @@ The platform implements a proposed mathematical framework through various comple
 
 ### Research Goals
 
-OpenWave aims to demonstrate, in one integrated simulator, the full chain of subatomic physics that downstream applied technology requires. Four primary domains:
+OpenWave investigates, in one integrated simulator, the chain of subatomic phenomena most relevant to advanced applied research. Four primary domains:
 
 - **MATTER** — investigate particle emergence (leptons, quarks, nucleons, atoms) from topological defects + wave dynamics in a Lagrangian field
 - **FORCES** — investigate whether all four forces can emerge from one classical-field framework: electric (from topology), strong (from string tension + standing waves), magnetic (from spin-induced transverse waves), gravitational (from density deficit / 4D boost-axis topology — the most speculative of the four)
 - **ELECTROMAGNETIC WAVES** — photons and EM radiation as travelling perturbations of the vacuum field
 - **HEAT** — thermal-energy mechanics at the defect-oscillation / spin-coherence level (complementary to bulk kinetic temperature; tests whether sub-molecular degrees of freedom contribute to thermal physics)
 
-The first domain (matter) is the foundation; the other three are what the simulator is designed to compute *outputs* for. Each produces measurable design parameters.
+The first domain (matter) is the foundation; the other three are what the simulator is designed to compute *outputs* for. Each is intended to produce measurable quantities that — *if* the framework's predictions match experiment — could inform applied research.
 
 OpenWave aims to:
 
@@ -39,19 +39,19 @@ OpenWave aims to:
 - Test predictions against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling) — pass criteria specified in `research_hub/3d_path_to_m5.md`
 - Provide computational and visualization tools that — *if* the framework's predictions match experiment — could yield design parameters relevant to applied research
 
-**Scientific Status:** OpenWave is a research tool for computational exploration using lattice field theory methodology to investigate alternative field equations and their predictions, with explicit downstream applied-technology output.
+**Scientific Status:** OpenWave is a research tool for computational exploration. It uses lattice-discretization methodology (similar in spirit to lattice QCD's tooling, with classical field equations rather than quantized operators) to investigate alternative field-theoretic models and their predictions. Applied-research outputs are conditional on the framework's predictions matching experiment — see the [Scientific Position](#scientific-position) section for the falsifiability framing.
 
 ![demo2 clip](images/demo2.gif)
 
 ## Core Scope
 
-OpenWave provides computational and visualization tools to explore, demonstrate, and validate predictions through three main functions:
+OpenWave provides computational and visualization tools to explore, demonstrate, and *test* predictions through three main functions:
 
-### Numerical Validation (Analytical Tools)
+### Numerical Analysis (Analytical Tools)
 
 - Runs simulations derived directly from built-in equations and energy-wave phenomena
-- Validates outcomes by comparing them against experimental observations
-- Generates numerical analysis and data support for scientific publications
+- Compares simulation outcomes against experimental observations to test predictions
+- Generates numerical analysis and data export for scientific publications
 
 ### Visual Demonstration (Educational Tools)
 
@@ -70,7 +70,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 #### Scalar and Vector Field Methods (Research Oriented)
 
-- 3D wave-field using partial differential equations (PDEs) and other wave functions
+- 3D wave-field evolved by partial differential equations (PDEs) and analytical wave-form expressions
 - Similar in spirit to lattice QCD (discrete spacetime + GPU integration), but with **classical field equations and no gauge structure** — different mathematical object
 - Scalable for matter formation and force simulations
 - Indexed by spatial coordinates with field properties at each voxel
@@ -309,7 +309,7 @@ The shared insight: a sufficiently rich classical field, with the right nonlinea
 
 ### Computational Approach
 
-OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with different field equations. Multiple complementary methods (scalar, vector, director-field, granule-motion) allow cross-validation of mechanisms and direct comparison between candidate Lagrangians.
+OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with classical field equations and no gauge structure. Multiple complementary methods (scalar, vector, director-field, granule-motion) allow cross-checking of mechanisms and direct comparison between candidate Lagrangians.
 
 ### Open Research Questions
 

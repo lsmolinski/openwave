@@ -17,7 +17,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 - **Methodology:** Lattice wave-field theory — similar in spirit to lattice QCD methods (discrete spacetime + GPU integration), but with classical field equations rather than quantized operators
 - **Implementation:** 3D vector field grid with PDE-based wave propagation equations
 - **Scale:** Wavelength-scale to molecules
-- **Purpose:** Research simulations for matter formation, force modeling, numerical validation
+- **Purpose:** Research simulations for matter formation, force modeling, and quantitative comparison of model predictions against experimental data
 - **Use Case:** Physics research, computational experimentation, theoretical exploration of particle and force emergence
 
 ### Granule-Motion Method (Education Oriented)
@@ -153,7 +153,7 @@ To launch the Xperiments Selector Menu:
 
 - **WAVE-FIELD Methods** use lattice wave-field methodology (similar in spirit to lattice QCD's discretization + GPU integration) with classical field equations from alternative theoretical models
 - **GRANULE-MOTION Method** provides particle-based visualizations for intuitive understanding
-- Both are computational frameworks for investigating mathematical predictions against experimentally observed physics
+- Both are computational frameworks for testing model predictions against experimental data
 
 ## OPENWAVE METHODS
 
