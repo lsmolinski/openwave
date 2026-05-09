@@ -14,11 +14,11 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ### Scalar and Vector-Field Methods (Research Oriented)
 
-- **Methodology:** Lattice wave-field theory - similar to lattice QCD computational methods (Nobel Prize 2004, 2008)
+- **Methodology:** Lattice wave-field theory — similar in spirit to lattice QCD methods (discrete spacetime + GPU integration), but with classical field equations rather than quantized operators
 - **Implementation:** 3D vector field grid with PDE-based wave propagation equations
 - **Scale:** Wavelength-scale to molecules
 - **Purpose:** Research simulations for matter formation, force modeling, numerical validation
-- **Use Case:** Scientific research, advanced simulations, subatomic engineering
+- **Use Case:** Physics research, computational experimentation, theoretical exploration of particle and force emergence
 
 ### Granule-Motion Method (Education Oriented)
 
@@ -28,7 +28,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 - **Purpose:** Educational visualization, understanding wave formation
 - **Use Case:** Learning, illustration, animation, introduction to wave concepts
 
-**Key Insight:** WAVE-FIELD methods uses the same computational approach as quantum field theory (lattice discretization), while GRANULE-MOTION method provides intuitive visuals. Both are computational tools for investigating wave dynamics models of physical phenomena.
+**Key Insight:** WAVE-FIELD methods use similar computational *tools* to lattice quantum field theory (lattice discretization, GPU integration), but evolve **classical field equations** rather than quantized operators — no Wick rotation, path integrals, or gauge structure. GRANULE-MOTION method provides intuitive visuals for the underlying wave concepts. Both are computational tools for investigating wave-dynamics models of physical phenomena.
 
 ## Xperiments
 
@@ -47,15 +47,16 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 ### 1. Spacetime Vibration
 
-**In this model:**
+> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier methods (M2/M3). The current research framework (M5 — see [path-to-M5 plan](research_hub/3d_path_to_m5.md)) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
 
-- Spacetime is computationally represented as oscillations at extremely high frequencies (~10^25Hz)
-- If you slow down the simulator frequency and increase the amp boost, you can observe WAVE PATTERNS (these waves are the effect of harmonic oscillations)
-- The wave patterns serve as the energy source for modeling all energy forms, forces, and matter development in the simulation
-- Now reduce the granule size and observe the wave pulse - this rhythm represents the model's fundamental time parameter (the wave's frequency defines the simulation's clock)
-- These waves are called ENERGY WAVES - the computational primitives for this modeling approach
+**In this educational demo:**
 
-**What you're seeing:** A computational representation of wave mechanics as the foundation for physical phenomena.
+- High-frequency oscillations (~10^25Hz) are visualized via discrete granules with phase-shifted motion — a *visualization tool*, not a physical claim about spacetime structure
+- If you slow the simulator and increase amp boost, the underlying wave patterns become visible (these waves are the visualization output of the granule motion)
+- These wave patterns are called ENERGY WAVES — the computational primitives for the granule-motion teaching method
+- In the M5 framework these traveling perturbations are emitted *by* defects oscillating at `ω = 2mc²/ℏ` (the de Broglie clock), not from a pre-oscillating vacuum
+
+**What you're seeing:** An educational visualization of wave mechanics; the physics in M5 is more carefully framed as defect oscillation, not vacuum oscillation.
 
 <div align = "center">
 
@@ -77,11 +78,11 @@ This xperiment demonstrates in a 3D view how a spherical longitudinal wave propa
 
 ### 3. Standing Wave
 
-This xperiment demonstrates standing wave patterns that emerge from inward and outward wave interactions. Standing waves are proposed as the mechanism that gives matter its structure, from fundamental particles to atoms and molecules.
+This xperiment demonstrates standing wave patterns that emerge from inward and outward wave interactions. In the M5 framework, **topological defects** (the particles themselves) are the primary structure-bearers; standing waves are *emitted by* defect oscillations and contribute to particle-pair interactions and orbital quantization.
 
 - **Observation:** Notice how stable patterns form when waves interfere constructively
 
-**Research question:** Can standing wave patterns account for particle properties like mass, charge, and spin? OpenWave helps explore this computationally.
+**Research question:** How do standing wave patterns from defect oscillations contribute to particle-particle interactions, orbital structure, and resonance phenomena? OpenWave helps explore this computationally.
 
 <div align = "center">
 
@@ -150,7 +151,7 @@ To launch the Xperiments Selector Menu:
 
 ## OpenWave's Computational Implementation
 
-- **WAVE-FIELD Methods** uses lattice wave-field theory methodology (similar to lattice QCD) with other models field equations
+- **WAVE-FIELD Methods** use lattice wave-field methodology (similar in spirit to lattice QCD's discretization + GPU integration) with classical field equations from alternative theoretical models
 - **GRANULE-MOTION Method** provides particle-based visualizations for intuitive understanding
 - Both are computational frameworks for investigating mathematical predictions against experimentally observed physics
 

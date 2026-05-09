@@ -25,19 +25,19 @@ The platform implements a proposed mathematical framework through various comple
 
 OpenWave aims to demonstrate, in one integrated simulator, the full chain of subatomic physics that downstream applied technology requires. Four primary domains:
 
-- **MATTER** — particle emergence (leptons, quarks, nucleons, atoms) from topological defects + wave dynamics in a Lagrangian field
-- **FORCES** — electric (topology), strong (string tension + standing waves), magnetic (transverse wave from spin), gravitational (density deficit / 4D boost-axis topology), unified in one classical-field framework
-- **ELECTROMAGNETIC WAVES** — photons, EM radiation, propagation through the vacuum medium
-- **HEAT** — thermal-energy mechanics at the wave / spin-coherence level (not just bulk kinetic temperature)
+- **MATTER** — investigate particle emergence (leptons, quarks, nucleons, atoms) from topological defects + wave dynamics in a Lagrangian field
+- **FORCES** — investigate whether all four forces can emerge from one classical-field framework: electric (from topology), strong (from string tension + standing waves), magnetic (from spin-induced transverse waves), gravitational (from density deficit / 4D boost-axis topology — the most speculative of the four)
+- **ELECTROMAGNETIC WAVES** — photons and EM radiation as travelling perturbations of the vacuum field
+- **HEAT** — thermal-energy mechanics at the defect-oscillation / spin-coherence level (complementary to bulk kinetic temperature; tests whether sub-molecular degrees of freedom contribute to thermal physics)
 
 The first domain (matter) is the foundation; the other three are what the simulator is designed to compute *outputs* for. Each produces measurable design parameters.
 
 OpenWave aims to:
 
-- Model matter, force unification, EM-wave dynamics, and heat phenomena through wave-dynamics and topology in one integrated simulator
-- Simulate particle emergence from topological defects + standing wave patterns in fields
-- Validate against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling)
-- Provide computational and visualization tools that yield **engineering design parameters** for tech development
+- Explore matter, force emergence, EM-wave dynamics, and heat phenomena through wave-dynamics and topology in one integrated simulator
+- Simulate candidate particle structures from topological defects + standing wave patterns in fields
+- Test predictions against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling) — pass criteria specified in `research_hub/3d_path_to_m5.md`
+- Provide computational and visualization tools that — *if* the framework's predictions match experiment — could yield design parameters relevant to applied research
 
 **Scientific Status:** OpenWave is a research tool for computational exploration using lattice field theory methodology to investigate alternative field equations and their predictions, with explicit downstream applied-technology output.
 
@@ -59,7 +59,7 @@ OpenWave provides computational and visualization tools to explore, demonstrate,
 - Represents graphically wave equations and analysis
 - Automates animation export for online video publishing
 
-### Exploratory Simulations (Hacking Energy)
+### Exploratory Simulations (Parametric Studies)
 
 - Models experimental wave-field configurations for parametric studies
 - Supports hypothesis testing and comparative analysis against theoretical predictions
@@ -71,7 +71,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 #### Scalar and Vector Field Methods (Research Oriented)
 
 - 3D wave-field using partial differential equations (PDEs) and other wave functions
-- Similar methodology to lattice QCD (quantum chromodynamics)
+- Similar in spirit to lattice QCD (discrete spacetime + GPU integration), but with **classical field equations and no gauge structure** — different mathematical object
 - Scalable for matter formation and force simulations
 - Indexed by spatial coordinates with field properties at each voxel
 
@@ -283,11 +283,11 @@ OpenWave provides complementary ways to explore wave mechanics:
 
 ## SCIENTIFIC BACKGROUND
 
-OpenWave is a shared simulation platform for exploring classical wave-field dynamics and topological field theory as computational approaches to particle emergence. The current research direction combines **topological defects** (static structure giving integer charge and spin) with **wave dynamics** (Klein-Gordon-like perturbations around a vacuum field, plus standing-wave interference for orbit quantization) — drawing directly from the frameworks contributed by the collaborators below.
+OpenWave is a shared simulation platform for exploring classical wave-field dynamics with topological defects as a computational approach to particle emergence. The current research direction combines **topological defects** (static structure giving integer charge and spin) with **wave dynamics** (Klein-Gordon-like perturbations around a vacuum field, plus standing-wave interference for orbit quantization) — drawing directly from the frameworks contributed by the collaborators below.
 
 ### Scientific Position
 
-OpenWave belongs to the **classical-field-theory-with-topology-and-nonlinearity tradition** — the scientific lineage of de Broglie–Bohm pilot waves, wave structure of matter, 4D extension, Landau–de Gennes topological-defect model, and classical elastic-solid framework. Its experimental sibling is the **hydrodynamic quantum analogs** program (Bush, Couder — silicone-oil walking droplets that reproduce single-slit interference, tunneling, orbital quantization, Zeeman-like splitting in classical fluid dynamics).
+OpenWave belongs to the **classical-field-theory-with-topology-and-nonlinearity tradition** — the scientific lineage of de Broglie–Bohm pilot waves, wave structure of matter, 4D field-theoretic extensions of teleparallelism, the Landau–de Gennes topological-defect model from soft-matter physics, and classical elastic-solid frameworks. Its experimental sibling is the **hydrodynamic quantum analogs** program (Bush, Couder — silicone-oil walking droplets that reproduce single-slit interference, tunneling, orbital quantization, and orbital-level splitting under rotation in classical fluid dynamics, the latter of which is an analog to atomic level splitting).
 
 The shared insight: a sufficiently rich classical field, with the right nonlinearity and the right topology, can reproduce phenomena historically attributed to quantum behavior — without operators, Hilbert space, or probability amplitudes.
 
@@ -303,7 +303,7 @@ The shared insight: a sufficiently rich classical field, with the right nonlinea
 
 | Contributor | Framework | Contribution |
 | --- | --- | --- |
-| [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) | [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") | A proposed deterministic quantum mechanics model that draws conceptual inspiration from historical work on wave interpretations of quantum mechanics. Primary physics advisor and collaborator on OpenWave since its inception. |
+| [Jeff Yee](https://www.youtube.com/@EnergyWaveTheory) | [Energy Wave Theory (EWT)](https://energywavetheory.com "Energy Wave Theory") | A proposed deterministic field-theoretic alternative to quantum mechanics, drawing conceptual inspiration from historical wave interpretations of QM (de Broglie, Bohm, Wolff). Primary physics advisor and collaborator on OpenWave since its inception. |
 | [Dr. Jarek Duda](https://en.wikipedia.org/wiki/Jaros%C5%82aw_Duda_(computer_scientist)) | [Liquid-Crystal Particle Analogs](https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs "Topological Field Framework") | A Landau-de Gennes field framework modeling particles as topological defects with integer-quantized charge. Proposes unifying electromagnetism, quantum mechanics, and gravity through a single vector order parameter, with mass and Zitterbewegung derived from a time-crystal mechanism (see [arXiv:2108.07896](https://arxiv.org/pdf/2108.07896), [arXiv:2501.04036](https://arxiv.org/pdf/2501.04036)). |
 | [Dr. Robert Close](https://www.classicalmatter.org) | ["Equation of Everything" (Foundations of Physics 2025)](https://doi.org/10.1007/s10701-025-00839-0 "Classical Wave Mechanics") | A classical elastic-solid framework that derives the Dirac equation from a nonlinear vector wave equation for spin density, giving every term a concrete physical interpretation in the underlying medium. |
 
@@ -494,7 +494,3 @@ All dependencies use licenses compatible with AGPL-3.0.
 ### Trademark
 
 "OpenWave" is a trademark of OpenWave Labs. See [TRADEMARK](TRADEMARK) for usage guidelines.
-
-> ***"There is a way to break the laws of physics: Challenge the models used to create them."***
->
-> *OpenWave Team, 11/11/25*
