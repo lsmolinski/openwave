@@ -204,10 +204,30 @@ class WaveField:
             psi_am      ← psi_new_am  (the just-completed step's "next" becomes "current")
             psi_new_am  is left as-is — it will be overwritten by the next leapfrog step
 
-        Implementation note: uses Taichi's field.copy_from() for simplicity (full-grid
-        copy, O(N) per step). At 256³ grid this is ~50 MB × 2 copies = ~100 MB / step,
-        sub-millisecond on M-series unified memory. Optimization for later (M5.0i+):
-        rotating-pointer scheme that reuses three field handles without copies.
+        Implementation note: uses Taichi's field.copy_from() — two full-grid GPU copies
+        per step. M5.0i profile (2026-05-08): copies are ~34 % of step time at 384³
+        (≈6.9 ms of 19.4 ms total).
+
+        WHY NOT ROTATING-POINTER (investigated and rejected in M5.0i):
+            The naive optimization — rotate Python attribute names so the same three
+            ti.field allocations cycle through prev/curr/new roles — silently breaks
+            correctness. Cause: Taichi's `ti.template()` caches attribute lookups at
+            kernel-compilation time, NOT at each call. So when @ti.kernel reads
+            `wave_field.psi_am` during tracing, Taichi binds that to the SPECIFIC
+            ti.field instance that wave_field.psi_am pointed to AT FIRST CALL. Later
+            calls with the same `wave_field` Python object reuse the cached binding —
+            attribute rotation on `wave_field` itself is invisible to the cached
+            kernel. M5.0h dispersion test reproduced this: after rotation, c² recovery
+            regressed from ±0.5 % to −19 % systematically, because the leapfrog kept
+            reading the originally-bound prev/curr fields whose data was now in the
+            wrong roles.
+            The proper fix (deferred): pass fields explicitly to kernels —
+            `propagate_psi(psi_prev, psi_curr, psi_new, ...)` — so each rotation
+            creates a distinct template-arg tuple that Taichi compiles separately
+            (3 cyclic permutations → 3 cached compilations). That's a 2–3 hr refactor
+            of every kernel that touches the triple buffer; not justified by current
+            budget (51 fps at 384³ is well over the 20 fps floor). Re-evaluate when
+            M5.2's V(ψ) makes per-step work heavier and the 35 % win matters.
         """
         self.psi_prev_am.copy_from(self.psi_am)
         self.psi_am.copy_from(self.psi_new_am)

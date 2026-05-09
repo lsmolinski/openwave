@@ -457,17 +457,37 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - ✅ **Physics invariant test (V=0)** — leapfrog reproduces the discrete dispersion within ±0.5% on `c²` recovery across all 5 modes (voxels/λ_x ∈ {31, 21, 16, 10, 8}). Klein-Gordon `+ m²` flavor deferred to M5.2 where it lands alongside the actual mass term. **Implementation** at `openwave/xperiments/m5_lagrangian_field/research/m5_0h_dispersion.py` (headless, ~30s on Metal); plot at `research/plots/m5_0h_dispersion.png`. New engine kernel `seed_dispersion_modes` for multi-mode standing-wave initial conditions
 - ✅ **Two persisted lessons from M5.0h** — (a) Taichi Metal lowers `s += …` auto-reduction to atomic_add and stalls on full-grid reductions just like the M2 `3-PLANE SAMPLING` block warned. Workaround: sparse point sampling at mode antinodes, FFT recovers ω from the mixed time series. (b) Discrete-scheme dispersion fits MUST invert the FULL space+time relation (`sin(ω·dt/2) = (c·dt/2)·√K`), not the spatial-only `ω² = c²·K` — the difference is a `(k·dx)²` systematic bias that grew to ~1.5% on `c²` at 7.8 voxels/λ. Both lessons captured in `lagrangian_engine.py` (the AUTO-REDUCE CAVEAT block) and in the auto-memory store (`feedback_taichi_metal_atomics.md`, `feedback_dispersion_validation.md`)
 
-#### M5.0i — Performance profiling + Tier 2 optimizations as needed
+#### M5.0i — Performance profile (baseline only) ✅
 
-- [ ] Profile the per-step path on production grids (256³ baseline, 384³ electron-scale): time `propagate_psi`, `swap_buffers`, `update_trackers_psi`, Hamiltonian, sample_avg_trackers individually
-- [ ] Apply Tier 2 optimizations selectively, in measured-bottleneck order — see [Performance optimizations § Tier 2](#tier-2--kernel-level-performance-hacks). Top candidates already identified for measurement: rotating-pointer `swap_buffers` (item 10), merge `update_trackers_psi` into `propagate_psi` (item 11), `BlockLocal` Laplacian tiling (item 5), Symplectic/Verlet (item 6), dirty-tile mask (item 12)
+- ✅ **Per-kernel profile delivered** at production grids (128³, 256³, 384³). Headless harness `openwave/xperiments/m5_lagrangian_field/research/m5_0i_profile.py`; chart at `research/plots/m5_0i_profile.png`. Per-step times:
+
+| Grid | step ms | fps | vs 20fps floor |
+| --- | --- | --- | --- |
+| 127³ (2M voxels) | 1.0 | 964 | ✅ 50× under |
+| 255³ (17M voxels) | 5.9 | 168 | ✅ 8× under |
+| 383³ (56M voxels) | 19.4 | 51 | ✅ at edge but passes |
+
+  Per-kernel breakdown is roughly stable across grid sizes: `swap_buffers` 34 %, `update_trackers_psi` 24 %, `propagate_psi` 23 %, `compute_energy_density_H` 18 %. `sample_avg_trackers` (every-60-frames cadence) is negligible (~0.06 ms/step amortized).
+
+- ✅ **M2 vs M5 head-to-head profile** (companion script `research/m5_0i_profile_m2_compare.py`): M5 is consistently ~2.1× M2 step time at production grids (M2 0.52 / 2.68 / 8.90 ms vs M5 0.99 / 5.94 / 19.4 ms at 128³ / 256³ / 384³). M2 fuses leapfrog + tracker EMA + zero-crossing freq + buffer swap into a single `propagate_wave` ndrange (`m2_laplace_propagation/wave_engine.py:603`); M5 deliberately split things into 4 separate kernels for cleanliness, AMR-readiness, and the V_psi hook for M5.2. The 2.1× is the bill for that split. ~50 % is fusion debt; ~50 % is Vector(3) being 1.5× bigger per voxel than M2's two scalars + the new `compute_energy_density_H` (no equivalent in M2).
+
+- ✅ **Decision: no Tier 2 opts justified by current budget.** M5 already passes the 20 fps floor at 56M voxels with margin. M5.0i is profile-only.
+
+- ✅ **Two persisted lessons captured** during the M5.0i investigation:
+
+  - **Rotating-pointer `swap_buffers` is NOT a 30-min change** — Taichi's `ti.template()` caches attribute lookups at first compilation, so attribute rotation on the same `wave_field` Python instance is invisible to cached kernels (M5.0h dispersion test reproduced this with a clean −19 % c² regression). Proper fix is passing fields explicitly to kernels (2–3 hr refactor of every kernel that touches the triple buffer). Documented in `medium.py:swap_buffers` docstring + `feedback_taichi_template_caching.md` memory.
+
+  - **Fusion is the single biggest Tier 2 lever** — would close ~50 % of the M2 gap by combining `propagate_psi` + `update_trackers_psi` + `compute_energy_density_H` (and ideally the swap) into one ndrange loop. **Proven prior art**: M2's `propagate_wave` (in `m2_laplace_propagation/wave_engine.py:603`) is the template — it does leapfrog + RMS-EMA + zero-crossing-freq + buffer swap in a single `ti.ndrange` followed by an in-kernel swap loop. Deferred because: (a) we don't need the win yet, (b) fusion makes the per-task kernels redundant or duplicated (divergence risk), and (c) AMR retrofit (M5.6/M5.8) is harder against fused kernels. Re-evaluate when M5.2's V(ψ) makes per-step work heavier.
+
+- 🚧 **Re-profile trigger**: when M5.2's V(ψ) (Klein-Gordon mass + Close Eq. 23 + LdG potential) lands and per-step time grows. If 384³ drops below 20 fps, decide between (1) rotating-pointer refactor for ~35 % win, (2) full fusion for ~50 % win + M2-equivalent step time, (3) BlockLocal Laplacian / dirty-tile mask. The M5.0i baseline numbers above are the comparison reference.
 
 ### Phase M5.1 — Port topology (from Exps 2, 3)
 
 - [ ] Implement `seed_vacuum()` — fill grid with ground-state `n = ẑ`
-- [ ] Implement `seed_hedgehog(center, sign)` — port Exp 2's weighted superposition + renormalization
+- [ ] Implement `seed_hedgehog(center, sign)` — port Exp 2's weighted superposition + renormalization. Seed extent: radial structure concentrated within ~D/4 of each defect via `w_vac = 1/(1 + (r/(D/4))⁴)`, smoothly blends to `n = ẑ` vacuum at the boundary (per `sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`)
 - [ ] Implement Frank elastic energy `H = (K/2) · ∫ |∇n|² d³r` on the vector field
 - [ ] Implement gradient-descent relaxation (tangent projection + unit-length renormalization + soft core pinning) — directly from Exp 2
+- [ ] **Director-glyph visualization** (3-plane line glyphs, signed-component RGB encoding for unambiguous polarity, `SHOW_DIRECTORS` checkbox) — full design in [3e_director_glyph_rendering.md](3e_director_glyph_rendering.md). Lands between relaxation (task above) and the Coulomb gating test (task below) so we visually confirm the relaxed hedgehog looks right before running the slower numerical sweep
 - [ ] Validate: reproduce Exp 2's hedgehog-pair 1/d Coulomb on Taichi. Target R² > 0.99 across a separation sweep
 - [ ] Implement `winding_number(center, radius)` tracker — port Exp 3's trilinear-sphere-sample + finite-difference surface integral
 
@@ -825,7 +845,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
   - ❌ Exp 8 (Smolinski Ψ³ K-selectivity falsified)
 - ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
 - ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
-- [~] M5.0 — Scaffold 🔶 **10/11 sub-phases complete** (M5.0a–c, M5.0d.1–3, M5.0e, M5.0f, M5.0g, M5.0h ✅ as of 2026-05-08; M5.0i pending). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; M5.0h dispersion gating test PASSES (±0.5% c² recovery across 5 modes, full leapfrog space+time formula); `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
+- ✅ M5.0 — Scaffold **COMPLETE** (all 11 sub-phases ✅ as of 2026-05-08). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; M5.0h dispersion gating test PASSES (±0.5% c² recovery across 5 modes, full leapfrog space+time formula); M5.0i baseline profile shows 51 fps at 384³ (well over 20 fps target) with no Tier 2 opts justified by current budget — fusion deferred to M5.2 re-profile when V(ψ) gets real body; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
 - [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
@@ -835,7 +855,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.0i** — performance profiling on production grids (256³ baseline, 384³ electron-scale). Time per-step kernels individually (`propagate_psi`, `swap_buffers`, `update_trackers_psi`, `compute_energy_density_H`, `sample_avg_trackers`); apply Tier 2 optimizations selectively in measured-bottleneck order. Closes out the M5.0 scaffold.
+**Next action**: **M5.1** — port topology kernels from Exp 2/3. `seed_vacuum`, `seed_hedgehog`, Frank elastic energy `H = (K/2)·∫|∇n|²`, gradient-descent relaxation (tangent projection + unit-length renormalization + soft core pinning), `winding_number` tracker. Validate by reproducing Exp 2's hedgehog-pair 1/d Coulomb scaling on Taichi (target R² > 0.99 across separation sweep). M5.0 scaffold is done; M5.1 is unblocked.
 
 ---
 
