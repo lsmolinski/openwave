@@ -261,7 +261,7 @@ Everything else — wave frequencies, masses, forces, oscillations, charge quant
 
 ## IMPLICATIONS FOR OPENWAVE'S DOCUMENTATION
 
-This reframing prompts a revisit of the **Energy Layers** hierarchy (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)). The current hierarchy starts at "Layer 1: Fundamental energy wave" and assumes a pre-existing base wave. A more complete picture inserts a **Layer 0 — Vacuum at rest** (static ground state of V(ψ)) before the wave physics begins.
+This reframing prompts a revisit of the **Energy Layers** hierarchy (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [3z_review_energy_layers.md](3z_review_energy_layers.md) — content moved out of the README pending re-evaluation). The current hierarchy starts at "Layer 1: Fundamental energy wave" and assumes a pre-existing base wave. A more complete picture inserts a **Layer 0 — Vacuum at rest** (static ground state of V(ψ)) before the wave physics begins.
 
 The proposed updated hierarchy:
 

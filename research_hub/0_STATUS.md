@@ -128,7 +128,7 @@ Promoted from sub-project to full Phase 3 (2026-04-17) after Exps 1, 2, 3 confir
 
 **Documentation correction from Exp 5**: the docs' Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution — its quadrature term leaves a residual `−c²k²·sin(ωt+φ)/r ≠ 0`. The M4 code's equivalent *sum form* `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)` IS valid. M5 uses the sum form.
 
-**Next phase**: **M5.0 scaffold** per [3d_path_to_m5.md](3d_path_to_m5.md). Full Overall Conclusions in [3a § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3b_concept_review.md](3b_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md)).
+**Next phase**: **M5.0 scaffold** per [3d_path_to_m5.md](3d_path_to_m5.md). Full Overall Conclusions in [3a § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions). Conceptual walk-through with empirical validation in [3b_concept_review.md](3b_concept_review.md). Pending documentation task: update Energy Layers hierarchy to insert **Layer 0: Vacuum at rest** (see [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [3z_review_energy_layers.md](3z_review_energy_layers.md) — content moved out of README pending re-evaluation).
 
 ### The Real Payoff
 

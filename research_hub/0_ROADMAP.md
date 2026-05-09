@@ -295,7 +295,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
   - [ ] M5.6 Biaxial LdG Q-tensor with `(δ, 1, g)` axis hierarchy (long-term, for lepton mass derivation; Exp 6.1 equivalent)
   - [ ] M5.7 Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm) — per Dr. Duda's 2026-04-17 guidance
   - [ ] M5.8 De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ` for electron + neutrino) — per Dr. Duda's 2026-04-17 guidance
-- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), [README.md](../README.md) — rationale in [3b_concept_review.md](3b_concept_review.md)
+- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md), [0_OVERVIEW.md](0_OVERVIEW.md), and [3z_review_energy_layers.md](3z_review_energy_layers.md) (the content was moved out of the README pending re-evaluation; once revised, decide whether to put it back) — rationale in [3b_concept_review.md](3b_concept_review.md)
 
 ## [PHASE 4: TIME DYNAMICS](5_TIME_DYNAMICS.md)
 
