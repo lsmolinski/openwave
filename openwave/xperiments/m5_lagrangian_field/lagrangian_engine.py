@@ -16,8 +16,8 @@ Module layout (top-to-bottom):
     ENERGY DENSITY (HAMILTONIAN) — compute_energy_density_H
     POSITION RENDER           — sample_position_to_render (granule viz)
     3-PLANE SAMPLING          — sample_avg_trackers (cheap global means)
-    DIRECTOR GLYPHS           — update_director_glyphs (M5.1 director viz)
     FLUX MESH UPDATING        — update_flux_mesh_values (color mapping)
+    DIRECTOR GLYPHS           — update_director_glyphs (M5.1 director viz)
 """
 
 import math
@@ -1050,6 +1050,227 @@ def sample_avg_trackers(
 
 
 # ================================================================
+# FLUX MESH VALUES UPDATING
+# ================================================================
+# The flux mesh is a VISUALIZATION layer — it converts simulation-side
+# scalars/vectors to per-vertex colors and Z-axis warps so the user can "see"
+# what the field is doing. It is not physics; nothing here feeds back into
+# propagate_psi or any tracker. Treat it as a display driver.
+#
+# VECTOR-FIELD RENDERING NUANCE (worth remembering when M5.0g+ adds new
+# wave_menu options for energy density, curl, divergence, energy flux,
+# etc.):
+#
+# ψ is a Vector(3) field, but the flux mesh maps every voxel to ONE scalar
+# (one color, one Z-warp height). The current "Displacement (Magnitude)"
+# mode renders |ψ| = ψ.norm(). For a y-polarized seed ψ_y = A·sin(k·x):
+#
+#     |ψ| = A·|sin(k·x)|         period λ/2 — looks like 2× as many bumps
+#     ψ_y = A· sin(k·x)          period λ — the "true" sinusoid (signed)
+#
+# Magnitude is the right scalar for energy-density-style observables (always
+# positive, ∝ |ψ|²) but rectifies signed waves and visually doubles their
+# spatial frequency. When designing future wave_menu modes, decide per
+# observable:
+#
+#   - magnitude: |v|              → energy/intensity views (always ≥ 0)
+#   - signed component: v · ê     → propagation/polarization views (signed)
+#   - radial component: v · r̂    → longitudinal vs transverse decomposition
+#   - dominant axis: max(|v_i|)·sign  → quick-and-dirty signed view
+#
+# For the flux mesh specifically (one scalar per vertex), each new wave_menu
+# entry should pick one explicitly and not silently fall back to .norm().
+# This becomes important once we have curl(ψ), force vectors, energy flux,
+# etc. — all of which are vector quantities that need a deliberate scalar
+# projection to be rendered.
+
+
+@ti.kernel
+def update_flux_mesh_values(
+    wave_field: ti.template(),  # type: ignore
+    trackers: ti.template(),  # type: ignore
+    wave_menu: ti.i32,  # type: ignore
+    warp_mesh: ti.i32,  # type: ignore
+):
+    """
+    Update flux mesh colors and vertices by sampling wave properties from voxel grid.
+
+    Samples wave displacement at each plane vertex position and maps it to a color.
+    Should be called every frame after wave propagation to update visualization.
+
+    Args:
+        wave_field: WaveField instance containing flux mesh fields and displacement data
+        trackers: WaveTrackers instance with amplitude/frequency data for color scaling
+        wave_menu: Selected Wave displayed with color palette
+    """
+
+    # ================================================================
+    # XY Plane: Sample at z = fm_plane_z_idx
+    # ================================================================
+    # Always update all planes (conditionals cause GPU branch divergence)
+    # wave_menu == 4 renders the energy density (Hamiltonian) field
+    # `trackers.energy_density_H_aJ`, populated each step by M5.0g.
+    for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
+        # Sample displacement at this voxel
+        disp_value = wave_field.psi_am[i, j, wave_field.fm_plane_z_idx]
+        amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
+        freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
+        energy_value = trackers.energy_density_H_aJ[i, j, wave_field.fm_plane_z_idx]
+        univ_edge_z = wave_field.universe_size_am[2]
+
+        # Map value to color/vertex using selected gradient
+        # Scale range to 2× average for headroom without saturation (allows peak visualization)
+        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
+                energy_value, 0.0, H_max
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                energy_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
+            )
+        elif wave_menu == 3:  # blueprint
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
+                wave_field.nz / wave_field.max_grid_size
+            )
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                amp_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        else:  # default to orange (wave_menu == 1 or 4)
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
+                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
+            )
+            wave_field.fluxmesh_xy_vertices[i, j] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
+                    wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
+                ]
+            )
+
+    # ================================================================
+    # XZ Plane: Sample at y = fm_plane_y_idx
+    # ================================================================
+    for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
+        # Sample displacement at this voxel
+        disp_value = wave_field.psi_am[i, wave_field.fm_plane_y_idx, k]
+        amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
+        freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
+        energy_value = trackers.energy_density_H_aJ[i, wave_field.fm_plane_y_idx, k]
+        univ_edge_y = wave_field.universe_size_am[1]
+
+        # Map value to color/vertex using selected gradient
+        # Scale range to 2× average for headroom without saturation (allows peak visualization)
+        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
+                energy_value, 0.0, H_max
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                energy_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
+            )
+        elif wave_menu == 3:  # blueprint
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
+                wave_field.ny / wave_field.max_grid_size
+            )
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                amp_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        else:  # default to orange (wave_menu == 1 or 4)
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
+                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
+            )
+            wave_field.fluxmesh_xz_vertices[i, k] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
+                    wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
+                ]
+            )
+
+    # ================================================================
+    # YZ Plane: Sample at x = fm_plane_x_idx
+    # ================================================================
+    for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
+        # Sample displacement at this voxel
+        disp_value = wave_field.psi_am[wave_field.fm_plane_x_idx, j, k]
+        amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
+        freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
+        energy_value = trackers.energy_density_H_aJ[wave_field.fm_plane_x_idx, j, k]
+        univ_edge_x = wave_field.universe_size_am[0]
+
+        # Map value to color/vertex using selected gradient
+        # Scale range to 2× average for headroom without saturation (allows peak visualization)
+        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
+                energy_value, 0.0, H_max
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                energy_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
+            )
+        elif wave_menu == 3:  # blueprint
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
+                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = freq_value / trackers.freq_global_avg_rHz[
+                None
+            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
+                wave_field.nx / wave_field.max_grid_size
+            )
+        elif wave_menu == 2:  # ironbow
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                amp_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        else:  # default to orange (wave_menu == 1 or 4)
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
+                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
+            )
+            wave_field.fluxmesh_yz_vertices[j, k] = ti.Vector(
+                [
+                    wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
+                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
+                ]
+            )
+
+
+# ================================================================
 # DIRECTOR-GLYPH RENDERING (M5.1)
 # ================================================================
 # The flux mesh maps every voxel to ONE scalar (color + Z-warp). For a
@@ -1318,224 +1539,3 @@ def update_director_glyphs(
             wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
             wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
             wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
-
-
-# ================================================================
-# FLUX MESH VALUES UPDATING
-# ================================================================
-# The flux mesh is a VISUALIZATION layer — it converts simulation-side
-# scalars/vectors to per-vertex colors and Z-axis warps so the user can "see"
-# what the field is doing. It is not physics; nothing here feeds back into
-# propagate_psi or any tracker. Treat it as a display driver.
-#
-# VECTOR-FIELD RENDERING NUANCE (worth remembering when M5.0g+ adds new
-# wave_menu options for energy density, curl, divergence, energy flux,
-# etc.):
-#
-# ψ is a Vector(3) field, but the flux mesh maps every voxel to ONE scalar
-# (one color, one Z-warp height). The current "Displacement (Magnitude)"
-# mode renders |ψ| = ψ.norm(). For a y-polarized seed ψ_y = A·sin(k·x):
-#
-#     |ψ| = A·|sin(k·x)|         period λ/2 — looks like 2× as many bumps
-#     ψ_y = A· sin(k·x)          period λ — the "true" sinusoid (signed)
-#
-# Magnitude is the right scalar for energy-density-style observables (always
-# positive, ∝ |ψ|²) but rectifies signed waves and visually doubles their
-# spatial frequency. When designing future wave_menu modes, decide per
-# observable:
-#
-#   - magnitude: |v|              → energy/intensity views (always ≥ 0)
-#   - signed component: v · ê     → propagation/polarization views (signed)
-#   - radial component: v · r̂    → longitudinal vs transverse decomposition
-#   - dominant axis: max(|v_i|)·sign  → quick-and-dirty signed view
-#
-# For the flux mesh specifically (one scalar per vertex), each new wave_menu
-# entry should pick one explicitly and not silently fall back to .norm().
-# This becomes important once we have curl(ψ), force vectors, energy flux,
-# etc. — all of which are vector quantities that need a deliberate scalar
-# projection to be rendered.
-
-
-@ti.kernel
-def update_flux_mesh_values(
-    wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
-    wave_menu: ti.i32,  # type: ignore
-    warp_mesh: ti.i32,  # type: ignore
-):
-    """
-    Update flux mesh colors and vertices by sampling wave properties from voxel grid.
-
-    Samples wave displacement at each plane vertex position and maps it to a color.
-    Should be called every frame after wave propagation to update visualization.
-
-    Args:
-        wave_field: WaveField instance containing flux mesh fields and displacement data
-        trackers: WaveTrackers instance with amplitude/frequency data for color scaling
-        wave_menu: Selected Wave displayed with color palette
-    """
-
-    # ================================================================
-    # XY Plane: Sample at z = fm_plane_z_idx
-    # ================================================================
-    # Always update all planes (conditionals cause GPU branch divergence)
-    # wave_menu == 4 renders the energy density (Hamiltonian) field
-    # `trackers.energy_density_H_aJ`, populated each step by M5.0g.
-    for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[i, j, wave_field.fm_plane_z_idx]
-        amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
-        freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
-        energy_value = trackers.energy_density_H_aJ[i, j, wave_field.fm_plane_z_idx]
-        univ_edge_z = wave_field.universe_size_am[2]
-
-        # Map value to color/vertex using selected gradient
-        # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                energy_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                energy_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
-            )
-        elif wave_menu == 3:  # blueprint
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
-                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = freq_value / trackers.freq_global_avg_rHz[
-                None
-            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
-                wave_field.nz / wave_field.max_grid_size
-            )
-        elif wave_menu == 2:  # ironbow
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                amp_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
-        else:  # default to orange (wave_menu == 1 or 4)
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_xy_vertices[i, j] = ti.Vector(
-                [
-                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
-            )
-
-    # ================================================================
-    # XZ Plane: Sample at y = fm_plane_y_idx
-    # ================================================================
-    for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[i, wave_field.fm_plane_y_idx, k]
-        amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
-        freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
-        energy_value = trackers.energy_density_H_aJ[i, wave_field.fm_plane_y_idx, k]
-        univ_edge_y = wave_field.universe_size_am[1]
-
-        # Map value to color/vertex using selected gradient
-        # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                energy_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                energy_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
-            )
-        elif wave_menu == 3:  # blueprint
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
-                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = freq_value / trackers.freq_global_avg_rHz[
-                None
-            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
-                wave_field.ny / wave_field.max_grid_size
-            )
-        elif wave_menu == 2:  # ironbow
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                amp_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
-        else:  # default to orange (wave_menu == 1 or 4)
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_xz_vertices[i, k] = ti.Vector(
-                [
-                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
-            )
-
-    # ================================================================
-    # YZ Plane: Sample at x = fm_plane_x_idx
-    # ================================================================
-    for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[wave_field.fm_plane_x_idx, j, k]
-        amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
-        freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
-        energy_value = trackers.energy_density_H_aJ[wave_field.fm_plane_x_idx, j, k]
-        univ_edge_x = wave_field.universe_size_am[0]
-
-        # Map value to color/vertex using selected gradient
-        # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energy_global_H_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                energy_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                energy_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
-            )
-        elif wave_menu == 3:  # blueprint
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
-                freq_value, 0.0, trackers.freq_global_avg_rHz[None] * 2
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = freq_value / trackers.freq_global_avg_rHz[
-                None
-            ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
-                wave_field.nx / wave_field.max_grid_size
-            )
-        elif wave_menu == 2:  # ironbow
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                amp_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
-        else:  # default to orange (wave_menu == 1 or 4)
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_yz_vertices[j, k] = ti.Vector(
-                [
-                    wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
-            )

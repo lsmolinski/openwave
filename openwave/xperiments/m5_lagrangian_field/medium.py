@@ -125,9 +125,7 @@ class WaveField:
         #     psi_am      — ψ at t    (current; read-only during step + 6-point Laplacian)
         #     psi_new_am  — ψ at t+dt (output; written by leapfrog kernel)
         # After each step, swap_buffers() cycles prev ← curr, curr ← new.
-        self.psi_am = ti.Vector.field(
-            3, dtype=ti.f32, shape=self.grid_size
-        )  # am, ψ at t (current)
+        self.psi_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t
         self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t−dt
         self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
@@ -142,7 +140,7 @@ class WaveField:
         # energy_flux, wave_direction, displacement_direction, wave_mode, wave_type
 
         # ================================================================
-        # Grid Visualization: data structures & initialization
+        # Grid Lines: data structures & initialization
         # ================================================================
         # Grid: optimized grid lines for rendering
         # Each line spans the entire grid dimension (e.g., from x=0 to x=1 in normalized coords)
@@ -227,14 +225,10 @@ class WaveField:
         self.n_glyphs = nx_s * ny_s + nx_s * nz_s + ny_s * nz_s
         # Two vertices per line segment (start + end); GGUI renders consecutive
         # vertex pairs as a line.
-        self.director_glyph_vertices = ti.Vector.field(
-            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
-        )
+        self.director_glyph_vertices = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
         # Per-vertex color matches the line endpoints. Both endpoints get the
         # same color so each glyph reads as a uniform-colored line.
-        self.director_glyph_colors = ti.Vector.field(
-            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
-        )
+        self.director_glyph_colors = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
         # Flat-array offsets into the (2·n_glyphs) buffer per plane:
         self.glyph_offset_xy = 0
         self.glyph_offset_xz = nx_s * ny_s
@@ -246,12 +240,8 @@ class WaveField:
         # main shaft buffer; rendered separately by the launcher (gated on
         # lagrangian_engine.SHOW_DIRECTOR_ARROWHEAD) so it can be toggled
         # without re-running the kernel.
-        self.director_glyph_arrow_vertices = ti.Vector.field(
-            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
-        )
-        self.director_glyph_arrow_colors = ti.Vector.field(
-            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
-        )
+        self.director_glyph_arrow_vertices = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
+        self.director_glyph_arrow_colors = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
 
     def swap_buffers(self):
         """
@@ -573,9 +563,7 @@ class Trackers:
         # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_H_avg_aJ = ti.field(
-            dtype=ti.f32, shape=()
-        )  # mean energy density (per voxel)
+        self.energy_global_H_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density
 
 
 if __name__ == "__main__":
