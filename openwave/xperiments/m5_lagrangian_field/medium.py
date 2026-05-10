@@ -240,6 +240,19 @@ class WaveField:
         self.glyph_offset_xz = nx_s * ny_s
         self.glyph_offset_yz = nx_s * ny_s + nx_s * nz_s
 
+        # Half-arrowhead barb segments — one extra line per glyph from the
+        # shaft tip to a perpendicular offset, so direction (head vs tail) is
+        # visually unambiguous. Same indexing scheme + plane offsets as the
+        # main shaft buffer; rendered separately by the launcher (gated on
+        # lagrangian_engine.SHOW_DIRECTOR_ARROWHEAD) so it can be toggled
+        # without re-running the kernel.
+        self.director_glyph_arrow_vertices = ti.Vector.field(
+            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
+        )
+        self.director_glyph_arrow_colors = ti.Vector.field(
+            3, dtype=ti.f32, shape=(2 * self.n_glyphs)
+        )
+
     def swap_buffers(self):
         """
         Cyclic shift of the triple-buffer leapfrog state.

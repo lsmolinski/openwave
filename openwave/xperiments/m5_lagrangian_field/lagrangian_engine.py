@@ -20,6 +20,8 @@ Module layout (top-to-bottom):
     FLUX MESH UPDATING        — update_flux_mesh_values (color mapping)
 """
 
+import math
+
 import taichi as ti
 import numpy as np
 
@@ -1071,11 +1073,30 @@ def sample_avg_trackers(
 #
 # Design doc: research_hub/3e_director_glyph_rendering.md.
 
+# Half-arrowhead toggle (hardcoded for testing — flip to False to compare):
+# When True, each glyph gets ONE extra barb at the tip end so head vs tail is
+# unambiguous without arrowhead V-shapes. Cost: doubles the line count rendered
+# when on (e.g. 768 → 1536 lines at 64³ / stride=4 — still trivial on GPU).
+# Buffer is always allocated; the launcher gates the second scene.lines call.
+SHOW_DIRECTOR_ARROWHEAD = True
+ARROWHEAD_LENGTH_FRAC = 0.35  # barb length relative to shaft length
+# Barb angle measured from −n̂ (the backward shaft direction), rotated toward
+# the perpendicular axis. NOTE: smaller values give THINNER arrow-head profiles
+# (the variable runs opposite to a "sweep from perpendicular" intuition):
+#   90° → perpendicular barb (widest, no backward sweep)
+#   36° → moderately swept back (thin arrow profile — current default)
+#   <30° → very thin (barb collapses toward −n̂)
+ARROWHEAD_ANGLE_DEG = 36.0
+_arrow_rad = math.radians(ARROWHEAD_ANGLE_DEG)
+ARROWHEAD_BACK_COMP = -math.cos(_arrow_rad)  # component along n̂ (negative = backward)
+ARROWHEAD_PERP_COMP = math.sin(_arrow_rad)  # component along perpendicular axis
+
 
 @ti.kernel
 def update_director_glyphs(
     wave_field: ti.template(),  # type: ignore
     length: ti.f32,  # type: ignore
+    arrow_length: ti.f32,  # type: ignore
     show_level: ti.i32,  # type: ignore
 ):
     """
@@ -1091,6 +1112,16 @@ def update_director_glyphs(
         (blueprint default; ironbow alt) the vacuum BLENDS into the black GUI
         background — only the defect-twisted region stands out visually.
 
+    Half-arrowhead barb (when arrow_length > 0):
+      - arrow_vertices[2k+0] = tip = pos + length · n̂
+      - arrow_vertices[2k+1] = tip + arrow_length · barb_dir
+      - barb_dir = ARROWHEAD_BACK_COMP · n̂ + ARROWHEAD_PERP_COMP · perp,
+        where perp is a stable perpendicular to n̂ (cross with ẑ, falling
+        back to x̂ when n̂ is nearly parallel to ẑ) and the back/perp
+        components encode ARROWHEAD_ANGLE_DEG (54° default → swept-back
+        arrowhead, ≈36° between barb and shaft). Same color as the shaft.
+        The launcher decides whether to render this buffer.
+
     `show_level` mirrors SHOW_FLUX_MESH semantics for progressive plane reveal:
         0 → all planes off (degenerate glyphs; nothing renders)
         1 → XY plane only
@@ -1104,9 +1135,12 @@ def update_director_glyphs(
 
     Args:
         wave_field: WaveField (reads psi_am; writes director_glyph_vertices /
-            director_glyph_colors)
-        length: glyph length in normalized camera coords (e.g. 0.02 for ~2%
-            of the universe edge)
+            director_glyph_colors / director_glyph_arrow_vertices /
+            director_glyph_arrow_colors)
+        length: glyph shaft length in normalized camera coords (e.g. 0.02 for
+            ~2% of the universe edge)
+        arrow_length: barb length in the same normalized coords. Pass 0.0 to
+            skip computing the barb (writes zero-length lines instead).
         show_level: 0..3, parallel to SHOW_FLUX_MESH (0 off, 1 XY, 2 +XZ, 3 all)
     """
     nx = wave_field.nx
@@ -1146,6 +1180,7 @@ def update_director_glyphs(
                     ti.cast(z_plane_idx, ti.f32) / max_dim,
                 ]
             )
+            tip = pos + length * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -1155,14 +1190,32 @@ def update_director_glyphs(
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
             color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
             wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
+
+            # Half-arrowhead: barb perpendicular to n̂ at the tip end.
+            # Stable perp = n̂ × ref where ref flips to x̂ when n̂ ≈ ẑ
+            # to avoid the degenerate cross product at vacuum directors.
+            ref = ti.Vector([0.0, 0.0, 1.0])
+            if ti.abs(n_hat[2]) > 0.9:
+                ref = ti.Vector([1.0, 0.0, 0.0])
+            perp = n_hat.cross(ref).normalized()
+            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
+            barb_end = tip + arrow_length * barb_dir
+            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
+            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
+            wave_field.director_glyph_arrow_colors[idx + 0] = color
+            wave_field.director_glyph_arrow_colors[idx + 1] = color
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
             wave_field.director_glyph_colors[idx + 0] = zero_v
             wave_field.director_glyph_colors[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
 
     # ----- XZ plane at y = fm_plane_y_idx -----
     for si, sk in ti.ndrange(nx_s, nz_s):
@@ -1181,6 +1234,7 @@ def update_director_glyphs(
                     ti.cast(k, ti.f32) / max_dim,
                 ]
             )
+            tip = pos + length * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -1190,14 +1244,29 @@ def update_director_glyphs(
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
             color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
             wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
+
+            ref = ti.Vector([0.0, 0.0, 1.0])
+            if ti.abs(n_hat[2]) > 0.9:
+                ref = ti.Vector([1.0, 0.0, 0.0])
+            perp = n_hat.cross(ref).normalized()
+            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
+            barb_end = tip + arrow_length * barb_dir
+            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
+            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
+            wave_field.director_glyph_arrow_colors[idx + 0] = color
+            wave_field.director_glyph_arrow_colors[idx + 1] = color
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
             wave_field.director_glyph_colors[idx + 0] = zero_v
             wave_field.director_glyph_colors[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
 
     # ----- YZ plane at x = fm_plane_x_idx -----
     for sj, sk in ti.ndrange(ny_s, nz_s):
@@ -1216,6 +1285,7 @@ def update_director_glyphs(
                     ti.cast(k, ti.f32) / max_dim,
                 ]
             )
+            tip = pos + length * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -1225,14 +1295,29 @@ def update_director_glyphs(
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
             color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
             wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = pos + length * n_hat
+            wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
+
+            ref = ti.Vector([0.0, 0.0, 1.0])
+            if ti.abs(n_hat[2]) > 0.9:
+                ref = ti.Vector([1.0, 0.0, 0.0])
+            perp = n_hat.cross(ref).normalized()
+            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
+            barb_end = tip + arrow_length * barb_dir
+            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
+            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
+            wave_field.director_glyph_arrow_colors[idx + 0] = color
+            wave_field.director_glyph_arrow_colors[idx + 1] = color
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
             wave_field.director_glyph_colors[idx + 0] = zero_v
             wave_field.director_glyph_colors[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
 
 
 # ================================================================

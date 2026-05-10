@@ -61,7 +61,7 @@ XPARAMETERS = {
         "DESCRIPTION": "Seeded director field — visual verification of seed_vacuum / seed_hedgehog",
     },
     "camera": {
-        "INITIAL_POSITION": [1.20, 1.20, 1.20],
+        "INITIAL_POSITION": [1.10, 1.46, 0.81],
     },
     "universe": {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
@@ -83,7 +83,7 @@ XPARAMETERS = {
         "SHOW_FLUX_MESH": 0,  # off by default — directors are the primary view in M5.1
         "WARP_MESH": 0,  # no Z-warp — director field has |n|=1 uniformly, warp would be misleading
         "SHOW_DIRECTORS": 3,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
-        "VIZ_STRIDE": 2,  # shared every-Nth-voxel sampling stride for directors AND granules
+        "VIZ_STRIDE": 1,  # shared every-Nth-voxel sampling stride for directors AND granules
         "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
