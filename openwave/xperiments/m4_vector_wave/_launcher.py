@@ -254,10 +254,6 @@ def display_xperiment_launcher(xperiment_mgr, state):
         if sub.button("Close Launcher (esc)"):
             render.window.running = False
 
-    # TODO: remove hardcoded WIP notice and implement proper xperiment status handling
-    with render.gui.sub_window("WORK-IN-PROGRESS XPERIMENT", 0.40, 0.00, 0.20, 0.08) as sub:
-        sub.text("*** METHOD STILL UNDER DEVELOPMENT ***", color=colormap.RED[1])
-
     return selected_xperiment
 
 

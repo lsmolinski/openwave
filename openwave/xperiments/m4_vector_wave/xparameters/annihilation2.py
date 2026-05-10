@@ -40,7 +40,7 @@ XPARAMETERS = {
             [0.0, 0.0, 0.0],
             [0.0, 0.0, 0.0],
         ],
-        "APPLY_MOTION": False,  # Toggle to apply motion at wave-centers, from force at each iteration
+        "APPLY_MOTION": True,  # Toggle to apply motion at wave-centers, from force at each iteration
     },
     "ui_defaults": {
         "SHOW_AXIS": True,  # Toggle to show/hide axis lines
