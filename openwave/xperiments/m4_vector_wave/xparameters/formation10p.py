@@ -19,8 +19,7 @@ Each K places WCs at λ/2 spacing in the simplest possible geometry:
 """
 
 from openwave.common import constants
-from openwave.xperiments.m3_wolff_lafreniere.xparameters.formation02 import generate_K_positions
-
+from openwave.xperiments.m4_vector_wave.xparameters.formation02 import generate_K_positions
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
 TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
@@ -70,7 +69,7 @@ XPARAMETERS = {
         "COUNT": K,
         "POSITION": POSITIONS,
         "PHASE_OFFSETS_DEG": PHASES,
-        "APPLY_MOTION": False,
+        "APPLY_MOTION": True,
     },
     "ui_defaults": {
         "SHOW_AXIS": False,

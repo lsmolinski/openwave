@@ -216,7 +216,7 @@ XPARAMETERS = {
         "COUNT": K,
         "POSITION": POSITIONS,
         "PHASE_OFFSETS_DEG": PHASES,
-        "APPLY_MOTION": False,
+        "APPLY_MOTION": True,
     },
     "ui_defaults": {
         "SHOW_AXIS": False,
