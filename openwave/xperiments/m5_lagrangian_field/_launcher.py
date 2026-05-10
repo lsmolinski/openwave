@@ -663,12 +663,26 @@ def render_elements(state):
     # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
     if state.SHOW_DIRECTORS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
-        lagrange.update_director_glyphs(state.wave_field, glyph_length, state.SHOW_DIRECTORS)
+        arrow_length = (
+            glyph_length * lagrange.ARROWHEAD_LENGTH_FRAC
+            if lagrange.SHOW_DIRECTOR_ARROWHEAD
+            else 0.0
+        )
+        lagrange.update_director_glyphs(
+            state.wave_field, glyph_length, arrow_length, state.SHOW_DIRECTORS
+        )
         render.scene.lines(
             state.wave_field.director_glyph_vertices,
             per_vertex_color=state.wave_field.director_glyph_colors,
             width=2.0,
         )
+        # Half-arrowhead barb pass — toggled by lagrangian_engine.SHOW_DIRECTOR_ARROWHEAD.
+        if lagrange.SHOW_DIRECTOR_ARROWHEAD:
+            render.scene.lines(
+                state.wave_field.director_glyph_arrow_vertices,
+                per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                width=2.0,
+            )
 
     if state.PARTICLE_SHELL:
         # Convert wave-centers positions from [ijk] to [screen_normalization]
