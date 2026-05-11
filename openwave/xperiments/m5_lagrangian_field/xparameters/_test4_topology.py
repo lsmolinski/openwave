@@ -27,7 +27,7 @@ TARGET_VOXELS = 64**3  # ~262k voxels — small for fast smoke-test
 
 # Switch the mode here:
 # TOPOLOGY_MODE = "vacuum"
-TOPOLOGY_MODE = "hedgehog_1"
+TOPOLOGY_MODE = "hedgehog_2"
 # TOPOLOGY_MODE = "hedgehog_2"
 
 if TOPOLOGY_MODE == "vacuum":
@@ -82,7 +82,7 @@ XPARAMETERS = {
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 0,  # off by default — directors are the primary view in M5.1
         "WARP_MESH": 0,  # no Z-warp — director field has |n|=1 uniformly, warp would be misleading
-        "SHOW_DIRECTORS": 3,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
+        "SHOW_DIRECTORS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
         "VIZ_STRIDE": 1,  # shared every-Nth-voxel sampling stride for directors AND granules
         "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,

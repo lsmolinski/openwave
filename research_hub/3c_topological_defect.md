@@ -95,7 +95,26 @@ Now try to "smooth" the directors back to a uniform vacuum (all pointing in the 
 
 The rip is what's forbidden. The field has to remain continuous everywhere except possibly at the defect's core (an infinitesimal point). And precisely because the field can't rip, the defect persists. This is the **topological protection** — the same mathematics that makes a knot in a closed loop of rope persist no matter how you wiggle the rope.
 
+A more familiar way to see this same constraint is the **hairy ball theorem**: any continuous tangent vector field on the 2-sphere must have at least one zero (the "cowlick"). For OpenWave's unit-vector director field `n̂(r)` on any sphere surrounding a Q ≠ 0 defect, the same theorem forces a singular core — the hedgehog cannot be combed smooth, and that's the topological reason the seeded defect cannot smoothly disappear. Duda's framing in the 2026-05-11 Models-of-Particles thread (graphene-spin-transport news item) cites the hairy ball theorem + clock propulsion as the mechanism for the electron's constant magnetic dipole moment — the OpenWave M5.4 headline test is the empirical answer to that question.
+
 The defect is **not held in place by a force** balancing it. It's held in place by **a counting argument**: there is no continuous path through configuration space that connects "Q = +1" to "Q = 0", so dynamics that preserves continuity (and the field equations are continuous) literally cannot get there.
+
+### Why the vacuum has |n̂| = 1, not (0, 0, 0)
+
+A subtle but essential point: in this framework, the field `n̂` is a **director field** (a unit vector at every point), not a generic vector field. The vacuum has `|n̂| = 1` everywhere, with one chosen direction (M5 convention: `n̂ = ẑ`). The state `n̂ = (0, 0, 0)` is **not** a valid vacuum — it's a singularity (defect core, where the director is undefined).
+
+The choice between these two "vacuum types" is what enables (or kills) topology:
+
+| Vacuum type | Vacuum manifold | Topology |
+| --- | --- | --- |
+| Director, `|n̂| = 1` | Entire unit sphere `S²` | `Q ∈ ℤ` (rich) |
+| Scalar, `ψ = 0` | Single point | Always trivial |
+
+Topology lives in the **map from real space to the vacuum manifold**. A hedgehog `Q = +1` wraps the surrounding sphere once around `S²`; an anti-hedgehog `Q = −1` wraps it once in the opposite sense; a uniform field maps everything to one point on `S²` (winding 0). Without a non-trivial vacuum manifold, there's nothing to wind around — no winding number, no quantized charge, no stable particles.
+
+This is the same idea as **spontaneous symmetry breaking** in the Standard Model: the Higgs field has a non-zero vacuum expectation value, and that broken symmetry is what enables stable particle states. M5's director field plays an analogous role for the topology-as-particles hypothesis.
+
+The choice of `ẑ` as "the" vacuum direction is pure convention — the LdG potential (M5.6) is rotationally symmetric, so any unit direction works equally well. `ẑ` is the cleanest in our coordinate system. The director-glyph colormap renders `(1 − n̂_z) ∈ [0, 2]`, mapping vacuum (`n̂ = ẑ`) to "dark" (blends with the black GUI background) and peak twist (`n̂ = −ẑ`) to "bright" — so only the deviation from vacuum is visually apparent.
 
 ### Defects store field energy → that energy IS the rest mass
 
