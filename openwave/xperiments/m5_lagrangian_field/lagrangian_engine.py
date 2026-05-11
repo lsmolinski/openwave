@@ -9,14 +9,22 @@ Euler-Lagrange yields  ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ.  In M5.0d t
 zero (free wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
 
 Module layout (top-to-bottom):
-    DIFFERENTIAL OPERATORS    — Laplacian; M5.0e adds curl/div/curl-curl
-    INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes, seed_vacuum, seed_hedgehog
+    INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes,
+                                seed_vacuum, seed_hedgehog
+    DIFFERENTIAL OPERATORS    — Laplacian, divergence, curl, curl-curl
     ψ PROPAGATION ENGINE      — propagate_psi (leapfrog/Verlet)
-    FIELD OBSERVABLES         — update_trackers_psi (amp/freq EMA)
-    ENERGY DENSITY (HAMILTONIAN) — compute_energyH_density
+    WAVE TRACKERS             — update_trackers_psi (amp / freq EMA — writes
+                                to Trackers; stateful, dynamics-gated)
+    FIELD OBSERVABLES         — compute_energyH_density (Hamiltonian),
+                                compute_energyF_density (Frank elastic);
+                                both write to FieldObservables (stateless,
+                                always-on per-frame measurements)
     POSITION RENDER           — sample_position_to_render (granule viz)
-    3-PLANE SAMPLING          — sample_avg_trackers (cheap global means)
-    FLUX MESH UPDATING        — update_flux_mesh_values (color mapping)
+    3-PLANE SAMPLING          — sample_avg_trackers   (amp / freq globals)
+                                sample_avg_observables (energyH / energyF
+                                globals; separate pass for SoC, 2026-05-11)
+    FLUX MESH UPDATING        — update_flux_mesh_values (color mapping;
+                                reads both Trackers and FieldObservables)
     DIRECTOR GLYPHS           — update_director_glyphs (M5.1 director viz)
 """
 
@@ -640,7 +648,7 @@ def propagate_psi(
 
 
 # ================================================================
-# FIELD OBSERVABLES — PER-VOXEL AMPLITUDE & FREQUENCY TRACKERS
+# TRACKERS — PER-VOXEL AMPLITUDE & FREQUENCY
 # ================================================================
 # Trackers run after propagate_psi each step. They derive observable scalars
 # from ψ (the field) without touching it — read-only on psi_am, write to the
@@ -660,7 +668,7 @@ def propagate_psi(
 # same: in a merged kernel, write ψ_new then immediately use it (with
 # ψ_prev already in registers) for tracker EMA / zero-crossing — gives true
 # central-difference ψ̇ for free, more accurate than the forward diff used
-# below (psi_new gets consumed by swap_buffers before update_trackers_psi
+# below (psi_new gets consumed by swap_buffers before update_trackers
 # can see it, so we fall back to (ψ − ψ_prev) / dt here).
 #
 # Splitting was deliberate for M5.0d: cleaner kernel boundaries, AMR-ready
@@ -672,7 +680,7 @@ def propagate_psi(
 
 
 @ti.kernel
-def update_trackers_psi(
+def update_trackers(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
     dt_rs: ti.f32,  # type: ignore
@@ -781,38 +789,38 @@ def V_psi(
 # Future formulas would parallel: `_L` for Lagrangian density, `_K` for
 # kinetic-only, etc.
 #
-# Populated by compute_energyH_density into trackers.energyH_density_aJ
+# Populated by compute_energyH_density into observables.energyH_density_aJ
 # each step; consumed by:
 #   - xforce_motion.compute_force_vector  → F = −∇E per wave-center
 #   - sample_avg_trackers (below)         → 3-plane mean → dashboard total
 #   - launcher WAVE_MENU=4 flux mesh      → visualization
 #
 # This is a third full-grid pass per step (alongside propagate_psi and
-# update_trackers_psi). Performance optimization (merge into propagate_psi)
+# update_trackers). Performance optimization (merge into propagate_psi)
 # is M5.0i territory; we land it as a separate kernel for clarity in M5.0g.
 
 
 @ti.kernel
 def compute_energyH_density(
     wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
 ):
     """
     Compute per-voxel energy density (Hamiltonian formula) into
-    trackers.energyH_density_aJ.
+    observables.energyH_density_aJ.
     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
 
     Reads:  wave_field.psi_am, wave_field.psi_prev_am
-    Writes: trackers.energyH_density_aJ
+    Writes: observables.energyH_density_aJ
 
     Boundary handling: 1-cell halo (gradient stencil); boundary voxels left
     at zero (Dirichlet BC in ψ ⇒ ψ ≈ 0 at edges ⇒ H ≈ 0 trivially).
 
     Kinetic ψ̇ uses forward difference (ψ − ψ_prev)/dt because psi_new is
     consumed by swap_buffers before this kernel runs — same compromise as
-    update_trackers_psi. Central-difference ψ̇ becomes available once those
+    update_trackers. Central-difference ψ̇ becomes available once those
     two kernels are merged into propagate_psi (M5.0i optimization).
 
     PHYSICAL-SCALING TODO — M5.2: the field is currently named `_aJ` but
@@ -850,7 +858,7 @@ def compute_energyH_density(
         # Potential: V(ψ) — 0 in M5.0g, real physics in M5.2
         potential = V_psi(psi)
 
-        trackers.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
+        observables.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
 
 
 # Note: the global energy aggregate (mean per voxel + grid total) is computed
@@ -884,16 +892,16 @@ K_FRANK = 1.0  # Frank elastic coupling — Exp 2 baseline; physical scaling in 
 @ti.kernel
 def compute_energyF_density(
     wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
     K_frank: ti.f32,  # type: ignore
 ):
     """
     Compute per-voxel Frank elastic energy density H_F = (K/2)·|∇n̂|² into
-    trackers.energyF_density_aJ.
+    observables.energyF_density_aJ.
 
     Reads:  wave_field.psi_am  (director field n̂; |n̂|=1 enforced by seeders
             and by gradient-descent relaxation step in M5.1 task 6)
-    Writes: trackers.energyF_density_aJ
+    Writes: observables.energyF_density_aJ
 
     Same central-difference gradient stencil as compute_energyH_density's
     gradient term, sans the c² factor and sans the kinetic/potential terms.
@@ -921,7 +929,7 @@ def compute_energyF_density(
         d_dy = (wave_field.psi_am[i, j + 1, k] - wave_field.psi_am[i, j - 1, k]) * inv_2dx
         d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
         grad_n_sqr = d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr()
-        trackers.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
+        observables.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
 
 
 # ================================================================
@@ -976,70 +984,108 @@ def sample_position_to_render(
 # reduction" sidesteps this on Metal — it doesn't.
 # ================================================================
 
-# Cached slice buffers (initialized on first call) — one per axis × per observable
+# Cached slice buffers — separate caches per domain (Trackers vs FieldObservables)
+# so each domain owns its own 3-plane sampling pass. Per `feedback_visual_rendering_priority`,
+# each class is self-contained: Trackers samples amp/freq, FieldObservables samples H/F.
 _slice_xy_amp = None
 _slice_xy_freq = None
-_slice_xy_energyH = None
-_slice_xy_energyF = None
 _slice_xz_amp = None
 _slice_xz_freq = None
-_slice_xz_energyH = None
-_slice_xz_energyF = None
 _slice_yz_amp = None
 _slice_yz_freq = None
+_slice_xy_energyH = None
+_slice_xy_energyF = None
+_slice_xz_energyH = None
+_slice_xz_energyF = None
 _slice_yz_energyH = None
 _slice_yz_energyF = None
 
 
+# --- TRACKERS slice-copy kernels (amp + freq) -----------------------------
+
+
 @ti.kernel
-def _copy_slice_xy(
+def _copy_slice_xy_trackers(
     trackers: ti.template(),  # type: ignore
     slice_amp: ti.template(),  # type: ignore
     slice_freq: ti.template(),  # type: ignore
+    mid_z: ti.i32,  # type: ignore
+):
+    """Copy amp / freq at the XY center plane (z=mid_z) to 2D buffers."""
+    for i, j in slice_amp:
+        slice_amp[i, j] = trackers.amp_local_emarms_am[i, j, mid_z]
+        slice_freq[i, j] = trackers.freq_local_cross_rHz[i, j, mid_z]
+
+
+@ti.kernel
+def _copy_slice_xz_trackers(
+    trackers: ti.template(),  # type: ignore
+    slice_amp: ti.template(),  # type: ignore
+    slice_freq: ti.template(),  # type: ignore
+    mid_y: ti.i32,  # type: ignore
+):
+    """Copy amp / freq at the XZ center plane (y=mid_y) to 2D buffers."""
+    for i, k in slice_amp:
+        slice_amp[i, k] = trackers.amp_local_emarms_am[i, mid_y, k]
+        slice_freq[i, k] = trackers.freq_local_cross_rHz[i, mid_y, k]
+
+
+@ti.kernel
+def _copy_slice_yz_trackers(
+    trackers: ti.template(),  # type: ignore
+    slice_amp: ti.template(),  # type: ignore
+    slice_freq: ti.template(),  # type: ignore
+    mid_x: ti.i32,  # type: ignore
+):
+    """Copy amp / freq at the YZ center plane (x=mid_x) to 2D buffers."""
+    for j, k in slice_amp:
+        slice_amp[j, k] = trackers.amp_local_emarms_am[mid_x, j, k]
+        slice_freq[j, k] = trackers.freq_local_cross_rHz[mid_x, j, k]
+
+
+# --- FIELD-OBSERVABLES slice-copy kernels (energyH + energyF) -------------
+
+
+@ti.kernel
+def _copy_slice_xy_observables(
+    observables: ti.template(),  # type: ignore
     slice_energyH: ti.template(),  # type: ignore
     slice_energyF: ti.template(),  # type: ignore
     mid_z: ti.i32,  # type: ignore
 ):
-    """Copy amp / freq / energyH / energyF at the XY center plane (z=mid_z) to 2D buffers."""
-    for i, j in slice_amp:
-        slice_amp[i, j] = trackers.amp_local_emarms_am[i, j, mid_z]
-        slice_freq[i, j] = trackers.freq_local_cross_rHz[i, j, mid_z]
-        slice_energyH[i, j] = trackers.energyH_density_aJ[i, j, mid_z]
-        slice_energyF[i, j] = trackers.energyF_density_aJ[i, j, mid_z]
+    """Copy energyH / energyF at the XY center plane (z=mid_z) to 2D buffers."""
+    for i, j in slice_energyH:
+        slice_energyH[i, j] = observables.energyH_density_aJ[i, j, mid_z]
+        slice_energyF[i, j] = observables.energyF_density_aJ[i, j, mid_z]
 
 
 @ti.kernel
-def _copy_slice_xz(
-    trackers: ti.template(),  # type: ignore
-    slice_amp: ti.template(),  # type: ignore
-    slice_freq: ti.template(),  # type: ignore
+def _copy_slice_xz_observables(
+    observables: ti.template(),  # type: ignore
     slice_energyH: ti.template(),  # type: ignore
     slice_energyF: ti.template(),  # type: ignore
     mid_y: ti.i32,  # type: ignore
 ):
-    """Copy amp / freq / energyH / energyF at the XZ center plane (y=mid_y) to 2D buffers."""
-    for i, k in slice_amp:
-        slice_amp[i, k] = trackers.amp_local_emarms_am[i, mid_y, k]
-        slice_freq[i, k] = trackers.freq_local_cross_rHz[i, mid_y, k]
-        slice_energyH[i, k] = trackers.energyH_density_aJ[i, mid_y, k]
-        slice_energyF[i, k] = trackers.energyF_density_aJ[i, mid_y, k]
+    """Copy energyH / energyF at the XZ center plane (y=mid_y) to 2D buffers."""
+    for i, k in slice_energyH:
+        slice_energyH[i, k] = observables.energyH_density_aJ[i, mid_y, k]
+        slice_energyF[i, k] = observables.energyF_density_aJ[i, mid_y, k]
 
 
 @ti.kernel
-def _copy_slice_yz(
-    trackers: ti.template(),  # type: ignore
-    slice_amp: ti.template(),  # type: ignore
-    slice_freq: ti.template(),  # type: ignore
+def _copy_slice_yz_observables(
+    observables: ti.template(),  # type: ignore
     slice_energyH: ti.template(),  # type: ignore
     slice_energyF: ti.template(),  # type: ignore
     mid_x: ti.i32,  # type: ignore
 ):
-    """Copy amp / freq / energyH / energyF at the YZ center plane (x=mid_x) to 2D buffers."""
-    for j, k in slice_amp:
-        slice_amp[j, k] = trackers.amp_local_emarms_am[mid_x, j, k]
-        slice_freq[j, k] = trackers.freq_local_cross_rHz[mid_x, j, k]
-        slice_energyH[j, k] = trackers.energyH_density_aJ[mid_x, j, k]
-        slice_energyF[j, k] = trackers.energyF_density_aJ[mid_x, j, k]
+    """Copy energyH / energyF at the YZ center plane (x=mid_x) to 2D buffers."""
+    for j, k in slice_energyH:
+        slice_energyH[j, k] = observables.energyH_density_aJ[mid_x, j, k]
+        slice_energyF[j, k] = observables.energyF_density_aJ[mid_x, j, k]
+
+
+# --- Sampler functions ----------------------------------------------------
 
 
 def sample_avg_trackers(
@@ -1047,34 +1093,30 @@ def sample_avg_trackers(
     trackers,
 ):
     """
-    Estimate global aggregates by sampling 3 orthogonal center planes.
+    Estimate global Trackers aggregates by sampling 3 orthogonal center planes.
 
     Computes:
         trackers.amp_global_emarms_am   ← √⟨amp²⟩  (RMS over the 3 planes)
         trackers.freq_global_avg_rHz    ← ⟨freq⟩   (mean over the 3 planes)
-        trackers.energyH_global_avg_aJ ← ⟨E⟩      (mean energy density per voxel)
-
-    Caller (launcher) can derive the grid total trivially:
-        energy_total_H_aJ = energyH_global_avg_aJ × voxel_count
 
     Why 3-plane sampling: full 3D reductions with GPU atomic_add cause severe
     atomic contention at million-voxel scale and stalled the GUI for tens of
-    seconds in early M5.0d.2 testing (when compute_energy_total_H briefly
-    used a per-voxel reduction). 3-plane sampling reads ~3·N² voxels (3% of
-    a 100³ grid), is exact for spatially-uniform fields, and is a sound
+    seconds in early M5.0d.2 testing. 3-plane sampling reads ~3·N² voxels
+    (3% of a 100³ grid), is exact for spatially-uniform fields, and is a sound
     estimator for smooth wave packets.
 
-    Three observables share the same 3-plane pass for cache locality and to
-    keep one CPU↔GPU sync point per dashboard cadence (every 60 frames).
+    Companion sampler: `sample_avg_observables` (handles energyH / energyF
+    via the FieldObservables class). Each domain owns its own pass for clean
+    separation of concerns.
 
     Args:
         wave_field: WaveField (grid dimensions)
-        trackers: Trackers (reads amp/freq/energy_density_H per-voxel fields;
-            writes the three global aggregates)
+        trackers: Trackers (reads amp/freq per-voxel fields; writes the two
+            global aggregates)
     """
-    global _slice_xy_amp, _slice_xy_freq, _slice_xy_energyH, _slice_xy_energyF
-    global _slice_xz_amp, _slice_xz_freq, _slice_xz_energyH, _slice_xz_energyF
-    global _slice_yz_amp, _slice_yz_freq, _slice_yz_energyH, _slice_yz_energyF
+    global _slice_xy_amp, _slice_xy_freq
+    global _slice_xz_amp, _slice_xz_freq
+    global _slice_yz_amp, _slice_yz_freq
 
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
 
@@ -1082,42 +1124,24 @@ def sample_avg_trackers(
     if _slice_xy_amp is None:
         _slice_xy_amp = ti.field(dtype=ti.f32, shape=(nx, ny))
         _slice_xy_freq = ti.field(dtype=ti.f32, shape=(nx, ny))
-        _slice_xy_energyH = ti.field(dtype=ti.f32, shape=(nx, ny))
-        _slice_xy_energyF = ti.field(dtype=ti.f32, shape=(nx, ny))
         _slice_xz_amp = ti.field(dtype=ti.f32, shape=(nx, nz))
         _slice_xz_freq = ti.field(dtype=ti.f32, shape=(nx, nz))
-        _slice_xz_energyH = ti.field(dtype=ti.f32, shape=(nx, nz))
-        _slice_xz_energyF = ti.field(dtype=ti.f32, shape=(nx, nz))
         _slice_yz_amp = ti.field(dtype=ti.f32, shape=(ny, nz))
         _slice_yz_freq = ti.field(dtype=ti.f32, shape=(ny, nz))
-        _slice_yz_energyH = ti.field(dtype=ti.f32, shape=(ny, nz))
-        _slice_yz_energyF = ti.field(dtype=ti.f32, shape=(ny, nz))
 
     # Copy 3 center slices to 2D buffers (parallel kernels)
     mid_x, mid_y, mid_z = nx // 2, ny // 2, nz // 2
-    _copy_slice_xy(
-        trackers, _slice_xy_amp, _slice_xy_freq, _slice_xy_energyH, _slice_xy_energyF, mid_z
-    )
-    _copy_slice_xz(
-        trackers, _slice_xz_amp, _slice_xz_freq, _slice_xz_energyH, _slice_xz_energyF, mid_y
-    )
-    _copy_slice_yz(
-        trackers, _slice_yz_amp, _slice_yz_freq, _slice_yz_energyH, _slice_yz_energyF, mid_x
-    )
+    _copy_slice_xy_trackers(trackers, _slice_xy_amp, _slice_xy_freq, mid_z)
+    _copy_slice_xz_trackers(trackers, _slice_xz_amp, _slice_xz_freq, mid_y)
+    _copy_slice_yz_trackers(trackers, _slice_yz_amp, _slice_yz_freq, mid_x)
 
     # Transfer 2D slices to CPU for numpy operations (exclude boundary voxels)
     xy_amp = _slice_xy_amp.to_numpy()[1:-1, 1:-1]
     xy_freq = _slice_xy_freq.to_numpy()[1:-1, 1:-1]
-    xy_energyH = _slice_xy_energyH.to_numpy()[1:-1, 1:-1]
-    xy_energyF = _slice_xy_energyF.to_numpy()[1:-1, 1:-1]
     xz_amp = _slice_xz_amp.to_numpy()[1:-1, 1:-1]
     xz_freq = _slice_xz_freq.to_numpy()[1:-1, 1:-1]
-    xz_energyH = _slice_xz_energyH.to_numpy()[1:-1, 1:-1]
-    xz_energyF = _slice_xz_energyF.to_numpy()[1:-1, 1:-1]
     yz_amp = _slice_yz_amp.to_numpy()[1:-1, 1:-1]
     yz_freq = _slice_yz_freq.to_numpy()[1:-1, 1:-1]
-    yz_energyH = _slice_yz_energyH.to_numpy()[1:-1, 1:-1]
-    yz_energyF = _slice_yz_energyF.to_numpy()[1:-1, 1:-1]
 
     n_samples = xy_amp.size + xz_amp.size + yz_amp.size
 
@@ -1129,14 +1153,68 @@ def sample_avg_trackers(
     total_freq = xy_freq.sum() + xz_freq.sum() + yz_freq.sum()
     trackers.freq_global_avg_rHz[None] = float(total_freq / n_samples)
 
+
+def sample_avg_observables(
+    wave_field,
+    observables,
+):
+    """
+    Estimate global FieldObservables aggregates by sampling 3 orthogonal planes.
+
+    Computes:
+        observables.energyH_global_avg_aJ ← ⟨E_H⟩  (mean Hamiltonian density)
+        observables.energyF_global_avg_aJ ← ⟨E_F⟩  (mean Frank elastic density)
+
+    Caller (launcher) derives the grid total trivially:
+        energyH_total_aJ = energyH_global_avg_aJ × voxel_count
+
+    Same 3-plane sampling rationale as `sample_avg_trackers`. Separate pass so
+    FieldObservables is self-contained.
+
+    Args:
+        wave_field: WaveField (grid dimensions)
+        observables: FieldObservables (reads energyH/energyF per-voxel fields;
+            writes the two global aggregates)
+    """
+    global _slice_xy_energyH, _slice_xy_energyF
+    global _slice_xz_energyH, _slice_xz_energyF
+    global _slice_yz_energyH, _slice_yz_energyF
+
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+
+    # Initialize slice buffers once
+    if _slice_xy_energyH is None:
+        _slice_xy_energyH = ti.field(dtype=ti.f32, shape=(nx, ny))
+        _slice_xy_energyF = ti.field(dtype=ti.f32, shape=(nx, ny))
+        _slice_xz_energyH = ti.field(dtype=ti.f32, shape=(nx, nz))
+        _slice_xz_energyF = ti.field(dtype=ti.f32, shape=(nx, nz))
+        _slice_yz_energyH = ti.field(dtype=ti.f32, shape=(ny, nz))
+        _slice_yz_energyF = ti.field(dtype=ti.f32, shape=(ny, nz))
+
+    # Copy 3 center slices to 2D buffers (parallel kernels)
+    mid_x, mid_y, mid_z = nx // 2, ny // 2, nz // 2
+    _copy_slice_xy_observables(observables, _slice_xy_energyH, _slice_xy_energyF, mid_z)
+    _copy_slice_xz_observables(observables, _slice_xz_energyH, _slice_xz_energyF, mid_y)
+    _copy_slice_yz_observables(observables, _slice_yz_energyH, _slice_yz_energyF, mid_x)
+
+    # Transfer 2D slices to CPU for numpy operations (exclude boundary voxels)
+    xy_energyH = _slice_xy_energyH.to_numpy()[1:-1, 1:-1]
+    xy_energyF = _slice_xy_energyF.to_numpy()[1:-1, 1:-1]
+    xz_energyH = _slice_xz_energyH.to_numpy()[1:-1, 1:-1]
+    xz_energyF = _slice_xz_energyF.to_numpy()[1:-1, 1:-1]
+    yz_energyH = _slice_yz_energyH.to_numpy()[1:-1, 1:-1]
+    yz_energyF = _slice_yz_energyF.to_numpy()[1:-1, 1:-1]
+
+    n_samples = xy_energyH.size + xz_energyH.size + yz_energyH.size
+
     # Plain mean for energy density H (per voxel); launcher multiplies by
     # voxel_count to get the grid total.
     total_energyH = xy_energyH.sum() + xz_energyH.sum() + yz_energyH.sum()
-    trackers.energyH_global_avg_aJ[None] = float(total_energyH / n_samples)
+    observables.energyH_global_avg_aJ[None] = float(total_energyH / n_samples)
 
     # Plain mean for Frank elastic energy density F (per voxel).
     total_energyF = xy_energyF.sum() + xz_energyF.sum() + yz_energyF.sum()
-    trackers.energyF_global_avg_aJ[None] = float(total_energyF / n_samples)
+    observables.energyF_global_avg_aJ[None] = float(total_energyF / n_samples)
 
 
 # ================================================================
@@ -1179,6 +1257,7 @@ def sample_avg_trackers(
 def update_flux_mesh_values(
     wave_field: ti.template(),  # type: ignore
     trackers: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
     wave_menu: ti.i32,  # type: ignore
     warp_mesh: ti.i32,  # type: ignore
 ):
@@ -1189,8 +1268,9 @@ def update_flux_mesh_values(
     Should be called every frame after wave propagation to update visualization.
 
     Args:
-        wave_field: WaveField instance containing flux mesh fields and displacement data
-        trackers: WaveTrackers instance with amplitude/frequency data for color scaling
+        wave_field: WaveField instance with flux mesh fields and ψ data
+        trackers: Trackers — reads amp/freq (WAVE_MENU 2 / 3 + colormap range)
+        observables: FieldObservables — reads energyH/energyF (WAVE_MENU 4 / 5)
         wave_menu: Selected Wave displayed with color palette
     """
 
@@ -1199,22 +1279,22 @@ def update_flux_mesh_values(
     # ================================================================
     # Always update all planes (conditionals cause GPU branch divergence)
     # wave_menu == 4 renders the energy density (Hamiltonian) field
-    # `trackers.energyH_density_aJ`, populated each step by M5.0g.
-    # wave_menu == 5 renders the Frank elastic density `trackers.energyF_density_aJ`,
+    # `observables.energyH_density_aJ`, populated each step by M5.0g.
+    # wave_menu == 5 renders the Frank elastic density `observables.energyF_density_aJ`,
     # populated by compute_energyF_density (M5.1 task 5).
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
         # Sample displacement at this voxel
         disp_value = wave_field.psi_am[i, j, wave_field.fm_plane_z_idx]
         amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
-        energyH_value = trackers.energyH_density_aJ[i, j, wave_field.fm_plane_z_idx]
-        energyF_value = trackers.energyF_density_aJ[i, j, wave_field.fm_plane_z_idx]
+        energyH_value = observables.energyH_density_aJ[i, j, wave_field.fm_plane_z_idx]
+        energyF_value = observables.energyF_density_aJ[i, j, wave_field.fm_plane_z_idx]
         univ_edge_z = wave_field.universe_size_am[2]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
         if wave_menu == 5:  # Frank elastic density on ironbow (defect-focused palette)
-            F_max = trackers.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
                 energyF_value, 0.0, F_max
             )
@@ -1223,7 +1303,7 @@ def update_flux_mesh_values(
                 + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
             )
         elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energyH_global_avg_aJ[None] * 4.0 + 1e-10
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
                 energyH_value, 0.0, H_max
             )
@@ -1271,14 +1351,14 @@ def update_flux_mesh_values(
         disp_value = wave_field.psi_am[i, wave_field.fm_plane_y_idx, k]
         amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
-        energyH_value = trackers.energyH_density_aJ[i, wave_field.fm_plane_y_idx, k]
-        energyF_value = trackers.energyF_density_aJ[i, wave_field.fm_plane_y_idx, k]
+        energyH_value = observables.energyH_density_aJ[i, wave_field.fm_plane_y_idx, k]
+        energyF_value = observables.energyF_density_aJ[i, wave_field.fm_plane_y_idx, k]
         univ_edge_y = wave_field.universe_size_am[1]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
         if wave_menu == 5:  # Frank elastic density on ironbow
-            F_max = trackers.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
                 energyF_value, 0.0, F_max
             )
@@ -1287,7 +1367,7 @@ def update_flux_mesh_values(
                 + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
             )
         elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energyH_global_avg_aJ[None] * 4.0 + 1e-10
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
                 energyH_value, 0.0, H_max
             )
@@ -1335,14 +1415,14 @@ def update_flux_mesh_values(
         disp_value = wave_field.psi_am[wave_field.fm_plane_x_idx, j, k]
         amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
-        energyH_value = trackers.energyH_density_aJ[wave_field.fm_plane_x_idx, j, k]
-        energyF_value = trackers.energyF_density_aJ[wave_field.fm_plane_x_idx, j, k]
+        energyH_value = observables.energyH_density_aJ[wave_field.fm_plane_x_idx, j, k]
+        energyF_value = observables.energyF_density_aJ[wave_field.fm_plane_x_idx, j, k]
         univ_edge_x = wave_field.universe_size_am[0]
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
         if wave_menu == 5:  # Frank elastic density on ironbow
-            F_max = trackers.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
                 energyF_value, 0.0, F_max
             )
@@ -1351,7 +1431,7 @@ def update_flux_mesh_values(
                 + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
             )
         elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = trackers.energyH_global_avg_aJ[None] * 4.0 + 1e-10
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
                 energyH_value, 0.0, H_max
             )

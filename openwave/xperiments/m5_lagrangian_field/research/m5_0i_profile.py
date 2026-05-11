@@ -7,7 +7,7 @@ grid sizes to identify bottlenecks. Drives the Tier 2 optimization order.
 KERNELS PROFILED (mirrors _launcher.compute_oscillation):
     propagate_psi              — leapfrog/Verlet step
     swap_buffers               — Python triple-buffer cycle (no kernel work)
-    update_trackers_psi        — per-voxel amp / freq EMA
+    update_trackers        — per-voxel amp / freq EMA
     compute_energyH_density   — ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
     sample_avg_trackers        — 3-plane mean of amp / freq / energy (every 60 frames)
 
@@ -100,7 +100,7 @@ def profile_at_grid(target_voxels_per_axis):
     for _ in range(WARMUP_STEPS):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
-        lagrange.update_trackers_psi(wave_field, trackers, dt_rs, 0.0)
+        lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
     ti.sync()
 
@@ -109,7 +109,7 @@ def profile_at_grid(target_voxels_per_axis):
     times = {
         "propagate_psi": [],
         "swap_buffers": [],
-        "update_trackers_psi": [],
+        "update_trackers": [],
         "compute_energyH_density": [],
     }
 
@@ -122,7 +122,7 @@ def profile_at_grid(target_voxels_per_axis):
         wave_field.swap_buffers()
         ti.sync()
         t2 = time.perf_counter()
-        lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(step) * dt_rs)
+        lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         ti.sync()
         t3 = time.perf_counter()
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
@@ -131,7 +131,7 @@ def profile_at_grid(target_voxels_per_axis):
 
         times["propagate_psi"].append((t1 - t0) * 1000.0)
         times["swap_buffers"].append((t2 - t1) * 1000.0)
-        times["update_trackers_psi"].append((t3 - t2) * 1000.0)
+        times["update_trackers"].append((t3 - t2) * 1000.0)
         times["compute_energyH_density"].append((t4 - t3) * 1000.0)
 
     # ── sample_avg_trackers — measured separately (every-60-frames cadence) ──
@@ -151,7 +151,7 @@ def profile_at_grid(target_voxels_per_axis):
         t0 = time.perf_counter()
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
-        lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(step) * dt_rs)
+        lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
         ti.sync()
         end_to_end_ms.append((time.perf_counter() - t0) * 1000.0)
@@ -233,7 +233,7 @@ def plot_results(results):
     kernel_order = [
         "propagate_psi",
         "swap_buffers",
-        "update_trackers_psi",
+        "update_trackers",
         "compute_energyH_density",
     ]
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]

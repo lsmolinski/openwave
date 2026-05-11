@@ -108,7 +108,8 @@ class SimulationState:
 
     def __init__(self):
         self.wave_field = None
-        self.trackers = None
+        self.trackers = None  # Trackers (M3/M4 wave statistics: amp, freq, EMA-RMS)
+        self.observables = None  # FieldObservables (M5 derived scalars: energyH, energyF)
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
@@ -239,6 +240,7 @@ class SimulationState:
             viz_stride=self.VIZ_STRIDE,
         )
         self.trackers = medium.Trackers(self.wave_field.grid_size)
+        self.observables = medium.FieldObservables(self.wave_field.grid_size)
 
         # Resolution metric: voxels-per-wavelength, declared by the active
         # xperiment. Sources (in priority order):
@@ -593,9 +595,9 @@ def compute_oscillation(state):
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
     state.wave_field.swap_buffers()
 
-    # FIELD-OBSERVABLE TRACKERS (per-voxel amp / freq from ψ) ==============
+    # TRACKERS (per-voxel amp / freq from ψ) ==============
     # Time-dependent EMA — only meaningful during dynamics, so kept here.
-    lagrange.update_trackers_psi(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
+    lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
 
 def compute_field_observables(state):
@@ -611,30 +613,35 @@ def compute_field_observables(state):
     to a c² factor (with V=0 in M5.1).
     """
     # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ============================
-    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → trackers.energyH_density_aJ.
+    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
     # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
-    lagrange.compute_energyH_density(state.wave_field, state.trackers, state.c_amrs, state.dt_rs)
+    lagrange.compute_energyH_density(
+        state.wave_field, state.observables, state.c_amrs, state.dt_rs
+    )
 
     # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============
-    # F = (K/2)·|∇n̂|²  → trackers.energyF_density_aJ.
+    # F = (K/2)·|∇n̂|²  → observables.energyF_density_aJ.
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
-    lagrange.compute_energyF_density(state.wave_field, state.trackers, lagrange.K_FRANK)
+    lagrange.compute_energyF_density(state.wave_field, state.observables, lagrange.K_FRANK)
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ================================
     # Frame skip reduces GPU->CPU transfer overhead during dynamics; when
     # paused we run every frame because the field doesn't change and the
     # cost is dominated by cached slice copies, not the reduction.
+    # Two separate samplers per the 2026-05-11 SoC refactor: Trackers and
+    # FieldObservables each own their own 3-plane pass.
     if state.frame % 60 == 0 or state.frame == 10 or state.PAUSED:
         lagrange.sample_avg_trackers(state.wave_field, state.trackers)
+        lagrange.sample_avg_observables(state.wave_field, state.observables)
         state.energyH_total = (
-            state.trackers.energyH_global_avg_aJ[None] * state.wave_field.voxel_count
+            state.observables.energyH_global_avg_aJ[None] * state.wave_field.voxel_count
         ) * constants.ATTOJOULE  # J
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.wavelength_global_avg = constants.WAVE_SPEED / (state.freq_global_avg or 1)  # no 0 div
-    state.energyH_global_avg = state.trackers.energyH_global_avg_aJ[None] * constants.ATTOJOULE
-    state.energyF_global_avg = state.trackers.energyF_global_avg_aJ[None] * constants.ATTOJOULE
+    state.energyH_global_avg = state.observables.energyH_global_avg_aJ[None] * constants.ATTOJOULE
+    state.energyF_global_avg = state.observables.energyF_global_avg_aJ[None] * constants.ATTOJOULE
 
     if state.INSTRUMENTATION:
         instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)
@@ -654,7 +661,7 @@ def compute_force_motion(state):
     # Compute force from energy gradient, then integrate motion
     force_motion.compute_force_vector(
         state.wave_field,
-        state.trackers,
+        state.observables,
         state.wave_center,
     )
     if state.APPLY_MOTION:
@@ -690,6 +697,7 @@ def render_elements(state):
         lagrange.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
+            state.observables,
             state.WAVE_MENU,
             state.WARP_MESH,
         )

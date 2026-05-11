@@ -101,7 +101,7 @@ def profile_m5(target_voxels_per_axis):
     for _ in range(WARMUP_STEPS):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
-        lagrange.update_trackers_psi(wave_field, trackers, dt_rs, 0.0)
+        lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
     ti.sync()
 
@@ -110,7 +110,7 @@ def profile_m5(target_voxels_per_axis):
         t0 = time.perf_counter()
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
-        lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(s) * dt_rs)
+        lagrange.update_trackers(wave_field, trackers, dt_rs, float(s) * dt_rs)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
         ti.sync()
         step_ms.append((time.perf_counter() - t0) * 1000.0)

@@ -8,11 +8,12 @@ Physics Foundation (M5.0g):
 - Per-voxel energy density (Hamiltonian formula):
     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
   populated by lagrangian_engine.compute_energyH_density into
-  trackers.energyH_density_aJ
+  observables.energyH_density_aJ (FieldObservables class, post-2026-05-11
+  refactor that split derived scalars out of Trackers)
 - Force: F = −∇E sampled at the wave-center's grid position
   (E here is the energy density field computed via the Hamiltonian formula —
-  see naming convention in medium.py:Trackers. The physics statement F = −∇E
-  is canonical regardless of which formula is used to derive E.)
+  see naming convention in medium.py:FieldObservables. The physics statement
+  F = −∇E is canonical regardless of which formula is used to derive E.)
 - Motion: leapfrog (velocity Verlet) integration of F = m·a
 
 This replaces M4's postulated `E = ρ·V·(f·A)²` energy formula and the
@@ -68,13 +69,13 @@ VELOCITY_DAMPING = 0.999
 @ti.kernel
 def compute_force_vector(
     wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
 ):
     """
     Compute force on each wave-center from the energy-density gradient.
 
-    F = −∇E where E is `trackers.energyH_density_aJ` (per-voxel energy density
+    F = −∇E where E is `observables.energyH_density_aJ` (per-voxel energy density
     populated each step by lagrangian_engine.compute_energyH_density). The `_H`
     suffix on the field name tags the formula used (Hamiltonian); the physics
     statement F = −∇E is independent of the formula choice. Uses a weighted
@@ -99,8 +100,9 @@ def compute_force_vector(
 
     Args:
         wave_field: WaveField instance (used for dx_am and grid dims)
-        trackers: Trackers instance — reads `energyH_density_aJ` (populated
-            by lagrangian_engine.compute_energyH_density before this kernel)
+        observables: FieldObservables instance — reads `energyH_density_aJ`
+            (populated by lagrangian_engine.compute_energyH_density before
+            this kernel)
         wave_center: WaveCenter instance — writes computed forces into
             `wave_center.force[wc_idx]`
     """
@@ -152,24 +154,24 @@ def compute_force_vector(
                 grad_x += (
                     w
                     * (
-                        trackers.energyH_density_aJ[i + d, j, k]
-                        - trackers.energyH_density_aJ[i - d, j, k]
+                        observables.energyH_density_aJ[i + d, j, k]
+                        - observables.energyH_density_aJ[i - d, j, k]
                     )
                     / dist
                 )
                 grad_y += (
                     w
                     * (
-                        trackers.energyH_density_aJ[i, j + d, k]
-                        - trackers.energyH_density_aJ[i, j - d, k]
+                        observables.energyH_density_aJ[i, j + d, k]
+                        - observables.energyH_density_aJ[i, j - d, k]
                     )
                     / dist
                 )
                 grad_z += (
                     w
                     * (
-                        trackers.energyH_density_aJ[i, j, k + d]
-                        - trackers.energyH_density_aJ[i, j, k - d]
+                        observables.energyH_density_aJ[i, j, k + d]
+                        - observables.energyH_density_aJ[i, j, k - d]
                     )
                     / dist
                 )

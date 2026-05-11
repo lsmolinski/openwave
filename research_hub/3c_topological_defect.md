@@ -62,6 +62,41 @@ The defect's "position" is not a tracked state variable; it's wherever the windi
 
 This is structurally different from M3/M4 and is the architectural break between methods. See [3b_concept_review.md § How do topological defects move? (particle motion)](3b_concept_review.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
 
+### M3/M4 vs M5 paradigm — what changes mechanically
+
+The shift from "particle placed in medium" to "particle is the field" cascades into several concrete differences in how the simulation works and what the physics looks like:
+
+| Concept | M3 / M4 | M5 |
+| --- | --- | --- |
+| Particle | Wave-center (external object) | Topological defect (field feature) |
+| Field role | Medium that surrounds particles | The particle AND its surroundings |
+| Wave source | WC emits waves into medium | No source — waves are field configurations changing |
+| Particle position | Tracked state variable | Where winding integrates (emergent) |
+| Two-particle interaction | Wave overlap at separation | Static elastic texture between defects |
+| Coulomb mechanism | Far-field wave interference (sinc-laden, M3 problem) | Frank elastic energy of director texture (`E ~ 1/d`, M5.1 task 7) |
+| Self-energy | Diverges at the WC point (Abraham-Lorentz problem) | Finite, topologically protected (Faber 2025 resolution) |
+| Particle oscillation | Postulated (driving frequency input) | Intrinsic to stabilized defect — Wilczek time-crystal (M5.8) |
+| Charge quantization | Imposed `±1` convention | Geometric — Brouwer degree forces integer winding |
+
+A few of these deserve their own elaboration:
+
+**No source/emitter split.** In M3/M4, the wave equation only described what happened in the medium *around* the WC; the WC itself was not field-described — it had its own state variables (position, velocity, charge). In M5 there is no such split. The same field that's vacuum far away is the same field at the defect core; the defect is just a non-trivial configuration of the universal field. This is what eliminates the self-energy divergence — the energy is `∫ H(ψ) dV` over the defect's spatial extent, finite by topological protection.
+
+**Interaction via static texture, not wave exchange.** Two M5 defects at rest don't need to exchange waves to feel each other. The director field bridging them has a `1/r²` gradient density (radial-to-radial transition); the integrated Frank elastic energy of that texture scales as `E ~ const + C/d`, giving the 1/d Coulomb potential. The 1/d law is geometric — it comes from the static field configuration, not from wave propagation. This is why M5.1 task 7 fits `E(d)` against separation under *gradient-descent relaxation* (no time evolution at all).
+
+**Defect oscillation is emergent, not driven.** Once a defect is stabilized (M5.5 Skyrme + M5.6 LdG), it can't sit at the vacuum minimum (topology forbids), so it sits at a local-displaced equilibrium where the field is permanently excited but cannot dissipate. The system's lowest-energy state breaks time-translation symmetry by oscillating periodically at `ω = 2mc²/ℏ` — Wilczek's "time crystal." Crucially this oscillation isn't driven externally; it's the field's intrinsic response to having stored energy that topology won't let dissipate. M5.8 is the explicit Zitterbewegung test.
+
+**M5.1 transition state.** Right now (M5.1, `V(ψ) = 0`), a seeded defect *cannot* oscillate stably — it dissolves under free-wave dynamics (Derrick collapse, outgoing ripples). The oscillation behavior emerges only after the stabilizers land. M5.1's role is to validate the *static* topology + 1/d Coulomb via gradient descent — establishing the geometric framework before the dynamics are unlocked.
+
+**Outgoing radiation when it exists.** Waves still propagate in M5, but for different reasons than in M3/M4. A *stable* defect's energy stays localized — outgoing radiation is suppressed by topological protection. Waves appear when:
+
+| Scenario | Why waves propagate |
+| --- | --- |
+| Unstable defect (M5.1 V=0) | Free-wave equation dissolves the high-gradient texture |
+| Accelerating defect | Like classical bremsstrahlung — accelerated charge radiates |
+| Defect collision / annihilation (M5.4) | Final-state photons carry energy away |
+| Defect at rest (M5.5+) | None — topology suppresses outgoing radiation |
+
 ### The "twisted state" — the geometric varieties of defect
 
 A topological defect is **a place where the director field is twisted in a way it cannot smoothly untwist**. There are several geometric realizations of "twisted" in 3D fields, each corresponding to a different particle class in M5:
