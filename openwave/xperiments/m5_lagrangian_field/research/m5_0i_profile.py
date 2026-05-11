@@ -8,7 +8,7 @@ KERNELS PROFILED (mirrors _launcher.compute_oscillation):
     propagate_psi              — leapfrog/Verlet step
     swap_buffers               — Python triple-buffer cycle (no kernel work)
     update_trackers_psi        — per-voxel amp / freq EMA
-    compute_energy_density_H   — ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
+    compute_energyH_density   — ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
     sample_avg_trackers        — 3-plane mean of amp / freq / energy (every 60 frames)
 
 MEASUREMENT PROTOCOL:
@@ -71,9 +71,7 @@ def profile_at_grid(target_voxels_per_axis):
     print(f"{'=' * 72}")
 
     # ── Build grid + trackers ────────────────────────────────────
-    wave_field = medium.WaveField(
-        [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels
-    )
+    wave_field = medium.WaveField([UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels)
     trackers = medium.Trackers(wave_field.grid_size)
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     print(f"  actual grid: ({nx}, {ny}, {nz})  dx={wave_field.dx_am:.3f} am")
@@ -103,7 +101,7 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers_psi(wave_field, trackers, dt_rs, 0.0)
-        lagrange.compute_energy_density_H(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
     ti.sync()
 
     # ── PER-KERNEL pass: sync between every kernel ─────────────
@@ -112,7 +110,7 @@ def profile_at_grid(target_voxels_per_axis):
         "propagate_psi": [],
         "swap_buffers": [],
         "update_trackers_psi": [],
-        "compute_energy_density_H": [],
+        "compute_energyH_density": [],
     }
 
     for step in range(N_PROFILE_STEPS):
@@ -127,14 +125,14 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(step) * dt_rs)
         ti.sync()
         t3 = time.perf_counter()
-        lagrange.compute_energy_density_H(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
         ti.sync()
         t4 = time.perf_counter()
 
         times["propagate_psi"].append((t1 - t0) * 1000.0)
         times["swap_buffers"].append((t2 - t1) * 1000.0)
         times["update_trackers_psi"].append((t3 - t2) * 1000.0)
-        times["compute_energy_density_H"].append((t4 - t3) * 1000.0)
+        times["compute_energyH_density"].append((t4 - t3) * 1000.0)
 
     # ── sample_avg_trackers — measured separately (every-60-frames cadence) ──
     sample_times_ms = []
@@ -154,7 +152,7 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(step) * dt_rs)
-        lagrange.compute_energy_density_H(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
         ti.sync()
         end_to_end_ms.append((time.perf_counter() - t0) * 1000.0)
 
@@ -184,7 +182,9 @@ def print_report(result):
     e2e_stats = stats(end_to_end)
     fps_mean = 1000.0 / e2e_stats["mean"] if e2e_stats["mean"] > 0 else 0.0
     fps_p95 = 1000.0 / e2e_stats["p95"] if e2e_stats["p95"] > 0 else 0.0
-    sum_per_kernel_mean = sum(stats(v)["mean"] for k, v in per_kernel.items() if k != "sample_avg_trackers (per call)")
+    sum_per_kernel_mean = sum(
+        stats(v)["mean"] for k, v in per_kernel.items() if k != "sample_avg_trackers (per call)"
+    )
 
     print()
     print(f"--- {nx}×{ny}×{nz}  ({voxel_count / 1e6:.1f}M voxels) ---")
@@ -234,7 +234,7 @@ def plot_results(results):
         "propagate_psi",
         "swap_buffers",
         "update_trackers_psi",
-        "compute_energy_density_H",
+        "compute_energyH_density",
     ]
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
     grid_labels = [f"{r['grid'][0]}³" for r in results]

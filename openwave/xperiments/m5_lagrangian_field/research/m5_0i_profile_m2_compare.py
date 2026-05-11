@@ -56,9 +56,7 @@ def stats(values):
 def profile_m2(target_voxels_per_axis):
     """Profile M2's per-step path at the given grid size."""
     target_voxels = target_voxels_per_axis**3
-    wave_field = m2_medium.WaveField(
-        [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels
-    )
+    wave_field = m2_medium.WaveField([UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels)
     trackers = m2_medium.Trackers(wave_field.grid_size, scale_factor=1.0)
     nx = wave_field.nx
 
@@ -79,9 +77,7 @@ def profile_m2(target_voxels_per_axis):
     step_ms = []
     for s in range(N_PROFILE_STEPS):
         t0 = time.perf_counter()
-        m2_engine.propagate_wave(
-            wave_field, trackers, c_amrs, dt_rs, float(s) * dt_rs, 1.0
-        )
+        m2_engine.propagate_wave(wave_field, trackers, c_amrs, dt_rs, float(s) * dt_rs, 1.0)
         ti.sync()
         step_ms.append((time.perf_counter() - t0) * 1000.0)
 
@@ -91,9 +87,7 @@ def profile_m2(target_voxels_per_axis):
 def profile_m5(target_voxels_per_axis):
     """Profile M5's per-step path (4 kernels + swap) at the given grid size."""
     target_voxels = target_voxels_per_axis**3
-    wave_field = m5_medium.WaveField(
-        [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels
-    )
+    wave_field = m5_medium.WaveField([UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], target_voxels)
     trackers = m5_medium.Trackers(wave_field.grid_size)
     nx = wave_field.nx
 
@@ -101,16 +95,14 @@ def profile_m5(target_voxels_per_axis):
     c_amrs = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND
     dt_rs = wave_field.dx_am * cfl_safety / (c_amrs * np.sqrt(3.0))
 
-    lagrange.seed_gaussian(
-        wave_field, c_amrs, dt_rs, 5.0, 24.0, ti.Vector([0.0, 1.0, 0.0]), 0
-    )
+    lagrange.seed_gaussian(wave_field, c_amrs, dt_rs, 5.0, 24.0, ti.Vector([0.0, 1.0, 0.0]), 0)
     ti.sync()
 
     for _ in range(WARMUP_STEPS):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers_psi(wave_field, trackers, dt_rs, 0.0)
-        lagrange.compute_energy_density_H(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
     ti.sync()
 
     step_ms = []
@@ -119,7 +111,7 @@ def profile_m5(target_voxels_per_axis):
         lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers_psi(wave_field, trackers, dt_rs, float(s) * dt_rs)
-        lagrange.compute_energy_density_H(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
         ti.sync()
         step_ms.append((time.perf_counter() - t0) * 1000.0)
 

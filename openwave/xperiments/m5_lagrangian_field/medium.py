@@ -544,7 +544,7 @@ class Trackers:
         # Naming convention: the quantity is energy; the "_H" suffix denotes
         # the formula used (Hamiltonian). Future formulas (e.g. Lagrangian
         # density `_L`, kinetic-only `_K`) would parallel this pattern.
-        # Populated each step by lagrangian_engine.compute_energy_density_H.
+        # Populated each step by lagrangian_engine.compute_energyH_density.
         # Consumed by:
         #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
         #     postulated F = −∇E with E = ρV(fA)² formula). The energy E here
@@ -556,14 +556,27 @@ class Trackers:
         #   - launcher WAVE_MENU=4 flux-mesh visualization
         # In M5.0g the V(ψ) term is zero; M5.2 plugs in Klein-Gordon mass +
         # Close Eq. 23 + LdG via the V_psi hook in lagrangian_engine.
-        self.energy_density_H_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
+        self.energyH_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
+
+        # Per-voxel FRANK ELASTIC energy density (M5.1):
+        #     H_F = (K/2) · |∇n̂|²
+        # Computed by lagrangian_engine.compute_energyF_density. Same _aJ
+        # naming convention as energyH_density_aJ (the "_F" denotes the Frank
+        # formula). The K_frank coupling is currently hard-coded to 1.0 (Exp 2
+        # baseline); plumbing for a physical value lands with the M5.6 LdG
+        # elastic constants. Consumed by:
+        #   - launcher WAVE_MENU=5 flux mesh visualization
+        #   - M5.1 task 6 gradient-descent diagnostic (monitor monotone decrease)
+        #   - M5.1 task 7 Coulomb 1/d fit (sum over volume → E(d))
+        self.energyF_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
 
         # GLOBAL AVERAGES for visualization scaling — initialized to zero; the
         # update_trackers_psi EMA + sample_avg_trackers fill these in during sim.
         # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_H_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density
+        self.energyH_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (H)
+        self.energyF_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (F)
 
 
 if __name__ == "__main__":
