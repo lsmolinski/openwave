@@ -215,7 +215,7 @@ def handle_camera():
 def display_cam_instructions():
     """Display camera movement instructions."""
     global cam_x, cam_y, cam_z
-    with gui.sub_window("CAMERA MOVEMENT", 0.00, 0.88, 0.14, 0.12) as sub:
+    with gui.sub_window("CAMERA MOVEMENT", 0.87, 0.88, 0.13, 0.12) as sub:
         sub.text("Orbit: RMB or Shift+LMB")
         sub.text("Pan: Arrow keys")
         sub.text("Zoom: Q/Z keys")
