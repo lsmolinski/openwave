@@ -320,7 +320,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
     """
     selected_xperiment = None
 
-    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.33) as sub:
+    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.35) as sub:
         sub.text("(needs window reload)", color=colormap.LIGHT_BLUE[1])
         for xp_name in xperiment_mgr.available_xperiments:
             display_name = xperiment_mgr.get_xperiment_display_name(xp_name)
@@ -341,7 +341,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.33) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.35, 0.16, 0.33) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
@@ -363,7 +363,7 @@ def display_controls(state):
 
 def display_wave_menu(state):
     """Display wave properties selection menu."""
-    with render.gui.sub_window("WAVE MENU", 0.00, 0.73, 0.15, 0.15) as sub:
+    with render.gui.sub_window("WAVE MENU", 0.00, 0.80, 0.15, 0.20) as sub:
         if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
             state.wave_field.create_flux_mesh()
@@ -379,19 +379,19 @@ def display_wave_menu(state):
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
-            with render.gui.sub_window("displacement", 0.00, 0.67, 0.08, 0.06) as sub:
+            with render.gui.sub_window("displacement", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("amplitude", 0.00, 0.67, 0.08, 0.06) as sub:
+            with render.gui.sub_window("amplitude", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
-            with render.gui.sub_window("frequency", 0.00, 0.67, 0.08, 0.06) as sub:
+            with render.gui.sub_window("frequency", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
         if state.WAVE_MENU == 4:  # Energy density (Hamiltonian) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("energy", 0.00, 0.67, 0.08, 0.06) as sub:
+            with render.gui.sub_window("energy", 0.00, 0.74, 0.08, 0.06) as sub:
                 # Unit label "rel." — value is per-voxel mean × 4 (matches the
                 # colormap range max in update_flux_mesh_values). Underlying field
                 # is in scaled (am/rs)² units, not physical J/m³ — REVIEW IN M5.2
@@ -420,7 +420,7 @@ def display_data_dashboard(state):
     clock_time = time.time() - state.clock_start_time
     sim_time_years = clock_time / (state.elapsed_t_rs * constants.RONTOSECOND or 1) / 31_536_000
 
-    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.40, 0.16, 0.60) as sub:
+    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.17, 0.16, 0.60) as sub:
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
@@ -489,13 +489,13 @@ def initialize_xperiment(state):
 
     # Initialize color palette scales for gradient rendering and level indicator
     og_palette_vertices, og_palette_colors = colormap.get_palette_scale(
-        colormap.orange, 0.00, 0.66, 0.079, 0.01
+        colormap.orange, 0.00, 0.73, 0.079, 0.01
     )
     ib_palette_vertices, ib_palette_colors = colormap.get_palette_scale(
-        colormap.ironbow, 0.00, 0.66, 0.079, 0.01
+        colormap.ironbow, 0.00, 0.73, 0.079, 0.01
     )
     bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
-        colormap.blueprint, 0.00, 0.66, 0.079, 0.01
+        colormap.blueprint, 0.00, 0.73, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
