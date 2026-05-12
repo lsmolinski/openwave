@@ -1,7 +1,7 @@
 """
 M5.0h — Dispersion-Relation Regression Test
 
-Validates that propagate_psi reproduces the discrete leapfrog dispersion
+Validates that evolve_psi reproduces the discrete leapfrog dispersion
 
     ω² = (c²/dx²) · 2 · Σ_α (1 − cos(k_α · dx))
 
@@ -50,7 +50,6 @@ from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_lagrangian_field import lagrangian_engine as lagrange  # noqa: E402
 from openwave.xperiments.m5_lagrangian_field import medium  # noqa: E402
 
-
 # ================================================================
 # POINT-SAMPLING (avoids full-grid GPU reduction)
 # ================================================================
@@ -86,6 +85,7 @@ def record_sample_points(
         j = sample_points[s, 1]
         k = sample_points[s, 2]
         history[step, s] = wave_field.psi_am[i, j, k].dot(polarization)
+
 
 # ================================================================
 # TEST PARAMETERS
@@ -158,9 +158,7 @@ def main():
     ti.init(arch=ti.gpu)
 
     # ── Build grid ───────────────────────────────────────────────
-    wave_field = medium.WaveField(
-        [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], TARGET_VOXELS
-    )
+    wave_field = medium.WaveField([UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE], TARGET_VOXELS)
     # Allocate trackers (unused, but constructor keeps any shared expectations)
     _ = medium.Trackers(wave_field.grid_size)
 
@@ -176,16 +174,12 @@ def main():
     # ── Physics ──────────────────────────────────────────────────
     sim_speed = 1.0
     cfl_safety = 0.95
-    c_amrs = (
-        constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * sim_speed
-    )
+    c_amrs = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND * sim_speed
     dt_rs = dx_am * cfl_safety / (c_amrs / sim_speed * np.sqrt(3.0))
     cfl_factor = (c_amrs * dt_rs / dx_am) ** 2
 
     # ── Theoretical per-mode ω (full leapfrog: space + time) ────
-    omegas_theory = np.array(
-        [leapfrog_omega(M, c_amrs, dx_am, dt_rs, nm1) for M in MODE_INDICES]
-    )
+    omegas_theory = np.array([leapfrog_omega(M, c_amrs, dx_am, dt_rs, nm1) for M in MODE_INDICES])
     voxels_per_lambda_x = 2.0 * nm1 / MODE_INDICES[:, 0]
 
     # ── Allocate Taichi buffers for seed/projection ──────────────
@@ -195,9 +189,7 @@ def main():
 
     mode_indices_field.from_numpy(MODE_INDICES)
     mode_amp_field.from_numpy(np.full(N_MODES, SEED_AMPLITUDE_AM, dtype=np.float32))
-    mode_cos_omega_dt_field.from_numpy(
-        np.cos(omegas_theory * dt_rs).astype(np.float32)
-    )
+    mode_cos_omega_dt_field.from_numpy(np.cos(omegas_theory * dt_rs).astype(np.float32))
 
     # ── Sample-point selection (one antinode per mode) ────────────
     # Each mode m has its 1st x-antinode at i ≈ (N−1) / (2·n_x). Place sample
@@ -237,7 +229,7 @@ def main():
     print(f"[M5.0h] propagating...", flush=True)
     progress_every = max(1, N_STEPS // 20)
     for step in range(N_STEPS):
-        lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         record_sample_points(
             wave_field,
@@ -305,9 +297,7 @@ def main():
         passed = abs(err_pct[m]) < TOLERANCE_C2_PCT
         all_pass = all_pass and passed
         marker = "PASS" if passed else "FAIL"
-        n_str = (
-            f"({MODE_INDICES[m, 0]},{MODE_INDICES[m, 1]},{MODE_INDICES[m, 2]})"
-        )
+        n_str = f"({MODE_INDICES[m, 0]},{MODE_INDICES[m, 1]},{MODE_INDICES[m, 2]})"
         print(
             f"{n_str:<14} {voxels_per_lambda_x[m]:>10.2f} {kdx_x:>8.4f} "
             f"{omegas_theory[m]:>14.6e} {measured_omegas[m]:>14.6e} "
@@ -373,24 +363,17 @@ def main():
     ax_top.set_ylabel(r"$\omega$ (rad / rs)")
     title_status = "PASS" if all_pass else "FAIL"
     ax_top.set_title(
-        f"M5.0h Dispersion Test  [{title_status}]   "
-        f"N={N}³, {N_STEPS} steps, dt={dt_rs:.2f} rs"
+        f"M5.0h Dispersion Test  [{title_status}]   " f"N={N}³, {N_STEPS} steps, dt={dt_rs:.2f} rs"
     )
     ax_top.legend(loc="lower right")
     ax_top.grid(alpha=0.3)
 
-    bar_colors = [
-        "tab:green" if abs(e) < TOLERANCE_C2_PCT else "tab:red" for e in err_pct
-    ]
+    bar_colors = ["tab:green" if abs(e) < TOLERANCE_C2_PCT else "tab:red" for e in err_pct]
     xs = np.arange(N_MODES)
     ax_bot.bar(xs, err_pct, color=bar_colors)
     ax_bot.axhline(y=0, color="k", linewidth=0.5)
-    ax_bot.axhline(
-        y=TOLERANCE_C2_PCT, color="tab:red", linestyle=":", alpha=0.6, lw=0.8
-    )
-    ax_bot.axhline(
-        y=-TOLERANCE_C2_PCT, color="tab:red", linestyle=":", alpha=0.6, lw=0.8
-    )
+    ax_bot.axhline(y=TOLERANCE_C2_PCT, color="tab:red", linestyle=":", alpha=0.6, lw=0.8)
+    ax_bot.axhline(y=-TOLERANCE_C2_PCT, color="tab:red", linestyle=":", alpha=0.6, lw=0.8)
     ax_bot.set_xticks(xs)
     ax_bot.set_xticklabels(
         [

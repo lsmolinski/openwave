@@ -279,7 +279,7 @@ A research thread evaluating whether a Lagrangian / topological framework can re
     - ✅ M5.0a Module rename + alias (`wave_engine.py` → `lagrangian_engine.py`, `ewave` → `lagrange`)
     - ✅ M5.0b Triple buffer (`psi_prev_am` / `psi_am` / `psi_new_am`) + AMR-ready field-storage abstraction
     - ✅ M5.0c Vector Laplacian via 6-point stencil (port + simplify from M2)
-    - ✅ M5.0d.1 Leapfrog kernel `propagate_psi` + standing-wave eigenmode test
+    - ✅ M5.0d.1 Leapfrog kernel `evolve_psi` + standing-wave eigenmode test
     - ✅ M5.0d.2 CFL evaluation + plane-wave seed (Gaussian-windowed packet) + tracker EMA + Hamiltonian dashboard + delete legacy M4 `propagate_wave`
     - ✅ M5.0d.3 Drop `scale_factor` / `ewave_res` / EWT-default constants; introduce xperiment-driven `wave_res`
     - ✅ M5.0e Curl, divergence, curl-curl operators (`∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ` identity form, 2-cell halo) — analytical checks pass on linear / rigid-rotation / Gaussian fields

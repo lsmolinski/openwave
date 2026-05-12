@@ -1,11 +1,11 @@
 """
 M5.0i — Per-step kernel profile
 
-Times each per-step kernel of `compute_oscillation` separately at production
+Times each per-step kernel of `compute_propagation` separately at production
 grid sizes to identify bottlenecks. Drives the Tier 2 optimization order.
 
-KERNELS PROFILED (mirrors _launcher.compute_oscillation):
-    propagate_psi              — leapfrog/Verlet step
+KERNELS PROFILED (mirrors _launcher.compute_propagation):
+    evolve_psi              — leapfrog/Verlet step
     swap_buffers               — Python triple-buffer cycle (no kernel work)
     update_trackers        — per-voxel amp / freq EMA
     compute_energyH_density   — ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
@@ -98,7 +98,7 @@ def profile_at_grid(target_voxels_per_axis):
     # ── Warmup (kernel compile + GPU clock ramp) ────────────────
     print(f"  warmup ({WARMUP_STEPS} steps)...", flush=True)
     for _ in range(WARMUP_STEPS):
-        lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
@@ -107,7 +107,7 @@ def profile_at_grid(target_voxels_per_axis):
     # ── PER-KERNEL pass: sync between every kernel ─────────────
     print(f"  per-kernel pass ({N_PROFILE_STEPS} steps)...", flush=True)
     times = {
-        "propagate_psi": [],
+        "evolve_psi": [],
         "swap_buffers": [],
         "update_trackers": [],
         "compute_energyH_density": [],
@@ -116,7 +116,7 @@ def profile_at_grid(target_voxels_per_axis):
     for step in range(N_PROFILE_STEPS):
         ti.sync()
         t0 = time.perf_counter()
-        lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         ti.sync()
         t1 = time.perf_counter()
         wave_field.swap_buffers()
@@ -129,7 +129,7 @@ def profile_at_grid(target_voxels_per_axis):
         ti.sync()
         t4 = time.perf_counter()
 
-        times["propagate_psi"].append((t1 - t0) * 1000.0)
+        times["evolve_psi"].append((t1 - t0) * 1000.0)
         times["swap_buffers"].append((t2 - t1) * 1000.0)
         times["update_trackers"].append((t3 - t2) * 1000.0)
         times["compute_energyH_density"].append((t4 - t3) * 1000.0)
@@ -149,7 +149,7 @@ def profile_at_grid(target_voxels_per_axis):
     end_to_end_ms = []
     for step in range(N_PROFILE_STEPS):
         t0 = time.perf_counter()
-        lagrange.propagate_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
@@ -231,7 +231,7 @@ def plot_results(results):
     plot_path.parent.mkdir(parents=True, exist_ok=True)
 
     kernel_order = [
-        "propagate_psi",
+        "evolve_psi",
         "swap_buffers",
         "update_trackers",
         "compute_energyH_density",

@@ -374,7 +374,7 @@ def display_controls(state):
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
-            if sub.button(">> PROPAGATE WAVE >>"):
+            if sub.button(">> EVOLVE PSI >>"):
                 state.PAUSED = False
         else:
             if sub.button("Pause"):
@@ -606,7 +606,7 @@ def initialize_xperiment(state):
         print("=" * 64)
 
 
-def compute_oscillation(state):
+def compute_propagation(state):
     """Step ψ one timestep via leapfrog, then update trackers.
 
     Dynamics-only: runs the wave propagation + buffer swap + per-voxel
@@ -618,7 +618,7 @@ def compute_oscillation(state):
 
     # ψ PROPAGATION =======================================
     # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    lagrange.propagate_psi(state.wave_field, state.c_amrs, state.dt_rs)
+    lagrange.evolve_psi(state.wave_field, state.c_amrs, state.dt_rs)
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
     state.wave_field.swap_buffers()
 
@@ -650,9 +650,7 @@ def relax_field(state, n_steps):
     cfl_bound = (wf.dx_am**2) / 6.0  # τ < dx²/(2·dim·K) with dim=3, K=1
     tau = 0.4 * cfl_bound
     for _ in range(n_steps):
-        lagrange.relax_director_step(
-            wf, tau, state.pin_centers, state.pin_signs, state.n_defects
-        )
+        lagrange.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
         # Copy relaxed field back into psi_am (and psi_prev_am to keep ψ̇=0).
         # NOT swap_buffers — that would cycle prev←curr which we don't want
         # for a static (non-time-evolving) update.
@@ -906,7 +904,7 @@ def main():
 
         if not state.PAUSED:
             # Run simulation step and update time
-            compute_oscillation(state)
+            compute_propagation(state)
             compute_force_motion(state)
             state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1

@@ -12,7 +12,7 @@ Module layout (top-to-bottom):
     INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes,
                                 seed_vacuum, seed_hedgehog
     DIFFERENTIAL OPERATORS    — Laplacian, divergence, curl, curl-curl
-    ψ PROPAGATION ENGINE      — propagate_psi (leapfrog/Verlet)
+    ψ EVOLVING ENGINE         — evolve_psi (leapfrog/Verlet)
     WAVE TRACKERS             — update_trackers_psi (amp / freq EMA — writes
                                 to Trackers; stateful, dynamics-gated)
     FIELD OBSERVABLES         — compute_energyH_density (Hamiltonian),
@@ -46,7 +46,7 @@ from openwave.common import colormap
 # INITIAL-CONDITION SEEDING
 # ================================================================
 # Seed kernels prime the triple-buffer (psi_prev, psi at t−dt and t) with a
-# known analytical solution so propagate_psi can step it forward. Used by:
+# known analytical solution so evolve_psi can step it forward. Used by:
 #   - test/UI xperiments to verify the leapfrog kernel visually
 #   - M5.0h dispersion-relation regression test
 
@@ -154,7 +154,7 @@ def seed_gaussian(
         # Initialize psi_new_am to the t=0 value too — required for BC consistency
         # so the first swap_buffers doesn't clobber boundary voxels (psi_new_am's
         # default is zero; without this write, psi_am's boundary becomes 0 after
-        # the first swap regardless of what the seed put there). See propagate_psi
+        # the first swap regardless of what the seed put there). See evolve_psi
         # docstring "BC consistency requirement" for the full rationale.
         wave_field.psi_new_am[i, j, k] = amplitude_am * ti.sin(phase) * envelope_3d * polarization
 
@@ -224,7 +224,7 @@ def seed_dispersion_modes(
             sum_tprev += amp * mode_cos_omega_dt[m] * shape
         wave_field.psi_am[i, j, k] = sum_t0 * polarization
         wave_field.psi_prev_am[i, j, k] = sum_tprev * polarization
-        # BC consistency: write psi_new_am too. See propagate_psi docstring.
+        # BC consistency: write psi_new_am too. See evolve_psi docstring.
         wave_field.psi_new_am[i, j, k] = sum_t0 * polarization
 
 
@@ -255,7 +255,7 @@ def seed_vacuum(
         wave_field.psi_am[i, j, k] = z_hat
         wave_field.psi_prev_am[i, j, k] = z_hat
         # BC consistency: write psi_new_am too so the first swap_buffers
-        # doesn't clobber the boundary. See propagate_psi docstring.
+        # doesn't clobber the boundary. See evolve_psi docstring.
         wave_field.psi_new_am[i, j, k] = z_hat
 
 
@@ -364,7 +364,7 @@ def seed_hedgehog(
 
         wave_field.psi_am[i, j, k] = n_unit
         wave_field.psi_prev_am[i, j, k] = n_unit
-        # BC consistency: write psi_new_am too. See propagate_psi docstring.
+        # BC consistency: write psi_new_am too. See evolve_psi docstring.
         wave_field.psi_new_am[i, j, k] = n_unit
 
 
@@ -376,10 +376,10 @@ def seed_hedgehog(
 # for skipping boundary voxels (each operator's halo requirement is noted in
 # its docstring).
 #
-#   compute_laplacian_psi   — ∇²ψ          → Vector(3); 1-cell halo
-#   compute_divergence_psi  — ∇·ψ          → scalar;    1-cell halo
-#   compute_curl_psi        — ∇×ψ          → Vector(3); 1-cell halo
-#   compute_curl_curl_psi   — ∇×(∇×ψ)      → Vector(3); 2-cell halo (uses identity)
+#   compute_laplacian   — ∇²ψ          → Vector(3); 1-cell halo
+#   compute_divergence  — ∇·ψ          → scalar;    1-cell halo
+#   compute_curl        — ∇×ψ          → Vector(3); 1-cell halo
+#   compute_curl_curl   — ∇×(∇×ψ)      → Vector(3); 2-cell halo (uses identity)
 #
 # The curl-curl is implemented via the vector identity
 #       ∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ
@@ -390,12 +390,12 @@ def seed_hedgehog(
 #      and matches Exp 7 v2's implementation (the reference)
 #
 # Why @ti.func not @ti.kernel: these are inner-loop primitives meant to be
-# called from kernels that iterate over voxels (propagate_psi, future force
+# called from kernels that iterate over voxels (evolve_psi, future force
 # kernels, divergence-cleaning projections, etc.), not standalone passes.
 
 
 @ti.func
-def compute_laplacian_psi(
+def compute_laplacian(
     wave_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
@@ -439,7 +439,7 @@ def compute_laplacian_psi(
 
 
 @ti.func
-def compute_divergence_psi(
+def compute_divergence(
     wave_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
@@ -477,7 +477,7 @@ def compute_divergence_psi(
 
 
 @ti.func
-def compute_curl_psi(
+def compute_curl(
     wave_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
@@ -524,7 +524,7 @@ def compute_curl_psi(
 
 
 @ti.func
-def compute_curl_curl_psi(
+def compute_curl_curl(
     wave_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
@@ -535,11 +535,11 @@ def compute_curl_curl_psi(
         ∇×(∇×ψ) = ∇(∇·ψ) − ∇²ψ
 
     The gradient of divergence is computed by central-differencing
-    compute_divergence_psi at the six face neighbors — that's what makes
+    compute_divergence at the six face neighbors — that's what makes
     this a 2-cell halo operator (each face neighbor itself needs a 1-cell
     halo for its own divergence stencil, so [i±2, j, k] etc. are read).
 
-    The Laplacian piece reuses the validated compute_laplacian_psi.
+    The Laplacian piece reuses the validated compute_laplacian.
 
     Used by M5.2 Close Eq. 19 linear limit  ∂²_t Q = −c² · ∇×(∇×Q).
 
@@ -554,12 +554,12 @@ def compute_curl_curl_psi(
     inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
 
     # ∇(∇·ψ): central-difference the divergence at the six face neighbors
-    div_xp = compute_divergence_psi(wave_field, i + 1, j, k)
-    div_xm = compute_divergence_psi(wave_field, i - 1, j, k)
-    div_yp = compute_divergence_psi(wave_field, i, j + 1, k)
-    div_ym = compute_divergence_psi(wave_field, i, j - 1, k)
-    div_zp = compute_divergence_psi(wave_field, i, j, k + 1)
-    div_zm = compute_divergence_psi(wave_field, i, j, k - 1)
+    div_xp = compute_divergence(wave_field, i + 1, j, k)
+    div_xm = compute_divergence(wave_field, i - 1, j, k)
+    div_yp = compute_divergence(wave_field, i, j + 1, k)
+    div_ym = compute_divergence(wave_field, i, j - 1, k)
+    div_zp = compute_divergence(wave_field, i, j, k + 1)
+    div_zm = compute_divergence(wave_field, i, j, k - 1)
 
     grad_div = ti.Vector(
         [
@@ -569,22 +569,22 @@ def compute_curl_curl_psi(
         ]
     )
 
-    laplacian = compute_laplacian_psi(wave_field, i, j, k)
+    laplacian = compute_laplacian(wave_field, i, j, k)
 
     return grad_div - laplacian
 
 
 # ================================================================
-# ψ PROPAGATION ENGINE — LAGRANGIAN FIELD EVOLUTION
+# ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION
 # ================================================================
-# propagate_psi evolves the field ψ via leapfrog/Verlet integration of the
+# evolve_psi evolves the field ψ via leapfrog/Verlet integration of the
 # wave equation:
 #     ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ
 #
 # In M5.0d this lands with V(ψ) = 0 (free wave). The nonlinear potential term
 # −∂V/∂ψ is added in M5.2 (Close's Eq. 23 + Klein-Gordon mass term + LdG).
 #
-# Why "propagate_psi" not "propagate_wave": the operation is field evolution,
+# Why "evolve_psi" not "propagate_wave": the operation is field evolution,
 # not wave-specific. Leapfrog also evolves topology (defect drift), gradient
 # descent for relaxation reuses the same buffers, etc. Naming follows what the
 # function operates on (the field ψ), not the method (leapfrog) or one of the
@@ -595,7 +595,7 @@ def compute_curl_curl_psi(
 
 
 @ti.kernel
-def propagate_psi(
+def evolve_psi(
     wave_field: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
@@ -644,7 +644,7 @@ def propagate_psi(
 
     # Interior voxels only (Dirichlet BC; 6-point Laplacian needs 1-cell halo)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        laplacian_psi_am = compute_laplacian_psi(wave_field, i, j, k)
+        laplacian_psi_am = compute_laplacian(wave_field, i, j, k)
 
         # Leapfrog/Verlet update: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
         wave_field.psi_new_am[i, j, k] = (
@@ -657,7 +657,7 @@ def propagate_psi(
 # ================================================================
 # TRACKERS — PER-VOXEL AMPLITUDE & FREQUENCY
 # ================================================================
-# Trackers run after propagate_psi each step. They derive observable scalars
+# Trackers run after evolve_psi each step. They derive observable scalars
 # from ψ (the field) without touching it — read-only on psi_am, write to the
 # tracker fields in-place. EMA / zero-crossing logic preserved from M4 but
 # adapted to vector ψ:
@@ -665,7 +665,7 @@ def propagate_psi(
 #   - freq_local_cross_rHz : zero-crossing rate of ψ_z (chosen polarization axis)
 #
 # PERFORMANCE NOTE (deferred to M5.0i): this is a SECOND full-grid pass over
-# ψ — propagate_psi already touched every voxel; we re-stream ψ and ψ_prev
+# ψ — evolve_psi already touched every voxel; we re-stream ψ and ψ_prev
 # from memory just to compute trackers. At 100M voxels this costs ~5 GB of
 # extra memory bandwidth per step (~25–30% of total per-step traffic).
 #
@@ -802,8 +802,8 @@ def V_psi(
 #   - sample_avg_trackers (below)         → 3-plane mean → dashboard total
 #   - launcher WAVE_MENU=4 flux mesh      → visualization
 #
-# This is a third full-grid pass per step (alongside propagate_psi and
-# update_trackers). Performance optimization (merge into propagate_psi)
+# This is a third full-grid pass per step (alongside evolve_psi and
+# update_trackers). Performance optimization (merge into evolve_psi)
 # is M5.0i territory; we land it as a separate kernel for clarity in M5.0g.
 
 
@@ -828,7 +828,7 @@ def compute_energyH_density(
     Kinetic ψ̇ uses forward difference (ψ − ψ_prev)/dt because psi_new is
     consumed by swap_buffers before this kernel runs — same compromise as
     update_trackers. Central-difference ψ̇ becomes available once those
-    two kernels are merged into propagate_psi (M5.0i optimization).
+    two kernels are merged into evolve_psi (M5.0i optimization).
 
     PHYSICAL-SCALING TODO — M5.2: the field is currently named `_aJ` but
     actually stores `(am/rs)²` per voxel — the kernel writes raw kinematic
@@ -1007,7 +1007,7 @@ def relax_director_step(
     # ---- Interior: tangent-projected gradient step + renormalization ----
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
         n = wave_field.psi_am[i, j, k]
-        lap = compute_laplacian_psi(wave_field, i, j, k)
+        lap = compute_laplacian(wave_field, i, j, k)
         n_dot_lap = n.dot(lap)
         dn = lap - n_dot_lap * n  # tangent projection (remove component along n)
         n_new = n + tau * dn
@@ -1099,11 +1099,7 @@ def compute_winding_number(
     for dxi in (0, 1):
         for dyi in (0, 1):
             for dzi in (0, 1):
-                w = (
-                    (fx if dxi else 1 - fx)
-                    * (fy if dyi else 1 - fy)
-                    * (fz if dzi else 1 - fz)
-                )
+                w = (fx if dxi else 1 - fx) * (fy if dyi else 1 - fy) * (fz if dzi else 1 - fz)
                 n_s += w[..., None] * psi_np[i0 + dxi, j0 + dyi, k0 + dzi, :]
 
     # Re-normalize the sampled directors (interpolation slightly shrinks |n̂|)
@@ -1416,7 +1412,7 @@ def sample_avg_observables(
 # The flux mesh is a VISUALIZATION layer — it converts simulation-side
 # scalars/vectors to per-vertex colors and Z-axis warps so the user can "see"
 # what the field is doing. It is not physics; nothing here feeds back into
-# propagate_psi or any tracker. Treat it as a display driver.
+# evolve_psi or any tracker. Treat it as a display driver.
 #
 # VECTOR-FIELD RENDERING NUANCE (worth remembering when M5.0g+ adds new
 # wave_menu options for energy density, curl, divergence, energy flux,
