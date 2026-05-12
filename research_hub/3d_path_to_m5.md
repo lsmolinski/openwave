@@ -501,7 +501,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 ### Phase M5.2 — Wave dynamics (Close's Eq. 23 + Eq. 19 linear limit + Klein-Gordon)
 
 > **Refinement from Robert Close (2026-04-18)**: use **Eq. 23 as the particle equation**, not Eq. 21. Eq. 23 preserves `∇·s = 0` (zero divergence of spin density), which is a physical invariant Exp 7's Eq. 21 implementation did not enforce. Eq. 19 remains the linear free-wave limit.
-
+>
 > **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.2's first email-ready milestone is **"defect survives PROPAGATE WAVE under V(ψ)"** — the simplest stable-particle demonstration. Currently (M5.1) defects dissolve under free-wave V=0; M5.2's V(ψ) should fix this. When you can press PROPAGATE on `_test4_topology.py` (hedgehog_1 mode) and the defect stays coherent for 100+ steps without dissolving, that's the trigger to compose the first Models-of-Particles update (closes the loop on the April 2026 thread).
 
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
@@ -529,7 +529,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 ### Phase M5.4 — Electron stability + dynamic Coulomb recovery (the headline goal)
 
 > **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.4 passing is the strongest single-milestone trigger for a Models-of-Particles update. Email framing: "M5.4 complete — single hedgehog stable, pair reproduces dynamic 1/d²". If M5.2 has already triggered an earlier send, M5.4 is the follow-up showing the headline-goal result.
-
+>
 > **Paradigm shift from EWT (2026-04-19)**: the electron is NOT a K=10 tetrahedron of constituents in M5. Per Dr. Duda's framework, the electron is a **single biaxial hedgehog** — one topological defect with a specific axis choice (the δ ~ ℏ axis of the LdG order parameter). Muon and tau are single hedgehogs on the other two axes (unity and g scales respectively, tested in M5.6). EWT's "K" as a combinatorial parameter does not apply at the lepton scale. K re-emerges only as a *descriptive count* for composite-particle configurations (quarks in nucleons, nucleons in nuclei, electrons in atomic orbitals) — best-practice labeling for those deferred until M5.7+.
 >
 > **Refinement from Robert Close (2026-04-18)**: "Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions." Success criterion is therefore **long-lived resonance with measurable lifetime**, not perfect stability.
@@ -563,7 +563,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 ### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
 
 > **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.5 landing removes the "topology dissipates under heavy relax" caveat from M5.1. If M5.4 has revealed defect collapse and M5.5 fixes it, this is a worthwhile follow-up email to the Models-of-Particles thread — framing: "Topology fully protected (Skyrme stabilizer)". Send only if the M5.5 result genuinely strengthens an earlier claim (e.g., M5.4's long-lived resonance was borderline and Skyrme tightens the lifetime).
-
+>
 > **Lab-existence anchor (2026)**: Liu et al. demonstrated **direct laser creation of isolated skyrmions and hopfions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). M5.5's numerical Skyrme stabilizer is the **OpenWave-side complement** to that lab observation: lab confirms these structures CAN exist in nature; M5.5 confirms they can exist in our LdGS Lagrangian numerically with the same stabilization mechanism (Skyrme higher-derivative term). Pair this with M5.6's biaxial LdG and you have both numerical *and* experimental support for the topology-as-particles framework. Cited by Duda's 2026-05-09 message on the models-of-particles list ("seeing particles as their smaller versions, what should be the particle-defect correspondence?") as motivation for the M5 program.
 >
 > **Forward-looking (post-M5.8)**: hopfions — knotted/linked closed loops with non-trivial Hopf invariant — are a candidate for **excited neutrino oscillation states**. The standard closed vortex loop (M5.8 neutrino seed) covers the ground state; the hopfion variant could carry the additional topological degree of freedom that maps to mass-eigenstate vs flavor-eigenstate in standard neutrino-oscillation phenomenology. Not in M5.0–M5.8 scope, but worth flagging as the next frontier once the simple-loop neutrino is validated.
