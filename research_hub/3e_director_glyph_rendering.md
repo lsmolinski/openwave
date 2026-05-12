@@ -194,7 +194,7 @@ The renderer landed AFTER the seeders but BEFORE Frank energy / relaxation — e
 
 ### Bonus discovery: BC-bleed bug
 
-While verifying the glyphs, the user spotted that on first PROPAGATE WAVE click, an inward-traveling wave appeared from every boundary face. Diagnosis: `psi_new_am` boundary was never written by anyone (propagator skips boundary; was zero by Taichi default). First `swap_buffers` clobbered the seeded `n = ẑ` at boundary with that zero, and the discontinuity radiated inward.
+While verifying the glyphs, the user spotted that on first EVOLVE PSI click, an inward-traveling wave appeared from every boundary face. Diagnosis: `psi_new_am` boundary was never written by anyone (propagator skips boundary; was zero by Taichi default). First `swap_buffers` clobbered the seeded `n = ẑ` at boundary with that zero, and the discontinuity radiated inward.
 
 **Latent in M5.0 too**, but invisible because `seed_gaussian`'s envelope decay and `seed_dispersion_modes`'s sin-mode shape both happen to leave boundaries at ψ ≈ 0, matching `psi_new_am`'s default of 0 by accident. M5.1 was the first time we wanted ψ ≠ 0 at boundary.
 

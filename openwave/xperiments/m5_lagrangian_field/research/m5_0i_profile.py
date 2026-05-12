@@ -98,7 +98,7 @@ def profile_at_grid(target_voxels_per_axis):
     # ── Warmup (kernel compile + GPU clock ramp) ────────────────
     print(f"  warmup ({WARMUP_STEPS} steps)...", flush=True)
     for _ in range(WARMUP_STEPS):
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0)
@@ -116,7 +116,7 @@ def profile_at_grid(target_voxels_per_axis):
     for step in range(N_PROFILE_STEPS):
         ti.sync()
         t0 = time.perf_counter()
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0)
         ti.sync()
         t1 = time.perf_counter()
         wave_field.swap_buffers()
@@ -149,7 +149,7 @@ def profile_at_grid(target_voxels_per_axis):
     end_to_end_ms = []
     for step in range(N_PROFILE_STEPS):
         t0 = time.perf_counter()
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0)

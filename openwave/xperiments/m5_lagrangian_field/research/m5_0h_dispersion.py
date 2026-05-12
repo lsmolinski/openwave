@@ -229,7 +229,7 @@ def main():
     print(f"[M5.0h] propagating...", flush=True)
     progress_every = max(1, N_STEPS // 20)
     for step in range(N_STEPS):
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
+        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0)
         wave_field.swap_buffers()
         record_sample_points(
             wave_field,

@@ -628,7 +628,7 @@ def compute_propagation(state):
 
     # ψ PROPAGATION =======================================
     # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    lagrange.evolve_psi(state.wave_field, state.c_amrs, state.dt_rs)
+    lagrange.evolve_psi(state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs)
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
     state.wave_field.swap_buffers()
 
@@ -643,7 +643,7 @@ def relax_field(state, n_steps):
     Lowers the Frank elastic energy by smoothing the seeded hedgehog blend
     zone, while preserving topology via soft-core pinning. After all N steps,
     psi_am and psi_prev_am hold the same relaxed field so subsequent
-    PROPAGATE WAVE sees ψ̇ = 0 (no spurious time-derivative artifact).
+    EVOLVE PSI sees ψ̇ = 0 (no spurious time-derivative artifact).
 
     Args:
         state: SimulationState with wave_field + pin_centers/signs/n_defects

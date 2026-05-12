@@ -599,15 +599,18 @@ def evolve_psi(
     wave_field: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
+    m_freq_rs: ti.f32,  # type: ignore
 ):
     """
     Evolve ψ one timestep via leapfrog/Verlet integration.
 
-    Wave Equation (free wave, V=0):
-        ∂²ψ/∂t² = c²·∇²ψ
+    Klein-Gordon Equation (V = ½·m²·|ψ|²):
+        ∂²ψ/∂t² = c²·∇²ψ − m²·ψ
 
     Discrete (leapfrog/Verlet):
-        ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+        ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ
+
+    Setting m_freq_rs = 0 recovers the free wave equation (V = 0).
 
     Reads:  wave_field.psi_am, wave_field.psi_prev_am
     Writes: wave_field.psi_new_am
@@ -638,19 +641,23 @@ def evolve_psi(
         c_amrs: wave speed in scaled units (am/rs); already includes any
             slow-motion factor for visualization
         dt_rs: timestep in rontoseconds, sized below the CFL bound
+        m_freq_rs: Klein-Gordon mass-frequency m·c²/ℏ in rad/rs storage units
+            (electron: ~7.76e-7 rad/rs at SIM_SPEED=1; 0 disables the mass term)
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     c_dt_squared = (c_amrs * dt_rs) ** 2
+    m_dt_squared = (m_freq_rs * dt_rs) ** 2
 
     # Interior voxels only (Dirichlet BC; 6-point Laplacian needs 1-cell halo)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
         laplacian_psi_am = compute_laplacian(wave_field, i, j, k)
 
-        # Leapfrog/Verlet update: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+        # Leapfrog/Verlet update: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ
         wave_field.psi_new_am[i, j, k] = (
             2.0 * wave_field.psi_am[i, j, k]
             - wave_field.psi_prev_am[i, j, k]
             + c_dt_squared * laplacian_psi_am
+            - m_dt_squared * wave_field.psi_am[i, j, k]
         )
 
 
@@ -773,10 +780,12 @@ def update_trackers(
 # For ψ in am, V_storage = ½·(m_freq_rs)²·|ψ|² produces an energy density in
 # (am/rs)² — same units as the kinetic and gradient terms.
 #
-# M5.2 Step 1 (this scaffold): plumbing only — V_psi accepts m_freq_rs but
-# still returns 0. Step 2 lights up the ½·m²·|ψ|² body here AND adds the
-# −(m·dt)²·ψ term to evolve_psi. Step 4 (Close Eq. 23) layers nonlinear
-# terms on top.
+# M5.2 Step 2 (this version): plain Klein-Gordon mass term active —
+# V_psi returns ½·m²·|ψ|² and evolve_psi adds −(m·dt)²·ψ to the leapfrog.
+# Setting m_freq_rs = 0 from a caller recovers free-wave (V = 0) behavior;
+# the M5.0h dispersion tests do this. Step 4 (Close Eq. 23) layers nonlinear
+# terms on top so the potential minimum sits on the unit sphere (|ψ| = 1)
+# instead of at ψ = 0 — required for hedgehog stability.
 #
 # Linear kernels (Laplacian, divergence, curl, curl-curl) stay in storage
 # units (am, rs, rHz) throughout — dimensionally self-balancing, don't
@@ -789,12 +798,17 @@ def V_psi(
     m_freq_rs: ti.f32,  # type: ignore
 ):
     """
-    Scalar potential V(ψ) at one voxel.
+    Scalar potential V(ψ) at one voxel — Klein-Gordon mass term (M5.2 Step 2).
 
-    Returns the local potential-energy density contribution to the
-    Hamiltonian. M5.0g: returns 0 (free wave). M5.2 Step 1 (this version):
-    accepts m_freq_rs but still returns 0 — the scaffold passes the value
-    through without consuming it. M5.2 Step 2 will return ½·m²·|ψ|².
+    V(ψ) = ½·m²·|ψ|²
+    EL contribution: ∂V/∂ψ = m²·ψ → evolve_psi adds −(m·dt)²·ψ to the leapfrog.
+    Setting m_freq_rs = 0 reduces this to the free wave (V = 0).
+
+    NOTE: a plain KG term has its minimum at ψ = 0, which is the WRONG shape
+    for stabilizing a |ψ|=1 hedgehog. M5.2 Step 4 (Close Eq. 23) and Step 6
+    (LdG biaxial) layer Mexican-hat-style nonlinear terms on top so the
+    minimum sits on the unit sphere. Plain KG by itself is mainly useful for
+    verifying the V(ψ) hook + Klein-Gordon dispersion ω² = c²k² + m².
 
     Args:
         psi: Vector(3) field value at the voxel
@@ -804,10 +818,7 @@ def V_psi(
     Returns:
         scalar V(ψ) in the same units as kinetic and gradient terms (am²/rs²)
     """
-    # M5.2 Step 1: m_freq_rs accepted but unused — Step 2 wires in ½·m²·|ψ|²
-    _ = m_freq_rs
-    _ = psi
-    return ti.cast(0.0, ti.f32)
+    return 0.5 * m_freq_rs * m_freq_rs * psi.norm_sqr()
 
 
 # ================================================================
