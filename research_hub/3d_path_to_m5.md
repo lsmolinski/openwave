@@ -275,10 +275,10 @@ In one sentence: **M5 doesn't simulate the EWT vacuum's oscillations — there a
 | Phase | Particle | dx (≈λ_C/12) | Domain (≈8·λ_C) | N (per side) | Voxels | Memory* | Steps for 10 T_Z | Wall-clock estimate |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M5.0 / M5.1 / M5.2 (KG dispersion, Coulomb) | n/a (geometric tests) | natural-units `1` | `64` | 256 | 17M | ~1 GB | n/a (relaxation, not Zitterbewegung) | minutes |
-| **M5.4** (electron stability, e⁺/e⁻ pair) | electron | 3.2e-14 m | 3.1e-12 m | 256–384 | 17M–57M | 1–4 GB | ~500k steps | **~12–24h** (uniform grid, no AMR) |
-| M5.7 (Cornell, light quarks) | u/d quark | ~7.5e-15 m (≈λ_C(u)/12) | ~7e-13 m | 96–128 | 1M–2M | <1 GB | ~50k–500k | hours |
-| M5.6 (muon, tau) | muon, tau | ~1.5e-16 m / ~9e-18 m | tight | uniform grid impractical | — | — | — | **needs AMR** |
-| M5.8 (Zitterbewegung table for all 7 particles) | all | per-particle `dx` | per-particle | varies | varies | varies | 100×T_Z | **needs AMR + cloud burst** |
+| **M5.7 + M5.8** (resonance + electron Zitterbewegung) | electron | 3.2e-14 m | 3.1e-12 m | 256–384 | 17M–57M | 1–4 GB | ~500k steps | **~12–24h** (uniform grid, no AMR) |
+| M5.9 (Cornell, light quarks) | u/d quark | ~7.5e-15 m (≈λ_C(u)/12) | ~7e-13 m | 96–128 | 1M–2M | <1 GB | ~50k–500k | hours |
+| M5.9 (muon, tau biaxial) | muon, tau | ~1.5e-16 m / ~9e-18 m | tight | uniform grid impractical | — | — | — | **needs AMR** |
+| M5.8 (Zitterbewegung table for all particles) | all | per-particle `dx` | per-particle | varies | varies | varies | 100×T_Z | **needs AMR + cloud burst** |
 
 *Memory assumes Vector(3) for Q + 3 buffers (prev/curr/new) + winding/director field + Hamiltonian tracker, ~64 bytes/voxel.
 
@@ -498,161 +498,109 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 >
 > **Frank elastic energy is a measurement, not a dynamics** (same review): the elastic behavior is *already* in the wave equation — the `c²·∇²ψ` term IS the gradient of the Frank density `(K/2)|∇n|²`. Computing the Frank energy as an explicit kernel (task 5) doesn't add new physics; it provides the scalar `E(t)` needed for the downstream tests that *depend on having an E to fit*: task 6 needs `E` falling monotonically as a convergence diagnostic; task 7 needs `E(d)` as a function of pair separation to fit the 1/d Coulomb law; future visualization can colormap the per-voxel elastic density. Parallel to how `compute_energyH_density` (M5.0g) is the measurement scalar that goes with the wave dynamics — same logic, different formula component.
 
-### Phase M5.2 — Wave dynamics (Close's Eq. 23 + Eq. 19 linear limit + Klein-Gordon)
+### Phase M5.2 — V(ψ) escalation on Vector(3) — CLOSED as informative negative (2026-05-12)
 
-> **Refinement from Robert Close (2026-04-18)**: use **Eq. 23 as the particle equation**, not Eq. 21. Eq. 23 preserves `∇·s = 0` (zero divergence of spin density), which is a physical invariant Exp 7's Eq. 21 implementation did not enforce. Eq. 19 remains the linear free-wave limit.
+> **Status**: closed. The four V(ψ) escalations we tested (V=0, KG mass `½m²|ψ|²`, φ⁴ Mexican-hat `¼λ(|ψ|²−1)²`, biharmonic `½κ|∇²ψ|²`) all collapse the topological charge Q identically within 4-5 propagation steps. The result is documented as an informative negative; phase moves out of the critical path. Path forward absorbed into M5.3 (direction review) + M5.4 (matrix-field substrate) + M5.5 (paper Lagrangian).
 >
-> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.2's first email-ready milestone is **"defect survives EVOLVE PSI under V(ψ)"** — the simplest stable-particle demonstration. Currently (M5.1) defects dissolve under free-wave V=0; M5.2's V(ψ) should fix this. When you can press EVOLVE PSI on `_test4_topology.py` (hedgehog_1 mode) and the defect stays coherent for 100+ steps without dissolving, that's the trigger to compose the first Models-of-Particles update (closes the loop on the April 2026 thread).
+> **Original scope (preserved for archaeology)**: Close's Eq. 23 + Eq. 19 + Klein-Gordon mass on Vector(3) ψ; dispersion validation; resonance-hunt amplitude sweep. All assumed Vector(3) substrate.
 >
-> **M5.2 Step 1 — Natural-units scaffold ✅ (2026-05-12)**: `constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM` added. Klein-Gordon mass-frequency `m_freq_kg_rs = c_amrs / λ̄_C` (electron: ~7.76e-7 rad/rs at SIM_SPEED=1) computed once in launcher and threaded through `V_psi` via `compute_energyH_density`. Plumbing only — V_psi still returned 0 at this step.
+> **What we actually executed and learned**:
 >
-> **M5.2 Step 2 — KG mass term in V(ψ) ✅ (2026-05-12)**: `V_psi` now returns `½·m²·|ψ|²`; `evolve_psi` adds `−(m·dt)²·ψ` to the leapfrog (`∂²ψ/∂t² = c²·∇²ψ − m²·ψ`, Klein-Gordon). Math verified at f32: `V_psi` contribution matches `½·m²·|ψ|²` exactly; `(m·dt)² ≈ 4.8e-10` at production grid (65³, dx≈15 am, dt≈28 rs).
+> - ✅ **Step 1 (Natural-units scaffold, 2026-05-12)**: `constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM` added; `m_freq_kg_rs = c_amrs / λ̄_C` (electron: ~7.76e-7 rad/rs at SIM_SPEED=1) threaded through `V_psi` via `compute_energyH_density`. Plumbing only — V_psi returned 0 at this step.
+> - ✅ **Step 2 (KG mass term, 2026-05-12)**: `V_psi` returns `½·m²·|ψ|²`; `evolve_psi` adds `−(m·dt)²·ψ` to leapfrog. Math verified at f32.
+> - ⚠️ **Step 3 (Defect-survival check, NEGATIVE)**: `research/m5_2_kg_defect_survival.py`. Q drops from `+0.9958` → `~0` within 20 steps under BOTH V=0 and KG-electron; `|Q_free − Q_kg|` below f32 precision at every sample.
+> - ⚠️ **Step 4a (Mexican-hat φ⁴, PARTIAL)**: `research/m5_2_phi4_defect_survival.py`. `V += ¼λ(|ψ|²−1)²` damps `|ψ|` excursions (max `1.83 → 1.27`) but does NOT preserve Q. Same step-4 collapse as free wave.
+> - ⚠️ **Step 4b (Biharmonic, NEGATIVE on Q)**: `research/m5_2_biharmonic_defect_survival.py`. `+ ½κ|∇²ψ|²` (kernels kept research-only, NOT promoted to production). Stable at κ ≤ 0.003·c²·dx²; Q decay identical to free wave at every stable scale. Pre-relaxing 20 steps doesn't help.
 >
-> **M5.2 Step 3 — Defect-survival check ⚠️ NEGATIVE (2026-05-12)**: headless test `research/m5_2_kg_defect_survival.py` runs a Q=+1 hedgehog through 200 `evolve_psi` steps under both V=0 and KG (electron mass). Result: Q drops from `+0.9958 → ~0` within 20 steps, **identically** for both runs (`|Q_free − Q_kg| = 0.0e+00` at every sample step). Two reinforcing reasons:
+> **Root cause** (initial diagnosis 2026-05-12, refined after re-reading Duda paper arxiv:2108.07896): the framework requires **(a) matrix field `M = ODO^T`, NOT Vector(3) ψ** (Duda paper §III, Eq. 18); and **(b) the "particle" is a time-periodic resonance**, not a static soliton. Triple-confirmed from three independent sources: Duda paper Fig. 10 (4D Lorentz negative-energy terms auto-propel the clock), Robert Close email reply (l=1 amplitudes, A/λ ≈ 1 protocol), Werbos chaoiton paper (explicit "static solitons don't exist; the stable objects are chaoitons"). Captured in [`3g_lagrangian_roadblocks.md`](3g_lagrangian_roadblocks.md) and memories `feedback_no_static_solitons`, `reference_duda_lcb_paper`.
 >
-> 1. **Mass-scale mismatch**: electron KG mass-frequency is ~10⁴× smaller than the grid's wave-eq frequency scale. `(m·dt)² ≈ 5e-10` is below f32 precision when added to ψ in the leapfrog update.
-> 2. **Wrong potential shape**: plain KG `V = ½m²|ψ|²` has its minimum at `ψ = 0`, not on the unit sphere `|ψ| = 1`. Even at scaled-up `m` (testable via a future knob), KG would *destabilize* the hedgehog (pull ψ → 0), not preserve it. The hedgehog needs a Mexican-hat-style potential whose minimum lives on the unit sphere.
+> **Closure**: M5.2 closed as informative negative. The work was correct under its assumption; the assumption was wrong (Vector(3) substrate + static stability goal). The corrective phases are M5.3 → M5.4 → M5.5 → M5.6 → M5.7. The new external-comms trigger lives in M5.8 (Zitterbewegung clock at `ω = 2mc²/ℏ`), not in defect-survives-EVOLVE-PSI.
+
+---
+
+### Phase M5.3 — Direction review (active 2026-05-12+) 🔶
+
+> Study, sandbox, decide, wait. Goal: lock the M5.4 implementation plan with a clear substrate choice before code commitment. No fixed timeline — exits when M5.4 plan is concrete and any awaited external input has arrived (or been decisively waited-out).
+
+- [ ] **Re-read Duda paper §III-V deeply** (`scientific_source/liquid_crystal_model.pdf`, arxiv:2108.07896 v7): matrix field `M = ODO^T`, Eq. 18 Lagrangian, Eq. 13 Higgs-like `V_LG(M)`, Eq. 42 4D Skyrme-like kinetic, Fig. 9 KG-from-twist, Fig. 10 4D negative-energy clock propulsion. Annotated reading notes captured in memory or `3h_*.md`.
+- [ ] **Taichi storage layout study** — review [Field](https://docs.taichi-lang.org/docs/field), [Layout](https://docs.taichi-lang.org/docs/layout), and [Sparse](https://docs.taichi-lang.org/docs/sparse) docs. Decide layout (struct-of-arrays vs matrix-field vs sparse for void regions) for `M = ODO^T` storage. Cost estimate at 65³ / 128³ / 256³ grids.
+- [ ] **Sandbox: Close's resonance protocol on existing Vector(3)** — new `research/m5_3_resonance_smoke.py`. l=1 harmonic seed at A/λ ∈ {0.5, 1, 2}; measure energy-localization lifetime. Not gating, but informative — if even Vector(3) shows extended lifetime at specific amplitudes, the resonance mechanism is substrate-agnostic.
+- [ ] **Feasibility study: matrix field in Taichi** — implement a minimal `M(x) = O(x) D O^T(x)` storage + matrix commutator `[M_μ, M_ν]` kernel. Verify it works on small grids; measure cost vs Vector(3). Decide in-place migration vs parallel-track.
+- [ ] **Thermal prerequisites analysis** — what does M5.10 actually need from M5.4-M5.7? Confirm M5.7 (metastable resonance) is sufficient foundation; identify any drive/measurement infrastructure that must land earlier. Cross-reference SABER private repo for thermal-specific scope items.
+- [ ] **Wait for Duda reply** to the 2026-05-12 outreach (`3g_lagrangian_roadblocks.md`). If no reply within ~2 weeks, proceed on best-current-understanding.
+- [ ] **Decision document** — substrate choice, migration plan, M5.4+ task breakdown. Could live as `3h_m5_substrate_decision.md` or be a section of `3d_path_to_m5.md`.
+
+**Exit criterion**: M5.4 implementation plan is concrete with cost estimates and substrate decision locked.
+
+---
+
+### Phase M5.4 — Matrix-field substrate migration
+
+> Replace Vector(3) ψ with the paper's `M(x) = O(x) D O^T(x)` real symmetric 3×3 matrix field. The architectural shift identified in M5.3.
+
+- [ ] Storage redesign — Taichi matrix field with the layout decided in M5.3 (struct-of-arrays vs `ti.Matrix.field` vs sparse)
+- [ ] Operators — matrix commutator `[M_μ, M_ν]`, antisymmetric `A_μ = [M, ∂_μ M]` (paper Eq. 19), curvature `F_μν = ∂_μ A_ν − ∂_ν A_μ` (Eq. 20)
+- [ ] Seeders for vacuum and hedgehog on the M field (analogs of `seed_vacuum` and `seed_hedgehog` for ψ)
+- [ ] Director-glyph and energy-density visualizers adapted for the matrix substrate
+- [ ] Reproduce M5.1 Coulomb on the matrix field — sanity check that static-topology results carry over (target R² ≥ 0.95)
+- [ ] **Apply physical-energy-scaling factor to `compute_energyH_density`** (deferred from M5.0g): multiply by `ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ` so kinetic + gradient + V terms add in real units. Drop the dashboard `(rel.)` labels in `_launcher.py` once landed
+- [ ] **Exit criterion**: M5.1 Coulomb fit reproduced on matrix substrate; operators verified against small-case analytic examples
+
+---
+
+### Phase M5.5 — Paper Lagrangian + Higgs-like V(M)
+
+> Implement Duda paper Eq. 18: `L = Σ ‖F_μ0‖²_F − Σ ‖F_μν‖²_F − V(M)`. Subsumes the old "Skyrme stabilizer" phase since the Eq. 42 4D Skyrme-like kinetic is part of the same Lagrangian family — there is no separate Skyrme add-on phase in the new structure.
+
+- [ ] Implement Eq. 18 action on the M field from M5.4
+- [ ] Choose V(M) — start with the simpler eigenvalue-preference variant `V(M) = Σ_i (λ_i − Λ_i)²` (Eq. 12), then graduate to the LdG Higgs-like `V_LG(M) = a Tr(M²) − b Tr(M³) + c (Tr(M²))²` (Eq. 13)
+- [ ] **Faber regularization** — port Manfried Faber's scheme to "activate" V (per `reference_faber_regularization.md`). Faber's scheme produces the running-coupling effect as a side-validation
+- [ ] In M5.8 (4D extension), the Skyrme-like 4th-order kinetic from Eq. 42 lands; M5.5 stays in 3D
+- [ ] **Exit criterion**: full Eq. 18 Lagrangian running; defect dynamics governed by the actual proposed action (not our scalar approximation)
+
+---
+
+### Phase M5.6 — Biaxial twist + KG emergence
+
+> With biaxial axes `Λ = (1, δ, 0)` and `δ ~ ℏ` (small twist), reproduce paper Fig. 9: Klein-Gordon-like equation emerges automatically from twist dynamics, NOT as an added V_psi term. This was the conceptual error in M5.2 Step 2.
+
+- [ ] Configure the matrix field with `D = diag(1, δ, 0)`; Λ values from paper §III
+- [ ] Apply the evolution equation (paper §IV — Euler-Lagrange of Eq. 18)
+- [ ] Verify low-energy twist mode `ψ` obeys `2ψ_tt = (∇² − Â^hedg / ‖Â^hedg‖²) ψ` — Klein-Gordon-like with position-dependent mass from hedgehog structure
+- [ ] Verify high-energy tilt modes obey Maxwell-like equations (paper Eq. 37 + 38)
+- [ ] Compare ω(k) dispersion to M5.0h's free-wave dispersion — KG branch should show the mass-gap signature
+- [ ] **Exit criterion**: paper Fig. 9 reproduced; KG is derived, not postulated
+
+---
+
+### Phase M5.7 — Resonance hunt (Close's protocol) — UNBLOCKS M5.10
+
+> **Refinement from Robert Close (2026-04 email reply)**: "Even including the nonlinear term, I would expect your result of dispersing waves in most cases. But I suspect that certain amplitudes of certain harmonic waves will keep energy localized longer (i.e. as an unstable particle or resonance). My suggestion is to explore a wide range of amplitudes (probably l=1 harmonic wave is the most interesting). A likely criterion is that the maximum displacements should be comparable to the wavelength (or half or twice). Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions."
 >
-> **Conclusion**: external-comms trigger NOT met. Plain KG by itself doesn't preserve topological defects. Step 4 (Close Eq. 23 nonlinear terms / LdG biaxial Mexican-hat) is the structural fix. Documented as a falsification milestone — clean negative result on the simplest-possible V(ψ).
+> This phase implements Close's protocol on top of the biaxial matrix substrate from M5.4-M5.6. Success criterion is **extended-lifetime localization**, not perfect stability — the framework's "particles" are metastable resonances.
+
+- [ ] Seed `l = 1` harmonic perturbation (dipole) on the biaxial matrix field from M5.6
+- [ ] Amplitude sweep: `A/λ ∈ {0.5, 1, 2}` per Close's amplitude-comparable-to-wavelength criterion
+- [ ] Measure energy-localization lifetime at each amplitude
+- [ ] **Drive infrastructure for M5.10 thermal work** — parameterized harmonic forcing, energy tracking, modulation primitives (FM/AM)
+- [ ] **Exit criterion**: at least one `(A/λ)` regime shows substantially extended energy-localization lifetime — "first long-lived particle in M5". **UNBLOCKS M5.10 THERMAL ENERGY.**
+
+---
+
+### Phase M5.8 — 4D extension + Zitterbewegung clock (GROUP HEADLINE)
+
+> **GROUP HEADLINE**: M5.8 passing IS the empirical answer to Duda's standing clock-propulsion question. External-comms framing: "M5.8 complete — Zitterbewegung clock at ω = 2mc²/ℏ confirmed empirically." This is the load-bearing test of clock propulsion (per `project_clock_propulsion` memory).
 >
-> **M5.2 Step 4a — Mexican-hat φ⁴ in V(ψ) ⚠️ PARTIAL (2026-05-12)**: replaced plain KG with the proper Mexican-hat shape: `V(ψ) = ½·m²·|ψ|² + ¼·λ·(|ψ|² − 1)²` whose minimum is the unit sphere `|ψ| = 1`. evolve_psi gets the EL term `−(dt)²·λ·(|ψ|² − 1)·ψ`. Stability: nonlinear cubic feedback amplifies `|ψ|` excursions, so the linearized CFL bound `λ·dt² ≤ 2` is too loose. Empirical bound `λ·dt² ≲ 0.3` (1.0·(c/dx)² blew up at step ~40; 0.1·(c/dx)² stable for 400+ steps). Default set to `λ = 0.1·(c/dx)²` in launcher.
->
-> **Test**: `research/m5_2_phi4_defect_survival.py` runs the same Q=+1 hedgehog comparison as Step 3. Findings (with and without pre-relax):
->
-> 1. **φ⁴ damps |ψ| excursions** (Mexican-hat does its job): at step 20 of propagation, free wave hits `|ψ|_max = 1.83`; φ⁴ holds at `|ψ|_max = 1.27`. By step 400 the field stays in `[0.83, 1.18]` (φ⁴) vs `[0.73, 1.21]` (free).
-> 2. **φ⁴ does NOT preserve Q**: Q drops from `+0.9958` → `~0` between step 2 and step 5 in BOTH free and φ⁴ runs. Identical decay rate (`|Q_free − Q_φ⁴|` at each sample step is below 1e-3 magnitude). Pre-relaxing 20 steps (which keeps `Q = 0.996` and `|ψ| ≡ 1`) doesn't change this — the wave dynamics rapidly disintegrate the texture regardless of starting smoothness.
->
-> **Conclusion**: φ⁴ Mexican-hat fixes the *magnitude* problem (|ψ| stays on the unit sphere) but does NOT fix the *texture stability* problem. The hedgehog texture loses coherence at the winding-sample radius within 2-5 wave propagation steps — Derrick's collapse acts on the spatial extent, not the field magnitude. Step 4b (Skyrme 4th-derivative term) is the textbook fix: `+ ½κ|∇ψ × ∇ψ|²` resists rapid spatial variation; combined with φ⁴ Mexican-hat, the classical Skyrme model has supported stable 3D hedgehog solitons since 1962.
->
-> **M5.2 Step 4b — Biharmonic stabilizer ⚠️ NEGATIVE on Q (2026-05-12)**: started with the simplest 4th-derivative term `V_bi = ½κ|∇²ψ|²` (biharmonic, same `R⁻¹` Derrick-defying scaling as Faddeev-Skyrme but without the topological cross-product structure). Two-pass implementation: `compute_psi_laplacian` fills a `lap_field = ∇²ψ`; `apply_biharmonic_correction` computes `∇⁴ψ = ∇²(lap_field)` inline and subtracts `(dt²·κ·∇⁴ψ)` from `psi_new_am`. Kernels live in `research/m5_2_biharmonic_defect_survival.py` ONLY — not promoted to production since the experiment produced a negative result. Stability sweep:
->
-> | κ scale | NaN step | Q[5] | Q[100] |
-> | --- | --- | --- | --- |
-> | 0.000 (free) | — | +0.0006 | -0.0000 |
-> | 0.001·c²·dx² | — | +0.0006 | -0.0000 |
-> | 0.003·c²·dx² | — | +0.0006 | -0.0000 |
-> | 0.010·c²·dx² | 100 | +0.0006 | NaN |
-> | 0.030·c²·dx² | 20 | +0.0007 | NaN |
->
-> **Two findings**:
->
-> 1. **Stability**: linearized analysis gave `κ ≲ 0.037·c²·dx²`, but nonlinear φ⁴ feedback tightens the bound to `≲ 0.003`. Launcher default set to `0.001·c²·dx²` (10× safety margin).
-> 2. **Q collapse is unaffected by biharmonic at any stable scale**: Q drops from `+0.99` to `~0` between step 3 and step 5 in ALL configurations (free, φ⁴, φ⁴ + biharmonic). The early-step Q collapse is *independent* of V(ψ) choice.
->
-> **Root cause**: the seeded hedgehog (Frank-energy-only relax) is NOT a soliton of the full dynamic equation. The leapfrog's first step `psi_new = psi + (c·dt)²·∇²ψ` immediately kicks the field into motion because `∇²ψ` is non-zero at the relaxed hedgehog (Frank-minimum, but not full-Lagrangian-minimum). Subsequent dynamic evolution rapidly destroys texture coherence at the winding-sample radius before any V(ψ) term gets a chance to stabilize it.
->
-> **Conclusion**: V(ψ) escalation has hit a methodological ceiling. The seeded initial condition is the bottleneck, not the potential shape. Three forward paths emerge: (i) extend `relax_director_step` to descend on the **full** energy `E_grad + V(ψ) + ½κ|∇²ψ|²` so the seed converges to a soliton of the dynamic system; (ii) construct an exact-soliton seed (numerical shooting on the radial profile); (iii) accept that small-grid hedgehog texture is too sharp for stable propagation and switch to a coarser-grain Q-tensor representation (M5.6 LdG territory).
+> Per Duda paper Fig. 10, extending to 4D with `D = diag(g, 1, δ, 0)` and SO(1,3) Lorentz introduces **negative-energy contributions** in the Hamiltonian (`ΓΓ̃` rotation-boost type) that automatically propel the de Broglie clock — no engineered V(ψ) propulsion needed. The Zitterbewegung emerges as a consequence of 4D Lorentz signature.
 
-- [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
-- [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
-- [ ] **Add kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for the new nonlinear-physics kernels added in M5.2 only — Klein-Gordon mass term, Close Eq. 23 nonlinear couplings `−u·∇s + w×s`, LdG biaxial potential. Convert at kernel entry/exit. Linear kernels from M5.0 (leapfrog, divergence, curl, Laplacian) are dimensionally self-balancing and stay in storage units (`_am` / `_rs`) — no conversion. Rationale: natural units make the dimensional coefficients in nonlinear couplings read as O(1) (textbook-form), where mismatched powers of `λ_C` in storage units would push f32. This was originally scoped as M5.0f but deferred here because linear kernels don't need it. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written) and the M5.0f decision-record above
-- [ ] **Apply physical-energy-scaling factor to `compute_energyH_density`** (deferred from M5.0g): the kernel currently writes raw `(am/rs)²` per voxel and the field is named `_aJ` aspirationally. Multiply by `ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ` (matching M4's `E = ρ·V·(f·A)²` conversion) so the kinetic + gradient + V(ψ) terms add in the same physical units. M5.0g defers this because: (a) `F = −∇E` only depends on the gradient (relative scaling survives), (b) M5.0h Klein-Gordon dispersion test checks `ω(k)` not absolute E. But M5.2 needs the V(ψ) couplings to add in real units against the kinetic term — physical scaling becomes load-bearing. Once landed, drop the dashboard `(rel.)` labels in `_launcher.py` (search for "M5.2" in the launcher) and restore `J / J/m³` units
-- [ ] Validate: reproduce Exp 4's Klein-Gordon dispersion on the GPU. FFT-extract ω(k), fit ω² = c²k² + m²
-- [ ] Validate: reproduce Exp 7's transverse wave dispersion (dipole/quadrupole seeds disperse as transverse elastic-solid waves)
-- [ ] Add Close's nonlinear terms `−u·∇s + w×s` (from Eq. 21) as optional runtime flag for comparison
-- [ ] **Resonance-hunt protocol** (per Close's recommendation): seed `Y_1^0` (electric-dipole harmonic) at amplitudes `A ∈ {0.25λ, 0.5λ, 1.0λ, 2.0λ}` (displacement-comparable-to-wavelength regime); measure localization lifetime. Particles in Close's framework are *unstable resonances* at specific amplitude/wavelength ratios, not static solitons. Success = extended-lifetime localization, not perfect stability
-- [ ] **(Optional, if 1/d Coulomb tightening needed)** Add periodic-BC variant of `relax_director_step` — Dirichlet BC in M5.1 task 7 capped R² at ~0.978 (threshold 0.95 → PASS, but Exp 2 reached 0.993 with periodic BC in numpy). If M5.2 dynamic-Coulomb validation needs higher fit quality on the static-relaxed baseline, port periodic-BC Laplacian (np.roll equivalent in Taichi) and re-run `research/m5_1_coulomb.py` with the new BC. Estimated effort: ~30 min for the kernel + 1 hr to validate against numpy reference. Skip if M5.2 dynamic results land at acceptable accuracy without it.
+- [ ] Promote the 3D matrix substrate from M5.4-M5.7 to 4D — add 0th time axis, SO(1,3) Lorentz group
+- [ ] Apply 4D Skyrme-like 4th-order kinetic (paper Eq. 42): `L = −Σ F_μναβ F^μναβ − V(M)` with `F_μναβ = [∂_μ M, ∂_ν M]_αβ`
+- [ ] Verify negative-energy contributions emerge from spacetime signature (Fig. 10)
+- [ ] Seed a single biaxial hedgehog on the electron axis (δ)
+- [ ] Measure intrinsic oscillation frequency at the defect core (FFT of director rotation)
+- [ ] **Target**: `ω = 2 m_e c² / ℏ ≈ 1.55 × 10²¹ rad/s` (electron Zitterbewegung)
 
-> **Open implementation choices for M5.2** (Rodrigo's 2026-04-19 follow-up to Robert Close, awaiting clarification before final implementation):
->
-> 1. **`∇·s = 0` enforcement method** — divergence-cleaning projection at each step, vs. vector-potential formulation `s = ∇×A` that makes zero-divergence automatic. Both options listed above; pick one once Robert weighs in
-> 2. **Dipole-family scope for the amplitude sweep** — `Y_1^0` (`l=1, m=0`) alone, or the full dipole family `Y_1^m` for `m ∈ {−1, 0, +1}`? Currently scoped to `m=0` only; expanding to full family triples runtime but probes the rotational symmetry of resonance behavior
-> 3. **Eq. 23 form** — direct implementation of Eq. 23 as written in *Foundations of Physics* 2025, vs. any implicit assumption Robert had in mind for how `∇·s = 0` interacts with the time-stepping. Confirm before porting
-
-### Phase M5.3 — Hamiltonian energy + force
-
-- [ ] Replace M4's postulated `E = ρV(fA)²` with the Hamiltonian density `H = ½|∂ₜψ|² + ½c²|∇ψ|² + V(ψ)` derived from the Lagrangian (matches Exp 5's Noether result)
-- [ ] Verify `F = −∇E` still produces the expected particle motion — the mechanism survives, the energy source changes
-- [ ] Cross-check: Exps 2 and 4 measured Hamiltonian energies; M5 must reproduce them
-
-### Phase M5.4 — Electron stability + dynamic Coulomb recovery (the headline goal)
-
-> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.4 passing is the strongest single-milestone trigger for a Models-of-Particles update. Email framing: "M5.4 complete — single hedgehog stable, pair reproduces dynamic 1/d²". If M5.2 has already triggered an earlier send, M5.4 is the follow-up showing the headline-goal result.
->
-> **Paradigm shift from EWT (2026-04-19)**: the electron is NOT a K=10 tetrahedron of constituents in M5. Per Dr. Duda's framework, the electron is a **single biaxial hedgehog** — one topological defect with a specific axis choice (the δ ~ ℏ axis of the LdG order parameter). Muon and tau are single hedgehogs on the other two axes (unity and g scales respectively, tested in M5.6). EWT's "K" as a combinatorial parameter does not apply at the lepton scale. K re-emerges only as a *descriptive count* for composite-particle configurations (quarks in nucleons, nucleons in nuclei, electrons in atomic orbitals) — best-practice labeling for those deferred until M5.7+.
->
-> **Refinement from Robert Close (2026-04-18)**: "Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions." Success criterion is therefore **long-lived resonance with measurable lifetime**, not perfect stability.
-
-**Single-particle stability test (electron as a defect)**:
-
-- [ ] Seed a single biaxial hedgehog with the electron-axis choice (δ ~ ℏ)
-- [ ] Evolve the field under the full Lagrangian (Close's Eq. 23 + KG mass term + LdG biaxial potential + Frank elastic + Skyrme if needed)
-- [ ] Measure defect stability under perturbation: is the hedgehog a long-lived resonance? What's its measurable lifetime?
-- [ ] Compare to variants (different axis choices, topological-vortex-loop alternatives for neutrino): does the δ-axis hedgehog have a measurably longer lifetime than alternatives, as a proxy for "electron is the lightest stable charged lepton"?
-
-**Pair-interaction test (dynamic Coulomb + annihilation)**:
-
-- [ ] Seed a hedgehog + anti-hedgehog pair (electron + positron) at various separations
-- [ ] Compare to M3 Combined W-L baseline: does the sinc far-field barrier disappear when topology is active?
-- [ ] Measure far-field force *dynamically* (not just statically as in Exp 2): does clean 1/d² Coulomb emerge as the pair moves toward each other?
-- [ ] Test annihilation: when the pair closes to near-zero separation, do the winding numbers cancel and the stored energy radiate outward as Klein-Gordon waves at ~511 keV each?
-
-**Mechanism-distinguishing tests (3b Q&A → M5.4 testing points)**:
-
-- [ ] **Topology-vs-wave annihilation test**: seed a *same-winding* pair (Q = +1 and Q = +1) and force them together. They must NOT annihilate (topology forbids `Q_total = +2 → 0` smoothly; only `Q + (−Q) = 0` is topologically allowed). This directly distinguishes M5's "annihilation = topological cancellation" from M3's "annihilation = wave cancellation" — same-winding pairs would annihilate in M3 if waves were forced to overlap, but cannot in M5
-- [ ] **Phase-as-derived test**: seed two electrons (same winding Q = −1) with *different* initial oscillation phases. Confirm both behave as electrons (same charge sign) regardless of phase choice. This validates that charge sign comes from winding only, not from emitted-wave phase (which is now a derived output, not a free parameter)
-- [ ] **Same-mass Zitterbewegung lock-in test (positronium)**: at sub-λ_C separations, e⁺/e⁻ should form standing-wave bound states from direct Zitterbewegung-frequency interference (matching frequencies → coherent standing waves at λ_Z/2 wells). Lifetime should match positronium's ~125 ps (para) and ~142 ns (ortho) — this validates that *same-mass* pairs DO use direct Zitterbewegung lock-in (in contrast to mass-mismatched pairs like hydrogen, see "Beyond M5.8" cross-mass-class note below)
-
-**Success metrics**:
-
-- [ ] Single biaxial hedgehog (electron-axis) is a long-lived resonance under moderate perturbation (lifetime substantially longer than decoy variants)
-- [ ] Hedgehog + anti-hedgehog pair dynamics reproduce 1/d² Coulomb attraction + annihilation; same-winding pairs do NOT annihilate; e⁺/e⁻ standing-wave lock-in reproduces positronium lifetimes
-- [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If the single biaxial hedgehog is a long-lived electron-like resonance AND the e⁺/e⁻ pair reproduces Coulomb + annihilation + positronium lock-in dynamically AND same-winding pairs cannot annihilate, the loop is closed
-
-### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
-
-> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.5 landing removes the "topology dissipates under heavy relax" caveat from M5.1. If M5.4 has revealed defect collapse and M5.5 fixes it, this is a worthwhile follow-up email to the Models-of-Particles thread — framing: "Topology fully protected (Skyrme stabilizer)". Send only if the M5.5 result genuinely strengthens an earlier claim (e.g., M5.4's long-lived resonance was borderline and Skyrme tightens the lifetime).
->
-> **Lab-existence anchor (2026)**: Liu et al. demonstrated **direct laser creation of isolated skyrmions and hopfions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). M5.5's numerical Skyrme stabilizer is the **OpenWave-side complement** to that lab observation: lab confirms these structures CAN exist in nature; M5.5 confirms they can exist in our LdGS Lagrangian numerically with the same stabilization mechanism (Skyrme higher-derivative term). Pair this with M5.6's biaxial LdG and you have both numerical *and* experimental support for the topology-as-particles framework. Cited by Duda's 2026-05-09 message on the models-of-particles list ("seeing particles as their smaller versions, what should be the particle-defect correspondence?") as motivation for the M5 program.
->
-> **Forward-looking (post-M5.8)**: hopfions — knotted/linked closed loops with non-trivial Hopf invariant — are a candidate for **excited neutrino oscillation states**. The standard closed vortex loop (M5.8 neutrino seed) covers the ground state; the hopfion variant could carry the additional topological degree of freedom that maps to mass-eigenstate vs flavor-eigenstate in standard neutrino-oscillation phenomenology. Not in M5.0–M5.8 scope, but worth flagging as the next frontier once the simple-loop neutrino is validated.
-
-- [ ] Per-Derrick's theorem, a bare topological defect in 3D is unstable to scale change. Add a Skyrme higher-derivative term `(∂_μ s × ∂^μ s)²` to stabilize
-- [ ] Scan Skyrme coefficient to find physically meaningful range
-- [ ] Rerun M5.4 with Skyrme term; compare stability
-- [ ] **Cross-validation against Liu et al. 2026** (lab skyrmion creation): once M5.5 produces a stable LdGS skyrmion numerically, compare core-radius / energy-density profile to the laser-isolated skyrmion measurements where the Nature Physics paper reports them. This is a soft validation (different medium, different coupling constants) but anchors M5.5 to a real-world existence proof rather than purely numerical self-consistency
-
-### Phase M5.6 — Biaxial LdG (deferred long-term)
-
-> **Refinement from Jarek Duda (2026-04-17)**: the lepton mass hierarchy is **not ad-hoc tuning** — it comes from the natural scale separation `0 < δ << 1 << g` where `δ ~ ℏ` (QM scale, twist eigenvalue), `1` (unity / matter scale, tilt eigenvalue), `g` (gravity scale, boost eigenvalue). The Exp 6 requirement for ~3477:1 axis ratio is *physically motivated* by this three-scale hierarchy. Additionally, "the main mass contributions of leptons come from LdG-like potential in regularization, it is the most difficult to include in simulation."
->
-> **Follow-up refinement from Jarek Duda (2026-04-19)**: `(δ, g)` are **calibration parameters**, not ab-initio derivations: *"while these delta, g parameters describe Lagrangian contributions of QM and gravity, their exact choice seem to require numerical simulations."* No analytical form to pull from — M5.6 iterates them against observed physics. On regularization: the details are still an open research problem, but **Manfried Faber's scheme (slightly different potential, produces running-coupling effect) is the recommended starting point** — Faber et al., *Universe* 11 (2025) 113 (<https://www.mdpi.com/2218-1997/11/4/113>) and arxiv:2604.12021.
-
-- [ ] Full 3×3 Q-tensor dynamics with LdG potential `V(Q) = a·Tr(Q²) − b·Tr(Q³) + c·(Tr Q²)²` using traces of powers from original Landau-de Gennes theory
-- [ ] Parameterize eigenvalues as `D = diag(δ, 1, g)` and **calibrate (δ, g) numerically** against observed lepton-mass ratios; they are not derivable ab-initio per Jarek's 2026-04-19 guidance
-- [ ] **Port Manfried Faber's regularization scheme** as the baseline (arxiv:2604.12021 + Universe 11/2025/113). Faber's form uses a slightly different potential but demonstrably produces the **running-coupling effect** — adapt to LdG-with-Skyrme rather than reinventing. This derisks the "hardest numerical step" from blank-slate design to port + adapt
-- [ ] Implement the core-singularity handling carefully — soft core smoothing + adaptive time step near the defect, on top of Faber's regularization
-- [ ] Validate: recover running-coupling effect (charge strength varies with distance / energy scale) as an independent check that the regularization is correctly ported. **This is the load-bearing test of the metric / magnitude leg of the framework**, complementing the topology leg validated in Phase 3 sandbox: topology counts charge in integer units, regularization fixes the *size* of each unit (elementary charge magnitude, electron mass, fm-scale defect core). See [3c § Topology counts; regularization gives magnitudes](3c_topological_defect.md#topology-counts-regularization-gives-magnitudes) for the methodological framing (Fleury–Duda 2026-04 thread)
-- [ ] Goal: three distinct lepton energy scales emerge from the calibrated `(δ, 1, g)` hierarchy plus the chosen LdG parameters `(a, b, c)`, with Faber's regularization active
-- [ ] This is the "electron, muon, tau from biaxial geometry" experiment — a significant undertaking beyond initial M5
-
-### Phase M5.7 — Cornell potential / quark confinement (new, per Jarek's guidance)
-
-> **Refinement from Jarek Duda (2026-04-17)**: after M5.4 succeeds, the next validation target is **recreation of the [Cornell potential](https://en.wikipedia.org/wiki/Cornell_potential)** for quarks. Quarks are excitations of a **quark string / topological vortex**; fractional charges add, on top of Coulomb, a **linear ~1 GeV/fm confinement energy** from the conflict produced by fractional charges. This is the topological analog of QCD confinement.
-
-- [ ] Seed a topological vortex string (1D defect line, not point hedgehog) connecting two fractional-charge end points
-- [ ] Measure the interaction energy `V(r)` as a function of end-point separation
-- [ ] Validate the Cornell form: `V(r) = −α/r + σ·r` with `σ ≈ 1 GeV/fm` (string tension)
-- [ ] Compare to QCD phenomenology (linear confinement, asymptotic freedom at small r)
-- [ ] **Why this matters**: it's the strong force / QCD analog in the Lagrangian-topological framework — demonstrating that the same ingredients that give lepton Coulomb (Exp 2) also give quark confinement when extended from point defects to string defects
-
-### Phase M5.8 — De Broglie clock / Zitterbewegung test (new, per Jarek's guidance)
-
-> **Refinement from Jarek Duda (2026-04-17)**: the 1+1D phi-4 kink toy-model (arxiv 2501.04036) validates the *mechanism*; for actual electron and neutrino, we need to run it in **full LdGS** (Landau-de Gennes + Skyrme) dynamics.
->
-> **Conceptual background**: the full mechanism (why defects oscillate, why the oscillation is rotational not linear, how mass + spin + de Broglie wavelength all derive from one rotation) is documented in [3c_topological_defect.md](3c_topological_defect.md). This phase is the empirical-validation step that confirms M5's specific implementation reproduces the experimentally-established Zitterbewegung frequency.
->
-> **Why M5.8 is one of the two load-bearing legs**: per Duda's 2026-05 Models-of-Particles thread (Re: [Ap-Fi] What God wants and would help...), any viable single-particle field theory must satisfy **two requirements simultaneously**: (1) charge quantization via topology — the Gauss-Bonnet leg, validated in Phase 3 sandbox + M5.4; and (2) **clock propulsion** — the de Broglie clock at rest, the leg M5.8 validates. The 2008 Catillon and 2026 nonrelativistic-positronium measurements pin the experimental target. Full treatment in [3c § TWO-REQUIREMENT TEST](3c_topological_defect.md#two-requirement-test-for-any-viable-single-particle-field-theory).
->
-> **Clock-propulsion candidate — LdG `−b·Tr(Q³)` cubic as our negative-Hamiltonian term** (cross-references Duda's 2026-04-29 + 2026-05-09 thread "News: Classical physics can explain quantum weirdness…" on models-of-particles list, where he publicly re-posed *"What is your clock propulsion mechanism?"*). Duda's framing: `ψ ~ exp(iEt/ℏ)` for `E = mc²` is literally **mass propelling oscillations**, which mathematically requires **negative Hamiltonian terms** that allow the system to slightly reduce mass by activating oscillations (toy model: arxiv:2501.04036, the phi-4 kink with curvature coupling). In our M5.2 V(ψ) plumbing, the LdG potential `V(Q) = a·Tr(Q²) − b·Tr(Q³) + c·(Tr Q²)²` already contains the candidate: the **`−b·Tr(Q³)` cubic term** is the negative Hamiltonian piece that — if our hypothesis is right — provides the clock propulsion in 3D LdGS what arxiv:2501.04036's phi-4 cubic provides in 1+1D. **Falsifiability**: if M5.4 single-defect dynamics don't exhibit self-sustained Zitterbewegung when `−b·Tr(Q³)` is active (and don't damp out when it's switched off), the cubic is *not* the propulsion mechanism — M5.8 then needs a different candidate (Close Eq. 23 nonlinear couplings `−u·∇s + w×s`, the Skyrme term, or Faber-style 4D extension). M5.8 is therefore not just a frequency-validation phase; it's the load-bearing test of which V(ψ) term is doing the propulsion.
-
-- [ ] Seed a single LdGS defect (electron: non-dual hedgehog; neutrino: dual hedgehog / closed vortex loop)
-- [ ] Let it evolve under full M5 dynamics (no external driving)
-- [ ] Measure the intrinsic oscillation frequency of the defect core (FFT of director rotation at the core)
-- [ ] Validate `ω = 2·m·c²/ℏ` (Zitterbewegung / de Broglie clock) — this is the mass-gap mechanism from Exp 4 extended to the full LdGS field
-- [ ] Compare electron (SO(2) ~ U(1), 2D rotation → de Broglie clock) vs neutrino (SO(3) ~ SU(2), 3D rotation → neutrino oscillations)
-- [ ] Confirm oscillation is **rotational** (director rotates around an axis) rather than linear position-bouncing (per [3c § What the oscillation looks like](3c_topological_defect.md#what-the-oscillation-looks-like--rotation-not-translation))
-- [ ] **Mass → frequency table** (target values to validate; per [3c § Concrete particle table](3c_topological_defect.md#concrete-particle-table--masses-to-zitterbewegung-frequencies)):
+**Mass → frequency table** (validation targets across particle species):
 
 | Particle | Defect type | Target ω = 2mc²/ℏ |
 | --- | --- | --- |
@@ -660,25 +608,72 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 | Muon | Point hedgehog (1 axis) | 3.21 × 10²³ rad/s |
 | Tau | Point hedgehog (g axis) | 5.39 × 10²⁴ rad/s |
 | Neutrino | Closed vortex loop | ~10¹⁵ rad/s (sub-eV mass) |
-| Up quark | Vortex string endpoint | ~7 × 10²¹ rad/s |
-| Down quark | Vortex string endpoint | ~1.4 × 10²² rad/s |
-| Proton (composite) | 3-string Y-config | 2.85 × 10²⁴ rad/s |
 
-- [ ] **Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Measure each one's intrinsic frequency independently. Confirm each ticks at its own mass-derived `ω` (validates that frequency is set by *each* defect's stored energy, not a coupling between them)
-- [ ] **Negative-Hamiltonian propulsion test** (per Duda's 2026-04-29 + 2026-05-09 public clock-propulsion question): toggle the LdG `−b·Tr(Q³)` cubic term on / off. With it ON, single-defect dynamics should self-sustain at `ω = 2mc²/ℏ` for ≥ 100·T_Z runs without damping. With it OFF (set b = 0), oscillation should damp out within a few periods. If self-sustained oscillation persists with b = 0, the propulsion lives elsewhere (Close Eq. 23 nonlinear couplings or Skyrme term — investigate by toggling those next)
-- [ ] **Why this matters**: mass-driven oscillation is the origin of the wave-particle duality; validating it numerically in the full LdGS closes the loop from Exp 4 linear-order validation to full nonlinear particle dynamics. Once the table above is reproduced, M5 has empirically derived particle masses from geometric defect parameters — the Standard Model's free-mass-parameter problem becomes a calibration problem instead. Additionally, the clock-propulsion term identification (previous task) directly answers Duda's open public question — a publishable result independent of the frequency table
+**Experimental anchors** (validation against measured values):
 
-#### Experimental anchors for M5.8
-
-The numerical M5.8 result must reproduce a real, measured frequency. Three experimental anchors define the validation target — full treatment in [3c § Zitterbewegung experimental anchors](3c_topological_defect.md#how-the-rotation-stores-energy):
-
-| Year | Experiment | Regime | Relevance to M5.8 |
+| Year | Experiment | Regime | Relevance |
 | --- | --- | --- | --- |
-| 2010 | Gerritsma et al. (trapped-ion simulation of Dirac dynamics) | Analog | First observation of a Zitterbewegung-class signal; analog rather than direct |
-| 2008 | Catillon, Cue, et al. (electron channeling clock) | 81 MeV electrons (relativistic) | Direct measurement of an electron clock, but at energies where the kinematic mass correction contributes alongside the rest-mass term |
-| **2026** | **Positronium de Broglie clock measurement, Nature Comm.** | **3 keV (nonrelativistic, e⁺e⁻ bound state)** | **Cleanest anchor**: kinetic energy far below the rest-mass scale, so the kinematic correction is negligible — the measurement is essentially `ω = 2mc²/ℏ` for the bound electron pair. Cross-anchors **M5.4** (e⁺/e⁻ pair dynamics, positronium lifetime) and **M5.8** (rest-mass Zitterbewegung) at the same composite-scale system. *Flagged by Jarek Duda, 2026-05* |
+| 2010 | Gerritsma et al. (trapped-ion Dirac analog) | Analog | First Zitterbewegung-class observation |
+| 2008 | Catillon, Cue, et al. (electron channeling) | 81 MeV electrons (relativistic) | Direct electron-clock measurement, with kinematic mass correction |
+| **2026** | **Positronium de Broglie clock, Nature Comm.** | **3 keV (nonrelativistic e⁺e⁻ bound state)** | **Highest-priority anchor**: kinetic energy ≪ rest-mass → measurement is essentially `ω = 2mc²/ℏ`. Cleanest validation target. *Flagged by Duda 2026-05* |
 
-The 2026 positronium measurement is the **highest-priority validation target** for M5.8 because it isolates the rest-mass clock that the LdGS dynamics is supposed to derive — no relativistic confound to interpret. If M5.4 reproduces positronium lifetime AND M5.8 reproduces the bound-state Zitterbewegung frequency, both phases are anchored to the same 2026 experimental dataset.
+- [ ] **Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Each ticks at its own mass-derived `ω`, independently
+- [ ] **Negative-Hamiltonian propulsion test**: toggle the `−b·Tr(M³)` cubic term on/off. With it ON, single-defect dynamics should self-sustain for ≥100·T_Z runs; with it OFF (b=0), oscillation should damp. Identifies which term in V(M) is the propulsion mechanism
+- [ ] **Exit criterion**: electron Zitterbewegung frequency reproduced within 10% of `1.55 × 10²¹ rad/s`. **GROUP-HEADLINE SEND** to Models-of-Particles thread.
+
+---
+
+### Phase M5.9 — 3 lepton families + Cornell quark strings
+
+> Standard Model correspondence. The biaxial Λ = (g, 1, δ, 0) gives 3 axis-choices → 3 lepton families with the same Q but different masses (e/μ/τ). Cornell potential for quark strings via topological vortex.
+
+- [ ] Seed hedgehogs along the 3 different axes of the biaxial M field
+- [ ] **Calibrate `(g, δ) numerically** against observed lepton-mass ratios: μ/e ≈ 207, τ/e ≈ 3477`. Per Duda 2026-04-19 guidance, these are calibration parameters, not ab-initio derivations
+- [ ] Topological vortex string (1D defect line, not point hedgehog) for quark-pair binding
+- [ ] Validate Cornell form: `V(r) = −α/r + σ·r` with `σ ≈ 1 GeV/fm` (string tension)
+- [ ] **Exit criterion**: lepton mass ratios within 10% of observed; Cornell potential reproduced with `σ ≈ 1 GeV/fm`
+
+---
+
+### Phase M5.10 — Thermal energy (SABER tie-in — MAIN GOAL)
+
+> **THERMAL HEADLINE** (SABER deliverable). Tests the SABER thermal-amplitude hypothesis: **heat = joint (A, ω) excess of subatomic defect oscillation above ground state** (per `project_thermal_amplitude_hypothesis` memory).
+>
+> Starts as soon as M5.7 lands (drive infrastructure ready); runs in parallel with M5.8 / M5.9. Composite-particle work (M5.11) is deferred until M5.10 lands — thermal is the priority once foundations exist.
+>
+> Engineering implementations stay in the private SABER repo per the cardinal repo-discipline rule (`feedback_repo_discipline`). M5.10 in this public repo validates the *physics hypothesis* numerically; SABER repo holds device-side engineering.
+
+#### M5.10a — Drive infrastructure on M5.7 resonance
+
+- [ ] Reuse M5.7's parameterized harmonic forcing as the thermal-drive primitive
+- [ ] Per-defect (A, ω) measurement instrumentation: FFT of director rotation, amplitude tracker
+- [ ] Define ground state (A₀, ω₀) from M5.7's metastable resonance baseline (or M5.8 Zitterbewegung if 4D landed)
+- [ ] Test: drive defect at A > A₀ and ω > ω₀; verify excess energy is recoverable as kinetic
+
+#### M5.10b — Modulation hypothesis test
+
+- [ ] FM / AM / hybrid modulation of the drive signal (per thermal-amplitude-hypothesis modulation framing)
+- [ ] Measure: under which modulation patterns does the defect efficiently absorb / release thermal-excess energy?
+- [ ] **Falsification**: if NO modulation pattern produces a measurable thermal signature distinct from random noise, the hypothesis is falsified — close out as clean negative
+
+#### M5.10c+ — TBD per SABER scope
+
+- [ ] Sub-phases detailed once 10a/10b results land. Reference: SABER private repo `SABER/projects/direct_heat_conversion/`
+
+**Exit criterion**: SABER thermal-amplitude hypothesis empirically tested — validated, falsified, or scope-refined with concrete next experiment. **THERMAL-HEADLINE result**, regardless of sign.
+
+---
+
+### Phase M5.11 — Composite particles (DEFERRED post-M5.10)
+
+> Pursued only if M5.10 succeeds and resources permit. Hopfions, knots → nuclei. Liu et al. 2026 lab anchor (`project_particle_defect_correspondence` memory).
+
+- Hopfions as excited-state neutrino/lepton variants
+- Multi-defect knots → halo nuclei / few-nucleon binding
+- Atom-scale physics (hydrogen orbital quantization)
+- Cross-mass-class machinery for proton/electron (see "Cross-mass-class" subsection below — same engineering effort)
+
+Detailed sub-scoping deferred. Composite work is no longer on the critical path; thermal energy (M5.10) is the priority.
 
 ### What M5 does NOT implement
 
@@ -698,106 +693,107 @@ The full physics hierarchy maps cleanly onto M5 phases:
 
 | Layer | Physics primitive | M5 phase that validates it | Status |
 | --- | --- | --- | --- |
-| **0 — Vacuum** | LdG ground state, static field configuration | M5.0 (scaffold) + M5.1 (`seed_vacuum`) | 🚧 next |
-| **1a — Single point defect (lepton-axis δ)** | Hedgehog as single-defect electron | M5.4 single-particle test (electron stability) | 🚧 |
-| **1b — Lepton family hierarchy** | Three biaxial axes `(δ, 1, g)` → e/μ/τ from same Lagrangian | M5.6 (biaxial Q-tensor + Faber regularization) | 🚧 |
-| **1c — Closed vortex loop** | Neutrino topology variants (SO(3)~SU(2)) | M5.6 alternative seed + M5.8 (de Broglie clock) | 🚧 |
-| **1d — Two-defect interactions** | Dynamic Coulomb 1/d², annihilation | M5.4 pair test (e⁺/e⁻) | 🚧 |
-| **1e — Intrinsic oscillation** | Zitterbewegung at `ω = 2mc²/ℏ` | M5.8 | 🚧 |
-| **2 — Open vortex string + 2 endpoints** | Quark-antiquark (meson), Cornell potential `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm | M5.7 (Cornell potential) | 🚧 |
-| **3 — 3 string endpoints (baryon configuration)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites; mass dominated by string energy | **Post-M5.8 (Phase 6 candidate)** | not yet planned |
-| **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | **Post-M5.8 (Phase 6+ candidate)** | not yet planned |
-| **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus, M3-style interference at atomic scale | **Post-M5.8 (Phase 6++ candidate)** | not yet planned |
-| **6 — Molecules / bulk matter** | Multi-atom bonding | **Long-term** | not planned |
+| **0 — Vacuum** | LdG ground state, static field configuration | M5.0 (scaffold) + M5.1 (`seed_vacuum`) | ✅ |
+| **0' — Static topology / Coulomb** | Hedgehog pair → 1/d Coulomb from Frank elastic | M5.1 (Coulomb + visual confirmation) | ✅ |
+| **1a — Matrix-substrate metastable defect** | First long-lived hedgehog on `M = ODO^T` field | M5.4 + M5.5 + M5.6 + M5.7 (resonance hunt) | 🚧 |
+| **1b — Intrinsic oscillation (Zitterbewegung)** | de Broglie clock at `ω = 2mc²/ℏ` from 4D Lorentz-signature negative-energy terms | M5.8 (GROUP HEADLINE) | 🚧 |
+| **1c — Lepton family hierarchy** | Three biaxial axes `(δ, 1, g)` → e/μ/τ from same Lagrangian | M5.9 | 🚧 |
+| **1d — Closed vortex loop** | Neutrino topology variant (SO(3)~SU(2)) | M5.9 (alternative seed) | 🚧 |
+| **1e — Two-defect annihilation** | Dynamic Coulomb 1/d² + e⁺/e⁻ annihilation | M5.7+ pair test | 🚧 |
+| **2 — Open vortex string** | Quark-antiquark (meson), Cornell potential `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm | M5.9 (Cornell) | 🚧 |
+| **THERMAL — Per-defect (A, ω) excess** | Heat as joint amplitude+frequency excess above defect ground state | **M5.10 — THERMAL HEADLINE (SABER MAIN GOAL)** | 🚧 (unblocked when M5.7 lands) |
+| **3 — Baryons (3 string endpoints)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites | M5.11 (DEFERRED post-M5.10) | not planned |
+| **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | M5.11 (DEFERRED) | not planned |
+| **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus | M5.11 (DEFERRED — also needs cross-mass-class machinery) | not planned |
+| **6 — Molecules / bulk matter** | Multi-atom bonding | Long-term | not planned |
 
 ### Layer-by-layer dependency chain
 
 Each higher layer requires the layer below to be working correctly:
 
-- **Layer 1** (lepton) requires Layer 0 (vacuum that supports topological defects) — checked by M5.0/M5.1 invariant tests
-- **Layer 2** (meson / vortex string) requires Layer 1 (defect machinery + force diagnostics) — checked by M5.7 Cornell-potential validation passing
-- **Layer 3** (nucleon) requires Layer 2 (validated string-tension physics + 3-endpoint Y-configuration handling) — gated on M5.7 success
+- **Layer 1** (lepton) requires Layer 0 (vacuum that supports topological defects) — checked by M5.0/M5.1 invariant tests (✅)
+- **THERMAL** (per-defect (A, ω) excess) requires Layer 1a (matrix-substrate metastable defect) — gated on M5.7 success; runs in parallel with M5.8/M5.9
+- **Layer 2** (meson / vortex string) requires Layer 1 (defect machinery + force diagnostics) — checked by M5.9 Cornell-potential validation passing
+- **Layer 3** (nucleon) requires Layer 2 (validated string-tension physics + 3-endpoint Y-configuration handling) — gated on M5.9 success
 - **Layer 4** (nucleus) requires Layer 3 (working nucleon + residual-force model)
 - **Layer 5** (atom) requires Layer 4 (working nucleus) + Layer 1 (working electron) + the standing-wave near-field physics (already validated in M3, retained in M5)
 
 **The cross-layer integration is the unique value**: a successful Layer 5 (atom simulation) provides simultaneous validation that the lepton physics, string-string-tension physics, residual-force binding, and orbital-force standing-wave interference all work *together* — something a single-scale simulator cannot test by construction.
 
-### Beyond M5.8 — composite-particle roadmap (sketched, not yet planned)
+### M5.11 — Composite-particle detail (DEFERRED, sub-scope sketched)
 
-The current 9-phase plan (M5.0–M5.8) covers the vacuum, lepton, and meson layers (Layers 0–2). Layers 3–5 are major undertakings deferred to a future Phase 6+ scope. Sketched phases:
+Detail for the M5.11 phase introduced earlier. Layers 3–5 are major undertakings; sub-phases sketched here for forward visibility but NOT on the critical path. M5.10 thermal is the priority once foundations exist.
 
-| Phase candidate | Layer | Headline |
+| Sub-phase | Layer | Headline |
 | --- | --- | --- |
-| **M6.1 / Nucleon assembly** | Layer 3 | Seed 3-string Y-configuration with color-neutral axis assignment; verify proton/neutron forms a stable bound state with mass dominated by string energy |
-| **M6.2 / Color confinement test** | Layer 3 | Attempt to separate one quark from a 3-quark configuration; verify string tension prevents isolation (linear energy growth) |
-| **M6.3 / Nuclear binding** | Layer 4 | Two-nucleon and few-nucleon bound states; measure residual strong force; reproduce binding-energy curve |
-| **M6.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
-| **M6.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
+| **M5.11.1 / Nucleon assembly** | Layer 3 | Seed 3-string Y-configuration with color-neutral axis assignment; verify proton/neutron forms a stable bound state with mass dominated by string energy |
+| **M5.11.2 / Color confinement test** | Layer 3 | Attempt to separate one quark from a 3-quark configuration; verify string tension prevents isolation (linear energy growth) |
+| **M5.11.3 / Nuclear binding** | Layer 4 | Two-nucleon and few-nucleon bound states; measure residual strong force; reproduce binding-energy curve |
+| **M5.11.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
+| **M5.11.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
 
-#### Cross-mass-class machinery required for M6.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](3c_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
+#### Cross-mass-class machinery required for M5.11.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](3c_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
 
-Atom-scale simulations (M6.4 onward) need additional architectural capability beyond the same-mass-class physics validated by M5.4–M5.7. The reason: in hydrogen-like systems, the proton ticks at `ω_p ≈ 1836 × ω_e`, so direct e-p Zitterbewegung interference does NOT form coherent standing waves. Instead, three layered mechanisms must work together:
+Atom-scale simulations (M5.11.4 onward) need additional architectural capability beyond the same-mass-class physics validated by M5.7–M5.8. The reason: in hydrogen-like systems, the proton ticks at `ω_p ≈ 1836 × ω_e`, so direct e-p Zitterbewegung interference does NOT form coherent standing waves. Instead, three layered mechanisms must work together:
 
-- [ ] **Topological 1/d Coulomb** between e (Q=−1) and p (effective Q=+1) — provides the static potential well (already validated in M5.4)
+- [ ] **Topological 1/d Coulomb** between e (Q=−1) and p (effective Q=+1) — provides the static potential well (already validated in M5.1)
 - [ ] **Electron self-de-Broglie standing waves** — the electron's Zitterbewegung (ω_e at 10²¹ rad/s) + translational drift produces de Broglie wavelength `λ_dB = h/(m_e v)`. Standing waves of the electron's *own* emission (interfering with reflections off the central proton's potential well) quantize discrete Bohr orbital shells at `n·λ_dB = 2π·r_n`
-- [ ] **Quasi-static heavy-center treatment** for the proton — because m_p ≫ m_e, the proton's intrinsic clock (10²⁴ rad/s) is invisible to the electron's slower 10²¹ rad/s response and time-averages out. M6.4's solver must treat the proton as a fixed Coulomb center on the electron's time scale (with proton dynamics on its own slower scale only when needed)
+- [ ] **Quasi-static heavy-center treatment** for the proton — because m_p ≫ m_e, the proton's intrinsic clock (10²⁴ rad/s) is invisible to the electron's slower 10²¹ rad/s response and time-averages out. M5.11.4's solver must treat the proton as a fixed Coulomb center on the electron's time scale (with proton dynamics on its own slower scale only when needed)
 
-This is structurally different from the same-mass cases: positronium (M5.4) and quark-quark binding (M5.7) DO use direct Zitterbewegung interference; hydrogen-like atoms (M6.4) cannot. The transition criterion is `ω_a ≈ ω_b` (frequency-matched, direct interference works) vs `|ω_a − ω_b| ≫ min(ω_a, ω_b)` (frequency-mismatched, requires the three-mechanism layering above).
+This is structurally different from the same-mass cases: positronium (M5.7+) and quark-quark binding (M5.9) DO use direct Zitterbewegung interference; hydrogen-like atoms (M5.11.4) cannot. The transition criterion is `ω_a ≈ ω_b` (frequency-matched, direct interference works) vs `|ω_a − ω_b| ≫ min(ω_a, ω_b)` (frequency-mismatched, requires the three-mechanism layering above).
 
-This testing-architecture distinction is **gating** for atom-scale simulations: M6.4 cannot succeed by simply scaling up M5.4's mechanism. The cross-mass machinery is a separate engineering effort.
+This testing-architecture distinction is **gating** for atom-scale simulations: M5.11.4 cannot succeed by simply scaling up the same-mass mechanism. The cross-mass machinery is a separate engineering effort.
 
-### Beyond M6 — thermal mechanics pathway (Phase 7+)
+### M5.10 — Thermal-mechanics detail
 
 A working hypothesis for the heat output domain: **the thermal degree of freedom is the joint amplitude+frequency `(A, ω)` excess of a topological defect's intrinsic Zitterbewegung above its ground-state values `(A₀, ω₀)`** — both components carry thermal content; they are coupled by **wave-steepness conservation** (`A/λ = const`), the same conservation principle articulated in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation `(A₀, ω₀)` with `A₀ ≈ ℏ/(mc)` (its Compton wavelength) and `ω₀ = 2mc²/ℏ` (the Zitterbewegung clock). Any excess on top of *either* component is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
 
-**Direct prediction at the boundary**: if all defects sit exactly at `(A₀, ω₀)` with zero thermal excess, the framework predicts the system temperature is exactly **0 Kelvin** (absolute zero). Conversely, the temperature observable is — by construction — the measurement of joint `(A, ω)` excess above ground state. This recovers absolute zero correctly and consistently with the third law of thermodynamics, BEC, and superconductivity (phase-coherent ground states are the zero-excess configuration). The framework being self-consistent at this boundary is a pre-numerical sanity check on the hypothesis itself — and one of the M7 phases below (M7.0) verifies it numerically.
+**Direct prediction at the boundary**: if all defects sit exactly at `(A₀, ω₀)` with zero thermal excess, the framework predicts the system temperature is exactly **0 Kelvin** (absolute zero). Conversely, the temperature observable is — by construction — the measurement of joint `(A, ω)` excess above ground state. This recovers absolute zero correctly and consistently with the third law of thermodynamics, BEC, and superconductivity (phase-coherent ground states are the zero-excess configuration). The framework being self-consistent at this boundary is a pre-numerical sanity check on the hypothesis itself — and one of the M5.10 sub-phases below (M5.10.0) verifies it numerically.
 
 The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). The topological-defect deep dive in [3c_topological_defect.md](3c_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
 
 **Connection to Time Dynamics**: the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock — its rate of internal cycling. Modulating defect `ω` therefore corresponds to *locally engineering the rate of time at the subatomic scale*. The Phase 7 (A, ω) modulation experiments are simultaneously thermal-mechanics validation AND time-dynamics validation under different framings — same physical operation, two complementary scientific framings. See [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md) for the time-dynamics-side treatment.
 
-**Infrastructure foundation from M5.1 task 6**: the `lagrangian_engine.relax_director_step` kernel built for M5.1 task 6 (gradient-descent ground-state finder) is the **mathematical precursor** to M7's thermal-modulation primitives, despite the very different physics intent. The relaxation uses tangent-projected diffusion `∂_τ n = ∇²n − (n·∇²n)n` to drag the field toward the minimum-energy configuration — i.e. the **γ → ∞ limit** of a damped wave equation `∂²_t ψ = c²·∇²ψ − γ·∂_t ψ` (pure-dissipation overdamped regime). M7's thermal-modulation kernels will reuse the **same primitives** — the Laplacian stencil (`compute_laplacian`), the tangent projection (to preserve `|n|=1`), the soft-core pinning (to preserve topology) — but with a **physical γ** representing real damping (radiation, phonon coupling, EM-load impedance) instead of an artificial time-stepping parameter τ. So although task 6's relaxation has no physics interpretation in M5.1 (it's a ground-state finder for visualization + initial conditions), the kernel and its surrounding test infrastructure (`research/m5_1_relax.py`, `pin_centers/signs` plumbing in `SimulationState`, the `relax_field` helper that updates both `psi_am` AND `psi_prev_am` to preserve ψ̇=0) will all carry forward into M7 with minimal modification. The applied-tech implications of this math overlap — engineering γ as the DHC engineering target — are explored in private SABER work outside this repo.
+**Infrastructure foundation from M5.1 task 6**: the `lagrangian_engine.relax_director_step` kernel built for M5.1 task 6 (gradient-descent ground-state finder) is the **mathematical precursor** to M5.10's thermal-modulation primitives, despite the very different physics intent. The relaxation uses tangent-projected diffusion `∂_τ n = ∇²n − (n·∇²n)n` to drag the field toward the minimum-energy configuration — i.e. the **γ → ∞ limit** of a damped wave equation `∂²_t ψ = c²·∇²ψ − γ·∂_t ψ` (pure-dissipation overdamped regime). M5.10's thermal-modulation kernels will reuse the **same primitives** — the Laplacian stencil (`compute_laplacian`), the tangent projection (to preserve `|n|=1`), the soft-core pinning (to preserve topology) — but with a **physical γ** representing real damping (radiation, phonon coupling, EM-load impedance) instead of an artificial time-stepping parameter τ. So although task 6's relaxation has no physics interpretation in M5.1 (it's a ground-state finder for visualization + initial conditions), the kernel and its surrounding test infrastructure (`research/m5_1_relax.py`, `pin_centers/signs` plumbing in `SimulationState`, the `relax_field` helper that updates both `psi_am` AND `psi_prev_am` to preserve ψ̇=0) will all carry forward into M5.10 with minimal modification. The applied-tech implications of this math overlap — engineering γ as the DHC engineering target — are explored in private SABER work outside this repo.
 
-#### Phase 7 — Thermal mechanics from defect (A, ω) statistics (proposed)
+#### M5.10 sub-phases — Thermal mechanics from defect (A, ω) statistics
 
-| Phase candidate | Layer / domain | Headline test |
+| Sub-phase | Layer / domain | Headline test |
 | --- | --- | --- |
-| **M7.0 / Temperature observable + absolute-zero sanity check** | Per-defect thermal (definition + boundary case) | Define the temperature observable as a measurement of joint `(A, ω)` excess above ground-state `(A₀, ω₀)`. Implement it as a numerical probe operating on the M5.4 single-defect output. Verify the boundary case: a defect sitting at exactly `(A₀, ω₀)` with no perturbation reads `T = 0 K`. Verify monotonicity: small symmetric `(A − A₀, ω − ω₀)` excitation reads small positive `T`; larger excitation reads larger `T`. This is the cheapest pre-numerical sanity check on the framework — if M7.0 fails, the temperature definition itself is wrong and all downstream M7.x phases are meaningless. Establishes the temperature observable that M7.1 → M7.6 will all use |
-| **M7.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.4. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from the topological ground state — a real defect's instantaneous state is its rest-energy ground `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is now). Five sub-experiments share the same kink + Klein-Gordon background and instrumentation: **(7.1a) AM-up** — bump A above current; measure relaxation pathway, breather modes, emission spectrum. **(7.1b) AM-down** — pull A below current via destructive interference at the defect; measure whether the surrounding field refills the kink (a per-defect cooling event). **(7.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(7.1d) FM-down** — slow ω below current via tuned interference; measure A rise and energy-source direction. **(7.1e) coupling cross-check** — validate `A/λ = const` holds at per-defect level under all four perturbation directions. The cheapest go/no-go check on the joint (A, ω) thermal hypothesis |
-| **M7.2 / Soliton-breather comparison** | Per-defect thermal | Compare M7.1's measured amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). If the framework is correct, these breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
-| **M7.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
-| **M7.4 / Specific heat reproduction** | Defect ensemble thermal | From M7.3 statistics, derive specific heat C_V(T). Validate against experimental measurements: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
-| **M7.5 / Blackbody spectrum** | Thermal-EM coupling | Measure emission spectrum from a thermalized defect ensemble. Validate Wien's displacement law and Stefan-Boltzmann scaling. The heat → light channel — physics that connects the matter / forces / EM / heat output domains |
-| **M7.6 / Phase-coherence transition** | Quantum thermal | At low T, do defect ensembles transition into phase-coherent ground states (analogous to superconductivity / BEC)? Reproduce critical temperatures for known materials. The cleanest "novel hypothesis" validation |
-| **M7.7 / Per-defect outgoing-wave thermal-character measurement** | Per-defect thermal-EM coupling | Take a single defect from M7.1 at varied joint (A, ω) states. Measure the outgoing wave-field's amplitude / frequency / polarization at engineering distance from the defect core. Confirm thermal-excess content is also expressed in the outgoing wave (the dual-located thermal-degree-of-freedom prediction — heat lives both inside the defect AND in the spherical waves the defect propagates outward). The load-bearing physics test for whether the outgoing wave is a separate, addressable observable channel for thermal content |
-| **M7.8 / Wave-modulation back-reaction** | Per-defect thermal | Drive resonance with the defect's outgoing wave-field at engineering distance (perturbation acts on the wave, NOT on the defect's interior). Measure whether the defect's joint (A, ω) state responds via back-reaction. Pass = back-reaction is detectable and proportional to wave-perturbation magnitude (energy conservation forces the defect to refill what was extracted from the wave). Fail = the wave-perturbation dissipates without back-reacting, meaning the outgoing-wave channel cannot be used as an indirect lever on the defect. Cheapest go/no-go on whether outgoing-wave engineering is physically viable as an alternative to direct defect modulation |
-| **M7.9 / Heat-magnetism wave-level co-scaling** | Per-defect thermal-EM coupling | Cross-validation joining M7.7 with the Phase 4 magnetic-emergence work. Confirm that thermal excess in a defect's joint (A, ω) state scales the latent magnetic-component (T-component) magnitude of its outgoing wave as predicted by the L+T-as-channels framing. If thermal excess only scales the L-component (or scales L and T identically rather than coupling them at the wave level), the heat-magnetism per-defect coupling claim needs revision |
+| **M5.10.0 / Temperature observable + absolute-zero sanity check** | Per-defect thermal (definition + boundary case) | Define the temperature observable as a measurement of joint `(A, ω)` excess above ground-state `(A₀, ω₀)`. Implement it as a numerical probe operating on the M5.7 metastable defect output. Verify the boundary case: a defect sitting at exactly `(A₀, ω₀)` with no perturbation reads `T = 0 K`. Verify monotonicity: small symmetric `(A − A₀, ω − ω₀)` excitation reads small positive `T`; larger excitation reads larger `T`. Cheapest pre-numerical sanity check on the framework — if M5.10.0 fails, the temperature definition is wrong and all downstream M5.10.x phases are meaningless. Establishes the temperature observable that M5.10.1 → M5.10.6 will all use |
+| **M5.10.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.7. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from topological ground — a real defect's instantaneous state is `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is). Five sub-experiments share the same kink + KG background: **(10.1a) AM-up** — bump A above current; measure relaxation, breather modes, emission spectrum. **(10.1b) AM-down** — pull A below current via destructive interference; measure whether the field refills the kink (a per-defect cooling event). **(10.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(10.1d) FM-down** — slow ω below current via tuned interference; measure A rise. **(10.1e) coupling cross-check** — validate `A/λ = const` under all four perturbation directions. Cheapest go/no-go on the joint (A, ω) thermal hypothesis |
+| **M5.10.2 / Soliton-breather comparison** | Per-defect thermal | Compare M5.10.1's amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). Breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
+| **M5.10.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
+| **M5.10.4 / Specific heat reproduction** | Defect ensemble thermal | From M5.10.3 statistics, derive specific heat `C_V(T)`. Validate against experimental: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
+| **M5.10.5 / Blackbody spectrum** | Thermal-EM coupling | Emission spectrum from a thermalized defect ensemble. Validate Wien's displacement law + Stefan-Boltzmann scaling. The heat → light channel |
+| **M5.10.6 / Phase-coherence transition** | Quantum thermal | At low T, do defect ensembles transition into phase-coherent ground states (analogous to superconductivity / BEC)? Reproduce critical temperatures for known materials |
+| **M5.10.7 / Per-defect outgoing-wave thermal-character measurement** | Per-defect thermal-EM coupling | Take a single defect from M5.10.1 at varied joint (A, ω) states. Measure the outgoing wave-field's amplitude / frequency / polarization at engineering distance from the defect core. Confirm thermal-excess content is also expressed in the outgoing wave (the dual-located thermal-degree-of-freedom prediction — heat lives both inside the defect AND in the spherical waves the defect propagates outward) |
+| **M5.10.8 / Wave-modulation back-reaction** | Per-defect thermal | Drive resonance with the defect's outgoing wave-field at engineering distance (perturbation acts on the wave, NOT on the defect interior). Measure whether the defect's joint (A, ω) state responds via back-reaction. Cheapest go/no-go on whether outgoing-wave engineering is physically viable as an alternative to direct defect modulation |
+| **M5.10.9 / Heat-magnetism wave-level co-scaling** | Per-defect thermal-EM coupling | Cross-validation joining M5.10.7 with the Phase 4 magnetic-emergence work. Confirm that thermal excess scales the latent magnetic-component (T-component) magnitude of the outgoing wave as predicted by the L+T-as-channels framing |
 
-These Phase 7 phases are deliberately speculative — they assume the joint (A, ω) framework holds and cascade from there. If M7.1 falsifies the hypothesis, the rest don't run as planned. But if M7.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
+These M5.10 sub-phases are deliberately speculative — they assume the joint (A, ω) framework holds and cascade from there. If M5.10.1 falsifies the hypothesis, the rest don't run as planned. But if M5.10.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
 
-> **Why M7.7 / M7.8 / M7.9 matter**: M7.1's sub-experiments perturb the defect directly, but real measurement and engineering instruments operate at engineering distance from the defect, on the outgoing wave-field — never directly on the sub-fm-scale defect interior. M7.7 verifies that the outgoing wave carries the thermal information; M7.8 verifies that perturbing the outgoing wave back-reacts on the defect's state (closing the indirect-engineering loop); M7.9 cross-validates the per-defect heat-magnetism wave-level coupling that joins Phase 7 (thermal mechanics) to Phase 4 (EM emergence) at the per-defect substrate. Together they upgrade the Phase 7 program from "we can perturb defects we can't reach" to "we can perturb something we *can* reach (the outgoing wave) and validly infer / predict the defect-level effect."
+> **Why M5.10.7 / M5.10.8 / M5.10.9 matter**: M5.10.1's sub-experiments perturb the defect directly, but real measurement and engineering instruments operate at engineering distance from the defect, on the outgoing wave-field — never directly on the sub-fm-scale defect interior. M5.10.7 verifies that the outgoing wave carries the thermal information; M5.10.8 verifies that perturbing the outgoing wave back-reacts on the defect's state (closing the indirect-engineering loop); M5.10.9 cross-validates the per-defect heat-magnetism wave-level coupling that joins thermal (M5.10) to EM emergence (Phase 4) at the per-defect substrate. Together they upgrade the program from "we can perturb defects we can't reach" to "we can perturb something we *can* reach (the outgoing wave) and validly infer / predict the defect-level effect."
 
-**M7.1 four-outcome decision matrix**:
+**M5.10.1 four-outcome decision matrix**:
 
-| AM (7.1a + 7.1b) | FM (7.1c + 7.1d) + coupling (7.1e) | Interpretation |
+| AM (10.1a + 10.1b) | FM (10.1c + 10.1d) + coupling (10.1e) | Interpretation |
 | --- | --- | --- |
-| ✅ | ✅ + `A/λ = const` validated | Joint (A, ω) hypothesis validated; proceed to M7.2 → M8 |
+| ✅ | ✅ + `A/λ = const` validated | Joint (A, ω) hypothesis validated; proceed to M5.10.2 → M5.10.9 |
 | ✅ | ❌ | Revise: heat is amplitude-only; engineering pivots to AM-pure pathway; doc updates needed |
 | ❌ | ✅ | Revise: heat is frequency-only or coupling inverted; rethink the physics framing |
-| ❌ | ❌ | Hypothesis falsified at the per-defect level; redirect Phase 7 effort |
+| ❌ | ❌ | Hypothesis falsified at the per-defect level; close out M5.10 as informative negative |
 
-**Two-tier prerequisite distinction for M7.1**:
+**Two-tier prerequisite distinction for M5.10.1**:
 
 | Test scope | Minimum prerequisites | Why |
 | --- | --- | --- |
-| **M7.1 internal validation** (tests the hypothesis at the field-theoretic level) | M5.4 (stable defect) + M5.2 (KG wave dynamics) | The "external wave" driving 7.1c/d can be a Klein-Gordon perturbation in the M5 medium itself. This is sufficient to test whether the defect responds to (A, ω) modulation as the hypothesis predicts |
-| **M7.1 full-lab-relevance** (tests with the same wave classes that downstream applications will use as engineering tools — EM, magnetic, acoustic, etc.) | M5.4 + Phase 4 (EM emergence) + Phase 5 (gravity, optional for non-gravitational drives) | Physical engineering applications use real-world wave classes. To predict their effect on defect modulation, the simulation drive must be the same class as the lab drive — which requires the lever-class phases to be validated first |
+| **M5.10.1 internal validation** (tests the hypothesis at the field-theoretic level) | M5.7 (metastable defect) + M5.6 (KG wave dynamics from twist) | The "external wave" driving 10.1c/d can be a KG perturbation in the M5 medium. Sufficient to test the (A, ω) modulation hypothesis |
+| **M5.10.1 full-lab-relevance** (tests with the same wave classes that downstream applications will use as engineering tools — EM, magnetic, acoustic) | M5.7 + Phase 4 (EM emergence) + Phase 5 (gravity, optional for non-gravitational drives) | Physical applications use real-world wave classes. To predict their effect on defect modulation, the simulation drive must be the same class as the lab drive |
 
-The internal validation can run as soon as M5.4 lands; full lab-relevance results follow Phase 4 (EM-wave emergence). This is captured in the dependency chain: heat-substrate validation (M7.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites for engineering downstream — both must reach completion before applications that combine them can be predicted reliably from simulation.
+The internal validation can run as soon as M5.7 lands; full lab-relevance results follow Phase 4. Heat-substrate validation (M5.10.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites for engineering downstream — both must reach completion before applications combining them can be predicted reliably.
 
 Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
-
-These plans are kept intentionally rough — concrete phase work waits until M5.0–M5.8 establish the foundations.
 
 ### Why the hierarchy matters for the project's positioning
 
@@ -814,11 +810,11 @@ The integration is the value. Reading the layered table top-to-bottom is also a 
 
 For the conceptual companion to this roadmap, see [3b_concept_review.md § Where do quarks, protons, nuclei, and atoms fit?](3b_concept_review.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
 
-### Beyond M5.8 — phase, Berry, and entanglement experiments
+### Long-term research directions — phase, Berry, and entanglement experiments
 
 A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [3c_topological_defect.md § The twist degree of freedom](3c_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
 
-These are exploratory targets, not committed milestones. They naturally slot in after M5.4 (electron stability) provides the validated single-defect substrate and M5.7 (Cornell potential, vortex strings) provides validated string-defect dynamics.
+These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below thermal (M5.10) and composites (M5.11).
 
 | Phase candidate | Headline test | Layered on |
 | --- | --- | --- |
