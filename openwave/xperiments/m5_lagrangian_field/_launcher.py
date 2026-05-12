@@ -178,6 +178,20 @@ class SimulationState:
         # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
         self.TOPOLOGY_SEED = None
 
+        # M5.1 task 6 — gradient-descent relaxation
+        # pin_centers / pin_signs / n_defects are captured at seed time so the
+        # relaxation kernel can soft-pin the defect cores at ±ẑ each step
+        # (prevents numerical dissolution of topology on the discrete grid).
+        self.pin_centers = None  # ti.field (n_defects, 3) i32 — voxel coords
+        self.pin_signs = None  # ti.field (n_defects,) i32 — ±1
+        self.n_defects = 0
+        # Auto-relax on seed — set by xperiment via AUTO_RELAX_STEPS in topology_seed.
+        # Relaxation is a numerical ground-state-finder, not physics, so there's
+        # no demo / interactive use case — every seed gets relaxed once,
+        # silently, before the user sees the field. M7 (thermal modulation)
+        # will introduce proper interactive heat-modulation controls.
+        self.AUTO_RELAX_STEPS = 0
+
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
         # Meta
@@ -230,6 +244,9 @@ class SimulationState:
         self.TEST_SEED = params.get("test_seed", None)
         # Optional topology seed (only present in _test_topology xperiment, M5.1+)
         self.TOPOLOGY_SEED = params.get("topology_seed", None)
+        # M5.1 task 6 — auto-relaxation (optional; 0 = manual via RELAX button only)
+        topo_seed = params.get("topology_seed") or {}
+        self.AUTO_RELAX_STEPS = topo_seed.get("AUTO_RELAX_STEPS", 0)
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -565,6 +582,10 @@ def initialize_xperiment(state):
             lagrange.seed_hedgehog(
                 wf, centers_field, signs_field, domain_quarter_voxels, n_defects
             )
+            # Stash pin info for relaxation kernel (M5.1 task 6)
+            state.pin_centers = centers_field
+            state.pin_signs = signs_field
+            state.n_defects = n_defects
             print(
                 f"[M5.1] seeded {n_defects} hedgehog defect(s); "
                 f"D/4 = {domain_quarter_voxels:.1f} voxels"
@@ -572,6 +593,12 @@ def initialize_xperiment(state):
 
         else:
             print(f"[M5.1] WARNING: unknown TOPOLOGY_SEED mode: {seed_mode!r}")
+
+        # Optional auto-relaxation (M5.1 task 6)
+        if state.AUTO_RELAX_STEPS > 0 and state.n_defects > 0:
+            print(f"[M5.1] auto-relaxing for {state.AUTO_RELAX_STEPS} gradient-descent steps...")
+            relax_field(state, state.AUTO_RELAX_STEPS)
+            print("[M5.1] auto-relax complete")
 
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
@@ -598,6 +625,41 @@ def compute_oscillation(state):
     # TRACKERS (per-voxel amp / freq from ψ) ==============
     # Time-dependent EMA — only meaningful during dynamics, so kept here.
     lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
+
+
+def relax_field(state, n_steps):
+    """Run N gradient-descent relaxation steps on the director field (M5.1 task 6).
+
+    Lowers the Frank elastic energy by smoothing the seeded hedgehog blend
+    zone, while preserving topology via soft-core pinning. After all N steps,
+    psi_am and psi_prev_am hold the same relaxed field so subsequent
+    PROPAGATE WAVE sees ψ̇ = 0 (no spurious time-derivative artifact).
+
+    Args:
+        state: SimulationState with wave_field + pin_centers/signs/n_defects
+        n_steps: number of relax_director_step iterations to run
+
+    Step size: τ = 0.4 · dx²/6 (40% of the heat-equation CFL bound for headroom).
+    Empirically Exp 2 used τ = 0.008 with dx = 0.34 → 41% of CFL; we match.
+    """
+    if state.pin_centers is None or state.n_defects == 0:
+        # No defects → nothing to pin; gradient descent on a uniform field
+        # has nothing to do (∇²n = 0 everywhere). Skip.
+        return
+    wf = state.wave_field
+    cfl_bound = (wf.dx_am**2) / 6.0  # τ < dx²/(2·dim·K) with dim=3, K=1
+    tau = 0.4 * cfl_bound
+    for _ in range(n_steps):
+        lagrange.relax_director_step(
+            wf, tau, state.pin_centers, state.pin_signs, state.n_defects
+        )
+        # Copy relaxed field back into psi_am (and psi_prev_am to keep ψ̇=0).
+        # NOT swap_buffers — that would cycle prev←curr which we don't want
+        # for a static (non-time-evolving) update.
+        wf.psi_am.copy_from(wf.psi_new_am)
+        wf.psi_prev_am.copy_from(wf.psi_new_am)
+    # Refresh observables so dashboard + flux mesh reflect the relaxed field
+    compute_field_observables(state)
 
 
 def compute_field_observables(state):
