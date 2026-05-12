@@ -194,17 +194,17 @@ The renderer landed AFTER the seeders but BEFORE Frank energy / relaxation — e
 
 ### Bonus discovery: BC-bleed bug
 
-While verifying the glyphs, the user spotted that on first PROPAGATE WAVE click, an inward-traveling wave appeared from every boundary face. Diagnosis: `psi_new_am` boundary was never written by anyone (propagator skips boundary; was zero by Taichi default). First `swap_buffers` clobbered the seeded `n = ẑ` at boundary with that zero, and the discontinuity radiated inward.
+While verifying the glyphs, the user spotted that on first EVOLVE PSI click, an inward-traveling wave appeared from every boundary face. Diagnosis: `psi_new_am` boundary was never written by anyone (propagator skips boundary; was zero by Taichi default). First `swap_buffers` clobbered the seeded `n = ẑ` at boundary with that zero, and the discontinuity radiated inward.
 
 **Latent in M5.0 too**, but invisible because `seed_gaussian`'s envelope decay and `seed_dispersion_modes`'s sin-mode shape both happen to leave boundaries at ψ ≈ 0, matching `psi_new_am`'s default of 0 by accident. M5.1 was the first time we wanted ψ ≠ 0 at boundary.
 
-Fix applied to all 4 seeders: write all three buffers (`psi_prev_am`, `psi_am`, `psi_new_am`) at every voxel. `propagate_psi` docstring now explicitly states "fixed-value Dirichlet — boundary value depends on active seeder" and includes the BC-consistency requirement. Captured in the `feedback_triple_buffer_bc.md` auto-memory.
+Fix applied to all 4 seeders: write all three buffers (`psi_prev_am`, `psi_am`, `psi_new_am`) at every voxel. `evolve_psi` docstring now explicitly states "fixed-value Dirichlet — boundary value depends on active seeder" and includes the BC-consistency requirement. Captured in the `feedback_triple_buffer_bc.md` auto-memory.
 
 ### Files actually touched
 
 | File | Change |
 | --- | --- |
-| `lagrangian_engine.py` | added `update_director_glyphs` kernel (3-plane sample, palette color, level gating); updated all 4 seeders to write `psi_new_am`; updated `propagate_psi` docstring with fixed-value Dirichlet semantics |
+| `lagrangian_engine.py` | added `update_director_glyphs` kernel (3-plane sample, palette color, level gating); updated all 4 seeders to write `psi_new_am`; updated `evolve_psi` docstring with fixed-value Dirichlet semantics |
 | `medium.py` | `WaveField.__init__` accepts `viz_stride=4`; allocates `director_glyph_vertices/colors` fields with round-up indexing; stores `glyph_offset_xy/xz/yz` |
 | `_launcher.py` | `SimulationState.SHOW_DIRECTORS` (int 0..3) + `VIZ_STRIDE` (int) attrs; `apply_xparameters` reads both with defaults; `display_controls` slider; `render_elements` calls `update_director_glyphs` and `scene.lines`; granule rendering uses `state.VIZ_STRIDE` (consolidated from prior `max_particles=401` derivation) |
 | `xparameters/_test4_topology.py` | renamed from `_test_topology.py`; sets `SHOW_DIRECTORS: 3`, `VIZ_STRIDE: 1` (high-density default for visual quality), `SHOW_FLUX_MESH: 0` (directors are M5.1's primary view) |

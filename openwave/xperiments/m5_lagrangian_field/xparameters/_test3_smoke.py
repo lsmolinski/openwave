@@ -2,7 +2,7 @@
 XPERIMENT PARAMETERS — Plane Wave UI Smoke Test
 
 This XPERIMENT seeds a transverse-polarized traveling plane wave along x and
-lets propagate_psi (leapfrog) evolve it. The visual goal is to confirm:
+lets evolve_psi (leapfrog) evolve it. The visual goal is to confirm:
 
 - The wavefront propagates in the +x direction (not symmetrically)
 - The wavelength matches the seed (12 voxels/λ)
@@ -14,7 +14,7 @@ through the simulation domain crossing time. The first ~50% of crossing time
 is the clean regime for visual inspection.
 
 Wave-centers are present (annihilation1 baseline) but APPLY_MOTION=False and
-the seed overrides any wave-center contribution at t=0. The propagate_psi
+the seed overrides any wave-center contribution at t=0. The evolve_psi
 kernel does not consult wave_center, so they stay decorative.
 """
 

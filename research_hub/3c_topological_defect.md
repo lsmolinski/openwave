@@ -107,6 +107,10 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 
 Reading the map: if the question is about *what exists or what's protected*, the answer is topology. If the question is about *what changes or what propagates*, the answer is waves. The interesting cases are where both apply — annihilation events, accelerated defects, and the intrinsic Zitterbewegung — because those are where M5's unified field-as-particle-and-medium picture pays the most explanatory dividends.
 
+### Alternative stabilization — oscillation (Werbos chaoitons)
+
+Topology is *one* mechanism that evades Derrick's theorem. Werbos's 2026 Ouroboros paper (`scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf`) proposes an alternative: **time-periodicity** as the stabilizer. A *chaoiton* is a localized, time-periodic solution of a coupled-vector-field Lagrangian — stable because it oscillates, not because it's topologically protected. M5 uses topology as the default (winding number, hedgehog/skyrmion), but the M5.2+ dynamics may *also* exhibit oscillation-stabilization (Wilczek time-crystal preview in [§ Intrinsic oscillation](#intrinsic-oscillation--the-time-crystal-mechanism-preview)), so the two mechanisms are not mutually exclusive — they could co-occur in the same defect. Werbos's framework also cites the **Sawada `v(r) ~ -C/r⁶`** long-range nuclear-force anomaly (Sawada 1989, 2003) as an empirical anchor; that's a candidate M5.4+ falsifiability target for any field theory that produces composite hadron-like solitons.
+
 ---
 
 ## WHAT IS A TOPOLOGICAL DEFECT?

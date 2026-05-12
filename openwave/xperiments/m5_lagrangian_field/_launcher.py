@@ -113,6 +113,18 @@ class SimulationState:
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
+        # V(ψ) coupling values — populated in compute_timestep, threaded through
+        # to V_psi via evolve_psi + compute_energyH_density. Set to 0 here so
+        # any pre-init kernel call gets free-wave behavior.
+        #   m_freq_kg_rs : Klein-Gordon mass-frequency m·c²/ℏ for the electron
+        #                  (rad/rs storage units; ~7.76e-7 at SIM_SPEED=1)
+        #                  M5.2 Step 2 activated this in V_psi + evolve_psi.
+        #   lambda_phi4  : Mexican-hat φ⁴ coupling (1/(am²·rs²)). Set to
+        #                  (c_amrs/dx_am)² for grid-scale restoring force.
+        #                  M5.2 Step 4a activated this — V = ¼λ(|ψ|²−1)²
+        #                  moves the potential minimum to the unit sphere.
+        self.m_freq_kg_rs = 0.0
+        self.lambda_phi4 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -302,6 +314,18 @@ class SimulationState:
             self.wave_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
         )  # rs
         self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
+        # Klein-Gordon mass-frequency for the electron (m·c²/ℏ in rad/rs).
+        # Scales with SIM_SPEED via c_amrs so the mass-oscillation timescale
+        # stays consistent with the wave timescale under slow-motion playback.
+        self.m_freq_kg_rs = self.c_amrs / constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
+        # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
+        # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
+        # near the defect core — at λ = (c/dx)² the system NaNs around step 40
+        # of a hedgehog seed. Empirically (research/m5_2_phi4_defect_survival),
+        # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
+        # 400 steps vs [0.73, 1.21] for free wave). 0.3·(c/dx)² is the
+        # marginal stability ceiling at the production grid.
+        self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -310,6 +334,8 @@ class SimulationState:
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
+        self.m_freq_kg_rs = 0.0
+        self.lambda_phi4 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -374,7 +400,7 @@ def display_controls(state):
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
-            if sub.button(">> PROPAGATE WAVE >>"):
+            if sub.button(">> EVOLVE PSI >>"):
                 state.PAUSED = False
         else:
             if sub.button("Pause"):
@@ -606,7 +632,7 @@ def initialize_xperiment(state):
         print("=" * 64)
 
 
-def compute_oscillation(state):
+def compute_propagation(state):
     """Step ψ one timestep via leapfrog, then update trackers.
 
     Dynamics-only: runs the wave propagation + buffer swap + per-voxel
@@ -618,7 +644,9 @@ def compute_oscillation(state):
 
     # ψ PROPAGATION =======================================
     # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    lagrange.propagate_psi(state.wave_field, state.c_amrs, state.dt_rs)
+    lagrange.evolve_psi(
+        state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs, state.lambda_phi4
+    )
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
     state.wave_field.swap_buffers()
 
@@ -633,7 +661,7 @@ def relax_field(state, n_steps):
     Lowers the Frank elastic energy by smoothing the seeded hedgehog blend
     zone, while preserving topology via soft-core pinning. After all N steps,
     psi_am and psi_prev_am hold the same relaxed field so subsequent
-    PROPAGATE WAVE sees ψ̇ = 0 (no spurious time-derivative artifact).
+    EVOLVE PSI sees ψ̇ = 0 (no spurious time-derivative artifact).
 
     Args:
         state: SimulationState with wave_field + pin_centers/signs/n_defects
@@ -650,9 +678,7 @@ def relax_field(state, n_steps):
     cfl_bound = (wf.dx_am**2) / 6.0  # τ < dx²/(2·dim·K) with dim=3, K=1
     tau = 0.4 * cfl_bound
     for _ in range(n_steps):
-        lagrange.relax_director_step(
-            wf, tau, state.pin_centers, state.pin_signs, state.n_defects
-        )
+        lagrange.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
         # Copy relaxed field back into psi_am (and psi_prev_am to keep ψ̇=0).
         # NOT swap_buffers — that would cycle prev←curr which we don't want
         # for a static (non-time-evolving) update.
@@ -678,7 +704,8 @@ def compute_field_observables(state):
     # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
     # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
     lagrange.compute_energyH_density(
-        state.wave_field, state.observables, state.c_amrs, state.dt_rs
+        state.wave_field, state.observables, state.c_amrs, state.dt_rs,
+        state.m_freq_kg_rs, state.lambda_phi4
     )
 
     # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============
@@ -906,7 +933,7 @@ def main():
 
         if not state.PAUSED:
             # Run simulation step and update time
-            compute_oscillation(state)
+            compute_propagation(state)
             compute_force_motion(state)
             state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1

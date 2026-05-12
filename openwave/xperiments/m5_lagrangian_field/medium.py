@@ -271,7 +271,7 @@ class WaveField:
             reading the originally-bound prev/curr fields whose data was now in the
             wrong roles.
             The proper fix (deferred): pass fields explicitly to kernels —
-            `propagate_psi(psi_prev, psi_curr, psi_new, ...)` — so each rotation
+            `evolve_psi(psi_prev, psi_curr, psi_new, ...)` — so each rotation
             creates a distinct template-arg tuple that Taichi compiles separately
             (3 cyclic permutations → 3 cached compilations). That's a 2–3 hr refactor
             of every kernel that touches the triple buffer; not justified by current
