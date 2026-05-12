@@ -378,10 +378,10 @@ def display_wave_menu(state):
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("ENERGY (Density)", state.WAVE_MENU == 4):
+        if sub.checkbox("ENERGY (Hamiltonian)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("ENERGY (Elastic)", state.WAVE_MENU == 5):
+        if sub.checkbox("ENERGY (Frank Elastic)", state.WAVE_MENU == 5):
             state.WAVE_MENU = 5
             state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
