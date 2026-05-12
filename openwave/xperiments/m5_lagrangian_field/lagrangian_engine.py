@@ -23,6 +23,9 @@ Module layout (top-to-bottom):
                                 descent on Frank energy w/ tangent projection
                                 + unit-length renorm + soft core pin; M5.1
                                 task 6 — port from Exp 2)
+    WINDING-NUMBER DIAGNOSTIC — compute_winding_number (Q on a sphere
+                                around a defect; CPU numpy; M5.1 task 8 —
+                                port from Exp 3; diagnostic only)
     POSITION RENDER           — sample_position_to_render (granule viz)
     3-PLANE SAMPLING          — sample_avg_trackers   (amp / freq globals)
                                 sample_avg_observables (energyH / energyF
@@ -1029,6 +1032,97 @@ def relax_director_step(
         ck = pin_centers[d, 2]
         sgn = ti.cast(pin_signs[d], ti.f32)
         wave_field.psi_new_am[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
+
+
+# ================================================================
+# WINDING-NUMBER DIAGNOSTIC (M5.1 task 8)
+# ================================================================
+# Compute the topological charge Q of a director field on a sphere around
+# a given center. For a +1 hedgehog Q ≈ +1, anti-hedgehog Q ≈ −1, vacuum
+# Q ≈ 0. Pure CPU numpy; called occasionally (once per dashboard frame) as
+# a diagnostic, not per-step. Port of Exp 3's `winding_number()`.
+#
+# Math:
+#     Q = (1/4π) ∮_S n̂ · (∂_θ n̂ × ∂_φ n̂) dθ dφ
+# Where S is a sphere of given radius around the defect center.
+# Method: trilinear-sample ψ on a regular (θ, φ) grid; finite-difference
+# the angular derivatives; integrate.
+
+
+def compute_winding_number(
+    psi_np,
+    center_vox,
+    radius_vox,
+    n_theta=32,
+    n_phi=64,
+):
+    """Compute topological winding number Q on a sphere of radius `radius_vox`
+    around `center_vox` in voxel coordinates.
+
+    Args:
+        psi_np: (nx, ny, nz, 3) numpy array of director-field values
+                (typically `wave_field.psi_am.to_numpy()`).
+        center_vox: (cx, cy, cz) tuple of voxel-coord defect center.
+        radius_vox: sphere radius in voxel units. Should be small enough that
+                    the sphere fits inside the grid but large enough to be
+                    away from the defect core (e.g., 4-10 voxels).
+        n_theta: number of polar samples (default 32).
+        n_phi: number of azimuthal samples (default 64).
+
+    Returns:
+        Q (float): the winding number. ≈ +1 for hedgehog, −1 for anti-hedgehog,
+                   0 for vacuum-only enclosure. Discrete grids give Q within
+                   ~5% of the integer for a typical relaxed defect.
+    """
+    nx, ny, nz, _ = psi_np.shape
+    cx, cy, cz = center_vox
+
+    # Spherical sample grid
+    theta = np.linspace(1e-3, np.pi - 1e-3, n_theta)
+    phi = np.linspace(0.0, 2.0 * np.pi, n_phi, endpoint=False)
+    dth = float(theta[1] - theta[0])
+    dph = float(phi[1] - phi[0])
+    TH, PH = np.meshgrid(theta, phi, indexing="ij")
+    sx = cx + radius_vox * np.sin(TH) * np.cos(PH)
+    sy = cy + radius_vox * np.sin(TH) * np.sin(PH)
+    sz = cz + radius_vox * np.cos(TH)
+
+    # Trilinear sample of ψ at the sphere points
+    i0 = np.clip(np.floor(sx).astype(int), 0, nx - 2)
+    j0 = np.clip(np.floor(sy).astype(int), 0, ny - 2)
+    k0 = np.clip(np.floor(sz).astype(int), 0, nz - 2)
+    fx = np.clip(sx - i0, 0.0, 1.0)
+    fy = np.clip(sy - j0, 0.0, 1.0)
+    fz = np.clip(sz - k0, 0.0, 1.0)
+
+    n_s = np.zeros(sx.shape + (3,), dtype=np.float64)
+    for dxi in (0, 1):
+        for dyi in (0, 1):
+            for dzi in (0, 1):
+                w = (
+                    (fx if dxi else 1 - fx)
+                    * (fy if dyi else 1 - fy)
+                    * (fz if dzi else 1 - fz)
+                )
+                n_s += w[..., None] * psi_np[i0 + dxi, j0 + dyi, k0 + dzi, :]
+
+    # Re-normalize the sampled directors (interpolation slightly shrinks |n̂|)
+    norm = np.linalg.norm(n_s, axis=-1, keepdims=True)
+    n_s = n_s / np.maximum(norm, 1e-12)
+
+    # Angular derivatives (central differences; φ wraps periodic)
+    dn_dtheta = np.zeros_like(n_s)
+    dn_dphi = np.zeros_like(n_s)
+    dn_dtheta[1:-1] = (n_s[2:] - n_s[:-2]) / (2 * dth)
+    dn_dtheta[0] = (n_s[1] - n_s[0]) / dth
+    dn_dtheta[-1] = (n_s[-1] - n_s[-2]) / dth
+    dn_dphi[:, :] = (np.roll(n_s, -1, axis=1) - np.roll(n_s, 1, axis=1)) / (2 * dph)
+
+    # Integrand: n̂ · (∂_θ n̂ × ∂_φ n̂). The sinθ factor is implicit in the
+    # cross product for a unit-vector field on a parameterized sphere.
+    cross = np.cross(dn_dtheta, dn_dphi, axis=-1)
+    integrand = (n_s * cross).sum(axis=-1)
+    return float(integrand.sum() * dth * dph / (4.0 * np.pi))
 
 
 # ================================================================

@@ -69,7 +69,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 
 | Force | Mechanism | Detail |
 | --- | --- | --- |
-| Electric (static Coulomb) | Topology | Frank elastic E(d) ~ 1/d (pure geometry) |
+| Electric (static Coulomb) | Topology | Frank elastic E(d) ~ 1/d — quant + visual confirmation in [3f_coulomb_visual_geometry.md](3f_coulomb_visual_geometry.md) |
 | Electric (quantization) | Topology | Brouwer integer winding |
 | Strong (confinement σ·r) | Topology | Vortex-string tension |
 | Strong (short-range) | Waves | M3 standing-wave lock-in (retained) |
