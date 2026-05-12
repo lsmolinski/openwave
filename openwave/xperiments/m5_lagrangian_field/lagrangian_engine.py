@@ -19,6 +19,10 @@ Module layout (top-to-bottom):
                                 compute_energyF_density (Frank elastic);
                                 both write to FieldObservables (stateless,
                                 always-on per-frame measurements)
+    GRADIENT-DESCENT RELAX    — relax_director_step (one step of gradient
+                                descent on Frank energy w/ tangent projection
+                                + unit-length renorm + soft core pin; M5.1
+                                task 6 — port from Exp 2)
     POSITION RENDER           — sample_position_to_render (granule viz)
     3-PLANE SAMPLING          — sample_avg_trackers   (amp / freq globals)
                                 sample_avg_observables (energyH / energyF
@@ -930,6 +934,101 @@ def compute_energyF_density(
         d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
         grad_n_sqr = d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr()
         observables.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
+
+
+# ================================================================
+# GRADIENT-DESCENT RELAXATION (M5.1 task 6)
+# ================================================================
+# Direct port of Exp 2's relax() inner loop to Taichi:
+#     dn = ∇²n − (n·∇²n) n         (tangent projection onto unit sphere)
+#     n_new = n + τ · dn           (gradient-descent step)
+#     n_new ← n_new / |n_new|       (unit-length constraint)
+#     n_new[defect_core] = ±ẑ      (soft Dirichlet pin)
+#
+# Stability: τ < dx²/(2·dim·K) by the standard heat-equation CFL condition.
+# For dim=3 in 3D the bound is τ < dx²/(6·K). Use ~50% of the bound for
+# headroom; the launcher computes this from wave_field.dx_am at runtime.
+#
+# Output buffer convention: writes to psi_new_am (same buffer leapfrog uses).
+# The caller copies psi_new_am to BOTH psi_am AND psi_prev_am so that
+# subsequent leapfrog steps see ψ̇ = 0 (no spurious time-derivative from the
+# relaxation update — relaxation is a STATIC operation, not a dynamics step).
+# This is different from swap_buffers, which rotates buffers for time evolution.
+#
+# Boundary handling: psi_new_am boundary voxels are copied from psi_am (no
+# update) — preserves the fixed-value Dirichlet BC (e.g. ẑ at the universe
+# edge from seed_vacuum).
+#
+# Core pin: soft Dirichlet at the SINGLE closest voxel to each defect center.
+# Without this, gradient descent can numerically dissolve the defect on a
+# discrete grid (topology is not strictly preserved by discretization).
+#
+# M7 FORWARD-LINK: this kernel is mathematically the γ → ∞ limit of a damped
+# wave equation `∂²_t ψ = c²∇²ψ − γ·∂_t ψ`. Although the relaxation use is
+# purely numerical (no physics interpretation in M5.1), the same primitives
+# — Laplacian stencil, tangent projection, soft-core pin — will be reused
+# in M7 thermal-modulation kernels where γ becomes a PHYSICAL damping
+# coefficient (radiation loss, phonon coupling, EM-load impedance). See
+# `research_hub/3d_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
+# for the infrastructure-foundation discussion.
+
+
+@ti.kernel
+def relax_director_step(
+    wave_field: ti.template(),  # type: ignore
+    tau: ti.f32,  # type: ignore
+    pin_centers: ti.template(),  # type: ignore
+    pin_signs: ti.template(),  # type: ignore
+    n_defects: ti.i32,  # type: ignore
+):
+    """
+    One gradient-descent step on the Frank elastic energy `H_F = (K/2)·|∇n̂|²`.
+
+    Reads:  wave_field.psi_am
+    Writes: wave_field.psi_new_am  (caller copies → psi_am AND psi_prev_am)
+
+    Args:
+        wave_field: WaveField with the director field in psi_am
+        tau: step size (must satisfy τ < dx²/(6·K) for stability)
+        pin_centers: ti.field shape (n_defects, 3) i32 — defect centers in voxel coords
+        pin_signs: ti.field shape (n_defects,) i32 — ±1 per defect (pin direction)
+        n_defects: number of active defects in pin_centers/signs
+
+    Note: K_frank is implicit in `tau`'s CFL derivation — the kernel itself
+    doesn't multiply by K because gradient descent on `(K/2)·|∇n̂|²` gives
+    `∂n/∂τ = K·∇²n` and the K can be absorbed into the step size (τ_eff = K·τ).
+    For K=1 (M5.1 default) this is τ_eff = τ.
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+
+    # ---- Interior: tangent-projected gradient step + renormalization ----
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        n = wave_field.psi_am[i, j, k]
+        lap = compute_laplacian_psi(wave_field, i, j, k)
+        n_dot_lap = n.dot(lap)
+        dn = lap - n_dot_lap * n  # tangent projection (remove component along n)
+        n_new = n + tau * dn
+        norm = n_new.norm() + 1e-12
+        wave_field.psi_new_am[i, j, k] = n_new / norm
+
+    # ---- Boundary: preserve Dirichlet BC by copying from current ψ ----
+    for j, k in ti.ndrange(ny, nz):
+        wave_field.psi_new_am[0, j, k] = wave_field.psi_am[0, j, k]
+        wave_field.psi_new_am[nx - 1, j, k] = wave_field.psi_am[nx - 1, j, k]
+    for i, k in ti.ndrange(nx, nz):
+        wave_field.psi_new_am[i, 0, k] = wave_field.psi_am[i, 0, k]
+        wave_field.psi_new_am[i, ny - 1, k] = wave_field.psi_am[i, ny - 1, k]
+    for i, j in ti.ndrange(nx, ny):
+        wave_field.psi_new_am[i, j, 0] = wave_field.psi_am[i, j, 0]
+        wave_field.psi_new_am[i, j, nz - 1] = wave_field.psi_am[i, j, nz - 1]
+
+    # ---- Pin defect cores (soft Dirichlet at single closest voxel) ----
+    for d in range(n_defects):
+        ci = pin_centers[d, 0]
+        cj = pin_centers[d, 1]
+        ck = pin_centers[d, 2]
+        sgn = ti.cast(pin_signs[d], ti.f32)
+        wave_field.psi_new_am[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
 
 
 # ================================================================

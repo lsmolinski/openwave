@@ -2,10 +2,12 @@
 XPERIMENT PARAMETERS — Topology Smoke Test (M5.1)
 
 Seeds either a uniform vacuum or one/two hedgehog defects via M5.1's
-`seed_vacuum` / `seed_hedgehog` kernels (validated port from Exp 2).
-The simulator runs PAUSED — this xperiment exists to *visually verify*
-the seeded director field before the M5.1 director-glyph renderer (task 4)
-or the gradient-descent relaxation (task 6) land.
+`seed_vacuum` / `seed_hedgehog` kernels (validated port from Exp 2),
+then auto-relaxes the seeded field into a minimum-Frank-energy
+configuration via M5.1 task 6's gradient-descent kernel. The simulator
+runs PAUSED — this xperiment exists to *visually verify* the seeded +
+relaxed director field; the director-glyph renderer (task 4) makes the
+topology visible on the 3 orthogonal planes.
 
 Three configurations selectable via TOPOLOGY_MODE below:
 - "vacuum"        : uniform n = ẑ everywhere (sanity check)
@@ -27,12 +29,21 @@ TARGET_VOXELS = 64**3  # ~262k voxels — small for fast smoke-test
 
 # Switch the mode here:
 # TOPOLOGY_MODE = "vacuum"
-TOPOLOGY_MODE = "hedgehog_1"
+TOPOLOGY_MODE = "hedgehog_2"
 # TOPOLOGY_MODE = "hedgehog_2"
+
+# M5.1 task 6 — auto-relax steps on seed. Relaxation is the numerical
+# ground-state finder for the Frank elastic energy; always run after seeding
+# to drop the blend-zone artifacts into a minimum-energy configuration
+# before the user sees the field. 60 matches Exp 2's default; bump higher
+# (200-300) for tighter convergence. 0 disables auto-relax (e.g. when
+# inspecting the raw seed state for debugging).
+AUTO_RELAX_STEPS = 60
 
 if TOPOLOGY_MODE == "vacuum":
     TOPOLOGY_SEED = {
         "MODE": "vacuum",
+        "AUTO_RELAX_STEPS": 0,  # no defects → nothing to relax
     }
 elif TOPOLOGY_MODE == "hedgehog_1":
     TOPOLOGY_SEED = {
@@ -41,6 +52,7 @@ elif TOPOLOGY_MODE == "hedgehog_1":
             {"CENTER": [0.50, 0.50, 0.50], "SIGN": +1},
         ],
         "DOMAIN_QUARTER_FRACTION": 0.25,  # w_vac falloff at ~D/4
+        "AUTO_RELAX_STEPS": AUTO_RELAX_STEPS,
     }
 elif TOPOLOGY_MODE == "hedgehog_2":
     TOPOLOGY_SEED = {
@@ -50,6 +62,7 @@ elif TOPOLOGY_MODE == "hedgehog_2":
             {"CENTER": [0.70, 0.50, 0.50], "SIGN": -1},  # right, inward
         ],
         "DOMAIN_QUARTER_FRACTION": 0.20,  # tighter blend so pair stays distinct
+        "AUTO_RELAX_STEPS": AUTO_RELAX_STEPS,
     }
 else:
     raise ValueError(f"Unknown TOPOLOGY_MODE: {TOPOLOGY_MODE}")
