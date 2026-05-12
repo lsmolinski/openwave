@@ -21,19 +21,19 @@ These are the **visual companion** to the quantitative `research/m5_1_coulomb.py
 
 ## OPPOSITE CHARGES (Q=+1, Q=−1) — ATTRACTIVE
 
-### Frank elastic density (WAVE_MENU=5)
+### ATTRACTIVE - Frank elastic density (WAVE_MENU=5)
 
 ![Opposite charges — F density](images/coulomb_visual/attract_energyF.png)
 
 **Observed**: a clear **dumbbell / elongated bridge** of F density along the axis connecting the two cores. Energy is concentrated *between* the defects, not just at their cores.
 
-### Director field (SHOW_DIRECTORS=3)
+### ATTRACTIVE - Director field (SHOW_DIRECTORS=3)
 
 ![Opposite charges — directors](images/coulomb_visual/attract_directors.png)
 
 **Observed**: directors flow *smoothly from one defect to the other*. Near the +1 defect they point outward (radial); near the −1 defect they point inward (anti-radial). In the middle of the axis they lie roughly horizontal, completing the smooth interpolation from outward → inward.
 
-### Why this shape
+### ATTRACTIVE - Why this shape
 
 | Element | Reason |
 | --- | --- |
@@ -47,19 +47,19 @@ This matches the classical EM picture of field lines connecting opposite point c
 
 ## SAME CHARGES (Q=+1, Q=+1) — REPULSIVE
 
-### Frank elastic density (WAVE_MENU=5)
+### REPULSIVE - Frank elastic density (WAVE_MENU=5)
 
 ![Same charges — F density](images/coulomb_visual/repel_energyF.png)
 
 **Observed**: a **pinched / perpendicular** F density pattern. Energy is *pushed sideways*, away from the axis connecting the cores; the connecting region itself is comparatively dim while there's intensity above / below / around the cores.
 
-### Director field (SHOW_DIRECTORS=3)
+### REPULSIVE -Director field (SHOW_DIRECTORS=3)
 
 ![Same charges — directors](images/coulomb_visual/repel_directors.png)
 
 **Observed**: directors near both defects point outward (both are Q=+1). In the middle of the connecting axis they *can't smoothly interpolate* — both endpoints want directors pointing toward the OTHER defect's exterior, creating a high-gradient region. The field is forced into a "squeezed" configuration.
 
-### Why this shape
+### REPULSIVE -Why this shape
 
 | Element | Reason |
 | --- | --- |

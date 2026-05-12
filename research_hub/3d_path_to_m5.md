@@ -502,6 +502,8 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 
 > **Refinement from Robert Close (2026-04-18)**: use **Eq. 23 as the particle equation**, not Eq. 21. Eq. 23 preserves `∇·s = 0` (zero divergence of spin density), which is a physical invariant Exp 7's Eq. 21 implementation did not enforce. Eq. 19 remains the linear free-wave limit.
 
+> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.2's first email-ready milestone is **"defect survives PROPAGATE WAVE under V(ψ)"** — the simplest stable-particle demonstration. Currently (M5.1) defects dissolve under free-wave V=0; M5.2's V(ψ) should fix this. When you can press PROPAGATE on `_test4_topology.py` (hedgehog_1 mode) and the defect stays coherent for 100+ steps without dissolving, that's the trigger to compose the first Models-of-Particles update (closes the loop on the April 2026 thread).
+
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
 - [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
 - [ ] **Add kernel-internal natural-unit scaling** (`c = 1`, `λ_C(defect-of-interest) = 1`, `ℏ = 1`) for the new nonlinear-physics kernels added in M5.2 only — Klein-Gordon mass term, Close Eq. 23 nonlinear couplings `−u·∇s + w×s`, LdG biaxial potential. Convert at kernel entry/exit. Linear kernels from M5.0 (leapfrog, divergence, curl, Laplacian) are dimensionally self-balancing and stay in storage units (`_am` / `_rs`) — no conversion. Rationale: natural units make the dimensional coefficients in nonlinear couplings read as O(1) (textbook-form), where mismatched powers of `λ_C` in storage units would push f32. This was originally scoped as M5.0f but deferred here because linear kernels don't need it. See [Resolution & Performance Plan § Tier 1](#tier-1--architectural-decisions-fix-before-any-kernel-is-written) and the M5.0f decision-record above
@@ -525,6 +527,8 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - [ ] Cross-check: Exps 2 and 4 measured Hamiltonian energies; M5 must reproduce them
 
 ### Phase M5.4 — Electron stability + dynamic Coulomb recovery (the headline goal)
+
+> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.4 passing is the strongest single-milestone trigger for a Models-of-Particles update. Email framing: "M5.4 complete — single hedgehog stable, pair reproduces dynamic 1/d²". If M5.2 has already triggered an earlier send, M5.4 is the follow-up showing the headline-goal result.
 
 > **Paradigm shift from EWT (2026-04-19)**: the electron is NOT a K=10 tetrahedron of constituents in M5. Per Dr. Duda's framework, the electron is a **single biaxial hedgehog** — one topological defect with a specific axis choice (the δ ~ ℏ axis of the LdG order parameter). Muon and tau are single hedgehogs on the other two axes (unity and g scales respectively, tested in M5.6). EWT's "K" as a combinatorial parameter does not apply at the lepton scale. K re-emerges only as a *descriptive count* for composite-particle configurations (quarks in nucleons, nucleons in nuclei, electrons in atomic orbitals) — best-practice labeling for those deferred until M5.7+.
 >
@@ -557,6 +561,8 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - [ ] **This is the full Phase 2 → Phase 3 → M5 validation loop.** If the single biaxial hedgehog is a long-lived electron-like resonance AND the e⁺/e⁻ pair reproduces Coulomb + annihilation + positronium lock-in dynamically AND same-winding pairs cannot annihilate, the loop is closed
 
 ### Phase M5.5 — Skyrme stabilizer (if M5.4 reveals defect collapse)
+
+> **External-comms trigger** (see § EXTERNAL-COMMS MILESTONES above): M5.5 landing removes the "topology dissipates under heavy relax" caveat from M5.1. If M5.4 has revealed defect collapse and M5.5 fixes it, this is a worthwhile follow-up email to the Models-of-Particles thread — framing: "Topology fully protected (Skyrme stabilizer)". Send only if the M5.5 result genuinely strengthens an earlier claim (e.g., M5.4's long-lived resonance was borderline and Skyrme tightens the lifetime).
 
 > **Lab-existence anchor (2026)**: Liu et al. demonstrated **direct laser creation of isolated skyrmions and hopfions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). M5.5's numerical Skyrme stabilizer is the **OpenWave-side complement** to that lab observation: lab confirms these structures CAN exist in nature; M5.5 confirms they can exist in our LdGS Lagrangian numerically with the same stabilization mechanism (Skyrme higher-derivative term). Pair this with M5.6's biaxial LdG and you have both numerical *and* experimental support for the topology-as-particles framework. Cited by Duda's 2026-05-09 message on the models-of-particles list ("seeing particles as their smaller versions, what should be the particle-defect correspondence?") as motivation for the M5 program.
 >
@@ -864,7 +870,7 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - ✅ **Winning recipe identified**: topology + Klein-Gordon + Close's Eq. 23 + M3 near-field + Skyrme stabilizer
 - ✅ **Group feedback integrated (2026-04-19)** — Jarek, Jeff, and Robert reviewed the sandbox summary; refinements captured in this document (Eq. 23 over Eq. 21, axis-hierarchy for lepton masses, Cornell potential and de Broglie clock added as M5.7/M5.8 targets, resonance-lifetime success criterion)
 - ✅ M5.0 — Scaffold **COMPLETE** (all 11 sub-phases ✅ as of 2026-05-08). Leapfrog kernel + full vector-calculus toolkit (Laplacian, divergence, curl, curl-curl) wired and verified analytically; CFL bound + per-voxel energy density (Hamiltonian) + F=−∇E force kernel + plane-wave seed all working in the GUI; M5.0h dispersion gating test PASSES (±0.5% c² recovery across 5 modes, full leapfrog space+time formula); M5.0i baseline profile shows 51 fps at 384³ (well over 20 fps target) with no Tier 2 opts justified by current budget — fusion deferred to M5.2 re-profile when V(ψ) gets real body; `scale_factor` legacy retired; storage units stay `_am` / `_rs` / `_rHz` (decision-record M5.0f); kernel-internal natural-unit scaling + nonlinear V(ψ) deferred to M5.2 alongside the physics that benefits from them
-- [ ] M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, winding tracker)
+- ✅ M5.1 — Port topology from Exps 2, 3 (`seed_vacuum`, `seed_hedgehog`, Frank energy, gradient-descent relaxation, 1/d Coulomb gating test PASSED with R²=0.978, winding-number tracker). Complete 2026-05-11
 - [ ] M5.2 — Wave dynamics from **Close's Eq. 23** (with `∇·s = 0` enforced) + Klein-Gordon mass term, validate Exp 4 dispersion, amplitude-sweep resonance hunt
 - [ ] M5.3 — Hamiltonian energy (replaces postulated `E = ρV(fA)²`)
 - [ ] M5.4 — **Headline test**: single biaxial hedgehog (electron) is a long-lived resonance; hedgehog + anti-hedgehog pair reproduces dynamic 1/d² Coulomb + annihilation
@@ -873,7 +879,41 @@ The applied-technology counterpart of OpenWave's open-source physics work is the
 - [ ] M5.7 — Cornell potential / quark confinement (topological vortex string, `V(r) = −α/r + σ·r`)
 - [ ] M5.8 — De Broglie clock / Zitterbewegung test (`ω = 2mc²/ℏ`) for electron + neutrino
 
-**Next action**: **M5.1** — port topology kernels from Exp 2/3. `seed_vacuum`, `seed_hedgehog`, Frank elastic energy `H = (K/2)·∫|∇n|²`, gradient-descent relaxation (tangent projection + unit-length renormalization + soft core pinning), `winding_number` tracker. Validate by reproducing Exp 2's hedgehog-pair 1/d Coulomb scaling on Taichi (target R² > 0.99 across separation sweep). M5.0 scaffold is done; M5.1 is unblocked.
+**Next action**: **M5.2** — wave dynamics from Close's Eq. 23 + Klein-Gordon mass term. M5.1 complete; M5.2 unblocked. First M5.2 success criterion: defect survives PROPAGATE WAVE under V(ψ) (currently dissolves under free-wave V=0 per Derrick collapse).
+
+---
+
+## EXTERNAL-COMMS MILESTONES — TRIGGER GATES FOR MODELS-OF-PARTICLES UPDATES
+
+Strategic decision 2026-05-11: M5.1 Coulomb result (R²=0.978 + visual EM-field-line geometry, documented in [`3f_coulomb_visual_geometry.md`](3f_coulomb_visual_geometry.md)) is correct but **not yet ready for an external update to the Models-of-Particles group**. Reasons for holding:
+
+| Concern | Why it's not email-ready |
+| --- | --- |
+| Static energy only (not dynamic) | Duda will ask "can you SEE attraction?" — answer should be yes |
+| R² = 0.978 (Dirichlet BC) vs Exp 2's 0.993 (periodic BC) | First impression should not look like a regression on a worked example |
+| Topology dissipates under heavy relax | Admits the result is fragile — undermines the demo |
+
+Per `feedback_external_comms.md` memory: scientific-venue communications are Rodrigo's voice only, no AI text generation. Below are the **content-trigger milestones** that would lift the email-readiness threshold. Send when any of these lands, in increasing impact order:
+
+| Trigger | What's added since M5.1 | Email framing (in Rodrigo's voice when composed) |
+| --- | --- | --- |
+| **M5.2 V(ψ) lands + defect survives PROPAGATE WAVE** | Stable particle in simplest dynamic sense; topology no longer dissolves | "Topological hedgehog is now a long-lived resonance under V(ψ)" |
+| **M5.2 + dynamic attraction visible** | Pair moves toward each other under wave dynamics (defect motion is observable, not just static energy bookkeeping) | "Coulomb attraction observed dynamically" |
+| **M5.4 headline test passes** | Stable single defect + dynamic pair Coulomb + possibly annihilation | "M5.4 complete — single hedgehog stable, pair reproduces dynamic 1/d²" |
+| **M5.5 Skyrme protection** | Topology robust under any relaxation / perturbation; the "topology dissipation" caveat goes away | "Topology fully protected (Skyrme stabilizer)" |
+
+Recommended first send: **M5.2 + defect survives PROPAGATE** (the lowest bar that addresses all three current concerns at once). M5.4 would be even stronger but is months out; communicate before then. When the email goes out, it should reference M5.1 Coulomb as the FIRST DATA POINT in a sequence — the M5.1 work isn't wasted, it becomes more compelling when paired with M5.2+ dynamics.
+
+**Pre-send checklist** (per `feedback_external_comms.md`):
+
+| Item | Status when ready |
+| --- | --- |
+| Composed in Rodrigo's voice (no AI prose draft) | Required |
+| Visual screenshots / plots as the lead | Available — `images/coulomb_visual/` + future M5.2 dynamic captures |
+| Honest caveats (what's still TBD) | Required — Duda values transparency |
+| Reference Jarek's April 2026 framing | The April thread set the "recreate EM via topological charges" milestone; closing the loop |
+| Single screen-height max | Mailing-list etiquette |
+| Reply-in-thread to the original 2026-04 discussion | Continuity |
 
 ---
 
