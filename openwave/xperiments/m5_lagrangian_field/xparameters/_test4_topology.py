@@ -58,8 +58,8 @@ elif TOPOLOGY_MODE == "hedgehog_2":
     TOPOLOGY_SEED = {
         "MODE": "hedgehog",
         "DEFECTS": [
-            {"CENTER": [0.30, 0.50, 0.50], "SIGN": +1},  # left, outward
-            {"CENTER": [0.70, 0.50, 0.50], "SIGN": -1},  # right, inward
+            {"CENTER": [0.40, 0.50, 0.50], "SIGN": +1},  # left, outward
+            {"CENTER": [0.60, 0.50, 0.50], "SIGN": -1},  # right, inward
         ],
         "DOMAIN_QUARTER_FRACTION": 0.20,  # tighter blend so pair stays distinct
         "AUTO_RELAX_STEPS": AUTO_RELAX_STEPS,
