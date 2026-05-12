@@ -108,7 +108,8 @@ class SimulationState:
 
     def __init__(self):
         self.wave_field = None
-        self.trackers = None
+        self.trackers = None  # Trackers (M3/M4 wave statistics: amp, freq, EMA-RMS)
+        self.observables = None  # FieldObservables (M5 derived scalars: energyH, energyF)
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
@@ -122,13 +123,15 @@ class SimulationState:
         self.wavelength_global_avg = 0.0  # m, derived from freq_global_avg
         # Energy attrs — currently in SCALED units (per-voxel (am/rs)² ×
         # ATTOJOULE), not true J. The kernel that populates them
-        # (compute_energy_density_H) doesn't yet apply the physical scaling
+        # (compute_energyH_density) doesn't yet apply the physical scaling
         # factor (ρ_medium × voxel_volume × INTERNAL_ENERGY_TO_AJ). Useful as
         # *relative* observables for trends and force-gradient sourcing
         # (F = −∇E only cares about gradients). REVIEW IN M5.2 when nonlinear
         # V(ψ) couplings land alongside the physical-scaling factor.
-        self.energy_global_H_avg = 0.0  # per-voxel mean in scaled "(rel.)" units
-        self.energy_total_H = 0.0  # mean × voxel_count, scaled "(rel.)" units
+        self.energyH_global_avg = 0.0  # per-voxel mean in scaled "(rel.)" units
+        self.energyH_total = 0.0  # mean × voxel_count, scaled "(rel.)" units
+        # Frank elastic density (M5.1 task 5) — populated by sample_avg_trackers.
+        self.energyF_global_avg = 0.0  # per-voxel mean in scaled "(rel.)" units
         # Resolution metric: voxels-per-wavelength (xperiment-driven).
         # 0.0 means "no reference λ declared" → dashboard shows n/a
         self.wave_res = 0.0
@@ -237,6 +240,7 @@ class SimulationState:
             viz_stride=self.VIZ_STRIDE,
         )
         self.trackers = medium.Trackers(self.wave_field.grid_size)
+        self.observables = medium.FieldObservables(self.wave_field.grid_size)
 
         # Resolution metric: voxels-per-wavelength, declared by the active
         # xperiment. Sources (in priority order):
@@ -295,8 +299,9 @@ class SimulationState:
         self.amp_global_rms = 0.0
         self.freq_global_avg = 0.0
         self.wavelength_global_avg = 0.0
-        self.energy_global_H_avg = 0.0
-        self.energy_total_H = 0.0
+        self.energyH_global_avg = 0.0
+        self.energyH_total = 0.0
+        self.energyF_global_avg = 0.0
         self.wave_res = 0.0
         self.initialize_grid()
         self.compute_timestep()
@@ -373,8 +378,11 @@ def display_wave_menu(state):
         if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("ENERGY (Density)", state.WAVE_MENU == 4):
+        if sub.checkbox("ENERGY (Hamiltonian)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
+            state.wave_field.create_flux_mesh()
+        if sub.checkbox("ENERGY (Frank Elastic)", state.WAVE_MENU == 5):
+            state.WAVE_MENU = 5
             state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
@@ -391,13 +399,19 @@ def display_wave_menu(state):
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
         if state.WAVE_MENU == 4:  # Energy density (Hamiltonian) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("energy", 0.00, 0.74, 0.08, 0.06) as sub:
+            with render.gui.sub_window("energyH", 0.00, 0.74, 0.08, 0.06) as sub:
                 # Unit label "rel." — value is per-voxel mean × 4 (matches the
                 # colormap range max in update_flux_mesh_values). Underlying field
                 # is in scaled (am/rs)² units, not physical J/m³ — REVIEW IN M5.2
                 # when physical-scaling factor (ρ × voxel_volume × correction)
-                # is wired into compute_energy_density_H.
-                sub.text(f"0      {state.energy_global_H_avg*4:.0e}rel.")
+                # is wired into compute_energyH_density.
+                sub.text(f"0      {state.energyH_global_avg*4:.0e}rel.")
+        if state.WAVE_MENU == 5:  # Frank elastic density on ironbow gradient
+            render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
+            with render.gui.sub_window("energyF", 0.00, 0.74, 0.08, 0.06) as sub:
+                # Same "rel." caveat as WAVE_MENU=4 — K_frank=1.0 dimensionless
+                # until M5.6 physical elastic constants land.
+                sub.text(f"0      {state.energyF_global_avg*4:.0e}rel.")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -448,10 +462,10 @@ def display_data_dashboard(state):
         sub.text(f"Amplitude (avg): {state.amp_global_rms:.1e} m")
         sub.text(f"Frequency (avg): {state.freq_global_avg:.1e} Hz")
         sub.text(f"Wavelength (avg): {state.wavelength_global_avg:.1e} m")
-        # Unit label "rel." — energy_total_H is `mean × voxel_count × ATTOJOULE`
+        # Unit label "rel." — energyH_total is `mean × voxel_count × ATTOJOULE`
         # but the mean is in scaled (am/rs)² units, not actual aJ — so the value
         # isn't physically J. REVIEW IN M5.2 when physical-scaling factor lands.
-        sub.text(f"Total ENERGY (H): {state.energy_total_H:.1e} rel.")
+        sub.text(f"Total ENERGY (H): {state.energyH_total:.1e} rel.")
 
         sub.text("\n--- TIME MICROSCOPE ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Sim Steps (frames): {state.frame:,}")
@@ -566,7 +580,14 @@ def initialize_xperiment(state):
 
 
 def compute_oscillation(state):
-    """Step ψ one timestep via leapfrog, then update trackers and global aggregates."""
+    """Step ψ one timestep via leapfrog, then update trackers.
+
+    Dynamics-only: runs the wave propagation + buffer swap + per-voxel
+    amp/freq EMA. Per-voxel ENERGY DENSITIES (H, F) and the global aggregates
+    are computed by `compute_field_observables`, which runs every frame
+    regardless of pause state so visualization reflects the current ψ
+    (including the static seeded state when PAUSED=True).
+    """
 
     # ψ PROPAGATION =======================================
     # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
@@ -574,30 +595,53 @@ def compute_oscillation(state):
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
     state.wave_field.swap_buffers()
 
-    # FIELD-OBSERVABLE TRACKERS (per-voxel amp / freq from ψ) ==============
-    lagrange.update_trackers_psi(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
+    # TRACKERS (per-voxel amp / freq from ψ) ==============
+    # Time-dependent EMA — only meaningful during dynamics, so kept here.
+    lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
-    # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ========================================
-    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  written into trackers.energy_density_H_aJ.
-    # Consumed this same frame by xforce_motion (F = −∇E) and the flux-mesh
-    # WAVE_MENU=4 visualization. M5.0i: candidate to merge into propagate_psi
-    # for a ~25% per-step bandwidth saving.
-    lagrange.compute_energy_density_H(state.wave_field, state.trackers, state.c_amrs, state.dt_rs)
 
-    # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
-    # Frame skip reduces GPU->CPU transfer overhead.
-    # sample_avg_trackers populates amp / freq / energy global aggregates in
-    # one 3-plane sampling pass; we derive the grid-total energy here as the
-    # trivial product mean × voxel_count (no extra Taichi work needed).
-    if state.frame % 60 == 0 or state.frame == 10:
+def compute_field_observables(state):
+    """Compute per-voxel energy densities + global aggregates from the current ψ.
+
+    Runs every frame regardless of pause state so the flux-mesh visualization
+    and dashboard reflect the current field — including the static seeded
+    state when PAUSED=True. The kernels here read ψ but don't modify it, so
+    they are safe to run while dynamics are halted.
+
+    When paused at the seeded state, ψ == ψ_prev, so the kinetic term in H
+    is zero and H reduces to ½c²|∇ψ|² + V(ψ) — structurally similar to F up
+    to a c² factor (with V=0 in M5.1).
+    """
+    # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ============================
+    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
+    # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
+    lagrange.compute_energyH_density(
+        state.wave_field, state.observables, state.c_amrs, state.dt_rs
+    )
+
+    # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============
+    # F = (K/2)·|∇n̂|²  → observables.energyF_density_aJ.
+    # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
+    # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
+    lagrange.compute_energyF_density(state.wave_field, state.observables, lagrange.K_FRANK)
+
+    # IN-FRAME DATA SAMPLING & ANALYTICS ================================
+    # Frame skip reduces GPU->CPU transfer overhead during dynamics; when
+    # paused we run every frame because the field doesn't change and the
+    # cost is dominated by cached slice copies, not the reduction.
+    # Two separate samplers per the 2026-05-11 SoC refactor: Trackers and
+    # FieldObservables each own their own 3-plane pass.
+    if state.frame % 60 == 0 or state.frame == 10 or state.PAUSED:
         lagrange.sample_avg_trackers(state.wave_field, state.trackers)
-        state.energy_total_H = (
-            state.trackers.energy_global_H_avg_aJ[None] * state.wave_field.voxel_count
+        lagrange.sample_avg_observables(state.wave_field, state.observables)
+        state.energyH_total = (
+            state.observables.energyH_global_avg_aJ[None] * state.wave_field.voxel_count
         ) * constants.ATTOJOULE  # J
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
     state.wavelength_global_avg = constants.WAVE_SPEED / (state.freq_global_avg or 1)  # no 0 div
-    state.energy_global_H_avg = state.trackers.energy_global_H_avg_aJ[None] * constants.ATTOJOULE
+    state.energyH_global_avg = state.observables.energyH_global_avg_aJ[None] * constants.ATTOJOULE
+    state.energyF_global_avg = state.observables.energyF_global_avg_aJ[None] * constants.ATTOJOULE
 
     if state.INSTRUMENTATION:
         instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)
@@ -617,7 +661,7 @@ def compute_force_motion(state):
     # Compute force from energy gradient, then integrate motion
     force_motion.compute_force_vector(
         state.wave_field,
-        state.trackers,
+        state.observables,
         state.wave_center,
     )
     if state.APPLY_MOTION:
@@ -653,6 +697,7 @@ def render_elements(state):
         lagrange.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
+            state.observables,
             state.WAVE_MENU,
             state.WARP_MESH,
         )
@@ -793,14 +838,20 @@ def main():
             # os.execv replaces current process (macOS may show harmless warning)
             os.execv(sys.executable, [sys.executable, __file__, new_xperiment])
 
+        # Always recompute timestep so observables have a valid dt_rs even
+        # while paused (compute_energyH_density needs it for the kinetic term).
+        state.compute_timestep()
+
         if not state.PAUSED:
-            # Recompute CFL-bound timestep (responds to SIM_SPEED slider)
-            state.compute_timestep()
             # Run simulation step and update time
             compute_oscillation(state)
             compute_force_motion(state)
             state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1
+
+        # Always compute observables — flux-mesh + dashboard reflect the
+        # current ψ even when paused (user can inspect the seeded state).
+        compute_field_observables(state)
 
         # Render scene elements
         render_elements(state)

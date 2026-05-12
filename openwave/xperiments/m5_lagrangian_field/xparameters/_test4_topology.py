@@ -80,9 +80,9 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 0,  # off by default — directors are the primary view in M5.1
+        "SHOW_FLUX_MESH": 1,  # off by default — directors are the primary view in M5.1
         "WARP_MESH": 0,  # no Z-warp — director field has |n|=1 uniformly, warp would be misleading
-        "SHOW_DIRECTORS": 3,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
+        "SHOW_DIRECTORS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
         "VIZ_STRIDE": 1,  # shared every-Nth-voxel sampling stride for directors AND granules
         "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
@@ -91,7 +91,7 @@ XPARAMETERS = {
     },
     "color_defaults": {
         "COLOR_THEME": "OCEAN",
-        "WAVE_MENU": 1,
+        "WAVE_MENU": 5,
     },
     "analytics": {
         "INSTRUMENTATION": False,

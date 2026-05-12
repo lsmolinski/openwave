@@ -517,53 +517,105 @@ class WaveField:
 @ti.data_oriented
 class Trackers:
     """
-    Wave property trackers for each voxel.
-    Use separate class to avoid overloading WaveField class.
+    Wave-property trackers for each voxel — STATEFUL, time-integrated quantities.
 
-    Tracks amplitude envelope and frequency at each grid point using
-    per-voxel fields and grid-wide averages for visualization scaling.
+    Tracks amplitude envelope (EMA RMS of |ψ|) and frequency (zero-crossing
+    detection) at each grid point. These observables have temporal state
+    (EMA accumulator, last-crossing timestamps) so they only update meaningfully
+    while dynamics are running.
+
+    Separation of concerns (2026-05-11 refactor): per-voxel ENERGY DENSITY
+    fields (`energyH_density_aJ`, `energyF_density_aJ`) and their global
+    aggregates moved to `FieldObservables` below — those are *instantaneous*
+    derived scalars from the current ψ (no temporal state), so they
+    conceptually belong in a different class.
     """
 
     def __init__(self, grid_size):
         """
-        Initialize tracker fields for wave property monitoring.
+        Initialize tracker fields for wave-property monitoring.
 
         Args:
             grid_size: Grid dimensions [nx, ny, nz] matching WaveField.
         """
-        # TRACKED FIELDS ==================================================
-        # LOCAL FIELDS per voxel
+        # LOCAL FIELDS per voxel (stateful)
         # Amplitude tracks A via EMA of |ψ| and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
         self.amp_local_emarms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, rms amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
         self.freq_local_cross_rHz = ti.field(dtype=ti.f32, shape=grid_size)  # rHz, local frequency
 
-        # Per-voxel ENERGY density (computed via the Hamiltonian formula):
-        #     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
-        # Naming convention: the quantity is energy; the "_H" suffix denotes
-        # the formula used (Hamiltonian). Future formulas (e.g. Lagrangian
-        # density `_L`, kinetic-only `_K`) would parallel this pattern.
-        # Populated each step by lagrangian_engine.compute_energy_density_H.
-        # Consumed by:
-        #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
-        #     postulated F = −∇E with E = ρV(fA)² formula). The energy E here
-        #     is computed via the Hamiltonian formula (hence _H suffix), but
-        #     the physics statement F = −∇E is canonical regardless of how E
-        #     is derived.
-        #   - lagrangian_engine.compute_energy_total_H  →  3-plane-sampled
-        #     grid-total scalar for the dashboard
-        #   - launcher WAVE_MENU=4 flux-mesh visualization
-        # In M5.0g the V(ψ) term is zero; M5.2 plugs in Klein-Gordon mass +
-        # Close Eq. 23 + LdG via the V_psi hook in lagrangian_engine.
-        self.energy_density_H_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
-
         # GLOBAL AVERAGES for visualization scaling — initialized to zero; the
-        # update_trackers_psi EMA + sample_avg_trackers fill these in during sim.
+        # update_trackers EMA + sample_avg_trackers fill these in during sim.
         # M5 has no universal reference scale, so we let the simulation discover them.
         self.amp_global_emarms_am = ti.field(dtype=ti.f32, shape=())  # RMS all voxels
         self.freq_global_avg_rHz = ti.field(dtype=ti.f32, shape=())  # avg frequency all voxels
-        self.energy_global_H_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density
+
+
+@ti.data_oriented
+class FieldObservables:
+    """
+    Per-voxel derived scalar fields — STATELESS, instantaneous from current ψ.
+
+    Each field here is a pure function of the current ψ configuration. No EMA,
+    no temporal accumulator, no zero-crossing history — values are recomputed
+    fresh every frame by their respective kernels. This means they are valid
+    *even when dynamics are paused*: pause the sim, read the observable, get
+    the current ψ's value of that observable.
+
+    Companion to `Trackers`; the split was introduced 2026-05-11 to separate
+    M3/M4-style wave statistics (stateful) from M5 field-theoretic observables
+    (stateless). Each class owns its own 3-plane sampling pass for global
+    aggregates (`sample_avg_trackers` vs `sample_avg_observables`).
+
+    Future hooks (post-M5.1) — each lands as: new ti.field + dedicated kernel
+    + extend `sample_avg_observables` for the global mean:
+      - winding_number_local (M5.1 task 8)
+      - divergence_psi (M5.2 ∇·s = 0 diagnostic)
+      - curl_psi_magnitude / spin_density_s (M5.2 Close Eq. 23)
+      - energy_flux (M5.3+ Poynting analog)
+    """
+
+    def __init__(self, grid_size):
+        """
+        Initialize derived-scalar fields.
+
+        Args:
+            grid_size: Grid dimensions [nx, ny, nz] matching WaveField.
+        """
+        # Per-voxel ENERGY density (HAMILTONIAN formula):
+        #     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
+        # Naming: quantity is *energy*; the "_H" prefix denotes the formula
+        # (Hamiltonian). Future formulas would parallel: `_L` for Lagrangian
+        # density, `_K` for kinetic-only.
+        # Populated each frame by lagrangian_engine.compute_energyH_density.
+        # Consumed by:
+        #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
+        #     postulated F = −∇E with E = ρV(fA)² formula). E is computed
+        #     via the Hamiltonian formula (hence _H prefix); the physics
+        #     statement F = −∇E is canonical regardless of how E is derived.
+        #   - sample_avg_observables  →  3-plane-sampled global mean
+        #   - launcher WAVE_MENU=4 flux-mesh visualization
+        # In M5.0g–M5.1 the V(ψ) term is zero; M5.2 plugs in Klein-Gordon
+        # mass + Close Eq. 23 + LdG via the V_psi hook in lagrangian_engine.
+        self.energyH_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
+
+        # Per-voxel FRANK ELASTIC energy density (M5.1):
+        #     H_F = (K/2) · |∇n̂|²
+        # Computed by lagrangian_engine.compute_energyF_density. Same _aJ
+        # convention as energyH_density_aJ (the "_F" denotes the Frank
+        # formula). The K_frank coupling is hard-coded to 1.0 (Exp 2 baseline);
+        # physical value lands with M5.6 LdG elastic constants.
+        # Consumed by:
+        #   - launcher WAVE_MENU=5 flux-mesh visualization
+        #   - M5.1 task 6 gradient-descent diagnostic (monotone decrease)
+        #   - M5.1 task 7 Coulomb 1/d fit (sum over volume → E(d))
+        self.energyF_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
+
+        # GLOBAL AVERAGES for visualization scaling — filled by
+        # sample_avg_observables (M5.1) using its own 3-plane sampling pass.
+        self.energyH_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (H)
+        self.energyF_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (F)
 
 
 if __name__ == "__main__":

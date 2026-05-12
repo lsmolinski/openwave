@@ -37,6 +37,78 @@ The 4/3 self-energy divergence — the classical Abraham-Lorentz problem that hi
 
 ---
 
+## STRATEGIC MAPPING — WAVES vs TOPOLOGY
+
+The same field plays both roles in M5: *topology* describes how it's CONFIGURED; *waves* describe how it's CHANGING. Almost every M5 phenomenon involves both, but usually one dominates. This section maps the proof-targets from `0_ROADMAP.md` onto the underlying mechanism, so readers know where to look when investigating any specific physics question.
+
+| Mechanism | Physical meaning |
+| --- | --- |
+| Topology | Static field configuration (winding, gradient cost) |
+| Waves | Dynamic field evolution (oscillation, propagation) |
+
+### PARTICLES — stability, annihilation, kinematic phenomena
+
+| Proof target | Mechanism | Detail |
+| --- | --- | --- |
+| Defect existence | Topology | Brouwer winding Q = ±1 |
+| Rest mass | Topology | E = mc² = stored gradient + V cost |
+| Lock-in / stability | Topology | Skyrme + LdG protection (M5.5 / 6) |
+| Annihilation event | Topology | Q = +1 + Q = −1 cancels to vacuum |
+| Annihilation release | Waves | Stored energy → outgoing photons |
+| Threshold velocity | Both | Kinetic (waves) vs Coulomb barrier (topology) |
+| Lorentz contraction | Waves | Wave-eq relativistic invariance |
+| Standing-wave modes | Waves | Reflection / interference (M3-validated, retained) |
+| Traveling waves | Waves | Free-wave propagation |
+| Rotational (Zitterbewegung) | Both | Topology forces oscillation; waves carry it |
+| Near-field interactions | Waves | Wave-interference lock-in |
+| Far-field interactions | Topology | Static elastic texture |
+
+**Key insight:** stability is topology-protected, but the energy release on annihilation is wave-mediated. The defect cannot decay smoothly (topology), but when two opposite-winding defects meet, the cancellation event dumps stored field energy into outgoing electromagnetic waves.
+
+### FORCES — attraction, repulsion, binding
+
+| Force | Mechanism | Detail |
+| --- | --- | --- |
+| Electric (static Coulomb) | Topology | Frank elastic E(d) ~ 1/d (pure geometry) |
+| Electric (quantization) | Topology | Brouwer integer winding |
+| Strong (confinement σ·r) | Topology | Vortex-string tension |
+| Strong (short-range) | Waves | M3 standing-wave lock-in (retained) |
+| Orbital (1/d well) | Topology | Same as Coulomb |
+| Orbital (quantization) | Waves | De Broglie standing wave |
+| Magnetic (spin) | Topology | Director twist DoF |
+| Magnetic (motion effects) | Waves | Dynamical Coulomb correction (Feynman framing) |
+| Gravitational | TBD | Out of M5 scope |
+
+**Key insight:** electrostatic force is pure topology — no waves needed for two static defects to feel each other. M5.1 task 7 demonstrates this directly via gradient-descent relaxation (no time evolution, no waves, yet 1/d Coulomb emerges from the static Frank elastic energy of the director texture between the defects).
+
+### EMERGENT WAVES — radiation channels
+
+| Emission | Mechanism | When it appears |
+| --- | --- | --- |
+| EM static field | Topology | Static defect → static director texture |
+| EM radiation | Waves | Accelerating / annihilating defect |
+| Photon emission | Waves | Energy release from topology event |
+| Thermal excess (per-defect) | Waves | Per-defect oscillation above ground state |
+
+**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its M7.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` M7.1](0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
+
+### Strategic implication — where to look when
+
+| If you want to understand... | Look at... |
+| --- | --- |
+| Why charges quantize | Topology (Brouwer degree, M5.1) |
+| Why Coulomb is 1/d | Topology (Frank elastic, M5.1 task 7) |
+| Why particles are stable | Topology (Skyrme + LdG, M5.5 / 6) |
+| Why annihilation releases photons | Both (topology event → wave emission) |
+| Why magnetism couples to motion | Waves (dynamical Coulomb, M5.2+) |
+| Why orbits quantize | Waves (de Broglie standing wave) |
+| Why mass differs across leptons | Topology (LdG axis hierarchy, M5.6) |
+| Why outgoing radiation suppressed at rest | Topology (defect localized; no source) |
+
+Reading the map: if the question is about *what exists or what's protected*, the answer is topology. If the question is about *what changes or what propagates*, the answer is waves. The interesting cases are where both apply — annihilation events, accelerated defects, and the intrinsic Zitterbewegung — because those are where M5's unified field-as-particle-and-medium picture pays the most explanatory dividends.
+
+---
+
 ## WHAT IS A TOPOLOGICAL DEFECT?
 
 Before getting to *how* defects oscillate, we need to be precise about *what they are*. This section is the conceptual foundation for the rest of the document.
@@ -61,6 +133,41 @@ You can't "remove" a defect by deleting some parameter. You can only:
 The defect's "position" is not a tracked state variable; it's wherever the winding-number integral is concentrated at that instant. The defect moves because the field moves; the field has a topological feature, not a foreign body.
 
 This is structurally different from M3/M4 and is the architectural break between methods. See [3b_concept_review.md § How do topological defects move? (particle motion)](3b_concept_review.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
+
+### M3/M4 vs M5 paradigm — what changes mechanically
+
+The shift from "particle placed in medium" to "particle is the field" cascades into several concrete differences in how the simulation works and what the physics looks like:
+
+| Concept | M3 / M4 | M5 |
+| --- | --- | --- |
+| Particle | Wave-center (external object) | Topological defect (field feature) |
+| Field role | Medium that surrounds particles | The particle AND its surroundings |
+| Wave source | WC emits waves into medium | No source — waves are field configurations changing |
+| Particle position | Tracked state variable | Where winding integrates (emergent) |
+| Two-particle interaction | Wave overlap at separation | Static elastic texture between defects |
+| Coulomb mechanism | Far-field wave interference (sinc-laden, M3 problem) | Frank elastic energy of director texture (`E ~ 1/d`, M5.1 task 7) |
+| Self-energy | Diverges at the WC point (Abraham-Lorentz problem) | Finite, topologically protected (Faber 2025 resolution) |
+| Particle oscillation | Postulated (driving frequency input) | Intrinsic to stabilized defect — Wilczek time-crystal (M5.8) |
+| Charge quantization | Imposed `±1` convention | Geometric — Brouwer degree forces integer winding |
+
+A few of these deserve their own elaboration:
+
+**No source/emitter split.** In M3/M4, the wave equation only described what happened in the medium *around* the WC; the WC itself was not field-described — it had its own state variables (position, velocity, charge). In M5 there is no such split. The same field that's vacuum far away is the same field at the defect core; the defect is just a non-trivial configuration of the universal field. This is what eliminates the self-energy divergence — the energy is `∫ H(ψ) dV` over the defect's spatial extent, finite by topological protection.
+
+**Interaction via static texture, not wave exchange.** Two M5 defects at rest don't need to exchange waves to feel each other. The director field bridging them has a `1/r²` gradient density (radial-to-radial transition); the integrated Frank elastic energy of that texture scales as `E ~ const + C/d`, giving the 1/d Coulomb potential. The 1/d law is geometric — it comes from the static field configuration, not from wave propagation. This is why M5.1 task 7 fits `E(d)` against separation under *gradient-descent relaxation* (no time evolution at all).
+
+**Defect oscillation is emergent, not driven.** Once a defect is stabilized (M5.5 Skyrme + M5.6 LdG), it can't sit at the vacuum minimum (topology forbids), so it sits at a local-displaced equilibrium where the field is permanently excited but cannot dissipate. The system's lowest-energy state breaks time-translation symmetry by oscillating periodically at `ω = 2mc²/ℏ` — Wilczek's "time crystal." Crucially this oscillation isn't driven externally; it's the field's intrinsic response to having stored energy that topology won't let dissipate. M5.8 is the explicit Zitterbewegung test.
+
+**M5.1 transition state.** Right now (M5.1, `V(ψ) = 0`), a seeded defect *cannot* oscillate stably — it dissolves under free-wave dynamics (Derrick collapse, outgoing ripples). The oscillation behavior emerges only after the stabilizers land. M5.1's role is to validate the *static* topology + 1/d Coulomb via gradient descent — establishing the geometric framework before the dynamics are unlocked.
+
+**Outgoing radiation when it exists.** Waves still propagate in M5, but for different reasons than in M3/M4. A *stable* defect's energy stays localized — outgoing radiation is suppressed by topological protection. Waves appear when:
+
+| Scenario | Why waves propagate |
+| --- | --- |
+| Unstable defect (M5.1 V=0) | Free-wave equation dissolves the high-gradient texture |
+| Accelerating defect | Like classical bremsstrahlung — accelerated charge radiates |
+| Defect collision / annihilation (M5.4) | Final-state photons carry energy away |
+| Defect at rest (M5.5+) | None — topology suppresses outgoing radiation |
 
 ### The "twisted state" — the geometric varieties of defect
 
@@ -95,7 +202,26 @@ Now try to "smooth" the directors back to a uniform vacuum (all pointing in the 
 
 The rip is what's forbidden. The field has to remain continuous everywhere except possibly at the defect's core (an infinitesimal point). And precisely because the field can't rip, the defect persists. This is the **topological protection** — the same mathematics that makes a knot in a closed loop of rope persist no matter how you wiggle the rope.
 
+A more familiar way to see this same constraint is the **hairy ball theorem**: any continuous tangent vector field on the 2-sphere must have at least one zero (the "cowlick"). For OpenWave's unit-vector director field `n̂(r)` on any sphere surrounding a Q ≠ 0 defect, the same theorem forces a singular core — the hedgehog cannot be combed smooth, and that's the topological reason the seeded defect cannot smoothly disappear. Duda's framing in the 2026-05-11 Models-of-Particles thread (graphene-spin-transport news item) cites the hairy ball theorem + clock propulsion as the mechanism for the electron's constant magnetic dipole moment — the OpenWave M5.4 headline test is the empirical answer to that question.
+
 The defect is **not held in place by a force** balancing it. It's held in place by **a counting argument**: there is no continuous path through configuration space that connects "Q = +1" to "Q = 0", so dynamics that preserves continuity (and the field equations are continuous) literally cannot get there.
+
+### Why the vacuum has |n̂| = 1, not (0, 0, 0)
+
+A subtle but essential point: in this framework, the field `n̂` is a **director field** (a unit vector at every point), not a generic vector field. The vacuum has `|n̂| = 1` everywhere, with one chosen direction (M5 convention: `n̂ = ẑ`). The state `n̂ = (0, 0, 0)` is **not** a valid vacuum — it's a singularity (defect core, where the director is undefined).
+
+The choice between these two "vacuum types" is what enables (or kills) topology:
+
+| Vacuum type | Vacuum manifold | Topology |
+| --- | --- | --- |
+| Director, `n̂ = 1` | Entire unit sphere `S²` | `Q ∈ ℤ` (rich) |
+| Scalar, `ψ = 0` | Single point | Always trivial |
+
+Topology lives in the **map from real space to the vacuum manifold**. A hedgehog `Q = +1` wraps the surrounding sphere once around `S²`; an anti-hedgehog `Q = −1` wraps it once in the opposite sense; a uniform field maps everything to one point on `S²` (winding 0). Without a non-trivial vacuum manifold, there's nothing to wind around — no winding number, no quantized charge, no stable particles.
+
+This is the same idea as **spontaneous symmetry breaking** in the Standard Model: the Higgs field has a non-zero vacuum expectation value, and that broken symmetry is what enables stable particle states. M5's director field plays an analogous role for the topology-as-particles hypothesis.
+
+The choice of `ẑ` as "the" vacuum direction is pure convention — the LdG potential (M5.6) is rotationally symmetric, so any unit direction works equally well. `ẑ` is the cleanest in our coordinate system. The director-glyph colormap renders `(1 − n̂_z) ∈ [0, 2]`, mapping vacuum (`n̂ = ẑ`) to "dark" (blends with the black GUI background) and peak twist (`n̂ = −ẑ`) to "bright" — so only the deviation from vacuum is visually apparent.
 
 ### Defects store field energy → that energy IS the rest mass
 
@@ -722,7 +848,7 @@ This is why an isolated electron at rest is electrically detectable (the L-compo
 
 ### Three known conditions that manifest the T-component
 
-Macroscopic magnetism appears when one or more of the averagings above is broken:
+Macroscopic magnetism appears when one or more of the averaging above is broken:
 
 1. **Coherent alignment** in a material's structure → permanent magnets. Aligned domains break the direction averaging across the sphere; the T-components add coherently along the magnetization axis. The 10²¹ rad/s frequency averaging still happens at the per-defect level but the *coherent sum* yields a non-zero static magnetic field
 2. **Coherent motion** of charges in one direction → electromagnets. Moving charges' T-components add coherently in the lab frame (the kinematic-correction-to-Coulomb framing above). Equivalent to imposing a coherent direction on the otherwise-isotropic emission
