@@ -514,6 +514,15 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 > 2. **Wrong potential shape**: plain KG `V = ½m²|ψ|²` has its minimum at `ψ = 0`, not on the unit sphere `|ψ| = 1`. Even at scaled-up `m` (testable via a future knob), KG would *destabilize* the hedgehog (pull ψ → 0), not preserve it. The hedgehog needs a Mexican-hat-style potential whose minimum lives on the unit sphere.
 >
 > **Conclusion**: external-comms trigger NOT met. Plain KG by itself doesn't preserve topological defects. Step 4 (Close Eq. 23 nonlinear terms / LdG biaxial Mexican-hat) is the structural fix. Documented as a falsification milestone — clean negative result on the simplest-possible V(ψ).
+>
+> **M5.2 Step 4a — Mexican-hat φ⁴ in V(ψ) ⚠️ PARTIAL (2026-05-12)**: replaced plain KG with the proper Mexican-hat shape: `V(ψ) = ½·m²·|ψ|² + ¼·λ·(|ψ|² − 1)²` whose minimum is the unit sphere `|ψ| = 1`. evolve_psi gets the EL term `−(dt)²·λ·(|ψ|² − 1)·ψ`. Stability: nonlinear cubic feedback amplifies `|ψ|` excursions, so the linearized CFL bound `λ·dt² ≤ 2` is too loose. Empirical bound `λ·dt² ≲ 0.3` (1.0·(c/dx)² blew up at step ~40; 0.1·(c/dx)² stable for 400+ steps). Default set to `λ = 0.1·(c/dx)²` in launcher.
+>
+> **Test**: `research/m5_2_phi4_defect_survival.py` runs the same Q=+1 hedgehog comparison as Step 3. Findings (with and without pre-relax):
+>
+> 1. **φ⁴ damps |ψ| excursions** (Mexican-hat does its job): at step 20 of propagation, free wave hits `|ψ|_max = 1.83`; φ⁴ holds at `|ψ|_max = 1.27`. By step 400 the field stays in `[0.83, 1.18]` (φ⁴) vs `[0.73, 1.21]` (free).
+> 2. **φ⁴ does NOT preserve Q**: Q drops from `+0.9958` → `~0` between step 2 and step 5 in BOTH free and φ⁴ runs. Identical decay rate (`|Q_free − Q_φ⁴|` at each sample step is below 1e-3 magnitude). Pre-relaxing 20 steps (which keeps `Q = 0.996` and `|ψ| ≡ 1`) doesn't change this — the wave dynamics rapidly disintegrate the texture regardless of starting smoothness.
+>
+> **Conclusion**: φ⁴ Mexican-hat fixes the *magnitude* problem (|ψ| stays on the unit sphere) but does NOT fix the *texture stability* problem. The hedgehog texture loses coherence at the winding-sample radius within 2-5 wave propagation steps — Derrick's collapse acts on the spatial extent, not the field magnitude. Step 4b (Skyrme 4th-derivative term) is the textbook fix: `+ ½κ|∇ψ × ∇ψ|²` resists rapid spatial variation; combined with φ⁴ Mexican-hat, the classical Skyrme model has supported stable 3D hedgehog solitons since 1962.
 
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
 - [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit

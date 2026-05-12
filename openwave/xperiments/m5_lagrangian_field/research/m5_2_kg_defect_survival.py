@@ -83,7 +83,7 @@ def propagate_and_measure(wf, c_amrs, dt_rs, m_freq_rs, center):
     samples.append((0, Q0, psi_norm))
 
     for step in range(1, N_PROPAGATE_STEPS + 1):
-        lagrange.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs)
+        lagrange.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs, 0.0)
         wf.swap_buffers()
         if step % SAMPLE_EVERY == 0 or step == N_PROPAGATE_STEPS:
             psi_np = wf.psi_am.to_numpy()

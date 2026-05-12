@@ -600,17 +600,18 @@ def evolve_psi(
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
     m_freq_rs: ti.f32,  # type: ignore
+    lambda_phi4: ti.f32,  # type: ignore
 ):
     """
     Evolve ψ one timestep via leapfrog/Verlet integration.
 
-    Klein-Gordon Equation (V = ½·m²·|ψ|²):
-        ∂²ψ/∂t² = c²·∇²ψ − m²·ψ
+    Klein-Gordon + Mexican-hat φ⁴ (V = ½·m²·|ψ|² + ¼·λ·(|ψ|² − 1)²):
+        ∂²ψ/∂t² = c²·∇²ψ − m²·ψ − λ·(|ψ|² − 1)·ψ
 
     Discrete (leapfrog/Verlet):
-        ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ
+        ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ − (dt)²·λ·(|ψ|² − 1)·ψ
 
-    Setting m_freq_rs = 0 recovers the free wave equation (V = 0).
+    Setting both m_freq_rs = 0 and lambda_phi4 = 0 recovers the free wave.
 
     Reads:  wave_field.psi_am, wave_field.psi_prev_am
     Writes: wave_field.psi_new_am
@@ -643,21 +644,30 @@ def evolve_psi(
         dt_rs: timestep in rontoseconds, sized below the CFL bound
         m_freq_rs: Klein-Gordon mass-frequency m·c²/ℏ in rad/rs storage units
             (electron: ~7.76e-7 rad/rs at SIM_SPEED=1; 0 disables the mass term)
+        lambda_phi4: Mexican-hat coupling in 1/(am²·rs²). Set in launcher to
+            (c_amrs/dx_am)² for a natural grid-scale restoring force; 0
+            disables the φ⁴ term.
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     c_dt_squared = (c_amrs * dt_rs) ** 2
     m_dt_squared = (m_freq_rs * dt_rs) ** 2
+    lambda_dt_squared = lambda_phi4 * dt_rs * dt_rs
 
     # Interior voxels only (Dirichlet BC; 6-point Laplacian needs 1-cell halo)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
         laplacian_psi_am = compute_laplacian(wave_field, i, j, k)
+        psi_ijk = wave_field.psi_am[i, j, k]
+        psi_sq = psi_ijk.norm_sqr()
+        phi4_factor = lambda_dt_squared * (psi_sq - 1.0)
 
-        # Leapfrog/Verlet update: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ
+        # Leapfrog/Verlet update:
+        # ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ − (dt)²·λ·(|ψ|²−1)·ψ
         wave_field.psi_new_am[i, j, k] = (
-            2.0 * wave_field.psi_am[i, j, k]
+            2.0 * psi_ijk
             - wave_field.psi_prev_am[i, j, k]
             + c_dt_squared * laplacian_psi_am
-            - m_dt_squared * wave_field.psi_am[i, j, k]
+            - m_dt_squared * psi_ijk
+            - phi4_factor * psi_ijk
         )
 
 
@@ -780,12 +790,20 @@ def update_trackers(
 # For ψ in am, V_storage = ½·(m_freq_rs)²·|ψ|² produces an energy density in
 # (am/rs)² — same units as the kinetic and gradient terms.
 #
-# M5.2 Step 2 (this version): plain Klein-Gordon mass term active —
-# V_psi returns ½·m²·|ψ|² and evolve_psi adds −(m·dt)²·ψ to the leapfrog.
-# Setting m_freq_rs = 0 from a caller recovers free-wave (V = 0) behavior;
-# the M5.0h dispersion tests do this. Step 4 (Close Eq. 23) layers nonlinear
-# terms on top so the potential minimum sits on the unit sphere (|ψ| = 1)
-# instead of at ψ = 0 — required for hedgehog stability.
+# M5.2 Step 4a (this version): plain KG + Mexican-hat φ⁴ Mexican-hat active —
+#     V(ψ) = ½·m²·|ψ|² + ¼·λ·(|ψ|² − 1)²
+# EL derivative: ∂V/∂ψ = m²·ψ + λ·(|ψ|² − 1)·ψ
+# evolve_psi adds −(dt)²·[m²·ψ + λ·(|ψ|² − 1)·ψ] to the leapfrog.
+#
+# The φ⁴ Mexican-hat moves the potential minimum from ψ = 0 (plain KG) to the
+# unit sphere |ψ| = 1 — the right shape for stabilizing a unit-vector
+# director field. Setting both m_freq_rs = 0 AND lambda_phi4 = 0 recovers
+# the free wave (V = 0) used by the M5.0h dispersion tests.
+#
+# DERRICK'S THEOREM CAVEAT: φ⁴ alone (without a 4th-derivative Skyrme term)
+# does NOT prevent the hedgehog core from collapsing to a point in 3D
+# (E_kinetic ~ R + E_potential·R³ both monotone in R). M5.2 Step 4b will
+# add the Skyrme term if 4a shows the hedgehog still collapses.
 #
 # Linear kernels (Laplacian, divergence, curl, curl-curl) stay in storage
 # units (am, rs, rHz) throughout — dimensionally self-balancing, don't
@@ -796,29 +814,37 @@ def update_trackers(
 def V_psi(
     psi: ti.template(),  # type: ignore
     m_freq_rs: ti.f32,  # type: ignore
+    lambda_phi4: ti.f32,  # type: ignore
 ):
     """
-    Scalar potential V(ψ) at one voxel — Klein-Gordon mass term (M5.2 Step 2).
+    Scalar potential V(ψ) at one voxel — KG mass + Mexican-hat φ⁴ (M5.2 Step 4a).
 
-    V(ψ) = ½·m²·|ψ|²
-    EL contribution: ∂V/∂ψ = m²·ψ → evolve_psi adds −(m·dt)²·ψ to the leapfrog.
-    Setting m_freq_rs = 0 reduces this to the free wave (V = 0).
+    V(ψ) = ½·m²·|ψ|² + ¼·λ·(|ψ|² − 1)²
+    EL contribution: ∂V/∂ψ = m²·ψ + λ·(|ψ|² − 1)·ψ
+    evolve_psi adds −(dt)²·[m²·ψ + λ·(|ψ|² − 1)·ψ] to the leapfrog.
 
-    NOTE: a plain KG term has its minimum at ψ = 0, which is the WRONG shape
-    for stabilizing a |ψ|=1 hedgehog. M5.2 Step 4 (Close Eq. 23) and Step 6
-    (LdG biaxial) layer Mexican-hat-style nonlinear terms on top so the
-    minimum sits on the unit sphere. Plain KG by itself is mainly useful for
-    verifying the V(ψ) hook + Klein-Gordon dispersion ω² = c²k² + m².
+    Mexican-hat term: minimum is the unit sphere |ψ| = 1 (V = 0); maximum at
+    ψ = 0 (V = ¼λ). Right shape to stabilize a director field whose vacuum
+    is the unit sphere. Setting λ = 0 reduces to plain KG; setting both = 0
+    recovers the free wave (V = 0). |ψ|² = 1 is the implicit vacuum convention
+    of seed_hedgehog / seed_vacuum (boundary at n̂ = ẑ, |n̂| = 1).
 
     Args:
         psi: Vector(3) field value at the voxel
         m_freq_rs: Klein-Gordon mass-frequency m·c²/ℏ in rad/rs storage units
-            (electron: ~7.76e-7 rad/rs at SIM_SPEED=1; 0 disables the term)
+            (electron: ~7.76e-7 rad/rs at SIM_SPEED=1; 0 disables the KG term)
+        lambda_phi4: Mexican-hat coupling in 1/(am²·rs²). Set in launcher to
+            (c_amrs/dx_am)² → φ⁴ "restoring force" matches grid scale. 0
+            disables the term.
 
     Returns:
         scalar V(ψ) in the same units as kinetic and gradient terms (am²/rs²)
     """
-    return 0.5 * m_freq_rs * m_freq_rs * psi.norm_sqr()
+    psi_sq = psi.norm_sqr()
+    v_kg = 0.5 * m_freq_rs * m_freq_rs * psi_sq
+    diff = psi_sq - 1.0
+    v_phi4 = 0.25 * lambda_phi4 * diff * diff
+    return v_kg + v_phi4
 
 
 # ================================================================
@@ -849,6 +875,7 @@ def compute_energyH_density(
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
     m_freq_rs: ti.f32,  # type: ignore
+    lambda_phi4: ti.f32,  # type: ignore
 ):
     """
     Compute per-voxel energy density (Hamiltonian formula) into
@@ -898,8 +925,8 @@ def compute_energyH_density(
         d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
         gradient = half_c2 * (d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr())
 
-        # Potential: V(ψ) — 0 in M5.0g + M5.2 Step 1; KG mass term lands in Step 2
-        potential = V_psi(psi, m_freq_rs)
+        # Potential: V(ψ) — KG mass term (Step 2) + Mexican-hat φ⁴ (Step 4a)
+        potential = V_psi(psi, m_freq_rs, lambda_phi4)
 
         observables.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
 
