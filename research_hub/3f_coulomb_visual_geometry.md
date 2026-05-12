@@ -30,6 +30,7 @@ These are the **visual companion** to the quantitative `research/m5_1_coulomb.py
 ### ATTRACTIVE - Director field (SHOW_DIRECTORS=3)
 
 ![Opposite charges — directors](images/coulomb_visual/attract_directors.png)
+![Opposite charges — directors](images/coulomb_visual/attract_directors.gif)
 
 **Observed**: directors flow *smoothly from one defect to the other*. Near the +1 defect they point outward (radial); near the −1 defect they point inward (anti-radial). In the middle of the axis they lie roughly horizontal, completing the smooth interpolation from outward → inward.
 
@@ -56,6 +57,7 @@ This matches the classical EM picture of field lines connecting opposite point c
 ### REPULSIVE -Director field (SHOW_DIRECTORS=3)
 
 ![Same charges — directors](images/coulomb_visual/repel_directors.png)
+![Same charges — directors](images/coulomb_visual/repel_directors.gif)
 
 **Observed**: directors near both defects point outward (both are Q=+1). In the middle of the connecting axis they *can't smoothly interpolate* — both endpoints want directors pointing toward the OTHER defect's exterior, creating a high-gradient region. The field is forced into a "squeezed" configuration.
 

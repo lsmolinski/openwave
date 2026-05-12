@@ -523,6 +523,25 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 > 2. **φ⁴ does NOT preserve Q**: Q drops from `+0.9958` → `~0` between step 2 and step 5 in BOTH free and φ⁴ runs. Identical decay rate (`|Q_free − Q_φ⁴|` at each sample step is below 1e-3 magnitude). Pre-relaxing 20 steps (which keeps `Q = 0.996` and `|ψ| ≡ 1`) doesn't change this — the wave dynamics rapidly disintegrate the texture regardless of starting smoothness.
 >
 > **Conclusion**: φ⁴ Mexican-hat fixes the *magnitude* problem (|ψ| stays on the unit sphere) but does NOT fix the *texture stability* problem. The hedgehog texture loses coherence at the winding-sample radius within 2-5 wave propagation steps — Derrick's collapse acts on the spatial extent, not the field magnitude. Step 4b (Skyrme 4th-derivative term) is the textbook fix: `+ ½κ|∇ψ × ∇ψ|²` resists rapid spatial variation; combined with φ⁴ Mexican-hat, the classical Skyrme model has supported stable 3D hedgehog solitons since 1962.
+>
+> **M5.2 Step 4b — Biharmonic stabilizer ⚠️ NEGATIVE on Q (2026-05-12)**: started with the simplest 4th-derivative term `V_bi = ½κ|∇²ψ|²` (biharmonic, same `R⁻¹` Derrick-defying scaling as Faddeev-Skyrme but without the topological cross-product structure). Two-pass implementation: `compute_psi_laplacian` fills a `lap_field = ∇²ψ`; `apply_biharmonic_correction` computes `∇⁴ψ = ∇²(lap_field)` inline and subtracts `(dt²·κ·∇⁴ψ)` from `psi_new_am`. Kernels live in `research/m5_2_biharmonic_defect_survival.py` ONLY — not promoted to production since the experiment produced a negative result. Stability sweep:
+>
+> | κ scale | NaN step | Q[5] | Q[100] |
+> | --- | --- | --- | --- |
+> | 0.000 (free) | — | +0.0006 | -0.0000 |
+> | 0.001·c²·dx² | — | +0.0006 | -0.0000 |
+> | 0.003·c²·dx² | — | +0.0006 | -0.0000 |
+> | 0.010·c²·dx² | 100 | +0.0006 | NaN |
+> | 0.030·c²·dx² | 20 | +0.0007 | NaN |
+>
+> **Two findings**:
+>
+> 1. **Stability**: linearized analysis gave `κ ≲ 0.037·c²·dx²`, but nonlinear φ⁴ feedback tightens the bound to `≲ 0.003`. Launcher default set to `0.001·c²·dx²` (10× safety margin).
+> 2. **Q collapse is unaffected by biharmonic at any stable scale**: Q drops from `+0.99` to `~0` between step 3 and step 5 in ALL configurations (free, φ⁴, φ⁴ + biharmonic). The early-step Q collapse is *independent* of V(ψ) choice.
+>
+> **Root cause**: the seeded hedgehog (Frank-energy-only relax) is NOT a soliton of the full dynamic equation. The leapfrog's first step `psi_new = psi + (c·dt)²·∇²ψ` immediately kicks the field into motion because `∇²ψ` is non-zero at the relaxed hedgehog (Frank-minimum, but not full-Lagrangian-minimum). Subsequent dynamic evolution rapidly destroys texture coherence at the winding-sample radius before any V(ψ) term gets a chance to stabilize it.
+>
+> **Conclusion**: V(ψ) escalation has hit a methodological ceiling. The seeded initial condition is the bottleneck, not the potential shape. Three forward paths emerge: (i) extend `relax_director_step` to descend on the **full** energy `E_grad + V(ψ) + ½κ|∇²ψ|²` so the seed converges to a soliton of the dynamic system; (ii) construct an exact-soliton seed (numerical shooting on the radial profile); (iii) accept that small-grid hedgehog texture is too sharp for stable propagation and switch to a coarser-grain Q-tensor representation (M5.6 LdG territory).
 
 - [ ] Implement time-stepping leapfrog for Close's **Eq. 23** as the particle equation, enforcing `∇·s = 0` at each step (divergence-cleaning projection, or vector-potential `s = ∇×A` formulation that makes zero-div automatic)
 - [ ] Keep Eq. 19 `∂²Q/∂t² = −c²·∇×∇×Q + (optional mass term −m²Q)` as the V=0 linear limit
