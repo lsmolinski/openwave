@@ -101,7 +101,7 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0)
     ti.sync()
 
     # ── PER-KERNEL pass: sync between every kernel ─────────────
@@ -125,7 +125,7 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         ti.sync()
         t3 = time.perf_counter()
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0)
         ti.sync()
         t4 = time.perf_counter()
 
@@ -152,7 +152,7 @@ def profile_at_grid(target_voxels_per_axis):
         lagrange.evolve_psi(wave_field, c_amrs, dt_rs)
         wave_field.swap_buffers()
         lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs)
+        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0)
         ti.sync()
         end_to_end_ms.append((time.perf_counter() - t0) * 1000.0)
 

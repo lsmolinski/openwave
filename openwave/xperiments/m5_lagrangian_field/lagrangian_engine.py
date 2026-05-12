@@ -759,30 +759,54 @@ def update_trackers(
 #   - Close Eq. 23 nonlin:  V = … (from −u·∇s + w×s couplings)
 #   - LdG biaxial:          V = polynomial in (Q, axes δ/1/g)
 #
-# When M5.2 lands, this hook is also where the kernel-internal natural-unit
-# scaling lives (c=1, λ_C=1, ℏ=1) — the wrapping function converts ψ to
-# natural units, evaluates the textbook potential, converts the scalar back.
-# Linear kernels (leapfrog, Laplacian, divergence, curl, curl-curl) stay in
-# storage units throughout (am, rs, rHz) — they're dimensionally self-balancing,
-# don't benefit from natural units. See M5.0f decision-record in 3d_path_to_m5.md.
+# --- NATURAL-UNIT BASIS — applied here in V(ψ) -----------------------------
+# Basis convention: ℏ = c = λ̄_C(electron) = 1, where λ̄_C = ℏ/(m_e·c) is the
+# reduced Compton wavelength of the electron (constants.COMPTON_WAVELENGTH_
+# REDUCED_ELECTRON_AM). This makes m_e = 1 in natural units and aligns
+# dimensional couplings with textbook field-theory form.
+#
+# Single bridge value: the Klein-Gordon mass-frequency m·c²/ℏ in rad/rs.
+# Computed once in launcher as
+#     m_freq_kg_rs = c_amrs / COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
+# (electron rest-frame angular frequency, ~7.76e-7 rad/rs at SIM_SPEED=1).
+# Threaded into V_psi via compute_energyH_density and (Step 2+) evolve_psi.
+# For ψ in am, V_storage = ½·(m_freq_rs)²·|ψ|² produces an energy density in
+# (am/rs)² — same units as the kinetic and gradient terms.
+#
+# M5.2 Step 1 (this scaffold): plumbing only — V_psi accepts m_freq_rs but
+# still returns 0. Step 2 lights up the ½·m²·|ψ|² body here AND adds the
+# −(m·dt)²·ψ term to evolve_psi. Step 4 (Close Eq. 23) layers nonlinear
+# terms on top.
+#
+# Linear kernels (Laplacian, divergence, curl, curl-curl) stay in storage
+# units (am, rs, rHz) throughout — dimensionally self-balancing, don't
+# benefit from natural units. See M5.0f decision-record in 3d_path_to_m5.md.
 
 
 @ti.func
 def V_psi(
     psi: ti.template(),  # type: ignore
+    m_freq_rs: ti.f32,  # type: ignore
 ):
     """
     Scalar potential V(ψ) at one voxel.
 
     Returns the local potential-energy density contribution to the
-    Hamiltonian. M5.0g: returns 0 (free wave). M5.2: real nonlinear physics.
+    Hamiltonian. M5.0g: returns 0 (free wave). M5.2 Step 1 (this version):
+    accepts m_freq_rs but still returns 0 — the scaffold passes the value
+    through without consuming it. M5.2 Step 2 will return ½·m²·|ψ|².
 
     Args:
         psi: Vector(3) field value at the voxel
+        m_freq_rs: Klein-Gordon mass-frequency m·c²/ℏ in rad/rs storage units
+            (electron: ~7.76e-7 rad/rs at SIM_SPEED=1; 0 disables the term)
 
     Returns:
         scalar V(ψ) in the same units as kinetic and gradient terms (am²/rs²)
     """
+    # M5.2 Step 1: m_freq_rs accepted but unused — Step 2 wires in ½·m²·|ψ|²
+    _ = m_freq_rs
+    _ = psi
     return ti.cast(0.0, ti.f32)
 
 
@@ -813,6 +837,7 @@ def compute_energyH_density(
     observables: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
+    m_freq_rs: ti.f32,  # type: ignore
 ):
     """
     Compute per-voxel energy density (Hamiltonian formula) into
@@ -862,8 +887,8 @@ def compute_energyH_density(
         d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
         gradient = half_c2 * (d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr())
 
-        # Potential: V(ψ) — 0 in M5.0g, real physics in M5.2
-        potential = V_psi(psi)
+        # Potential: V(ψ) — 0 in M5.0g + M5.2 Step 1; KG mass term lands in Step 2
+        potential = V_psi(psi, m_freq_rs)
 
         observables.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
 
