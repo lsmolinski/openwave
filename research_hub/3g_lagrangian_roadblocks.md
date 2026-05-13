@@ -97,6 +97,9 @@ The Q-decay timing is **identical** across all configurations to f32 precision. 
 - The φ⁴ Mexican-hat *does* tighten `|ψ|` around the unit sphere (max excursion drops from 1.83 to 1.27 over 20 steps), so the term is mathematically active — it just isn't acting on the right degree of freedom to preserve topology.
 - The biharmonic stabilizer is stable at `κ ≤ 0.003·c²·dx²` (nonlinear φ⁴ feedback amplifies higher-k modes, tightening the linearized CFL bound). At the stable scale, Q decay is again identical to the free wave.
 
+![Topo Recovery Director)](images/coulomb_visual/topo_recovery_director.gif)
+![Topo Recovery Granule)](images/coulomb_visual/topo_recovery_granule.gif)
+
 ### Our diagnosis
 
 The seed is *not* a stationary point of the dynamic equation.
