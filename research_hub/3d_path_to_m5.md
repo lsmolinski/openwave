@@ -583,6 +583,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - [ ] Amplitude sweep: `A/λ ∈ {0.5, 1, 2}` per Close's amplitude-comparable-to-wavelength criterion
 - [ ] Measure energy-localization lifetime at each amplitude
 - [ ] **Drive infrastructure for M5.10 thermal work** — parameterized harmonic forcing, energy tracking, modulation primitives (FM/AM)
+- [ ] **Literature anchor** — skim BEC vortex-kinetics literature for long-lived oscillation modes (esp. Duda's 2026-05-13 cite: PRA "*Index theorem and vortex kinetics in Bose-Einstein condensates on a Haldane sphere with a magnetic monopole*", `10.1103/2msv-lk1m`). BEC is the experimental analog of our metastable-defect resonance hunt. Compact-manifold geometry (Haldane sphere) is a third escape from Derrick's theorem alongside topology + time-periodicity — could inform domain-shape choice for the test bed (see [`3c_topological_defect.md § Alternative stabilization — compact manifold`](3c_topological_defect.md))
 - [ ] **Exit criterion**: at least one `(A/λ)` regime shows substantially extended energy-localization lifetime — "first long-lived particle in M5". **UNBLOCKS M5.10 THERMAL ENERGY.**
 
 ---

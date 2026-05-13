@@ -111,6 +111,20 @@ Reading the map: if the question is about *what exists or what's protected*, the
 
 Topology is *one* mechanism that evades Derrick's theorem. Werbos's 2026 Ouroboros paper (`scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf`) proposes an alternative: **time-periodicity** as the stabilizer. A *chaoiton* is a localized, time-periodic solution of a coupled-vector-field Lagrangian — stable because it oscillates, not because it's topologically protected. M5 uses topology as the default (winding number, hedgehog/skyrmion), but the M5.2+ dynamics may *also* exhibit oscillation-stabilization (Wilczek time-crystal preview in [§ Intrinsic oscillation](#intrinsic-oscillation--the-time-crystal-mechanism-preview)), so the two mechanisms are not mutually exclusive — they could co-occur in the same defect. Werbos's framework also cites the **Sawada `v(r) ~ -C/r⁶`** long-range nuclear-force anomaly (Sawada 1989, 2003) as an empirical anchor; that's a candidate M5.4+ falsifiability target for any field theory that produces composite hadron-like solitons.
 
+### Alternative stabilization — compact manifold (Haldane-sphere BEC analog)
+
+A third escape from Derrick's theorem: **compact geometry of the underlying manifold**. On a closed surface (e.g. a 2-sphere) with a Dirac monopole inside, a vortex configuration *cannot scale to zero size* — the manifold is bounded, so the volume integral that Derrick exploits has no infinite-tail freedom. Jarek Duda flagged this on 2026-05-13 in his models-of-particles "ps." cite: "*Index theorem and vortex kinetics in Bose-Einstein condensates on a Haldane sphere with a magnetic monopole*" (Phys. Rev. A, DOI `10.1103/2msv-lk1m`). The paper combines (a) the **index theorem** (vortex count is a topological invariant of the operator on the manifold — sharper than the ±1 winding number we use in M5.1) and (b) **experimentally-measured BEC vortex kinetics** (time-evolution and long-lived modes of topological defects in real condensates).
+
+For M5: our 3D periodic-BC box partially mimics this protection, but a spherical-domain test bed could be a cleaner geometry for M5.7 resonance hunting. The BEC vortex-kinetics literature is also a direct experimental analog of what we're trying to measure (long-lived oscillation modes of topological defects).
+
+**Summary — three known escapes from Derrick** (not mutually exclusive):
+
+| Escape | Mechanism | M5 relevance |
+| --- | --- | --- |
+| Topology | Winding number protects against smooth collapse | M5 default — M5.1 |
+| Time-periodicity | Energy in oscillation, not static gradient | M5.7 + M5.8 target |
+| Compact manifold | Bounded geometry — no infinite-tail scaling room | Possible M5.7 domain-shape choice |
+
 ---
 
 ## WHAT IS A TOPOLOGICAL DEFECT?
