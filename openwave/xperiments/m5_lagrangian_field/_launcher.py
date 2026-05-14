@@ -330,7 +330,7 @@ class SimulationState:
             # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
             # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
             # near the defect core — at λ = (c/dx)² the system NaNs around step 40
-            # of a hedgehog seed. Empirically (research/m5_2_phi4_defect_survival),
+            # of a hedgehog seed. Empirically (research/scripts/m5_2_phi4_defect_survival),
             # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
             # 400 steps vs [0.73, 1.21] for free wave). 0.3·(c/dx)² is the
             # marginal stability ceiling at the production grid.

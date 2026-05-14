@@ -36,7 +36,7 @@ A relaxed pair of opposite-sign hedgehog defects under gradient descent on Frank
 | Separations swept | d ∈ {8, 10, 12, 14, 16, 18, 20} voxels |
 | Threshold | R² ≥ 0.95 — PASS |
 | Same-charge run | R² = 0.14 (sign-correct REPULSIVE; informational) |
-| Implementation | `xperiments/m5_lagrangian_field/research/m5_1_coulomb.py` |
+| Implementation | `xperiments/m5_lagrangian_field/research/scripts/m5_1_coulomb.py` |
 
 The geometric mechanism matches the classical EM field-line picture exactly.
 
@@ -162,11 +162,11 @@ Is one of these *the* answer, or is the soliton existence theorem itself conting
 ## Links to code, data, and roadmap
 
 - M5.1 Coulomb visual document (full screenshots + commentary): [`3f_coulomb_visual_geometry.md`](3f_coulomb_visual_geometry.md)
-- Headless Coulomb gating test (the script that produced R²=0.978): `xperiments/m5_lagrangian_field/research/m5_1_coulomb.py`
+- Headless Coulomb gating test (the script that produced R²=0.978): `xperiments/m5_lagrangian_field/research/scripts/m5_1_coulomb.py`
 - M5 phase-by-phase roadmap (M5.0 through M5.8): [`3d_path_to_m5.md`](3d_path_to_m5.md)
 - Strategic map of which physics is "topology" vs "waves" in M5: [`3c_topological_defect.md`](3c_topological_defect.md)
 - Step 3 / 4a / 4b negative-result test scripts:
-  - `xperiments/m5_lagrangian_field/research/m5_2_kg_defect_survival.py`
-  - `xperiments/m5_lagrangian_field/research/m5_2_phi4_defect_survival.py`
-  - `xperiments/m5_lagrangian_field/research/m5_2_biharmonic_defect_survival.py`
+  - `xperiments/m5_lagrangian_field/research/scripts/m5_2_kg_defect_survival.py`
+  - `xperiments/m5_lagrangian_field/research/scripts/m5_2_phi4_defect_survival.py`
+  - `xperiments/m5_lagrangian_field/research/scripts/m5_2_biharmonic_defect_survival.py`
 - OpenWave repository: <https://github.com/openwave-labs/openwave>

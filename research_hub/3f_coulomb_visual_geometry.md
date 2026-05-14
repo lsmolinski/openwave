@@ -2,7 +2,7 @@
 
 Captured 2026-05-11 during M5.1 task 7 (1/d Coulomb gating) verification in the OpenWave GUI. Side-by-side screenshots of a hedgehog defect pair under two configurations: **opposite charges (Q=+1, Q=−1, attractive)** vs **same charges (Q=+1, Q=+1, repulsive)**, viewed both via Frank elastic energy density (`WAVE_MENU=5`) and via director-glyph rendering (`SHOW_DIRECTORS=3`).
 
-These are the **visual companion** to the quantitative `research/m5_1_coulomb.py` headless test (R² = 0.978 with attractive sign). The headless test proves the *1/d scaling*; these screenshots show the *geometric mechanism* — exactly the field-line patterns classical EM textbooks attribute to point charges, but emerging here from pure topology (director winding) on a Lagrangian field, with no electromagnetism postulated.
+These are the **visual companion** to the quantitative `research/scripts/m5_1_coulomb.py` headless test (R² = 0.978 with attractive sign). The headless test proves the *1/d scaling*; these screenshots show the *geometric mechanism* — exactly the field-line patterns classical EM textbooks attribute to point charges, but emerging here from pure topology (director winding) on a Lagrangian field, with no electromagnetism postulated.
 
 ---
 
@@ -112,7 +112,7 @@ The M5 framework reproduces the *exact geometric pattern* of classical Coulomb f
 
 ## REFERENCES
 
-- **Quantitative test**: `openwave/xperiments/m5_lagrangian_field/research/m5_1_coulomb.py`
+- **Quantitative test**: `openwave/xperiments/m5_lagrangian_field/research/scripts/m5_1_coulomb.py`
 - **Quantitative plot**: `research/plots/m5_1_coulomb.png` (E vs d + E vs 1/d linear fit)
 - **Strategic context**: [`3c_topological_defect.md § STRATEGIC MAPPING`](3c_topological_defect.md) — wave vs topology decomposition; Coulomb listed under "FORCES — Topology"
 - **M5.1 task entry**: [`3d_path_to_m5.md § Phase M5.1 — task 7`](3d_path_to_m5.md)
