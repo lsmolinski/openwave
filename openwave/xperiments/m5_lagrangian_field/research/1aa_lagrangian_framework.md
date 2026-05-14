@@ -1,8 +1,8 @@
-# PHASE 3 — LAGRANGIAN FRAMEWORK
+# LAGRANGIAN FRAMEWORK
 
 A research phase evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
 
-> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md). For the conceptual walk-through and Q&A see [3b_concept_review.md](3b_concept_review.md). For the topology / time-crystal / Zitterbewegung deep-dive see [3c_topological_defect.md](3c_topological_defect.md). For the M5 implementation plan see [3d_path_to_m5.md](3d_path_to_m5.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
+> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md). For the conceptual walk-through and Q&A see [0b_overview.md](0b_overview.md). For the topology / time-crystal / Zitterbewegung deep-dive see [1b_topological_defect.md](1b_topological_defect.md). For the M5 implementation plan see [2a_path_to_m5.md](2a_path_to_m5.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
 
 ---
 
@@ -150,7 +150,7 @@ Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / 
 
 Proposed M5 recipe combined: topological hedgehog defects + Klein-Gordon wave dynamics + Close's Eq. 19 base vector wave + retained M3 near-field lock-in + Skyrme stabilizer + LdG biaxial potential. Asked three targeted questions — to Dr. Duda about the extreme biaxial eigenvalue hierarchy needed for lepton ratios (~3477:1), to Dr. Close about fidelity of the Eqs. 19 & 21 implementation and what test would best exercise his nonlinear terms, and to Jeff about any concern with keeping M3 near-field physics alongside topology in the same engine.
 
-Full tables, scorecards, and architectural summary are preserved in [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) and [3d_path_to_m5.md](3d_path_to_m5.md).
+Full tables, scorecards, and architectural summary are preserved in [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) and [2a_path_to_m5.md](2a_path_to_m5.md).
 
 ### 2026-04-17 — Dr. Duda's substantive feedback
 
@@ -202,7 +202,7 @@ Dr. Duda clarified two points refining M5.6:
 
 ## REPLY ANALYSIS — KEY INSIGHTS FOR M5 (2026-04-19)
 
-Three replies, three distinct action items for M5. These refinements are incorporated into [3d_path_to_m5.md](3d_path_to_m5.md) § "Group Feedback (2026-04-17/18)".
+Three replies, three distinct action items for M5. These refinements are incorporated into [2a_path_to_m5.md](2a_path_to_m5.md) § "Group Feedback (2026-04-17/18)".
 
 ### From Jarek Duda
 
@@ -270,7 +270,7 @@ Duda points out that we *assume* oscillations (our wave centers oscillate at fre
 
 - **Duda (2025)**: "Time crystal phi-4 kinks by curvature coupling as toy model for mechanism of oscillations propelled by mass" — a phi-4 field `V(ψ) = k·(ψ²-1)²` with curvature coupling creates kinks that oscillate with frequency proportional to mass. This is the *origin* of the oscillation, not an assumption.
 
-**Connection to OpenWave**: this directly addresses our Phase 3 (Time Dynamics) question: "why does the medium oscillate?" In our framework, we take f₀ = 10²⁵ Hz as given. Duda's time crystal mechanism would *derive* this frequency from the field's potential. The phi-4 potential `(ψ²-1)²` is closely related to Smolinski's quartic potential `k·ψ⁴` — both are non-linear potentials that come from valid Lagrangians.
+**Connection to OpenWave**: this directly addresses our M5 Time Dynamics question: "why does the medium oscillate?" In our framework, we take f₀ = 10²⁵ Hz as given. Duda's time crystal mechanism would *derive* this frequency from the field's potential. The phi-4 potential `(ψ²-1)²` is closely related to Smolinski's quartic potential `k·ψ⁴` — both are non-linear potentials that come from valid Lagrangians.
 
 ### 3. Coulomb Calculation Needs Regularization
 

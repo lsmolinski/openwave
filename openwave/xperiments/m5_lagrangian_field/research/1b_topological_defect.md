@@ -1,20 +1,20 @@
-# PHASE 3 — TOPOLOGICAL DEFECT (THE M5 PARTICLE)
+# TOPOLOGICAL DEFECT (THE M5 PARTICLE)
 
 A focused, foundational walk-through of what a **topological defect** is in M5 — the geometric / topological object that replaces "wave center" as the meaning of *particle* in OpenWave's Lagrangian-Field Method. Two halves:
 
 1. **What a defect IS** — its definition, the geometric forms it can take (hedgehog, kink, vortex, knot), how it differs from a "WC placed in a field", how its winding number quantizes charge, and how it stores rest-mass energy
 2. **How a defect OSCILLATES** — the time-crystal / Zitterbewegung mechanism that gives the defect its intrinsic clock at `ω = 2mc²/ℏ`, the rotational nature of that oscillation, and how mass + spin + de Broglie wavelength + magnetic moment all derive from this one rotating-defect mechanism
 
-The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [3b_concept_review.md § What is the time-crystal concept?](3b_concept_review.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [3d_path_to_m5.md § Phase M5.8](3d_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
+The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [0b_overview.md § What is the time-crystal concept?](0b_overview.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [2a_path_to_m5.md § Phase M5.8](2a_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
 
 **Status** (2026-04-19): conceptual framework complete (this document); empirical validation scheduled for **M5.8** (single defect, intrinsic oscillation measurement, target `ω = 2mc²/ℏ` for electron + neutrino).
 
 Related reading:
 
-- [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — master spec + group email thread (paraphrased)
-- [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — sandbox numerical results
-- [3b_concept_review.md](3b_concept_review.md) — full concept Q&A (this is a deep-dive on one specific entry there)
-- [3d_path_to_m5.md](3d_path_to_m5.md) — M5 implementation plan (M5.8 tests this physics)
+- [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) — master spec + group email thread (paraphrased)
+- [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results
+- [0b_overview.md](0b_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
+- [2a_path_to_m5.md](2a_path_to_m5.md) — M5 implementation plan (M5.8 tests this physics)
 - Dr. Duda's φ⁴ time-crystal toy model: <https://arxiv.org/pdf/2501.04036>
 - Wikipedia Zitterbewegung: <https://en.wikipedia.org/wiki/Zitterbewegung>
 - Frank Wilczek's 2012 time-crystal proposal: <https://en.wikipedia.org/wiki/Time_crystal>
@@ -52,7 +52,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 | --- | --- | --- |
 | Defect existence | Topology | Brouwer winding Q = ±1 |
 | Rest mass | Topology | E = mc² = stored gradient + V cost |
-| Lock-in / stability | Topology | Skyrme + LdG protection (M5.5 / 6) |
+| Stability / Lock-in | Topology | Skyrme + LdG protection (M5.5 / 6) |
 | Annihilation event | Topology | Q = +1 + Q = −1 cancels to vacuum |
 | Annihilation release | Waves | Stored energy → outgoing photons |
 | Threshold velocity | Both | Kinetic (waves) vs Coulomb barrier (topology) |
@@ -69,7 +69,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 
 | Force | Mechanism | Detail |
 | --- | --- | --- |
-| Electric (static Coulomb) | Topology | Frank elastic E(d) ~ 1/d — quant + visual confirmation in [3f_coulomb_visual_geometry.md](3f_coulomb_visual_geometry.md) |
+| Electric (static Coulomb) | Topology | Frank elastic E(d) ~ 1/d — quant + visual confirmation in [3a_coulomb_visual_geometry.md](3a_coulomb_visual_geometry.md) |
 | Electric (quantization) | Topology | Brouwer integer winding |
 | Strong (confinement σ·r) | Topology | Vortex-string tension |
 | Strong (short-range) | Waves | M3 standing-wave lock-in (retained) |
@@ -150,7 +150,7 @@ You can't "remove" a defect by deleting some parameter. You can only:
 
 The defect's "position" is not a tracked state variable; it's wherever the winding-number integral is concentrated at that instant. The defect moves because the field moves; the field has a topological feature, not a foreign body.
 
-This is structurally different from M3/M4 and is the architectural break between methods. See [3b_concept_review.md § How do topological defects move? (particle motion)](3b_concept_review.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
+This is structurally different from M3/M4 and is the architectural break between methods. See [0b_overview.md § How do topological defects move? (particle motion)](0b_overview.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
 
 ### M3/M4 vs M5 paradigm — what changes mechanically
 
@@ -206,7 +206,7 @@ All of these are *the same kind of mathematical object* — a topologically prot
 
 **Common informal names** for the same thing across literatures: *kink* (1D field theory), *hedgehog* (liquid crystals + nematic LdG), *vortex* (fluid dynamics + superconductors), *skyrmion* (Skyrme-stabilized hedgehog in nuclear / liquid-crystal / magnetic literature), *hopfion* (knotted/linked closed loop with non-zero Hopf invariant), *knot* (broader topology / DNA), *whirlpool* (everyday analogy), *soliton* (generic nonlinear field theory). They overlap heavily — a hedgehog is the 3D analog of a 2D vortex, which is a 2D analog of a 1D kink; a skyrmion is a hedgehog with the Skyrme stabilizer attached; a hopfion is a closed vortex loop with a non-trivial Hopf invariant. M5's documentation uses these terms relatively interchangeably; the specific class matters more than the name.
 
-**Experimental existence proof for the hopfion + skyrmion families** (2026): Liu et al. demonstrated **direct laser creation of isolated hopfions and skyrmions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). This is a **structure-existence anchor** complementary to the de Broglie clock anchors (Catillon 2008, positronium 2026) — together they cover both the structural side (these defects can be created in nature) and the dynamical side (the resulting clock matches `2mc²/ℏ`). Cross-referenced in [3d_path_to_m5.md § Phase M5.5](3d_path_to_m5.md#phase-m55--skyrme-stabilizer-if-m54-reveals-defect-collapse) where the Skyrme stabilizer phase becomes the OpenWave numerical complement to Liu et al.'s lab observation.
+**Experimental existence proof for the hopfion + skyrmion families** (2026): Liu et al. demonstrated **direct laser creation of isolated hopfions and skyrmions** in a real medium for the first time — *Nature Physics*, [s41567-026-03236-0](https://www.nature.com/articles/s41567-026-03236-0) (overview at [phys.org](https://phys.org/news/2026-05-laser-isolated-hopfions.html)). This is a **structure-existence anchor** complementary to the de Broglie clock anchors (Catillon 2008, positronium 2026) — together they cover both the structural side (these defects can be created in nature) and the dynamical side (the resulting clock matches `2mc²/ℏ`). Cross-referenced in [2a_path_to_m5.md § Phase M5.5](2a_path_to_m5.md#phase-m55--skyrme-stabilizer-if-m54-reveals-defect-collapse) where the Skyrme stabilizer phase becomes the OpenWave numerical complement to Liu et al.'s lab observation.
 
 ### Why "twisted" can't be undone — the topological constraint
 
@@ -493,7 +493,7 @@ The twist DoF gives M5 a natural mechanism for several phenomena that are otherw
 - **Berry / geometric phases** in adiabatic defect-state evolution
 - **Entanglement-like correlations** between defect pairs sharing a topologically nontrivial field
 
-Validation pathway in OpenWave's M-phases is sketched in [3d_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](3d_path_to_m5.md).
+Validation pathway in OpenWave's M-phases is sketched in [2a_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](2a_path_to_m5.md).
 
 ### EM-hydrodynamics formal equivalence — the structural bridge
 
@@ -535,7 +535,7 @@ Per Duda's 2026-04 Models-of-Particles thread (*"Magnetic field: Some historic m
 
 The two topologies are **orthogonal**: loop-topology ⊥ surface-topology. Combined, they form **SO(3)** — exactly the symmetry group of the LdG director field. M5's biaxial-hedgehog framework therefore carries *both quantizations simultaneously* in one structure: the director field's S² winding gives the integer charge; quantum phase on closed loops in the same field gives integer magnetic flux. The director field is, by construction, the deeper field whose *curvature* gives the Maxwell tensor `F`.
 
-**Extension to SO(1,3)**: adding boost degrees of freedom upgrades SO(3) (rotations) to SO(1,3) (Lorentz group). This is the path Duda outlines for unification — the same framework that gets EM from S¹ × S² gets gravity from boosts (the missing dimension), connecting electromagnetism, quantum mechanics, and gravity in a single Lorentz-invariant topological-defect field theory. M5.6 (biaxial LdG) and the long-term gravity-emergence phase (Layer 5 in [3d_path_to_m5.md](3d_path_to_m5.md)) are the implementation targets for this extension.
+**Extension to SO(1,3)**: adding boost degrees of freedom upgrades SO(3) (rotations) to SO(1,3) (Lorentz group). This is the path Duda outlines for unification — the same framework that gets EM from S¹ × S² gets gravity from boosts (the missing dimension), connecting electromagnetism, quantum mechanics, and gravity in a single Lorentz-invariant topological-defect field theory. M5.6 (biaxial LdG) and the long-term gravity-emergence phase (Layer 5 in [2a_path_to_m5.md](2a_path_to_m5.md)) are the implementation targets for this extension.
 
 #### Topology counts; regularization gives magnitudes
 
@@ -550,7 +550,7 @@ Duda's response in the thread spells out where the magnitude comes from in this 
 | **Compton radius** | Not directly | Comes from the clock: `ψ = exp(−tE/ℏ)` means mass *propels* the oscillation at `ω = 2mc²/ℏ`, and the geometric scale of that oscillation is the Compton wavelength |
 | **Running coupling** (high-energy Coulomb deformation) | Not directly | Direct empirical signature of the fm-scale regularization: deformation of Coulomb at very high energy / very low distance is observed and agrees with Faber's regularization predictions ([Universe 11/4/113](https://www.mdpi.com/2218-1997/11/4/113)) |
 
-**Why this matters for M5**: topology and regularization are **complementary, not competing**. Phase 3 sandbox already validated the topology side (1/d Coulomb at R² = 0.993 from defect winding). M5.6 (Faber biaxial LdG regularization) is the validation of the metric / magnitude side — without it, the framework cannot produce calibrated particle masses, only relative ratios. Both legs are required for the full physics.
+**Why this matters for M5**: topology and regularization are **complementary, not competing**. M5 sandbox already validated the topology side (1/d Coulomb at R² = 0.993 from defect winding). M5.6 (Faber biaxial LdG regularization) is the validation of the metric / magnitude side — without it, the framework cannot produce calibrated particle masses, only relative ratios. Both legs are required for the full physics.
 
 **Validation target — running coupling as empirical anchor for M5.6**: at very high energy / very low distance scales, the effective Coulomb law deviates from `1/d²` due to the defect's finite-size structure. This is the same "running coupling" observed in mainstream particle physics; it directly probes the regularization scheme. Reproducing the observed running-coupling deformation in M5.6 simulations would be a stiff validation of the Faber regularization choice — failure would indicate the regularization is wrong even if the topology is right.
 
@@ -563,7 +563,7 @@ Several converging arguments place magnetism as a **dynamical (relativistic) con
 - **Walking-droplet Zeeman analog** ([Bush et al. 2012, PRL 108, 264503](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.108.264503)) — droplets in a rotating bath reproduce the Zeeman effect with **Coriolis force playing the role of the Lorentz force**. Hydrodynamic-quantum-analog evidence that "magnetism" emerges automatically from rotational dynamics in an inertial frame
 - **Berry's hydrodynamic Aharonov-Bohm** ([1999, PRL 83, 1966](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.83.1966)) — the AB phase shift around a vortex is the same equation in EM and hydrodynamic readings (per the equivalence in the previous section)
 
-**Implication for M5**: the simulator does not need to introduce a separate magnetic-field equation. If M5 reproduces (a) static Coulomb 1/d² from S² topology (already validated in Phase 3 sandbox) and (b) Lorentz invariance via Klein-Gordon + Skyrme dynamics (M5.2 → M5.5), then the magnetic force emerges automatically as the kinematic correction to moving-charge Coulomb. This is structurally simpler than postulating two separate force laws — it's one law observed from two reference frames. Phase 4 (electromagnetism emergence in [3d_path_to_m5.md § Beyond matter](3d_path_to_m5.md)) is the validation target.
+**Implication for M5**: the simulator does not need to introduce a separate magnetic-field equation. If M5 reproduces (a) static Coulomb 1/d² from S² topology (already validated in M5 sandbox) and (b) Lorentz invariance via Klein-Gordon + Skyrme dynamics (M5.2 → M5.5), then the magnetic force emerges automatically as the kinematic correction to moving-charge Coulomb. This is structurally simpler than postulating two separate force laws — it's one law observed from two reference frames. Phase 4 (electromagnetism emergence in [2a_path_to_m5.md § Beyond matter](2a_path_to_m5.md)) is the validation target.
 
 ### CPT-paired emission and absorption — the coupled-oscillator framing
 
@@ -578,7 +578,7 @@ Under CPT symmetry, "emission" is the time-reverse of "absorption" — they are 
 | Spontaneous emission (no apparent absorber) | Apparent only — the mathematical formalism still requires `ψ_f`; in practice the absorber is some thermal mode of the surrounding field |
 | Stimulated emission | Direct CPT mirror of stimulated absorption — same coupling, time-reversed |
 
-**Why this matters for M5**: the time-symmetric Lagrangian dynamics of M5 (Hermitian, Lorentz-invariant → CPT by theorem) means the simulator does not produce one-directional "emission events" any more than it produces one-directional "absorption events". What M5 produces is field couplings between defects through their shared environment — and whether the observer reads a given coupling event as "emission" or "absorption" depends on which defect's clock runs which direction. The apparent radiation asymmetry of our universe (electrons spontaneously radiate but do not spontaneously climb up energy levels) is a **boundary-condition effect** — there are more absorbers in our future than emitters in our past — not a feature of the underlying dynamics. M5 should reproduce both cases naturally; testing this is part of the CPT-symmetry validation in [3d_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](3d_path_to_m5.md).
+**Why this matters for M5**: the time-symmetric Lagrangian dynamics of M5 (Hermitian, Lorentz-invariant → CPT by theorem) means the simulator does not produce one-directional "emission events" any more than it produces one-directional "absorption events". What M5 produces is field couplings between defects through their shared environment — and whether the observer reads a given coupling event as "emission" or "absorption" depends on which defect's clock runs which direction. The apparent radiation asymmetry of our universe (electrons spontaneously radiate but do not spontaneously climb up energy levels) is a **boundary-condition effect** — there are more absorbers in our future than emitters in our past — not a feature of the underlying dynamics. M5 should reproduce both cases naturally; testing this is part of the CPT-symmetry validation in [2a_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](2a_path_to_m5.md).
 
 **Engineering connection**: the CPT-paired absorption/emission framework is also the structural basis for the **negative-radiation-pressure regime** — when stimulated emission dominates over absorption, the photon flux exerts a *pulling* force on the source instead of a pushing force. This is the regime where coherent amplitude-extraction operations (gain media, biased semiconductors, certain metamaterial regimes) become possible. M5's CPT-symmetric dynamics provide the substrate; engineering applications of the negative-radiation-pressure regime are the downstream consumer of this physics.
 
@@ -598,7 +598,7 @@ where `m` is the defect's stored rest mass. This is the **Zitterbewegung frequen
 
 Crucially, this oscillation is **not driven externally**. It's the system's intrinsic response to having stored energy that topology won't let dissipate. The defect's ground state is *itself* time-periodic — this is what Frank Wilczek (2012) called a **time crystal**: a system whose lowest-energy state breaks time-translation symmetry by oscillating periodically.
 
-**Time emergence connection**: this is also why time itself emerges from defect oscillation in M5's framework. The vacuum (no defects) has no clock — there's nothing to set a frequency. As soon as a defect appears, it brings its own intrinsic clock at `ω = 2mc²/ℏ`. The wave period of that clock IS the local time unit. Time doesn't pre-exist; it emerges where matter is. This is captured in the [Energy Layers under M5 review](3z_review_energy_layers.md) (Layer 1: Vacuum is static / source of time; Layer 2: defects oscillate and time emerges with them).
+**Time emergence connection**: this is also why time itself emerges from defect oscillation in M5's framework. The vacuum (no defects) has no clock — there's nothing to set a frequency. As soon as a defect appears, it brings its own intrinsic clock at `ω = 2mc²/ℏ`. The wave period of that clock IS the local time unit. Time doesn't pre-exist; it emerges where matter is. This is captured in the [Energy Layers under M5 review](../../m3_wolff_lafreniere/research/2_ENERGY_LAYERS.md) (Layer 1: Vacuum is static / source of time; Layer 2: defects oscillate and time emerges with them).
 
 The next sections of this document unpack each piece of this mechanism in turn — what time-translation symmetry and its breaking actually mean (next section), how the math gives `ω = 2mc²/ℏ`, why the oscillation is rotational rather than linear, and how the M4 elliptical-granule picture fits in.
 
@@ -831,7 +831,7 @@ All four were *separate postulates* in EWT and quantum mechanics. In M5, they're
 
 ## OUTGOING-WAVE L+T DECOMPOSITION — MAGNETISM AS THE TRANSVERSE CHANNEL
 
-The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (M7.7 / M7.8 / M7.9 in [3d_path_to_m5.md](3d_path_to_m5.md)) all build on it.
+The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (M7.7 / M7.8 / M7.9 in [2a_path_to_m5.md](2a_path_to_m5.md)) all build on it.
 
 ### The decomposition
 
@@ -870,7 +870,7 @@ Macroscopic magnetism appears when one or more of the averaging above is broken:
 
 1. **Coherent alignment** in a material's structure → permanent magnets. Aligned domains break the direction averaging across the sphere; the T-components add coherently along the magnetization axis. The 10²¹ rad/s frequency averaging still happens at the per-defect level but the *coherent sum* yields a non-zero static magnetic field
 2. **Coherent motion** of charges in one direction → electromagnets. Moving charges' T-components add coherently in the lab frame (the kinematic-correction-to-Coulomb framing above). Equivalent to imposing a coherent direction on the otherwise-isotropic emission
-3. **Frequency downshift of the effective T-component oscillation** → exposes the field to the inertial-response regime where test particles can resolve it. This is a **falsifiable physics question** for Phase 4 — see [3d_path_to_m5.md § Phase 4 explicit goals](3d_path_to_m5.md#phase-4--explicit-goals-refined-2026-05) for the experimental design. If the high-ω averaging can be defeated by a heterodyne / mixing / low-pass operation on the wave field, magnetism becomes inertially observable at the downshifted frequency. If not, the averaging is fundamental and magnetism stays bound to the existing two manifesting conditions
+3. **Frequency downshift of the effective T-component oscillation** → exposes the field to the inertial-response regime where test particles can resolve it. This is a **falsifiable physics question** for Phase 4 — see [2a_path_to_m5.md § Phase 4 explicit goals](2a_path_to_m5.md#phase-4--explicit-goals-refined-2026-05) for the experimental design. If the high-ω averaging can be defeated by a heterodyne / mixing / low-pass operation on the wave field, magnetism becomes inertially observable at the downshifted frequency. If not, the averaging is fundamental and magnetism stays bound to the existing two manifesting conditions
 
 The third route is the new physics target Phase 4 must validate (or falsify); the first two are well-established empirical phenomena (permanent magnets and electromagnets) that any viable framework must reproduce — and this one does, by construction, from the L+T decomposition + coherent-summing argument.
 
@@ -886,11 +886,11 @@ Mainstream phenomena consistent with this prediction:
 - **Magnetocaloric effect** — applied magnetic-field changes produce temperature changes at fixed pressure
 - **Pyromagnetic / thermomagnetic coefficients** — per-material temperature-magnetization coupling constants
 
-In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **M7.9 in [3d_path_to_m5.md](3d_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
+In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **M7.9 in [2a_path_to_m5.md](2a_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
 
 ### Note on engineering operationalization
 
-Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [3d_path_to_m5.md](3d_path_to_m5.md) cover only the physics side.
+Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [2a_path_to_m5.md](2a_path_to_m5.md) cover only the physics side.
 
 ---
 
@@ -954,7 +954,7 @@ In a 2026-05 Models-of-Particles thread (with Bruce Lloyd, Paul Werbos, Shiva Me
 
 | Requirement | What it solves | OpenWave's M5 mechanism |
 | --- | --- | --- |
-| **(1) Charge quantization** — via topology | Why electrons and protons carry integer multiples of `e`; why the "naive" Gauss law (which would allow any real charge) fails. The fix: the electric field must be the *curvature of a deeper field*, so Gauss's law counts a topological winding number (Gauss-Bonnet) rather than a continuous integral. The lightest nontrivial winding = electron | The LdG biaxial director field provides the deeper field. M5's defects carry integer winding by construction. Validated in Phase 3 sandbox (topological 1/d Coulomb, R² = 0.993) |
+| **(1) Charge quantization** — via topology | Why electrons and protons carry integer multiples of `e`; why the "naive" Gauss law (which would allow any real charge) fails. The fix: the electric field must be the *curvature of a deeper field*, so Gauss's law counts a topological winding number (Gauss-Bonnet) rather than a continuous integral. The lightest nontrivial winding = electron | The LdG biaxial director field provides the deeper field. M5's defects carry integer winding by construction. Validated in M5 sandbox (topological 1/d Coulomb, R² = 0.993) |
 | **(2) Clock propulsion** — `ω = 2mc²/ℏ` already ticking at rest | A particle must have its own internal "shaker" — without it, the hydrodynamic-quantum-analog correspondence has no oscillator to drive coherence. Confirmation: the de Broglie clock measured in Catillon 2008 (electron at 81 MeV) and the 2026 nonrelativistic positronium measurement | The time-crystal mechanism in §§ TIME-TRANSLATION + WHY DEFECTS OSCILLATE above gives the defect intrinsic Zitterbewegung at `ω = 2mc²/ℏ` from topology + curvature coupling. **Clock propulsion appears automatically when the electric field is treated as curvature dual `F` of the deeper field**. M5.8 validates this numerically |
 
 **Energy-balance mechanism for clock propulsion** (from Duda's 2026-04 follow-up on the MIT-paper thread): mathematically, the time-crystal oscillation is realized via **negative Hamiltonian terms** in the Lagrangian — activating the oscillation **slightly reduces the defect's static mass component** while conserving total energy. The defect "borrows" a tiny amount from its own rest-mass budget to fund the perpetual oscillation. The 1+1D φ⁴ toy model in [arxiv:2501.04036](https://arxiv.org/pdf/2501.04036) demonstrates this energy bookkeeping explicitly, and M5 inherits the same balance in 3D LdGS dynamics. This is what allows the oscillation to be *spontaneous* (the energy cost is paid from the rest-mass budget, no external pump needed) without violating energy conservation — answering the historical "no-go theorem" objection to time crystals (Watanabe-Oshikawa 2015) for the *topologically-protected* case where the rest-mass reduction is pinned by the winding number.
@@ -982,5 +982,5 @@ These adjacent frameworks are useful as cross-validation references: if multiple
 - **Wikipedia: Zitterbewegung**: <https://en.wikipedia.org/wiki/Zitterbewegung>
 - **Wikipedia: Time crystal**: <https://en.wikipedia.org/wiki/Time_crystal>
 - **Faber, M. (2025)** "Conclusions Not Yet Drawn from the Unsolved 4/3-Problem — How to Get a Stable Classical Electron." *Universe* 11(3), 097. <https://doi.org/10.3390/universe11030097> — historical-foundations companion to the two M5.6 LdG-regularization papers. Argues that a stable classical electron field configuration with finite self-energy and Coulomb far-field would have made the renormalization detour unnecessary. M5's topological-defect approach inherits this property by construction: defects carry finite topologically-protected stored energy `E = mc²`, not a point singularity, so the 4/3 divergence does not arise
-- **OpenWave Phase 3 sandbox results** ([3a_lagrangian_experiments.md § Experiment 1](3a_lagrangian_experiments.md#experiment-1-sine-gordon-1d-solitons)): kink rest energy `E = 8mc²` measured to 0.06% accuracy — validates the "stored field energy = rest mass" half of the time-crystal mechanism
-- **OpenWave Phase 3 sandbox results** ([3a_lagrangian_experiments.md § Experiment 4](3a_lagrangian_experiments.md#experiment-4-klein-gordon-from-twist-dynamics)): Klein-Gordon dispersion `ω² = c²k² + m²` measured to R² = 0.999982 — validates the mass-from-potential mechanism at linear order
+- **OpenWave M5 sandbox results** ([1c_lagrangian_experiments.md § Experiment 1](1c_lagrangian_experiments.md#experiment-1-sine-gordon-1d-solitons)): kink rest energy `E = 8mc²` measured to 0.06% accuracy — validates the "stored field energy = rest mass" half of the time-crystal mechanism
+- **OpenWave M5 sandbox results** ([1c_lagrangian_experiments.md § Experiment 4](1c_lagrangian_experiments.md#experiment-4-klein-gordon-from-twist-dynamics)): Klein-Gordon dispersion `ω² = c²k² + m²` measured to R² = 0.999982 — validates the mass-from-potential mechanism at linear order

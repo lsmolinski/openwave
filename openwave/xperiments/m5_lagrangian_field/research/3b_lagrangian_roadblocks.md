@@ -22,7 +22,7 @@ M5 is OpenWave's Lagrangian-field implementation, built after a 2026-04 sandbox 
 - **Gradient-descent relax**: tangent-projected, unit-vector-preserving descent on Frank energy (port from sandbox Exp 2)
 - **Planned V(ψ) lineage**: Close Eq. 23 + Klein-Gordon mass + LdG biaxial (Faber regularization for M5.6)
 
-Roadmap and validation history: [`3d_path_to_m5.md`](3d_path_to_m5.md).
+Roadmap and validation history: [`2a_path_to_m5.md`](2a_path_to_m5.md).
 
 ---
 
@@ -73,7 +73,7 @@ Directors near both defects point outward (both are `Q = +1`). In the middle of 
 | Energy vs separation | `E(d) ~ ±1/d` | `F_total(d) ~ a + b/d` (b<0 attractive, b>0 repulsive) |
 | Mechanism | Coulomb's law (postulated) | Frank elastic of topological winding (derived) |
 
-The winding-number tracker measured `Q = ±0.996` on seeded ±1 hedgehogs and `Q = 0` in vacuum, confirming the topological charge is what we think it is. Full write-up of the visual result: [`3f_coulomb_visual_geometry.md`](3f_coulomb_visual_geometry.md).
+The winding-number tracker measured `Q = ±0.996` on seeded ±1 hedgehogs and `Q = 0` in vacuum, confirming the topological charge is what we think it is. Full write-up of the visual result: [`3a_coulomb_visual_geometry.md`](3a_coulomb_visual_geometry.md).
 
 ---
 
@@ -161,10 +161,10 @@ Is one of these *the* answer, or is the soliton existence theorem itself conting
 
 ## Links to code, data, and roadmap
 
-- M5.1 Coulomb visual document (full screenshots + commentary): [`3f_coulomb_visual_geometry.md`](3f_coulomb_visual_geometry.md)
+- M5.1 Coulomb visual document (full screenshots + commentary): [`3a_coulomb_visual_geometry.md`](3a_coulomb_visual_geometry.md)
 - Headless Coulomb gating test (the script that produced R²=0.978): `xperiments/m5_lagrangian_field/research/scripts/m5_1_coulomb.py`
-- M5 phase-by-phase roadmap (M5.0 through M5.8): [`3d_path_to_m5.md`](3d_path_to_m5.md)
-- Strategic map of which physics is "topology" vs "waves" in M5: [`3c_topological_defect.md`](3c_topological_defect.md)
+- M5 phase-by-phase roadmap (M5.0 through M5.8): [`2a_path_to_m5.md`](2a_path_to_m5.md)
+- Strategic map of which physics is "topology" vs "waves" in M5: [`1b_topological_defect.md`](1b_topological_defect.md)
 - Step 3 / 4a / 4b negative-result test scripts:
   - `xperiments/m5_lagrangian_field/research/scripts/m5_2_kg_defect_survival.py`
   - `xperiments/m5_lagrangian_field/research/scripts/m5_2_phi4_defect_survival.py`

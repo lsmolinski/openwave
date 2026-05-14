@@ -262,7 +262,7 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 
 ## 🔶 [M5 / LAGRANGIAN-FIELD METHOD — see 0c_roadmap.md](../../m5_lagrangian_field/research/0c_roadmap.md)
 
-The M5 implementation roadmap (M5.0 through M5.11) and Phase 4 / TIME DYNAMICS future-extension task list have been consolidated into [`0c_roadmap.md`](../../m5_lagrangian_field/research/0c_roadmap.md) under the M5 method directory. Design rationale, M2/M4 inheritance, code mapping, resolution & performance plan, layered validation, external-comms milestones, and group feedback live in [`3d_path_to_m5.md`](../../m5_lagrangian_field/research/3d_path_to_m5.md).
+The M5 implementation roadmap (M5.0 through M5.11) and Phase 4 / TIME DYNAMICS future-extension task list have been consolidated into [`0c_roadmap.md`](../../m5_lagrangian_field/research/0c_roadmap.md) under the M5 method directory. Design rationale, M2/M4 inheritance, code mapping, resolution & performance plan, layered validation, external-comms milestones, and group feedback live in [`2a_path_to_m5.md`](../../m5_lagrangian_field/research/2a_path_to_m5.md).
 
 ---
 

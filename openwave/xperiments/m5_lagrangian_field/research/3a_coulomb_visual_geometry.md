@@ -114,6 +114,6 @@ The M5 framework reproduces the *exact geometric pattern* of classical Coulomb f
 
 - **Quantitative test**: `openwave/xperiments/m5_lagrangian_field/research/scripts/m5_1_coulomb.py`
 - **Quantitative plot**: `research/plots/m5_1_coulomb.png` (E vs d + E vs 1/d linear fit)
-- **Strategic context**: [`3c_topological_defect.md § STRATEGIC MAPPING`](3c_topological_defect.md) — wave vs topology decomposition; Coulomb listed under "FORCES — Topology"
-- **M5.1 task entry**: [`3d_path_to_m5.md § Phase M5.1 — task 7`](3d_path_to_m5.md)
+- **Strategic context**: [`1b_topological_defect.md § STRATEGIC MAPPING`](1b_topological_defect.md) — wave vs topology decomposition; Coulomb listed under "FORCES — Topology"
+- **M5.1 task entry**: [`2a_path_to_m5.md § Phase M5.1 — task 7`](2a_path_to_m5.md)
 - **Roadmap status**: [`0_ROADMAP.md`](../../m3_wolff_lafreniere/research/0_ROADMAP.md) — M5.1 complete; M5.2 unblocked

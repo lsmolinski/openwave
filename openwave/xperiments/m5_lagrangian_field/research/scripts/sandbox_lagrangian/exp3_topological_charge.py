@@ -16,7 +16,7 @@ Tests:
 4. Perturbed hedgehog    → Q = +1   (noise levels: 5%, 10%, 20%, 50%)
 5. Two-defect config     → Q_sphere_around_each = ±1, Q_sphere_around_both = 0
 
-Spec:    ../../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 3)
+Spec:    ../../1aa_lagrangian_framework.md  (Experiment 3)
 Results: ../3b_lagrangian_experiments.md  (Experiment 3)
 """
 

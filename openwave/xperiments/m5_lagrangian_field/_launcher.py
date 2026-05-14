@@ -407,7 +407,7 @@ def display_controls(state):
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
-        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
+        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
         state.SHOW_DIRECTORS = sub.slider_int("Directors", state.SHOW_DIRECTORS, 0, 3)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
@@ -718,8 +718,12 @@ def compute_field_observables(state):
     # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
     # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
     lagrange.compute_energyH_density(
-        state.wave_field, state.observables, state.c_amrs, state.dt_rs,
-        state.m_freq_kg_rs, state.lambda_phi4
+        state.wave_field,
+        state.observables,
+        state.c_amrs,
+        state.dt_rs,
+        state.m_freq_kg_rs,
+        state.lambda_phi4,
     )
 
     # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============

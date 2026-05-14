@@ -2,12 +2,12 @@
 
 Implementation plan for **M5 / LAGRANGIAN-FIELD METHOD** (directory `openwave/xperiments/m5_lagrangian_field/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
 
-**Naming**: **M5 / LAGRANGIAN-FIELD METHOD** (renamed 2026-04-19 from the earlier "Lagrangian-Wave Method" working title). The rename reflects what the method actually does: it is a full **Lagrangian field-theory** simulator, not just a wave engine. "Lagrangian" refers to the variational formalism (L = T − V, Euler-Lagrange equations, action principle) from which the equation of motion is derived; "Field" because the engine integrates a unified PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)` — two channels, one equation. The module that implements this is `lagrangian_engine.py` (not `wave_engine.py`) for the same reason. See [3b § What wave equation does M5 solve?](3b_concept_review.md#what-wave-equation-does-m5-solve-is-force-still-e) for the full rationale — particularly the 7-item breakdown of what the engine does (only one item is strictly wave propagation). The name distinguishes M5 from M1–M4's "Wave Method" naming (those really are wave engines; M5 is a field-theory engine).
+**Naming**: **M5 / LAGRANGIAN-FIELD METHOD** (renamed 2026-04-19 from the earlier "Lagrangian-Wave Method" working title). The rename reflects what the method actually does: it is a full **Lagrangian field-theory** simulator, not just a wave engine. "Lagrangian" refers to the variational formalism (L = T − V, Euler-Lagrange equations, action principle) from which the equation of motion is derived; "Field" because the engine integrates a unified PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)` — two channels, one equation. The module that implements this is `lagrangian_engine.py` (not `wave_engine.py`) for the same reason. See [3b § What wave equation does M5 solve?](0b_overview.md#what-wave-equation-does-m5-solve-is-force-still-e) for the full rationale — particularly the 7-item breakdown of what the engine does (only one item is strictly wave propagation). The name distinguishes M5 from M1–M4's "Wave Method" naming (those really are wave engines; M5 is a field-theory engine).
 
 **Spec inputs**:
 
-- [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
-- [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
+- [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
+- [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
 - [0_WAVE_EQUATION.md](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
 
 **Production code references**:
@@ -94,7 +94,7 @@ The specific `V(ψ)` is selected from sandbox results:
 | Landau-de Gennes | `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr M²)²` | ⚠️ mechanism validated (Exp 6); specific parameters deferred to M5.6 |
 | Close's elastic solid | Eq. 19 `∂²Q = −c²·∇×∇×Q` (linear limit) + **Eq. 23** (particle equation, preserves `∇·s = 0`, Close's recommendation 2026-04-18) — optional Eq. 21 nonlinear terms `−u·∇s + w×s` for comparison | ✅ Eq. 19 validated (Exp 7 v2); Eq. 23 selected per Close's explicit guidance — **M5's base wave dynamics layer** |
 | Klein-Gordon mass term | `V(ψ) = ½m²·ψ²` → `∂V/∂ψ = m²·ψ` | ✅ validated (Exp 4) — **selected as M5's perturbation-mass mechanism** |
-| Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3a § Winning Approach](3a_lagrangian_experiments.md#winning-approach-for-m5) |
+| Mixed / composite | linear combination (topology seeding + Close dynamics + KG mass + optional Skyrme) | **adopted** — full recipe in [3a § Winning Approach](1c_lagrangian_experiments.md#winning-approach-for-m5) |
 
 ### 2. True independent vector components (no radial constraint)
 
@@ -167,7 +167,7 @@ Duda's vacuum is **not** the same as M2's base wave. The distinction:
 | Time dependence | Built in (ω·t) | None — oscillations arise from the dynamics, not the ground state |
 | Mathematical role | Initial condition + driving term | Minimum of V(ψ) — the potential well |
 
-So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [3_LAGRANGIAN_FRAMEWORK.md § Impact on Base Wave Architecture](3_LAGRANGIAN_FRAMEWORK.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
+So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [1aa_lagrangian_framework.md § Impact on Base Wave Architecture](1aa_lagrangian_framework.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
 
 ### Concrete Consequence for M5 `seed_*` Kernels
 
@@ -185,7 +185,7 @@ This mirrors how the sandbox experiments seed their fields (a hedgehog is "unifo
 
 ### Why This Does NOT Invalidate M3's Results
 
-M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [3_LAGRANGIAN_FRAMEWORK.md § Practical Implication](3_LAGRANGIAN_FRAMEWORK.md).
+M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [1aa_lagrangian_framework.md § Practical Implication](1aa_lagrangian_framework.md).
 
 ---
 
@@ -220,7 +220,7 @@ M5 (target):
 
 ## SANDBOX VERDICTS (all 8 experiments complete)
 
-Phase 3 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisions for M5 are now resolved:
+M5 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisions for M5 are now resolved:
 
 | Decision | Resolution | Source |
 | --- | --- | --- |
@@ -233,7 +233,7 @@ Phase 3 sandbox is complete (2026-04-16 / 2026-04-17). The architectural decisio
 | Does the PDE evolution produce Klein-Gordon dispersion? | ✅ **Yes** — ω² = c²k² + m² validated to R² = 0.999982 across 9 modes | Exp 4 |
 | Is leapfrog + nonlinear potential stable with Lorentz-correct kinematics? | ✅ **Yes** — kink v = 0.4997c (input 0.5c), width L/γ matched, energy drift 1.5e-6 | Exp 1 |
 
-**Headline finding**: topology (Exps 1, 2, 3) is load-bearing; pure nonlinearity (Exps 7, 8) is insufficient on its own; Klein-Gordon wave dynamics (Exp 4) are the correct perturbative layer. Full context in [3a_lagrangian_experiments.md § OVERALL CONCLUSIONS](3a_lagrangian_experiments.md#overall-conclusions).
+**Headline finding**: topology (Exps 1, 2, 3) is load-bearing; pure nonlinearity (Exps 7, 8) is insufficient on its own; Klein-Gordon wave dynamics (Exp 4) are the correct perturbative layer. Full context in [1c_lagrangian_experiments.md § OVERALL CONCLUSIONS](1c_lagrangian_experiments.md#overall-conclusions).
 
 ---
 
@@ -429,7 +429,7 @@ Detail for the M5.11 phase introduced earlier. Layers 3–5 are major undertakin
 | **M5.11.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
 | **M5.11.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
 
-#### Cross-mass-class machinery required for M5.11.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](3c_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
+#### Cross-mass-class machinery required for M5.11.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](1b_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
 
 Atom-scale simulations (M5.11.4 onward) need additional architectural capability beyond the same-mass-class physics validated by M5.7–M5.8. The reason: in hydrogen-like systems, the proton ticks at `ω_p ≈ 1836 × ω_e`, so direct e-p Zitterbewegung interference does NOT form coherent standing waves. Instead, three layered mechanisms must work together:
 
@@ -443,13 +443,13 @@ This testing-architecture distinction is **gating** for atom-scale simulations: 
 
 ### M5.10 — Thermal-mechanics detail
 
-A working hypothesis for the heat output domain: **the thermal degree of freedom is the joint amplitude+frequency `(A, ω)` excess of a topological defect's intrinsic Zitterbewegung above its ground-state values `(A₀, ω₀)`** — both components carry thermal content; they are coupled by **wave-steepness conservation** (`A/λ = const`), the same conservation principle articulated in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation `(A₀, ω₀)` with `A₀ ≈ ℏ/(mc)` (its Compton wavelength) and `ω₀ = 2mc²/ℏ` (the Zitterbewegung clock). Any excess on top of *either* component is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
+A working hypothesis for the heat output domain: **the thermal degree of freedom is the joint amplitude+frequency `(A, ω)` excess of a topological defect's intrinsic Zitterbewegung above its ground-state values `(A₀, ω₀)`** — both components carry thermal content; they are coupled by **wave-steepness conservation** (`A/λ = const`), the same conservation principle articulated in [5c_time_dynamics.md](5c_time_dynamics.md). Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation `(A₀, ω₀)` with `A₀ ≈ ℏ/(mc)` (its Compton wavelength) and `ω₀ = 2mc²/ℏ` (the Zitterbewegung clock). Any excess on top of *either* component is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
 
 **Direct prediction at the boundary**: if all defects sit exactly at `(A₀, ω₀)` with zero thermal excess, the framework predicts the system temperature is exactly **0 Kelvin** (absolute zero). Conversely, the temperature observable is — by construction — the measurement of joint `(A, ω)` excess above ground state. This recovers absolute zero correctly and consistently with the third law of thermodynamics, BEC, and superconductivity (phase-coherent ground states are the zero-excess configuration). The framework being self-consistent at this boundary is a pre-numerical sanity check on the hypothesis itself — and one of the M5.10 sub-phases below (M5.10.0) verifies it numerically.
 
-The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md). The topological-defect deep dive in [3c_topological_defect.md](3c_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
+The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5c_time_dynamics.md](5c_time_dynamics.md). The topological-defect deep dive in [1b_topological_defect.md](1b_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
 
-**Connection to Time Dynamics**: the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock — its rate of internal cycling. Modulating defect `ω` therefore corresponds to *locally engineering the rate of time at the subatomic scale*. The Phase 7 (A, ω) modulation experiments are simultaneously thermal-mechanics validation AND time-dynamics validation under different framings — same physical operation, two complementary scientific framings. See [5_TIME_DYNAMICS.md](5_TIME_DYNAMICS.md) for the time-dynamics-side treatment.
+**Connection to Time Dynamics**: the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock — its rate of internal cycling. Modulating defect `ω` therefore corresponds to *locally engineering the rate of time at the subatomic scale*. The Phase 7 (A, ω) modulation experiments are simultaneously thermal-mechanics validation AND time-dynamics validation under different framings — same physical operation, two complementary scientific framings. See [5c_time_dynamics.md](5c_time_dynamics.md) for the time-dynamics-side treatment.
 
 **Infrastructure foundation from M5.1 task 6**: the `lagrangian_engine.relax_director_step` kernel built for M5.1 task 6 (gradient-descent ground-state finder) is the **mathematical precursor** to M5.10's thermal-modulation primitives, despite the very different physics intent. The relaxation uses tangent-projected diffusion `∂_τ n = ∇²n − (n·∇²n)n` to drag the field toward the minimum-energy configuration — i.e. the **γ → ∞ limit** of a damped wave equation `∂²_t ψ = c²·∇²ψ − γ·∂_t ψ` (pure-dissipation overdamped regime). M5.10's thermal-modulation kernels will reuse the **same primitives** — the Laplacian stencil (`compute_laplacian`), the tangent projection (to preserve `|n|=1`), the soft-core pinning (to preserve topology) — but with a **physical γ** representing real damping (radiation, phonon coupling, EM-load impedance) instead of an artificial time-stepping parameter τ. So although task 6's relaxation has no physics interpretation in M5.1 (it's a ground-state finder for visualization + initial conditions), the kernel and its surrounding test infrastructure (`research/scripts/m5_1_relax.py`, `pin_centers/signs` plumbing in `SimulationState`, the `relax_field` helper that updates both `psi_am` AND `psi_prev_am` to preserve ψ̇=0) will all carry forward into M5.10 with minimal modification. The applied-tech implications of this math overlap — engineering γ as the DHC engineering target — are explored in private SABER work outside this repo.
 
@@ -505,11 +505,11 @@ This integrated layered scope is what differentiates OpenWave from comparable si
 
 The integration is the value. Reading the layered table top-to-bottom is also a reading-order suggestion for new contributors: validated primitives at the top, frontier work at the bottom.
 
-For the conceptual companion to this roadmap, see [3b_concept_review.md § Where do quarks, protons, nuclei, and atoms fit?](3b_concept_review.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
+For the conceptual companion to this roadmap, see [0b_overview.md § Where do quarks, protons, nuclei, and atoms fit?](0b_overview.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
 
 ### Long-term research directions — phase, Berry, and entanglement experiments
 
-A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [3c_topological_defect.md § The twist degree of freedom](3c_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
+A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [1b_topological_defect.md § The twist degree of freedom](1b_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
 
 These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below thermal (M5.10) and composites (M5.11).
 
@@ -578,7 +578,7 @@ Phase 4 (EM / magnetic emergence) is not yet detail-scoped at the per-experiment
 
 | Phase 4 goal | What it validates | Why it matters |
 | --- | --- | --- |
-| **L+T decomposition of defect-emitted wave as separable observables** | The defect's outgoing wave carries longitudinal (electric / scalar) AND transverse (magnetic) components, measurable independently and controllable independently | Already implicit in [3c_topological_defect.md § Outgoing-wave L+T decomposition](3c_topological_defect.md). Phase 4 elevates from "stated" to "numerically verified, with engineering-relevant amplitudes". Required for any downstream method that targets L vs T independently |
+| **L+T decomposition of defect-emitted wave as separable observables** | The defect's outgoing wave carries longitudinal (electric / scalar) AND transverse (magnetic) components, measurable independently and controllable independently | Already implicit in [1b_topological_defect.md § Outgoing-wave L+T decomposition](1b_topological_defect.md). Phase 4 elevates from "stated" to "numerically verified, with engineering-relevant amplitudes". Required for any downstream method that targets L vs T independently |
 | **Polarization-selective response in dielectric / ferromagnetic / metasurface analogs** | A simulated material with anisotropic structure exhibits selective transmission / reflection of L vs T components of the defect-emitted wave | Validates that the L+T decomposition is engineering-actionable — the components can be filtered, rotated, mode-converted by structures analogous to optical polarizers. Without this validation, "manipulate L and T separately" is a hopeful claim |
 | **Frequency-downshift inertial-response test** | Apply a heterodyne / low-pass / mixing operation on the high-ω T-component of a single defect's outgoing wave; measure whether the downshifted-effective-frequency variable mag field exerts measurable force on a test charged particle (electron analog) | Tests the physics underlying the engineering primitive. The "averaged-out at high ω" intuition is correct; whether a downshift operation defeats that averaging is the falsifiable open question. Pass = downshift principle works; fail = the averaging is not engineering-recoverable, magnetism stays inertially invisible at all engineered frequencies |
 | **Heat-magnetism co-scaling** (joint with M7.9) | Confirm thermal excess in a defect's joint (A, ω) state scales the magnitude of the outgoing wave's T-component as predicted | Closes the loop between Phase 4 (T-component physics) and Phase 7 (thermal-content physics). If the T-component does NOT scale with thermal excess, heat-magnetism per-defect coupling needs revision and downstream engineering pivots accordingly |
@@ -600,7 +600,7 @@ Current M5 phase status (✅ / 🔶 / [ ]) lives in [`0c_roadmap.md`](0c_roadmap
 
 ## EXTERNAL-COMMS MILESTONES — TRIGGER GATES FOR MODELS-OF-PARTICLES UPDATES
 
-Strategic decision 2026-05-11: M5.1 Coulomb result (R²=0.978 + visual EM-field-line geometry, documented in [`3f_coulomb_visual_geometry.md`](3f_coulomb_visual_geometry.md)) is correct but **not yet ready for an external update to the Models-of-Particles group**. Reasons for holding:
+Strategic decision 2026-05-11: M5.1 Coulomb result (R²=0.978 + visual EM-field-line geometry, documented in [`3a_coulomb_visual_geometry.md`](3a_coulomb_visual_geometry.md)) is correct but **not yet ready for an external update to the Models-of-Particles group**. Reasons for holding:
 
 | Concern | Why it's not email-ready |
 | --- | --- |
@@ -634,7 +634,7 @@ Recommended first send: **M5.2 + defect survives EVOLVE PSI** (the lowest bar th
 
 ## GROUP FEEDBACK (2026-04-17/18) — REFINEMENTS TO M5 PLAN
 
-Replies from Jarek Duda, Jeff Yee, and Robert Close to the Apr 17 sandbox-summary email produced four targeted refinements to the M5 plan. Full email thread in [3_LAGRANGIAN_FRAMEWORK.md § EMAIL THREAD](3_LAGRANGIAN_FRAMEWORK.md#email-thread).
+Replies from Jarek Duda, Jeff Yee, and Robert Close to the Apr 17 sandbox-summary email produced four targeted refinements to the M5 plan. Full email thread in [1aa_lagrangian_framework.md § EMAIL THREAD](1aa_lagrangian_framework.md#email-thread).
 
 ### Refinement 1 — Use Close's Eq. 23 as the particle equation (Robert Close)
 
