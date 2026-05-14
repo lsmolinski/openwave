@@ -72,7 +72,7 @@ Changing λ/frequency changes the rate at which granules cycle through their ell
 
 This creates a direct link to Smoliński's gravitational push-out/buoyancy model: if wave centers alter λ in their vicinity (time dilation near mass), they change the local granule velocity, which changes the local medium pressure/density. The pressure deficit around a massive body IS the gravitational field — and it emerges from λ modulation, not from a separate gravitational mechanism. Gravity, time dilation, and medium pressure become three descriptions of the same underlying phenomenon: **local λ variation**.
 
-**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in Phase 3 (see [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
+**Status**: To be explored after force unification (electric, magnetic, gravitational) is validated. First we crack the 1/r² law and electrostatic forces, then this becomes accessible. Supported by [Yee & Hauger](references/Spin.pdf) variable-λ paper and the non-linear wave equation research carried out in the M5 sandbox (see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — Klein-Gordon mass gap and Close's vector wave equation are now validated building blocks).
 
 ---
 
@@ -164,7 +164,7 @@ A precursor framing for what heat is at the wave level: particles may have a fun
 
 **Connection to energy starvation**: steepness conservation applies within an isolated system — when A drops at one location, λ drops proportionally (f increases, time speeds up), and vice versa. The total energy stays constant, only the A↔λ balance shifts. External energy input (heating) breaks this conservation by increasing steepness. External energy output (radiation) decreases it.
 
-This hypothesis is the closest precursor to the per-defect amplitude-as-heat hypothesis articulated for the M5 / Lagrangian-Field framework — see [3c_topological_defect.md](3c_topological_defect.md) for the topological defect's intrinsic oscillation amplitude, and the M5 plan in [3d_path_to_m5.md](3d_path_to_m5.md) for the post-M5 thermal-mechanics validation phases.
+This hypothesis is the closest precursor to the per-defect amplitude-as-heat hypothesis articulated for the M5 / Lagrangian-Field framework — see [1b_topological_defect.md](1b_topological_defect.md) for the topological defect's intrinsic oscillation amplitude, and the M5 plan in [2a_path_to_m5.md](2a_path_to_m5.md) for the post-M5 thermal-mechanics validation phases.
 
 ---
 

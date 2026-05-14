@@ -136,7 +136,7 @@ Two color-cube starbursts of opposite polarity, sitting in vacuum with a "compro
 
 ## Reference: Exp 2's hedgehog seed extent
 
-The hedgehog seed is **not** purely radial across the entire grid — it's a weighted blend with vacuum that concentrates the radial structure within ~D/4 of each defect (where D = domain edge). From `research_hub/sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`:
+The hedgehog seed is **not** purely radial across the entire grid — it's a weighted blend with vacuum that concentrates the radial structure within ~D/4 of each defect (where D = domain edge). From `research/scripts/sandbox_lagrangian/exp2_hedgehog_energy.py:71-108`:
 
 ```python
 # Per-defect radial proximity weight (long tail, ~1/r):

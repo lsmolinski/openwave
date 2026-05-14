@@ -1,9 +1,10 @@
+
 # LAGRANGIAN FRAMEWORK — NUMERICAL EXPERIMENTS
 
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
 
 Numerical results from the 8 Lagrangian framework experiments in `sandbox_phase3_lagrangian/`.
-See [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) for experiment specifications.
+See [1a_lagrangian_framework.md](1a_lagrangian_framework.md) for experiment specifications.
 
 ---
 
@@ -12,7 +13,7 @@ See [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) for experiment specif
 OpenWave uses two layers of experimentation:
 
 - **Sandbox = explore fast, fail cheap.**
-  - (`research_hub/sandbox_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
+  - (`openwave/xperiments/m3_wolff_lafreniere/research/sandbox_phase1_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
 - **Production = implement validated winners.**
   - (`openwave/xperiments/m*/`) — Taichi-based 3D rendering and simulation on the official OpenWave platform. GPU-accelerated, full grid infrastructure, visualization, force & motion. This is the final product where validated equations run at scale.
 
@@ -584,7 +585,7 @@ The Quadrature part would emerge naturally if the Lagrangian included a **source
 
 ### 5.7 Next Steps
 
-- **Update `3_LAGRANGIAN_FRAMEWORK.md` line ~418** to correct the "Combined W-L IS an exact solution" claim — **done** (incorporated finding)
+- **Update `1a_lagrangian_framework.md` line ~418** to correct the "Combined W-L IS an exact solution" claim — **done** (incorporated finding)
 - **Use the sum form, not the product form, when referring to M4's wave equation in any future documentation** — the product form may be a computational shortcut but misrepresents the physics
 - **Open question for Exp 8**: if we use Smolinski's nonlinear Ψ³ term as the potential in an M5 simulation, can we recover a spatial pattern that looks like the Combined W-L product form? I.e., is the product form the *static nonlinear solution* of Smolinski's equation? Worth testing
 - **Continue to Experiment 8** (Smolinski Ψ³ K-selectivity — recommended next) now that its Lagrangian validity is confirmed
@@ -811,11 +812,11 @@ After properly reading the paper (not just proxying the equation class), the pic
 
 **Why the v1 proxy gave the same qualitative answer**: both the Mexican-hat proxy and Close's actual equation belong to the family "nonlinear vector wave equations in 3D without higher-derivative (Skyrme) or topological terms." Derrick's theorem rules out static solitons for this entire family. Our v1 null result was correct; only the *explanation* was wrong.
 
-**Contribution of this experiment to the Phase 3 program**:
+**Contribution of this experiment to the M5 sandbox program**:
 
 - Close's framework is **complementary to, not a replacement for**, the topology-first route (Exps 2, 3). Topology gives *static particles* (hedgehogs with integer charge, Coulomb interaction). Close's vector wave equation gives *wave dynamics* (first-order Dirac-like form, plane wave solutions, relativistic spin).
 - M5 can use **both**: topological defects for identity/charge, plus Close-style vector wave equations for dynamics on top of the vacuum. This mirrors Duda's recommendation (topology + waves) in a different mathematical framework
-- The **linear limit of Close's Eq. 19 is already consistent with M2**'s free-wave PDE physics — so porting it to M5 is a small delta from the M2 infrastructure (per `3d_path_to_m5.md`)
+- The **linear limit of Close's Eq. 19 is already consistent with M2**'s free-wave PDE physics — so porting it to M5 is a small delta from the M2 infrastructure (per `2a_path_to_m5.md`)
 
 ### 7.7 Important Caveats
 
@@ -828,7 +829,7 @@ After properly reading the paper (not just proxying the equation class), the pic
 - **Plane-wave dispersion test** (quick follow-up): seed a Q plane wave, verify ω = c|k|, check Hamiltonian conservation at better than 1% (should be achievable for a pure plane wave where nonlinear terms vanish exactly)
 - **Topological-seed variant**: instead of Y_l^m, seed Q with a hedgehog-like field (Q points radially, with Gaussian envelope). Tests whether Close's equation supports topologically-protected states. Expected yes, but should be verified
 - **Incompressibility projection**: upgrade the code to project out ∇·Q at each step, see if energy drift drops — this is the right numerical scheme for Close's assumed incompressible limit
-- **For M5**: the production engine should implement Close's Eq. 19 as the **base vector-wave equation** (massless transverse waves), with nonlinear terms added for particle dynamics. This is fully compatible with the M5 design in `3d_path_to_m5.md` — Close's equation is one candidate for the "wave equation" layer, with topology (Exps 2, 3) providing the "defect" layer on top
+- **For M5**: the production engine should implement Close's Eq. 19 as the **base vector-wave equation** (massless transverse waves), with nonlinear terms added for particle dynamics. This is fully compatible with the M5 design in `2a_path_to_m5.md` — Close's equation is one candidate for the "wave equation" layer, with topology (Exps 2, 3) providing the "defect" layer on top
 
 ---
 
@@ -1012,7 +1013,7 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 
 ### Concrete Next Actions
 
-- **Implement M5.0 scaffold** per [3d_path_to_m5.md](3d_path_to_m5.md) — mirror M4's Taichi structure, add `psi_old/psi/psi_new` triple buffer, port M2's 6-point Laplacian
+- **Implement M5.0 scaffold** per [2a_path_to_m5.md](2a_path_to_m5.md) — mirror M4's Taichi structure, add `psi_old/psi/psi_new` triple buffer, port M2's 6-point Laplacian
 - **Implement `seed_vacuum` and `seed_hedgehog` kernels** as the first new physics (the M5.1 milestone) — direct port of Exps 2 and 3 to Taichi
 - **Implement Close's Eq. 19** (`∂²Q = −c²·∇×∇×Q`) as M5.2 wave dynamics — port from Exp 7 v2 (curl, divergence, curl-curl operators are already validated)
 - **Validate M5.0 linear limit** against M2's free-wave physics and Exp 4's Klein-Gordon dispersion — this is the "physics invariant test" for M5
@@ -1032,6 +1033,6 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 | 2026-04-17 | Exp 6 | E(K) scaling validated; full biaxial Q-tensor derivation deferred |
 | 2026-04-17 | Exp 7 | v1: Mexican-hat proxy — no soliton emergence. v2: Close's actual Eqs. 19 & 21 implemented after obtaining the paper — harmonic seeds disperse as Close's framework predicts (particles = plane-wave bispinors, not static solitons); Eq. 19 is now a candidate M5 base wave dynamics layer |
 | 2026-04-17 | Exp 8 | Smolinski Ψ³ K-selectivity hypothesis falsified |
-| 2026-04-17 | Overall | Phase 3 sandbox complete — recommendation to M5: topology + Klein-Gordon + Skyrme |
+| 2026-04-17 | Overall | M5 sandbox complete — recommendation to M5: topology + Klein-Gordon + Skyrme |
 | 2026-04-19 | M5 plan | Group feedback integrated (Jarek, Jeff, Robert): Close's Eq. 23 replaces Eq. 21 as particle equation; resonance-lifetime success criterion; axis hierarchy `0 < δ << 1 << g` for lepton masses; new M5.7 (Cornell/quark confinement) and M5.8 (Zitterbewegung) phases; M3 near-field retention justified by three-force-regime coverage (intra-particle, strong, orbital) |
 | 2026-04-19 | M5.6 | Follow-up from Jarek: `(δ, g)` are calibration parameters (no ab-initio form); LdG regularization baseline → port Manfried Faber's scheme (arxiv:2604.12021, Universe 11/2025/113) which produces running-coupling effect |

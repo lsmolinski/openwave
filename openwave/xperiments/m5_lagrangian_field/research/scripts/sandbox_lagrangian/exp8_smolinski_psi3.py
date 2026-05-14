@@ -21,7 +21,7 @@ Approach:
 - Measure stability metrics: peak retention at each WC location, total
   energy drift, spatial concentration (fraction of energy within WC balls)
 
-Spec:    ../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 8)
+Spec:    ../../1a_lagrangian_framework.md  (Experiment 8)
 Results: ../3b_lagrangian_experiments.md  (Experiment 8)
 """
 

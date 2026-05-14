@@ -314,18 +314,32 @@ class SimulationState:
             self.wave_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
         )  # rs
         self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
-        # Klein-Gordon mass-frequency for the electron (m·c²/ℏ in rad/rs).
-        # Scales with SIM_SPEED via c_amrs so the mass-oscillation timescale
-        # stays consistent with the wave timescale under slow-motion playback.
-        self.m_freq_kg_rs = self.c_amrs / constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
-        # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
-        # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
-        # near the defect core — at λ = (c/dx)² the system NaNs around step 40
-        # of a hedgehog seed. Empirically (research/m5_2_phi4_defect_survival),
-        # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
-        # 400 steps vs [0.73, 1.21] for free wave). 0.3·(c/dx)² is the
-        # marginal stability ceiling at the production grid.
-        self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
+        # V(ψ) couplings — only meaningful for director-class (topology) seeds,
+        # where vacuum is |ψ|=1 (unit sphere). For wave-class seeds (TEST_SEED
+        # plane wave / Gaussian — small ψ around 0), the φ⁴ Mexican-hat with
+        # min at |ψ|=1 creates positive feedback (the (|ψ|²−1) factor ≈ −1
+        # everywhere, so the EL term pulls ψ AWAY from 0 toward the unit
+        # sphere, blowing up the small-amplitude plane wave). Gate on
+        # TOPOLOGY_SEED presence to keep wave-class xperiments (M5.0 smoke
+        # tests) on V(ψ)=0 free-wave dynamics.
+        if self.TOPOLOGY_SEED is not None:
+            # Klein-Gordon mass-frequency for the electron (m·c²/ℏ in rad/rs).
+            # Scales with SIM_SPEED via c_amrs so the mass-oscillation timescale
+            # stays consistent with the wave timescale under slow-motion playback.
+            self.m_freq_kg_rs = self.c_amrs / constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
+            # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
+            # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
+            # near the defect core — at λ = (c/dx)² the system NaNs around step 40
+            # of a hedgehog seed. Empirically (research/scripts/m5_2_phi4_defect_survival),
+            # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
+            # 400 steps vs [0.73, 1.21] for free wave). 0.3·(c/dx)² is the
+            # marginal stability ceiling at the production grid.
+            self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
+        else:
+            # Wave-class seed (TEST_SEED plane wave) — disable V(ψ) entirely
+            # so evolve_psi runs the free-wave equation `∂²ψ/∂t² = c²·∇²ψ`.
+            self.m_freq_kg_rs = 0.0
+            self.lambda_phi4 = 0.0
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -393,7 +407,7 @@ def display_controls(state):
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
-        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
+        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
         state.SHOW_DIRECTORS = sub.slider_int("Directors", state.SHOW_DIRECTORS, 0, 3)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
@@ -704,8 +718,12 @@ def compute_field_observables(state):
     # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
     # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
     lagrange.compute_energyH_density(
-        state.wave_field, state.observables, state.c_amrs, state.dt_rs,
-        state.m_freq_kg_rs, state.lambda_phi4
+        state.wave_field,
+        state.observables,
+        state.c_amrs,
+        state.dt_rs,
+        state.m_freq_kg_rs,
+        state.lambda_phi4,
     )
 
     # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============

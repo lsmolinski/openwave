@@ -271,7 +271,7 @@ def seed_hedgehog(
     Seed N topological hedgehog defects via weighted superposition + renormalization.
 
     Direct port of Exp 2's `seed_hedgehog_pair` (validated in
-    `research_hub/sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`),
+    `research/scripts/sandbox_lagrangian/exp2_hedgehog_energy.py:71-108`),
     generalized from a hardcoded pair to an N-defect array. Same math; same
     weighting choices; same soft-core handling.
 
@@ -807,7 +807,7 @@ def update_trackers(
 #
 # Linear kernels (Laplacian, divergence, curl, curl-curl) stay in storage
 # units (am, rs, rHz) throughout — dimensionally self-balancing, don't
-# benefit from natural units. See M5.0f decision-record in 3d_path_to_m5.md.
+# benefit from natural units. See M5.0f decision-record in 2a_path_to_m5.md.
 
 
 @ti.func
@@ -1035,7 +1035,7 @@ def compute_energyF_density(
 # — Laplacian stencil, tangent projection, soft-core pin — will be reused
 # in M7 thermal-modulation kernels where γ becomes a PHYSICAL damping
 # coefficient (radiation loss, phonon coupling, EM-load impedance). See
-# `research_hub/3d_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
+# `research/2a_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
 # for the infrastructure-foundation discussion.
 
 
@@ -1746,7 +1746,7 @@ def update_flux_mesh_values(
 # XZ at fm_plane_y, YZ at fm_plane_x. At GLYPH_STRIDE=4 with a 64³ grid,
 # total glyph count is ~768 segments; renders in well under 1 ms.
 #
-# Design doc: research_hub/3e_director_glyph_rendering.md.
+# Design doc: research/2b_director_glyph_rendering.md.
 
 # Half-arrowhead toggle (hardcoded for testing — flip to False to compare):
 # When True, each glyph gets ONE extra barb at the tip end so head vs tail is

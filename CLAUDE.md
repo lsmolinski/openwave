@@ -40,7 +40,7 @@ To develop OpenWave, an open-source computer simulator with objectives described
 
 ### Scientific Source Material
 
-The `/research_hub` directory contains on-going research supporting OpenWave development.
+Each method directory under `openwave/xperiments/` (e.g. `m3_wolff_lafreniere/`, `m5_lagrangian_field/`) contains a `/research` subfolder with on-going research supporting that method.
 
 The `/scientific_source` directory contains foundational papers.
 

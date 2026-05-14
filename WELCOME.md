@@ -47,7 +47,7 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 ### 1. Spacetime Vibration
 
-> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier methods (M2/M3). The current research framework (M5 — see [path-to-M5 plan](research_hub/3d_path_to_m5.md)) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
+> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier methods (M1). The current research framework (M5) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
 
 **In this educational demo:**
 
