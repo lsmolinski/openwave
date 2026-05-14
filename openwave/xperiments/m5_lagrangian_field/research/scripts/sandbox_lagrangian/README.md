@@ -21,7 +21,7 @@ Validate (or rule out) candidate Lagrangians before committing to any architectu
 
 ## Spec & Results
 
-- **Spec**: [../../1aa_lagrangian_framework.md](../../1aa_lagrangian_framework.md) — full experiment specifications, hypotheses, success criteria
+- **Spec**: [../../1a_lagrangian_framework.md](../../1a_lagrangian_framework.md) — full experiment specifications, hypotheses, success criteria
 - **Results**: [../../1c_lagrangian_experiments.md](../../1c_lagrangian_experiments.md) — running log of results, comparisons to expected, conclusions
 
 ## File Naming Convention

@@ -23,7 +23,7 @@ Hypothesis:
 Method: symbolic manipulation with sympy. Substitute candidate solutions
 into the Euler-Lagrange PDE, simplify, and verify identities.
 
-Spec:    ../../1aa_lagrangian_framework.md  (Experiment 5)
+Spec:    ../../1a_lagrangian_framework.md  (Experiment 5)
 Results: ../3b_lagrangian_experiments.md  (Experiment 5)
 """
 

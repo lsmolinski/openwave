@@ -6,7 +6,7 @@ Implementation plan for **M5 / LAGRANGIAN-FIELD METHOD** (directory `openwave/xp
 
 **Spec inputs**:
 
-- [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
+- [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
 - [0_WAVE_EQUATION.md](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
 
@@ -167,7 +167,7 @@ Duda's vacuum is **not** the same as M2's base wave. The distinction:
 | Time dependence | Built in (ω·t) | None — oscillations arise from the dynamics, not the ground state |
 | Mathematical role | Initial condition + driving term | Minimum of V(ψ) — the potential well |
 
-So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [1aa_lagrangian_framework.md § Impact on Base Wave Architecture](1aa_lagrangian_framework.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
+So M5's vacuum is **more fundamental** than M2's base wave: it explains *why* fields oscillate (defects oscillate because they have mass and interact with V(ψ)) rather than assuming the universe comes pre-oscillating. See [1a_lagrangian_framework.md § Impact on Base Wave Architecture](1a_lagrangian_framework.md#impact-on-base-wave-architecture--m2-vs-m3-philosophy) for the full comparison and how this resolves Duda's time-crystal insight.
 
 ### Concrete Consequence for M5 `seed_*` Kernels
 
@@ -185,7 +185,7 @@ This mirrors how the sandbox experiments seed their fields (a hedgehog is "unifo
 
 ### Why This Does NOT Invalidate M3's Results
 
-M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [1aa_lagrangian_framework.md § Practical Implication](1aa_lagrangian_framework.md).
+M3's lock-in, annihilation, and K=10 stability are real near-field wave physics — they happen regardless of whether the far field is modeled as vacuum or void. What M3 cannot do, because of its "no background" philosophy, is measure topological charge or produce far-field Coulomb without sinc barriers. M5 keeps M3's near-field physics as validated phenomena and adds the background-vacuum architecture where it matters (topology, charge quantization, far-field interactions). Cf. [1a_lagrangian_framework.md § Practical Implication](1a_lagrangian_framework.md).
 
 ---
 
@@ -417,81 +417,6 @@ Each higher layer requires the layer below to be working correctly:
 
 **The cross-layer integration is the unique value**: a successful Layer 5 (atom simulation) provides simultaneous validation that the lepton physics, string-string-tension physics, residual-force binding, and orbital-force standing-wave interference all work *together* — something a single-scale simulator cannot test by construction.
 
-### M5.11 — Composite-particle detail (DEFERRED, sub-scope sketched)
-
-Detail for the M5.11 phase introduced earlier. Layers 3–5 are major undertakings; sub-phases sketched here for forward visibility but NOT on the critical path. M5.10 thermal is the priority once foundations exist.
-
-| Sub-phase | Layer | Headline |
-| --- | --- | --- |
-| **M5.11.1 / Nucleon assembly** | Layer 3 | Seed 3-string Y-configuration with color-neutral axis assignment; verify proton/neutron forms a stable bound state with mass dominated by string energy |
-| **M5.11.2 / Color confinement test** | Layer 3 | Attempt to separate one quark from a 3-quark configuration; verify string tension prevents isolation (linear energy growth) |
-| **M5.11.3 / Nuclear binding** | Layer 4 | Two-nucleon and few-nucleon bound states; measure residual strong force; reproduce binding-energy curve |
-| **M5.11.4 / Atomic orbitals** | Layer 5 | Single electron orbiting a nucleus; verify discrete orbital shells emerge from standing-wave interference at atomic scales |
-| **M5.11.5 / Multi-electron atom** | Layer 5 | Z electrons in a single-nucleus configuration; verify shell structure (Pauli-like exclusion via wave interference + topology) |
-
-#### Cross-mass-class machinery required for M5.11.4+ (per [3c § How different-frequency Zitterbewegung emissions interfere](1b_topological_defect.md#how-different-frequency-zitterbewegung-emissions-interferehydrogen-vs-positronium))
-
-Atom-scale simulations (M5.11.4 onward) need additional architectural capability beyond the same-mass-class physics validated by M5.7–M5.8. The reason: in hydrogen-like systems, the proton ticks at `ω_p ≈ 1836 × ω_e`, so direct e-p Zitterbewegung interference does NOT form coherent standing waves. Instead, three layered mechanisms must work together:
-
-- [ ] **Topological 1/d Coulomb** between e (Q=−1) and p (effective Q=+1) — provides the static potential well (already validated in M5.1)
-- [ ] **Electron self-de-Broglie standing waves** — the electron's Zitterbewegung (ω_e at 10²¹ rad/s) + translational drift produces de Broglie wavelength `λ_dB = h/(m_e v)`. Standing waves of the electron's *own* emission (interfering with reflections off the central proton's potential well) quantize discrete Bohr orbital shells at `n·λ_dB = 2π·r_n`
-- [ ] **Quasi-static heavy-center treatment** for the proton — because m_p ≫ m_e, the proton's intrinsic clock (10²⁴ rad/s) is invisible to the electron's slower 10²¹ rad/s response and time-averages out. M5.11.4's solver must treat the proton as a fixed Coulomb center on the electron's time scale (with proton dynamics on its own slower scale only when needed)
-
-This is structurally different from the same-mass cases: positronium (M5.7+) and quark-quark binding (M5.9) DO use direct Zitterbewegung interference; hydrogen-like atoms (M5.11.4) cannot. The transition criterion is `ω_a ≈ ω_b` (frequency-matched, direct interference works) vs `|ω_a − ω_b| ≫ min(ω_a, ω_b)` (frequency-mismatched, requires the three-mechanism layering above).
-
-This testing-architecture distinction is **gating** for atom-scale simulations: M5.11.4 cannot succeed by simply scaling up the same-mass mechanism. The cross-mass machinery is a separate engineering effort.
-
-### M5.10 — Thermal-mechanics detail
-
-A working hypothesis for the heat output domain: **the thermal degree of freedom is the joint amplitude+frequency `(A, ω)` excess of a topological defect's intrinsic Zitterbewegung above its ground-state values `(A₀, ω₀)`** — both components carry thermal content; they are coupled by **wave-steepness conservation** (`A/λ = const`), the same conservation principle articulated in [5c_time_dynamics.md](5c_time_dynamics.md). Each topological defect (= each particle in M5) has its own intrinsic ground-state oscillation `(A₀, ω₀)` with `A₀ ≈ ℏ/(mc)` (its Compton wavelength) and `ω₀ = 2mc²/ℏ` (the Zitterbewegung clock). Any excess on top of *either* component is what aggregates statistically into macroscopic thermodynamic temperature. This extends thermodynamics from ensemble-only statistical mechanics (where heat is a collective property requiring many particles) to a per-particle quantum-mechanical degree of freedom — the same way M5 makes other things "more fundamental, not less" by deriving collective phenomena from defect-level dynamics.
-
-**Direct prediction at the boundary**: if all defects sit exactly at `(A₀, ω₀)` with zero thermal excess, the framework predicts the system temperature is exactly **0 Kelvin** (absolute zero). Conversely, the temperature observable is — by construction — the measurement of joint `(A, ω)` excess above ground state. This recovers absolute zero correctly and consistently with the third law of thermodynamics, BEC, and superconductivity (phase-coherent ground states are the zero-excess configuration). The framework being self-consistent at this boundary is a pre-numerical sanity check on the hypothesis itself — and one of the M5.10 sub-phases below (M5.10.0) verifies it numerically.
-
-The closest precursor framing in OpenWave is the steepness-conservation / energy-starvation work in [5c_time_dynamics.md](5c_time_dynamics.md). The topological-defect deep dive in [1b_topological_defect.md](1b_topological_defect.md) covers the defect's ground-state oscillation; this Phase 7 pathway is what extends it to the excited (thermally-excited) regime.
-
-**Connection to Time Dynamics**: the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock — its rate of internal cycling. Modulating defect `ω` therefore corresponds to *locally engineering the rate of time at the subatomic scale*. The Phase 7 (A, ω) modulation experiments are simultaneously thermal-mechanics validation AND time-dynamics validation under different framings — same physical operation, two complementary scientific framings. See [5c_time_dynamics.md](5c_time_dynamics.md) for the time-dynamics-side treatment.
-
-**Infrastructure foundation from M5.1 task 6**: the `lagrangian_engine.relax_director_step` kernel built for M5.1 task 6 (gradient-descent ground-state finder) is the **mathematical precursor** to M5.10's thermal-modulation primitives, despite the very different physics intent. The relaxation uses tangent-projected diffusion `∂_τ n = ∇²n − (n·∇²n)n` to drag the field toward the minimum-energy configuration — i.e. the **γ → ∞ limit** of a damped wave equation `∂²_t ψ = c²·∇²ψ − γ·∂_t ψ` (pure-dissipation overdamped regime). M5.10's thermal-modulation kernels will reuse the **same primitives** — the Laplacian stencil (`compute_laplacian`), the tangent projection (to preserve `|n|=1`), the soft-core pinning (to preserve topology) — but with a **physical γ** representing real damping (radiation, phonon coupling, EM-load impedance) instead of an artificial time-stepping parameter τ. So although task 6's relaxation has no physics interpretation in M5.1 (it's a ground-state finder for visualization + initial conditions), the kernel and its surrounding test infrastructure (`research/scripts/m5_1_relax.py`, `pin_centers/signs` plumbing in `SimulationState`, the `relax_field` helper that updates both `psi_am` AND `psi_prev_am` to preserve ψ̇=0) will all carry forward into M5.10 with minimal modification. The applied-tech implications of this math overlap — engineering γ as the DHC engineering target — are explored in private SABER work outside this repo.
-
-#### M5.10 sub-phases — Thermal mechanics from defect (A, ω) statistics
-
-| Sub-phase | Layer / domain | Headline test |
-| --- | --- | --- |
-| **M5.10.0 / Temperature observable + absolute-zero sanity check** | Per-defect thermal (definition + boundary case) | Define the temperature observable as a measurement of joint `(A, ω)` excess above ground-state `(A₀, ω₀)`. Implement it as a numerical probe operating on the M5.7 metastable defect output. Verify the boundary case: a defect sitting at exactly `(A₀, ω₀)` with no perturbation reads `T = 0 K`. Verify monotonicity: small symmetric `(A − A₀, ω − ω₀)` excitation reads small positive `T`; larger excitation reads larger `T`. Cheapest pre-numerical sanity check on the framework — if M5.10.0 fails, the temperature definition is wrong and all downstream M5.10.x phases are meaningless. Establishes the temperature observable that M5.10.1 → M5.10.6 will all use |
-| **M5.10.1 / Single-defect (A, ω) modulation** | Per-defect thermal | Take a single biaxial hedgehog from M5.7. **Bidirectional perturbation of both amplitude AND frequency, from the defect's *current* state** (not only from topological ground — a real defect's instantaneous state is `(A₀, ω₀)` *plus* current thermal excess; modulation perturbs from wherever it is). Five sub-experiments share the same kink + KG background: **(10.1a) AM-up** — bump A above current; measure relaxation, breather modes, emission spectrum. **(10.1b) AM-down** — pull A below current via destructive interference; measure whether the field refills the kink (a per-defect cooling event). **(10.1c) FM-up** — drive ω above current via tuned external wave; measure A response per wave-steepness conservation `A/λ = const`. **(10.1d) FM-down** — slow ω below current via tuned interference; measure A rise. **(10.1e) coupling cross-check** — validate `A/λ = const` under all four perturbation directions. Cheapest go/no-go on the joint (A, ω) thermal hypothesis |
-| **M5.10.2 / Soliton-breather comparison** | Per-defect thermal | Compare M5.10.1's amplitude oscillations to known soliton-breather modes (Sine-Gordon, φ⁴). Breather modes should match observed thermal excitation patterns. Cross-validation against established field-theory math |
-| **M5.10.3 / Multi-defect amplitude statistics** | Defect ensemble thermal | Seed N defects (10², 10³, 10⁴) with varying initial amplitudes. Run to thermodynamic equilibrium. Extract amplitude distribution. Predict: should match Boltzmann (classical) or Bose-Einstein (quantized) statistics for the appropriate temperature definition |
-| **M5.10.4 / Specific heat reproduction** | Defect ensemble thermal | From M5.10.3 statistics, derive specific heat `C_V(T)`. Validate against experimental: Dulong-Petit at high T, Einstein-Debye at low T, electronic heat-capacity scaling for free electrons. Stiff prediction — wrong scaling = hypothesis falsified |
-| **M5.10.5 / Blackbody spectrum** | Thermal-EM coupling | Emission spectrum from a thermalized defect ensemble. Validate Wien's displacement law + Stefan-Boltzmann scaling. The heat → light channel |
-| **M5.10.6 / Phase-coherence transition** | Quantum thermal | At low T, do defect ensembles transition into phase-coherent ground states (analogous to superconductivity / BEC)? Reproduce critical temperatures for known materials |
-| **M5.10.7 / Per-defect outgoing-wave thermal-character measurement** | Per-defect thermal-EM coupling | Take a single defect from M5.10.1 at varied joint (A, ω) states. Measure the outgoing wave-field's amplitude / frequency / polarization at engineering distance from the defect core. Confirm thermal-excess content is also expressed in the outgoing wave (the dual-located thermal-degree-of-freedom prediction — heat lives both inside the defect AND in the spherical waves the defect propagates outward) |
-| **M5.10.8 / Wave-modulation back-reaction** | Per-defect thermal | Drive resonance with the defect's outgoing wave-field at engineering distance (perturbation acts on the wave, NOT on the defect interior). Measure whether the defect's joint (A, ω) state responds via back-reaction. Cheapest go/no-go on whether outgoing-wave engineering is physically viable as an alternative to direct defect modulation |
-| **M5.10.9 / Heat-magnetism wave-level co-scaling** | Per-defect thermal-EM coupling | Cross-validation joining M5.10.7 with the Phase 4 magnetic-emergence work. Confirm that thermal excess scales the latent magnetic-component (T-component) magnitude of the outgoing wave as predicted by the L+T-as-channels framing |
-
-These M5.10 sub-phases are deliberately speculative — they assume the joint (A, ω) framework holds and cascade from there. If M5.10.1 falsifies the hypothesis, the rest don't run as planned. But if M5.10.1 confirms it, OpenWave has identified a new mechanism for thermal physics: heat as a single-particle quantum-mechanical phenomenon rather than an ensemble-only statistical one.
-
-> **Why M5.10.7 / M5.10.8 / M5.10.9 matter**: M5.10.1's sub-experiments perturb the defect directly, but real measurement and engineering instruments operate at engineering distance from the defect, on the outgoing wave-field — never directly on the sub-fm-scale defect interior. M5.10.7 verifies that the outgoing wave carries the thermal information; M5.10.8 verifies that perturbing the outgoing wave back-reacts on the defect's state (closing the indirect-engineering loop); M5.10.9 cross-validates the per-defect heat-magnetism wave-level coupling that joins thermal (M5.10) to EM emergence (Phase 4) at the per-defect substrate. Together they upgrade the program from "we can perturb defects we can't reach" to "we can perturb something we *can* reach (the outgoing wave) and validly infer / predict the defect-level effect."
-
-**M5.10.1 four-outcome decision matrix**:
-
-| AM (10.1a + 10.1b) | FM (10.1c + 10.1d) + coupling (10.1e) | Interpretation |
-| --- | --- | --- |
-| ✅ | ✅ + `A/λ = const` validated | Joint (A, ω) hypothesis validated; proceed to M5.10.2 → M5.10.9 |
-| ✅ | ❌ | Revise: heat is amplitude-only; engineering pivots to AM-pure pathway; doc updates needed |
-| ❌ | ✅ | Revise: heat is frequency-only or coupling inverted; rethink the physics framing |
-| ❌ | ❌ | Hypothesis falsified at the per-defect level; close out M5.10 as informative negative |
-
-**Two-tier prerequisite distinction for M5.10.1**:
-
-| Test scope | Minimum prerequisites | Why |
-| --- | --- | --- |
-| **M5.10.1 internal validation** (tests the hypothesis at the field-theoretic level) | M5.7 (metastable defect) + M5.6 (KG wave dynamics from twist) | The "external wave" driving 10.1c/d can be a KG perturbation in the M5 medium. Sufficient to test the (A, ω) modulation hypothesis |
-| **M5.10.1 full-lab-relevance** (tests with the same wave classes that downstream applications will use as engineering tools — EM, magnetic, acoustic) | M5.7 + Phase 4 (EM emergence) + Phase 5 (gravity, optional for non-gravitational drives) | Physical applications use real-world wave classes. To predict their effect on defect modulation, the simulation drive must be the same class as the lab drive |
-
-The internal validation can run as soon as M5.7 lands; full lab-relevance results follow Phase 4. Heat-substrate validation (M5.10.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites for engineering downstream — both must reach completion before applications combining them can be predicted reliably.
-
-Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
-
 ### Why the hierarchy matters for the project's positioning
 
 This integrated layered scope is what differentiates OpenWave from comparable simulators:
@@ -634,7 +559,7 @@ Recommended first send: **M5.2 + defect survives EVOLVE PSI** (the lowest bar th
 
 ## GROUP FEEDBACK (2026-04-17/18) — REFINEMENTS TO M5 PLAN
 
-Replies from Jarek Duda, Jeff Yee, and Robert Close to the Apr 17 sandbox-summary email produced four targeted refinements to the M5 plan. Full email thread in [1aa_lagrangian_framework.md § EMAIL THREAD](1aa_lagrangian_framework.md#email-thread).
+Replies from Jarek Duda, Jeff Yee, and Robert Close to the Apr 17 sandbox-summary email produced four targeted refinements to the M5 plan. Full email thread in [1a_lagrangian_framework.md § EMAIL THREAD](1a_lagrangian_framework.md#email-thread).
 
 ### Refinement 1 — Use Close's Eq. 23 as the particle equation (Robert Close)
 

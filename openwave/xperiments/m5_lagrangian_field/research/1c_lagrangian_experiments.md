@@ -4,7 +4,7 @@
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
 
 Numerical results from the 8 Lagrangian framework experiments in `sandbox_phase3_lagrangian/`.
-See [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) for experiment specifications.
+See [1a_lagrangian_framework.md](1a_lagrangian_framework.md) for experiment specifications.
 
 ---
 
@@ -585,7 +585,7 @@ The Quadrature part would emerge naturally if the Lagrangian included a **source
 
 ### 5.7 Next Steps
 
-- **Update `1aa_lagrangian_framework.md` line ~418** to correct the "Combined W-L IS an exact solution" claim — **done** (incorporated finding)
+- **Update `1a_lagrangian_framework.md` line ~418** to correct the "Combined W-L IS an exact solution" claim — **done** (incorporated finding)
 - **Use the sum form, not the product form, when referring to M4's wave equation in any future documentation** — the product form may be a computational shortcut but misrepresents the physics
 - **Open question for Exp 8**: if we use Smolinski's nonlinear Ψ³ term as the potential in an M5 simulation, can we recover a spatial pattern that looks like the Combined W-L product form? I.e., is the product form the *static nonlinear solution* of Smolinski's equation? Worth testing
 - **Continue to Experiment 8** (Smolinski Ψ³ K-selectivity — recommended next) now that its Lagrangian validity is confirmed

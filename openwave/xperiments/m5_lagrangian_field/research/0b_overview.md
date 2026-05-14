@@ -6,7 +6,7 @@ A conceptual walk-through of the Lagrangian / topological framework from Rodrigo
 
 Related reading:
 
-- [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
+- [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — numerical experiment results
 - [1b_topological_defect.md](1b_topological_defect.md) — topology / time-crystal / Zitterbewegung deep dive (mechanism by which defects oscillate)
 - [2a_path_to_m5.md](2a_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
@@ -83,7 +83,7 @@ Four levels of "what a thing is", from physical microphysics up to mathematical 
 | **Granule** | M1 engine (`m1_granule_motion/`), `constants.py` (Planck mass, granule density), scientific source papers |
 | **Aether / Medium** | EWT papers (aether density ρ = 3.86×10²² kg/m³), README.md ("aether-like medium") |
 | **Spacetime** | README.md ("spacetime subatomic simulator"), docstrings ("@spacetime module"). Often used synonymously with aether |
-| **Vacuum** | M5 / Lagrangian framework (`1aa_lagrangian_framework.md`, this doc) — the Duda / Close language |
+| **Vacuum** | M5 / Lagrangian framework (`1a_lagrangian_framework.md`, this doc) — the Duda / Close language |
 | **Field** | M2 engine (scalar ψ), M4 engine (vector ψ), sandbox experiments (director n, kink φ) |
 
 ### Common confusions to watch out for

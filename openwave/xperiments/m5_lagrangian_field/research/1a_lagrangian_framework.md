@@ -2,7 +2,15 @@
 
 A research phase evaluating whether a Lagrangian formulation could replace OpenWave's empirical wave-equation search with a first-principles derivation.
 
-> **📍 Status** (2026-04-17): this document is the **experimental plan & spec** — written before the 8 sandbox experiments were run. For live results and the resolved M5 recipe see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md). For the conceptual walk-through and Q&A see [0b_overview.md](0b_overview.md). For the topology / time-crystal / Zitterbewegung deep-dive see [1b_topological_defect.md](1b_topological_defect.md). For the M5 implementation plan see [2a_path_to_m5.md](2a_path_to_m5.md). **The sandbox phase is complete; M5.0 scaffold is the next action.**
+> **📍 Status — sandbox COMPLETE** (2026-04-17): all 8 M5 sandbox experiments run. **4 ✅** (Exps 1, 2, 3, 4) + **3 ⚠️** (Exps 5, 6, 7) + **1 ❌** (Exp 8).
+>
+> **Net verdict**: topology is the load-bearing ingredient (Exps 2, 3 confirmed charge quantization and far-field Coulomb); pure nonlinearity alone is insufficient (Exp 8 falsified Smolinski Ψ³ K-selectivity); Close's actual vector wave equation (Exp 7 v2) gives valid massless transverse wave dynamics consistent with his Dirac-equation factoring; Klein-Gordon dispersion `ω² = c²k² + m²` validated to R² = 0.999982 (Exp 4, the mass-from-potential mechanism).
+>
+> **Winning M5 recipe** (detailed in [1c § Winning Approach](1c_lagrangian_experiments.md#winning-approach-for-m5)): topology from Exps 2/3 + Klein-Gordon from Exp 4 + Close's Eq. 19 from Exp 7 v2 + M3 near-field standing-wave lock-in + Skyrme stabilizer + (long-term) LdG biaxial potential for lepton masses.
+>
+> **Documentation correction from Exp 5**: the docs' Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution — its quadrature term leaves a residual `−c²k²·sin(ωt+φ)/r ≠ 0`. The M4 code's equivalent *sum form* `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)` IS valid. M5 uses the sum form.
+>
+> This document is the **experimental plan & spec** — written before the sandbox; preserved for context. For live results see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md); conceptual walk-through in [0b_overview.md](0b_overview.md); topology / time-crystal / Zitterbewegung deep-dive in [1b_topological_defect.md](1b_topological_defect.md); M5 implementation plan in [2a_path_to_m5.md](2a_path_to_m5.md); current phase status in [0c_roadmap.md](0c_roadmap.md).
 
 ---
 
@@ -63,6 +71,17 @@ So OpenWave's M3 results (lock-in, K=10 tetrahedron, annihilation) stay valid as
 We will implement 8 numpy research scripts in `research/scripts/sandbox_lagrangian/` (same pattern as Phase 1 vector/scalar scripts) to test the core ideas before committing to any architecture change. None of these tests require refactoring M3 or M4 — they're standalone exploration scripts that can validate (or rule out) the Lagrangian framework quickly.
 
 See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section below for the full test plan.
+
+---
+
+## KEY PEOPLE
+
+- **Jarek Duda** (Jagiellonian University) — inventor of ANS data compression (zstd, JPEG XL, LZFSE). Works on liquid crystal particle analogs and topological field theory. Argues OpenWave needs (1) a Lagrangian, (2) topological charge quantization to prevent the electron from "exploding". Author of *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7) — the canonical reference Lagrangian for M5.
+- **Robert Close** (Clark College, retired) — author of *Plane Wave Solutions to a Proposed "Equation of Everything"* (Foundations of Physics, 2025). Derives the Dirac equation from classical wave mechanics in an ideal elastic solid. Has a constructed Lagrangian with classical interpretation.
+- **Manfried Faber** (Vienna University of Technology) — long-running topological-charge-as-electric-charge research program (~30 years). Faber's regularization scheme is the baseline for M5.5/M5.6 V(M) activation; recent *Universe* 2025 paper cited by Duda as canonical.
+- **Yves Couder** (deceased) and team — bouncing droplet experiments showing orbit quantization, diffraction, and tunneling in classical wave-particle systems. The closest physical analog to what OpenWave simulates.
+- **John Bush** (MIT) — leads the modern walking droplet research program. His *Pilot-wave hydrodynamics* (Annual Review of Fluid Mechanics, 2015) is the canonical review of the field.
+- **Paul Werbos** (former NSF) — author of the Ouroboros Lagrangian / chaoiton papers (2025–2026). His chaoiton framing (time-periodic stability via Derrick's theorem) provided the third independent confirmation that static stable solitons don't exist in this framework — alongside Duda's paper and Close's correspondence.
 
 ---
 

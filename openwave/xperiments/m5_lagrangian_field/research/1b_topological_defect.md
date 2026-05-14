@@ -11,7 +11,7 @@ The two halves are sequential: first you need to know what the object is, then h
 
 Related reading:
 
-- [1aa_lagrangian_framework.md](1aa_lagrangian_framework.md) — master spec + group email thread (paraphrased)
+- [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — master spec + group email thread (paraphrased)
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results
 - [0b_overview.md](0b_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
 - [2a_path_to_m5.md](2a_path_to_m5.md) — M5 implementation plan (M5.8 tests this physics)

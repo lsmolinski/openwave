@@ -32,7 +32,7 @@ Deferred for a future, more ambitious pass:
   + c·(Tr Q²)². This would *derive* the three K values from a single
   choice of LdG parameters rather than fitting them independently.
 
-Spec:    ../../1aa_lagrangian_framework.md  (Experiment 6)
+Spec:    ../../1a_lagrangian_framework.md  (Experiment 6)
 Results: ../3b_lagrangian_experiments.md  (Experiment 6)
 """
 
