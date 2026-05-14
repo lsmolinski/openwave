@@ -1,12 +1,4 @@
-# LEVEL 6: EMERGENT WAVES
-
-Photons as traveling wave packets, thermal energy as standing wave dynamics.
-
-## Electromagnetic Wave Packets (Photons)
-
-The same fundamental wave field and medium that supports standing waves (particles) can also be disturbed to create packets of traveling waves — photons. Electromagnetic waves may emerge as coherent disturbances propagating through the medium, with the photon's electric and magnetic field components corresponding to the longitudinal and transverse wave displacements identified in the scalar/vector ψ analysis above.
-
-## Thermal Energy as Wave Dynamics (Hypothesis)
+# Thermal Energy as Wave Dynamics (Hypothesis)
 
 **Hypothesis**: Thermal energy is wave-based rather than kinetic-based at the fundamental level, reframing heat entirely.
 
@@ -28,7 +20,7 @@ Heat and electromagnetic radiation are in constant mutual conversion. This is ob
 
 Heat converts itself to light and light converts itself to heat. There must be a resonance / energy exchange relationship mediating this — Wolff's coupled-oscillator model describes exactly this: wave systems exchanging frequency (energy) through resonance until they reach equilibrium. The photon is not a separate entity "emitted" — it is the traveling wave disturbance produced when a particle's standing wave steepness relaxes toward fundamental.
 
-### The Snap In / Snap Out Mechanism
+## The Snap In / Snap Out Mechanism
 
 The fundamental conversion in the universe is between two wave states:
 

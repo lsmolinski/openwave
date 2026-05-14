@@ -1,3 +1,4 @@
+
 # LAGRANGIAN FRAMEWORK — NUMERICAL EXPERIMENTS
 
 > *Numerical experiments — same spirit as OpenWave xperiments: controlled investigations of physics hypotheses through simulation. OpenWave is built as a shared experimental platform where wave-based and topological models can be tested, compared, and built upon by others.*
