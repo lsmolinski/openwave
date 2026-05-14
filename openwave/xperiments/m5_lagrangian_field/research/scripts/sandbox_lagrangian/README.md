@@ -1,10 +1,10 @@
-# Phase 3 — Lagrangian Framework Numerical Experiments
+# M5 Sandbox — Lagrangian Framework Numerical Experiments
 
 Standalone numpy research scripts for evaluating Lagrangian-based wave equations.
 
 > **📍 Status** (2026-04-17): all 8 sandbox experiments are complete. See [../../1c_lagrangian_experiments.md](../../1c_lagrangian_experiments.md) for results. The recommended-order workflow below is kept as historical record; no further sandbox work is planned (optional deferred: Exp 6.1 full biaxial Q-tensor). Next phase: M5 production implementation per [../../2a_path_to_m5.md](../../2a_path_to_m5.md).
 >
-> Note: directory name still `sandbox_phase3_lagrangian/` for backward compatibility (the content originated as a Phase-2 sub-project before being promoted to Phase 3 on 2026-04-17).
+> Note: directory was renamed from `sandbox_phase3_lagrangian/` → `sandbox_lagrangian/` on 2026-05-14 during the research-folder reorganization. Content originated as a Phase-2 sub-project, promoted to a full M5-sandbox program on 2026-04-17.
 
 ## Why "Sandbox"
 
