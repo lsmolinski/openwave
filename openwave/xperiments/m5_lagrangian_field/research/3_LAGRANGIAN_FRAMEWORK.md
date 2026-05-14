@@ -24,7 +24,7 @@ The new approach fixes all three:
 - vector fields enable topology,
 - and topological defects (hedgehogs) ARE part of the field configuration rather than imposed externally.
 
-See [`0_WAVE_EQUATION.md`](../../../../research_hub/0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
+See [`0_WAVE_EQUATION.md`](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
 
 OpenWave's M3 scalar method tested 5 wave equation candidates empirically (Wolff, LaFreniere-Marcotte, Phase-warped, Combined W-L, Weighted PSW). The best candidate (Combined Wolff-LaFreniere) produces particle lock-in and K=10 tetrahedron stability at perfect placement, but fails under perturbation and cannot produce far-field Coulomb (sinc barriers flip the force direction every λ/2).
 
@@ -60,7 +60,7 @@ So OpenWave's M3 results (lock-in, K=10 tetrahedron, annihilation) stay valid as
 
 ### The Approach
 
-We will implement 8 numpy research scripts in `research_hub/sandbox_phase3_lagrangian/` (same pattern as Phase 1 vector/scalar scripts) to test the core ideas before committing to any architecture change. None of these tests require refactoring M3 or M4 — they're standalone exploration scripts that can validate (or rule out) the Lagrangian framework quickly.
+We will implement 8 numpy research scripts in `research/scripts/sandbox_lagrangian/` (same pattern as Phase 1 vector/scalar scripts) to test the core ideas before committing to any architecture change. None of these tests require refactoring M3 or M4 — they're standalone exploration scripts that can validate (or rule out) the Lagrangian framework quickly.
 
 See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section below for the full test plan.
 
@@ -617,7 +617,7 @@ Duda's approach: same topology, different axis orientation → different mass.
 
 ## Implementation Feasibility
 
-All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `sandbox_phase1_vector/`, `sandbox_phase1_scalar/`). Scripts go in `research_hub/sandbox_phase3_lagrangian/`.
+All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `sandbox_phase1_vector/`, `sandbox_phase1_scalar/`). Scripts go in `research/scripts/sandbox_lagrangian/`.
 
 | Test | Approach | Effort | M4 refactor? |
 | --- | --- | --- | --- |

@@ -12,7 +12,7 @@ See [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) for experiment specif
 OpenWave uses two layers of experimentation:
 
 - **Sandbox = explore fast, fail cheap.**
-  - (`research_hub/sandbox_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
+  - (`openwave/xperiments/m3_wolff_lafreniere/research/sandbox_phase1_*/`) — quick numpy scripts to validate math, logic, and concepts. Pure exploration. No GPU, no Taichi, no production dependencies. This is where ideas are tested cheaply before committing engineering effort. If an experiment works in the sandbox, it graduates to the production engine.
 - **Production = implement validated winners.**
   - (`openwave/xperiments/m*/`) — Taichi-based 3D rendering and simulation on the official OpenWave platform. GPU-accelerated, full grid infrastructure, visualization, force & motion. This is the final product where validated equations run at scale.
 

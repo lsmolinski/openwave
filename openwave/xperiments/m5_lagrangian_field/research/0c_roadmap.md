@@ -38,7 +38,7 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 
 ### Cross-cutting follow-up
 
-- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [`2_ENERGY_LAYERS.md`](../../../../research_hub/2_ENERGY_LAYERS.md), [`0_OVERVIEW.md`](../../../../research_hub/0_OVERVIEW.md), and [3z_review_energy_layers.md](3z_review_energy_layers.md) (the content was moved out of the README pending re-evaluation; once revised, decide whether to put it back) — rationale in [3b_concept_review.md](3b_concept_review.md)
+- [ ] **Revisit Energy Layers hierarchy** with Lagrangian perspective — insert **Layer 0: Vacuum at rest** before Layer 1; rewrite Layer 1-3 semantics in [`2_ENERGY_LAYERS.md`](../../m3_wolff_lafreniere/research/2_ENERGY_LAYERS.md), [`0_OVERVIEW.md`](../../m3_wolff_lafreniere/research/0_OVERVIEW.md), and [3z_review_energy_layers.md](3z_review_energy_layers.md) (the content was moved out of the README pending re-evaluation; once revised, decide whether to put it back) — rationale in [3b_concept_review.md](3b_concept_review.md)
 
 ---
 

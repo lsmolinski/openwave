@@ -40,7 +40,7 @@ EXIT CODE:
 USAGE:
     python -m openwave.xperiments.m5_lagrangian_field.research.m5_1_coulomb
 
-Reference: Exp 2 (`research_hub/sandbox_phase3_lagrangian/exp2_hedgehog_energy.py`)
+Reference: Exp 2 (`research/scripts/sandbox_lagrangian/exp2_hedgehog_energy.py`)
 got R² = 0.993 on the sandbox numpy version. M5.1 task 7 ports the test to
 the Taichi production kernel; expected R² comparable.
 """

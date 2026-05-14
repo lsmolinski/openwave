@@ -271,7 +271,7 @@ def seed_hedgehog(
     Seed N topological hedgehog defects via weighted superposition + renormalization.
 
     Direct port of Exp 2's `seed_hedgehog_pair` (validated in
-    `research_hub/sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`),
+    `research/scripts/sandbox_lagrangian/exp2_hedgehog_energy.py:71-108`),
     generalized from a hardcoded pair to an N-defect array. Same math; same
     weighting choices; same soft-core handling.
 
@@ -1035,7 +1035,7 @@ def compute_energyF_density(
 # — Laplacian stencil, tangent projection, soft-core pin — will be reused
 # in M7 thermal-modulation kernels where γ becomes a PHYSICAL damping
 # coefficient (radiation loss, phonon coupling, EM-load impedance). See
-# `research_hub/3d_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
+# `research/3d_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
 # for the infrastructure-foundation discussion.
 
 

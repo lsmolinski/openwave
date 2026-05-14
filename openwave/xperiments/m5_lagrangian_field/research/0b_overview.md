@@ -10,7 +10,7 @@ Related reading:
 - [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — numerical experiment results
 - [3c_topological_defect.md](3c_topological_defect.md) — topology / time-crystal / Zitterbewegung deep dive (mechanism by which defects oscillate)
 - [3d_path_to_m5.md](3d_path_to_m5.md) — M5 / Lagrangian-Field Method implementation plan
-- [0_WAVE_EQUATION.md](../../../../research_hub/0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
+- [0_WAVE_EQUATION.md](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
 
 ---
 
@@ -261,7 +261,7 @@ Everything else — wave frequencies, masses, forces, oscillations, charge quant
 
 ## IMPLICATIONS FOR OPENWAVE'S DOCUMENTATION
 
-This reframing prompts a revisit of the **Energy Layers** hierarchy (see [2_ENERGY_LAYERS.md](../../../../research_hub/2_ENERGY_LAYERS.md), [0_OVERVIEW.md](../../../../research_hub/0_OVERVIEW.md), [3z_review_energy_layers.md](3z_review_energy_layers.md) — content moved out of the README pending re-evaluation). The current hierarchy starts at "Layer 1: Fundamental energy wave" and assumes a pre-existing base wave. A more complete picture inserts a **Layer 0 — Vacuum at rest** (static ground state of V(ψ)) before the wave physics begins.
+This reframing prompts a revisit of the **Energy Layers** hierarchy (see [2_ENERGY_LAYERS.md](../../m3_wolff_lafreniere/research/2_ENERGY_LAYERS.md), [0_OVERVIEW.md](../../m3_wolff_lafreniere/research/0_OVERVIEW.md), [3z_review_energy_layers.md](3z_review_energy_layers.md) — content moved out of the README pending re-evaluation). The current hierarchy starts at "Layer 1: Fundamental energy wave" and assumes a pre-existing base wave. A more complete picture inserts a **Layer 0 — Vacuum at rest** (static ground state of V(ψ)) before the wave physics begins.
 
 The proposed updated hierarchy:
 
@@ -273,7 +273,7 @@ The proposed updated hierarchy:
 | **3 — Particle formation** | Standing-wave standalone | Defect + interference from emissions / other defects |
 | **4-7** | Unchanged | Unchanged — force emergence, gravity, composite particles |
 
-Follow-up TODO tracked in [0_ROADMAP.md](../../../../research_hub/0_ROADMAP.md) PHASE 3 — rewrite the layers in `2_ENERGY_LAYERS.md`, `0_OVERVIEW.md`, `README.md` with a Layer 0 prepended and the Layer 1–3 semantics refined.
+Follow-up TODO tracked in [0_ROADMAP.md](../../m3_wolff_lafreniere/research/0_ROADMAP.md) PHASE 3 — rewrite the layers in `2_ENERGY_LAYERS.md`, `0_OVERVIEW.md`, `README.md` with a Layer 0 prepended and the Layer 1–3 semantics refined.
 
 ---
 
@@ -330,7 +330,7 @@ FIELD LEVEL (depends on which Lagrangian we pick):
   Sine-Gordon:   a scalar ANGLE         (aspect of rotation — setup-dependent)
 ```
 
-This is the same "M4 is a superset" insight from [0_WAVE_EQUATION.md § M4's Elliptical Motion and the Director Field](../../../../research_hub/0_WAVE_EQUATION.md#m4s-elliptical-granule-motion-and-the-director-field): the director field Duda operates on is a *projection* of M4's 6-phasor ellipse data. If M4 captures the full elliptical trajectory, we can extract any Lagrangian-picture observable (director, spin density, scalar amplitude) by reading off the appropriate aspect.
+This is the same "M4 is a superset" insight from [0_WAVE_EQUATION.md § M4's Elliptical Motion and the Director Field](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md#m4s-elliptical-granule-motion-and-the-director-field): the director field Duda operates on is a *projection* of M4's 6-phasor ellipse data. If M4 captures the full elliptical trajectory, we can extract any Lagrangian-picture observable (director, spin density, scalar amplitude) by reading off the appropriate aspect.
 
 ### What "at rest" means at each level
 
@@ -410,7 +410,7 @@ The corrected layering in [CORRECTED CONCEPTUAL LAYERING](#corrected-conceptual-
 
 The one conceptual shift that came from the experiments (vs. just validating what we expected):
 
-- **"Combined W-L is an exact free-wave solution"** — what the M3/M4 docs claimed — was wrong. The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` contains a quadrature piece `(1−cos(kr))/r·sin(ωt+φ)` that is NOT a free-wave solution. The M4 code's equivalent sum form IS a solution; they're not algebraically identical. For M5, we keep the sum form and discard the claim that the product form is Lagrangian-derived. See [0_WAVE_EQUATION.md § M3: The Quest for the Wave Equation](../../../../research_hub/0_WAVE_EQUATION.md#m3-the-quest-for-the-wave-equation-vs-lagrangian-mechanics) and [3a § Experiment 5](3a_lagrangian_experiments.md#experiment-5-lagrangian-derivation-combined-w-l-from-a-lagrangian) for the full reasoning
+- **"Combined W-L is an exact free-wave solution"** — what the M3/M4 docs claimed — was wrong. The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` contains a quadrature piece `(1−cos(kr))/r·sin(ωt+φ)` that is NOT a free-wave solution. The M4 code's equivalent sum form IS a solution; they're not algebraically identical. For M5, we keep the sum form and discard the claim that the product form is Lagrangian-derived. See [0_WAVE_EQUATION.md § M3: The Quest for the Wave Equation](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md#m3-the-quest-for-the-wave-equation-vs-lagrangian-mechanics) and [3a § Experiment 5](3a_lagrangian_experiments.md#experiment-5-lagrangian-derivation-combined-w-l-from-a-lagrangian) for the full reasoning
 
 This is exactly the kind of finding the Lagrangian framework was designed to surface: when you formalize the equation's origin, latent inconsistencies in empirical modeling choices show up.
 
