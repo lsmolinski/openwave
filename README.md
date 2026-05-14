@@ -36,7 +36,7 @@ OpenWave aims to:
 
 - Explore matter, force emergence, EM-wave dynamics, and heat phenomena through wave-dynamics and topology in one integrated simulator
 - Simulate candidate particle structures from topological defects + standing wave patterns in fields
-- Test predictions against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling) — pass criteria specified in `research_hub/3d_path_to_m5.md`
+- Test predictions against known physics (particle masses, force laws, decay rates, EM dispersion, thermal coupling) — pass criteria specified in `/research`
 - Provide computational and visualization tools that — *if* the framework's predictions match experiment — could yield design parameters relevant to applied research
 
 **Scientific Status:** OpenWave is a research tool for computational exploration. It uses lattice-discretization methodology (similar in spirit to lattice QCD's tooling, with classical field equations rather than quantized operators) to investigate alternative field-theoretic models and their predictions. Applied-research outputs are conditional on the framework's predictions matching experiment — see the [Scientific Position](#scientific-position) section for the falsifiability framing.

@@ -30,7 +30,7 @@ Method:
    frequency ω via FFT.
 5. Fit ω² = c²·k² + m² across the k sweep.
 
-Spec:    ../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 4)
+Spec:    ../../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 4)
 Results: ../3b_lagrangian_experiments.md (Experiment 4)
 """
 

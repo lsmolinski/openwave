@@ -21,7 +21,7 @@ correctness gate — it confirms the kernels run, fields are populated
 without NaN/inf, and the simulator boots cleanly with the new seed paths.
 
 The director structure becomes visible once M5.1 task 4 (director-glyph
-renderer per `research_hub/3e_director_glyph_rendering.md`) lands.
+renderer per `../research/3e_director_glyph_rendering.md`) lands.
 """
 
 UNIVERSE_EDGE = 1e-15  # m

@@ -18,7 +18,7 @@ Setup:
 
 Expected: E(d) ≈ const + C/d (see Duda arXiv:2108.07896 Fig. 2).
 
-Spec:    ../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 2)
+Spec:    ../../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 2)
 Results: ../3b_lagrangian_experiments.md  (Experiment 2)
 """
 

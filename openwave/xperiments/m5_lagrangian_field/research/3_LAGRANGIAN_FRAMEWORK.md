@@ -24,7 +24,7 @@ The new approach fixes all three:
 - vector fields enable topology,
 - and topological defects (hedgehogs) ARE part of the field configuration rather than imposed externally.
 
-See [`0_WAVE_EQUATION.md`](0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
+See [`0_WAVE_EQUATION.md`](../../../../research_hub/0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
 
 OpenWave's M3 scalar method tested 5 wave equation candidates empirically (Wolff, LaFreniere-Marcotte, Phase-warped, Combined W-L, Weighted PSW). The best candidate (Combined Wolff-LaFreniere) produces particle lock-in and K=10 tetrahedron stability at perfect placement, but fails under perturbation and cannot produce far-field Coulomb (sinc barriers flip the force direction every λ/2).
 

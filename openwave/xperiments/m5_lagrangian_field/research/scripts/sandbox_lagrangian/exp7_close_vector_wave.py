@@ -40,7 +40,7 @@ Test plan:
 2. Full nonlinear (Eq. 21) with same seeds → looks for self-localization or
    rotational dynamics from the u·∇s − w×s coupling
 
-Spec:    ../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 7)
+Spec:    ../../3_LAGRANGIAN_FRAMEWORK.md  (Experiment 7)
 Results: ../3b_lagrangian_experiments.md  (Experiment 7)
 """
 

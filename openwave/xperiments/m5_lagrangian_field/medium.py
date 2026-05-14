@@ -206,7 +206,7 @@ class WaveField:
         # we need to see. Director glyphs draw a line segment from each
         # sampled voxel to voxel + L·n̂, with color = signed-component RGB
         # so opposite directions look opposite (red↔cyan, green↔magenta,
-        # blue↔yellow). Design doc: research_hub/3e_director_glyph_rendering.md.
+        # blue↔yellow). Design doc: research/3e_director_glyph_rendering.md.
         #
         # Same 3-plane sampling pattern as flux_mesh, sampled every VIZ_STRIDE
         # voxels. VIZ_STRIDE is the consolidated xparameter that ALSO drives

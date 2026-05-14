@@ -90,7 +90,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 | Photon emission | Waves | Energy release from topology event |
 | Thermal excess (per-defect) | Waves | Per-defect oscillation above ground state |
 
-**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its M7.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` M7.1](0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
+**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its M7.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` M7.1](../../../../research_hub/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
 
 ### Strategic implication — where to look when
 

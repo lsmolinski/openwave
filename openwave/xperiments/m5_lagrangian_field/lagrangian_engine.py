@@ -1746,7 +1746,7 @@ def update_flux_mesh_values(
 # XZ at fm_plane_y, YZ at fm_plane_x. At GLYPH_STRIDE=4 with a 64³ grid,
 # total glyph count is ~768 segments; renders in well under 1 ms.
 #
-# Design doc: research_hub/3e_director_glyph_rendering.md.
+# Design doc: research/3e_director_glyph_rendering.md.
 
 # Half-arrowhead toggle (hardcoded for testing — flip to False to compare):
 # When True, each glyph gets ONE extra barb at the tip end so head vs tail is

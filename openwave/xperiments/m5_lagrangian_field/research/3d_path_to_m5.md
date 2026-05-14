@@ -8,7 +8,7 @@ Implementation plan for **M5 / LAGRANGIAN-FIELD METHOD** (directory `openwave/xp
 
 - [3_LAGRANGIAN_FRAMEWORK.md](3_LAGRANGIAN_FRAMEWORK.md) — Lagrangian framework evaluation, 8 experiments, Duda/Close context
 - [3a_lagrangian_experiments.md](3a_lagrangian_experiments.md) — sandbox numerical results (experiment-by-experiment)
-- [0_WAVE_EQUATION.md](0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
+- [0_WAVE_EQUATION.md](../../../../research_hub/0_WAVE_EQUATION.md) — the M2/M3 vs Lagrangian comparison and why the equation is the *consequence*, not the goal
 
 **Production code references**:
 
