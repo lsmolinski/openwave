@@ -2,9 +2,9 @@
 
 ## What is OpenWave?
 
-OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through **classical field theory enriched with topology and nonlinearity** — the scientific tradition of de Broglie–Bohm pilot waves, wave structure of matter, and modern topological-soliton models. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics, topological defects, and nonlinear potentials, investigating whether particles and forces can emerge from a deterministic field equation rather than being postulated.
+OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through **classical field theory enriched with topology and nonlinearity** — the scientific tradition of de Broglie–Bohm pilot waves, wave structure of matter, and modern topological-soliton models. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics, topological defects, and nonlinear potentials, investigating whether particles and forces can emerge from deterministic field equations rather than being postulated.
 
-The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD models (similar to lattice gauge theory), VECTOR-FIELD models, both for research simulations, and a GRANULE-MOTION model for educational visualization.
+The platform implements multiple candidate mathematical frameworks through complementary approaches: SCALAR-FIELD models (similar to lattice gauge theory), VECTOR-FIELD models, both for research simulations, and a GRANULE-MOTION model for educational visualization. Each framework runs in the same numerical engine, enabling direct comparison of model predictions against shared observables.
 
 ![OpenWave Logo](images/openwave-white-small.png#gh-dark-mode-only)![OpenWave Logo](images/openwave-black-small.png#gh-light-mode-only)
 
@@ -47,7 +47,7 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 ### 1. Spacetime Vibration
 
-> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier models (M1). The current research framework (M5) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
+> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier models (M1). The current research framework (M5) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at Planck-scale visualization.
 
 **In this educational demo:**
 
