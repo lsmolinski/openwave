@@ -650,7 +650,7 @@ Both remaining paths are needed and will likely converge into one solution:
 
 The M2 (Laplacian propagation) engine already explored exactly what Phase 1b is attempting — creating emergent standing waves around wave centers in a base wave field — and documented 12 experiments with critical findings. The M2 research is directly relevant because it tested WC interactions on a real Laplacian-propagated base wave (the same standing wave field we validated in Step 1).
 
-**Source files**: `m2_laplace_propagation/research/13_wave_center.md` (12 experiments), `14_spin_theory.md` (proposed solution), `wave_engine.py` (commented WC interaction code)
+**Source files**: `m2_free_wave/research/13_wave_center.md` (12 experiments), `14_spin_theory.md` (proposed solution), `wave_engine.py` (commented WC interaction code)
 
 ### 12 WC Interaction Experiments — Summary
 
