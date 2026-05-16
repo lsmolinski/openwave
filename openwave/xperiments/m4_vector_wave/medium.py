@@ -1,5 +1,5 @@
 """
-VECTOR-WAVE Method Medium Data-Grid
+VECTOR-WAVE Model Medium Data-Grid
 
 Object Classes @spacetime module.
 

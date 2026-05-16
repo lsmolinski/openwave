@@ -1,12 +1,12 @@
 """
-LIQUID CRYSTAL ENGINE (M5)
+LIQUID-CRYSTAL ENGINE (M5)
 
 PDE-driven evolution of the field ψ on a voxel grid. The action is
 
     S[ψ] = ∫ dt d³x [ ½|ψ̇|² − ½c²|∇ψ|² − V(ψ) ]
 
 Euler-Lagrange yields  ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ.  In M5.0d the potential is
-zero (free wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
+zero (free-wave); M5.2 plugs in Klein-Gordon mass + Close Eq. 23 + LdG.
 
 Module layout (top-to-bottom):
     INITIAL-CONDITION SEEDING — seed_gaussian, seed_dispersion_modes,
@@ -581,7 +581,7 @@ def compute_curl_curl(
 # wave equation:
 #     ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ
 #
-# In M5.0d this lands with V(ψ) = 0 (free wave). The nonlinear potential term
+# In M5.0d this lands with V(ψ) = 0 (free-wave). The nonlinear potential term
 # −∂V/∂ψ is added in M5.2 (Close's Eq. 23 + Klein-Gordon mass term + LdG).
 #
 # Why "evolve_psi" not "propagate_wave": the operation is field evolution,
@@ -611,7 +611,7 @@ def evolve_psi(
     Discrete (leapfrog/Verlet):
         ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ − (m·dt)²·ψ − (dt)²·λ·(|ψ|² − 1)·ψ
 
-    Setting both m_freq_rs = 0 and lambda_phi4 = 0 recovers the free wave.
+    Setting both m_freq_rs = 0 and lambda_phi4 = 0 recovers the free-wave.
 
     Reads:  wave_field.psi_am, wave_field.psi_prev_am
     Writes: wave_field.psi_new_am
@@ -770,7 +770,7 @@ def update_trackers(
 # ================================================================
 # POTENTIAL ENERGY HOOK — V(ψ)
 # ================================================================
-# Default V(ψ) = 0 (free wave) in M5.0g. M5.2 swaps this implementation in to
+# Default V(ψ) = 0 (free-wave) in M5.0g. M5.2 swaps this implementation in to
 # add the nonlinear physics:
 #   - Klein-Gordon mass:    V = ½ m² |ψ|²
 #   - Close Eq. 23 nonlin:  V = … (from −u·∇s + w×s couplings)
@@ -798,7 +798,7 @@ def update_trackers(
 # The φ⁴ Mexican-hat moves the potential minimum from ψ = 0 (plain KG) to the
 # unit sphere |ψ| = 1 — the right shape for stabilizing a unit-vector
 # director field. Setting both m_freq_rs = 0 AND lambda_phi4 = 0 recovers
-# the free wave (V = 0) used by the M5.0h dispersion tests.
+# the free-wave (V = 0) used by the M5.0h dispersion tests.
 #
 # DERRICK'S THEOREM CAVEAT: φ⁴ alone (without a 4th-derivative Skyrme term)
 # does NOT prevent the hedgehog core from collapsing to a point in 3D
@@ -826,7 +826,7 @@ def V_psi(
     Mexican-hat term: minimum is the unit sphere |ψ| = 1 (V = 0); maximum at
     ψ = 0 (V = ¼λ). Right shape to stabilize a director field whose vacuum
     is the unit sphere. Setting λ = 0 reduces to plain KG; setting both = 0
-    recovers the free wave (V = 0). |ψ|² = 1 is the implicit vacuum convention
+    recovers the free-wave (V = 0). |ψ|² = 1 is the implicit vacuum convention
     of seed_hedgehog / seed_vacuum (boundary at n̂ = ẑ, |n̂| = 1).
 
     Args:

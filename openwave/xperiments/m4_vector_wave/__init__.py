@@ -1,5 +1,5 @@
 """
-M4/ VECTOR-WAVE Method (analytical tools)
+M4/ VECTOR-WAVE Model (analytical tools)
 
-Experiments exploring wave dynamics using vector-field method simulation.
+Experiments exploring wave dynamics using vector-field model simulation.
 """

@@ -1,5 +1,5 @@
 """
-GRANULE-MOTION METHOD
+GRANULE-MOTION MODEL
 
 Objects Engine @spacetime module.
 

@@ -164,7 +164,7 @@ A precursor framing for what heat is at the wave level: particles may have a fun
 
 **Connection to energy starvation**: steepness conservation applies within an isolated system — when A drops at one location, λ drops proportionally (f increases, time speeds up), and vice versa. The total energy stays constant, only the A↔λ balance shifts. External energy input (heating) breaks this conservation by increasing steepness. External energy output (radiation) decreases it.
 
-This hypothesis is the closest precursor to the per-defect amplitude-as-heat hypothesis articulated for the M5 / Liquid Crystal framework — see [1b_topological_defect.md](1b_topological_defect.md) for the topological defect's intrinsic oscillation amplitude, and the M5 plan in [2a_path_to_m5.md](2a_path_to_m5.md) for the post-M5 thermal-mechanics validation phases.
+This hypothesis is the closest precursor to the per-defect amplitude-as-heat hypothesis articulated for the M5 / Liquid-Crystal framework — see [1b_topological_defect.md](1b_topological_defect.md) for the topological defect's intrinsic oscillation amplitude, and the M5 plan in [2a_path_to_m5.md](2a_path_to_m5.md) for the post-M5 thermal-mechanics validation phases.
 
 ---
 

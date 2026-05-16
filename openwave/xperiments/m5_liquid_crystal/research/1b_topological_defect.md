@@ -1,6 +1,6 @@
 # TOPOLOGICAL DEFECT (THE M5 PARTICLE)
 
-A focused, foundational walk-through of what a **topological defect** is in M5 — the geometric / topological object that replaces "wave center" as the meaning of *particle* in OpenWave's Liquid Crystal Method. Two halves:
+A focused, foundational walk-through of what a **topological defect** is in M5 — the geometric / topological object that replaces "wave center" as the meaning of *particle* in OpenWave's Liquid-Crystal Model. Two halves:
 
 1. **What a defect IS** — its definition, the geometric forms it can take (hedgehog, kink, vortex, knot), how it differs from a "WC placed in a field", how its winding number quantizes charge, and how it stores rest-mass energy
 2. **How a defect OSCILLATES** — the time-crystal / Zitterbewegung mechanism that gives the defect its intrinsic clock at `ω = 2mc²/ℏ`, the rotational nature of that oscillation, and how mass + spin + de Broglie wavelength + magnetic moment all derive from this one rotating-defect mechanism
@@ -468,7 +468,7 @@ See also Dr. Duda's email-thread challenge: *"Without charge quantization your e
 
 ### The twist degree of freedom — quantum phase as a derived field state
 
-The director field has a third degree of freedom alongside topology (winding → charge) and amplitude (oscillation magnitude → mass / thermal content): a **local rotation phase φ around the principal axis** at each point. This twist DoF is the natural home for the **quantum phase** in the Liquid Crystal framework.
+The director field has a third degree of freedom alongside topology (winding → charge) and amplitude (oscillation magnitude → mass / thermal content): a **local rotation phase φ around the principal axis** at each point. This twist DoF is the natural home for the **quantum phase** in the Liquid-Crystal framework.
 
 | DoF | What it is | What it physically gives | Quantization |
 | --- | --- | --- | --- |
@@ -476,7 +476,7 @@ The director field has a third degree of freedom alongside topology (winding →
 | Amplitude (oscillation magnitude) | Excursion of the field above its ground state | Mass / thermal content | Continuous above `A_0`; quantized in finite-T |
 | **Twist** (phase φ around principal axis) | Local rotation phase of the director field | **Quantum phase** (and its winding = Berry phase) | 2π-quantized when integrated around a defect or path |
 
-In `S^1 ⊂ SO(3)` terms (per Dr. Duda's 2026-04 framing on the Models of Particles thread), the twist field is the `S^1` quantum-phase carrier sitting inside the larger `SO(3)` order-parameter manifold whose `S^2` part carries the topological charge. The single Liquid Crystal framework therefore unifies:
+In `S^1 ⊂ SO(3)` terms (per Dr. Duda's 2026-04 framing on the Models of Particles thread), the twist field is the `S^1` quantum-phase carrier sitting inside the larger `SO(3)` order-parameter manifold whose `S^2` part carries the topological charge. The single Liquid-Crystal framework therefore unifies:
 
 - `S^2 → Q` (topological charge, EM)
 - `S^1 → φ` (quantum phase, twist)
@@ -484,7 +484,7 @@ In `S^1 ⊂ SO(3)` terms (per Dr. Duda's 2026-04 framing on the Models of Partic
 
 This connects directly to the formula linking superfluid-like velocity to phase and EM vector potential: `v_m = ℏ∇φ − qA`. In M5 terms, the gradient of the twist phase φ contributes to the field's effective momentum / current alongside the EM-vector-potential term — both arise from the same order parameter, just from different rotation channels (`S^1` vs `S^2`) of the underlying SO(3).
 
-**The Berry phase is then a winding number of the twist field**, geometrically distinct from the topology winding. When a defect is moved adiabatically along a closed loop in parameter space, the accumulated twist phase around the loop is the Berry phase. When two defects share a vector field, the twist phase along a path between them is path-dependent in the presence of nontrivial topology — this is the **Aharonov-Bohm analog** in the Liquid Crystal framework, and the same phenomenon underlies entanglement-like correlations between defect pairs (per the Orion–Akkermans 2026 topological sum rule: `ν_H ≠ 0` is necessary for entanglement, and M5's defect pairs satisfy this by construction).
+**The Berry phase is then a winding number of the twist field**, geometrically distinct from the topology winding. When a defect is moved adiabatically along a closed loop in parameter space, the accumulated twist phase around the loop is the Berry phase. When two defects share a vector field, the twist phase along a path between them is path-dependent in the presence of nontrivial topology — this is the **Aharonov-Bohm analog** in the Liquid-Crystal framework, and the same phenomenon underlies entanglement-like correlations between defect pairs (per the Orion–Akkermans 2026 topological sum rule: `ν_H ≠ 0` is necessary for entanglement, and M5's defect pairs satisfy this by construction).
 
 The twist DoF gives M5 a natural mechanism for several phenomena that are otherwise "quantum" in standard frameworks:
 
@@ -762,7 +762,7 @@ The defect's *position* is fixed (or slowly drifting due to external forces); th
 
 ## CONNECTION TO M4'S ELLIPTICAL GRANULE MOTION
 
-OpenWave's M4 method described granule motion as **elliptical** oscillations — each granule traces an ellipse over time, with 6 phasor numbers describing the ellipse's shape, orientation, and handedness.
+OpenWave's M4 model described granule motion as **elliptical** oscillations — each granule traces an ellipse over time, with 6 phasor numbers describing the ellipse's shape, orientation, and handedness.
 
 **This is the same physics seen from a different vantage point.**
 

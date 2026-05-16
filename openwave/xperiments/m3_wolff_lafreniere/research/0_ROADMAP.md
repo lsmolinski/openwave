@@ -144,7 +144,7 @@ Follows the energy layers hierarchy from [0_OVERVIEW.md](0_OVERVIEW.md). See [2_
 
 ### 🔶 LAYERS 1-3: [PARTICLE EMERGENCE](2L3_particle_emergence.md) from Near-Field Standing Waves (M3 Scalar)
 
-M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
+M3 scalar model handles longitudinal standing wave physics. Goal: demonstrate stable standalone particle formation. No far-field analysis on M3 — Coulomb needs spin → vector field (M4).
 
 #### Layer 1: Fundamental energy wave
 
@@ -183,7 +183,7 @@ M3 scalar method handles longitudinal standing wave physics. Goal: demonstrate s
 
 ### 🚧 LAYER 4: [ELECTROMAGNETISM EMERGENCE](02L4_electromagnetism_emergence.md) from Far-Field Traveling Waves (maybe M3 Scalar enough, or M4 Vector)
 
-M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md) for context sources and references to load when starting this phase.
+M4 vector model may be needed for spin (L→T conversion) → charge, Coulomb, magnetic force. Non-dual standalone particles (electron family) have spin; dual particles (neutrino family) are neutral. See [2_ENERGY_LAYERS.md](2_ENERGY_LAYERS.md) for context sources and references to load when starting this phase.
 
 #### Layer 4a-b: Charge emergence (from non-dual spin)
 
@@ -260,9 +260,9 @@ M4 vector method may be needed for spin (L→T conversion) → charge, Coulomb, 
 - [ ] review <https://energywavetheory.com/project/phase4/>
 - [ ] review <https://energywavetheory.com/project/phase5/>
 
-## 🔶 [M5 / LIQUID CRYSTAL METHOD — see 0c_roadmap.md](../../m5_liquid_crystal/research/0c_roadmap.md)
+## 🔶 [M5 / LIQUID-CRYSTAL MODEL — see 0c_roadmap.md](../../m5_liquid_crystal/research/0c_roadmap.md)
 
-The M5 implementation roadmap (M5.0 through 5d) and Phase 4 / TIME DYNAMICS future-extension task list have been consolidated into [`0c_roadmap.md`](../../m5_liquid_crystal/research/0c_roadmap.md) under the M5 method directory. Design rationale, M2/M4 inheritance, code mapping, resolution & performance plan, layered validation, external-comms milestones, and group feedback live in [`2a_path_to_m5.md`](../../m5_liquid_crystal/research/2a_path_to_m5.md).
+The M5 implementation roadmap (M5.0 through 5d) and Phase 4 / TIME DYNAMICS future-extension task list have been consolidated into [`0c_roadmap.md`](../../m5_liquid_crystal/research/0c_roadmap.md) under the M5 model directory. Design rationale, M2/M4 inheritance, code mapping, resolution & performance plan, layered validation, external-comms milestones, and group feedback live in [`2a_path_to_m5.md`](../../m5_liquid_crystal/research/2a_path_to_m5.md).
 
 ---
 

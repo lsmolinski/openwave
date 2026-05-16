@@ -1,8 +1,8 @@
 # M5 ROADMAP
 
-🔶 **M5 / LIQUID CRYSTAL METHOD** — full implementation plan, post-sandbox.
+🔶 **M5 / LIQUID-CRYSTAL MODEL** — full implementation plan, post-sandbox.
 
-A research thread evaluating whether a Lagrangian / topological framework can replace OpenWave's empirical wave-equation search with a first-principles derivation, and produce charge quantization + far-field Coulomb that the M3 scalar method cannot. Sparked by email exchange with Jarek Duda (Jagiellonian) and Robert Close (Clark College) in the "Models of Particles" group.
+A research thread evaluating whether a Lagrangian / topological framework can replace OpenWave's empirical wave-equation search with a first-principles derivation, and produce charge quantization + far-field Coulomb that the M3 scalar model cannot. Sparked by email exchange with Jarek Duda (Jagiellonian) and Robert Close (Clark College) in the "Models of Particles" group.
 
 For design rationale, M2/M4 inheritance, code mapping, resolution & performance plan, and layered validation, see [2a_path_to_m5.md](2a_path_to_m5.md).
 
@@ -71,7 +71,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 
 #### M5.0d.1 — Leapfrog kernel + standing-wave eigenmode test ✅ (commit `6df9a1b` 2026-05-06)
 
-- ✅ Implement `evolve_psi` kernel: leapfrog/Verlet update `ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ` (V=0 free wave; V terms land in M5.2)
+- ✅ Implement `evolve_psi` kernel: leapfrog/Verlet update `ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ` (V=0 free-wave; V terms land in M5.2)
 - ✅ Standing-wave eigenmode test (V=0 reproduces continuum dispersion at low k; 2.26% deviation at 12 voxels/λ matches discrete-stencil prediction)
 
 #### M5.0d.2 — CFL eval + plane-wave seed + tracker EMA + Hamiltonian dashboard ✅ (committed 2026-05-07)
@@ -186,8 +186,8 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 > - ✅ **Step 1 (Natural-units scaffold, 2026-05-12)**: `constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM` added; `m_freq_kg_rs = c_amrs / λ̄_C` (electron: ~7.76e-7 rad/rs at SIM_SPEED=1) threaded through `V_psi` via `compute_energyH_density`. Plumbing only — V_psi returned 0 at this step.
 > - ✅ **Step 2 (KG mass term, 2026-05-12)**: `V_psi` returns `½·m²·|ψ|²`; `evolve_psi` adds `−(m·dt)²·ψ` to leapfrog. Math verified at f32.
 > - ⚠️ **Step 3 (Defect-survival check, NEGATIVE)**: `research/scripts/m5_2_kg_defect_survival.py`. Q drops from `+0.9958` → `~0` within 20 steps under BOTH V=0 and KG-electron; `|Q_free − Q_kg|` below f32 precision at every sample.
-> - ⚠️ **Step 4a (Mexican-hat φ⁴, PARTIAL)**: `research/scripts/m5_2_phi4_defect_survival.py`. `V += ¼λ(|ψ|²−1)²` damps `|ψ|` excursions (max `1.83 → 1.27`) but does NOT preserve Q. Same step-4 collapse as free wave.
-> - ⚠️ **Step 4b (Biharmonic, NEGATIVE on Q)**: `research/scripts/m5_2_biharmonic_defect_survival.py`. `+ ½κ|∇²ψ|²` (kernels kept research-only, NOT promoted to production). Stable at κ ≤ 0.003·c²·dx²; Q decay identical to free wave at every stable scale. Pre-relaxing 20 steps doesn't help.
+> - ⚠️ **Step 4a (Mexican-hat φ⁴, PARTIAL)**: `research/scripts/m5_2_phi4_defect_survival.py`. `V += ¼λ(|ψ|²−1)²` damps `|ψ|` excursions (max `1.83 → 1.27`) but does NOT preserve Q. Same step-4 collapse as free-wave.
+> - ⚠️ **Step 4b (Biharmonic, NEGATIVE on Q)**: `research/scripts/m5_2_biharmonic_defect_survival.py`. `+ ½κ|∇²ψ|²` (kernels kept research-only, NOT promoted to production). Stable at κ ≤ 0.003·c²·dx²; Q decay identical to free-wave at every stable scale. Pre-relaxing 20 steps doesn't help.
 >
 > **Root cause** (initial diagnosis 2026-05-12, refined after re-reading Duda paper arxiv:2108.07896): the framework requires **(a) matrix field `M = ODO^T`, NOT Vector(3) ψ** (Duda paper §III, Eq. 18); and **(b) the "particle" is a time-periodic resonance**, not a static soliton. Triple-confirmed from three independent sources: Duda paper Fig. 10 (4D Lorentz negative-energy terms auto-propel the clock), Robert Close email reply (l=1 amplitudes, A/λ ≈ 1 protocol), Werbos chaoiton paper (explicit "static solitons don't exist; the stable objects are chaoitons"). Captured in [`3b_lagrangian_roadblocks.md`](3b_lagrangian_roadblocks.md) and memories `feedback_no_static_solitons`, `reference_duda_lcb_paper`.
 >

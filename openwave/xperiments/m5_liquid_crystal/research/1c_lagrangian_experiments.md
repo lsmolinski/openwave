@@ -502,7 +502,7 @@ OpenWave's empirically-selected Combined Wolff-LaFreniere wave equation `ψ = 2A
 
 **Identity confirmation**: `(sum form) − (product standing form) = 0` — confirms (1b) and (1c) are the same equation written differently.
 
-**Surprise finding (1d)**: The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` does **not** satisfy the 3D free wave equation. Decomposing via `sin(a)·cos(b) = ½[sin(a+b) + sin(a−b)]`:
+**Surprise finding (1d)**: The product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` does **not** satisfy the 3D free-wave equation. Decomposing via `sin(a)·cos(b) = ½[sin(a+b) + sin(a−b)]`:
 
 ```text
 2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r
@@ -528,7 +528,7 @@ So **the LaFreniere quadrature term (1−cos(kr))/r is a modeling choice** — i
 
 **Noether energy density** (Test 3): `H = π·∂ₜψ − L`:
 
-- Free wave: `H = ½(∂ₜψ)² + ½c²|∇ψ|²` (kinetic + gradient energy)
+- Free-Wave: `H = ½(∂ₜψ)² + ½c²|∇ψ|²` (kinetic + gradient energy)
 - Smolinski: `H = ½(∂ₜψ)² + ½c²|∇ψ|² + (κ/4)·ψ⁴` (adds quartic potential)
 
 Both are standard `T + V` Hamiltonians. Canonical energy conservation is guaranteed by Noether's theorem (time translation symmetry). ✅
@@ -988,7 +988,7 @@ All 8 sandbox experiments complete (2026-04-16 / 2026-04-17). The 8-test program
 
 ## WINNING APPROACH FOR M5
 
-**M5 / LIQUID CRYSTAL METHOD** implements the union:
+**M5 / LIQUID-CRYSTAL MODEL** implements the union:
 
 1. **Background vacuum + topological defects** (from Exps 2, 3) — primary mechanism for charge, spin, far-field Coulomb
 2. **Klein-Gordon-like wave dynamics** (from Exp 4) around the vacuum — propagating perturbations have the right relativistic dispersion and mass gap

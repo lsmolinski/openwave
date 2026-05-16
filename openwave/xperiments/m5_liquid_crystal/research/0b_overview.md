@@ -9,7 +9,7 @@ Related reading:
 - [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — full Lagrangian framework evaluation, email thread, Duda/Close context
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — numerical experiment results
 - [1b_topological_defect.md](1b_topological_defect.md) — topology / time-crystal / Zitterbewegung deep dive (mechanism by which defects oscillate)
-- [2a_path_to_m5.md](2a_path_to_m5.md) — M5 / Liquid Crystal Method implementation plan
+- [2a_path_to_m5.md](2a_path_to_m5.md) — M5 / Liquid-Crystal Model implementation plan
 - [0_WAVE_EQUATION.md](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) — M2/M3/M4 vs. Lagrangian comparisons
 
 ---
@@ -289,12 +289,12 @@ This matters because the Lagrangian framework uses ψ (or φ, or n) as a central
 
 **In the Lagrangian framework: not always.** ψ is whichever field quantity the chosen Lagrangian operates on — often an *orientation* (unit vector, angle) rather than a spatial displacement. Every field theory is a *lens onto the granule dynamics*, and the Lagrangian determines which aspect of granule motion we track.
 
-### What each method's ψ actually is
+### What each model's ψ actually is
 
 | Framework | Field symbol | What it physically represents | Units |
 | --- | --- | --- | --- |
 | **M1 — Granule Motion** | r(t) per granule | Position vector of each granule (actual particle) | length (am) |
-| **M2 — Free Wave** | ψ(x,t) | Scalar displacement of the medium (coarse-grained) | length |
+| **M2 — Free-Wave** | ψ(x,t) | Scalar displacement of the medium (coarse-grained) | length |
 | **M3 — Wolff-LaFreniere** | ψ(x,t) | Scalar wave amplitude (analytical) | length |
 | **M4 — Vector-Wave** | ψ(x,t) = (ψx, ψy, ψz) | Vector displacement (3 components per voxel) | length |
 | **Sine-Gordon** (Exp 1) | φ(x,t) | **Angle / orientation** of a local rotational degree of freedom | radians |
@@ -420,16 +420,16 @@ This is exactly the kind of finding the Lagrangian framework was designed to sur
 
 Clarifications that emerged from the collaboration with Dr. Duda, Dr. Close, and Jeff Yee after the sandbox was complete. Kept in Q&A form because the questions are ones any new contributor or reader will naturally ask when encountering the M5 paradigm for the first time.
 
-### The naming of M5 — why "Liquid Crystal Method"
+### The naming of M5 — why "Liquid-Crystal Model"
 
 **Question**: given that particles in M5 are topological defects (not waves or standing-wave interference patterns as in M2/M3/M4), what is the correct name for the method?
 
-**Answer — Liquid Crystal Method.**
+**Answer — Liquid-Crystal Model.**
 
 The name went through two iterations before landing:
 
-1. **First working title: "Lagrangian-Wave Method"** (parallel to M4 "Vector-Wave Method"). Justified initially because waves remain the dynamical content (Klein-Gordon perturbations, Close's Eq. 23, M3-style near-field standing-wave lock-in). The "Wave" half felt defensible because the engine still solves wave equations and OpenWave's identity is wave-based
-2. **Final name: "Liquid Crystal Method"** (adopted 2026-04-19). The "Wave" was removed because it under-sells what the engine actually does. The method is a **full Lagrangian field-theory simulator**, of which wave propagation is only one of several outputs. In M5, particles ARE topological defects (not waves), the engine maintains field configurations with topology (not just oscillations), and the module solves a single unified PDE that generates wave dynamics *and* preserves topology *and* enforces constraints *and* tracks topological charge — all from one Lagrangian
+1. **First working title: "Lagrangian-Wave Model"** (parallel to M4 "Vector-Wave Model"). Justified initially because waves remain the dynamical content (Klein-Gordon perturbations, Close's Eq. 23, M3-style near-field standing-wave lock-in). The "Wave" half felt defensible because the engine still solves wave equations and OpenWave's identity is wave-based
+2. **Final name: "Liquid-Crystal Model"** (adopted 2026-04-19). The "Wave" was removed because it under-sells what the engine actually does. The method is a **full Lagrangian field-theory simulator**, of which wave propagation is only one of several outputs. In M5, particles ARE topological defects (not waves), the engine maintains field configurations with topology (not just oscillations), and the module solves a single unified PDE that generates wave dynamics *and* preserves topology *and* enforces constraints *and* tracks topological charge — all from one Lagrangian
 
 Waves still matter — they are the dynamical content:
 
@@ -437,16 +437,16 @@ Waves still matter — they are the dynamical content:
 - Close's Eq. 23 transverse vector wave for spin density (M5.2)
 - M3's retained near-field standing-wave lock-in (orbit quantization, Couder-droplet analog)
 
-But waves are **one of two channels** M5 runs, and particle identity comes from the other channel (topology). Calling the method "Liquid Crystal" accurately reflects that both channels are first-class, unified by the Lagrangian.
+But waves are **one of two channels** M5 runs, and particle identity comes from the other channel (topology). Calling the method "Liquid-Crystal" accurately reflects that both channels are first-class, unified by the Lagrangian.
 
 **Consequences of the rename** (all applied):
 
-- Method name everywhere in docs: **LIQUID CRYSTAL METHOD**
+- Method name everywhere in docs: **LIQUID-CRYSTAL MODEL**
 - Production directory: `openwave/xperiments/m5_liquid_crystal/` (was `m5_lagrangian_wave/`)
 - Engine module: `lagrangian_engine.py` (was `wave_engine.py` in M1–M4)
 - The naming distinction between `wave_engine.py` (M1–M4: analytical wave superposition, no topology) and `lagrangian_engine.py` (M5+: Lagrangian field theory with topology + waves) marks the architectural boundary between the two paradigms in the repo
 
-**What is NOT renamed**: the parent project stays **OpenWave**. "Wave" is in the project identity; "Liquid Crystal" is the specific method within it. One method's name does not override the brand.
+**What is NOT renamed**: the parent project stays **OpenWave**. "Wave" is in the project identity; "Liquid-Crystal" is the specific method within it. One method's name does not override the brand.
 
 ### The defect-wave relationship — better analogies
 
@@ -988,7 +988,7 @@ There is a separate applied-technology counterpart project (SABER) that consumes
 
 A natural question prompted by the 2026-04 thread on Models of Particles around the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795), where the corollary states that **nontrivial Hamiltonian topology is a necessary condition for quantum entanglement**. Dr. Duda asked the group: *"How do you see quantum phase in your model of particles?"*
 
-OpenWave's answer falls out of the Liquid Crystal framework cleanly, with no new structure required.
+OpenWave's answer falls out of the Liquid-Crystal framework cleanly, with no new structure required.
 
 #### The director field has three degrees of freedom — phase is the third
 
@@ -1028,7 +1028,7 @@ A follow-up question prompted by Dr. Duda's 2026-04 presentation on negative rad
 
 **CPT** = Charge conjugation × Parity flip × Time reversal. The CPT theorem states that any Lorentz-invariant local quantum field theory with a Hermitian Hamiltonian must satisfy CPT symmetry — i.e., the equations of motion are invariant under simultaneous application of all three operations. Microscopic CPT violation has been searched for extensively and never observed; it would imply Lorentz-invariance violation.
 
-**Does M5 have CPT?** Yes, by construction. M5's Liquid Crystal method uses a Hermitian Lagrangian (the action `S = ∫L d⁴x` is real-valued) and is Lorentz-invariant (the Klein-Gordon mass term, Close's Eq. 23, the Skyrme stabilizer, and the LdG potential are all relativistically covariant). Therefore the M5 dynamics inherit CPT symmetry without needing it to be imposed separately.
+**Does M5 have CPT?** Yes, by construction. M5's Liquid-Crystal model uses a Hermitian Lagrangian (the action `S = ∫L d⁴x` is real-valued) and is Lorentz-invariant (the Klein-Gordon mass term, Close's Eq. 23, the Skyrme stabilizer, and the LdG potential are all relativistically covariant). Therefore the M5 dynamics inherit CPT symmetry without needing it to be imposed separately.
 
 This has several useful consequences:
 

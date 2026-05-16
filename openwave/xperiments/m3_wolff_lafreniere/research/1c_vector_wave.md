@@ -405,7 +405,7 @@ Tested the K=10 tetrahedral electron in M3 with fixes (leapfrog integrator, λ/2
 Two paths to fix:
 
 1. **Non-linear λ(r)** (Phase 1d): Yee & Hauger shells give variable node spacing near the WC core. The real electron tetrahedron may sit at nodes of a non-uniform λ(r) lattice, not the uniform λ/2 lattice
-2. **M4 vector method** (this Phase 1c): L→T spin conversion creates transverse energy with different spatial structure than the sinc pattern. Equilibrium in a vector field (E = E_L + E_T) could accommodate geometry that scalar M3 cannot
+2. **M4 vector model** (this Phase 1c): L→T spin conversion creates transverse energy with different spatial structure than the sinc pattern. Equilibrium in a vector field (E = E_L + E_T) could accommodate geometry that scalar M3 cannot
 
 ### K Variable: Do We Need It in Phase 1c?
 

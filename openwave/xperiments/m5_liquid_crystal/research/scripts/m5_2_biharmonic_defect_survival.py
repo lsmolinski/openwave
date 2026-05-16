@@ -5,7 +5,7 @@ Tests whether the 4th-derivative biharmonic term `+ ½κ|∇²ψ|²` preserves t
 +1 hedgehog winding number under wave propagation, where φ⁴ Mexican-hat alone
 (Step 4a) failed to. Three-way comparison:
 
-  [A] V = 0                                      — free wave (reference Derrick)
+  [A] V = 0                                      — free-wave (reference Derrick)
   [B] V = ½m²|ψ|² + ¼λ(|ψ|²−1)²                  — Step 4a Mexican-hat
   [C] V = ½m²|ψ|² + ¼λ(|ψ|²−1)² + ½κ|∇²ψ|²       — Step 4b adds biharmonic
 
@@ -22,7 +22,7 @@ is required (Step 4b.2).
 
 Pass criterion (observation):
   - Step at which |Q| drops below 0.5 — biharmonic should EXTEND this step
-    significantly relative to free wave and φ⁴ alone.
+    significantly relative to free-wave and φ⁴ alone.
 
 USAGE:
     python -m openwave.xperiments.m5_liquid_crystal.research.m5_2_biharmonic_defect_survival
@@ -42,7 +42,6 @@ if str(REPO_ROOT) not in sys.path:
 from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
-
 
 # ================================================================
 # BIHARMONIC KERNELS — sandbox-only, not in production lagrangian_engine
@@ -82,9 +81,12 @@ def apply_biharmonic_correction(
     for i, j, k in ti.ndrange((2, nx - 2), (2, ny - 2), (2, nz - 2)):
         center = lap_field[i, j, k]
         face_sum = (
-            lap_field[i + 1, j, k] + lap_field[i - 1, j, k]
-            + lap_field[i, j + 1, k] + lap_field[i, j - 1, k]
-            + lap_field[i, j, k + 1] + lap_field[i, j, k - 1]
+            lap_field[i + 1, j, k]
+            + lap_field[i - 1, j, k]
+            + lap_field[i, j + 1, k]
+            + lap_field[i, j - 1, k]
+            + lap_field[i, j, k + 1]
+            + lap_field[i, j, k - 1]
         )
         bilap = (face_sum - 6.0 * center) * inv_dx2
         wave_field.psi_new_am[i, j, k] -= kappa_dt2 * bilap
@@ -137,7 +139,7 @@ def propagate(wf, lap_field, c_amrs, dt_rs, m_freq_rs, lambda_phi4, kappa_bi, ce
         if step % SAMPLE_EVERY == 0 or step == N_PROPAGATE_STEPS or step <= 5:
             psi_np = wf.psi_am.to_numpy()
             if np.isnan(psi_np).any():
-                samples.append((step, float('nan'), float('nan'), float('nan')))
+                samples.append((step, float("nan"), float("nan"), float("nan")))
                 break
             Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
             n = np.linalg.norm(psi_np, axis=-1)
@@ -180,7 +182,7 @@ def main():
     lambda_phi4 = 0.1 * (c_amrs / wf.dx_am) ** 2
     # Empirically: 0.01 blows up at step 100 due to nonlinear φ⁴ feedback;
     # 0.003 stable 200+ steps; 0.001 has 10× safety margin.
-    kappa_bi = 0.001 * (c_amrs ** 2) * (wf.dx_am ** 2)
+    kappa_bi = 0.001 * (c_amrs**2) * (wf.dx_am**2)
 
     print(f"Grid: {wf.nx}³  dx={wf.dx_am:.3f} am  dt={dt_rs:.4f} rs")
     print(f"c={c_amrs:.4f} am/rs   m_freq_kg(electron)={m_freq_kg:.4e} rad/rs")
@@ -192,7 +194,7 @@ def main():
     print()
 
     # [A] V = 0
-    print("[A] BASELINE — V = 0 (free wave)")
+    print("[A] BASELINE — V = 0 (free-wave)")
     center = seed_and_relax(wf, N_RELAX)
     samples_A = propagate(wf, lap_field, c_amrs, dt_rs, 0.0, 0.0, 0.0, center)
     print_table("free Q(t):", samples_A)
@@ -220,18 +222,24 @@ def main():
     print("INTERPRETATION")
     print("=" * 78)
     print(f"  First step where |Q| < 0.5:")
-    print(f"    [A] free wave:        {decay_A}")
+    print(f"    [A] free-wave:        {decay_A}")
     print(f"    [B] φ⁴:               {decay_B}")
     print(f"    [C] φ⁴ + biharmonic:  {decay_C}")
     print()
     if decay_C is None:
         print("  ✅ BIHARMONIC PRESERVED Q for the entire run — defect-survival WIN")
     elif decay_A is not None and decay_C is not None and decay_C > 2 * decay_A:
-        print(f"  ✅ BIHARMONIC EXTENDS lifetime by {decay_C / max(decay_A,1):.1f}× — significant improvement")
+        print(
+            f"  ✅ BIHARMONIC EXTENDS lifetime by {decay_C / max(decay_A,1):.1f}× — significant improvement"
+        )
     elif decay_A is not None and decay_C is not None and decay_C > decay_A:
-        print(f"  ⚠️ Modest extension: {decay_C / max(decay_A,1):.2f}× — biharmonic helps but may need more")
+        print(
+            f"  ⚠️ Modest extension: {decay_C / max(decay_A,1):.2f}× — biharmonic helps but may need more"
+        )
     else:
-        print("  ⚠️ Biharmonic did NOT meaningfully preserve Q — Step 4b.2 needed (full Faddeev-Skyrme)")
+        print(
+            "  ⚠️ Biharmonic did NOT meaningfully preserve Q — Step 4b.2 needed (full Faddeev-Skyrme)"
+        )
     print("=" * 78)
     return 0
 

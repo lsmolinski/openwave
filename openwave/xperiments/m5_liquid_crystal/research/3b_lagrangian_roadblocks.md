@@ -4,7 +4,7 @@
 
 - M5 implements a Lagrangian field theory `S[ψ] = ∫ dt d³x [ ½\|ψ̇\|² − ½c²\|∇ψ\|² − V(ψ) ]` on a Vector(3) director field `ψ`, on a Taichi-GPU voxel grid. Topological defects are treated as field configurations (not external objects placed in a medium), per the framework Dr. Duda has advocated and consistent with Robert Close's elastic-solid derivation.
 - **Topological charge quantization**: M5 implements the standard mechanism — director field on S², integer charge by Brouwer-degree (Gauss-law-equivalent) wrapping count. Measured `Q = ±0.996` on seeded ±1 hedgehog defects, `Q = 0` in vacuum. Quantization is geometric, not postulated.
-- **Paper alignment** (added 2026-05-12 after reading arxiv:2108.07896 "Framework for liquid crystal based particle models" v7 Nov 2025): the M5 work and Dr. Duda's framework paper line up directly. Their Fig. 2 is the analytical version of our M5.1 Coulomb test (same Faber dipole ansatz, same `E(d)` integration, same `~1/d` behavior). The paper also addresses our roadblock from inside the framework — see "Where the paper addresses our roadblock" section below.
+- **Paper alignment** (added 2026-05-12 after reading arxiv:2108.07896 "Framework for liquid-crystal based particle models" v7 Nov 2025): the M5 work and Dr. Duda's framework paper line up directly. Their Fig. 2 is the analytical version of our M5.1 Coulomb test (same Faber dipole ansatz, same `E(d)` integration, same `~1/d` behavior). The paper also addresses our roadblock from inside the framework — see "Where the paper addresses our roadblock" section below.
 - **M5.1 result**: a relaxed pair of opposite-sign hedgehog defects reproduces **Coulomb's `1/d` law from pure topology** (R² = 0.978, attractive sign). The geometric field-line picture matches the classical EM textbook exactly — no electromagnetism is postulated; it emerges as the geometry of director winding. Quantitative + visual confirmation below. Charge quantization and Coulomb force come from the *same* field configuration, not separate postulates.
 - **M5.2 roadblock**: when we step the same hedgehog forward under the wave equation `∂²ψ/∂t² = c²∇²ψ − ∂V/∂ψ`, the topological charge Q decays from `+0.996` to `~0` within 4-5 steps, regardless of which V(ψ) we add (Klein-Gordon mass, Mexican-hat φ⁴, biharmonic 4th-derivative). The decay is *identical* across configurations at every sample step.
 - **Diagnosis**: the seed (a Frank-elastic-relaxed hedgehog with `|n̂| = 1` everywhere and `Q ≈ 1`) is *not* a stationary point of the full dynamic equation. `∇²ψ ≠ 0` at the relaxed state, so the leapfrog's first step immediately kicks the field. We have not found a V(ψ) that turns the seed into a soliton, and we suspect the right move is to construct the initial condition differently. Questions for the group below.
@@ -13,7 +13,7 @@
 
 ## What M5 is
 
-M5 is OpenWave's Liquid Crystal implementation, built after a 2026-04 sandbox phase that tested 8 candidate Lagrangians from Dr. Duda's framework, Robert Close's *Foundations of Physics* 2025 paper, and the Skyrme / LdG literature. Selected recipe per the sandbox results:
+M5 is OpenWave's Liquid-Crystal implementation, built after a 2026-04 sandbox phase that tested 8 candidate Lagrangians from Dr. Duda's framework, Robert Close's *Foundations of Physics* 2025 paper, and the Skyrme / LdG literature. Selected recipe per the sandbox results:
 
 - **Field**: Vector(3) `ψ` on a voxel grid (current production: 65³ to 384³, Taichi-Metal on M4 Max)
 - **Action**: `S = ∫ ½|ψ̇|² − ½c²|∇ψ|² − V(ψ)` — wave-eq kinetic + gradient + potential
@@ -87,7 +87,7 @@ In each case we seed a `Q = +1` hedgehog, relax for 20 steps on Frank energy (wh
 
 | V(ψ) recipe | Step at which Q drops below 0.5 |
 | --- | --- |
-| V = 0 (free wave, expected Derrick collapse) | step 4 |
+| V = 0 (free-wave, expected Derrick collapse) | step 4 |
 | V = ½m²·\|ψ\|² (Klein-Gordon, electron mass) | step 4 (identical to V=0 at electron scale) |
 | V += ¼λ(\|ψ\|² − 1)² (φ⁴ Mexican-hat) | step 4 |
 | V += ½κ·\|∇²ψ\|² (biharmonic 4th-derivative) | step 4 |
@@ -95,7 +95,7 @@ In each case we seed a `Q = +1` hedgehog, relax for 20 steps on Frank energy (wh
 The Q-decay timing is **identical** across all configurations to f32 precision. `|Q_free − Q_with_V(ψ)|` stays below 1e-3 at every sample step. Notably:
 
 - The φ⁴ Mexican-hat *does* tighten `|ψ|` around the unit sphere (max excursion drops from 1.83 to 1.27 over 20 steps), so the term is mathematically active — it just isn't acting on the right degree of freedom to preserve topology.
-- The biharmonic stabilizer is stable at `κ ≤ 0.003·c²·dx²` (nonlinear φ⁴ feedback amplifies higher-k modes, tightening the linearized CFL bound). At the stable scale, Q decay is again identical to the free wave.
+- The biharmonic stabilizer is stable at `κ ≤ 0.003·c²·dx²` (nonlinear φ⁴ feedback amplifies higher-k modes, tightening the linearized CFL bound). At the stable scale, Q decay is again identical to the free-wave.
 
 ![Topo Recovery Director)](images/coulomb_visual/topo_recovery_director.gif)
 ![Topo Recovery Granule)](images/coulomb_visual/topo_recovery_granule.gif)

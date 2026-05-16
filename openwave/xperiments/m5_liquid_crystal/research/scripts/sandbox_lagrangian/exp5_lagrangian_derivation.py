@@ -29,21 +29,20 @@ Results: ../3b_lagrangian_experiments.md  (Experiment 5)
 
 import sympy as sp
 
-
 # ---------------------------------------------------------------------------
 # SYMBOLS
 # ---------------------------------------------------------------------------
 
 t, r = sp.symbols("t r", real=True, positive=True)
 x, y, z = sp.symbols("x y z", real=True)
-c, k, omega, A, phi0, kappa = sp.symbols("c k omega A phi0 kappa",
-                                          real=True, positive=True)
+c, k, omega, A, phi0, kappa = sp.symbols("c k omega A phi0 kappa", real=True, positive=True)
 psi = sp.Function("psi")
 
 
 # ---------------------------------------------------------------------------
 # HELPERS — spherical & Cartesian Laplacians, Euler-Lagrange operator
 # ---------------------------------------------------------------------------
+
 
 def spherical_laplacian(f, r_var=r):
     """∇²f for spherically symmetric f(r, t) in 3D: (1/r²) ∂/∂r (r² ∂f/∂r)."""
@@ -72,6 +71,7 @@ def euler_lagrange_scalar(L, psi_sym, coords):
 # TEST 1 — Does the Combined W-L (pure standing-wave limit) satisfy the
 #          free-wave Euler-Lagrange equation?
 # ---------------------------------------------------------------------------
+
 
 def test_combined_wl_outgoing():
     """Pure outgoing spherical wave: ψ = A·sin(kr − ωt − φ) / r.
@@ -114,8 +114,7 @@ def test_combined_wl_sum():
     print("\n" + "=" * 72)
     print("TEST 1c — Combined W-L (sum form, w=1)")
     print("=" * 72)
-    psi_sum = A * (sp.sin(k * r + omega * t + phi0)
-                   + sp.sin(k * r - omega * t - phi0)) / (k * r)
+    psi_sum = A * (sp.sin(k * r + omega * t + phi0) + sp.sin(k * r - omega * t - phi0)) / (k * r)
     box = sp.simplify(free_wave_operator(psi_sum))
     box_on_shell = sp.simplify(box.subs(omega, c * k))
     print(f"  ψ_sum = A·[sin(kr+ωt+φ) + sin(kr−ωt−φ)] / (kr)")
@@ -157,6 +156,7 @@ def test_combined_wl_doc_form():
 # TEST 2 — Derive Smolinski's Ψ³ equation from the quartic Lagrangian
 # ---------------------------------------------------------------------------
 
+
 def test_smolinski_from_lagrangian():
     """Start from the quartic Lagrangian and derive Smolinski's equation
     via Euler-Lagrange."""
@@ -171,9 +171,11 @@ def test_smolinski_from_lagrangian():
     dzpsi = sp.Derivative(psi_sym, z)
 
     # Lagrangian density: L = ½(∂_t ψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴
-    L = (sp.Rational(1, 2) * dtpsi**2
-         - sp.Rational(1, 2) * c**2 * (dxpsi**2 + dypsi**2 + dzpsi**2)
-         - sp.Rational(1, 4) * kappa * psi_sym**4)
+    L = (
+        sp.Rational(1, 2) * dtpsi**2
+        - sp.Rational(1, 2) * c**2 * (dxpsi**2 + dypsi**2 + dzpsi**2)
+        - sp.Rational(1, 4) * kappa * psi_sym**4
+    )
 
     print("  Lagrangian L = ½(∂ₜψ)² − ½c²|∇ψ|² − (κ/4)·ψ⁴")
     EL = euler_lagrange_scalar(L, psi_sym, [t, x, y, z])
@@ -184,13 +186,18 @@ def test_smolinski_from_lagrangian():
     EoM = sp.simplify(-EL)
     print(f"  Euler-Lagrange EoM: {EoM} = 0")
     # Expected: ∂²ψ/∂t² − c²∇²ψ + κ·ψ³ = 0
-    expected = (sp.Derivative(psi_sym, t, 2)
-                - c**2 * (sp.Derivative(psi_sym, x, 2)
-                          + sp.Derivative(psi_sym, y, 2)
-                          + sp.Derivative(psi_sym, z, 2))
-                + kappa * psi_sym**3)
+    expected = (
+        sp.Derivative(psi_sym, t, 2)
+        - c**2
+        * (
+            sp.Derivative(psi_sym, x, 2)
+            + sp.Derivative(psi_sym, y, 2)
+            + sp.Derivative(psi_sym, z, 2)
+        )
+        + kappa * psi_sym**3
+    )
     diff = sp.simplify(EoM - expected)
-    match = (diff == 0)
+    match = diff == 0
     print(f"  Expected:  ∂ₜ²ψ − c²∇²ψ + κ·ψ³ = 0")
     print(f"  Difference (derived − expected): {diff}")
     print(f"  Match: {'✅' if match else '❌'}")
@@ -200,6 +207,7 @@ def test_smolinski_from_lagrangian():
 # ---------------------------------------------------------------------------
 # TEST 3 — Noether's theorem: energy density from time translation
 # ---------------------------------------------------------------------------
+
 
 def test_noether_energy_density():
     """Compute the Hamiltonian (energy) density from the Lagrangian and show
@@ -221,11 +229,12 @@ def test_noether_energy_density():
     dzpsi = sp.Derivative(psi_sym, z)
 
     # Free-wave Lagrangian (V = 0)
-    L_free = (sp.Rational(1, 2) * dtpsi**2
-              - sp.Rational(1, 2) * c**2 * (dxpsi**2 + dypsi**2 + dzpsi**2))
+    L_free = sp.Rational(1, 2) * dtpsi**2 - sp.Rational(1, 2) * c**2 * (
+        dxpsi**2 + dypsi**2 + dzpsi**2
+    )
     pi_conj = sp.diff(L_free, dtpsi)
     H_free = sp.simplify(pi_conj * dtpsi - L_free)
-    print(f"  Free wave:     π = ∂L/∂(∂ₜψ) = {pi_conj}")
+    print(f"  Free-Wave:     π = ∂L/∂(∂ₜψ) = {pi_conj}")
     print(f"                 H = π·∂ₜψ − L = {H_free}")
 
     # Smolinski (quartic) Lagrangian
@@ -239,6 +248,7 @@ def test_noether_energy_density():
 # ---------------------------------------------------------------------------
 # TEST 4 — Summary
 # ---------------------------------------------------------------------------
+
 
 def main():
     print("EXPERIMENT 5 — LAGRANGIAN DERIVATION (sympy verification)")
@@ -255,16 +265,18 @@ def main():
     print("SUMMARY")
     print("=" * 72)
     cases = [
-        ("1a — outgoing  ψ = A·sin(kr−ωt−φ)/r",              r1a),
-        ("1b — standing  ψ = 2A·sin(kr)·cos(ωt+φ)/(kr)",     r1b),
+        ("1a — outgoing  ψ = A·sin(kr−ωt−φ)/r", r1a),
+        ("1b — standing  ψ = 2A·sin(kr)·cos(ωt+φ)/(kr)", r1b),
         ("1c — sum-form  ψ = A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)", r1c),
-        ("1d — doc-form  ψ = 2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r",    r1d),
+        ("1d — doc-form  ψ = 2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r", r1d),
     ]
     for name, val in cases:
         verdict = "✅ satisfies □ψ = 0" if val == 0 else f"❌ □ψ = {val}"
         print(f"  {name}\n      {verdict}")
-    print(f"\n  Test 2 — Smolinski Ψ³ from quartic Lagrangian: "
-          f"{'✅ derived' if r2 else '❌ mismatch'}")
+    print(
+        f"\n  Test 2 — Smolinski Ψ³ from quartic Lagrangian: "
+        f"{'✅ derived' if r2 else '❌ mismatch'}"
+    )
     print("\n  Test 3 — Noether energy density H = T + V: ✅ confirmed")
 
 

@@ -1,9 +1,9 @@
 """
-LIQUID CRYSTAL Method Medium Data-Grid
+LIQUID-CRYSTAL Model Medium Data-Grid
 
 Object Classes @spacetime module.
 
-LIQUID CRYSTAL evolves the field ψ via a Lagrangian-derived PDE:
+LIQUID-CRYSTAL evolves the field ψ via a Lagrangian-derived PDE:
     ∂²_t ψ = c²·∇²ψ − ∂V/∂ψ
 
 The field stores granule displacement (M3/M4 conceptual continuity) but is named ψ

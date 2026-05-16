@@ -28,7 +28,7 @@ Pedagogical / engineering view        Modern theoretical physics view
 
 For our purposes — deriving the *correct* wave equation for OpenWave — the bottom-up view (Lagrangian first) is the right one. That's exactly what Duda is asking us to do.
 
-The Wikipedia "Wave equation" page is fine reference material for the linear free wave case, but it won't help us find the right potential V(ψ) or vector structure. For that, we need the field theory pages.
+The Wikipedia "Wave equation" page is fine reference material for the linear free-wave case, but it won't help us find the right potential V(ψ) or vector structure. For that, we need the field theory pages.
 
 ### What This Means in Practice
 
@@ -67,7 +67,7 @@ If we want to study the Lagrangian view of wave equations in order:
 1. **[Action (physics)](https://en.wikipedia.org/wiki/Action_(physics))** — what an action functional is
 1. **[Euler-Lagrange equation](https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation)** — the math machinery
 1. **[Lagrangian (field theory)](https://en.wikipedia.org/wiki/Lagrangian_(field_theory))** — apply it to fields ψ(x,t)
-1. **[Klein-Gordon equation](https://en.wikipedia.org/wiki/Klein%E2%80%93Gordon_equation)** — first nontrivial example (free wave + mass)
+1. **[Klein-Gordon equation](https://en.wikipedia.org/wiki/Klein%E2%80%93Gordon_equation)** — first nontrivial example (free-wave + mass)
 1. **[Sine-Gordon equation](https://en.wikipedia.org/wiki/Sine-Gordon_equation)** — first nonlinear example (solitons!)
 1. **[Landau-de Gennes theory](https://en.wikipedia.org/wiki/Landau%E2%80%93de_Gennes_theory)** — Duda's specific framework
 

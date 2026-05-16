@@ -1,7 +1,7 @@
 """
 ENERGY-WAVE ENGINE
 
-ON FREE WAVE METHOD
+ON FREE-WAVE MODEL
 
 Wave Physics Engine @spacetime module. Wave dynamics and motion.
 """

@@ -181,7 +181,7 @@ The 4×4 matrix in M5.8 still lives at each 3D voxel — but now it's an operato
 
 ## 5. What the matrix elements represent — NOT ψ, NOT position
 
-The matrix encodes the local **biaxial orientation state** of the medium — analog of a liquid crystal's nematic order tensor:
+The matrix encodes the local **biaxial orientation state** of the medium — analog of a liquid-crystal's nematic order tensor:
 
 | Object | What it is at each voxel |
 | --- | --- |
@@ -572,7 +572,7 @@ Duda explicitly positions his framework relative to:
 
 - Standard liquid crystals (same field + potential, but Lorentz-invariant kinetic)
 - Skyrmion models (same kinetic, potential → ~Higgs, topological charge → electric)
-- Einstein's teleparallelism (4D liquid crystal extension; same λᵢ in 3D, then 4D for EM ≫ QM ≫ GEM hierarchy)
+- Einstein's teleparallelism (4D liquid-crystal extension; same λᵢ in 3D, then 4D for EM ≫ QM ≫ GEM hierarchy)
 - Spin hydrodynamics
 - Lattice QCD (Yang-Mills kinetic; quarks as topological vortex strings instead of probability distributions)
 - Standard Model (perturbative / effective — creation operators, probability distributions of *what?*)

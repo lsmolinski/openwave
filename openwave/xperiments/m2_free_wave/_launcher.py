@@ -61,9 +61,7 @@ class XperimentManager:
             dict: Parameters dictionary or None if loading fails
         """
         try:
-            module_path = (
-                f"openwave.xperiments.m2_free_wave.xparameters.{xperiment_name}"
-            )
+            module_path = f"openwave.xperiments.m2_free_wave.xparameters.{xperiment_name}"
             parameters_module = importlib.import_module(module_path)
             importlib.reload(parameters_module)  # Reload for fresh parameters
 
@@ -88,9 +86,7 @@ class XperimentManager:
 
         # Fallback: try to load just for the name
         try:
-            module_path = (
-                f"openwave.xperiments.m2_free_wave.xparameters.{xperiment_name}"
-            )
+            module_path = f"openwave.xperiments.m2_free_wave.xparameters.{xperiment_name}"
             parameters_module = importlib.import_module(module_path)
             display_name = parameters_module.XPARAMETERS["meta"]["X_NAME"]
             self.xperiment_display_names[xperiment_name] = display_name
@@ -328,7 +324,7 @@ def display_wave_menu(state):
 def display_level_specs(state, level_bar_vertices):
     """Display OpenWave level specifications overlay."""
     render.canvas.triangles(level_bar_vertices, color=colormap.LIGHT_BLUE[1])
-    with render.gui.sub_window("FREE WAVE METHOD (M2)", 0.84, 0.01, 0.16, 0.16) as sub:
+    with render.gui.sub_window("FREE-WAVE MODEL (M2)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Scalar Field")
         sub.text("Coupling: Laplacian Operator")

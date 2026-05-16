@@ -1,8 +1,8 @@
-# PATH TO M5 — LIQUID CRYSTAL METHOD
+# PATH TO M5 — LIQUID-CRYSTAL MODEL
 
-Implementation plan for **M5 / LIQUID CRYSTAL METHOD** (directory `openwave/xperiments/m5_liquid_crystal/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
+Implementation plan for **M5 / LIQUID-CRYSTAL MODEL** (directory `openwave/xperiments/m5_liquid_crystal/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
 
-**Naming**: **M5 / LIQUID CRYSTAL METHOD**. History — originally "Lagrangian-Wave Method", renamed 2026-04-19 to "Lagrangian-Field Method", renamed again 2026-05-15 to "Liquid Crystal Method". The current name identifies the **framework** the method implements (the Landau-de Gennes liquid-crystal-based particle framework of Duda's `arxiv:2108.07896` v7) rather than the mathematical formalism. This matters because M6 (Ouroboros, Werbos's chaoiton framework) is also a Lagrangian field theory — calling M5 "Lagrangian Field" would conflict. Methods are named after the candidate framework they implement (M3 = Wolff-LaFreniere, M5 = Liquid Crystal, M6 = Ouroboros), not after the math they share. The Python module stays as `lagrangian_engine.py` because the module name describes *what the code does* (integrates a Lagrangian-derived PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` on the matrix field `M = ODO^T`), which is still accurate. See [3b § What wave equation does M5 solve?](0b_overview.md#what-wave-equation-does-m5-solve-is-force-still-e) for the engine architecture.
+**Naming**: **M5 / LIQUID-CRYSTAL MODEL**. History — originally "Lagrangian-Wave Model", renamed 2026-04-19 to "Lagrangian-Field Model", renamed again 2026-05-15 to "Liquid-Crystal Model". The current name identifies the **framework** the method implements (the Landau-de Gennes liquid-crystal-based particle framework of Duda's `arxiv:2108.07896` v7) rather than the mathematical formalism. This matters because M6 (Ouroboros, Werbos's chaoiton framework) is also a Lagrangian field theory — calling M5 "Lagrangian Field" would conflict. Methods are named after the candidate framework they implement (M3 = Wolff-LaFreniere, M5 = Liquid-Crystal, M6 = Ouroboros), not after the math they share. The Python module stays as `lagrangian_engine.py` because the module name describes *what the code does* (integrates a Lagrangian-derived PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` on the matrix field `M = ODO^T`), which is still accurate. See [3b § What wave equation does M5 solve?](0b_overview.md#what-wave-equation-does-m5-solve-is-force-still-e) for the engine architecture.
 
 **Spec inputs**:
 
@@ -12,7 +12,7 @@ Implementation plan for **M5 / LIQUID CRYSTAL METHOD** (directory `openwave/xper
 
 **Production code references**:
 
-- `openwave/xperiments/m2_free_wave/wave_engine.py` — existing PDE-stepping engine (free wave, scalar)
+- `openwave/xperiments/m2_free_wave/wave_engine.py` — existing PDE-stepping engine (free-wave, scalar)
 - `openwave/xperiments/m4_vector_wave/wave_engine.py` — existing analytical-superposition engine (vector, WPSW)
 
 ---
@@ -38,7 +38,7 @@ M5 therefore replaces the core physics kernel while keeping the production infra
 
 ## WHAT M5 INHERITS FROM M2
 
-M2 (`m2_free_wave/wave_engine.py`) already solves the **free wave equation** via leapfrog time-stepping on a 3D grid. It is, in essence, a linear-Lagrangian PDE engine — the simplest case of what M5 becomes. The following patterns port directly to M5:
+M2 (`m2_free_wave/wave_engine.py`) already solves the **free-wave equation** via leapfrog time-stepping on a 3D grid. It is, in essence, a linear-Lagrangian PDE engine — the simplest case of what M5 becomes. The following patterns port directly to M5:
 
 | M2 element | Location | Reuse in M5 |
 | --- | --- | --- |

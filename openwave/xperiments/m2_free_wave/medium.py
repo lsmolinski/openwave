@@ -1,9 +1,9 @@
 """
-FREE WAVE Method Medium Data-Grid
+FREE-WAVE Model Medium Data-Grid
 
 Object Classes @spacetime module.
 
-FREE WAVE propagates Wave Motion (ENERGY-WAVE).
+FREE-WAVE propagates Wave Motion (ENERGY-WAVE).
 Modeled as a wave-field that allows energy to transfer from one point to the next.
 """
 
@@ -17,7 +17,7 @@ class WaveField:
     """
     Wave field simulation using cell-centered grid with attometer scaling.
 
-    This class implements FREE WAVE propagation with:
+    This class implements FREE-WAVE propagation with:
     - Cell-centered cubic grid
     - Attometer scaling for numerical precision (f32 fields)
     - Computed positions from indices (memory efficient)

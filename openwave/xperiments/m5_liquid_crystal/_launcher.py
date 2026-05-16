@@ -332,7 +332,7 @@ class SimulationState:
             # near the defect core — at λ = (c/dx)² the system NaNs around step 40
             # of a hedgehog seed. Empirically (research/scripts/m5_2_phi4_defect_survival),
             # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
-            # 400 steps vs [0.73, 1.21] for free wave). 0.3·(c/dx)² is the
+            # 400 steps vs [0.73, 1.21] for free-wave). 0.3·(c/dx)² is the
             # marginal stability ceiling at the production grid.
             self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
         else:
@@ -396,7 +396,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
     # TODO: remove hardcoded WIP notice and implement proper xperiment status handling
     with render.gui.sub_window("WORK-IN-PROGRESS XPERIMENT", 0.40, 0.00, 0.20, 0.08) as sub:
-        sub.text("*** METHOD STILL UNDER DEVELOPMENT ***", color=colormap.RED[1])
+        sub.text("*** MODEL STILL UNDER DEVELOPMENT ***", color=colormap.RED[1])
 
     return selected_xperiment
 
@@ -474,7 +474,7 @@ def display_wave_menu(state):
 def display_level_specs(state, level_bar_vertices):
     """Display OpenWave level specifications overlay."""
     render.canvas.triangles(level_bar_vertices, color=colormap.ORANGE[1])
-    with render.gui.sub_window("LIQUID CRYSTAL METHOD (M5)", 0.84, 0.01, 0.16, 0.16) as sub:
+    with render.gui.sub_window("LIQUID-CRYSTAL MODEL (M5)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Vector Field")
         sub.text("Coupling: Non-linear Lagrangian")

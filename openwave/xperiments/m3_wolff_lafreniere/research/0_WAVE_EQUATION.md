@@ -8,7 +8,7 @@ The central technical question of OpenWave: what is the correct wave equation th
 
 ### The Question
 
-> M2 PDE wave equation solver is pretty close to the Lagrange and Euler-Lagrange equations, right? But as we documented, our M2 method / PDE was not enough to show WC disturbances — a stabilized wave field governed by a PDE solver creates an isotropic standing-wave-like background field that does not get disturbed by WCs acting as Dirichlet boundary conditions (ψ=0). How does this new approach change that?
+> M2 PDE wave equation solver is pretty close to the Lagrange and Euler-Lagrange equations, right? But as we documented, our M2 model / PDE was not enough to show WC disturbances — a stabilized wave field governed by a PDE solver creates an isotropic standing-wave-like background field that does not get disturbed by WCs acting as Dirichlet boundary conditions (ψ=0). How does this new approach change that?
 
 This question gets at the heart of why M2 failed and how the Lagrangian approach fixes it.
 
@@ -32,7 +32,7 @@ L = ½(∂ψ/∂t)² - ½c²(∇ψ)²
        ∂²ψ/∂t² = c²∇²ψ  ✓
 ```
 
-So M2 is already doing Lagrangian field theory — the **free wave Lagrangian** with no potential V(ψ). Every Taichi tick is solving an Euler-Lagrange equation.
+So M2 is already doing Lagrangian field theory — the **free-wave Lagrangian** with no potential V(ψ). Every Taichi tick is solving an Euler-Lagrange equation.
 
 ---
 
@@ -44,7 +44,7 @@ Three structural limitations prevent the WC from disturbing the field:
 
 ```text
 M2's Lagrangian:    L = ½(∂ψ/∂t)² - ½c²(∇ψ)²              ← LINEAR
-                                                              (free wave)
+                                                              (free-wave)
 
 Nonlinear option:   L = ½(∂ψ/∂t)² - ½c²(∇ψ)² - V(ψ)       ← NONLINEAR
                                                               (Sine-Gordon, phi-4, LdG)

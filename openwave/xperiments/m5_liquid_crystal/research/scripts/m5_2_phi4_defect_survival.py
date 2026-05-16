@@ -43,7 +43,6 @@ from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
 
-
 # ================================================================
 # CONFIG
 # ================================================================
@@ -82,7 +81,7 @@ def propagate_and_measure(wf, obs, c_amrs, dt_rs, m_freq_rs, lambda_phi4, center
     psi_norm = np.linalg.norm(psi_np, axis=-1).mean()
     # Initial V contribution: just compute energyH and subtract kinetic+gradient
     # Simpler: compute (|ψ|²−1)² mean as a proxy for φ⁴ stress
-    psi_sq = (psi_np ** 2).sum(axis=-1)
+    psi_sq = (psi_np**2).sum(axis=-1)
     v_phi4_proxy = (0.25 * lambda_phi4 * (psi_sq - 1.0) ** 2).mean()
     samples.append((0, Q0, psi_norm, v_phi4_proxy))
 
@@ -93,7 +92,7 @@ def propagate_and_measure(wf, obs, c_amrs, dt_rs, m_freq_rs, lambda_phi4, center
             psi_np = wf.psi_am.to_numpy()
             Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
             psi_norm = np.linalg.norm(psi_np, axis=-1).mean()
-            psi_sq = (psi_np ** 2).sum(axis=-1)
+            psi_sq = (psi_np**2).sum(axis=-1)
             v_phi4 = (0.25 * lambda_phi4 * (psi_sq - 1.0) ** 2).mean()
             samples.append((step, Q, psi_norm, v_phi4))
 
@@ -127,15 +126,17 @@ def main():
     print(f"Grid: {wf.nx}³  dx={wf.dx_am:.3f} am  dt={dt_rs:.4f} rs")
     print(f"c={c_amrs:.4f} am/rs   m_freq_kg(electron)={m_freq_kg:.4e} rad/rs")
     print(f"λ_φ⁴ = (c/dx)² = {lambda_phi4:.4e}  1/(am²·rs²)")
-    print(f"λ·dt² = {lambda_phi4 * dt_rs**2:.4f}  (vs (c·dt/dx)² = "
-          f"{(c_amrs * dt_rs / wf.dx_am)**2:.4f}; both < 4 for stability)")
+    print(
+        f"λ·dt² = {lambda_phi4 * dt_rs**2:.4f}  (vs (c·dt/dx)² = "
+        f"{(c_amrs * dt_rs / wf.dx_am)**2:.4f}; both < 4 for stability)"
+    )
     print(f"propagate {N_PROPAGATE_STEPS} steps, sample every {SAMPLE_EVERY}")
     print()
 
     # =================================================================
     # Run A — V = 0 (baseline; same as Step 3 [A])
     # =================================================================
-    print("[A] BASELINE — V = 0 (free wave)")
+    print("[A] BASELINE — V = 0 (free-wave)")
     print(f"    seeding hedgehog Q=+1 at center...")
     center = seed_single_hedgehog(wf)
     samples_free = propagate_and_measure(wf, obs, c_amrs, dt_rs, 0.0, 0.0, center)
@@ -158,11 +159,12 @@ def main():
     print("=" * 78)
     print("COMPARISON — free vs Mexican-hat φ⁴")
     print("=" * 78)
-    print(f"  {'step':>6s}  {'Q_free':>10s}  {'Q_φ⁴':>10s}  "
-          f"{'<|ψ|>_free':>12s}  {'<|ψ|>_φ⁴':>12s}")
+    print(
+        f"  {'step':>6s}  {'Q_free':>10s}  {'Q_φ⁴':>10s}  "
+        f"{'<|ψ|>_free':>12s}  {'<|ψ|>_φ⁴':>12s}"
+    )
     for (s_f, Q_f, pn_f, _), (s_p, Q_p, pn_p, _) in zip(samples_free, samples_phi4):
-        print(f"  {s_f:>6d}  {Q_f:>+10.4f}  {Q_p:>+10.4f}  "
-              f"{pn_f:>12.5f}  {pn_p:>12.5f}")
+        print(f"  {s_f:>6d}  {Q_f:>+10.4f}  {Q_p:>+10.4f}  " f"{pn_f:>12.5f}  {pn_p:>12.5f}")
     print()
 
     # =================================================================
@@ -183,12 +185,15 @@ def main():
     print("INTERPRETATION")
     print("=" * 78)
     print(f"  Q decay step (|Q| < 0.5):  free = {decay_free}  φ⁴ = {decay_phi4}")
-    print(f"  Final <|ψ|>:               free = {psi_final_free:.4f}   "
-          f"φ⁴ = {psi_final_phi4:.4f}")
+    print(
+        f"  Final <|ψ|>:               free = {psi_final_free:.4f}   " f"φ⁴ = {psi_final_phi4:.4f}"
+    )
     print()
     if decay_phi4 is not None and decay_free is not None:
         if decay_phi4 > decay_free:
-            print("  ✅ φ⁴ EXTENDS defect lifetime — Mexican-hat shape helps slow Derrick collapse.")
+            print(
+                "  ✅ φ⁴ EXTENDS defect lifetime — Mexican-hat shape helps slow Derrick collapse."
+            )
         elif decay_phi4 < decay_free:
             print("  ⚠️ φ⁴ ACCELERATES decay — likely numerical (λ too large?).")
         else:

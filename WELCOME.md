@@ -4,7 +4,7 @@
 
 OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through **classical field theory enriched with topology and nonlinearity** — the scientific tradition of de Broglie–Bohm pilot waves, wave structure of matter, and modern topological-soliton models. The platform is python-based and lets you model matter and energy phenomena using wave-dynamics, topological defects, and nonlinear potentials, investigating whether particles and forces can emerge from a deterministic field equation rather than being postulated.
 
-The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD methods (similar to lattice gauge theory), VECTOR-FIELD methods, both for research simulations, and a GRANULE-MOTION method for educational visualization.
+The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD models (similar to lattice gauge theory), VECTOR-FIELD models, both for research simulations, and a GRANULE-MOTION model for educational visualization.
 
 ![OpenWave Logo](images/openwave-white-small.png#gh-dark-mode-only)![OpenWave Logo](images/openwave-black-small.png#gh-light-mode-only)
 
@@ -12,7 +12,7 @@ The platform implements a proposed mathematical framework through various comple
 
 OpenWave provides complementary ways to explore wave mechanics:
 
-### Scalar and Vector-Field Methods (Research Oriented)
+### Scalar and Vector-Field Models (Research Oriented)
 
 - **Methodology:** Lattice wave-field theory — similar in spirit to lattice QCD methods (discrete spacetime + GPU integration), but with classical field equations rather than quantized operators
 - **Implementation:** 3D vector field grid with PDE-based wave propagation equations
@@ -20,7 +20,7 @@ OpenWave provides complementary ways to explore wave mechanics:
 - **Purpose:** Research simulations for matter formation, force modeling, and quantitative comparison of model predictions against experimental data
 - **Use Case:** Physics research, computational experimentation, theoretical exploration of particle and force emergence
 
-### Granule-Motion Method (Education Oriented)
+### Granule-Motion Model (Education Oriented)
 
 - **Methodology:** Particle-based visualization with phase-shifted oscillations
 - **Implementation:** Discrete granules representing wave simulation
@@ -28,13 +28,13 @@ OpenWave provides complementary ways to explore wave mechanics:
 - **Purpose:** Educational visualization, understanding wave formation
 - **Use Case:** Learning, illustration, animation, introduction to wave concepts
 
-**Key Insight:** WAVE-FIELD methods use similar computational *tools* to lattice quantum field theory (lattice discretization, GPU integration), but evolve **classical field equations** rather than quantized operators — no Wick rotation, path integrals, or gauge structure. GRANULE-MOTION method provides intuitive visuals for the underlying wave concepts. Both are computational tools for investigating wave-dynamics models of physical phenomena.
+**Key Insight:** WAVE-FIELD models use similar computational *tools* to lattice quantum field theory (lattice discretization, GPU integration), but evolve **classical field equations** rather than quantized operators — no Wick rotation, path integrals, or gauge structure. GRANULE-MOTION model provides intuitive visuals for the underlying wave concepts. Both are computational tools for investigating wave-dynamics models of physical phenomena.
 
 ## Xperiments
 
 OpenWave Xperiments is a collection of interactive physics simulations that brings wave-field dynamics to life through real-time visualization and computation.
 
-**GRANULE-MOTION method Demos** showcase wave mechanics fundamentals through intuitive visualizations. These xperiments demonstrate how waves propagate, interfere, and create standing patterns - the foundational concepts that will be scaled up in WAVE-FIELD research simulations.
+**GRANULE-MOTION model Demos** showcase wave mechanics fundamentals through intuitive visualizations. These xperiments demonstrate how waves propagate, interfere, and create standing patterns - the foundational concepts that will be scaled up in WAVE-FIELD research simulations.
 
 Each Xperiment is fully customizable (via user controls and Python scripting), enabling you to adjust parameters such as universe size, wave source configurations, and visualization settings to investigate wave behavior at different scales.
 
@@ -47,13 +47,13 @@ Each Xperiment is fully customizable (via user controls and Python scripting), e
 
 ### 1. Spacetime Vibration
 
-> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier methods (M1). The current research framework (M5) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
+> **Note:** This is a **granule-motion educational visualization** carried over from OpenWave's earlier models (M1). The current research framework (M5) treats the **vacuum as a static ordered ground state**, with oscillation as a property of *topological defects* (particles), not of spacetime itself. This demo is retained as an intuitive teaching aid for wave concepts at sub-Planck visualization scales.
 
 **In this educational demo:**
 
 - High-frequency oscillations (~10^25Hz) are visualized via discrete granules with phase-shifted motion — a *visualization tool*, not a physical claim about spacetime structure
 - If you slow the simulator and increase amp boost, the underlying wave patterns become visible (these waves are the visualization output of the granule motion)
-- These wave patterns are called ENERGY WAVES — the computational primitives for the granule-motion teaching method
+- These wave patterns are called ENERGY WAVES — the computational primitives for the granule-motion teaching model
 - In the M5 framework these traveling perturbations are emitted *by* defects oscillating at `ω = 2mc²/ℏ` (the de Broglie clock), not from a pre-oscillating vacuum
 
 **What you're seeing:** An educational visualization of wave mechanics; the physics in M5 is more carefully framed as defect oscillation, not vacuum oscillation.
@@ -101,7 +101,7 @@ Now that you're introduced to the basic concepts of wave phenomena in this compu
 - Stable wave structures
 - Resonance phenomena
 - How changing parameters affects outcomes
-- Experiment the WAVE-FIELD methods with more advanced wave equations and numerical analysis
+- Experiment the WAVE-FIELD models with more advanced wave equations and numerical analysis
 
 To launch the Xperiments Selector Menu:
 
@@ -151,13 +151,13 @@ To launch the Xperiments Selector Menu:
 
 ## OpenWave's Computational Implementation
 
-- **WAVE-FIELD Methods** use lattice wave-field methodology (similar in spirit to lattice QCD's discretization + GPU integration) with classical field equations from alternative theoretical models
-- **GRANULE-MOTION Method** provides particle-based visualizations for intuitive understanding
+- **WAVE-FIELD Models** use lattice wave-field methodology (similar in spirit to lattice QCD's discretization + GPU integration) with classical field equations from alternative theoretical models
+- **GRANULE-MOTION Model** provides particle-based visualizations for intuitive understanding
 - Both are computational frameworks for testing model predictions against experimental data
 
-## OPENWAVE METHODS
+## OPENWAVE MODELS
 
-![methods](images/methods.png)
+![models](images/models.png)
 
 ## Getting Help and Contributing
 

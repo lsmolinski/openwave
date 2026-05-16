@@ -19,7 +19,7 @@ OpenWave is an open-source subatomic wave simulator for exploring fundamental ph
 
 OpenWave is a computational test of a specific, well-defined scientific question: *can a classical Lagrangian field theory, when augmented with topology and the right nonlinear potentials, quantitatively reproduce specific particle-scale phenomena (Coulomb interaction, lepton mass spectrum, Zitterbewegung, quark confinement, annihilation)?* — with concrete pass/fail criteria for each phenomenon. See the [Scientific Position](#scientific-position) section below.
 
-The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD methods (similar to lattice gauge theory), VECTOR-FIELD methods, both for research simulations, and a GRANULE-MOTION method for educational visualization.
+The platform implements a proposed mathematical framework through various complementary approaches: SCALAR-FIELD models (similar to lattice gauge theory), VECTOR-FIELD models, both for research simulations, and a GRANULE-MOTION model for educational visualization.
 
 ### Research Goals
 
@@ -64,18 +64,18 @@ OpenWave provides computational and visualization tools to explore, demonstrate,
 - Models experimental wave-field configurations for parametric studies
 - Supports hypothesis testing and comparative analysis against theoretical predictions
 
-### COMPUTATIONAL METHODS
+### COMPUTATIONAL MODELS
 
 OpenWave provides complementary ways to explore wave mechanics:
 
-#### Scalar and Vector Field Methods (Research Oriented)
+#### Scalar and Vector Field Models (Research Oriented)
 
 - 3D wave-field evolved by partial differential equations (PDEs) and analytical wave-form expressions
 - Similar in spirit to lattice QCD (discrete spacetime + GPU integration), but with **classical field equations and no gauge structure** — different mathematical object
 - Scalable for matter formation and force simulations
 - Indexed by spatial coordinates with field properties at each voxel
 
-#### Granule-Motion Method (Education Oriented)
+#### Granule-Motion Model (Education Oriented)
 
 - Discrete particle visualization with phase-shifted oscillations
 - Intuitive for understanding wave mechanics
@@ -111,7 +111,7 @@ The shared insight: a sufficiently rich classical field, with the right nonlinea
 
 ### Computational Approach
 
-OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with classical field equations and no gauge structure. Multiple complementary methods (scalar, vector, director-field, granule-motion) allow cross-checking of mechanisms and direct comparison between candidate Lagrangians.
+OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with classical field equations and no gauge structure. Multiple complementary models (scalar, vector, director-field, granule-motion) allow cross-checking of mechanisms and direct comparison between candidate Lagrangians.
 
 ### Open Research Questions
 

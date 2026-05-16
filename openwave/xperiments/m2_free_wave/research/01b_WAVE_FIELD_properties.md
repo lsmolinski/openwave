@@ -1012,7 +1012,7 @@ wave_type[i,j,k] = continuous value [0, 1]
 0.3  # Mostly standing (weak energy flux)
 0.5  # Quasi-standing (intermediate)
 0.7  # Mostly traveling (strong energy flux)
-1.0  # Pure traveling (free wave propagation)
+1.0  # Pure traveling (free-wave propagation)
 ```
 
 **Measurement Method**:

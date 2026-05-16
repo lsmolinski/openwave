@@ -18,7 +18,7 @@ A research phase evaluating whether a Lagrangian formulation could replace OpenW
 
 ### The Problem
 
-Even if OpenWave's M2 / Laplacian-Propagation Method already used a Lagrangian — implicitly. M2's PDE solver evolves `∂²ψ/∂t² = c²∇²ψ`, which IS the Euler-Lagrange equation of the simplest possible field Lagrangian: `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²` (the free wave Lagrangian, V=0). So we've already done Lagrangian field theory — just with the most basic version, and on a scalar field.
+Even if OpenWave's M2 / Laplacian-Propagation Method already used a Lagrangian — implicitly. M2's PDE solver evolves `∂²ψ/∂t² = c²∇²ψ`, which IS the Euler-Lagrange equation of the simplest possible field Lagrangian: `L = ½(∂ψ/∂t)² - ½c²(∇ψ)²` (the free-wave Lagrangian, V=0). So we've already done Lagrangian field theory — just with the most basic version, and on a scalar field.
 
 M2 produced a self-stabilized standing-wave background, but the wave centers (modeled as Dirichlet ψ=0 boundary points) were invisible to the field — the wave passes through without reorganizing. Three structural limitations explain this:
 
@@ -34,7 +34,7 @@ The new approach fixes all three:
 
 See [`0_WAVE_EQUATION.md`](../../m3_wolff_lafreniere/research/0_WAVE_EQUATION.md) for the full M2/Lagrangian analysis.
 
-OpenWave's M3 scalar method tested 5 wave equation candidates empirically (Wolff, LaFreniere-Marcotte, Phase-warped, Combined W-L, Weighted PSW). The best candidate (Combined Wolff-LaFreniere) produces particle lock-in and K=10 tetrahedron stability at perfect placement, but fails under perturbation and cannot produce far-field Coulomb (sinc barriers flip the force direction every λ/2).
+OpenWave's M3 scalar model tested 5 wave equation candidates empirically (Wolff, LaFreniere-Marcotte, Phase-warped, Combined W-L, Weighted PSW). The best candidate (Combined Wolff-LaFreniere) produces particle lock-in and K=10 tetrahedron stability at perfect placement, but fails under perturbation and cannot produce far-field Coulomb (sinc barriers flip the force direction every λ/2).
 
 We've been searching for the perfect wave equation as the **goal** of our research. A Lagrangian formulation inverts this: the wave equation becomes the **consequence** of a deeper choice (the Lagrangian itself, chosen from symmetries and physical principles).
 
@@ -76,7 +76,7 @@ See the [What We Can Test in OpenWave](#what-we-can-test-in-openwave) section be
 
 ## KEY PEOPLE
 
-- **Jarek Duda** (Jagiellonian University) — inventor of ANS data compression (zstd, JPEG XL, LZFSE). Works on liquid crystal particle analogs and topological field theory. Argues OpenWave needs (1) a Lagrangian, (2) topological charge quantization to prevent the electron from "exploding". Author of *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7) — the canonical reference Lagrangian for M5.
+- **Jarek Duda** (Jagiellonian University) — inventor of ANS data compression (zstd, JPEG XL, LZFSE). Works on liquid-crystal particle analogs and topological field theory. Argues OpenWave needs (1) a Lagrangian, (2) topological charge quantization to prevent the electron from "exploding". Author of *Framework for liquid-crystal based particle models* (arxiv:2108.07896 v7) — the canonical reference Lagrangian for M5.
 - **Robert Close** (Clark College, retired) — author of *Plane Wave Solutions to a Proposed "Equation of Everything"* (Foundations of Physics, 2025). Derives the Dirac equation from classical wave mechanics in an ideal elastic solid. Has a constructed Lagrangian with classical interpretation.
 - **Manfried Faber** (Vienna University of Technology) — long-running topological-charge-as-electric-charge research program (~30 years). Faber's regularization scheme is the baseline for M5.5/M5.6 V(M) activation; recent *Universe* 2025 paper cited by Duda as canonical.
 - **Yves Couder** (deceased) and team — bouncing droplet experiments showing orbit quantization, diffraction, and tunneling in classical wave-particle systems. The closest physical analog to what OpenWave simulates.
@@ -161,7 +161,7 @@ Dr. Duda outlined a concrete learning sequence:
 
 ### 2026-04-17 — Rodrigo (sandbox complete, M5 plan drafted)
 
-Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / Liquid Crystal Method build plan was drafted based on the group's directions. Summary of results:
+Rodrigo reported that all 8 sandbox experiments were complete and that the M5 / Liquid-Crystal Model build plan was drafted based on the group's directions. Summary of results:
 
 - ✅ 4 Passed (Sine-Gordon kinks, Hedgehog Coulomb, Winding quantization, Klein-Gordon dispersion)
 - ⚠️ 3 Partial (Lagrangian derivation + docs correction, biaxial lepton mechanism, Close's vector wave equation)
@@ -332,7 +332,7 @@ This equation is remarkable because it produces:
 
 **Connection to OpenWave**: the Sine-Gordon equation is a non-linear wave equation with a sinusoidal potential `V(φ) = 1 - cos(φ)`. This sits between:
 
-- Our free wave equation `V = 0` (Combined W-L, linear, sinc nodes)
+- Our free-wave equation `V = 0` (Combined W-L, linear, sinc nodes)
 - Smolinski's quartic `V = k·ψ⁴/4` (cubic non-linearity)
 - Close's nonlinear vector equation (Dirac from elastic solid)
 
@@ -361,7 +361,7 @@ Duda is giving us a clear pedagogical sequence:
 
 1. **Walking droplets** → intuition for QM from classical waves (Couder experiments)
 1. **Sine-Gordon equation** → stable massive particles, pair creation, special relativity (1D first)
-1. **Liquid crystal particle analogs** → topological charge quantization (3D hedgehogs)
+1. **Liquid-Crystal particle analogs** → topological charge quantization (3D hedgehogs)
 1. **Zitterbewegung** → why particles oscillate (mass-driven trembling)
 1. **Faber's 4D approach** → combines all of the above (LdG + Skyrme + teleparallelism)
 
@@ -427,7 +427,7 @@ This maps to a test sequence for OpenWave:
 
 ### The Field: Director Field n(x)
 
-Instead of a scalar displacement ψ(r,t), the fundamental object is a **unit vector field** `n(x)` at every point in space — a "director" that specifies the local orientation of the medium. This is the order parameter of a nematic liquid crystal.
+Instead of a scalar displacement ψ(r,t), the fundamental object is a **unit vector field** `n(x)` at every point in space — a "director" that specifies the local orientation of the medium. This is the order parameter of a nematic liquid-crystal.
 
 More generally, Duda uses a **symmetric matrix field** `M(x) = O·D·O^T` where O is orthogonal (rotation) and `D = diag(λ₁, λ₂, λ₃)` encodes the ellipsoid shape — directly analogous to our 6-phasor ellipse model in M4.
 
@@ -636,7 +636,7 @@ Duda's approach: same topology, different axis orientation → different mass.
 
 ## Implementation Feasibility
 
-All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `sandbox_phase1_vector/`, `sandbox_phase1_scalar/`). Scripts go in `research/scripts/sandbox_lagrangian/`.
+All 8 tests are **doable without refactoring M4 or M3**. The director field / liquid-crystal / non-linear scalar physics is fundamentally different from our wave propagation — they live as standalone numpy research scripts (same pattern as `sandbox_phase1_vector/`, `sandbox_phase1_scalar/`). Scripts go in `research/scripts/sandbox_lagrangian/`.
 
 | Test | Approach | Effort | M4 refactor? |
 | --- | --- | --- | --- |
@@ -649,7 +649,7 @@ All 8 tests are **doable without refactoring M4 or M3**. The director field / li
 | 7. Close's nonlinear vector wave eq | Standalone numpy. 3D vector spin density field, seed with spherical harmonic, time-domain PDE evolution | Medium (~300-400 lines) | No |
 | 8. Smolinski's non-linear Ψ³ | Standalone numpy. 3D scalar grid, time-domain PDE with `-k·Ψ³` term, multiple WCs, direct K-selectivity test | Medium (~300 lines) | No |
 
-**Decision strategy**: Run all 8 numpy script tests first. After reviewing the results, select the winning equation/approach and implement it in M4 (or a new M5 method if the architecture change is significant).
+**Decision strategy**: Run all 8 numpy script tests first. After reviewing the results, select the winning equation/approach and implement it in M4 (or a new M5 model if the architecture change is significant).
 
 **Recommended order**: Test 1 (Sine-Gordon 1D, build intuition) → Tests 2+3 together (hedgehog energy + topological charge — Coulomb from topology vs our sinc Coulomb) → Test 5 (math, informs everything) → Test 8 (Smolinski Ψ³, direct K-selectivity test on familiar scalar M3-like setup) → Test 4 (Klein-Gordon dynamics) → Test 6 (three lepton families, most complex) → Test 7 (Close's equation).
 
@@ -820,7 +820,7 @@ Dr Robert Close:
 
 Wikipedia / background:
 
-- Liquid crystal particle analogs: <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs>
+- Liquid-Crystal particle analogs: <https://en.wikipedia.org/wiki/Draft:Liquid_crystal_particle_analogs>
 - Landau-de Gennes theory: <https://en.wikipedia.org/wiki/Landau%E2%80%93de_Gennes_theory>
 - Teleparallelism: <https://en.wikipedia.org/wiki/Teleparallelism>
 - Gravitoelectromagnetism: <https://en.wikipedia.org/wiki/Gravitoelectromagnetism>
@@ -900,7 +900,7 @@ Right now, wave_engine.py has 5 wave equations chosen empirically — and most o
 
 | Lagrangian | V(ψ) | Euler-Lagrange → wave equation | What it gives |
 | --- | --- | --- | --- |
-| Free wave | 0 | `∂²ψ/∂t² = c²∇²ψ` | Our Combined W-L is a solution. But no mass, no soliton stability |
+| Free-Wave | 0 | `∂²ψ/∂t² = c²∇²ψ` | Our Combined W-L is a solution. But no mass, no soliton stability |
 | Quartic (Smolinski) | `k·ψ⁴/4` | `∂²ψ/∂t² = c²∇²ψ - k·ψ³` | Soliton stability, non-linear. Changes spatial structure from pure sinc |
 | LdG (Duda) | `a·Tr(M²) - b·Tr(M³) + c·(Tr(M²))²` | Maxwell + Klein-Gordon + GEM | Topological charges, Coulomb, mass gap |
 
@@ -921,7 +921,7 @@ Right now, wave_engine.py has 5 wave equations chosen empirically — and most o
 
 **The key tension**: our current wave_engine.py uses **analytical phasor precomputation** (fast, exact, GPU-friendly). A non-linear Lagrangian (ψ³ or LdG) would require **time-domain PDE evolution** (like M2's Laplacian mode) because superposition doesn't hold for non-linear equations. That's not a refactor — it's a different computation strategy. We already have both patterns in the codebase (M2 = PDE evolution, M3 = analytical phasor).
 
-So the Lagrangian tests in `sandbox_phase3_lagrangian/` would first validate *which* Lagrangian is right, and only then would we port the winning equation into wave_engine.py — potentially as a new method (M5) rather than modifying M3.
+So the Lagrangian tests in `sandbox_phase3_lagrangian/` would first validate *which* Lagrangian is right, and only then would we port the winning equation into wave_engine.py — potentially as a new model (M5) rather than modifying M3.
 
 ---
 
@@ -931,7 +931,7 @@ The Lagrangian / topological framework has a strong preference for HOW the backg
 
 ### The Vacuum State IS the Base Wave
 
-In Duda's liquid crystal model, the **vacuum state** (all directors aligned, minimum of V(M)) is the base wave equivalent. It's not empty space — it's a fully ordered field. A topological defect (hedgehog = particle) is a deformation OF this field. **The hedgehog cannot exist without the background field** — a winding number only makes sense relative to a vacuum state.
+In Duda's liquid-crystal model, the **vacuum state** (all directors aligned, minimum of V(M)) is the base wave equivalent. It's not empty space — it's a fully ordered field. A topological defect (hedgehog = particle) is a deformation OF this field. **The hedgehog cannot exist without the background field** — a winding number only makes sense relative to a vacuum state.
 
 ```text
 Our base wave (M1/M2):  ψ_base(x,t) = A₀·cos(kx)·cos(ωt)  ← oscillating wave
@@ -944,7 +944,7 @@ Time crystal mechanism  → WHY defects oscillate (mass-driven, not assumed)
 
 The oscillations we assume in M3 (f₀ = 10²⁵ Hz) would need to be *derived* from the time crystal phi-4 kink mechanism, not assumed. The base wave isn't waves from all matter in the universe (EWT concept) — it's the ground state of the field's potential.
 
-### How Each OpenWave Method Maps
+### How Each OpenWave Model Maps
 
 | Concept | M2 (Laplacian) | M3 (Wolff-LF) | Duda (LdG) |
 | --- | --- | --- | --- |
@@ -998,9 +998,9 @@ Duda's model requires a **vector field** (director `n(x)` = unit vector at every
 
 **For numpy research scripts** (sandbox_phase3_lagrangian/): infrastructure doesn't matter — we allocate whatever arrays we need. But for eventual GPU implementation (M5 on Taichi), it would extend M4's vector grid infrastructure.
 
-#### Future M5 Method, or an upgrade to M4
+#### Future M5 Model, or an upgrade to M4
 
-If the Lagrangian tests validate, a future M4/M5 method would combine:
+If the Lagrangian tests validate, a future M4/M5 model would combine:
 
 - **M2's philosophy**: background field exists, particles are disturbances
 - **M3's near-field results**: standing wave lock-in, energy well structure
@@ -1045,7 +1045,7 @@ Close constructs a Lagrangian and Hamiltonian density where each term correspond
 - **Potential energy**: associated with wave propagation and rotation of wave velocity RELATIVE to the medium
 - **Intrinsic momentum**: from the Belinfante-Rosenfeld stress-energy tensor, generator of translations
 
-This is a **candidate Lagrangian** for OpenWave — directly answering Duda's "show me your Lagrangian" challenge, but from a different angle (elastic solid rather than liquid crystal).
+This is a **candidate Lagrangian** for OpenWave — directly answering Duda's "show me your Lagrangian" challenge, but from a different angle (elastic solid rather than liquid-crystal).
 
 #### Nonlinearity → Quantized Amplitudes
 

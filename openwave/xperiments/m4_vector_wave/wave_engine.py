@@ -1,7 +1,7 @@
 """
 ENERGY-WAVE ENGINE
 
-ON VECTOR-WAVE METHOD
+ON VECTOR-WAVE MODEL
 
 Wave Physics Engine @spacetime module. Wave dynamics and motion.
 """

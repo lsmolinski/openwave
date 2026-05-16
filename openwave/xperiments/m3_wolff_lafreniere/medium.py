@@ -1,5 +1,5 @@
 """
-WOLFF-LAFRENIERE Method Medium Data-Grid
+WOLFF-LAFRENIERE Model Medium Data-Grid
 
 Object Classes @spacetime module.
 

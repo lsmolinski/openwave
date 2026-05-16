@@ -2,7 +2,7 @@
 
 **Status** — initial evaluation, 2026-05-15. Triggered by Paul Werbos engaging directly in the models-of-particles thread with his Ouroboros / chaoiton framework as an alternative to Duda's LdGS approach.
 
-**Question being asked** — is Werbos's Ouroboros system a good candidate for an OpenWave M6 method (parallel to or post-M5)? The specific technical test: does it answer Duda's two standing challenges (charge quantization, clock propulsion) without resorting to topology, as Werbos claims?
+**Question being asked** — is Werbos's Ouroboros system a good candidate for an OpenWave M6 model (parallel to or post-M5)? The specific technical test: does it answer Duda's two standing challenges (charge quantization, clock propulsion) without resorting to topology, as Werbos claims?
 
 **Cross-refs:**
 
@@ -302,7 +302,7 @@ This means **if Ouroboros's J_μ field is real, SABER could in principle use eit
 - A second engineering channel for SABER (J_μ alongside EM tilts)
 - A way to engage Werbos productively in the group
 
-### What "M6 method" would actually mean in OpenWave
+### What "M6 model" would actually mean in OpenWave
 
 ```text
 M5 (Duda):  matrix field M = ODO^T → emergent EM, QM, gravity (3D + 4D)

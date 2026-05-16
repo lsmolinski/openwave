@@ -41,7 +41,6 @@ from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
 
-
 # ================================================================
 # CONFIG
 # ================================================================
@@ -110,15 +109,17 @@ def main():
 
     print(f"Grid: {wf.nx}³  dx={wf.dx_am:.3f} am  dt={dt_rs:.4f} rs")
     print(f"c={c_amrs:.4f} am/rs   m_freq_kg(electron)={m_freq_kg:.4e} rad/rs")
-    print(f"(m·dt)² = {(m_freq_kg * dt_rs)**2:.4e}  "
-          f"(vs (c·dt/dx)² = {(c_amrs * dt_rs / wf.dx_am)**2:.4f})")
+    print(
+        f"(m·dt)² = {(m_freq_kg * dt_rs)**2:.4e}  "
+        f"(vs (c·dt/dx)² = {(c_amrs * dt_rs / wf.dx_am)**2:.4f})"
+    )
     print(f"propagate {N_PROPAGATE_STEPS} steps, sample every {SAMPLE_EVERY}")
     print()
 
     # =================================================================
-    # Run A — V = 0 (free wave, M5.0g baseline)
+    # Run A — V = 0 (free-wave, M5.0g baseline)
     # =================================================================
-    print("[A] BASELINE — V = 0 (free wave)")
+    print("[A] BASELINE — V = 0 (free-wave)")
     print(f"    seeding hedgehog Q=+1 at center...")
     center = seed_single_hedgehog(wf)
     samples_free = propagate_and_measure(wf, c_amrs, dt_rs, 0.0, center)
@@ -169,7 +170,7 @@ def main():
     print(f"  Final Q (KG e⁻):  {Q_final_kg:+.4f}  → ΔQ = {decay_kg:.4f}")
     print(f"  |Q_free − Q_kg| at end: {delta_kg_vs_free:.4e}")
     print()
-    print("  Expected: KG behavior indistinguishable from free wave at electron")
+    print("  Expected: KG behavior indistinguishable from free-wave at electron")
     print("  mass scale — (m·dt)² ~ 1e-13 is below f32 precision relative to ψ.")
     print()
     print("  CONCLUSION: plain KG (V = ½·m²·|ψ|²) at electron mass-frequency does")

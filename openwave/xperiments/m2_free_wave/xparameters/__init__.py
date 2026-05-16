@@ -1,1 +1,1 @@
-"""Xperiment parameters files for FREE WAVE simulations."""
+"""Xperiment parameters files for FREE-WAVE simulations."""
