@@ -8,4 +8,4 @@ for modeling matter and energy phenomena using wave-field dynamics.
 
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
