@@ -493,8 +493,8 @@ Both are needed: L→T alone may still oscillate if using sinc spatial structure
 
 ## References
 
-- M2 spin theory: `m2_laplace_propagation/research/14_spin_theory.md`
-- M2 WC experiments: `m2_laplace_propagation/research/13_wave_center.md`
+- M2 spin theory: `m2_free_wave/research/14_spin_theory.md`
+- M2 WC experiments: `m2_free_wave/research/13_wave_center.md`
 - Wolff: *Schrodinger's Universe and the Origin of the Natural Laws*
 - Smoliński: *The Geometric Identity of Gravity* (soliton structure, r⁵, εM)
 - Butto (2021): *A New Theory for the Essence and Origin of Electron Spin* (vortex model)
