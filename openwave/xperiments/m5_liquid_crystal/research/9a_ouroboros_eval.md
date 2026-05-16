@@ -6,9 +6,15 @@
 
 **Cross-refs:**
 
-- Paper: `scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` (10 pages)
+- Original paper (v1): `scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` (10 pages)
+- Full Ouroboros corpus (downloaded 2026-05-16) at `scientific_source/Ouroboros/`:
+  - `The_Ouroboros_Systemv2.pdf` (10 pages) — updated framework paper, explicit Hopf-invariant axioms
+  - `Electron_Calibration_Ouroboros_2026.pdf` (5 pages) — 3-parameter electron calibration to sub-percent
+  - `Ouroboros_Particle_Spectrum_2026.pdf` (6 pages) — lepton spectrum + proton-radius-puzzle paper
+  - `Nuclear story.pdf` (4 pages) — Werbos's personal Schwinger / Teller / cold fusion history
+  - `Werbos_Budapest_AI_Summit_2026.pdf` (38 pages) — AI summit talk (not yet read)
+  - `chaoiton_theorem.lean.txt` — Lean 4 proof source
 - Existing context: [1b_topological_defect.md](1b_topological_defect.md) (compares time-periodicity vs topology), [feedback_no_static_solitons](../../../../../../.claude/projects/-Users-xrodz-Documents-source-code-OPENWAVE-LABS-openwave/memory/feedback_no_static_solitons.md) (three Derrick escapes)
-- Outstanding (not yet read): Zenodo 20179985 ("Do you still believe in quarks? I don't"), Zenodo 20218067 ("Ouroboros model passes another test" — electron properties to ~1%), Zenodo 20030162 (chaoiton existence theorem with 62 families)
 
 ---
 
@@ -23,6 +29,7 @@
 7. [Verdict — is this a good M6 candidate?](#7-verdict--is-this-a-good-m6-candidate)
 8. [Open questions / outstanding context](#8-open-questions--outstanding-context)
 9. [If we decide to pursue — minimal M6 sandbox shape](#9-if-we-decide-to-pursue--minimal-m6-sandbox-shape)
+10. [2026-05-16 update — full corpus + NSF X-Labs context](#10-2026-05-16-update--full-corpus--nsf-x-labs-context)
 
 ---
 
@@ -395,3 +402,187 @@ M6 is genuinely a **post-M5.7** call. Don't pre-commit. Re-evaluate when:
 - M5.7 metastable resonance result is in hand
 - We've read all four outstanding Werbos zenodo papers
 - We've had at least one direct technical reply from Werbos clarifying the issues above
+
+---
+
+## 10. 2026-05-16 update — full corpus + NSF X-Labs context
+
+Major substantive update triggered by:
+
+- Werbos's 2026-05-16 reply to the technical outreach with the new Particle Spectrum paper (Zenodo 20242421)
+- Full Ouroboros corpus downloaded to `scientific_source/Ouroboros/`
+- NSF $1.5B X-Labs initiative announcement (2026-05-14) — strategic context
+
+### 10.1 Q2 answered — Werbos has a concrete mass-spectrum mechanism
+
+The Particle Spectrum paper (`Ouroboros_Particle_Spectrum_2026.pdf`, 6 pages, May 2026, co-authored with Claude Sonnet 4.6) directly addresses the lepton-hierarchy question from §8 Q2.
+
+**Setup:** at fixed coupling parameters `g = 1.0625, λ = 1.0` (calibrated to the electron), Werbos scans the oscillation frequency ω from 1.0 to 80 in the Ouroboros radial ODE. Stable chaoiton solutions appear at discrete ω values.
+
+**Result table:**
+
+| Particle | ω | Predicted mass | Observed | Gap |
+| --- | --- | --- | --- | --- |
+| Electron | 1.0 | 0.511 MeV | 0.511 MeV | 0.00% (calibration) |
+| Muon | 11.0 | 110.2 MeV | 105.7 MeV | 4.31% |
+| Pion+ | 13.0 | 147.6 MeV | 139.6 MeV | 5.76% |
+| Tau | 40.7 | 1690 MeV | 1777 MeV | 4.88% |
+
+**Mass-frequency scaling law:** `m ∝ ω^2.22` (near-quadratic, matches classical oscillator `E = ½ mω²A²` with a small nonlinear correction from `f(s) = gs²`).
+
+**Werbos's central claim:** the three lepton generations are three values of ω in the *same* Lagrangian with the *same* coupling constants — no new parameters per family. The 4-6% gaps are claimed to be numerical-scan-resolution artifacts that finer scans should close.
+
+### 10.2 The key open question Werbos himself flags
+
+> "Whether these are truly eigenvalues — i.e., whether there is a quantization condition that picks out exactly ω = 1, 11, 40.7 and no other stable values — is the key open question."
+
+If ω is **discrete** (eigenvalue-like): 0 free parameters per particle → genuine first-principles prediction of lepton masses.
+
+If ω is **continuous**: 3 separate fitted inputs for 3 particles → not different from Standard Model parameter-counting (just relabeled).
+
+The numerical evidence (62 stable chaoiton families clustered at specific ω) suggests discreteness, but no analytical proof exists yet. This is what would need to be settled before the mass-spectrum claim is fully load-bearing.
+
+### 10.3 Electron calibration detail — sub-percent across three observables
+
+The Electron Calibration paper (`Electron_Calibration_Ouroboros_2026.pdf`, 5 pages) reports the calibration baseline:
+
+| Observable | Electron (obs) | Chaoiton (pred) | Agreement |
+| --- | --- | --- | --- |
+| g-factor (2L/Q) | 2.00232 | 2.000 | 0.116% |
+| Mass-to-charge H/Q | 1.6875 | 1.6969 | 0.56% |
+| Elementary charge | 0.30282 | 0.3011 (predicted) | 0.56% |
+| Zitterbewegung freq | 2.47×10²⁰ Hz | 2.50×10²⁰ Hz | 1.2% (independent check) |
+
+Key technical points:
+
+- **`L/Q = ω` identity** comes from Noether's theorem on the U(1) phase symmetry of the oscillatory ansatz `A_μ(t,x) = A_μ(x) e^{-iωt}`. Not specific to Ouroboros — generic for rotating field configs.
+- **`H/Q` is scale-free** by dimensional analysis. This makes the elementary-charge prediction non-fitted (once R^phys is fixed by `m_e`).
+- **R^phys = 191 fm** ≈ ½ the electron's reduced Compton wavelength (`λ̄_e ≈ 386 fm`). Notable choice; the chaoiton "is" the electron at this scale.
+- **0.116% g-factor residual = QED α/2π exactly** — numerologically suggestive but not actually matching at the 1-part-per-thousand level. Werbos notes this; doesn't claim QED reproduction.
+
+### 10.4 Charge quantization v2 — explicit Hopf-axiom approach
+
+The Ouroboros System v2 paper (`The_Ouroboros_Systemv2.pdf`) updates the v1 charge-quantization argument. Key change:
+
+> "The two main theorems are proved by reduction to two explicit Hopf-invariant axioms. Axiom 1 states that the linking number always equals an integer-valued Hopf invariant; Axiom 2 states that the Hopf invariant is a homotopy invariant, hence unchanged under continuous deformations of the fields."
+
+This is an **explicit admission that the mechanism IS topology** (the Hopf invariant). Confirms §2.1 and §2.4 of this eval. The "topology vs time-periodicity" framing in Werbos's marketing is now contradicted by his own v2 paper. The real distinction is "different topological invariant" (Hopf / Chern-Simons linking vs Duda's Brouwer winding).
+
+The v2 paper also explicitly clarifies the J-field is NOT a classical current — addressing Duda's earlier critique:
+
+> "The fields J_μ and A_μ are fundamental covariant fields of the theory, not to be confused with other uses of these letters (e.g., a classical electric current or a gauge potential)."
+
+So Duda's "J is averaged statistics" objection is now formally answered.
+
+### 10.5 AI co-authorship — transparency note
+
+Multiple Ouroboros papers now list **explicit AI co-authorship**:
+
+| Paper | Co-author |
+| --- | --- |
+| Electron Calibration | Paul J. Werbos + Claude (Anthropic AI, Claude Sonnet 4.6) |
+| Particle Spectrum | Paul J. Werbos + Claude (Anthropic AI, Claude Sonnet 4.6) |
+| Stable Chaoitons (Zenodo 20030162) | Paul J. Werbos + Claude (Anthropic AI) |
+| Analytic Foundations of Thermal QA | Paul J. Werbos + Claude (Anthropic AI) |
+| Ouroboros System v2 (Lean formalization) | DeepSeek AI acknowledged |
+
+Worth noting for context — Werbos is transparent about AI contribution, which is good practice but also unusual in physics. The mathematics is presumably his physics + AI computational assistance. Read the technical claims on their own merits, not on the authorship convention.
+
+### 10.6 The "Nuclear story" PDF — Werbos's framing
+
+This is a 4-page first-person narrative document, not a peer-reviewed paper. It's Werbos's personal account of his 1989 EPRI-NSF cold-fusion conference work with Schwinger, Teller, and Sawada. Key claims (in Werbos's voice, unverified):
+
+| Claim | Source per Werbos |
+| --- | --- |
+| Schwinger+Pons confirmed cold fusion empirically in 1989 | personal communication |
+| Teller warned Werbos that "Appleby-type" cold fusion enables nuclear transmutation = weapons-grade pathway | personal meeting |
+| Schwinger + Werbos drafted a joint paper with Sawada, then withdrew it under national-security pressure | personal archive |
+| Putin's "new nuclear technology" announcement → Russia (Protvino) → linked to Manton's Topological Solitons textbook | unspecified |
+| Larry Page's "clean energy" project is taking over a Mitsubishi project Werbos has tracked | personal files |
+| Nuclear sensor networks needed now to detect such activity | his sensor architecture in `Ouroboros System v2 §5` |
+
+**How to read this:** treat as Werbos's *motivation* for the framework, not as established physics. The cold-fusion / national-security framing is the *why* of his Ouroboros work — he sees a fundamental theory of long-range nuclear forces as both a path to clean energy and a national-security imperative. Don't take the specific historical claims as verified; do note the framing.
+
+### 10.7 NSF X-Labs strategic context — likely intentional positioning
+
+The NSF X-Labs newsletter (2026-05-14) announced **$1.5B over 10 years** for "independent teams of researchers, engineers and entrepreneurs pursuing milestone-based federal funding to solve specific scientific challenges." First-round topics:
+
+| X-Labs topic | Werbos / Ouroboros connection |
+| --- | --- |
+| Scientific Instrumentation for Sensing and Imaging | Direct match — Werbos's sensor network architecture in v2 §5 (J-field nuclear detection, layered nanostructure, TQuA quantum-intelligent processing) |
+| Quantum Systems: Interconnects and Integrated Photonics | Match — Werbos's TQuA (Time-Quantized Attention) framework is positioned as quantum decision-making at sensor scale |
+
+Werbos was an NSF Program Director (retired). He knows the funding architecture intimately. The Ouroboros System v2 paper's sensor-network architecture reads as **prepared for an NSF X-Labs proposal**:
+
+- Independent teams ✓ (QAGI LLC structure)
+- Milestone-driven ✓ (Lean proof → numerical → prototype sensor)
+- Specific scientific challenge ✓ (nuclear-signature detection)
+- Quantum-intelligent processing ✓ (TQuA)
+
+**Implication for our M6 evaluation:** Werbos is positioning Ouroboros not just as a fundamental physics framework but as a **funded engineering platform**. If/when an X-Labs award lands for his team, the Ouroboros work will have institutional momentum well beyond the current zenodo-preprint stage.
+
+### 10.8 Strategic implications for SABER
+
+The Nuclear story PDF + the NSF X-Labs alignment change the SABER picture substantially:
+
+**Where Werbos's framing aligns with SABER:**
+
+| SABER element | Werbos's framing |
+| --- | --- |
+| Direct heat / energy extraction at nuclear scale | "Appleby-type" cold fusion as a real-but-suppressed phenomenon → if true, nuclear-scale energy is accessible at modest engineering scales |
+| Field-theoretic substrate for thermal hypothesis | J-field is Werbos's substrate; same logical role as matrix tilts in M5 / LdGS |
+| Engineering chain: substrate → wave → coil/sensor | Werbos's sensor architecture is structurally identical (J-field → nanostructured detector → electronic signal) |
+| Modulation as a lever | Werbos's framework predicts coherent J-field emission from nuclear rearrangements — direct modulation channel |
+
+**Where Werbos's framing diverges:**
+
+| Divergence | What it means |
+| --- | --- |
+| Werbos targets *detection* (sensor networks); SABER targets *extraction* (energy conversion) | Same field, different engineering goal — but the substrate work is shared |
+| Werbos's primary motivation is national security; SABER's is clean energy | Different stakeholder profiles, similar technical path |
+| Werbos invokes cold fusion (LENR); SABER's thermal-amplitude hypothesis is broader | Cold fusion would be one specific manifestation of SABER's mechanism |
+
+**Net strategic implication:** if Werbos's framework gains traction (NSF X-Labs award, peer-reviewed publication, lab demonstration), SABER's hypothesis could either gain credibility-by-association OR get scooped on the field-theoretic substrate side. **Worth watching closely.**
+
+### 10.9 Revised verdict — modest upward revision
+
+| Aspect | Old verdict (2026-05-15) | Updated verdict (2026-05-16) |
+| --- | --- | --- |
+| Q2 mass spectrum | "no analytical mechanism found" | **partially answered** — Werbos has a concrete `m ∝ ω^2.22` scaling + 4-6% lepton match |
+| Q1 mechanism distinction | open | still open |
+| Q3 analytical ω derivation | open | still open (acknowledged by Werbos as the "key open question") |
+| Q4 two-field ontology | open | partly addressed in v2 paper (J ≠ current, both fundamental) but the deeper "single deeper field" preference of Duda is unaddressed |
+| Electron calibration | unclear from earlier paper | **strong** — 3 params, sub-percent on 3 observables + independent ZBW check |
+| Charge quantization mechanism | "claimed non-topological — actually IS topology" | **confirmed as Hopf-invariant topology** in v2 paper's own words |
+| SABER alignment | "conceptually parallel" | **structurally identical** at the engineering chain level |
+| Institutional momentum | none | **NSF X-Labs alignment** — possibly funded soon |
+
+**Revised M6 viability:** still "cross-validation method post-M5.7", but now with **higher technical credibility and stronger SABER relevance**. The framework is more developed than I gave it credit for, and the engineering positioning is sharper.
+
+### 10.10 Updated technical questions for Werbos (post-spectrum-paper)
+
+Refining the Q-list in §8 with the new content:
+
+| # | Status | Question (refined) |
+| --- | --- | --- |
+| Q1 | open | What's the physical distinction from Duda's LdGS beyond the choice of topological invariant (Hopf-linking vs Brouwer-winding)? |
+| Q2 | partially answered | Is the ω spectrum **discrete** (eigenvalue-like, zero free params per particle) or **continuous** (3 free params for 3 particles)? You acknowledge this as the key open question — what's the path to settling it? |
+| Q3 | partially answered | The chaoiton carrier frequency matches `ω = 2mc²/ℏ` to 1.2% via R^phys calibration. Is this an analytical derivation of Zitterbewegung from the Lagrangian, or a consequence of the calibration choice? |
+| Q4 | partly addressed | v2 paper clarifies J ≠ classical current; both A and J are fundamental covariant fields. But the deeper objection (single-deeper-field ontology with A as derived connection — Duda's preference) is unaddressed. |
+| Q5 (new) | open | The 4-6% gaps in muon / pion / tau mass: are these resolvable by finer ω scan, or do they reflect a missing physical ingredient (e.g. the higher-order QED-like correction you mentioned)? |
+| Q6 (new) | open | The proton-as-three-chaoiton picture revives Schwinger's 1969 H-particle. How does this reconcile with QCD's experimental successes (DIS scaling, jets, asymptotic freedom)? |
+| Q7 (new) | open | The Nuclear story claims about Schwinger+Pons cold-fusion confirmation in 1989 — is there a citation trail beyond your personal correspondence? Important for treating the framework as fundamental physics vs as historical narrative. |
+
+### 10.11 Decision update — when to actually commit to M6 build
+
+Re-stating the decision logic with the updated content:
+
+| Phase | Action | Trigger |
+| --- | --- | --- |
+| **Now → M5.7 lands** | Stay locked on M5 / LdGS | M5 milestone schedule |
+| **M5.7 lands** | Re-read full Ouroboros corpus including Particle Spectrum, attempt to reproduce Werbos's mass-frequency scan independently (the radial ODE setup at `g = 1.0625, λ = 1.0` is well-specified) | M5.7 metastable resonance result in hand |
+| **Reproduce Werbos numerics** | Decide M6 viability based on whether the ω spectrum reproduces 4-6% gap | reproduction success/failure |
+| **If reproducible** | Scaffold M6 (`m6_ouroboros/`) as Vector(4) × 2 in Taichi, port Werbos's calibration as Gate 0, then run resonance protocol on shared observables | strong reproduction |
+| **Track NSF X-Labs outcome** | If Werbos secures X-Labs funding for his Ouroboros sensor work, the framework gains institutional weight — adjust M6 priority upward | X-Labs award announcement |
+
+**Don't commit before M5.7.** The Ouroboros work is more credible than I rated it on first read, but M5 momentum is real and the M6 case isn't urgent enough to break the M5 build.
