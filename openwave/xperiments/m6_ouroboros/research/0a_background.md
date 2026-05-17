@@ -26,13 +26,12 @@
 3. [Side-by-side with Duda's LdGS](#3-side-by-side-with-dudas-ldgs)
 4. [Strengths Ouroboros has that Duda doesn't](#4-strengths-ouroboros-has-that-duda-doesnt)
 5. [Strengths Duda has that Ouroboros doesn't](#5-strengths-duda-has-that-ouroboros-doesnt)
-6. [SABER compatibility](#6-saber-compatibility)
-7. [Verdict — is this a good M6 candidate?](#7-verdict--is-this-a-good-m6-candidate)
-8. [Open questions / outstanding context](#8-open-questions--outstanding-context)
-9. [If we decide to pursue — minimal M6 sandbox shape](#9-if-we-decide-to-pursue--minimal-m6-sandbox-shape)
-10. [2026-05-16 update — full corpus + NSF X-Labs context](#10-2026-05-16-update--full-corpus--nsf-x-labs-context)
-11. [2026-05-17 update — 2017 foundation paper insights](#11-2026-05-17-update--2017-foundation-paper-insights)
-12. [2026-05-17 update — parallel M5/M6 build plan](#12-2026-05-17-update--parallel-m5m6-build-plan)
+6. [Verdict — is this a good M6 candidate?](#6-verdict--is-this-a-good-m6-candidate)
+7. [Open questions / outstanding context](#7-open-questions--outstanding-context)
+8. [If we decide to pursue — minimal M6 sandbox shape](#8-if-we-decide-to-pursue--minimal-m6-sandbox-shape)
+9. [2026-05-16 update — full corpus + NSF X-Labs context](#9-2026-05-16-update--full-corpus--nsf-x-labs-context)
+10. [2026-05-17 update — 2017 foundation paper insights](#10-2026-05-17-update--2017-foundation-paper-insights)
+11. [2026-05-17 update — parallel M5/M6 build plan](#11-2026-05-17-update--parallel-m5m6-build-plan)
 
 ---
 
@@ -237,7 +236,7 @@ If we pursue M6, we should engage Werbos through the mathematics directly (his n
 | Maxwell exactly recovered | drops out as the linear-limit kinetic term, no tilt-curvature gymnastics |
 | Lean-4 verified theorems | charge quantization mechanically proved (placeholder defs but structure verified) |
 | Dark matter candidate | neutral chaoiton configurations couple only gravitationally |
-| Engineering anchor | Werbos sketches sensor architecture for J_μ-channel nuclear detection — directly analog to SABER's induction-from-thermal goal |
+| Engineering anchor | Werbos sketches a J_μ-channel sensor architecture for nuclear detection — relevant for downstream applied-physics work that would build on this substrate |
 
 The Sawada anchor in particular is genuinely strong. It's a real measured nuclear anomaly (long-range component of the strong force, P-wave π-π phase shift deviation) that Standard Model + QCD has trouble explaining. If Ouroboros's J_μ field naturally produces this `v(r) ~ -C/r⁶` London-type tail with the right strength, that's an experimentally falsifiable prediction we can test numerically.
 
@@ -257,32 +256,7 @@ The Sawada anchor in particular is genuinely strong. It's a real measured nuclea
 
 ---
 
-## 6. SABER compatibility
-
-Both frameworks are **substrate-compatible** with the per-defect (A, ω) thermal hypothesis ([5b_thermal_energy.md](5b_thermal_energy.md)). Heat-as-defect-oscillation works in either substrate; the difference is which field carries the engineering coupling.
-
-| SABER stage | In Duda | In Ouroboros |
-| --- | --- | --- |
-| Heat substrate | (A, ω) excess of matrix twist | excess oscillation of chaoiton |
-| Internal modulation | drive matrix tilts via EM | drive chaoiton via A or J perturbations |
-| Outward coupling | tilt-wave (EM wave) at engineering distance | J_μ-channel radiation at engineering distance |
-| Extraction | conventional EM coil (Faraday's law) | layered nanostructure sensor (Werbos's sketch) |
-
-Notable: **Werbos's sensor architecture is structurally analogous to SABER's induction goal.** He proposes:
-
-- Top shield (EM + thermal isolation)
-- Quantum-intelligent processing (TQuA)
-- Isolation + transduction (J_μ → electronic signal)
-- Sensing material: nanostructured high-mass-number nuclei (W, Pb, heavy isotopes) tuned to specific J_μ frequency bands
-- Phonon-isolated substrate
-
-The SABER difference: SABER aims to **produce useful electric power** by harnessing thermal energy modulation, not just **detect nuclear events**. But the field-theoretic mechanism (modulate a deeper field, transduce to electronic signal) is the same family.
-
-This means **if Ouroboros's J_μ field is real, SABER could in principle use either the EM channel (M5 framework) or the J_μ channel (M6 framework)** for the extraction step. The J_μ channel is potentially even more interesting because it penetrates conventional EM shielding (Werbos's argument for nuclear detection applies equally to nuclear-scale energy extraction).
-
----
-
-## 7. Verdict — is this a good M6 candidate?
+## 6. Verdict — is this a good M6 candidate?
 
 **Yes, technically viable as M6 — with significant caveats:**
 
@@ -293,7 +267,7 @@ This means **if Ouroboros's J_μ field is real, SABER could in principle use eit
 3. The 2-vector-field structure is simpler than Duda's matrix substrate to implement in Taichi
 4. Time-periodicity as Derrick escape is now triple-confirmed (Duda + Close + Werbos)
 5. Werbos's claimed 62 chaoiton families with L/Q matching electron g-factor is a numerical achievement worth reproducing
-6. SABER engineering path is parallel — J_μ channel is conceptually similar to EM tilts
+6. The J_μ channel is conceptually similar to EM tilts as a substrate-modulation route
 
 ### Why it can't replace M5
 
@@ -309,7 +283,7 @@ This means **if Ouroboros's J_μ field is real, SABER could in principle use eit
 
 - An independent test of the heat-as-oscillation hypothesis (different substrate, same hypothesis)
 - A simpler sandbox for prototyping the resonance-hunt protocol (vector fields ship faster than matrix fields)
-- A second engineering channel for SABER (J_μ alongside EM tilts)
+- A second engineering channel candidate (J_μ alongside EM tilts)
 - A way to engage Werbos productively in the group
 
 ### What "M6 model" would actually mean in OpenWave
@@ -327,7 +301,7 @@ M6 (Werbos):  two coupled vector fields A, J on Minkowski
 
 ---
 
-## 8. Open questions / outstanding context
+## 7. Open questions / outstanding context
 
 ### Papers we haven't read yet
 
@@ -348,7 +322,7 @@ Recommended: download all four locally to `scientific_source/` before committing
 | Q2 | How does ω = 2mc²/ℏ derive from the Lagrangian analytically? | numerical existence is not the same as derivation |
 | Q3 | How does Ouroboros distinguish e from μ from τ? | mass spectrum mechanism is missing |
 | Q4 | What is the form of f(J·J) that gives the electron-g-factor match? | parameters of the 62-family search |
-| Q5 | Does the J_μ field connect to gravity at all, or is it strictly pre-gravity? | for SABER engineering, this matters |
+| Q5 | Does the J_μ field connect to gravity at all, or is it strictly pre-gravity? | matters for any downstream engineering on this substrate |
 | Q6 | What's the predicted strength of the Sawada `-C/r⁶` tail in physical units? | falsification test |
 | Q7 | How does A in Ouroboros capture the Aharonov-Bohm phase? | Duda's point — A is more fundamental than F; in his framework A is a derived connection that gets AB for free |
 | Q8 | Why two primary fields (A, J) instead of one deeper field with A as derived connection? | Duda's single-field ontology objection — Werbos doesn't address it in the thread |
@@ -364,7 +338,7 @@ Werbos's recent emails (in particular the "Do you still believe in quarks?" chal
 
 ---
 
-## 9. If we decide to pursue — minimal M6 sandbox shape
+## 8. If we decide to pursue — minimal M6 sandbox shape
 
 This is a placeholder for if/when M6 becomes a concrete commitment. Don't start until M5.4-M5.7 are in motion.
 
@@ -408,7 +382,7 @@ M6 is genuinely a **post-M5.7** call. Don't pre-commit. Re-evaluate when:
 
 ---
 
-## 10. 2026-05-16 update — full corpus + NSF X-Labs context
+## 9. 2026-05-16 update — full corpus + NSF X-Labs context
 
 Major substantive update triggered by:
 
@@ -524,30 +498,7 @@ Werbos was an NSF Program Director (retired). He knows the funding architecture 
 
 **Implication for our M6 evaluation:** Werbos is positioning Ouroboros not just as a fundamental physics framework but as a **funded engineering platform**. If/when an X-Labs award lands for his team, the Ouroboros work will have institutional momentum well beyond the current zenodo-preprint stage.
 
-### 10.8 Strategic implications for SABER
-
-The Nuclear story PDF + the NSF X-Labs alignment change the SABER picture substantially:
-
-**Where Werbos's framing aligns with SABER:**
-
-| SABER element | Werbos's framing |
-| --- | --- |
-| Direct heat / energy extraction at nuclear scale | "Appleby-type" cold fusion as a real-but-suppressed phenomenon → if true, nuclear-scale energy is accessible at modest engineering scales |
-| Field-theoretic substrate for thermal hypothesis | J-field is Werbos's substrate; same logical role as matrix tilts in M5 / LdGS |
-| Engineering chain: substrate → wave → coil/sensor | Werbos's sensor architecture is structurally identical (J-field → nanostructured detector → electronic signal) |
-| Modulation as a lever | Werbos's framework predicts coherent J-field emission from nuclear rearrangements — direct modulation channel |
-
-**Where Werbos's framing diverges:**
-
-| Divergence | What it means |
-| --- | --- |
-| Werbos targets *detection* (sensor networks); SABER targets *extraction* (energy conversion) | Same field, different engineering goal — but the substrate work is shared |
-| Werbos's primary motivation is national security; SABER's is clean energy | Different stakeholder profiles, similar technical path |
-| Werbos invokes cold fusion (LENR); SABER's thermal-amplitude hypothesis is broader | Cold fusion would be one specific manifestation of SABER's mechanism |
-
-**Net strategic implication:** if Werbos's framework gains traction (NSF X-Labs award, peer-reviewed publication, lab demonstration), SABER's hypothesis could either gain credibility-by-association OR get scooped on the field-theoretic substrate side. **Worth watching closely.**
-
-### 10.9 Revised verdict — modest upward revision
+### 10.8 Revised verdict — modest upward revision
 
 | Aspect | Old verdict (2026-05-15) | Updated verdict (2026-05-16) |
 | --- | --- | --- |
@@ -557,12 +508,12 @@ The Nuclear story PDF + the NSF X-Labs alignment change the SABER picture substa
 | Q4 two-field ontology | open | partly addressed in v2 paper (J ≠ current, both fundamental) but the deeper "single deeper field" preference of Duda is unaddressed |
 | Electron calibration | unclear from earlier paper | **strong** — 3 params, sub-percent on 3 observables + independent ZBW check |
 | Charge quantization mechanism | "claimed non-topological — actually IS topology" | **confirmed as Hopf-invariant topology** in v2 paper's own words |
-| SABER alignment | "conceptually parallel" | **structurally identical** at the engineering chain level |
+
 | Institutional momentum | none | **NSF X-Labs alignment** — possibly funded soon |
 
-**Revised M6 viability:** still "cross-validation method post-M5.7", but now with **higher technical credibility and stronger SABER relevance**. The framework is more developed than I gave it credit for, and the engineering positioning is sharper.
+**Revised M6 viability:** still \"cross-validation method post-M5.7\", but now with **higher technical credibility**. The framework is more developed than I gave it credit for.
 
-### 10.10 Updated technical questions for Werbos (post-spectrum-paper)
+### 10.9 Updated technical questions for Werbos (post-spectrum-paper)
 
 Refining the Q-list in §8 with the new content:
 
@@ -576,7 +527,7 @@ Refining the Q-list in §8 with the new content:
 | Q6 (new) | open | The proton-as-three-chaoiton picture revives Schwinger's 1969 H-particle. How does this reconcile with QCD's experimental successes (DIS scaling, jets, asymptotic freedom)? |
 | Q7 (new) | open | The Nuclear story claims about Schwinger+Pons cold-fusion confirmation in 1989 — is there a citation trail beyond your personal correspondence? Important for treating the framework as fundamental physics vs as historical narrative. |
 
-### 10.11 Decision update — when to actually commit to M6 build
+### 10.10 Decision update — when to actually commit to M6 build
 
 Re-stating the decision logic with the updated content:
 
@@ -594,7 +545,7 @@ Re-stating the decision logic with the updated content:
 
 ---
 
-## 11. 2026-05-17 update — 2017 foundation paper insights
+## 10. 2026-05-17 update — 2017 foundation paper insights
 
 New paper added to the corpus: `ouroboros4.docx` = Werbos's original 2017 challenge paper ("Proposal for a Theory of Everything", Paul J. Werbos, July 31 2017). This is the foundation document that all the 2026 numerical work answers. Key findings:
 
@@ -707,14 +658,14 @@ The picture is a researcher with deep personal stake in the framework gaining ac
 
 ---
 
-## 12. 2026-05-17 update — parallel M5/M6 build plan
+## 11. 2026-05-17 update — parallel M5/M6 build plan
 
 This section supersedes §10.11. New plan triggered by:
 
 - 2017 foundation paper reading (§11) — confirms framework maturity
 - Duda's own acknowledgment that V(M) is "the most difficult" piece
 - The matched-substrate observation — both M5 and M6 have V/f as the same bottleneck
-- Cross-validation as a SABER risk-mitigation imperative
+- Cross-validation as a risk-mitigation strategy for the overall research thrust
 
 ### 12.1 Decision context — both frameworks have the same hardest piece
 
@@ -845,20 +796,7 @@ Once both M5 and M6 are scaffolded:
 - Once M6 is scaffolded, add to the Major Theoretical Contributions table (M5: Duda; M6: Werbos)
 - Update memory entries to reflect both methods are in active build
 
-### 12.8 SABER alignment with the parallel-build plan
-
-For the SABER thermal-hypothesis goal, parallel M5+M6 gives:
-
-| SABER question | M5 angle | M6 angle |
-| --- | --- | --- |
-| What is the substrate where heat lives? | matrix-twist `(A, ω)` excess | chaoiton oscillation excess |
-| What carries the engineering coupling? | EM tilts (1-axis curvature) | J-field perturbations |
-| What's the modulation lever? | drive matrix tilts at resonance | drive A-J coupling at chaoiton ω |
-| Cross-validation target | thermal-to-EM conversion | thermal-to-J-field conversion |
-
-**If both frameworks predict the SABER hypothesis works, the case becomes much stronger.** Cross-validation across two independent substrates is far more convincing than a single-framework prediction. This is the strongest scientific argument for the parallel build.
-
-### 12.9 NSF X-Labs strategic note
+### 12.8 NSF X-Labs strategic note
 
 If Werbos secures NSF X-Labs funding for his Ouroboros sensor architecture, having OpenWave's M6 scaffolded becomes immediately valuable:
 
@@ -869,12 +807,12 @@ If Werbos secures NSF X-Labs funding for his Ouroboros sensor architecture, havi
 
 Either way, having M6 scaffolded ahead of any X-Labs award outcome is strategically sound.
 
-### 12.10 Summary — the new plan
+### 12.9 Summary — the new plan
 
 | What changed from §10.11 | Why |
 | --- | --- |
 | "Don't commit before M5.7" → "NumPy sandbox now" | 2017 paper + matched-substrate observation make M6 evaluation cheaper to start earlier |
-| "Sequential build" → "parallel build after reproduction" | Duda's V(M) hedging + SABER risk-mitigation imperative |
+| "Sequential build" → "parallel build after reproduction" | Duda's V(M) hedging + cross-validation risk-mitigation |
 | "M6 as alternative" → "M6 as backup + cross-validator" | Failure-mode diversification on the shared V/f bottleneck |
 | "Wait for Werbos reply" → "Reproduce his numerics ourselves" | Faster decision; reproduction is the strongest possible technical validation |
 
