@@ -7,7 +7,8 @@
 **Cross-refs:**
 
 - Original paper (v1): `scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` (10 pages)
-- Full Ouroboros corpus (downloaded 2026-05-16) at `scientific_source/Ouroboros/`:
+- Full Ouroboros corpus (downloaded 2026-05-16 → 2026-05-17) at `scientific_source/Ouroboros/`:
+  - `ouroboros4.docx` — **2017 foundation paper** ("Proposal for a Theory of Everything", Werbos July 31, 2017). The original challenge paper that grounds the 9-year framework history.
   - `The_Ouroboros_Systemv2.pdf` (10 pages) — updated framework paper, explicit Hopf-invariant axioms
   - `Electron_Calibration_Ouroboros_2026.pdf` (5 pages) — 3-parameter electron calibration to sub-percent
   - `Ouroboros_Particle_Spectrum_2026.pdf` (6 pages) — lepton spectrum + proton-radius-puzzle paper
@@ -30,6 +31,8 @@
 8. [Open questions / outstanding context](#8-open-questions--outstanding-context)
 9. [If we decide to pursue — minimal M6 sandbox shape](#9-if-we-decide-to-pursue--minimal-m6-sandbox-shape)
 10. [2026-05-16 update — full corpus + NSF X-Labs context](#10-2026-05-16-update--full-corpus--nsf-x-labs-context)
+11. [2026-05-17 update — 2017 foundation paper insights](#11-2026-05-17-update--2017-foundation-paper-insights)
+12. [2026-05-17 update — parallel M5/M6 build plan](#12-2026-05-17-update--parallel-m5m6-build-plan)
 
 ---
 
@@ -586,3 +589,293 @@ Re-stating the decision logic with the updated content:
 | **Track NSF X-Labs outcome** | If Werbos secures X-Labs funding for his Ouroboros sensor work, the framework gains institutional weight — adjust M6 priority upward | X-Labs award announcement |
 
 **Don't commit before M5.7.** The Ouroboros work is more credible than I rated it on first read, but M5 momentum is real and the M6 case isn't urgent enough to break the M5 build.
+
+> **Note (2026-05-17)**: §10.11 is superseded by §12 below. The 2017 foundation paper reading + the matched-substrate observation (both frameworks have V(?) as hardest part) shifted the decision toward earlier sandbox parallelism. See §12 for the current plan.
+
+---
+
+## 11. 2026-05-17 update — 2017 foundation paper insights
+
+New paper added to the corpus: `ouroboros4.docx` = Werbos's original 2017 challenge paper ("Proposal for a Theory of Everything", Paul J. Werbos, July 31 2017). This is the foundation document that all the 2026 numerical work answers. Key findings:
+
+### 11.1 9-year framework history
+
+The Ouroboros system was proposed in 2017, not in 2026. Werbos has been pursuing the same Lagrangian for nearly a decade. The recent zenodo papers (Calibration, Spectrum, Lean proofs) are the *maturation* of a long-pursued idea, not a sudden claim. This affects credibility calibration:
+
+| Reading | Implication |
+| --- | --- |
+| Decade-long commitment to one Lagrangian | researcher has thought carefully about edge cases over time |
+| Same framework, multiple iterative attempts | not chasing trends; persistent thesis |
+| Predecessor: "L3" neoclassical model (Werbos 2017, vixra:1704.0264) | Ouroboros emerged from prior attempts; not first try |
+
+### 11.2 The toroidal-poloidal mutual confinement — sharpens Q4
+
+The 2017 paper specifies the **geometric structure** of the chaoiton ansatz that gives angular momentum:
+
+```text
+A₀(x) = α(r)              ← poloidal scalar
+A(x) = β(r) d̂_φ           ← poloidal field around a central circle of radius R
+J₀(x) = γ(r)              ← toroidal scalar
+J(x) = δ(r) d̂_φ           ← toroidal current — like a wire loop around the circle
+
+where:
+  r, θ, φ = axisymmetric coords on the toroidal geometry
+  R       = radius of the central circle (the "ring" the soliton wraps around)
+```
+
+The "Ouroboros" name is now clear: **the snake eating its tail = J confines A, A confines J through mutual induction**. The narrow-torus limit (J confined to a wire loop with mass-term damping from f) is where the soliton emerges.
+
+This **sharpens the answer to Q4** ("why two fields"):
+
+| Old framing | Refined framing |
+| --- | --- |
+| "Two coupled vector fields" — looks arbitrary | Two fields are co-essential: the mutual toroidal/poloidal confinement IS the stability mechanism |
+| Duda's "single deeper field" objection | The two-field structure is not redundant; collapsing to one field eliminates the confinement geometry |
+| "Why not just use Duda's matrix M?" | Different geometry — matrix M lives at a point; A and J live around a torus |
+
+Werbos calls this the "yin-yang" model. The structural argument is genuine: you can't collapse the two fields without losing the confinement mechanism that gives the soliton its angular momentum.
+
+### 11.3 f(J·J) plays the Higgs role — same bottleneck as Duda's V(M)
+
+From the 2017 paper:
+
+> "The f term in equation 8 can operate like the Higgs term in the Yang-Mills-Higgs system, here forcing a kind of match between charge and spin, essential to a correct model of the electron."
+
+Important observation: **f(J·J) is the analog of Duda's V_LG(M) potential.** Both are "Higgs-like" terms that force structure/topology on the solitons. This means:
+
+| Framework | Hardest piece |
+| --- | --- |
+| Duda LdGS | V(M) = `a Tr(M²) − b Tr(M³) + c (Tr M²)²` — LdG-graduate via Faber regularization |
+| Werbos Ouroboros | f(J · J) — Higgs-like; 2017 paper says "any nonneg function with f(0)=0"; 2026 papers picked `f(s) = gs²` (quadratic) |
+
+**Both M5 and M6 face the same conceptual bottleneck: choosing the right nonlinear potential.** This is a critical observation for the parallel-build decision (§12) — work done on one potential gives intuition for the other.
+
+### 11.4 The Schwinger lineage
+
+> "Consider analogy to Schwinger's A and A* sources in his monopole model"
+
+Werbos explicitly grounds Ouroboros in Schwinger's 1969 dyon framework. Same Schwinger ancestor as Duda's LC framework (via Faber's running-coupling work). **Both M5 and M6 trace to Schwinger's magnetic-monopole intuition.** They are not from competing physics traditions — they are different mathematical realizations of the same Schwinger ancestor.
+
+```text
+                      Schwinger 1969
+                  (magnetic monopole model)
+                          │
+              ┌───────────┴───────────┐
+              ▼                       ▼
+       Faber (1990s+)            Werbos (2017+)
+       running coupling          toroidal-poloidal
+       via regularization        mutual confinement
+              │                       │
+              ▼                       ▼
+       Duda LdGS (M5)            Ouroboros (M6)
+       matrix-field              two-vector-field
+       biaxial nematic           narrow-torus chaoiton
+```
+
+This shared ancestry matters for the platform-cross-validation pitch: M5 and M6 are not "competing physics" but "competing mathematical realizations of a shared physics ancestor". The platform comparing them is comparing implementations of the same deep idea.
+
+### 11.5 The narrow-torus method
+
+The 2017 paper proposes the **narrow-torus limit** as the practical computational technique: look for a family of choices (c, f) where J becomes confined to an ever-narrower torus that shrinks to a circle in the limit. Stable axisymmetric solitons (SAS) emerge in this limit.
+
+The 2026 Calibration paper's radial ODE setup (RK45 on `r ∈ [0.02, 15.0]` code units, g = 1.0625, λ = 1.0) is the explicit numerical realization of this 2017 narrow-torus limit. So the 9-year arc is:
+
+| Year | Step |
+| --- | --- |
+| 2017 | Conceptual proposal — narrow-torus limit as method |
+| 2017 | "L3" predecessor neoclassical model |
+| 2026 (early) | Lean 4 formalization of charge quantization theorems |
+| 2026 (April) | Numerical existence of 62 stable chaoiton families |
+| 2026 (May) | Electron calibration — 3 params, sub-percent on 3 observables |
+| 2026 (May 15) | Particle Spectrum paper — lepton mass scaling law |
+| 2026 (May, ongoing) | Sensor architecture + NSF X-Labs alignment |
+
+### 11.6 Personal investment — calibration note
+
+The 2017 paper's appendix includes journal-entry-style text from Werbos's trip "from Virginia to the Arctic Ocean and back":
+
+> "Above all - if this works it will also show for the first time angular momentum in a stable relativistic soliton! ... LJA DERIVED at 71.4 degrees latitude, triple celebrations champagne. Just as the meditative link as passed north cape. Yesterday we talked about Ouroboros... This system might indeed have a higher energy solution as well, which could do what Schwinger proposed."
+
+Personal investment is high. Combined with:
+
+- AI co-authorship transparency on recent papers
+- The Nuclear story PDF's first-person framing
+- NSF X-Labs strategic positioning (as ex-NSF Program Director)
+- Decade-long pursuit of the same Lagrangian
+
+The picture is a researcher with deep personal stake in the framework gaining acceptance. **Read with calibration:** the technical claims should be evaluated on their merits independently of the framing. The math is the math.
+
+---
+
+## 12. 2026-05-17 update — parallel M5/M6 build plan
+
+This section supersedes §10.11. New plan triggered by:
+
+- 2017 foundation paper reading (§11) — confirms framework maturity
+- Duda's own acknowledgment that V(M) is "the most difficult" piece
+- The matched-substrate observation — both M5 and M6 have V/f as the same bottleneck
+- Cross-validation as a SABER risk-mitigation imperative
+
+### 12.1 Decision context — both frameworks have the same hardest piece
+
+Reframing the parallel-build question in light of §11.3:
+
+| Framework | "Hardest piece" admission |
+| --- | --- |
+| Duda LdGS | "Choosing the details especially of potential is very difficult, will rather require PDE simulations" — Duda paper §III |
+| Duda LdGS | "There is potential with minimum in this `diag(g, 1, δ, 0)` — getting EM+QM+GEM vacuum dynamics, and activating this potential especially to regularize infinite energy of e.g. charge. But finding its details seems the most difficult — could be like in Landau-de Gennes or slightly different." — Duda 2026-05-15 reply |
+| Duda LdGS | "Usually potentials are effective — there might be even deeper ~anisotropic fluid, effectively described by such liquid crystal-like potential." — Duda 2026-05-15 reply |
+| Werbos Ouroboros | f(J · J) "can be any nonnegative function" — 2017 paper. The specific form is a calibration choice. |
+
+**This is the SAME bottleneck.** Both frameworks rest on the right choice of nonlinear potential. Both creators acknowledge they don't know the exact form. The numerical work on either side could give intuition for the other.
+
+This is the strongest reason to build both: **diversification of failure modes on the shared bottleneck.**
+
+### 12.2 The plan — 4 steps
+
+```text
+   1. NumPy sandbox to reproduce Werbos's mass-frequency scan       (1-2 weeks)
+                  │
+                  ▼ pass → proceed; fail → drop M6 priority
+                  │
+   2. Decision on building M6                                       (1 day)
+                  │
+                  ▼ go
+                  │
+   3. Inform Werbos of decision + cc Models-of-Particles            (1 day)
+                  │
+                  ▼
+                  │
+   4. Scaffold M6 from current M5 vector substrate + parallel build (ongoing)
+                  │
+                  ▼
+   Both M5 and M6 build proceed in parallel,
+   cross-validating on shared observables
+```
+
+### 12.3 Step 1 — NumPy reproduction of Werbos's mass-frequency scan
+
+**What to reproduce** (from Particle Spectrum paper §2):
+
+| Element | Werbos's value |
+| --- | --- |
+| Coupling | g = 1.0625 |
+| Lagrange multiplier | λ = 1.0 |
+| ω scan range | 1.0 to 80 in 31 steps |
+| Integrator | RK45, rtol = 10⁻⁹, atol = 10⁻¹¹ |
+| Domain | r ∈ [0.02, 15.0] code units |
+| Grid | 500 grid points |
+| Localization criterion | `\|A(r_max)\| + \|J(r_max)\| < 0.25` |
+| Expected results | Electron at ω=1.0, muon at ω≈11.0, pion at ω≈13.0, tau at ω≈40.7 |
+| Expected scaling | m ∝ ω^2.22 (near-quadratic) |
+
+**Why NumPy first, not Taichi:**
+
+| Reason | Detail |
+| --- | --- |
+| Direct comparison | Werbos's code is scipy solve_ivp (RK45); using same tooling enables direct cross-check |
+| Speed of implementation | 1-2 weeks vs months for Taichi production |
+| Decision-grade output | the scan either reproduces or doesn't — clear pass/fail Gate 0 |
+| No M5 disruption | runs alongside M5.4 substrate refactor without splitting Taichi engineering time |
+
+**Outputs**:
+
+- Plot of m_predicted vs ω across the scan
+- Localization-acceptance map across (g, ω) parameter space
+- Verification of the m ∝ ω^2.22 scaling law
+- Decision-grade verdict: framework reproduces / partially reproduces / doesn't reproduce
+
+**Suggested location**: `openwave/xperiments/m6_ouroboros/research/scripts/m6_0_werbos_reproduction.py` (creates the M6 directory in a minimal-scaffold form even if M6 build doesn't go ahead).
+
+### 12.4 Step 2 — Decision criteria
+
+| Reproduction outcome | M6 decision |
+| --- | --- |
+| Reproduces within 5% across all 3 leptons | **GO** — Werbos's numerics are real; M6 worth building |
+| Reproduces for electron+muon but tau gap > 10% | **Conditional GO** — start scaffolding while investigating tau discrepancy |
+| Fails at electron calibration | **NO-GO** — framework's foundational numerics don't replicate; drop M6 priority |
+| Reproduction shows ω is continuous (not eigenvalue-spectrum) | **Conditional** — the 3 "fitted" ω's mean Ouroboros has the same parameter-count problem as Standard Model; still worth M6 sandbox but lower priority |
+| Numerical instability / non-convergent | **Investigate before deciding** — could be implementation detail or fundamental issue |
+
+### 12.5 Step 3 — Inform Werbos
+
+Short message to Werbos (cc Models-of-Particles list per group norms). Brief, specific, technical:
+
+```text
+- Acknowledge the Particle Spectrum paper directly addresses Q2 from our prior exchange
+- State the reproduction result (qualitative — was the spectrum scan reproducible?)
+- Announce decision on M6 scaffolding
+- Reaffirm cross-validation pitch (same engine, shared observables)
+- Re-invite engagement on architecture / design discussion at the openwave-labs repo
+- Keep the 3 unaddressed questions visible (Q1 mechanism, Q3 analytical ω, Q4 — even though 2017 paper sharpens the answer)
+```
+
+Same voice / tone as the prior Werbos email. Goes to the same recipient list. Public commitment to M6 (if GO) demonstrates the platform-for-multiple-models pitch is real.
+
+### 12.6 Step 4 — Scaffold M6 from M5 vector substrate
+
+If GO from step 2:
+
+| Step | Source | Target |
+| --- | --- | --- |
+| 4a | Create `openwave/xperiments/m6_ouroboros/` directory tree | mirror M5's structure |
+| 4b | Copy `lagrangian_engine.py` → `ouroboros_engine.py` | adapt for Vector(4) × 2 (A and J) instead of Vector(3) ψ |
+| 4c | Adapt seeders for toroidal-poloidal ansatz | reuse M5's hedgehog seeders as template |
+| 4d | Implement Lorenz constraint enforcer | new — not in M5 |
+| 4e | Adapt `update_director_glyphs` for vector-field rendering | reuse with minor changes |
+| 4f | Run Werbos's reproduction in Taichi at 65³ as M6 Gate 1 | matches what NumPy did, but in production engine |
+| 4g | Implement Chern-Simons linking number kernel | M6.1 gating test |
+
+**Important**: M6's Vector(4) × 2 substrate is LIGHTER than M5's matrix substrate (8 DoF/voxel vs 6 for M5 with the Lorenz constraints applied — but the constraint-enforcement makes it net comparable). The Taichi scaffolding can largely mirror M5 with substrate-type changes only.
+
+### 12.7 Parallel-build engineering reality
+
+Once both M5 and M6 are scaffolded:
+
+| Risk | Mitigation |
+| --- | --- |
+| Context switching cost | Time-box weeks — alternate weeks between M5 and M6 production work, not days |
+| Cognitive load | Keep cross-validation observables identical across both (same Coulomb test, same g-factor test, same resonance protocol) — this reduces mental model count |
+| Risk of incomplete both | Hard prioritization: M5 stays primary; M6 is secondary; if either is at risk of stalling, finish M5.7 first |
+| Shared bottleneck on V/f | Treat as a feature: insights from one might inform the other; track findings in both research folders |
+
+**Communicating the parallel build**:
+
+- README / WELCOME: model-agnostic positioning is already in place (per the 2026-05-16 README rewrite)
+- Once M6 is scaffolded, add to the Major Theoretical Contributions table (M5: Duda; M6: Werbos)
+- Update memory entries to reflect both methods are in active build
+
+### 12.8 SABER alignment with the parallel-build plan
+
+For the SABER thermal-hypothesis goal, parallel M5+M6 gives:
+
+| SABER question | M5 angle | M6 angle |
+| --- | --- | --- |
+| What is the substrate where heat lives? | matrix-twist `(A, ω)` excess | chaoiton oscillation excess |
+| What carries the engineering coupling? | EM tilts (1-axis curvature) | J-field perturbations |
+| What's the modulation lever? | drive matrix tilts at resonance | drive A-J coupling at chaoiton ω |
+| Cross-validation target | thermal-to-EM conversion | thermal-to-J-field conversion |
+
+**If both frameworks predict the SABER hypothesis works, the case becomes much stronger.** Cross-validation across two independent substrates is far more convincing than a single-framework prediction. This is the strongest scientific argument for the parallel build.
+
+### 12.9 NSF X-Labs strategic note
+
+If Werbos secures NSF X-Labs funding for his Ouroboros sensor architecture, having OpenWave's M6 scaffolded becomes immediately valuable:
+
+- Demonstrates independent implementation of the framework
+- Positions OpenWave as the open-source numerical platform underneath his sensor work
+- Could open collaboration paths (his sensor + our numerical engine)
+- Or competitive paths (our M5+M6 cross-validation as the better scientific platform)
+
+Either way, having M6 scaffolded ahead of any X-Labs award outcome is strategically sound.
+
+### 12.10 Summary — the new plan
+
+| What changed from §10.11 | Why |
+| --- | --- |
+| "Don't commit before M5.7" → "NumPy sandbox now" | 2017 paper + matched-substrate observation make M6 evaluation cheaper to start earlier |
+| "Sequential build" → "parallel build after reproduction" | Duda's V(M) hedging + SABER risk-mitigation imperative |
+| "M6 as alternative" → "M6 as backup + cross-validator" | Failure-mode diversification on the shared V/f bottleneck |
+| "Wait for Werbos reply" → "Reproduce his numerics ourselves" | Faster decision; reproduction is the strongest possible technical validation |
+
+**Action gate:** start step 1 (NumPy sandbox) as soon as you have the engineering hours. Likely scheduled to interleave with the M5.4 substrate-refactor study work currently in progress, since they're complementary (one is sandbox NumPy, one is Taichi production planning).
