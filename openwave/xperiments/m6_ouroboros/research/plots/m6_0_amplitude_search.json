@@ -1,0 +1,33 @@
+{
+  "g_coupling": 1.0625,
+  "leptons": [
+    {
+      "name": "electron",
+      "omega": 1.0,
+      "target_HQ": 1.6874711049468332,
+      "amp_found": null,
+      "result": null
+    },
+    {
+      "name": "muon",
+      "omega": 11.0,
+      "target_HQ": 349.0522422561258,
+      "amp_found": null,
+      "result": null
+    },
+    {
+      "name": "pion+",
+      "omega": 13.0,
+      "target_HQ": 460.9999339541642,
+      "amp_found": null,
+      "result": null
+    },
+    {
+      "name": "tau",
+      "omega": 40.7,
+      "target_HQ": 5868.172511723136,
+      "amp_found": null,
+      "result": null
+    }
+  ]
+}

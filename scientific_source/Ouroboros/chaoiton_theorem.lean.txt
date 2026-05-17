@@ -1,0 +1,117 @@
+text
+/-
+Formal Statement of the Existence of a Stable Chaoiton
+in the Ouroboros System
+
+Authors: Paul J. Werbos, Claude (Anthropic AI), DeepSeek AI
+Date: May 2026
+
+This Lean 4 file contains the formal theorem statement extracted
+from the Ouroboros Lagrangian field theory of two coupled
+Lorenz-constrained vector fields A^μ and J^μ.
+
+The statement asserts the existence of a stable, time-periodic,
+localized solution (a "chaoiton") satisfying specific boundary
+conditions, regularity, localization, and positive-definiteness
+of the second variation of the constrained energy functional.
+-/
+
+import Mathlib
+
+open Real
+open Set
+open Filter
+
+/- We define the reduced radial ODE system corresponding to the
+   toroidal ansatz of Werbos (2017, 2025). The radial coordinate
+   is r ∈ (0, ∞). The functions α, β : ℝ → ℝ are the field profiles.
+   The parameters g, ω, λ, A₀, B₀ are real constants with g>0, ω>0.
+-/
+
+structure ChaoitonParameters where
+  g : ℝ
+  ω : ℝ
+  λ : ℝ
+  A₀ : ℝ
+  B₀ : ℝ
+  g_pos : g > 0
+  ω_pos : ω > 0
+
+/- The ODE system:
+   α'' + (1/r) α' - (1/r²) α + ω² α = β
+   β'' + (1/r) β' - (1/r²) β + ω² β = α - λ β - 4g β³
+-/
+
+def ode_system (p : ChaoitonParameters) (α β : ℝ → ℝ) : Prop :=
+  ∀ (r : ℝ), r > 0 →
+    (deriv (deriv α) r + (1/r) * deriv α r - (1/(r^2)) * α r + (p.ω)^2 * α r = β r) ∧
+    (deriv (deriv β) r + (1/r) * deriv β r - (1/(r^2)) * β r + (p.ω)^2 * β r = α r - p.λ * β r - 4 * p.g * (β r)^3)
+
+/- Boundary conditions:
+   α(r) ~ A₀ r  as r → 0⁺
+   β(r) ~ B₀ r  as r → 0⁺
+   α(r) → 0    as r → ∞
+   β(r) → 0    as r → ∞
+-/
+
+def boundary_conditions (p : ChaoitonParameters) (α β : ℝ → ℝ) : Prop :=
+  (tendsto (λ r => α r / r) (𝓝[{0}ᶜ] (0 : ℝ)) (𝓝 p.A₀)) ∧
+  (tendsto (λ r => β r / r) (𝓝[{0}ᶜ] (0 : ℝ)) (𝓝 p.B₀)) ∧
+  (tendsto α atTop (𝓝 0)) ∧
+  (tendsto β atTop (𝓝 0))
+
+/- Localization condition: for all r ≥ 8, |α(r)| + |β(r)| < 0.1 -/
+
+def localization_condition (α β : ℝ → ℝ) : Prop :=
+  ∀ (r : ℝ), r ≥ 8 → |α r| + |β r| < 0.1
+
+/- Regularity condition: α and β have at most 4 radial nodes each.
+   We represent this by bounding the number of sign changes. -/
+
+def num_nodes_bounded (f : ℝ → ℝ) (N : ℕ) : Prop :=
+  sorry -- formal definition of radial nodes via roots of f(r)=0
+
+def regularity_condition (α β : ℝ → ℝ) : Prop :=
+  num_nodes_bounded α 4 ∧ num_nodes_bounded β 4
+
+/- Stability condition: the second variation of H' = H - λQ
+   is positive-definite in the radially symmetric sector.
+   Concretely: no conjugate point exists before r = 8. -/
+
+def no_conjugate_point_before (α β : ℝ → ℝ) (r_max : ℝ) : Prop :=
+  sorry -- Gelfand-Fomin conjugate point test
+
+def stability_condition (α β : ℝ → ℝ) : Prop :=
+  no_conjugate_point_before α β 8
+
+/- Finite energy condition: the total energy H is positive and finite. -/
+
+def energy (α β : ℝ → ℝ) : ℝ :=
+  sorry -- integral of energy density from r=0 to ∞
+
+def finite_energy_condition (α β : ℝ → ℝ) : Prop :=
+  energy α β > 0 ∧ energy α β < ∞
+
+/-
+  Main Theorem: Existence of a Stable Chaoiton
+
+  There exists a set of positive parameters (g, ω, λ, A₀, B₀) and
+  corresponding field profiles (α, β) such that:
+  - the ODE system holds
+  - boundary conditions are satisfied
+  - the solution is localized, regular, stable, and has finite energy
+-/
+
+theorem exists_stable_chaoiton :
+  ∃ (p : ChaoitonParameters) (α β : ℝ → ℝ),
+    ode_system p α β ∧
+    boundary_conditions p α β ∧
+    localization_condition α β ∧
+    regularity_condition α β ∧
+    stability_condition α β ∧
+    finite_energy_condition α β :=
+by
+  -- Proof: Variation of the shooting method with implicit function
+  -- theorem on the parameter space (g, ω, λ, A₀, B₀).
+  -- Completion of this proof is ongoing work.
+  sorry
