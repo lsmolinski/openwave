@@ -1,6 +1,6 @@
 # M6.0 — Werbos's mass-frequency reproduction (NumPy sandbox)
 
-**Purpose** — independently reproduce Werbos's published claim from `scientific_source/Ouroboros/Ouroboros_Particle_Spectrum_2026.pdf` that scanning the chaoiton oscillation frequency `ω` at fixed coupling parameters `(g = 1.0625, λ = 1.0)` produces the lepton mass spectrum (electron / muon / pion / tau).
+**Purpose** — independently reproduce Werbos's published claim from `theory/Ouroboros/Ouroboros_Particle_Spectrum_2026.pdf` that scanning the chaoiton oscillation frequency `ω` at fixed coupling parameters `(g = 1.0625, λ = 1.0)` produces the lepton mass spectrum (electron / muon / pion / tau).
 
 If the reproduction succeeds, M6 is a GO and we scaffold the Taichi production substrate. If it fails, M6 is downgraded. See `../0a_background.md § 12` for the decision framework.
 

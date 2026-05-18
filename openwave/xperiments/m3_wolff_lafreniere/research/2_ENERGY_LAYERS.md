@@ -61,7 +61,7 @@ Wave equation foundations:
 - LaFreniere radiation pressure model: `lafreniere/Gabriel_LaFreniere/sa_phaseshift.html` — core phase shift, diffractive lens, wave speed in compressed medium
 - [LaFreniere Electron](http://www.interwaves.com/en/sa_electron.htm) — standing → traveling transition, near-field → far-field
 
-Scientific papers (in `/scientific_source/`):
+Scientific papers (in `/theory/`):
 
 - `01. The Geometry of Spacetime and the Unification of Forces v2.3.pdf` — force unification framework
 - `02. The Geometry of Particles and the Explanation of Their Creation and Decay v2.pdf` — dual/non-dual tetrahedra, particle geometry, spin

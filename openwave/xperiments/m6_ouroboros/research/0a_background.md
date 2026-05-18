@@ -6,8 +6,8 @@
 
 **Cross-refs:**
 
-- Original paper (v1): `scientific_source/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` (10 pages)
-- Full Ouroboros corpus (downloaded 2026-05-16 → 2026-05-17) at `scientific_source/Ouroboros/`:
+- Original paper (v1): `theory/Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` (10 pages)
+- Full Ouroboros corpus (downloaded 2026-05-16 → 2026-05-17) at `theory/`:
   - `ouroboros4.docx` — **2017 foundation paper** ("Proposal for a Theory of Everything", Werbos July 31, 2017). The original challenge paper that grounds the 9-year framework history.
   - `The_Ouroboros_Systemv2.pdf` (10 pages) — updated framework paper, explicit Hopf-invariant axioms
   - `Electron_Calibration_Ouroboros_2026.pdf` (5 pages) — 3-parameter electron calibration to sub-percent
@@ -312,7 +312,7 @@ M6 (Werbos):  two coupled vector fields A, J on Minkowski
 | Zenodo 20179985 | "Do you still believe in quarks?" (Schwinger dyon alternative) | medium — QCD alternative framing |
 | Zenodo 20218067 | "Ouroboros model passes another test" — electron properties to ~1% | high — empirical test result |
 
-Recommended: download all four locally to `scientific_source/` before committing to M6 work. The 20218067 paper is freshest and most directly relevant to whether the framework actually produces electron properties at engineering accuracy.
+Recommended: download all four locally to `theory/` before committing to M6 work. The 20218067 paper is freshest and most directly relevant to whether the framework actually produces electron properties at engineering accuracy.
 
 ### Technical questions worth asking Werbos
 
@@ -387,7 +387,7 @@ M6 is genuinely a **post-M5.7** call. Don't pre-commit. Re-evaluate when:
 Major substantive update triggered by:
 
 - Werbos's 2026-05-16 reply to the technical outreach with the new Particle Spectrum paper (Zenodo 20242421)
-- Full Ouroboros corpus downloaded to `scientific_source/Ouroboros/`
+- Full Ouroboros corpus downloaded to `theory/`
 - NSF $1.5B X-Labs initiative announcement (2026-05-14) — strategic context
 
 ### 10.1 Q2 answered — Werbos has a concrete mass-spectrum mechanism
@@ -478,7 +478,7 @@ This is a 4-page first-person narrative document, not a peer-reviewed paper. It'
 | Larry Page's "clean energy" project is taking over a Mitsubishi project Werbos has tracked | personal files |
 | Nuclear sensor networks needed now to detect such activity | his sensor architecture in `Ouroboros System v2 §5` |
 
-**How to read this:** treat as Werbos's *motivation* for the framework, not as established physics. The cold-fusion / national-security framing is the *why* of his Ouroboros work — he sees a fundamental theory of long-range nuclear forces as both a path to clean energy and a national-security imperative. Don't take the specific historical claims as verified; do note the framing.
+**How to read this:** treat as Werbos's *motivation* for the framework, not as established physics. The cold-fusion / national-security framing is the *why* of his Ouroboros work — he sees a fundamental theory of long-range nuclear forces as both a path to clean energy and a national-security imperative. Don't takchaoitone the specific historical claims as verified; do note the framing.
 
 ### 10.7 NSF X-Labs strategic context — likely intentional positioning
 

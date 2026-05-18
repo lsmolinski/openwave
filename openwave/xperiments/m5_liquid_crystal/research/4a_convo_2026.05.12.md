@@ -4,7 +4,7 @@ Working overview consolidating the multi-day exchange with Jarek Duda on the mod
 
 **Status** — substrate gating question CLOSED. Refactor green-lit. Many forward implications captured below.
 
-**Cross-refs (current):** [0c_roadmap.md](0c_roadmap.md), [3b_lagrangian_roadblocks.md](3b_lagrangian_roadblocks.md), [1a_lagrangian_framework.md](1a_lagrangian_framework.md), `scientific_source/liquid_crystal_model.pdf` (Duda arxiv:2108.07896 v7), `scientific_source/liquid_crystal_particles.pdf` (Duda slides, 51 pages).
+**Cross-refs (current):** [0c_roadmap.md](0c_roadmap.md), [3b_lagrangian_roadblocks.md](3b_lagrangian_roadblocks.md), [1a_lagrangian_framework.md](1a_lagrangian_framework.md), `theory/liquid_crystal_model.pdf` (Duda arxiv:2108.07896 v7), `theory/liquid_crystal_particles.pdf` (Duda slides, 51 pages).
 
 ---
 
@@ -501,7 +501,7 @@ The thing to do *right* in M5.4: write operator kernels (commutator, curvature, 
 
 ## 11. Slides content (51 pages) — instrumental beyond the paper
 
-Local PDF: `scientific_source/liquid_crystal_particles.pdf`.
+Local PDF: `theory/liquid_crystal_particles.pdf`.
 
 ### Top-level confirmations
 
@@ -606,7 +606,7 @@ His pitch: same kinetic and potential structure as standard LC/Skyrmion, plus to
 
 | Entry | Captures |
 | --- | --- |
-| `reference_duda_slides` | 51-page slides at scientific_source/, list of ported targets |
+| `reference_duda_slides` | 51-page slides at theory/, list of ported targets |
 | `feedback_eigenvalue_force_map` | 1=EM, δ=QM, g=gravity, 3D leptons from axis choice |
 | `reference_kg_from_hedgehog_formula` | closed-form `2∂_tt ψ = …` from slide page 32 |
 | `project_duda_thread_2026_05_14_15` | substrate gate closed, three directions, reciprocal ask |
