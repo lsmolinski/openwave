@@ -1,0 +1,202 @@
+[
+  {
+    "label": "S1 sign=-1, m_J\u00b2=0, r_max=   30",
+    "ok": true,
+    "H": 14.862317863132407,
+    "mMeV": 15.373774145871783,
+    "tail": 0.034593216297617795,
+    "loc": true,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 2,
+    "slope": 0.14997405996540855,
+    "V_at_rmax": -0.008648304074404449,
+    "A_at_rmax": -0.008648304074404449
+  },
+  {
+    "label": "S1 sign=-1, m_J\u00b2=0, r_max=   60",
+    "ok": true,
+    "H": 30.413703917404096,
+    "mMeV": 31.460329355857272,
+    "tail": 0.03661590304574546,
+    "loc": true,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 4,
+    "slope": -0.019654386040100866,
+    "V_at_rmax": -0.009153975761436365,
+    "A_at_rmax": -0.009153975761436365
+  },
+  {
+    "label": "S1 sign=-1, m_J\u00b2=0, r_max=  120",
+    "ok": true,
+    "H": 60.506580186739,
+    "mMeV": 62.588790436080224,
+    "tail": 0.028753860733672428,
+    "loc": true,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 8,
+    "slope": -9.977330951694407e-05,
+    "V_at_rmax": 0.007188465183418107,
+    "A_at_rmax": 0.007188465183418107
+  },
+  {
+    "label": "S1 sign=+1, m_J\u00b2=0, r_max=   30",
+    "ok": true,
+    "H": 1.3960038643066829e+25,
+    "mMeV": 1.4440444831188561e+25,
+    "tail": 312385752671.92236,
+    "loc": false,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 0,
+    "slope": 0.9812615601297391,
+    "V_at_rmax": 78096438167.98059,
+    "A_at_rmax": 78096438167.98059
+  },
+  {
+    "label": "S1 sign=+1, m_J\u00b2=0, r_max=   60",
+    "ok": true,
+    "H": 1.6157331737188466e+51,
+    "mMeV": 1.671335327470305e+51,
+    "tail": 2.35549565149277e+24,
+    "loc": false,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 0,
+    "slope": 0.9906761729732672,
+    "V_at_rmax": 5.888739128731925e+23,
+    "A_at_rmax": 5.888739128731925e+23
+  },
+  {
+    "label": "S1 sign=+1, m_J\u00b2=0, r_max=  120",
+    "ok": true,
+    "H": 2.1226695489899805e+103,
+    "mMeV": 2.1957168816475308e+103,
+    "tail": 1.90010701309285e+50,
+    "loc": false,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 0,
+    "slope": 0.995349099928794,
+    "V_at_rmax": 4.750267532732125e+49,
+    "A_at_rmax": 4.750267532732125e+49
+  },
+  {
+    "label": "S2 sign=-1, m_J\u00b2=0.01, A0=0.141",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=-1, m_J\u00b2=0.10, A0=0.332",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=-1, m_J\u00b2=0.50, A0=0.714",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=-1, m_J\u00b2=1.00, A0=1.005",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=+1, m_J\u00b2=0.01, A0=0.141",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=+1, m_J\u00b2=0.10, A0=0.332",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=+1, m_J\u00b2=0.50, A0=0.714",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S2 sign=+1, m_J\u00b2=1.00, A0=1.005",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S3 sign=-1, m_J\u00b2=0, \u03c9_ins=explicit",
+    "ok": true,
+    "H": 21.140179690462887,
+    "mMeV": 21.867675752685294,
+    "tail": 0.03430831483355285,
+    "loc": true,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 2,
+    "slope": 0.001878377994385406,
+    "V_at_rmax": -0.008577078708388213,
+    "A_at_rmax": -0.008577078708388213
+  },
+  {
+    "label": "S3 sign=-1, m_J\u00b2=0, \u03c9_ins=in_m_J",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S3 sign=+1, m_J\u00b2=0, \u03c9_ins=explicit",
+    "ok": true,
+    "H": 0.0,
+    "mMeV": 0.0,
+    "tail": 0.4,
+    "loc": false,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 0,
+    "slope": 1.3127343580512698e-17,
+    "V_at_rmax": 0.1,
+    "A_at_rmax": 0.1
+  },
+  {
+    "label": "S3 sign=+1, m_J\u00b2=0, \u03c9_ins=in_m_J",
+    "ok": false,
+    "err": "Required step size is less than spacing between nu"
+  },
+  {
+    "label": "S4 sign=-1, m_J\u00b2=0, dim=3",
+    "ok": true,
+    "H": 2.8950208458606483,
+    "mMeV": 2.994647069301197,
+    "tail": 0.013176394941308702,
+    "loc": true,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 2,
+    "slope": 0.031796753590916514,
+    "V_at_rmax": -0.0032940987353271755,
+    "A_at_rmax": -0.0032940987353271755
+  },
+  {
+    "label": "S4 sign=+1, m_J\u00b2=0, dim=3",
+    "ok": true,
+    "H": 7.131706137730753e+23,
+    "mMeV": 7.377129223442135e+23,
+    "tail": 71229103844.3643,
+    "loc": false,
+    "Q_CS": 0.0,
+    "dQV": 0.0,
+    "dJA": 0.0,
+    "sc": 0,
+    "slope": 0.9628821097159733,
+    "V_at_rmax": 17807275961.091076,
+    "A_at_rmax": 17807275961.091076
+  }
+]

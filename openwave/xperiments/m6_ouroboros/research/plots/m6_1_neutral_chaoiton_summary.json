@@ -1,0 +1,30 @@
+{
+  "H_code": 14.862317863132407,
+  "m_chi_MeV": 15.373774145871783,
+  "Q_CS": 0.0,
+  "tail": 0.034593216297617795,
+  "localized": true,
+  "locked_drift_QV": 0.0,
+  "locked_drift_JA": 0.0,
+  "params": {
+    "g": 1.0625,
+    "lam": 1.0,
+    "omega": 1.0,
+    "m_J_sq": 0.0,
+    "A0": 0.1,
+    "B0": 0.1,
+    "r_min": 0.02,
+    "r_max": 30.0,
+    "n_grid": 2000,
+    "laplacian_dim": 2,
+    "omega_insertion": "none"
+  },
+  "convergence": {
+    "base_H": 14.862317863132407,
+    "double_N_H": 14.862304485680223,
+    "delta_N_pct": 9.000919175197983e-05,
+    "double_R_H": 30.413703917404096,
+    "delta_R_pct": 104.63634405807313,
+    "converged": false
+  }
+}
