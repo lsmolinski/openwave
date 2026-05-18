@@ -32,6 +32,7 @@
 9. [2026-05-16 update — full corpus + NSF X-Labs context](#9-2026-05-16-update--full-corpus--nsf-x-labs-context)
 10. [2026-05-17 update — 2017 foundation paper insights](#10-2026-05-17-update--2017-foundation-paper-insights)
 11. [2026-05-17 update — parallel M5/M6 build plan](#11-2026-05-17-update--parallel-m5m6-build-plan)
+12. [2026-05-18 update — Werbos collaboration + benchmark spec + sandbox v2 plan](#12-2026-05-18-update--werbos-collaboration--benchmark-spec--sandbox-v2-plan)
 
 ---
 
@@ -390,7 +391,7 @@ Major substantive update triggered by:
 - Full Ouroboros corpus downloaded to `theory/`
 - NSF $1.5B X-Labs initiative announcement (2026-05-14) — strategic context
 
-### 10.1 Q2 answered — Werbos has a concrete mass-spectrum mechanism
+### 9.1 Q2 answered — Werbos has a concrete mass-spectrum mechanism
 
 The Particle Spectrum paper (`Ouroboros_Particle_Spectrum_2026.pdf`, 6 pages, May 2026, co-authored with Claude Sonnet 4.6) directly addresses the lepton-hierarchy question from §8 Q2.
 
@@ -409,7 +410,7 @@ The Particle Spectrum paper (`Ouroboros_Particle_Spectrum_2026.pdf`, 6 pages, Ma
 
 **Werbos's central claim:** the three lepton generations are three values of ω in the *same* Lagrangian with the *same* coupling constants — no new parameters per family. The 4-6% gaps are claimed to be numerical-scan-resolution artifacts that finer scans should close.
 
-### 10.2 The key open question Werbos himself flags
+### 9.2 The key open question Werbos himself flags
 
 > "Whether these are truly eigenvalues — i.e., whether there is a quantization condition that picks out exactly ω = 1, 11, 40.7 and no other stable values — is the key open question."
 
@@ -419,7 +420,7 @@ If ω is **continuous**: 3 separate fitted inputs for 3 particles → not differ
 
 The numerical evidence (62 stable chaoiton families clustered at specific ω) suggests discreteness, but no analytical proof exists yet. This is what would need to be settled before the mass-spectrum claim is fully load-bearing.
 
-### 10.3 Electron calibration detail — sub-percent across three observables
+### 9.3 Electron calibration detail — sub-percent across three observables
 
 The Electron Calibration paper (`Electron_Calibration_Ouroboros_2026.pdf`, 5 pages) reports the calibration baseline:
 
@@ -437,7 +438,7 @@ Key technical points:
 - **R^phys = 191 fm** ≈ ½ the electron's reduced Compton wavelength (`λ̄_e ≈ 386 fm`). Notable choice; the chaoiton "is" the electron at this scale.
 - **0.116% g-factor residual = QED α/2π exactly** — numerologically suggestive but not actually matching at the 1-part-per-thousand level. Werbos notes this; doesn't claim QED reproduction.
 
-### 10.4 Charge quantization v2 — explicit Hopf-axiom approach
+### 9.4 Charge quantization v2 — explicit Hopf-axiom approach
 
 The Ouroboros System v2 paper (`The_Ouroboros_Systemv2.pdf`) updates the v1 charge-quantization argument. Key change:
 
@@ -451,7 +452,7 @@ The v2 paper also explicitly clarifies the J-field is NOT a classical current �
 
 So Duda's "J is averaged statistics" objection is now formally answered.
 
-### 10.5 AI co-authorship — transparency note
+### 9.5 AI co-authorship — transparency note
 
 Multiple Ouroboros papers now list **explicit AI co-authorship**:
 
@@ -465,7 +466,7 @@ Multiple Ouroboros papers now list **explicit AI co-authorship**:
 
 Worth noting for context — Werbos is transparent about AI contribution, which is good practice but also unusual in physics. The mathematics is presumably his physics + AI computational assistance. Read the technical claims on their own merits, not on the authorship convention.
 
-### 10.6 The "Nuclear story" PDF — Werbos's framing
+### 9.6 The "Nuclear story" PDF — Werbos's framing
 
 This is a 4-page first-person narrative document, not a peer-reviewed paper. It's Werbos's personal account of his 1989 EPRI-NSF cold-fusion conference work with Schwinger, Teller, and Sawada. Key claims (in Werbos's voice, unverified):
 
@@ -480,7 +481,7 @@ This is a 4-page first-person narrative document, not a peer-reviewed paper. It'
 
 **How to read this:** treat as Werbos's *motivation* for the framework, not as established physics. The cold-fusion / national-security framing is the *why* of his Ouroboros work — he sees a fundamental theory of long-range nuclear forces as both a path to clean energy and a national-security imperative. Don't takchaoitone the specific historical claims as verified; do note the framing.
 
-### 10.7 NSF X-Labs strategic context — likely intentional positioning
+### 9.7 NSF X-Labs strategic context — likely intentional positioning
 
 The NSF X-Labs newsletter (2026-05-14) announced **$1.5B over 10 years** for "independent teams of researchers, engineers and entrepreneurs pursuing milestone-based federal funding to solve specific scientific challenges." First-round topics:
 
@@ -498,7 +499,7 @@ Werbos was an NSF Program Director (retired). He knows the funding architecture 
 
 **Implication for our M6 evaluation:** Werbos is positioning Ouroboros not just as a fundamental physics framework but as a **funded engineering platform**. If/when an X-Labs award lands for his team, the Ouroboros work will have institutional momentum well beyond the current zenodo-preprint stage.
 
-### 10.8 Revised verdict — modest upward revision
+### 9.8 Revised verdict — modest upward revision
 
 | Aspect | Old verdict (2026-05-15) | Updated verdict (2026-05-16) |
 | --- | --- | --- |
@@ -513,7 +514,7 @@ Werbos was an NSF Program Director (retired). He knows the funding architecture 
 
 **Revised M6 viability:** still \"cross-validation method post-M5.7\", but now with **higher technical credibility**. The framework is more developed than I gave it credit for.
 
-### 10.9 Updated technical questions for Werbos (post-spectrum-paper)
+### 9.9 Updated technical questions for Werbos (post-spectrum-paper)
 
 Refining the Q-list in §8 with the new content:
 
@@ -527,7 +528,7 @@ Refining the Q-list in §8 with the new content:
 | Q6 (new) | open | The proton-as-three-chaoiton picture revives Schwinger's 1969 H-particle. How does this reconcile with QCD's experimental successes (DIS scaling, jets, asymptotic freedom)? |
 | Q7 (new) | open | The Nuclear story claims about Schwinger+Pons cold-fusion confirmation in 1989 — is there a citation trail beyond your personal correspondence? Important for treating the framework as fundamental physics vs as historical narrative. |
 
-### 10.10 Decision update — when to actually commit to M6 build
+### 9.10 Decision update — when to actually commit to M6 build
 
 Re-stating the decision logic with the updated content:
 
@@ -541,7 +542,7 @@ Re-stating the decision logic with the updated content:
 
 **Don't commit before M5.7.** The Ouroboros work is more credible than I rated it on first read, but M5 momentum is real and the M6 case isn't urgent enough to break the M5 build.
 
-> **Note (2026-05-17)**: §10.11 is superseded by §12 below. The 2017 foundation paper reading + the matched-substrate observation (both frameworks have V(?) as hardest part) shifted the decision toward earlier sandbox parallelism. See §12 for the current plan.
+> **Note (2026-05-17)**: §9.10 is superseded by §11 below. The 2017 foundation paper reading + the matched-substrate observation (both frameworks have V(?) as hardest part) shifted the decision toward earlier sandbox parallelism. See §11 for the current plan.
 
 ---
 
@@ -549,7 +550,7 @@ Re-stating the decision logic with the updated content:
 
 New paper added to the corpus: `ouroboros4.docx` = Werbos's original 2017 challenge paper ("Proposal for a Theory of Everything", Paul J. Werbos, July 31 2017). This is the foundation document that all the 2026 numerical work answers. Key findings:
 
-### 11.1 9-year framework history
+### 10.1 9-year framework history
 
 The Ouroboros system was proposed in 2017, not in 2026. Werbos has been pursuing the same Lagrangian for nearly a decade. The recent zenodo papers (Calibration, Spectrum, Lean proofs) are the *maturation* of a long-pursued idea, not a sudden claim. This affects credibility calibration:
 
@@ -559,7 +560,7 @@ The Ouroboros system was proposed in 2017, not in 2026. Werbos has been pursuing
 | Same framework, multiple iterative attempts | not chasing trends; persistent thesis |
 | Predecessor: "L3" neoclassical model (Werbos 2017, vixra:1704.0264) | Ouroboros emerged from prior attempts; not first try |
 
-### 11.2 The toroidal-poloidal mutual confinement — sharpens Q4
+### 10.2 The toroidal-poloidal mutual confinement — sharpens Q4
 
 The 2017 paper specifies the **geometric structure** of the chaoiton ansatz that gives angular momentum:
 
@@ -586,7 +587,7 @@ This **sharpens the answer to Q4** ("why two fields"):
 
 Werbos calls this the "yin-yang" model. The structural argument is genuine: you can't collapse the two fields without losing the confinement mechanism that gives the soliton its angular momentum.
 
-### 11.3 f(J·J) plays the Higgs role — same bottleneck as Duda's V(M)
+### 10.3 f(J·J) plays the Higgs role — same bottleneck as Duda's V(M)
 
 From the 2017 paper:
 
@@ -601,7 +602,7 @@ Important observation: **f(J·J) is the analog of Duda's V_LG(M) potential.** Bo
 
 **Both M5 and M6 face the same conceptual bottleneck: choosing the right nonlinear potential.** This is a critical observation for the parallel-build decision (§12) — work done on one potential gives intuition for the other.
 
-### 11.4 The Schwinger lineage
+### 10.4 The Schwinger lineage
 
 > "Consider analogy to Schwinger's A and A* sources in his monopole model"
 
@@ -625,7 +626,7 @@ Werbos explicitly grounds Ouroboros in Schwinger's 1969 dyon framework. Same Sch
 
 This shared ancestry matters for the platform-cross-validation pitch: M5 and M6 are not "competing physics" but "competing mathematical realizations of a shared physics ancestor". The platform comparing them is comparing implementations of the same deep idea.
 
-### 11.5 The narrow-torus method
+### 10.5 The narrow-torus method
 
 The 2017 paper proposes the **narrow-torus limit** as the practical computational technique: look for a family of choices (c, f) where J becomes confined to an ever-narrower torus that shrinks to a circle in the limit. Stable axisymmetric solitons (SAS) emerge in this limit.
 
@@ -641,7 +642,7 @@ The 2026 Calibration paper's radial ODE setup (RK45 on `r ∈ [0.02, 15.0]` code
 | 2026 (May 15) | Particle Spectrum paper — lepton mass scaling law |
 | 2026 (May, ongoing) | Sensor architecture + NSF X-Labs alignment |
 
-### 11.6 Personal investment — calibration note
+### 10.6 Personal investment — calibration note
 
 The 2017 paper's appendix includes journal-entry-style text from Werbos's trip "from Virginia to the Arctic Ocean and back":
 
@@ -660,16 +661,16 @@ The picture is a researcher with deep personal stake in the framework gaining ac
 
 ## 11. 2026-05-17 update — parallel M5/M6 build plan
 
-This section supersedes §10.11. New plan triggered by:
+This section supersedes §9.10. New plan triggered by:
 
 - 2017 foundation paper reading (§11) — confirms framework maturity
 - Duda's own acknowledgment that V(M) is "the most difficult" piece
 - The matched-substrate observation — both M5 and M6 have V/f as the same bottleneck
 - Cross-validation as a risk-mitigation strategy for the overall research thrust
 
-### 12.1 Decision context — both frameworks have the same hardest piece
+### 11.1 Decision context — both frameworks have the same hardest piece
 
-Reframing the parallel-build question in light of §11.3:
+Reframing the parallel-build question in light of §10.3:
 
 | Framework | "Hardest piece" admission |
 | --- | --- |
@@ -682,7 +683,7 @@ Reframing the parallel-build question in light of §11.3:
 
 This is the strongest reason to build both: **diversification of failure modes on the shared bottleneck.**
 
-### 12.2 The plan — 4 steps
+### 11.2 The plan — 4 steps
 
 ```text
    1. NumPy sandbox to reproduce Werbos's mass-frequency scan       (1-2 weeks)
@@ -704,7 +705,7 @@ This is the strongest reason to build both: **diversification of failure modes o
    cross-validating on shared observables
 ```
 
-### 12.3 Step 1 — NumPy reproduction of Werbos's mass-frequency scan
+### 11.3 Step 1 — NumPy reproduction of Werbos's mass-frequency scan
 
 **What to reproduce** (from Particle Spectrum paper §2):
 
@@ -738,7 +739,7 @@ This is the strongest reason to build both: **diversification of failure modes o
 
 **Suggested location**: `openwave/xperiments/m6_ouroboros/research/scripts/m6_0_werbos_reproduction.py` (creates the M6 directory in a minimal-scaffold form even if M6 build doesn't go ahead).
 
-### 12.4 Step 2 — Decision criteria
+### 11.4 Step 2 — Decision criteria
 
 | Reproduction outcome | M6 decision |
 | --- | --- |
@@ -748,7 +749,7 @@ This is the strongest reason to build both: **diversification of failure modes o
 | Reproduction shows ω is continuous (not eigenvalue-spectrum) | **Conditional** — the 3 "fitted" ω's mean Ouroboros has the same parameter-count problem as Standard Model; still worth M6 sandbox but lower priority |
 | Numerical instability / non-convergent | **Investigate before deciding** — could be implementation detail or fundamental issue |
 
-### 12.5 Step 3 — Inform Werbos
+### 11.5 Step 3 — Inform Werbos
 
 Short message to Werbos (cc Models-of-Particles list per group norms). Brief, specific, technical:
 
@@ -763,7 +764,7 @@ Short message to Werbos (cc Models-of-Particles list per group norms). Brief, sp
 
 Same voice / tone as the prior Werbos email. Goes to the same recipient list. Public commitment to M6 (if GO) demonstrates the platform-for-multiple-models pitch is real.
 
-### 12.6 Step 4 — Scaffold M6 from M5 vector substrate
+### 11.6 Step 4 — Scaffold M6 from M5 vector substrate
 
 If GO from step 2:
 
@@ -779,7 +780,7 @@ If GO from step 2:
 
 **Important**: M6's Vector(4) × 2 substrate is LIGHTER than M5's matrix substrate (8 DoF/voxel vs 6 for M5 with the Lorenz constraints applied — but the constraint-enforcement makes it net comparable). The Taichi scaffolding can largely mirror M5 with substrate-type changes only.
 
-### 12.7 Parallel-build engineering reality
+### 11.7 Parallel-build engineering reality
 
 Once both M5 and M6 are scaffolded:
 
@@ -796,7 +797,7 @@ Once both M5 and M6 are scaffolded:
 - Once M6 is scaffolded, add to the Major Theoretical Contributions table (M5: Duda; M6: Werbos)
 - Update memory entries to reflect both methods are in active build
 
-### 12.8 NSF X-Labs strategic note
+### 11.8 NSF X-Labs strategic note
 
 If Werbos secures NSF X-Labs funding for his Ouroboros sensor architecture, having OpenWave's M6 scaffolded becomes immediately valuable:
 
@@ -807,9 +808,9 @@ If Werbos secures NSF X-Labs funding for his Ouroboros sensor architecture, havi
 
 Either way, having M6 scaffolded ahead of any X-Labs award outcome is strategically sound.
 
-### 12.9 Summary — the new plan
+### 11.9 Summary — the new plan
 
-| What changed from §10.11 | Why |
+| What changed from §9.10 | Why |
 | --- | --- |
 | "Don't commit before M5.7" → "NumPy sandbox now" | 2017 paper + matched-substrate observation make M6 evaluation cheaper to start earlier |
 | "Sequential build" → "parallel build after reproduction" | Duda's V(M) hedging + cross-validation risk-mitigation |
@@ -817,3 +818,189 @@ Either way, having M6 scaffolded ahead of any X-Labs award outcome is strategica
 | "Wait for Werbos reply" → "Reproduce his numerics ourselves" | Faster decision; reproduction is the strongest possible technical validation |
 
 **Action gate:** start step 1 (NumPy sandbox) as soon as you have the engineering hours. Likely scheduled to interleave with the M5.4 substrate-refactor study work currently in progress, since they're complementary (one is sandbox NumPy, one is Taichi production planning).
+
+---
+
+## 12. 2026-05-18 update — Werbos collaboration + benchmark spec + sandbox v2 plan
+
+Triggered by Werbos's reply on 2026-05-17 to the sandbox-v1 reproduction email. Multiple emails received over the same evening; key contents:
+
+- **Collaboration commitment.** Werbos: *"your feedback was by far the most serious feedback so far on the Ouroboros model"* — accepts collaboration, offers Ouroboros2 as a parallel branch if v1 needs amendments.
+- **The benchmark document** (`theory/Numerical Benchmark for the Ouroboros Lagrangian.docx`) — DeepSeek-mediated, but the math is from Werbos. **First time the radial ODE is written explicitly in any Ouroboros document.** Resolves the structural ambiguity that forced sandbox-v1 to derive the equations from the Lagrangian.
+- **Dark matter ask** (separate cover note) — Werbos's #1 priority for the next sandbox round: compute the Q=0 (neutral) chaoiton ground-state mass m_χ. This is the missing piece for the dark-matter prediction `Ω_χ h² ≈ 0.12` (Planck).
+- **Two new theory papers added** to `theory/`:
+  - `DarkMatterv1.pdf` — Werbos + DeepSeek, May 2026. Frames the neutral chaoiton as a unification of axion + WIMP via the Brennan 2024 JHEP "dual axion mass" result.
+  - `Werbos_Chaoitons_Ouroboros_2025_with_far_field.pdf` — same content as the .docx already in `theory/`, updated PDF version.
+- **Sawada outreach** — Werbos sent a direct note to Tetsuo Sawada on 2026-05-13 claiming vindication via Ouroboros. The contact address bounced; Werbos forwarded the exchange to me on 2026-05-18 as one of "many dialogues."
+- **Bosonization conversation log** (`theory/TotalClaudeBosnoizationMay18.txt`) — full Werbos-Claude exchange from 2026-05-04 → 05-07 covering: the two-shoelace / Chern-Simons-linking framing of charge quantization, the mountain pass theorem as proof tool for chaoiton existence, far-field analysis (J-field range 6.5 units, A-field range 4.35 units), and the corrected `A` (not `A²`) coherent enhancement for Sawada's neutron-Pb anomaly.
+
+### 12.1 The benchmark document — explicit 4-function radial ODE
+
+The benchmark spells out the static radial equations Werbos uses (their absence from the Calibration and Spectrum papers was the source of our sandbox-v1 ODE-form uncertainty):
+
+```text
+Component          | Benchmark form
+-------------------|--------------------------------------------------
+Laplacian          | 2D radial: Δ_r f = f''(r) + (1/r) f'(r)
+Function count     | 4 (V, A, Q, J)
+V equation         | Δ_r V = Q
+A equation         | Δ_r A = J
+Q equation         | Δ_r Q = V + m_J² Q + λ Q(Q² − J²)
+J equation         | Δ_r J = A − m_J² J − λ J(Q² − J²)
+f(s)               | (1/2) m_J² s + (λ/4) s²    [mass + quartic]
+Time-dep ansatz    | V·sin(ωt), A·cos(ωt), Q·cos(ωt), J·sin(ωt)
+BCs at r=0         | V'(0) = A'(0) = Q'(0) = J'(0) = 0  (regularity)
+BCs at r → ∞       | fields → 0, exponential decay K_0(κr) Bessel
+```
+
+Calibration values (locked from electron):
+
+| Parameter | Value |
+| --- | --- |
+| g | 1.0625 |
+| λ | 1.0 |
+| A₀ = B₀ | 0.1 (field amplitude at r ≈ 0) |
+| ω (electron) | 1.0 |
+| R^phys | 191 fm |
+| Expected H/Q | 1.6969 |
+| Expected L/Q | 1.0  (= ω, exact identity) |
+| Expected Q_CS | 1  (integer) |
+
+### 12.2 What's different from our sandbox v1
+
+```text
+Aspect              | Sandbox v1               | Benchmark v2
+--------------------|--------------------------|-------------------------
+Function count      | 2 (α, γ) winner          | 4 (V, A, Q, J)
+                    | 4 ansatz also tried      |
+Laplacian           | 3D: (2/r) prefactor      | 2D: (1/r) prefactor
+Cubic term          | 4g·γ³ (single-field)     | λ·Q(Q²−J²), −λ·J(Q²−J²)
+Cross-coupling      | α↔γ direct symmetric     | V↔Q (Coul), A↔J (Amp)
+ω in radial eqs     | explicit ω² × field      | absent as written (see 12.4)
+m_J term            | not present              | (1/2)m_J²·s in f(s)
+Integrator          | RK45                     | RK4 / DOP853 / bvp_solve
+Method              | IVP (shoot-from-0)       | shooting OR collocation
+Domain r_max        | 10 (calib) / 15 (spec)   | 20–50 scaled units
+Grid points         | 500–800 (linear)         | 2000–5000 (log spacing)
+Tolerances          | rtol=1e-10, atol=1e-12   | convergence check at 0.1%
+```
+
+Implication: our sandbox-v1 winner A4+H1+Q2 (2-function, 3D Laplacian, 4g·γ³) **is structurally incorrect** relative to Werbos's actual radial ODE — even though it reproduces H/Q at electron calibration. The 0.30% calibration match was coincidental in form; the v2 spec is materially different.
+
+### 12.3 The Q=0 neutral chaoiton — Werbos's #1 ask
+
+From his cover note: *"the mass of the lightest neutral chaoiton is the last missing piece for the dark-matter prediction. If it comes out MeV-scale or above, the standard freeze-out calculation immediately gives Ω_DM. If it's very small, we have a dark radiation candidate instead. Either way, it's a result worth publishing."*
+
+```text
+Setup               | Value / form
+--------------------|--------------------------------------------------
+Locked ansatz       | J(r) = −A(r),  Q(r) = −V(r)
+Parameters          | g=1.0625, λ=1.0, ω=1.0  (same as electron)
+Q_CS                | 0  (no topological charge)
+Output              | m_χ = H_code  (since Q_CS = 0, no H/Q normalization)
+Werbos prelim est.  | 0.01–0.05 scaled units  ≈ 0.003–0.015 MeV
+                    |   (linearized locked ansatz, semi-analytic)
+Quartic correction  | May push m_χ to MeV scale
+Decision branch     | m_χ ≥ MeV → cold DM, Ω_χ h² freeze-out
+                    | m_χ ≪ MeV → dark radiation candidate
+Planck target       | Ω_c h² = 0.120 ± 0.001
+```
+
+The Brennan 2024 JHEP claim (axion = longitudinal mode of massive vector field) Werbos cites for axion-WIMP unification: the J-field's massive longitudinal mode is the axion in this picture, so axion-search null results constrain m_J directly. Worth following the cite but not load-bearing for the Q=0 computation itself.
+
+### 12.4 Open structural questions in the benchmark spec
+
+```text
+Question                                | Tension with benchmark
+----------------------------------------|---------------------------------
+Where is ω in the radial equations?     | Eqs as written contain no ω.
+                                        | Spectrum paper says "only ω
+                                        | changes" for lepton scan — so
+                                        | ω must enter somewhere. Likely
+                                        | through m_J(ω) or as an added
+                                        | −ω² term we have to insert.
+What formula gives m_J from g?          | Doc says "determined by g" but
+                                        | no formula. Probably m_J = √g
+                                        | or m_J² = g — to be verified
+                                        | empirically against H/Q=1.6969.
+Why 2D Laplacian (1/r)?                 | Justified by thin-torus reduction.
+                                        | But the major radius R doesn't
+                                        | appear in the ODEs — so where
+                                        | does R enter the scaling?
+V↔Q, A↔J source structure?              | Doesn't fall out of straight EL
+                                        | on the L = −F·F − G·G + J·A − f
+                                        | Lagrangian. Likely from the
+                                        | sin/cos pairing in the time ansatz
+                                        | acting through ∂²_t terms.
+```
+
+These four ambiguities are what need pinning down before sandbox v2 can faithfully reproduce Werbos's setup. Email Werbos with these specifics once v2 is built and the ω-insertion choice is forced.
+
+### 12.5 Planned sandbox v2 — three priorities
+
+```text
+Priority | Task                                     | Effort   | Gate
+---------|------------------------------------------|----------|------
+A        | Q=0 neutral chaoiton, locked ansatz      | 1–2 days | m_χ value
+B        | 4-function ODE rebuild + lepton re-test  | 3–5 days | ω^2.22 ?
+C        | 3-body proton bound state                | 1–2 wks  | binding/r
+```
+
+**Priority A — Q=0 neutral chaoiton** (deliverable to Werbos this week):
+
+1. New script `m6_1_neutral_chaoiton.py` in `sandbox_v2/`
+2. Implement the 4-function ODE with `J = -A`, `Q = -V` substitution → reduces to 2 free functions (A, V) with the constraint baked in
+3. RK4 with shooting at r=0 (regularity BCs) outward to r_max=30 (start), confirm K_0 decay
+4. Sweep initial amplitude A₀ to find the lowest-energy localized solution
+5. Compute `m_χ = H` using the energy functional from §3 of benchmark
+6. Report m_χ in scaled units AND in MeV (via R^phys = 191 fm calibration)
+7. If MeV-scale: compute σv → Ω_χ h² freeze-out estimate
+8. If sub-keV: flag as dark-radiation candidate
+
+**Priority B — 4-function ODE rebuild + lepton spectrum re-test:**
+
+1. New script `m6_1_full_ansatz.py` (NOT the old `m6_0_full_ansatz.py` which had Vector Laplacian and worsened scaling)
+2. Implement the **benchmark's exact** 4-function ODE with 2D Laplacian
+3. Two ω-handling branches to test:
+   - 3a: **m_J²(ω)** — try m_J² = g·ω² (ω embedded in mass term)
+   - 3b: **explicit −ω²** — add `−ω²·field` term on LHS of each radial eq
+4. Run at ω=1.0; tune the ω-handling until H/Q reproduces 1.6969 to 0.5%
+5. Run at ω={11.0, 13.0, 40.7}; check whether muon/pion/tau masses match Werbos's 4–6% gaps OR our previous 31–44% gaps
+6. Outcome decides whether ω^2.22 scaling reproduces with the corrected ODE
+
+**Priority C — 3-body proton bound state** (parked, post-A/B):
+
+1. Compute chaoiton-chaoiton pair potential V(R) using the far-field formula `~exp(−2k·R)/R` (Yukawa-screened) from the bosonization-log far-field analysis
+2. Set up classical 3-body bound-state problem with this V(R)
+3. Find minimum-energy configuration, extract binding + r_rms
+4. Compare to proton mass 938 MeV / charge radius 0.84 fm
+5. This is harder and not Werbos's urgent ask — defer until A and B land
+
+### 12.6 Sawada / nuclear-detection adjacencies (notes, not action)
+
+Werbos forwarded the bounced 2026-05-13 email to T. Sawada (Japan) claiming Ouroboros vindicates the 1989/2003 long-range nuclear-force anomalies. The far-field analysis in the bosonization log gives the J-field a Yukawa range ≈ 6.5 scaled units, with A-coherent (linear in mass number, **corrected from earlier A² claim**) enhancement matching Sawada's neutron-Pb observation. This is downstream of the Q≠0 chaoiton work and not part of sandbox v2's load-bearing path. Tracking in [[reference-sawada-anomaly]].
+
+### 12.7 Comparison summary — v1 results vs v2 plan
+
+```text
+Sandbox v1 result                         | v2 expectation
+------------------------------------------|------------------------------
+H/Q = 1.6918 (0.30% off)                  | should reproduce to <0.5%
+                                          |   with correct 4-fn ODE
+ω^2.04 scaling, 31–44% lepton gaps        | unknown — depends on how ω
+                                          |   enters benchmark eqs
+H/Q amplitude-invariant                   | still expected (scale-free)
+Q=0 not yet attempted                     | PRIORITY A — Werbos's ask
+3-body proton not attempted               | PRIORITY C — deferred
+```
+
+### 12.8 Collaboration-norms note
+
+Werbos's reply pattern across the multi-email burst:
+
+- He's using DeepSeek + Claude in his loop; some of his "technical replies" are AI-drafted (he's transparent about this — *"I pass on comments from DeepSeek, not Claude, because MY Claude timed out again"*).
+- He sees the OpenWave sandbox as the "tool that doesn't time out" — values the persistent state we get from Claude Code (Opus 4.7) over his chat-window-bounded sessions.
+- He's prioritizing breadth (multiple parallel asks: Q=0, finer ω, proton, Sawada outreach) over depth on any one. We should keep depth-on-Q=0 as the first deliverable to anchor the collaboration.
+- Asked us to send him "anything else" — Werbos values raw context. When sandbox v2 lands, the email back should include the script, the plot, the numbers, and the open structural questions from §12.4.
+
+This collaboration norm matters for sequencing — deliver ONE clean result (the Q=0 mass) before opening the four-way correspondence on muon/tau/proton/Sawada. Otherwise the thread sprawls and load-bearing physics gets buried under email volume.
