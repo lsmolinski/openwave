@@ -646,29 +646,6 @@ def initialize_xperiment(state):
         print("=" * 64)
 
 
-def compute_propagation(state):
-    """Step ψ one timestep via leapfrog, then update trackers.
-
-    Dynamics-only: runs the wave propagation + buffer swap + per-voxel
-    amp/freq EMA. Per-voxel ENERGY DENSITIES (H, F) and the global aggregates
-    are computed by `compute_field_observables`, which runs every frame
-    regardless of pause state so visualization reflects the current ψ
-    (including the static seeded state when PAUSED=True).
-    """
-
-    # ψ PROPAGATION =======================================
-    # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    lagrange.evolve_psi(
-        state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs, state.lambda_phi4
-    )
-    # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
-    state.wave_field.swap_buffers()
-
-    # TRACKERS (per-voxel amp / freq from ψ) ==============
-    # Time-dependent EMA — only meaningful during dynamics, so kept here.
-    lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
-
-
 def relax_field(state, n_steps):
     """Run N gradient-descent relaxation steps on the director field (M5.1 task 6).
 
@@ -700,6 +677,29 @@ def relax_field(state, n_steps):
         wf.psi_prev_am.copy_from(wf.psi_new_am)
     # Refresh observables so dashboard + flux mesh reflect the relaxed field
     compute_field_observables(state)
+
+
+def compute_propagation(state):
+    """Step ψ one timestep via leapfrog, then update trackers.
+
+    Dynamics-only: runs the wave propagation + buffer swap + per-voxel
+    amp/freq EMA. Per-voxel ENERGY DENSITIES (H, F) and the global aggregates
+    are computed by `compute_field_observables`, which runs every frame
+    regardless of pause state so visualization reflects the current ψ
+    (including the static seeded state when PAUSED=True).
+    """
+
+    # ψ PROPAGATION =======================================
+    # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
+    lagrange.evolve_psi(
+        state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs, state.lambda_phi4
+    )
+    # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
+    state.wave_field.swap_buffers()
+
+    # TRACKERS (per-voxel amp / freq from ψ) ==============
+    # Time-dependent EMA — only meaningful during dynamics, so kept here.
+    lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
 
 def compute_field_observables(state):
@@ -902,7 +902,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_test4_topology"
+    default_xperiment = selected_xperiment_arg or "_topology1"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
