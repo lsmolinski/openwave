@@ -207,3 +207,97 @@ Aharonov-Bohm — is still unaddressed.
 OpenWave M6 production is pending clarification on the discrete-spectrum question. If I missed a selection mechanism, I want to fix the sandbox and proceed — the M6-Ouroboros-model directory is already structured to be built in parallel with the M5-Liquid-Crystal-model. The cross-validation value (running both your Ouroboros and Jarek's LdGS in the same numerical engine, same observables) is real and that's still the OpenWave pitch.
 
 Open to design / architecture engagement at the repo from anyone in the group.
+
+### IMMEDIATE-QUESTIONS (gates v2 sandbox)
+
+```text
+ID  | Question                                | First | Status at end of v1
+    |                                         | surf  |
+----|-----------------------------------------|-------|-------------------
+Q2  | Discrete-spectrum mechanism — is there  | 0a    | ANSWERED EMPIRICALLY
+    | a stability/quantization criterion      | §9.9  | (NEGATIVE) — v1 scan
+    | beyond |A|+|J|<0.15 that selects        |       | sees all ω in [1,60]
+    | ω={1,11,13,40.7} as DISCRETE            |       | localized equally;
+    | eigenvalues, not fitted points? AND     |       | reproduction shows
+    | do the predicted lepton masses match    |       | 31-44% lepton gaps
+    | Werbos's claimed 4-6% gaps, or          |       | (not 4-6%); ω^2.22
+    | larger?  [merges old Q5]                |       | = log(207)/log(11)
+    |                                         |       | suggests fitted.
+    |                                         |       | Awaiting Werbos
+    |                                         |       | response to v1 email.
+```
+
+One gating question, sent to Werbos in the email above on 2026-05-17.
+
+### STILL OPEN-QUESTIONS (load-bearing only)
+
+```text
+ID  | Question                                | First | Status at end of v1
+    |                                         | surf  |
+----|-----------------------------------------|-------|-------------------
+Q3  | Analytical derivation of ω = 2mc²/ℏ?    | 0a    | PARTIAL — 1.2% via
+    |                                         | §9.9  | R^phys calibration,
+    |                                         |       | not analytical
+Q6  | QCD reconciliation (3-chaoiton proton)  | 0a    | OPEN — Priority C
+    |                                         | §9.9  | in v2 plan
+```
+
+### RESOLVED-QUESTIONS
+
+```text
+ID  | Question                                | Resolution
+----|-----------------------------------------|------------------------
+Q1  | Physical distinction from Duda's LdGS   | BOTH ARE TOPOLOGICAL.
+    | beyond topological-invariant choice?    | 0a §2.1, §2.4, §9.4 and
+    |                                         | Werbos's v2 paper §3
+    |                                         | confirm Ouroboros uses
+    |                                         | Chern-Simons linking =
+    |                                         | Hopf invariant. Duda
+    |                                         | uses Brouwer degree. The
+    |                                         | distinction is invariant-
+    |                                         | type + field structure
+    |                                         | (matrix M vs two-vector
+    |                                         | A,J), NOT topology-vs-
+    |                                         | no-topology.
+```
+
+### ARCHIVED-QUESTIONS (framework-semantics / historical)
+
+```text
+ID  | Question                                | Why archived
+----|-----------------------------------------|------------------------
+Q4  | Single-deeper-field vs two-field        | Werbos 2017 explains
+    | ontology                                | two-field via toroidal-
+    |                                         | poloidal mutual
+    |                                         | confinement. Duda's
+    |                                         | "single deeper field"
+    |                                         | preference is aesthetic,
+    |                                         | not falsifiable physics.
+Q7  | Cold-fusion citation trail              | Historical/credibility
+    |                                         | question; not framework
+    |                                         | physics. Tracking
+    |                                         | separately if needed.
+```
+
+Active question count at end of v1: 1 IMMEDIATE + 2 STILL OPEN = 3 load-bearing.
+
+### HARDEST-PIECES TRACKER (state at end of v1)
+
+```text
+Declared            | Source             | Resolution status at v1
+--------------------|--------------------|--------------------------
+V(M) potential form | Duda §III          | UNRESOLVED — Duda himself
+                    | Duda 2026-05-15    |   admits "the most difficult"
+                    |   email            |
+f(J·J) form         | Werbos 2017 paper  | UNRESOLVED — Werbos says
+                    |   ("any nonneg     |   f(s) = gs² in Calibration,
+                    |   function")       |   but 2017 paper says any
+                    |                    |   nonneg function works
+ω quantization      | Werbos Spectrum    | UNRESOLVED — Werbos's own
+  mechanism         |   §6.1 ("the key   |   "key open question";
+                    |   open question")  |   sandbox v1 confirms ω is
+                    |                    |   NOT discrete (continuous in
+                    |                    |   the localization scan)
+```
+
+Pattern at end of v1: three hardest-pieces, all unresolved. V/f form bottleneck is shared between M5 and M6 — same physics problem, different math objects. ω-quantization is what sandbox v1 sharpened from "open question" → "empirically continuous in our scan".

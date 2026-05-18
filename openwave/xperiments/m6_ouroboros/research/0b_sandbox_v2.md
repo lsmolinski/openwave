@@ -183,3 +183,287 @@ Werbos's reply pattern across the multi-email burst:
 This collaboration norm matters for sequencing — deliver ONE clean result (the Q=0 mass) before opening the four-way correspondence on muon/tau/proton/Sawada. Otherwise the thread sprawls and load-bearing physics gets buried under email volume.
 
 ## SANDBOX v2 RESULTS, ROADBLOCKS, NEXT STEPS
+
+### First-run setup (2026-05-18)
+
+Built `sandbox_v2/m6_1_neutral_chaoiton.py` (main script) + `m6_1_investigate.py` (sweep harness). Implements the full 4-function radial ODE from the benchmark document §3, with the locked ansatz `J=−A, Q=−V` as initial conditions at `r=r_min`, integrated outward via `scipy.solve_ivp` (RK45 default; LSODA fallback for stiff cases).
+
+Goal: extract `m_χ = H_code` at electron parameters `(g=1.0625, λ=1.0, ω=1.0, A₀=B₀=0.1)`, convert to MeV via `R^phys = 191 fm`, decide between cold-DM and dark-radiation branch.
+
+### Investigation sweep — 4 batches, 22 parameter points
+
+Each row in the sweep covers a hypothesis the structural questions in § "Open structural questions in the benchmark spec" surfaced:
+
+```text
+Batch | What it tests                              | Outcome
+------|--------------------------------------------|---------------------------
+S1×6  | Werbos's locked_sign=−1 vs flipped +1 at   | sign=−1: Bessel J_0
+      | m_J²=0, across r_max ∈ {30, 60, 120}       |   oscillation; energy H
+      |                                            |   grows LINEARLY with
+      |                                            |   r_max (14→30→60). Sign
+      |                                            |   changes 2→4→8 over the
+      |                                            |   tail. NO localization.
+      |                                            | sign=+1: I_0 explosion;
+      |                                            |   fields reach 1e25 to
+      |                                            |   1e103. Slope = +0.99.
+S2×8  | Asymmetric seed satisfying V²−A²=−m_J²/λ   | All 8 FAIL stiffness
+      | at r_min, both signs, m_J²∈{.01,.1,.5,1}   |   ("step size below
+      |                                            |   spacing"). The cubic
+      |                                            |   term blows up.
+S3×4  | ω-insertion ∈ {explicit, in_m_J}           | sign=−1 explicit: still
+      |                                            |   Bessel-like.
+      |                                            | in_m_J: stiff fail.
+      |                                            | sign=+1 explicit:
+      |                                            |   trivial V = const.
+S4×2  | 3D Laplacian (sandbox-v1 convention)       | sign=−1: Bessel-like
+      |                                            |   (H=2.9, smaller due
+      |                                            |   to extra 1/r damping).
+      |                                            | sign=+1: I_0 explosion.
+```
+
+Output: `plots/m6_1_investigation_sweep.json` (22 rows, raw data) + `plots/m6_1_neutral_chaoiton_profile.png` (default-run field profiles).
+
+### Diagnostic — why IVP can't find the K_0 decay mode
+
+The benchmark equations + locked ansatz force the consistency constraint `V² − A² = −m_J²/λ` at every r where V ≠ 0 (algebraic consequence of equating the top eqs `Δ_r V = Q` with the bottom eqs `Δ_r Q = V + m_J²Q + λQ(Q²−J²)` under `Q = −V`). The seed `V(0) = A(0) = 0.1` violates this when `m_J² ≠ 0` → S2 stiffness.
+
+When `m_J² = 0` the consistency is trivially satisfied. The equations reduce to:
+
+```text
+sign = −1:  V'' + V'/r + V = 0   →   Bessel J_0 (oscillatory)
+sign = +1:  V'' + V'/r − V = 0   →   K_0 + I_0 mixture
+```
+
+The **regularity boundary condition at r=0** (`V'(0)=0`, V(0) finite) selects:
+
+```text
+For sign = −1:  J_0  (since Y_0 → −∞ at r=0)
+For sign = +1:  I_0  (since K_0 → −∞ at r=0)
+```
+
+Neither is the K_0 modified-Bessel decay the benchmark §4 itself predicts at infinity. The K_0 mode requires V(r→0) → −∞, which the regular-r=0 BC rules out.
+
+### Empirical conclusion
+
+**IVP with the regularity-at-zero BC structurally cannot find the Q=0 chaoiton in this framework.** This is not a bug in our reproduction — it's a clean mismatch between the solver class and the problem class. The benchmark §10 itself recommends `bvp_solve` (shooting or collocation). We chose IVP first because it's simpler; sandbox v2's negative result is what forces the move to BVP for v3.
+
+### Next steps for v3
+
+```text
+Step | Action                                      | Effort
+-----|---------------------------------------------|--------
+A ✅ | Capture v2 results into this doc            | done
+B    | Build BVP solver: m6_1_bvp.py in sandbox_v2 | 0.5-1 day
+     | using scipy.solve_bvp. Install scipy as    |
+     | dependency (add to pyproject.toml).        |
+C+F  | Email Werbos with: v2 sweep result +       | 1 hour
+     | IMMEDIATE questions Q8-Q12 (incl. ask for  |   to draft
+     | his Python source per Spectrum paper §Refs |
+     | "Code available on request from QAGI LLC") |
+```
+
+The order matters: B first because the BVP result may CHANGE the questions for Werbos (e.g. if BVP succeeds and yields m_χ, the ask shifts from "what method?" to "we got X MeV, does that match yours?"). Doing B → revise email → send C+F.
+
+### B done — BVP solver result (2026-05-18)
+
+Added `scipy>=1.13,<2.0` to `pyproject.toml`. Built `sandbox_v2/m6_1_bvp.py` using `scipy.integrate.solve_bvp` with:
+
+- 8-state vector `[V, V', A, A', Q, Q', J, J']`
+- 4 BCs at r=r_min (regularity: V'=A'=Q'=J'=0)
+- 4 BCs at r=r_max (decay: V=A=Q=J=0)
+- Initial guess: locked-ansatz exponential envelope `V₀·exp(-r/L)` etc.
+
+**Sweep over 180 parameter points** (2 signs × 5 m_J² × 3 decay-lengths × 6 (V₀,A₀) pairs):
+
+```text
+Outcome                           | Count | Interpretation
+----------------------------------|-------|---------------------------
+Trivial solution V=A=Q=J=0        |  148  | The only solution most of
+                                  |       | the time. Linear system,
+                                  |       | homogeneous BCs.
+Numerical-noise non-trivial       |   30  | max|V| < 0.001, H ≈ 0;
+  (max|V| < 0.001)                |       | not a real solution.
+Significant non-trivial           |    2  | max|V| ≈ 3.7. Both at
+  (max|V| > 0.001)                |       | sign=±1, m_J²=0.5,
+                                  |       | V₀=1.0, A₀=0.1, L=10
+Failed convergence                |    0  | All converged.
+```
+
+The 2 "significant" non-trivial cases have:
+
+```text
+Field profile                | Diagnostic
+-----------------------------|------------------------------------
+V oscillates around 0        | NOT K_0 decay
+Q oscillates around 0        | Bessel-like, not decaying
+A ≡ 0 to machine precision   | NOT the locked-ansatz solution
+J ≡ 0 to machine precision   |
+Locked-ansatz drift |Q-sV|=5 | Locked ansatz is BROKEN
+Q_CS ≈ 0 (10⁻¹⁰⁰+)           | Q_CS=0 only because A=J=0
+```
+
+**r_max sensitivity test** (THE decisive check):
+
+```text
+r_max | m_χ found (MeV) | Meaning
+------|-----------------|----------------------------------
+  20  |     0           | trivial
+  25  |  2788           | non-trivial
+  30  | 10524           | non-trivial (5× the r_max=25 value)
+  40  |     0           | trivial
+  50  |     0           | trivial
+  60  |  2053           | non-trivial (different from above)
+```
+
+A physical eigenstate would have an **r_max-invariant mass**. The fact that m_χ varies by 5× with r_max — and only exists at specific r_max values where Bessel zeros happen to coincide with our truncation — proves these are **r_max artifacts**, not real chaoitons.
+
+### Definitive empirical conclusion
+
+**The benchmark ODE + locked ansatz + Q_CS=0 + decay-at-infinity BC has NO physical chaoiton solution.**
+
+Both IVP (sandbox v2 first attempt) and BVP (this attempt) yield only:
+
+- Trivial V=A=Q=J=0  (the "no particle" state), or
+- Bessel-like oscillations that don't decay (artifacts of finite r_max)
+
+The "non-trivial" BVP solutions break the locked ansatz (|Q−sV| drift ≈ 5) AND have A=J=0, so they're not the locked-ansatz Q=0 chaoiton Werbos describes — they're a separate V-only sector.
+
+### What this means for v3
+
+Two interpretations of the negative result:
+
+```text
+Interpretation                          | Consequence
+----------------------------------------|--------------------------
+A. Our solver / setup is wrong          | Werbos's code will reveal
+                                        |   the missing ingredient
+B. Werbos's framework genuinely lacks   | Cold-DM prediction in
+   a localized Q=0 chaoiton             |   DarkMatterv1 is overstated;
+                                        |   collaboration value shifts
+                                        |   to lepton spectrum work
+```
+
+Cannot distinguish A vs B without Werbos's actual code (request via Q12) OR a completely different ansatz (asymmetric J/A; ω-quantized; eigenvalue). **C+F email is the right next move.**
+
+### IMMEDIATE-QUESTIONS (gates next steps)
+
+```text
+ID  | Question                                       | First surf
+----|------------------------------------------------|-----------
+Q8  | We tried IVP first (Bessel J_0 / I_0, no       | v2 (BVP)
+    | decay), then BVP (only trivial + r_max-        |
+    | artifact solutions). What numerical method     |
+    | actually gave you the 0.003-0.015 MeV semi-    |
+    | analytic estimate in DarkMatterv1 §5?          |
+Q9  | Is the "semi-analytic" estimate based on the   | v2 (BVP)
+    | LINEARIZED Bessel solution truncated at some   |
+    | characteristic length, rather than a true      |
+    | nonlinear localized chaoiton?                  |
+Q10 | The locked ansatz J=±A, Q=±V seems             | v2 (BVP)
+    | incompatible with Q²−J² ≠ 0 (needed for the    |
+    | cubic to give localization). Is there an       |
+    | asymmetric ansatz J(r)/A(r) ≠ const that you   |
+    | actually use?                                  |
+Q11 | Sign convention — DarkMatterv1 §5 says J=−A;   | v2 (BVP)
+    | the K_0 decay structure requires J=+A. Which   |
+    | is it?                                         |
+Q12 | Could you share your Python source for the     | v2 (BVP)
+    | Q=0 calculation? (Spectrum paper §Refs: "Code  |
+    | available on request from QAGI LLC")           |
+```
+
+### STILL OPEN-QUESTIONS (load-bearing only)
+
+```text
+ID  | Question                                | First | Status at end of v2
+    |                                         | surf  |
+----|-----------------------------------------|-------|-------------------
+Q2  | Discrete-spectrum mechanism — is there  | 0a    | ANSWERED EMPIRICALLY
+    | a stability/quantization criterion      | §9.9  | (NEGATIVE) — v1 scan
+    | beyond |A|+|J|<0.15 that selects        |       | sees all ω in [1,60]
+    | ω={1,11,13,40.7} as DISCRETE            |       | localized equally;
+    | eigenvalues? AND do the predicted       |       | reproduction shows
+    | lepton masses match Werbos's claimed    |       | 31-44% lepton gaps
+    | 4-6% gaps, or larger?  [merges old Q5]  |       | (not 4-6%); ω^2.22
+    |                                         |       | = log(207)/log(11)
+    |                                         |       | suggests fitted.
+    |                                         |       | Sent to Werbos
+    |                                         |       | 2026-05-17 — no
+    |                                         |       | reply yet.
+Q3  | Analytical derivation of ω = 2mc²/ℏ?    | 0a    | PARTIAL — 1.2% via
+    |                                         | §9.9  | R^phys calibration,
+    |                                         |       | not analytical
+Q6  | QCD reconciliation (3-chaoiton proton)  | 0a    | OPEN — Priority C
+    |                                         | §9.9  | in v2 plan,
+    |                                         |       | uninvestigated
+```
+
+### RESOLVED-QUESTIONS
+
+```text
+ID  | Question                                | Resolution
+----|-----------------------------------------|------------------------
+Q1  | Physical distinction from Duda's LdGS   | BOTH ARE TOPOLOGICAL.
+    | beyond topological-invariant choice?    | 0a §2.1, §2.4, §9.4 and
+    |                                         | Werbos's v2 paper §3
+    |                                         | confirm Ouroboros uses
+    |                                         | Chern-Simons linking =
+    |                                         | Hopf invariant. Duda
+    |                                         | uses Brouwer degree. The
+    |                                         | distinction is invariant-
+    |                                         | type + field structure
+    |                                         | (matrix M vs two-vector
+    |                                         | A,J), NOT topology-vs-
+    |                                         | no-topology.
+```
+
+### ARCHIVED-QUESTIONS (framework-semantics / historical)
+
+```text
+ID  | Question                                | Why archived
+----|-----------------------------------------|------------------------
+Q4  | Single-deeper-field vs two-field        | Werbos 2017 explains
+    | ontology                                | two-field via toroidal-
+    |                                         | poloidal mutual
+    |                                         | confinement. Duda's
+    |                                         | "single deeper field"
+    |                                         | preference is aesthetic,
+    |                                         | not falsifiable physics.
+Q7  | Cold-fusion citation trail              | Historical/credibility
+    |                                         | question; not framework
+    |                                         | physics. Tracking
+    |                                         | separately if needed.
+```
+
+Active question count at end of v2: 5 IMMEDIATE + 3 STILL OPEN = **8 load-bearing**.
+Q5 merged into Q2 (same finding, theoretical + empirical angles).
+
+### HARDEST-PIECES TRACKER
+
+Stable across all checkpoints — nothing resolved v1 → v2:
+
+```text
+Hardest piece     | Source           | v1 | v2 | Status at end of v2
+------------------|------------------|----|----|---------------------
+V(M) potential    | Duda §III +      | ✓  | ✓  | UNRESOLVED — Duda
+form              | Duda 2026-05-15  |    |    | admits "the most
+                  | email            |    |    | difficult"; gates
+                  |                  |    |    | both M5 and M6
+f(J·J) form       | Werbos 2017      | ✓  | ✓  | UNRESOLVED — "any
+                  | paper "any       |    |    | nonneg fn"; specific
+                  | nonneg fn"       |    |    | form is calibration
+                  |                  |    |    | choice
+ω quantization    | Werbos Spectrum  | ✓  | ✓  | UNRESOLVED + v1
+mechanism         | §6.1 "the key    |    |    | sharpened: scan
+                  | open question"   |    |    | shows ω continuous,
+                  |                  |    |    | not discrete
+Q=0 chaoiton      | NEW — v2 BVP     | —  | ✓  | EMPIRICALLY NEGATIVE
+existence under   | sweep            |    |    | under both IVP and
+locked ansatz     |                  |    |    | BVP; pending Werbos
+                  |                  |    |    | clarification (Q8-Q12).
+                  |                  |    |    | If unresolved, the
+                  |                  |    |    | DarkMatterv1 cold-DM
+                  |                  |    |    | prediction is at risk.
+```
+
+Pattern: the framework's hardest pieces are **stable and unresolved**. Each new sandbox round surfaces a NEW hardest piece (Q=0 existence for v2) without resolving the prior ones. This is a load-bearing observation for the email to Werbos — we're not running out of questions; we're accumulating them.
