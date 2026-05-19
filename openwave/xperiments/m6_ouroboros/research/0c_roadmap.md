@@ -142,11 +142,61 @@ T5    | Manual 4-fn ODE extraction via general-purpose agent   | ✅ DONE
       | H/Q=1.6969 at (g=1.0625, λ=1.0, ω=1.0, V₀=A₀=Q₀=J₀=0.1)|
       | Confidence: medium. Three gaps: ω-in-static, f(s)      |
       | two-form, R unspecified.                               |
-NEW   | Werbos 2026-05-19 10:51 AM sent DM paper draft for ApJ | 🔶 LIVE
-      | review citing Griesi v3 m_χ=0.508 MeV as load-bearing  |
+NEW   | Werbos 2026-05-19 10:51 AM sent DM paper draft for ApJ | ✅ REPLY
+      | review citing Griesi v3 m_χ=0.508 MeV as load-bearing  | RECEIVED
       | numerical input. Rodrigo replied 11:30ish with T2      |
       | invalidation + 4-fn extraction + honest code ask.      |
-      | Awaiting his response.                                  |
+      | Werbos reply 2026-05-19 1:49 PM (via DeepSeek):        |
+      | resolved all 3 implementation gaps (m_eff² formula,    |
+      | f(s) two-form mapping, R cancels in H/Q). Endorsed     |
+      | our Q14 → canonical Q=0 is Q_A≈0, Q_J≠0. Code "as soon |
+      | as I can" (no committed date).                         |
+T6    | Built m6_v4_4fn.py with Werbos's m_eff² substitution.  | ❌ NEGATIVE
+(new) | Tried RK45, LSODA, RK45+max_step+blowup_event. Scanned |
+      | (m_J², λ_bench) at canonical V₀=A₀=Q₀=J₀=0.1 across    |
+      | 40 grid points. RESULT: ALL 40 BLOW UP. Confirms       |
+      | 4-fn ODE is eigenvalue/shooting problem; generic IVP   |
+      | from canonical initial conditions doesn't find the     |
+      | bound state — that requires the SPECIFIC calibrated    |
+      | (m_J², λ_bench) which we don't yet have.               |
+T6→A  | Built m6_v4_4fn_bvp.py with scipy.solve_bvp +          | ⚠️ PARTIAL
+(new) | eigenvalue parameter(s). 1-eigenvalue mode converges   |
+      | to non-trivial (V,Q) bound state, but (A,J) collapses  |
+      | to zero spontaneously. Eigenvalue r_max-dependent      |
+      | (Bessel-zero artifact). 2-eigenvalue mode fails        |
+      | universally with singular Jacobian. Q_CS=1 is a        |
+      | topological/integral constraint not a BVP-compatible   |
+      | boundary condition.                                    |
+T7    | Built m6_v4_4fn_shoot.py using r_blowup distance as    | ❌ NEGATIVE
+(new) | continuous figure of merit. Coarse 2D scan (m_J²,     |    (definitive)
+      | λ_bench) ∈ [0.5,8] × [0.1,10] at V₀=A₀=Q₀=J₀=0.1:     |
+      | max r_blowup=6.44, well below r_max=15. m_J²=1.0 row   |
+      | flat (m_eff²=0 degenerate). Amplitude shoot: r_blowup  |
+      | monotone decreasing in A_0; no resonance. Conclusion:  |
+      | NO bound state in symmetric V₀=A₀=Q₀=J₀ regime         |
+      | anywhere we scanned. Werbos's calibration must use     |
+      | asymmetric initial values OR different parameters.     |
+EMAIL | Email sent ~5 PM 2026-05-19: T6/T6→A/T7 findings + ask | ✅ SENT
+(out) | for specific m_J², λ_bench, V₀, A₀, Q₀, J₀ values      |
+EMAIL | Werbos reply ~4:21 PM (via DeepSeek): m_J²≈0.5,        | ✅ RECEIVED
+(in)  | λ_bench=1.0, V₀=Q₀=+0.1, A₀=J₀=-0.1 (asymmetric        |
+      | helicity gives Q_CS=1). m_eff²=-0.5 correct. Shooting  |
+      | strategy: "decay rate at infinity as target" (algorithm|
+      | not specified). + v2 of DM paper sent for review.      |
+T8    | Re-ran 4fn IVP, shoot, BVP scripts with Werbos's       | ⚠️ PARTIAL
+(new) | asymmetric helicity. FINDING: helicity is necessary    |
+      | (Q_CS goes from 0 → non-zero) but NOT SUFFICIENT.      |
+      | IVP still blows up (Q_CS=4483, not 1). Amplitude       |
+      | shoot: ~12% better than symmetric, but still monotone. |
+      | BVP with 1-eigenvalue + asymmetric init guess: still   |
+      | collapses to (V,Q) sub bound state at m_J²=5.51        |
+      | regardless of init. A,J drift to 0 without a BC        |
+      | forcing them. 2-eigenvalue BVP: singular Jacobian.     |
+NEXT  | Wait for Werbos response to today's review reply.      | 🔶 WAITING
+      | The remaining open Q is the explicit shooting          |
+      | algorithm / Q_CS=1 constraint mechanism. With v2       |
+      | paper review feedback delivered, expect Werbos to      |
+      | follow up. If full code arrives, full unblock.         |
 ```
 
 ---
@@ -156,26 +206,32 @@ NEW   | Werbos 2026-05-19 10:51 AM sent DM paper draft for ApJ | 🔶 LIVE
 ```text
 Item                                | Status
 ------------------------------------|------------------------------------------
-Werbos collaboration                | 🔶 Active — paper draft + review request
-                                    |    2026-05-19 10:51 AM; reply sent ~11:30
-Email out (v4 findings + code ask)  | ✅ Sent 2026-05-19, includes T2
-                                    |    invalidation of his cited v3 result
-                                    |    + 4-fn extraction surface area
-Werbos's promised code              | ⚠️  ETA 2026-05-20 (still 1-2 day window
-                                    |    open; nothing received yet)
-Gate G1 (lepton scan)               | ❌ ATTEMPTED — 2-fn wrong tool.
-                                    |    BLOCKED on 4-fn implementation
-                                    |    (T5→code) OR Werbos's code
-Gate G2 (neutral m_χ ground state)  | ❌ v3 RESULT INVALIDATED (T2 negative).
-                                    |    G2 cannot be evaluated with 2-fn;
-                                    |    must use 4-fn or canonical Q=0 form.
-                                    |    Q14 now 3-way conflict.
-Gate G3 (discrete ω selection)      | ⚠️  Empirical-via-G1 path now also
+Werbos collaboration                | 🔶 Active — TWO emails today.
+                                    |    AM: ApJ paper draft for review.
+                                    |    PM: 3-gap clarifications + Q14
+                                    |    resolution + ApJ-revision intent.
+Email out (v4 findings + code ask)  | ✅ Sent 2026-05-19 AM with T2
+                                    |    invalidation + 4-fn surface area
+Werbos reply (3 clarifications)     | ✅ Received 2026-05-19 1:49 PM.
+                                    |    m_eff²=m_J²-ω², f(s) mapping,
+                                    |    R cancels. Q14 → Q_A≈0/Q_J≠0.
+Werbos's promised code              | ⚠️  "as soon as I can" — no
+                                    |    committed date in PM reply
+T6 — 4-fn IVP attempt               | ❌ NEGATIVE — all 40 (m_J², λ) scan
+                                    |    points blow up. Confirms eigenvalue
+                                    |    structure; can't anchor with IVP
+                                    |    from canonical initial conditions.
+Gate G1 (lepton scan)               | ❌ BLOCKED — 4-fn implementation
+                                    |    pending T6→A (BVP) and T7 (shoot)
+Gate G2 (neutral m_χ ground state)  | ❌ v3 INVALIDATED. Werbos endorsed
+                                    |    Q_A≈0 canonical; still need 4-fn
+                                    |    anchor before running it.
+Gate G3 (discrete ω selection)      | ⚠️  Empirical-via-G1 path still
                                     |    blocked (waiting for G1 path).
-                                    |    Analytic proof still deferred.
 M6 production in Taichi             | 🚧 Production decision delayed past
-                                    |    2026-05-25 — needs at least one
-                                    |    gate to land first.
+                                    |    2026-05-27 if T6→A and T7 land
+                                    |    this week; or 2026-05-30+ if
+                                    |    Werbos's code is the unblock
 M5 / Liquid Crystal                 | 🔶 Active — M5.4 substrate migration queued
 ```
 
@@ -269,10 +325,20 @@ Q13  | 4-function vs 2-function reduction   | RESOLVED in principle — 2-fn
                                             | CHARGED. Confirmed via T5
                                             | extraction. Full reduction
                                             | mapping still unclear.
-Q14  | Canonical Q=0: locked / A=0 /        | EXPANDED to 3-way; A=0 path
-       Q_A≈0?                               | now disproved by T2. Locked
-                                            | failed in v2. Q_A≈0 untested.
-                                            | Code resolves cleanly.
+Q14  | Canonical Q=0: locked / A=0 /        | RESOLVED (Werbos 1:49 PM):
+       Q_A≈0?                               | canonical DM candidate is
+                                            | Q_A≈0/Q_J≠0 (both fields
+                                            | active, EM-neutral). Locked
+                                            | and A=0 are limiting
+                                            | approximations.
+Q15  | Does m_eff² substitution close       | TESTED via T6 → INCONCLUSIVE
+       electron H/Q gap?                    | (eigenvalue structure means
+                                            | IVP can't test from generic
+                                            | initial conditions)
+Q16  | What specific m_J², λ_bench values   | NEW — load-bearing for T6→A
+       does Werbos use at calibration?      | / T7. Resolves if Werbos
+                                            | answers OR if BVP finds it
+                                            | independently.
 ```
 
 ---

@@ -1,18 +1,39 @@
 {
-  "mode": "calibration",
+  "mode": "single",
   "omega": 1.0,
   "config": {
-    "mode": "calibration",
+    "mode": "single",
     "omega": 1.0,
     "V0": 0.1,
-    "A0": 0.1,
+    "A0": -0.1,
     "Q0": 0.1,
-    "J0": 0.1,
-    "m_J_sq": 1.0,
-    "lam_bench": 4.25,
+    "J0": -0.1,
+    "m_J_sq": 0.5,
+    "lam_bench": 1.0,
     "no_omega_kinetic": false,
     "r_max": 20.0
   },
-  "best": null,
-  "n_scan_points": 40
+  "best": {
+    "success": true,
+    "V0": 0.1,
+    "A0": -0.1,
+    "Q0": 0.1,
+    "J0": -0.1,
+    "omega": 1.0,
+    "m_J_sq": 0.5,
+    "m_eff_sq": -0.5,
+    "lam_bench": 1.0,
+    "include_omega_kinetic": true,
+    "H": 25050114.121761814,
+    "Q_CS": 4483.516085110227,
+    "Q_noether": 17702.006724885203,
+    "HQ_CS": 5587.158303045534,
+    "HQ_noether": 1415.100248863128,
+    "tail": 71.1056545331183,
+    "localized": false,
+    "blew_up": 1.0,
+    "r_reached": 4.402001334222815,
+    "peak": 67.23400485323927
+  },
+  "n_scan_points": 1
 }

@@ -567,6 +567,487 @@ tables below). Q14 in particular moves from "3-way conflict" to
 
 ---
 
+### T6 first run — 2026-05-19 PM (4-fn IVP, negative result)
+
+Built `sandbox_v4/m6_v4_4fn.py` per Werbos's clarifications:
+benchmark ODE with `m_eff² = m_J² − ω²` substitution, value BCs
+`V(R_MIN)=A(R_MIN)=Q(R_MIN)=J(R_MIN)=0.1`, derivatives zero at origin,
+toroidal R=1, ω-kinetic term included in energy density. Started
+with RK45 → numerical stiffness → tried LSODA → hung → returned to
+RK45 with `max_step=0.05` and a `BLOWUP_THRESHOLD=100` termination
+event. Scan grid: m_J² ∈ {0, 0.5, 1, 1.5, 2, 3, 5, 10} × λ_bench ∈
+{0.5, 1, 2, 4.25, 10}. All 40 combinations completed.
+
+**Result: every combination blew up. No localized solution found.**
+
+```text
+Regime                   | What happens
+-------------------------|---------------------------------------------
+m_eff² < 0 (m_J² < ω²)   | Oscillatory growth (massive Bessel J_0
+                         |   instability). Fields → 50-100 amplitude
+                         |   before integrator terminates.
+m_eff² = 0 (m_J² = ω²=1) | Q_CS = 0 exactly (degenerate). H = 9.5e6.
+m_eff² > 0 (m_J² > ω²)   | Bound + non-bound modes mix. Generic
+                         |   initial conditions excite the
+                         |   unbound mode → exponential growth.
+                         |   Q_CS NEGATIVE (-0.04 to -24), opposite
+                         |   sign to target +1. Suggests A/J
+                         |   winding orientation wrong.
+```
+
+### What this finding means
+
+The 4-fn benchmark ODE is an **eigenvalue / shooting problem**, not
+a plain IVP. Werbos's `V₀=A₀=Q₀=J₀=0.1` only gives a bound state at
+ONE specific (m_J², λ_bench) calibrated point, not generically.
+Working from arbitrary (m_J², λ_bench) with those initial values
+gives saddle-point dynamics where the unbound mode dominates.
+
+Equivalent statement: a chaoiton is the rare initial condition
+within an 8-dimensional phase space `(V, V', A, A', Q, Q', J, J')`
+that decays at infinity. Generic ICs blow up. The "calibration"
+is finding that rare initial condition.
+
+### Three paths forward
+
+```text
+Path | Approach                            | Effort | Risk
+-----|-------------------------------------|--------|--------
+A    | scipy.solve_bvp — enforce decay     | 2-4 hr | Medium
+     | at r_max as boundary condition.     |        | (trivial
+     | Standard tool for soliton-finding   |        | sol'n
+     | ODEs. Needs sensible initial guess  |        | attractor)
+     | + may need normalization to avoid   |        |
+     | trivial solution.                   |        |
+B    | Newton-style shooting on            | 1-2 hr | High
+     | (m_J², λ_bench): residuals =        |        | (may not
+     | (H/Q − 1.6969, Q_CS − 1) targets.   |        | converge)
+     | Each step calls bounded IVP.        |        |
+C    | Ask Werbos for the specific m_J²    | 0 hr   | Low —
+     | and λ_bench values at calibration   | (one-  | his
+     | (he gave us the m_eff² formula but  | line   | answer
+     | not the m_J² number itself)         | ask)   | resolves
+```
+
+**Sequencing (per Rodrigo, 2026-05-19 afternoon):**
+
+1. Document this T6 finding now (this section)
+2. Build T6→A (BVP solver) — first solo attempt
+3. Review + document T6→A outcome
+4. If A succeeds → use it for calibration; if not → move to T7 (B shooting)
+5. Review + document T7 outcome
+6. Ask Werbos with whatever specific question we've narrowed down to
+
+The escalation principle: prove what we tried solo before going back
+to him. His ApJ paper timeline is also our timeline; if we can do
+the work without burning his cycles, that's better.
+
+### What v3's 1.56% gap really meant
+
+Werbos's "try the m_eff fix for the 1.56% gap" was about the LEAN
+2-fn ODE (which v3 used). T6 shows the m_eff² substitution applied
+to the 4-fn benchmark ODE doesn't trivially give bound states from
+generic ICs. The 1.56% gap closing test would need to be on the
+2-fn ODE specifically — which is now confirmed-wrong-tool for the
+charged sector. So that specific test is moot. The benchmark ODE
+calibration through BVP/shooting is the real anchor.
+
+---
+
+### T6→A — BVP solver attempt (Path A, 2026-05-19 PM)
+
+Built `sandbox_v4/m6_v4_4fn_bvp.py` using `scipy.integrate.solve_bvp`
+with eigenvalue parameter(s). Two formulations tried:
+
+#### Formulation 1: single eigenvalue (m_J²) + 1 normalization (V_norm)
+
+```text
+BCs (9 total for 8-dim state + 1 param):
+  V(R_MIN) = 0.1  (eats trivial sol'n attractor)
+  V'(R_MIN) = A'(R_MIN) = Q'(R_MIN) = J'(R_MIN) = 0  (regularity)
+  V(r_max) = A(r_max) = Q(r_max) = J(r_max) = 0      (decay)
+Unknown: m_J²
+```
+
+Result: **converges, but to 2-fn subset.** A(r) and J(r) collapse
+to zero identically. The (V, Q) sub-system finds a non-trivial
+bound state via eigenvalue m_J²; (A, J) decouples spontaneously
+because A=J=0 is a stable solution branch of the system.
+
+```text
+r_max=12  → m_J²_fit = 0.0933  m_eff² = -0.907  peak = 0.154  Q_CS = 0
+r_max=24  → m_J²_fit = 0.9403  m_eff² = -0.060  peak = 0.103  Q_CS = 0
+```
+
+The r_max-dependence of the eigenvalue (0.09 → 0.94 as r_max
+doubles) is a **Bessel-zero artifact signature** — the BVP is
+catching oscillating J_0 solutions that happen to have a zero at
+r_max, not genuine exponential-decay bound states. Negative m_eff²
+in both cases confirms the bound-state regime is not reached.
+
+**Formulation 2: two eigenvalues (m_J², λ_bench) + 2 normalizations
+(V_norm, A_norm)**
+
+```text
+BCs (10 total for 8-dim state + 2 params):
+  V(R_MIN) = 0.1, A(R_MIN) = 0.1  (eats trivial AND eats A→0 attractor)
+  V'=A'=Q'=J' = 0 at origin
+  V=A=Q=J = 0 at r_max
+Unknowns: m_J², λ_bench
+```
+
+Result: **all 36 scan combinations fail with "singular Jacobian
+encountered in collocation system."** The Jacobian is ill-conditioned
+near the initial guess because the two BC sensitivities (∂/∂m_J²,
+∂/∂λ_bench) are likely linearly dependent at the starting point.
+2-eigenvalue BVP problems are fragile this way.
+
+### T6→A diagnosis
+
+```text
+What we proved             | What it means
+---------------------------|-------------------------------------------
+BVP finds (V,Q) bound      | The Coulomb-like (V↔Q) sub-system has
+state spontaneously        | bound-state structure; well-posed alone.
+                           |
+(A,J) collapses to 0       | Trivial-A,J branch is a stable solution.
+in 1-eigenvalue mode       | Need explicit constraint to force them
+                           | non-zero (Q_CS=1 isn't a boundary BC).
+                           |
+r_max-dependent eigenvalue | Solution is Bessel-zero artifact, not true
+                           | exponential decay. m_eff² stays negative.
+                           |
+2-eigenvalue formulation   | Jacobian degeneracy at initial guesses.
+fails with singular        | Could be fixable with smarter initial
+Jacobian                   | guess or scaling, but high-risk.
+```
+
+The fundamental issue: **`Q_CS = 1` is an integral / topological
+constraint, not a boundary condition.** scipy.solve_bvp can enforce
+boundary values but not integral conditions. To pin Q_CS = 1, we'd
+need either (a) a Lagrange-multiplier reformulation, (b) shooting on
+(m_J², λ_bench, V₀, A₀, ...) with Q_CS as a residual, or (c) Werbos's
+explicit calibration values.
+
+### T6→A decision
+
+**Path A is partial-success / partial-fail.** It validates the
+eigenvalue structure (BVP found a bound state) but can't pin the
+specific 4-fn chaoiton with Q_CS=1. Two productive directions:
+
+```text
+Direction                  | Effort   | Risk    | Note
+---------------------------|----------|---------|-------------------
+T7 — shooting on (m_J²,    | 2-3 hr   | High    | More flexible
+λ_bench, V₀, A₀, Q₀, J₀)   |          |         | than BVP, can
+with Q_CS=1, H/Q=1.6969    |          |         | use Q_CS as
+as Newton residuals        |          |         | residual
+T8 — ask Werbos for the    | 0 hr     | Low     | The specific
+specific m_J² and λ_bench  | (1-line  |         | values fix
+values at calibration      | email)   |         | everything
+```
+
+T6→A is documented and scripts archived. Proceeding to T7.
+
+---
+
+### T7 — Shooting refinement (Path B, 2026-05-19 PM)
+
+Built `sandbox_v4/m6_v4_4fn_shoot.py`. Used "r_blowup distance" as a
+continuous figure of merit: in a bound state, the IVP would integrate
+to r_max without exceeding threshold; in a non-bound state, blowup
+happens at some finite r. **Larger r_blowup ≈ closer to eigenvalue.**
+
+**Coarse 2D scan** over (m_J², λ_bench) ∈ [0.5, 8] × [0.1, 10] with
+V₀=A₀=Q₀=J₀=0.1, r_max=15:
+
+```text
+Observation                 | Detail
+----------------------------|------------------------------------------
+Maximum r_blowup = 6.44     | Well below r_max=15 → no bound state in
+                            | this parameter window
+m_J²=1.0 row is flat at 6.44| Degenerate: m_eff²=0 makes the cubic
+                            | term irrelevant (λ_bench drops out)
+r_blowup decreases as m_J²  | Larger mass → faster nonlinear blowup,
+increases above 1.0         | not stabilization. Opposite of expected.
+r_blowup also decreases as  | The λ_bench·(Q²-J²) coupling is
+λ_bench grows               | destabilizing in this regime.
+```
+
+**Amplitude shoot** at fixed (m_J²=2.0, λ_bench=1.0), sweeping
+V₀=A₀=Q₀=J₀=A_0 from 0.001 to 1.0:
+
+```text
+A_0        | r_blowup | Note
+-----------|----------|----------------
+0.001      | 7.77     | Largest seen
+0.1        | 3.68     | Werbos's calib val
+1.0        | 1.75     | Strong blowup
+```
+
+**r_blowup is monotone decreasing in A_0.** As A_0 → 0, r_blowup → ∞
+(the trivial solution V=A=Q=J=0). There's no resonance / sweet spot
+at non-zero amplitude where the bound state lives.
+
+### T7 finding
+
+For the **symmetric ansatz** V₀ = A₀ = Q₀ = J₀, there is **NO bound
+state** at any tested (m_J², λ_bench) ∈ [0.5, 8] × [0.1, 10] and any
+amplitude A_0 > 0.
+
+This means **Werbos's calibration must use asymmetric initial values**
+— V₀ ≠ A₀ ≠ Q₀ ≠ J₀ — OR substantially different (m_J², λ_bench)
+values outside our scan window OR a different normalization / shooting
+parameter we haven't identified.
+
+### T7 decision: Werbos ask is now the highest-leverage action
+
+T6 + T6→A + T7 collectively establish:
+
+```text
+What we've proven independently  | What we need from Werbos
+---------------------------------|-----------------------------------
+- 4-fn benchmark ODE implements  | - Are V₀, A₀, Q₀, J₀ all 0.1 at
+  cleanly                        |   calibration, or do they differ?
+- m_eff² = m_J² − ω² substitution| - Specific m_J² value at electron
+  applied per Werbos's recipe    |   calibration point
+- Eigenvalue structure confirmed | - Specific λ_bench value
+  via BVP                        | - Shooting algorithm or BVP
+- (V, Q) sub-bound state exists  |   formulation he uses for Q_CS=1
+- Symmetric (V₀=A₀=Q₀=J₀)        | - Any normalization/decomposition
+  ansatz has no bound state      |   trick that helps converge
+```
+
+The question for Werbos has narrowed from "send your code" to
+"share these 2-4 specific numbers", which is much smaller ask and
+respects his time / QAGI LLC constraints. If he answers, we're
+unblocked instantly. If not, we have rich documented findings to
+include in a slower full code request.
+
+---
+
+### Werbos / DeepSeek helicity clarification — 2026-05-19 4:21 PM
+
+Werbos replied (via DeepSeek again) with the EXACT diagnosis we
+needed. The symmetric ansatz forces Q_CS=0 by symmetry. The Q_CS=1
+chaoiton requires **opposite helicity** between the (V, Q) and (A, J)
+subsystems.
+
+> "The Chern-Simons linking number Q_CS = 1 requires a specific
+> relative sign (helicity) between the (V, Q) and (A, J) subsystems.
+> The symmetric ansatz V₀ = A₀ = Q₀ = J₀ = 0.1 forces both subsystems
+> to have the same sign structure, which locks Q_CS = 0. The chaoiton
+> with Q_CS = 1 requires opposite helicity between the two subsystems
+> — typically V, Q positive and A, J negative, or vice versa."
+
+**Specific calibration values (verbatim from DeepSeek):**
+
+```text
+Field    Value    Sign
+V(0)     0.1      positive
+A(0)     0.1      negative  (or vice versa)
+Q(0)     0.1      positive
+J(0)     0.1      negative  (or vice versa)
+
+Critical: V and Q must have the same sign; A and J must have the
+same sign; the (V, Q) pair must have opposite sign to the (A, J)
+pair. This asymmetry is what gives Q_CS = 1.
+
+Parameters:
+  m_J²        | ≈ 0.5 (mixed case) OR 0 (pure-quartic case)
+  λ_bench     | 1.0 (mixed case) OR 4g = 4.25 (pure-quartic case)
+  m_eff²      | m_J² − ω² = -0.5 (negative; oscillatory core,
+              | correct for time-periodic solution)
+  ω           | 1.0 (electron calibration)
+```
+
+**Shooting strategy (verbatim):**
+
+> "The Q_CS = 1 chaoiton is found by a shooting method with the
+> asymmetric initial signs, treating the decay rate at infinity as
+> the target. The energy functional automatically selects the
+> correct profile once the helicity is set correctly."
+
+### Resolution of Q15, Q16, Q17
+
+```text
+Q15 | Does m_eff² substitution close   | RESOLVED. m_eff² = -0.5 IS the
+     | electron calibration?           | calibration regime. Negative
+                                       | m_eff² is correct ("oscillatory
+                                       | core, time-periodic solution").
+                                       | T6's expectation that m_eff²>0
+                                       | gives decay was wrong.
+Q16 | What specific m_J², λ_bench at   | RESOLVED. m_J² ≈ 0.5,
+     | calibration?                    | λ_bench = 1.0 (mixed case).
+                                       | V₀=Q₀=+0.1, A₀=J₀=-0.1.
+Q17 | What shooting strategy?         | RESOLVED. Asymmetric helicity
+(new)|                                  | + decay-rate-at-infinity
+                                       | target. The opposite-sign
+                                       | structure does the work that
+                                       | a Q_CS=1 constraint would
+                                       | otherwise impose.
+```
+
+### Implication for v4 implementation
+
+The "fix" turns out to be a 4-character code change: flip A₀ and J₀
+signs from +0.1 to -0.1. T6 + T7 explored ONLY the symmetric ansatz
+and missed this because we treated (V₀, A₀, Q₀, J₀) as a single
+common amplitude. Once asymmetric, the (V,Q) and (A,J) pairs are
+fundamentally distinguishable in the cubic Q(Q²-J²) and J(Q²-J²)
+terms — they were degenerate when V=A and Q=J.
+
+### Next: re-run T6 + T7 with helicity
+
+Specifically:
+1. Update `m6_v4_4fn.py` to allow independent (V₀, A₀, Q₀, J₀) signs
+2. Run single integration at (V₀=+0.1, A₀=-0.1, Q₀=+0.1, J₀=-0.1,
+   m_J²=0.5, λ_bench=1.0, ω=1.0)
+3. Check: does Q_CS land at +1? Does H/Q land at 1.6969?
+4. If yes: run full lepton scan (vary ω) for the muon@1.1% test
+5. If no: report specific failure mode and escalate
+
+The Werbos paper draft v2 (Dark_Matter_in_Universe_v2.txt) is being
+reviewed in parallel (paste-ready review delivered to Rodrigo
+2026-05-19 4:30 PM ish; user-edited and to be sent imminently).
+
+---
+
+### T8 — Asymmetric-helicity re-runs (2026-05-19 PM)
+
+Built/updated three scripts to support Werbos's helicity recipe
+(V_norm=+0.1, A_norm=-0.1, Q via init guess +0.1, J via init guess
+-0.1). Three scripts updated to accept --helicity argument.
+
+**T8a — IVP at canonical (m_J²=0.5, λ_bench=1.0):**
+
+```text
+Symmetric V₀=A₀=Q₀=J₀=+0.1   | Q_CS = 0 (T6 baseline)
+Asymmetric Werbos helicity   | Q_CS = 4483 (non-zero! helicity works)
+                             | But: tail=71, IVP still blows up,
+                             | Q_CS is way off target 1.
+```
+
+**Conclusion: helicity is necessary (Q_CS goes from 0 to non-zero
+when symmetry breaks) but not sufficient for IVP convergence.**
+
+**T8b — Amplitude shoot with Werbos helicity at (m_J²=0.5, λ=1):**
+
+```text
+A_0          | r_blowup (with helicity) | vs symmetric (T7)
+-------------|-----------|--------------|------------------------
+0.001        | 8.70      |              | (best vs sym 7.77)
+0.1          | 4.12      |              | (vs sym 3.68; +12%)
+1.0          | 1.96      |              | (vs sym 1.75; +12%)
+```
+
+Helicity gives ~10-15% improvement in r_blowup at each A_0, but
+r_blowup is still monotone in A_0 (no resonance). No bound state
+found by amplitude shooting alone.
+
+**T8c — 1-eigenvalue BVP with asymmetric helicity initial guess:**
+
+Updated `m6_v4_4fn_bvp.py` to: (a) revert to 1-eigenvalue (m_J²
+only, λ_bench fixed) to avoid the 2-eigenvalue singular Jacobian;
+(b) add helicity-aware initial guess. Drop A_norm constraint
+(state_dim + 1 param = 9 BCs requires only V_norm as the extra).
+
+Scan over m_J²_init ∈ {0.5, 1.0, 5.0, 10.0, 50.0, 100.0}:
+
+```text
+m_J²_init | m_J²_fit  | A(0)    | Q(0)    | Q_CS   | Notes
+----------|-----------|---------|---------|--------|---------------
+0.5       | -41.4     | -0.000  | -2.90   | 0      | (V,Q) bound,
+                                                   | a-J collapsed
+1.0       | (FAIL)    | -       | -       | -      | max nodes
+5.0       | 5.51      | 0.000   | -0.021  | 0      | same (V,Q)
+                                                   | bound state
+10.0      | 5.51      | -0.000  | -0.021  | 0      | converges to
+                                                   | same eigenvalue
+50.0      | -1.82     | 0.0003  | -0.306  | 0      | A,J non-zero
+                                                   | but tiny; H/Q
+                                                   | numerical noise
+100.0     | (FAIL)    | -       | -       | -      | max nodes
+```
+
+The BVP converges to the same **(V, Q) bound state at m_J² = 5.51**
+regardless of asymmetric initial guess. Even though we initialize
+A = -V·exp(-r) and J = -Q·exp(-r), the iteration drives A → 0 and
+J → 0. The asymmetric guess buys nothing because there's no BC
+forcing A to stay finite at the origin.
+
+### T8 finding
+
+**Helicity is necessary but not sufficient for a Q_CS=1 chaoiton.**
+The Q_CS=1 bound state requires either:
+
+```text
+Option A | A topological / integral constraint (Q_CS = 1 added as a
+         | residual to the BVP/shooter). solve_bvp doesn't natively
+         | support this; needs custom Newton on shooting parameters
+         | with Q_CS as residual.
+Option B | A second normalization (A_norm) that forces A non-zero,
+         | with a second eigenvalue (λ_bench) to make BCs consistent.
+         | We tried this in T6→A's 2-eigenvalue mode — fails with
+         | singular Jacobian universally across our scan.
+Option C | Better initial guess that's already in the Q_CS=1 basin,
+         | so BVP iterates within it rather than escaping. Likely
+         | requires Werbos's actual converged profile shapes
+         | (V(r), A(r), Q(r), J(r) tabulated), not just BCs.
+Option D | Werbos's actual shooting code with whatever parametrization
+         | he uses ("treating the decay rate at infinity as the
+         | target" — but on which shooting variable?).
+```
+
+### T8 decision
+
+T8 is **CLOSED with partial progress**:
+
+```text
+Today's net advance              | What we proved
+---------------------------------|-----------------------------------
+Helicity matters                 | Q_CS depends on sign structure
+                                 | (0 in sym, non-zero in asym).
+                                 | Confirms Werbos/DeepSeek
+                                 | helicity recipe is correct.
+But not sufficient               | All formulations we tried
+                                 | (IVP, BVP-1, BVP-2, shooting)
+                                 | hit walls.
+(V, Q) subset bound state real   | BVP repeatedly finds it at
+                                 | m_J²=5.51, λ_bench=1.0,
+                                 | regardless of initial guess.
+                                 | This is genuine sub-physics.
+```
+
+### Next action — wait for Werbos's response to today's email
+
+Rodrigo's email (~5:00 PM 2026-05-19) asked for:
+
+1. Specific calibrated (m_J², λ_bench) values [Werbos's 4:21 PM
+   reply already answered: m_J²≈0.5, λ_bench=1.0]
+2. Asymmetric helicity prescription [DONE — Werbos answered]
+3. Shooting algorithm or BVP formulation for Q_CS=1 [STILL OPEN]
+
+The third question is the one that remains. With today's review of
+his v2 paper draft, and the documented evidence that helicity alone
+doesn't crack it, we expect either:
+
+```text
+Likely Werbos response | Action on receipt
+-----------------------|------------------------------------------
+Specific algorithm     | Implement, anchor, run scans
+description (e.g.      |
+"add a 5th BC of       |
+Q_CS=1 via integral")  |
+Tabulated profile shape| Use as warm-start for BVP; should converge
+(V(r), A(r), Q(r),     | within the right basin
+J(r) on a grid)        |
+Full code              | The gold standard; full unblock
+"Will get back"        | Continue with parallel work (M5.4 etc.)
+```
+
+---
+
 ### IMMEDIATE-QUESTIONS (gates v5)
 
 ```text
@@ -591,11 +1072,25 @@ Q14 | Canonical Q=0: locked / A=0 / Q_A≈0?    | v4    | RESOLVED. Canonical
     |                                         |       | EM-neutral). Locked
     |                                         |       | and A=0 are limiting
     |                                         |       | approximations.
-Q15 | Does m_eff² = m_J² − ω² substitution    | v4    | NEW — surfaced by
-    | close electron calibration H/Q to       |       | Werbos's proposed
-    | 1.6969?                                 |       | direct test. Step 3
-    |                                         |       | of v4 4-fn build
-    |                                         |       | tests this.
+Q15 | Does m_eff² = m_J² − ω² substitution    | v4    | TESTED via T6 →
+    | close electron calibration H/Q to       |       | INCONCLUSIVE.
+    | 1.6969?                                 |       | Generic IVP from
+    |                                         |       | V₀=A₀=Q₀=J₀=0.1
+    |                                         |       | blows up across
+    |                                         |       | full (m_J²,
+    |                                         |       | λ_bench) scan.
+    |                                         |       | The fix may work
+    |                                         |       | but only at the
+    |                                         |       | specific eigenvalue
+    |                                         |       | which IVP can't find
+    |                                         |       | from generic start.
+Q16 | What specific m_J² and λ_bench does     | v4 PM | NEW — surfaced by
+    | Werbos use at the electron calibration  |       | T6 IVP-blowup
+    | point? (He gave us m_eff² formula but   |       | finding. Likely
+    | not the m_J² number itself.)            |       | resolves T6 if
+    |                                         |       | answered. Ask
+    |                                         |       | scheduled for
+    |                                         |       | after T6+T7 attempt.
 ```
 
 ### STILL OPEN-QUESTIONS

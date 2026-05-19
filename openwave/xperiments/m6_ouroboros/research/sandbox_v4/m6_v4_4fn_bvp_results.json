@@ -1,0 +1,29 @@
+{
+  "mode": "single",
+  "config": {
+    "mode": "single",
+    "m_J_sq": 100.0,
+    "lam_bench": 1.0,
+    "V_norm": 0.1,
+    "A_norm": -0.1,
+    "helicity": "werbos",
+    "omega": 1.0,
+    "r_max": 12.0,
+    "profile": "exp_decay",
+    "amplitude": 0.1,
+    "decay_rate": 1.0,
+    "phase_QJ": 1.0,
+    "verbose": false
+  },
+  "results": [
+    {
+      "success": false,
+      "error": "The maximum number of mesh nodes is exceeded.",
+      "m_J_sq_init": 100.0,
+      "lam_bench": 1.0,
+      "m_J_sq_fit": 324.1685414555204,
+      "helicity": "werbos",
+      "elapsed": 1.0436367988586426
+    }
+  ]
+}

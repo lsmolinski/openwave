@@ -171,6 +171,84 @@ Date       | Gate | Update
            |      | 4-fn extraction work-in-progress, code request as
            |      | path to firm up m_χ before submission. Awaiting Paul's
            |      | response.
+2026-05-19 | REPLY| Werbos replied (via DeepSeek) with 3 clarifications:
+  1:49 PM  |      | (1) m_eff² = m_J² − ω² (ω absorbs into mass term in
+           |      | the static benchmark ODE); (2) f(s) v5 ≡ benchmark
+           |      | when m_J²=0, λ=4g; use benchmark as general form;
+           |      | (3) Toroidal R cancels in H/Q ratio, set R=1.
+           |      | Endorsed Q14 → canonical Q=0 is Q_A≈0, Q_J≠0
+           |      | (both fields active, EM-neutral). Code arrives "as
+           |      | soon as I can" — no committed date.
+2026-05-19 | G2   | T6 first attempt at 4-fn benchmark ODE with
+  PM       |      | m_eff² substitution. Built m6_v4_4fn.py with
+           |      | value BCs V₀=A₀=Q₀=J₀=0.1, derivatives=0.
+           |      | RK45 → stiff, LSODA → hangs, RK45+max_step+blowup
+           |      | event → works numerically.
+           |      | RESULT: ALL 40 (m_J², λ_bench) grid combos BLEW UP.
+           |      | Reveals 4-fn ODE is eigenvalue/shooting problem;
+           |      | bound state exists only at specific calibrated
+           |      | (m_J², λ_bench) which we don't yet have. Q_CS
+           |      | also negative in m_eff²>0 cases (winding sign).
+           |      | Path forward: T6→A (BVP solver), then T7 (Newton
+           |      | shoot), then ask Werbos for specific m_J² + λ_bench
+           |      | values if neither converges.
+2026-05-19 | G2   | T6→A BVP attempt. Built m6_v4_4fn_bvp.py with
+  PM later |      | scipy.solve_bvp + eigenvalue parameter(s). RESULT:
+           |      | PARTIAL. 1-eigenvalue mode (m_J² + V_norm)
+           |      | converges to a non-trivial (V, Q) bound state, but
+           |      | (A, J) collapses to zero spontaneously → Q_CS = 0,
+           |      | not Q_CS = 1 target. The eigenvalue m_J² is also
+           |      | r_max-dependent (0.09 @ r_max=12; 0.94 @ r_max=24)
+           |      | suggesting Bessel-zero artifact, not true bound
+           |      | state. 2-eigenvalue mode (m_J², λ_bench + V_norm,
+           |      | A_norm) fails universally with singular Jacobian
+           |      | across 36 scan combinations. Fundamental issue:
+           |      | Q_CS=1 is a topological/integral constraint, not a
+           |      | boundary condition — solve_bvp can't enforce it.
+           |      | Moving to T7 (shooting with Q_CS=1 as residual).
+2026-05-19 | G2   | T7 shooting attempt. Built m6_v4_4fn_shoot.py
+  PM later |      | using r_blowup distance as continuous figure of
+           |      | merit. Coarse 2D scan (m_J², λ) ∈ [0.5, 8] ×
+           |      | [0.1, 10] at V₀=A₀=Q₀=J₀=0.1: max r_blowup = 6.44,
+           |      | well below r_max=15 → no bound state in scan
+           |      | window. m_J²=1.0 row flat (m_eff²=0 degenerate).
+           |      | Amplitude shoot: r_blowup monotone decreasing in
+           |      | A_0; no resonance/sweet spot.
+           |      | DEFINITIVE: NO bound state in symmetric ansatz
+           |      | V₀=A₀=Q₀=J₀ regime anywhere scanned. Werbos uses
+           |      | asymmetric initial values OR different param
+           |      | region we haven't covered.
+           |      | Next: email Werbos with sharper specific ask —
+           |      | what are the canonical (m_J², λ_bench, V₀, A₀,
+           |      | Q₀, J₀) values at his electron calibration?
+2026-05-19 | TRIG | Email sent ~5:00 PM with T6/T6→A/T7 findings +
+  5:00 PM  |      | request for canonical (m_J², λ_bench, V₀-J₀)
+           |      | values + shooting algorithm.
+2026-05-19 | REPLY| Werbos reply (via DeepSeek): asymmetric helicity
+  4:21 PM  |      | (NOTE: arrived BEFORE the 5 PM email — these
+  (cross-  |      | crossed in transit). V₀=Q₀=+0.1, A₀=J₀=-0.1
+   crossed)|      | gives Q_CS=1. m_J²≈0.5, λ_bench=1.0,
+           |      | m_eff²=-0.5 (negative is correct, time-periodic).
+           |      | "Shooting with decay rate at infinity as target"
+           |      | — algorithm not detailed. Also v2 paper draft
+           |      | sent for review.
+2026-05-19 | G2   | T8: Re-ran 4fn IVP / shoot / BVP scripts with
+  PM later |      | Werbos's asymmetric helicity prescription.
+           |      | RESULT: helicity is NECESSARY but NOT SUFFICIENT.
+           |      | IVP at (m_J²=0.5, λ=1): Q_CS goes from 0
+           |      | (symmetric) → 4483 (asymmetric) — confirms
+           |      | helicity prescription. But still not Q_CS=1.
+           |      | Amplitude shoot: ~12% better than symmetric but
+           |      | still monotone. BVP with 1-eigenvalue +
+           |      | asymmetric init guess: collapses to (V,Q)
+           |      | sub bound state at m_J²=5.51 regardless of init.
+           |      | A,J drift to 0 — no BC holds them.
+           |      | Q_CS=1 chaoiton requires: (a) topological
+           |      | constraint Q_CS=1 as Newton residual, or
+           |      | (b) tabulated init profile in right basin, or
+           |      | (c) Werbos's actual code.
+           |      | Review of v2 paper sent ~4:30 PM same day.
+           |      | Awaiting Werbos's follow-up.
 ```
 
 ---
@@ -234,3 +312,44 @@ B    | Solo: implement 4-fn benchmark   | G1 + G2 paths (with risk
 
 The 2026-05-19 reply to Werbos was framed around Path A but acknowledges
 Path B is the fallback if his code doesn't materialize.
+
+---
+
+## Status revision 2 (2026-05-19 PM, post-Werbos reply + T6)
+
+Werbos resolved the 3 implementation gaps (m_eff² formula, f(s) mapping,
+R cancels) but T6 first run revealed the deeper problem: the 4-fn ODE
+is an **eigenvalue/shooting problem**, not solvable by plain IVP from
+generic initial conditions. Scan of (m_J², λ_bench) at V₀=A₀=Q₀=J₀=0.1
+across 40 grid points: ALL BLEW UP.
+
+```text
+Implementation reality       | Status
+-----------------------------|---------------------------------------
+Gaps from Werbos's reply     | RESOLVED in formula. Need ONE more
+                             | piece: the specific m_J², λ_bench
+                             | values at his calibrated point.
+4-fn ODE is eigenvalue-like  | Generic IVP doesn't find bound state.
+                             | Need BVP (solve_bvp with decay BC at
+                             | r_max) or Newton-style shooting.
+Path B has new sub-paths     | T6→A: BVP solver (2-4 hr, medium risk)
+                             | T7: Newton shoot on (m_J², λ_bench)
+                             | T8: ask Werbos for specific values
+                             | (1-line email, lowest risk)
+```
+
+**Updated path sequence** (Rodrigo direction, 2026-05-19 PM):
+
+```text
+Step | Action                              | If succeeds        | If fails
+-----|-------------------------------------|--------------------|-------------
+1    | DONE — document T6 negative result  | proceed to (2)     | —
+2    | T6→A: implement BVP solver          | use to calibrate   | → (3)
+3    | T7: Newton shooting on              | use to calibrate   | → (4)
+     | (m_J², λ_bench)                     |                    |
+4    | Ask Werbos for specific calibration | resolves           | M6
+     | values (m_J², λ_bench at canonical  | immediately        | parked
+     | point)                              |                    |
+```
+
+The escalation principle: prove what we tried before going back to him.
