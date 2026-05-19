@@ -1,0 +1,18 @@
+{
+  "mode": "calibration",
+  "omega": 1.0,
+  "config": {
+    "mode": "calibration",
+    "omega": 1.0,
+    "V0": 0.1,
+    "A0": 0.1,
+    "Q0": 0.1,
+    "J0": 0.1,
+    "m_J_sq": 1.0,
+    "lam_bench": 4.25,
+    "no_omega_kinetic": false,
+    "r_max": 20.0
+  },
+  "best": null,
+  "n_scan_points": 40
+}

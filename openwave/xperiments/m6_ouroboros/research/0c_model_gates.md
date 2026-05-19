@@ -4,7 +4,7 @@ Three gates must pass before committing M6 to full Taichi production. The
 model is a credible scientific candidate; these gates determine whether it is
 a credible *engineering* candidate alongside M5.
 
-Last updated: 2026-05-18.
+Last updated: 2026-05-19.
 
 ---
 
@@ -134,6 +134,43 @@ Date       | Gate | Update
            |      | leptons, the framework's discrete-spectrum claim has
            |      | numerical backing even without analytic proof. This
            |      | could effectively close G3 for production purposes.
+-----------|------|----------------------------------------------------------
+2026-05-19 | G1   | ATTEMPTED, BLOCKED. Built sandbox_v4/m6_v4_lepton_scan.py
+  PM       |      | with Lean 2-fn ODE; quick ω-sweep found H decreases
+           |      | with ω (opposite of Werbos's bosonization). ω=1.0
+           |      | marginally fails localization. m_μ/m_e ratio target
+           |      | 207, found 0.04. Diagnostic confirmed v3's
+           |      | H_CODE_ELECTRON_CALIB=0.494 is wrong (real H ≈ 10.7
+           |      | at calibration point). Root cause per Werbos's Q13:
+           |      | 2-fn ODE is for NEUTRAL sector only; CHARGED scan
+           |      | needs 4-fn (φ,α,ρ,β) toroidal ansatz. G1 cannot
+           |      | progress until 4-fn ODE is implemented.
+2026-05-19 | G2   | v3 RESULT INVALIDATED. Built sandbox_v4/m6_v4_t2_
+  PM       |      | neutral_ground.py with wider B₀ ∈ [1e-5, 1.0] log
+           |      | scan + golden-section refinement. NEGATIVE: H is
+           |      | monotonic in B₀; no minimum exists. All "localized"
+           |      | scan points violate Lean ≤4-node regularity (found
+           |      | 13-29 nodes). Linear part is β''+β'/r-β/r²+λβ=0 =
+           |      | J_1(√λr) Bessel — oscillatory, not bound. v3's 23
+           |      | solutions + m_χ=0.508 MeV are artifacts of permissive
+           |      | absolute-tail check. The cited DM result is not
+           |      | scientifically defensible until canonical Q=0 ODE is
+           |      | settled. Q14 now 3-way: locked (v2 failed) / A=0
+           |      | (v3/T2 disproved) / Q_A≈0 (untested).
+2026-05-19 | G3   | BLOCKED. Empirical-via-G1 path now blocked alongside
+  PM       |      | G1 itself. Analytic-mechanism path still deferred
+           |      | per Werbos's own admission. No movement until G1
+           |      | unblocks (Werbos's code OR solo 4-fn).
+-----------|------|----------------------------------------------------------
+2026-05-19 | TRIG | Werbos sent DM paper draft (Dark_Matter_in_Universe
+  10:51 AM |      | v0.txt) for ApJ review citing Griesi v3 m_χ=0.508 MeV
+           |      | as numerical input to relic-abundance Ω_χh²≈0.1-0.2.
+           |      | The cited result is the one T2 invalidated 30min
+           |      | earlier. Rodrigo replied same morning with honest
+           |      | feedback: artifacts finding, 3-way Q14 conflict,
+           |      | 4-fn extraction work-in-progress, code request as
+           |      | path to firm up m_χ before submission. Awaiting Paul's
+           |      | response.
 ```
 
 ---
@@ -151,3 +188,49 @@ The first round of gate-relevant clarification arrived. Key impacts:
 
 **Refined GO/NO-GO**: with G1 + G2 both within reach this week, the
 production decision can plausibly land by 2026-05-25.
+
+---
+
+## Status revision (2026-05-19, post-v4 first runs)
+
+The 2026-05-18 "production decision by 2026-05-25" timeline is now too
+optimistic. Both G1 and G2 hit unexpected blockers in v4 first runs:
+
+```text
+Gate | Was (2026-05-18)               | Is (2026-05-19)
+-----|--------------------------------|--------------------------------
+G1   | READY — run lepton scan w/     | BLOCKED — 2-fn ODE wrong tool
+     | Lean 2-fn ODE; expect muon@    | for charged sector. Need 4-fn
+     | 1.1% gap (Werbos bosonization) | benchmark ODE first.
+G2   | CODE COMING — Werbos's source  | v3 RESULT INVALIDATED. T2 showed
+     | will close calibration + m_χ   | 23 solutions are artifacts.
+     | ground state in one round      | Existence in 2-fn form uncertain.
+G3   | EMPIRICAL VIA G1               | BLOCKED with G1.
+```
+
+**Why the optimism was wrong**: we assumed the Lean 2-fn ODE was the
+canonical form for both sectors. Per Werbos's Q13 reply, it is the
+reduced form for the NEUTRAL sector only; the charged calibration +
+lepton scan use the 4-function (φ, α, ρ, β) toroidal ansatz from his
+pre-Lean code. The two ODEs are structurally different (toroidal l=0
+vs vector l=1), not reductions of each other.
+
+**Revised timeline**: production decision likely 2026-05-23 to
+2026-05-27 if Werbos's code arrives this week; 2026-05-25 to
+2026-05-30 if we have to implement the 4-fn ODE solo.
+
+**Two unblock paths**:
+
+```text
+Path | Trigger                          | Resolves
+-----|----------------------------------|---------------------------
+A    | Werbos sends his Python source   | G1 + G2 + Q12 + Q14
+     | (in response to our 2026-05-19   | in one shot
+     | ask)                             |
+B    | Solo: implement 4-fn benchmark   | G1 + G2 paths (with risk
+     | ODE in sandbox_v4/, calibrate    | from 3 open gaps:
+     | to H/Q=1.6969, then run scans    | ω-in-static, f(s) form, R)
+```
+
+The 2026-05-19 reply to Werbos was framed around Path A but acknowledges
+Path B is the fallback if his code doesn't materialize.
