@@ -67,6 +67,23 @@ A **chaoiton** is a time-periodic, spatially-localized solution of the Ouroboros
 
 Werbos's prior numerical work (Zenodo 20030162, **not yet read locally**) claims existence of 62 stable chaoiton families across 1280 parameter combinations, with L/Q ratio (angular momentum / charge) in the range 0.79–2.6 — overlapping the electron g-factor.
 
+#### How to pronounce "chaoiton"
+
+It's Werbos's portmanteau of **chaos** + **soliton**:
+
+```text
+Phonetic    | Syllables    | Notes
+------------|--------------|---------------------------------
+KAY-oh-     | chao-        | Like "chaos" (ch = k sound)
+  i-ton     |   i-ton      | Like end of "soliton"
+
+Full:       | KAY-oh-i-ton  (4 syllables)
+            |
+Alt:        | "kay-OH-i-ton" with stress on second syllable
+```
+
+Most natural: **"KAY-oh-i-ton"** — 4 syllables, primary stress on first ("KAY"), secondary on third ("i"). The "ch" is hard `k`, not `ch` like in "church".
+
 ### Charge quantization mechanism — the mutual Chern-Simons linking number
 
 For static or time-periodic configurations on a constant-time slice:
