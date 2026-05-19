@@ -900,6 +900,7 @@ terms — they were degenerate when V=A and Q=J.
 ### Next: re-run T6 + T7 with helicity
 
 Specifically:
+
 1. Update `m6_v4_4fn.py` to allow independent (V₀, A₀, Q₀, J₀) signs
 2. Run single integration at (V₀=+0.1, A₀=-0.1, Q₀=+0.1, J₀=-0.1,
    m_J²=0.5, λ_bench=1.0, ω=1.0)
