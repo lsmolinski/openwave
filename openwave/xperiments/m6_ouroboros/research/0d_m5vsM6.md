@@ -215,7 +215,7 @@ for it.
 | --- | --- | --- |
 | Now (2026-05-20) | M5.3 direction review in progress; M5.4 matrix substrate queued | v6 essentially closed at 0.84%; awaiting Paul Q28/Q29/Q30 |
 | Next 1-2 weeks | M5.4 matrix-field substrate; M5.5 Lagrangian + V(M); M5.6 biaxial twist + KG emergence | sandbox_v7: continuation lepton scan + Q_A ≈ 0 DM scan + Gelfand-Fomin |
-| Next 2-4 weeks | M5.7 Resonance hunt (Close protocol — l=1 harmonic, A/λ ∈ {0.5, 1, 2}); M5.8 Zitterbewegung clock | ApJ Section 4 numbers handed off to Paul; Zenodo upload lifted |
+| Next 2-4 weeks | M5.7 Resonance hunt (Close protocol — l=1 harmonic, A/λ ∈ {0.5, 1, 2}); M5.8 Zitterbewegung clock | ApJ Section 4 numbers handed off to Paul as a data drop (OpenWave does NOT deposit anything — Paul's Ref [14] resolves to a stable GitHub URL) |
 | **SABER trigger point** | **5b.1 Sine-Gordon kink test — first direct falsifiability test of thermal-amplitude hypothesis. Runs AFTER M5.4.** | No direct SABER trigger; M6 is parallel-research |
 | Post-trigger | 5b.2-5b.9 thermal program (SABER MAIN GOAL scientific counterpart) | M5.9 lepton families + Cornell quarks; M6 stays parallel sandbox |
 
@@ -330,8 +330,8 @@ partial success leaves OpenWave better off than dropping M6 entirely.
 
 ### Documented contributions to M6 (irreversibility of dropping)
 
-Rodrigo's M6 sandbox work is now woven into Paul's published / about-to-be-
-published record. Dropping M6 would orphan these citations:
+Rodrigo's M6 sandbox work is referenced in Paul's published / about-to-be-
+published record. Dropping M6 would orphan these references:
 
 | Sandbox round | Contribution | Where it's cited in Paul's papers |
 | --- | --- | --- |
@@ -341,8 +341,12 @@ published record. Dropping M6 would orphan these citations:
 | v5/v6 (2026-05-20) | First-ever Q_CS=1 chaoiton convergence in OpenWave; drop-quartic finding at 0.84% off target | Reference [14] in Neutral Chaoiton ApJ: *"Griesi & Anthropic AI 2026, in preparation (ground state computation)"* |
 
 These aren't "Rodrigo helped a little"; they are load-bearing references in
-papers Paul is depositing publicly. The collaboration is documented and
-public.
+Paul's papers. The collaboration is documented and public. **OpenWave's
+side does NOT deposit anything separately** — the GitHub repo IS the
+deliverable, and Paul's Ref [14] *"Griesi & Anthropic AI 2026, in
+preparation"* resolves to a stable OpenWave GitHub URL (with the option to
+tag a release for Zenodo-DOI if a reviewer ever requires it; otherwise
+not needed). See `0c_roadmap.md` Publishing stance.
 
 ### The deeper thesis (why both M5 and M6 matter even partially)
 
@@ -350,11 +354,13 @@ Standard Model takes particles as point-like fundamentals; M5 / M6 /
 EWT-style frameworks take them as emergent stable patterns of an underlying
 field. **If even one of M5 or M6 holds up empirically, the Standard Model
 becomes a phenomenological description of underlying wave dynamics** —
-that's the OpenWave thesis. Dark matter (M6's ApJ angle) is the
-highest-impact downstream consequence that gives the framework an entry
-point into mainstream physics. SABER (M5's thermal-engineering angle) is
-the highest-impact applied consequence. They are the two ends of the same
-research program — one publishes, one ships.
+that's the OpenWave thesis. Dark matter (M6's ApJ angle, via Paul's paper)
+is the highest-impact downstream consequence that gives the framework an
+entry point into mainstream physics. SABER (M5's thermal-engineering angle)
+is the highest-impact applied consequence. They are the two ends of the
+same research program — Paul publishes on the scientific side; OpenWave
+ships the engineering side and provides the open-source numerical platform
+that backs both.
 
 ### Net direction
 

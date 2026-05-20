@@ -7,6 +7,15 @@ Last updated: 2026-05-20 evening (post step-(8/11/4/2) diagnostics + email v6 se
 See `0c_model_gates.md` for the G1/G2/G3 production criteria.
 See `0d_m5vsM6.md` for the M5 vs M6 cross-evaluation in service of the SABER trigger.
 
+**Publishing stance (locked-in 2026-05-20):** OpenWave will NOT deposit M6
+work on Zenodo, arxiv, or any paper venue. The open-source GitHub repo IS
+the deliverable — full granularity (code, diagnostics, email trails) lives
+there and is more useful than a frozen PDF. Werbos's ApJ Ref [14] *"Griesi
+& Anthropic AI 2026, in preparation"* will resolve to a stable GitHub URL
+(tagged release if needed for DOI via auto-Zenodo integration, only if a
+reviewer requires it). Section 4 numbers are handed off to Paul as a data
+drop, not co-authorship. No formal commitment to publish was ever made.
+
 ---
 
 ## Overview
@@ -188,7 +197,7 @@ v7 implementation outline (provisional, drafted tomorrow):
 | Gate G1 (lepton scan) | 🔶 NEARLY UNBLOCKED. Continuation method required (cold-start fails). v7 work. |
 | Gate G2 (neutral m_χ ground state) | 🔶 NEARLY UNBLOCKED. Q_A≈0 scan runs once v7 calibration mode is locked. |
 | Gate G3 (discrete ω selection) | ⚠️ BLOCKED on G1. Empirical-via-lepton-scan path; analytic proof deferred per Werbos. |
-| ApJ Neutral Chaoiton paper | 🔶 HOLD. Reference [14] *"Griesi & AI in prep"*. ApJ Zenodo upload hold reaffirmed in email v6. Section 4 numbers within ~1 day of Paul's Q28/Q29/Q30 answers + v7 build + scan execution. |
+| ApJ Neutral Chaoiton paper (Paul's, not ours) | 🔶 HOLD on Paul's side. Paul is holding his ApJ Zenodo update pending our Section 4 numbers. Once we hand off (m_χ, m_J, σ/m, Ω_χh²), Paul's Ref [14] *"Griesi & Anthropic AI 2026, in preparation"* resolves to a stable GitHub URL (the OpenWave m6_ouroboros tree). We don't deposit anything ourselves — see Publishing stance at top. |
 | M6 production in Taichi | 🚧 Decision deferred until v7 locks + scans run. Earliest realistic: 2-3 days. |
 | M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. With M6 calibration essentially closed pending Q28/Q29/Q30, M5 return is feasible after v7 + scans. Cardinal rule: M5 is SABER's primary engineering track. |
 
@@ -208,7 +217,7 @@ A/B/C/D in the Sandbox v7 section above determine which branch runs tomorrow.
 | 1 | Lepton scan ω ∈ [0.5, 50] via continuation method. Expected: muon ω≈12.78 (1.1% gap target), tau ω≈40.7. | G1 | ~2-3 hours (continuation slower than cold-start) |
 | 2 | Q_A≈0 neutral chaoiton scan. Lands m_χ, m_J mediator mass, σ/m self-interaction for ApJ Section 4. | G2 | ~1 hour |
 | 3 | Gelfand-Fomin conjugate-point stability check. Confirms ground state. | G3 (empirical) | ~30 min |
-| 4 | Handoff (m_χ, m_J, σ/m, Ω_χh²) to Paul. Lift ApJ Zenodo upload hold. "Griesi & AI in prep" becomes a real citation. | — | done |
+| 4 | Hand off (m_χ, m_J, σ/m, Ω_χh²) numbers to Paul as a data drop. Paul's Ref [14] "Griesi & AI in prep" resolves to a stable OpenWave GitHub URL (tag a release if Paul's reviewer asks for a DOI). Our involvement ends at the data drop — Paul publishes on his own schedule. | — | done |
 
 ### M5 return after v6/v7 deliverables land
 

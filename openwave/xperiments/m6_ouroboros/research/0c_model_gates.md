@@ -141,8 +141,12 @@ Werbos's own statement *"for the electron, the quartic term is small."*
 | A | Paul confirms quartic is negligible (Q28) + ground state OK at ≤4 nodes (Q29) | Lock calibration at v6.6 + drop-quartic H. Proceed to v7 = lepton continuation + Q_A≈0 scan. |
 | B | Paul gives different quartic form OR confirms production has ≤4 nodes everywhere | v7 needs mode-selector and/or quartic re-implementation. ~1 extra day of work. |
 
-ApJ Zenodo upload hold is unchanged. Section 4 numbers come out within ~1 day
-of Paul's Q28/Q29/Q30 answers + v7 build + scan execution.
+Paul's ApJ Zenodo upload remains on his hold (waiting on our numbers).
+Section 4 numbers come out within ~1 day of Paul's Q28/Q29/Q30 answers +
+v7 build + scan execution and are handed off as a data drop. **OpenWave
+itself does NOT deposit M6 work** — the GitHub repo IS the deliverable;
+Paul's Ref [14] resolves to a stable repo URL. See `0c_roadmap.md`
+Publishing stance.
 
 ---
 

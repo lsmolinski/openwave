@@ -473,7 +473,7 @@ undermining DeepSeek's quantitative contribution. Content:
 | Diagnostic findings | (a) Step (8) H-functional sweep shows only the no-quartic variant lands within 1% of target — Werbos's own "small for the electron" reading is the right interpretation. (b) Step (11) field-profile inspection: v6.6 has 5 nodes in V and Q (just over Lean ≤4-node ground-state spec) and Q(r=0) flipped sign during convergence — likely a slightly-excited mode rather than the true ground state. (c) Step (2) cold-start lepton scan at ω_init ∈ {5, 12, 20, 40.7} catastrophically diverges; higher-ω modes need a continuation method (warm-start from electron + nudge ω upward) — v7 work. |
 | Sonet acknowledgment (gracious) | Acknowledged Claude Sonet's earlier email and its analysis without flagging that some of its numbers had been superseded; thanked Paul for the multi-AI coordination effort. |
 | Three new asks | **Q28** Which quartic IS canonical for the electron H? Three candidates: (a) small g with the DeepSeek form, (b) different small-magnitude quartic combination, (c) genuinely negligible for the electron — which interpretation matches your production runs? **Q29** Does your converged production run have V, Q with ≤4 zero crossings each (ground state) or with 5 crossings (excited mode)? **Q30** At your converged production: is Q(r=0) positive (matching the asymmetric helicity prescription V₀=Q₀=+0.1) or negative? Ours converged with Q(0)=−0.12. |
-| Commitment | ApJ Zenodo upload still held. Once Paul confirms quartic interpretation (Q28) and ground-state spec (Q29/Q30), we proceed directly to lepton scan + Q_A≈0 DM scan and hand off Section 4 numbers (m_χ, m_J, σ/m, Ω_χh²). |
+| Commitment | Once Paul confirms quartic interpretation (Q28) and ground-state spec (Q29/Q30), we proceed directly to lepton scan + Q_A≈0 DM scan and hand off Section 4 numbers (m_χ, m_J, σ/m, Ω_χh²) to Paul as a data drop. **OpenWave does not deposit M6 work** — the GitHub repo IS the deliverable; Paul's Ref [14] resolves to a stable repo URL. |
 
 ---
 
@@ -524,7 +524,7 @@ depends on the scenario branch above.
 | 7 | Lepton scan ω ∈ [0.5, 50] via continuation method. Expected: muon ω≈12.78 (1.1% gap target), tau ω≈40.7. | G1 | ~2-3 hours (continuation method is slower than cold-start) |
 | 8 | Q_A ≈ 0 neutral chaoiton scan. Lands m_χ, m_J mediator mass, σ/m self-interaction. Feeds ApJ Section 4. | G2 | ~1 hour |
 | 9 | Gelfand-Fomin conjugate-point stability check (confirms ground state) | G3 (empirical) | ~30 min |
-| 10 | Handoff (m_χ, m_J, σ/m, Ω_χh²) to Paul. Lift ApJ Zenodo upload hold. | — | done |
+| 10 | Hand off (m_χ, m_J, σ/m, Ω_χh²) numbers to Paul as a data drop. Paul's Ref [14] resolves to the stable OpenWave GitHub URL. We don't deposit anything ourselves. | — | done |
 
 ---
 
