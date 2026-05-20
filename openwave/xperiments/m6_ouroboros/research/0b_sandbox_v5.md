@@ -21,31 +21,16 @@ to clarify before v6.
 
 ## Why v5 is a new sandbox iteration (not a v4 attempt)
 
-```text
-Aspect              | v4 (T6-T9)                      | v5 (Werbos algorithm)
---------------------|---------------------------------|--------------------------
-Method family       | Forward IVP / shooting          | Collocation BVP
-Solver              | scipy.integrate.solve_ivp +     | scipy.integrate.solve_bvp
-                    |   differential_evolution +      |   (or scipy.optimize.root
-                    |   Nelder-Mead                   |   method='lm')
-Q_CS=1 enforcement  | As Newton-residual target       | As INTEGRAL CONSTRAINT
-                    |   (post-integration check)      |   via auxiliary state I
-Origin BCs          | Value BC: V(0)=A(0)=Q(0)=J(0)   | Derivative-only:
-                    |   = 0.1 with derivative=0       |   V'(0)=A'(0)=Q'(0)=J'(0)
-                    |                                 |   = 0; values FREE
-R_max BCs           | Implicit (run to r_max, check   | Robin: V'(R_max)+k·V=0
-                    |   tail)                         |   matching K_0(κr) decay
-Free eigenvalues    | (m_J², λ_bench) — m_J² and the  | (ω, λ_LM) — ω varied
-                    |   bench coupling varied; ω      |   directly; λ_LM is the
-                    |   fixed at 1.0                  |   Lagrange multiplier
-                    |                                 |   from H' = H − λ·Q_CS
-Initial guess       | Single point (V₀=A₀=Q₀=J₀=0.1)  | Tabulated profile shapes
-                    |   with helicity signs           |   (exp(-r) decay + non-
-                    |                                 |   proportional A,J)
-Result              | All attempts blew up or         | Converged status=0 at
-                    |   collapsed (V,Q)→0             |   ω=1.047, m_eff²=−0.596;
-                    |                                 |   Q_CS=1 exact
-```
+| Aspect | v4 (T6-T9) | v5 (Werbos algorithm) |
+| --- | --- | --- |
+| Method family | Forward IVP / shooting | Collocation BVP |
+| Solver | `scipy.integrate.solve_ivp` + `differential_evolution` + Nelder-Mead | `scipy.integrate.solve_bvp` (or `scipy.optimize.root` method='lm') |
+| Q_CS=1 enforcement | As Newton-residual target (post-integration check) | As INTEGRAL CONSTRAINT via auxiliary state I |
+| Origin BCs | Value BC: V(0)=A(0)=Q(0)=J(0)=0.1 with derivative=0 | Derivative-only: V'(0)=A'(0)=Q'(0)=J'(0)=0; values FREE |
+| R_max BCs | Implicit (run to r_max, check tail) | Robin: V'(R_max)+k·V=0 matching K_0(κr) decay |
+| Free eigenvalues | (m_J², λ_bench) — bench coupling varied; ω fixed at 1.0 | (ω, λ_LM) — ω varied directly; λ_LM is the Lagrange multiplier from H' = H − λ·Q_CS |
+| Initial guess | Single point (V₀=A₀=Q₀=J₀=0.1) with helicity signs | Tabulated profile shapes (exp(-r) decay + non-proportional A,J) |
+| Result | All attempts blew up or collapsed (V,Q)→0 | Converged status=0 at ω=1.047, m_eff²=−0.596; Q_CS=1 exact |
 
 These are disjoint method families. v4 explored the wrong one (validated by
 Paul: *"forward shooting from the origin with decay conditions at infinity
@@ -62,35 +47,13 @@ Background motivation for keeping v5 cleanly documented. Duda responded on
 the public list to Paul's announcement of v8 LoE (Zenodo 20313063) with four
 substantive technical critiques:
 
-```text
-Critique                                | Internal verdict
-----------------------------------------|------------------------------------
-G_μν has no microscopic definition.     | RIGHT. G = ∂μ J ν − ∂ν J μ is curl of
-"in your Lagrangian I see EM term, but  | J, but J itself is a primary
-then G without explanation"             | undefined vector field. Same single-
-                                        | field-ontology objection Duda
-                                        | raised 2026-05-13.
-f(J μ J^μ) unspecified.                 | RIGHT but EDITORIAL. Numerical
-"is it square? Higgs?"                  | Benchmark sub-doc pins f(s) =
-                                        | ½ m_J² s + ¼ λ s². LoE paper as
-                                        | standalone leaves it open.
-Topological charge construction.        | RIGHT, AND DEEPER. Paper asserts
-"Clearly G is crucial here, you don't   | H/Q=1.6969 but doesn't show the
-specify... for e.g. electron you need   | field configuration (ansatz +
-to propose some field configuration —   | energy minimization). v4 T6-T9
-e.g. by ansatz, minimizing energy"      | empirically confirmed: the
-                                        | construction is offline-only in
-                                        | Werbos's workflow. v5 is the
-                                        | construction in scripted form.
-Two-charge Coulomb derivation.          | RIGHT. v5 §6 has Yukawa as ansatz,
-"For Coulomb V ~ 1/r you need to        | not derived from H[Φ₁, Φ₂].
-integrate Hamiltonian for two           | Out of scope for v5 — single-
-topological charges in distance"        | chaoiton calibration first.
-"LLM-generated word salad"              | Tonally harsh; technically the
-                                        | same construction critique.
-                                        | Consistent with 2026-05-08 anti-
-                                        | AI-slop warning.
-```
+| Critique | Internal verdict |
+| --- | --- |
+| G_μν has no microscopic definition. *"In your Lagrangian I see EM term, but then G without explanation"* | RIGHT. G = ∂μJν − ∂νJμ is curl of J, but J itself is a primary undefined vector field. Same single-field-ontology objection Duda raised 2026-05-13. |
+| f(JμJ^μ) unspecified. *"Is it square? Higgs?"* | RIGHT but EDITORIAL. Numerical Benchmark sub-doc pins f(s) = ½m_J²s + ¼λs². LoE paper as standalone leaves it open. |
+| Topological charge construction. *"For e.g. electron you need to propose some field configuration — e.g. by ansatz, minimizing energy"* | RIGHT, AND DEEPER. Paper asserts H/Q=1.6969 but doesn't show the field configuration. v4 T6-T9 empirically confirmed: construction is offline-only in Werbos's workflow. v5 is the construction in scripted form. |
+| Two-charge Coulomb derivation. *"For Coulomb V~1/r you need to integrate Hamiltonian for two topological charges in distance"* | RIGHT. v5 §6 has Yukawa as ansatz, not derived from H[Φ₁, Φ₂]. Out of scope for v5 — single-chaoiton calibration first. |
+| *"LLM-generated word salad"* | Tonally harsh; technically the same construction critique. Consistent with 2026-05-08 anti-AI-slop warning. |
 
 Internal posture: don't reply on the public list. v5 + a successor sandbox
 that lands H/Q = 1.6969 from a clean Python script would be the right
@@ -99,34 +62,12 @@ rhetorical reply.
 
 ### Did v5 resolve any of Duda's critiques?
 
-```text
-Critique           | v5 status        | Detail
--------------------|------------------|--------------------------------------
-(1) G_μν / single- | UNCHANGED        | v5 doesn't touch the Lagrangian's
-field ontology     |                  | ontological structure. Only a model
-                   |                  | rewrite (A, J as derived from a deeper
-                   |                  | field) could address this. Outside
-                   |                  | Werbos's framework as stated.
-(2) f(J·J)         | PARTIALLY (not   | v5 uses f(s) = ½ m_J²s + ¼ λ s² from
-unspecified        | in LoE paper     | Werbos's separate Numerical Benchmark
-                   | itself)          | sub-doc. Duda's editorial gap is the
-                   |                  | LoE paper STANDALONE leaves it open.
-                   |                  | One-line LoE revision would resolve.
-(3) Construction   | HALF ADDRESSED   | v5 attempt 4 demonstrates the
-not shown,         |                  | construction METHOD works as a
-"need ansatz +     |                  | script: solve_bvp + Lagrange-mult
-minimize energy"   |                  | converges to Q_CS=1 chaoiton with
-                   |                  | status=0. The construction exists as
-                   |                  | a Python recipe, no longer a black
-                   |                  | box. BUT the SPECIFIC H/Q=1.6969
-                   |                  | electron calibration isn't matched
-                   |                  | yet (31× normalization gap). v6
-                   |                  | closes the empirical demonstration.
-(4) Two-charge     | UNCHANGED        | v5 is single-chaoiton calibration.
-Coulomb derivation |                  | Two-chaoiton interaction Hamiltonian
-                   |                  | is a future sandbox v7+ milestone,
-                   |                  | contingent on v6 first.
-```
+| Critique | v5 status | Detail |
+| --- | --- | --- |
+| (1) G_μν / single-field ontology | UNCHANGED | v5 doesn't touch the Lagrangian's ontological structure. Only a model rewrite (A, J as derived from a deeper field) could address this. Outside Werbos's framework as stated. NOTE: this critique is now ARCHIVED per Q4 — single vs two-field ontology is an unfalsifiable preference if the math matches observation. |
+| (2) f(J·J) unspecified | PARTIALLY (not in LoE paper itself) | v5 uses f(s) = ½m_J²s + ¼λs² from Werbos's separate Numerical Benchmark sub-doc. Duda's editorial gap is the LoE paper STANDALONE leaves it open. One-line LoE revision would resolve. |
+| (3) Construction not shown, "need ansatz + minimize energy" | HALF ADDRESSED | v5 attempt 4 demonstrates the construction METHOD works as a script: solve_bvp + Lagrange-mult converges to Q_CS=1 chaoiton with status=0. The construction exists as a Python recipe, no longer a black box. BUT the SPECIFIC H/Q=1.6969 electron calibration isn't matched yet (31× normalization gap). v6 closes the empirical demonstration. |
+| (4) Two-charge Coulomb derivation | UNCHANGED | v5 is single-chaoiton calibration. Two-chaoiton interaction Hamiltonian is a future sandbox v7+ milestone, contingent on v6 first. |
 
 **Net:** 0 fully solved, 1 partially solved by method-demonstration (#3),
 3 unchanged. v6 + post-v6 lepton/DM scans convert #3 to "fully solved by
@@ -158,41 +99,17 @@ artifact for the model) and the **0.30% electron calibration** we
 originally reproduced in sandbox v1 (H/Q = 1.6918 at g=1.0625, ω=1.0).
 v6 should cross-check against the 62 families dataset once H/Q lands.
 
-```text
-Method                                  | Detail
-----------------------------------------|------------------------------------
-Solver                                  | Collocation / finite-difference BVP
-                                        | via scipy.integrate.solve_bvp OR
-                                        | scipy.optimize.root method='lm'.
-Topology of the problem                 | Nonlinear eigenvalue problem with
-                                        | Q_CS = 1 as INTEGRAL CONSTRAINT
-                                        | (not a boundary condition).
-Free eigenvalues (2)                    | ω (the chaoiton frequency)
-                                        | λ (Lagrange multiplier from
-                                        |    H' = H − λ·Q)
-Origin BCs (4)                          | V'(0) = A'(0) = Q'(0) = J'(0) = 0
-                                        | (derivative-only; values free)
-R_max BCs (4)                           | Robin: V'(R_max) + k·V(R_max) = 0
-                                        | (same for A, Q, J).
-                                        | k = √(ω² − m_J²) (approx k = ω
-                                        | for first iteration)
-Integral constraint (1)                 | Q_CS = ∫ f(V,A,Q,J,r) dr = 1.
-                                        | Approximate via trapezoidal rule.
-Initial profile (CRITICAL)              | V(r) = +0.1·exp(-r)
-                                        | A(r) = -0.1·exp(-r)
-                                        | Q(r) = +0.1·exp(-r)
-                                        | J(r) = -0.1·exp(-r)
-                                        | ω = 1.0, λ = 1.0 initial guess.
-                                        | NOT V(0)=0.1 as a boundary value;
-                                        | these are PROFILE SHAPES seeding
-                                        | the right basin.
-Grid                                    | N=200 grid points on [0, R_max],
-                                        | R_max ~ 20-30. Non-uniform with
-                                        | more points near 0.
-Stability check (post-convergence)      | Gelfand-Fomin conjugate-point test
-                                        | on second variation (per Lean
-                                        | theorem ≤4-node regularity).
-```
+| Method | Detail |
+| --- | --- |
+| Solver | Collocation / finite-difference BVP via `scipy.integrate.solve_bvp` OR `scipy.optimize.root` method='lm'. |
+| Topology of the problem | Nonlinear eigenvalue problem with Q_CS = 1 as INTEGRAL CONSTRAINT (not a boundary condition). |
+| Free eigenvalues (2) | ω (the chaoiton frequency); λ (Lagrange multiplier from H' = H − λ·Q). |
+| Origin BCs (4) | V'(0) = A'(0) = Q'(0) = J'(0) = 0 (derivative-only; values free). |
+| R_max BCs (4) | Robin: V'(R_max) + k·V(R_max) = 0 (same for A, Q, J). k = √(ω² − m_J²) (approx k = ω for first iteration). |
+| Integral constraint (1) | Q_CS = ∫f(V,A,Q,J,r)dr = 1. Approximate via trapezoidal rule. |
+| Initial profile (CRITICAL) | V(r)=+0.1·exp(-r); A(r)=-0.1·exp(-r); Q(r)=+0.1·exp(-r); J(r)=-0.1·exp(-r); ω=1.0, λ=1.0 initial guess. NOT V(0)=0.1 as a boundary value — these are PROFILE SHAPES seeding the right basin. |
+| Grid | N=200 grid points on [0, R_max], R_max~20-30. Non-uniform with more points near 0. |
+| Stability check (post-convergence) | Gelfand-Fomin conjugate-point test on second variation (per Lean theorem ≤4-node regularity). |
 
 ### Paul's explicit recipe (preserved for v6 cross-check)
 
@@ -438,17 +355,12 @@ A ∝ J in the initial guess and prevent convergence.
 
 ## Attempt progression
 
-```text
-Attempt | Key change                | status | ω    | λ_LM  | H       | nodes V/A/Q/J | H/Q_CS
---------|---------------------------|--------|------|-------|---------|---------------|--------
-1       | No λ in ODEs              | conv.  | 2.43 | n/a   | 12317.8 | 13/2/13/2     | 12317.8
-2       | + λ corrections,          | conv.  | 2.66 | 0.81  | 458.5   | 16/0/16/0     | 458.5
-        |   V_norm=0.1              |        |      |       |         |               |
-3       | + non-prop A,J init,      | conv.  | 0.89 | 3.24  | 32.8    | 3/0/3/0       | 32.8
-        |   r_max=10, max_nodes=2e4 |        |      |       |         |               |
-4 ★     | r_max=12, n_grid=400,     | 0 ★    | 1.047| -1.21 | 52.6    | 4/17/4/1      | 52.6
-        |   max_nodes=5e4, tol=5e-3 |        |      |       |         |               |
-```
+| Attempt | Key change | status | ω | λ_LM | H | nodes V/A/Q/J | H/Q_CS |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | No λ in ODEs | conv. | 2.43 | n/a | 12317.8 | 13/2/13/2 | 12317.8 |
+| 2 | + λ corrections, V_norm=0.1 | conv. | 2.66 | 0.81 | 458.5 | 16/0/16/0 | 458.5 |
+| 3 | + non-prop A,J init, r_max=10, max_nodes=2e4 | conv. | 0.89 | 3.24 | 32.8 | 3/0/3/0 | 32.8 |
+| 4 ★ | r_max=12, n_grid=400, max_nodes=5e4, tol=5e-3 | 0 ★ | 1.047 | -1.21 | 52.6 | 4/17/4/1 | 52.6 |
 
 ★ = `solve_bvp.status = 0` (converged to desired accuracy), max relative
 residual 1.3e-4, max BC residual 2.4e-5. First clean convergence.
@@ -484,18 +396,16 @@ Lean stability spec).
 
 V_norm scan {0.5, 0.3, 0.2, 0.15, 0.1, 0.05, 0.03, 0.01}:
 
-```text
-V_norm | ω     | λ_LM   | H         | nodes V/A/Q/J | H/Q_CS
--------|-------|--------|-----------|---------------|----------
-0.50   | 0.74  | -1.05  | 7094.09   | 4/0/4/0       | 7094.09
-0.30   | 1.07  | 2.25   | 449.09    | 4/0/4/0       | 449.09
-0.20   | 0.67  | 35.0   | 21718.21  | 4/0/5/0       | 21718.21
-0.15   | 1.05  | 29.9   | 64.44     | 4/0/4/0       | 64.44
-0.10 ★ | 1.05  | -1.21  | 52.64     | 4/17/4/1      | 52.64    ← minimum
-0.05   | 1.01  | 38.9   | 4195.85   | 4/0/4/0       | 4195.85
-0.03   | 1.44  | 2.78   | 1664.27   | 5/0/5/0       | 1664.27
-0.01   | 1.74  | 2.45   | 82.82     | 4/0/4/0       | 82.82
-```
+| V_norm | ω | λ_LM | H | nodes V/A/Q/J | H/Q_CS |
+| --- | --- | --- | --- | --- | --- |
+| 0.50 | 0.74 | -1.05 | 7094.09 | 4/0/4/0 | 7094.09 |
+| 0.30 | 1.07 | 2.25 | 449.09 | 4/0/4/0 | 449.09 |
+| 0.20 | 0.67 | 35.0 | 21718.21 | 4/0/5/0 | 21718.21 |
+| 0.15 | 1.05 | 29.9 | 64.44 | 4/0/4/0 | 64.44 |
+| 0.10 ★ | 1.05 | -1.21 | 52.64 | 4/17/4/1 | **52.64 ← minimum** |
+| 0.05 | 1.01 | 38.9 | 4195.85 | 4/0/4/0 | 4195.85 |
+| 0.03 | 1.44 | 2.78 | 1664.27 | 5/0/5/0 | 1664.27 |
+| 0.01 | 1.74 | 2.45 | 82.82 | 4/0/4/0 | 82.82 |
 
 ★ = `solve_bvp.status = 0` was achieved only at V_norm = 0.10 (the minimum).
 Other V_norm values landed at higher H/Q_CS modes with comparable
@@ -510,25 +420,15 @@ mismatch.
 
 ## What v5 has demonstrated (the WIN)
 
-```text
-Achievement                                         | Evidence
-----------------------------------------------------|---------------------------
-Forward-IVP wrong-tool diagnosis confirmed          | Paul's reply: "consistent
-  and now solved with the new method                |   with our experience"
-solve_bvp converges (status=0) on Werbos's          | Max residual 1.3e-4 at
-  collocation BVP                                   |   28k nodes, attempt 4
-Q_CS=1 integer constraint enforced exactly          | I(R_max) = 1/(2π) per BC,
-  via auxiliary integral state                      |   field-derived integral
-                                                    |   agrees to 0.01%
-Werbos's stated (ω, m_eff²) regime numerically      | ω=1.047 (4.7% off 1.0),
-  reproduced for the first time                     |   m_eff²=-0.596 (19% off -0.5)
-Lagrange multiplier λ_LM converges to specific      | λ_LM = -1.212 at the
-  non-trivial value (first time pinned)             |   minimum-H_norm point
-Non-proportional initial guess identified as the    | Symmetric A,J prop. would
-  critical detail (prevents Q_CS≡0 degeneracy)      |   give Q_CS density ≡ 0
-M6 chaoiton existence empirically demonstrated      | Six-attempt v4 negative
-  for the first time in OpenWave                    |   inverted by v5 attempt 4
-```
+| Achievement | Evidence |
+| --- | --- |
+| Forward-IVP wrong-tool diagnosis confirmed and now solved with the new method | Paul's reply: *"consistent with our experience"* |
+| `solve_bvp` converges (status=0) on Werbos's collocation BVP | Max residual 1.3e-4 at 28k nodes, attempt 4 |
+| Q_CS=1 integer constraint enforced exactly via auxiliary integral state | I(R_max) = 1/(2π) per BC; field-derived integral agrees to 0.01% |
+| Werbos's stated (ω, m_eff²) regime numerically reproduced for the first time | ω=1.047 (4.7% off 1.0); m_eff²=-0.596 (19% off -0.5) |
+| Lagrange multiplier λ_LM converges to specific non-trivial value (first time pinned) | λ_LM = -1.212 at the minimum-H_norm point |
+| Non-proportional initial guess identified as the critical detail (prevents Q_CS≡0 degeneracy) | Symmetric A,J prop. would give Q_CS density ≡ 0 |
+| M6 chaoiton existence empirically demonstrated for the first time in OpenWave | Six-attempt v4 negative inverted by v5 attempt 4 |
 
 This is a major shift from v4's "Q_CS=1 chaoiton appears unreachable"
 negative result. The chaoiton EXISTS as a solve_bvp solution; the open
@@ -538,57 +438,22 @@ question is the calibration mapping, not existence.
 
 ## What v5 has NOT closed (the OPEN)
 
-```text
-Open gap                                            | Most likely cause
-----------------------------------------------------|---------------------------
-H/Q_CS = 52.64 vs Werbos stated 1.6969 (31× off)    | Q_CS or H normalization
-  AT THE MINIMUM-FOUND MODE                         |   convention mismatch
-                                                    |   between our radial-
-                                                    |   toroidal form and
-                                                    |   Werbos's full 3D
-                                                    |   Chern-Simons form
-                                                    |   (1/4π²)·∫ε A ∂J d³x
-A-field has 17 nodes (excited mode, not ground      | We are picking up the
-  state per Lean ≤4-node spec)                      |   first Q_CS=1 mode that
-                                                    |   solve_bvp finds, which
-                                                    |   is not necessarily the
-                                                    |   lowest-energy one
-tail @ r≥8 = 0.17 (target < 0.05)                   | Excited mode has slower
-                                                    |   spatial decay; ground
-                                                    |   state should decay much
-                                                    |   faster
-Lagrange-multiplier coefficient in A,J equations    | Our derivation uses
-  could be off by an O(1) factor                    |   coefficient 1; if
-                                                    |   Werbos's H kinetic
-                                                    |   has factor 1/2, our
-                                                    |   correction coefficient
-                                                    |   should be 1/2 too
-```
+| Open gap | Most likely cause |
+| --- | --- |
+| H/Q_CS = 52.64 vs Werbos stated 1.6969 (31× off) AT THE MINIMUM-FOUND MODE | Q_CS or H normalization convention mismatch between our radial-toroidal form and Werbos's full 3D Chern-Simons form (1/4π²)·∫ε A ∂J d³x |
+| A-field has 17 nodes (excited mode, not ground state per Lean ≤4-node spec) | We are picking up the first Q_CS=1 mode that `solve_bvp` finds, which is not necessarily the lowest-energy one |
+| tail @ r≥8 = 0.17 (target < 0.05) | Excited mode has slower spatial decay; ground state should decay much faster |
+| Lagrange-multiplier coefficient in A,J equations could be off by an O(1) factor | Our derivation uses coefficient 1; if Werbos's H kinetic has factor 1/2, our correction coefficient should be 1/2 too |
 
 ---
 
 ## Three open questions for Werbos (sharp follow-up ask)
 
-```text
-Question                                   | Why it matters
--------------------------------------------|-----------------------------------
-(1) Exact Q_CS normalization               | Pin the factor that makes H/Q match
-    convention. We use Q_CS = 2π·∫r·       |   the 1.6969 target. If you use
-    (A·J'-J·A')dr in radial toroidal form. |   the (1/4π²)·∫ε A ∂J d³x form,
-    Could you confirm or correct?          |   the toroidal reduction factor
-                                           |   may give a 30-50× scale shift.
-(2) Exact H functional. Specifically:      | Pin the factor in the EL → fixes
-    coefficient on each kinetic (V')²,    |   the Lagrange-multiplier-
-    (A')² etc.; whether the ω-kinetic     |   coefficient.
-    ½ω²·(V²+A²+Q²+J²) is in H; whether    |
-    cross terms are -V·Q+A·J or both      |
-    same sign.                            |
-(3) Sample converged profile shape         | Lets us validate against your own
-    (V(r), A(r), Q(r), J(r) on a 5-10      |   ground state and pick the right
-    point coarse grid) for the electron    |   basin. Would resolve excited-
-    chaoiton. Even rough numbers would     |   mode vs ground-state selection.
-    let us anchor the basin.               |
-```
+| Question | Why it matters |
+| --- | --- |
+| (1) Exact Q_CS normalization convention. We use Q_CS = 2π·∫r·(A·J'-J·A')dr in radial toroidal form. Could you confirm or correct? | Pin the factor that makes H/Q match the 1.6969 target. If Werbos uses the (1/4π²)·∫ε A ∂J d³x form, the toroidal reduction factor may give a 30-50× scale shift. |
+| (2) Exact H functional. Specifically: coefficient on each kinetic (V')², (A')², etc.; whether the ω-kinetic ½ω²·(V²+A²+Q²+J²) is in H; whether cross terms are -V·Q+A·J or both same sign. | Pin the factor in the EL → fixes the Lagrange-multiplier coefficient. |
+| (3) Sample converged profile shape (V(r), A(r), Q(r), J(r) on a 5-10 point coarse grid) for the electron chaoiton. Even rough numbers would let us anchor the basin. | Lets us validate against Werbos's own ground state and pick the right basin. Would resolve excited-mode vs ground-state selection. |
 
 Each is answer-able in a few lines. Together they unlock v6.
 
@@ -596,33 +461,15 @@ Each is answer-able in a few lines. Together they unlock v6.
 
 ## v6 design (planned, contingent on Werbos reply)
 
-```text
-Step | Action                              | Triggers
------|-------------------------------------|------------------------------
-1    | Receive Werbos answers to the 3     | required — without this, v6
-     | normalization questions             | cannot start
-2    | Build sandbox_v6/m6_v6_4fn_         | once #1 lands; ~1 hr edits
-     | calibrated_bvp.py with corrected    | from v5 script
-     | normalizations + L-mult coefficient |
-3    | Re-converge attempt-4-style run     | should give H/Q ≈ 1.6969 if
-     | against the corrected conventions   | normalization is the only gap
-4    | If Werbos sent profile shapes:      | optional — speeds basin
-     | warm-start from those grid values   | selection if attempted before
-                                           | step 3 lands ground state
-5    | If H/Q still off after #3 + #4:     | only if normalization fix
-     | escalate with new specific finding  | doesn't close the gap
-     | (could be the EL kinetic factor    |
-     | derivation needs re-derivation     |
-     | from the actual benchmark Lagrangian)|
-6    | Post-pass: lepton scan (vary ω)     | unlocks ApJ paper Section 4
-     | + Q_A≈0 neutral chaoiton scan       | numbers (m_χ, m_J, σ/m for
-                                           | DM relic abundance + Bullet
-                                           | Cluster + halo cores)
-7    | Stability check: Gelfand-Fomin      | per Lean theorem; confirms
-     | conjugate-point test on the         | the converged state is the
-     | converged second variation          | ground state, not an excited
-                                           | mode
-```
+| Step | Action | Triggers |
+| --- | --- | --- |
+| 1 | Receive Werbos answers to the 3 normalization questions | required — without this, v6 cannot start |
+| 2 | Build `sandbox_v6/m6_v6_4fn_calibrated_bvp.py` with corrected normalizations + L-mult coefficient | once #1 lands; ~1 hr edits from v5 script |
+| 3 | Re-converge attempt-4-style run against the corrected conventions | should give H/Q ≈ 1.6969 if normalization is the only gap |
+| 4 | If Werbos sent profile shapes: warm-start from those grid values | optional — speeds basin selection if attempted before step 3 lands ground state |
+| 5 | If H/Q still off after #3 + #4: escalate with new specific finding (could be the EL kinetic factor derivation needs re-derivation from the actual benchmark Lagrangian) | only if normalization fix doesn't close the gap |
+| 6 | Post-pass: lepton scan (vary ω) + Q_A≈0 neutral chaoiton scan | unlocks ApJ paper Section 4 numbers (m_χ, m_J, σ/m for DM relic abundance + Bullet Cluster + halo cores) |
+| 7 | Stability check: Gelfand-Fomin conjugate-point test on the converged second variation | per Lean theorem; confirms the converged state is the ground state, not an excited mode |
 
 If Werbos cannot get back within ~48 hours, the fallback is to accept
 DeepSeek's offer to write the Python code — DeepSeek has Werbos's working
@@ -659,34 +506,6 @@ questions are now RESOLVED.
 
 ### IMMEDIATE-QUESTIONS (block v6 progress)
 
-```text
-ID  | Question                                | Surfaced | Status post-v5
-----|-----------------------------------------|----------|----------------------
-Q22 | Q_CS normalization convention.          | v5 attempt 4 | IMMEDIATE.
-    | We use Q_CS = 2π·∫r·(A·J'-J·A')dr in    | (2026-05-20  | Asked Werbos in
-    | radial toroidal form. Werbos's email    |  PM)         | email v4 (sent
-    | says the integrand "comes from the      |              | 2026-05-20 PM).
-    | Hopf invariant expression in radial     |              | Awaiting reply.
-    | coordinates" — the toroidal reduction   |              | Most likely
-    | factor unclear. 31× H/Q gap consistent  |              | resolves the 31×
-    | with this being the gap source.         |              | mismatch alone.
-Q23 | Exact H functional. Specifically:       | v5 attempt 4 | IMMEDIATE.
-    | (i) coefficient on each kinetic (V')²,  | (2026-05-20  | Asked in same
-    |     (A')², (Q')², (J')²                 |  PM)         | email v4. Pins
-    | (ii) whether ω-kinetic ½ω²·(V²+A²+Q²+J²)|              | the Lagrange-
-    |      is in H or absorbed elsewhere      |              | multiplier
-    | (iii) sign convention on cross terms    |              | coefficient.
-    |      (-V·Q + A·J vs both same sign)     |              |
-Q24 | Sample converged profile from one of    | v5 attempt 4 | IMMEDIATE.
-    | Werbos's runs (V(r), A(r), Q(r), J(r)   | (2026-05-20  | Asked in same
-    | on 5-10 point coarse grid for electron  |  PM)         | email. Would
-    | chaoiton). Selects ground-state basin   |              | resolve excited-
-    | vs excited mode. v5 landed in 17-node   |              | mode-vs-ground-
-    | excited A-mode at H/Q=52.64 minimum;    |              | state question
-    | ground state should have all fields     |              | immediately.
-    | with ≤4 nodes per Lean stability spec.  |              |
-```
-
 | ID | Question | Surfaced | Status post-v5 |
 | --- | --- | --- | --- |
 | Q22 | Q_CS normalization convention.<br>We use Q_CS = 2π·∫r·(A·J'-J·A')dr in radial toroidal form. Werbos's email says the integrand "comes from the Hopf invariant expression in radial coordinates" - the toroidal reduction factor unclear. 31x H/Q gap consistent with this being the gap source. | v5 attempt 4<br>(2026-05-20 PM) | IMMEDIATE.<br>Asked Werbos in email v4 (sent 2026-05-20 PM). Awaiting reply. Most likely resolves the 31x mismatch alone. |
@@ -695,220 +514,53 @@ Q24 | Sample converged profile from one of    | v5 attempt 4 | IMMEDIATE.
 
 ### STILL OPEN-QUESTIONS (active but not blocking)
 
-```text
-ID  | Question                                | First | Status post-v5
-    |                                         | surf  |
-----|-----------------------------------------|-------|----------------------
-Q2  | Discrete ω selection mechanism          | 0a    | OPEN. Werbos: empirical
-    |                                         | §9.9  | for now; analytic proof
-    |                                         |       | deferred. v6 lepton scan
-    |                                         |       | (ω ∈ [0.5, 50] sweep)
-    |                                         |       | will test the "lowest 3
-    |                                         |       | stable modes = leptons"
-    |                                         |       | hypothesis empirically
-    |                                         |       | once v6 anchors at
-    |                                         |       | H/Q=1.6969.
-Q3  | Analytical ω = 2mc²/ℏ derivation?       | 0a    | PARTIAL. Calibration
-    |                                         | §9.9  | only (1.2% gap at
-    |                                         |       | original sandbox v1
-    |                                         |       | reproduction). No
-    |                                         |       | first-principles
-    |                                         |       | derivation in any
-    |                                         |       | Werbos paper.
-Q6  | QCD reconciliation (3-chaoiton proton)  | 0a    | OPEN, uninvestigated.
-    |                                         | §9.9  | Future sandbox v7+.
-    |                                         |       | Not in v5/v6 scope.
-Q19 | f(J·J) explicit form in LoE paper       | Duda  | PARTIALLY ADDRESSED.
-    | (Duda critique #2: "square? Higgs?")    | 2026- | v5 uses f(s) = ½m_J²s +
-    |                                         | 05-20 | ¼λ s² from the Werbos
-    |                                         | thread| Numerical Benchmark
-    |                                         |       | sub-document. The LoE
-    |                                         |       | paper STANDALONE
-    |                                         |       | doesn't pin it. One-
-    |                                         |       | line Werbos LoE
-    |                                         |       | revision would close
-    |                                         |       | the editorial gap;
-    |                                         |       | flag to him when v6
-    |                                         |       | lands.
-Q20 | "Construction not shown" — does v6      | Duda  | HALF ADDRESSED. v5
-    | demonstrate the H/Q=1.6969 electron     | 2026- | shows the construction
-    | calibration with a clean Python script? | 05-20 | METHOD works (solve_bvp
-    |                                         | thread| status=0 on Q_CS=1
-    |                                         |       | chaoiton); doesn't
-    |                                         |       | match the 1.6969 number
-    |                                         |       | yet (31× normalization
-    |                                         |       | gap). v6 closes if
-    |                                         |       | Q22-Q24 resolve.
-    |                                         |       | THE high-leverage
-    |                                         |       | Duda critique to close.
-```
+| ID | Question | Surfaced | Status post-v5 |
+| --- | --- | --- | --- |
+| Q2 | Discrete ω selection mechanism | 0a §9.9 | OPEN. Werbos: empirical for now; analytic proof deferred. v6 lepton scan (ω ∈ [0.5, 50] sweep) will test the "lowest 3 stable modes = leptons" hypothesis empirically once v6 anchors at H/Q=1.6969. |
+| Q3 | Analytical ω = 2mc²/ℏ derivation? | 0a §9.9 | PARTIAL. Calibration only (1.2% gap at original sandbox v1 reproduction). No first-principles derivation in any Werbos paper. |
+| Q6 | QCD reconciliation (3-chaoiton proton) | 0a §9.9 | OPEN, uninvestigated. Future sandbox v7+. Not in v5/v6 scope. |
+| Q19 | f(J·J) explicit form in LoE paper (Duda critique #2: "square? Higgs?") | Duda 2026-05-20 thread | PARTIALLY ADDRESSED. v5 uses f(s) = ½m_J²s + ¼λs² from the Werbos Numerical Benchmark sub-document. The LoE paper STANDALONE doesn't pin it. One-line Werbos LoE revision would close the editorial gap; flag to him when v6 lands. |
+| Q20 | "Construction not shown" — does v6 demonstrate the H/Q=1.6969 electron calibration with a clean Python script? | Duda 2026-05-20 thread | HALF ADDRESSED. v5 shows the construction METHOD works (`solve_bvp` status=0 on Q_CS=1 chaoiton); doesn't match the 1.6969 number yet (31× normalization gap). v6 closes if Q22-Q24 resolve. THE high-leverage Duda critique to close. |
 
 ### RESOLVED-QUESTIONS (closed by v5 or earlier)
 
-```text
-ID  | Question                                | Resolution
-----|-----------------------------------------|--------------------------
-Q1  | Distinction from Duda's LdGS            | Both are topological (Lean
-    |                                         | invariants, just different
-    |                                         | flavors). Settled 2026-05-15.
-Q9  | Linearized Bessel truncation?           | YES (v5 paper §6 explicit).
-Q10 | Asymmetric ansatz J/A ≠ const?          | YES (Lean theorem allows it;
-    |                                         | confirmed by v5 helicity work).
-Q11 | Sign convention J=−A or J=+A?           | OBSOLETE — Werbos asymmetric
-    |                                         | helicity prescription
-    |                                         | (V₀,Q₀>0; A₀,J₀<0) replaces.
-Q12 | Werbos's Python source                  | DEMOTED → no longer blocking.
-    |                                         | v5 algorithm description
-    |                                         | (2026-05-20 PM email) plus
-    |                                         | DeepSeek-write-code offer
-    |                                         | provides the same unblock.
-Q13 | 4-fn to 2-fn reduction                  | RESOLVED: 2-fn for NEUTRAL,
-    |                                         | 4-fn for CHARGED. Use
-    |                                         | Numerical Benchmark form.
-Q14 | Canonical Q=0: locked / A=0 / Q_A≈0?    | RESOLVED. Canonical DM
-    |                                         | candidate = Q_A≈0 / Q_J≠0.
-    |                                         | (Werbos 2026-05-19 1:49 PM)
-Q15 | Does m_eff² = m_J² − ω² substitution    | RESOLVED post-v5. v5
-    | give the bound state?                   | attempt 4 converges at
-    |                                         | m_eff² = -0.596 — confirms
-    |                                         | the substitution is correct
-    |                                         | AND that m_eff² is negative
-    |                                         | (oscillatory regime). Earlier
-    |                                         | T6 INCONCLUSIVE result was
-    |                                         | from wrong-tool (IVP).
-Q16 | Specific (m_J², λ_bench) at calibration | RESOLVED. Werbos: m_J²≈0.5,
-    |                                         | λ_bench=1.0. v5 attempt 4
-    |                                         | uses these and converges.
-Q17 | What is the actual shooting algorithm?  | RESOLVED. Collocation BVP
-    |                                         | (scipy.integrate.solve_bvp)
-    |                                         | with Q_CS=1 as integral
-    |                                         | constraint, two free
-    |                                         | eigenvalues ω + Lagrange
-    |                                         | multiplier λ_LM, Robin BCs
-    |                                         | matching K_0 decay. Werbos
-    |                                         | email 2026-05-20 PM.
-Q25 | Is charge quantization rigorously       | RESOLVED. Werbos &
-(new)| proved (Q[A,J] = Hopf invariant H(Φ))? | DeepSeek 2026-05-XX
-    |                                         | "Rigorous Completion of the
-    |                                         | Hopf-Invariant Proof"
-    |                                         | (Zenodo 20296060) supplies
-    |                                         | Lemmas A (∇×J=B everywhere
-    |                                         | for finite-energy Lorenz-
-    |                                         | constrained solutions) and
-    |                                         | B (zeros of B made isolated
-    |                                         | by Q-preserving perturbation).
-    |                                         | Charge quantization is now
-    |                                         | a theorem of differential
-    |                                         | topology. ✓
-```
+| ID | Question | Resolution |
+| --- | --- | --- |
+| Q1 | Distinction from Duda's LdGS | Both are topological (Lean invariants, just different flavors). Settled 2026-05-15. |
+| Q9 | Linearized Bessel truncation? | YES (v5 paper §6 explicit). |
+| Q10 | Asymmetric ansatz J/A ≠ const? | YES (Lean theorem allows it; confirmed by v5 helicity work). |
+| Q11 | Sign convention J=−A or J=+A? | OBSOLETE — Werbos asymmetric helicity prescription (V₀,Q₀>0; A₀,J₀<0) replaces. |
+| Q12 | Werbos's Python source | DEMOTED → no longer blocking. v5 algorithm description (2026-05-20 PM email) plus DeepSeek-write-code offer provides the same unblock. |
+| Q13 | 4-fn to 2-fn reduction | RESOLVED: 2-fn for NEUTRAL, 4-fn for CHARGED. Use Numerical Benchmark form. |
+| Q14 | Canonical Q=0: locked / A=0 / Q_A≈0? | RESOLVED. Canonical DM candidate = Q_A≈0 / Q_J≠0. (Werbos 2026-05-19 1:49 PM) |
+| Q15 | Does m_eff² = m_J² − ω² substitution give the bound state? | RESOLVED post-v5. v5 attempt 4 converges at m_eff² = -0.596 — confirms the substitution is correct AND that m_eff² is negative (oscillatory regime). Earlier T6 INCONCLUSIVE result was from wrong-tool (IVP). |
+| Q16 | Specific (m_J², λ_bench) at calibration | RESOLVED. Werbos: m_J²≈0.5, λ_bench=1.0. v5 attempt 4 uses these and converges. |
+| Q17 | What is the actual shooting algorithm? | RESOLVED. Collocation BVP (`scipy.integrate.solve_bvp`) with Q_CS=1 as integral constraint, two free eigenvalues ω + Lagrange multiplier λ_LM, Robin BCs matching K_0 decay. Werbos email 2026-05-20 PM. |
+| Q25 (new) | Is charge quantization rigorously proved (Q[A,J] = Hopf invariant H(Φ))? | RESOLVED. Werbos & DeepSeek "Rigorous Completion of the Hopf-Invariant Proof" (Zenodo 20296060) supplies Lemmas A (∇×J=B everywhere for finite-energy Lorenz-constrained solutions) and B (zeros of B made isolated by Q-preserving perturbation). Charge quantization is now a theorem of differential topology. ✓ |
 
 ### ARCHIVED-QUESTIONS (unfalsifiable / not actionable)
 
-```text
-ID  | Question                                | Why archived
-----|-----------------------------------------|----------------------
-Q4  | Single vs two-field ontology            | Aesthetic preference. If
-    | (= Duda critique #1, "G_μν has no       | the math works and matches
-    | microscopic definition")                | observation, having two
-    |                                         | primary fields is just
-    |                                         | a description of nature.
-    |                                         | We may not be able to
-    |                                         | explain WHY two fields,
-    |                                         | but unfalsifiable as a
-    |                                         | theory-killer. Falls
-    |                                         | out of the question
-    |                                         | tracker the same way
-    |                                         | "why does the universe
-    |                                         | have 3 spatial dimensions"
-    |                                         | does.
-Q7  | Cold-fusion citation trail              | Historical, not physics.
-Q21 | Two-chaoiton Coulomb derivation         | Not blocking single-
-    | from H[Φ₁, Φ₂] (= Duda critique #4)     | chaoiton calibration.
-    |                                         | Future sandbox v7+ after
-    |                                         | v6 lands H/Q=1.6969.
-    |                                         | Out of current scope but
-    |                                         | retained in roadmap as
-    |                                         | "post-v6 milestone."
-```
+| ID | Question | Why archived |
+| --- | --- | --- |
+| Q4 | Single vs two-field ontology (= Duda critique #1, "G_μν has no microscopic definition") | Aesthetic preference. If the math works and matches observation, having two primary fields is just a description of nature. We may not be able to explain WHY two fields, but unfalsifiable as a theory-killer. Falls out of the question tracker the same way "why does the universe have 3 spatial dimensions" does. |
+| Q7 | Cold-fusion citation trail | Historical, not physics. |
+| Q21 | Two-chaoiton Coulomb derivation from H[Φ₁, Φ₂] (= Duda critique #4) | Not blocking single-chaoiton calibration. Future sandbox v7+ after v6 lands H/Q=1.6969. Out of current scope but retained in roadmap as "post-v6 milestone." |
 
 ### HARDEST-PIECES TRACKER (post-v5)
 
-```text
-Hardest piece                | v4 status         | v5 status / impact
------------------------------|-------------------|------------------------
-Forward-IVP method family    | BROKEN — all 6    | RESOLVED. Werbos's email
-                             | T6-T9 attempts    | confirms our diagnosis;
-                             | blew up.          | new method (collocation
-                             |                   | BVP) takes over in v5.
-Q_CS=1 enforcement           | UNSOLVED. Treated | RESOLVED. Auxiliary
-                             | as residual /     | integral state I + BC
-                             | post-hoc check.   | I(R_max) = 1/(2π).
-                             |                   | Exact Q_CS = 1.000
-                             |                   | achieved in v5.
-Q_CS=1 chaoiton existence    | UNSOLVED. No      | RESOLVED. v5 attempt 4
-empirically                  | parameter         | converges (solve_bvp
-                             | combination found | status=0) at ω=1.047,
-                             | a bound state.    | m_eff²=-0.596,
-                             |                   | Q_CS=1.000. First-ever
-                             |                   | empirical chaoiton in
-                             |                   | OpenWave.
-Electron H/Q = 1.6969        | UNTESTED — no     | NEW OPEN. v5 lands
-calibration                  | bound state to    | H/Q=52.64 consistently
-                             | even check H/Q.   | across V_norm sweep;
-                             |                   | 31× off. Most likely
-                             |                   | normalization-convention
-                             |                   | mismatch (Q22). v6
-                             |                   | closes once Werbos
-                             |                   | confirms convention.
-Ground-state vs excited-     | UNTESTED.         | NEW OPEN. v5 attempt 4
-mode selection               |                   | finds Q_CS=1 chaoiton
-                             |                   | but with A in 17-node
-                             |                   | excited mode (Lean
-                             |                   | spec: ≤4 nodes for
-                             |                   | ground state). v6
-                             |                   | needs either sample
-                             |                   | profile (Q24) or
-                             |                   | minimum-H outer loop
-                             |                   | for state selection.
-Lepton mass spectrum         | UNTESTED (2-fn    | BLOCKED on v6. Once
-                             | wrong tool).      | v6 anchors H/Q=1.6969,
-                             |                   | run ω-sweep [0.5, 50]
-                             |                   | to test "lowest 3
-                             |                   | stable = leptons"
-                             |                   | hypothesis.
-Neutral m_χ true ground      | UNCERTAIN (v3     | BLOCKED on v6. Once
-state                        | 0.508 MeV         | v6 anchors, run Q_A≈0
-                             | invalidated by    | scan for DM candidate
-                             | T2; Werbos        | mass. Feeds Section 4
-                             | estimate          | of ApJ Neutral Chaoiton
-                             | 0.003-0.015 MeV   | paper directly.
-                             | unverified).      |
-Lagrange-multiplier ODE      | N/A (was IVP)     | NEW. v5 derives δQ_CS/δA
-correction coefficient       |                   | = J + 2r·J' and adds
-                             |                   | this with coefficient 1
-                             |                   | to A equation (similarly
-                             |                   | for J). If Werbos's H
-                             |                   | has different kinetic
-                             |                   | normalization, the
-                             |                   | coefficient may need
-                             |                   | adjustment — Q23.
-ω quantization mechanism     | OPEN. Werbos      | OPEN (unchanged). v6
-                             | calls it          | lepton scan provides
-                             | empirical for     | EMPIRICAL test, not
-                             | now; analytic     | analytic proof. Q2.
-                             | proof deferred.   |
-Two-chaoiton Coulomb         | NOT ADDRESSED.    | NOT ADDRESSED. Future
-derivation                   | (Duda critique    | sandbox v7+. Q21,
-                             | #4 surfaced       | archived for now.
-                             | 2026-05-20)       |
-f(J·J) explicit form in LoE  | NOT FLAGGED.      | EDITORIAL OPEN. v5 uses
-paper (standalone)           | (Duda critique    | f from Numerical
-                             | #2 surfaced       | Benchmark sub-doc;
-                             | 2026-05-20)       | LoE paper itself
-                             |                   | doesn't specify. Q19.
-                             |                   | Flag to Werbos when
-                             |                   | v6 lands.
-```
+| Hardest piece | v4 status | v5 status / impact |
+| --- | --- | --- |
+| Forward-IVP method family | BROKEN — all 6 T6-T9 attempts blew up. | RESOLVED. Werbos's email confirms our diagnosis; new method (collocation BVP) takes over in v5. |
+| Q_CS=1 enforcement | UNSOLVED. Treated as residual / post-hoc check. | RESOLVED. Auxiliary integral state I + BC I(R_max) = 1/(2π). Exact Q_CS = 1.000 achieved in v5. |
+| Q_CS=1 chaoiton existence empirically | UNSOLVED. No parameter combination found a bound state. | RESOLVED. v5 attempt 4 converges (`solve_bvp` status=0) at ω=1.047, m_eff²=-0.596, Q_CS=1.000. First-ever empirical chaoiton in OpenWave. |
+| Electron H/Q = 1.6969 calibration | UNTESTED — no bound state to even check H/Q. | NEW OPEN. v5 lands H/Q=52.64 consistently across V_norm sweep; 31× off. Most likely normalization-convention mismatch (Q22). v6 closes once Werbos confirms convention. |
+| Ground-state vs excited-mode selection | UNTESTED. | NEW OPEN. v5 attempt 4 finds Q_CS=1 chaoiton but with A in 17-node excited mode (Lean spec: ≤4 nodes for ground state). v6 needs either sample profile (Q24) or minimum-H outer loop for state selection. |
+| Lepton mass spectrum | UNTESTED (2-fn wrong tool). | BLOCKED on v6. Once v6 anchors H/Q=1.6969, run ω-sweep [0.5, 50] to test "lowest 3 stable = leptons" hypothesis. |
+| Neutral m_χ true ground state | UNCERTAIN (v3 0.508 MeV invalidated by T2; Werbos estimate 0.003-0.015 MeV unverified). | BLOCKED on v6. Once v6 anchors, run Q_A≈0 scan for DM candidate mass. Feeds Section 4 of ApJ Neutral Chaoiton paper directly. |
+| Lagrange-multiplier ODE correction coefficient | N/A (was IVP) | NEW. v5 derives δQ_CS/δA = J + 2r·J' and adds this with coefficient 1 to A equation (similarly for J). If Werbos's H has different kinetic normalization, the coefficient may need adjustment — Q23. |
+| ω quantization mechanism | OPEN. Werbos calls it empirical for now; analytic proof deferred. | OPEN (unchanged). v6 lepton scan provides EMPIRICAL test, not analytic proof. Q2. |
+| Two-chaoiton Coulomb derivation | NOT ADDRESSED. (Duda critique #4 surfaced 2026-05-20) | NOT ADDRESSED. Future sandbox v7+. Q21, archived for now. |
+| f(J·J) explicit form in LoE paper (standalone) | NOT FLAGGED. (Duda critique #2 surfaced 2026-05-20) | EDITORIAL OPEN. v5 uses f from Numerical Benchmark sub-doc; LoE paper itself doesn't specify. Q19. Flag to Werbos when v6 lands. |
 
 ### Active question count entering v6
 
