@@ -144,7 +144,7 @@ def show_menu_simple(experiments):
     # Display numbered list of experiments with spacing
     for idx, (display_name, _) in enumerate(experiments, 1):
         console.print(f"  [bold]{idx}.[/bold] {display_name}")
-        console.print()
+        # console.print()  # Spacing between items
 
     console.print(f"  [dim]{len(experiments) + 1}. EXIT[/dim]")
     console.print()
@@ -204,7 +204,7 @@ def show_menu_interactive(experiments):
     menu_options = []
     for display_name, _ in experiments:
         menu_options.append(f"  • {display_name}")
-        menu_options.append(None)  # Spacing between items
+        # menu_options.append(None)  # Spacing between items
 
     menu_options.append("  ─── EXIT ───")
     exit_idx = len(menu_options) - 1
