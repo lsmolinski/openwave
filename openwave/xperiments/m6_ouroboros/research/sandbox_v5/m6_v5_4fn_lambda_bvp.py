@@ -1,4 +1,4 @@
-"""M6 sandbox v4 T10 — Collocation BVP per Werbos's actual algorithm (2026-05-20).
+"""M6 sandbox v5 — Collocation BVP per Werbos's actual algorithm (2026-05-20).
 
 After T9 closed-negative confirmed that forward-IVP from value-BC origin
 does not reach a Q_CS=1 chaoiton in any explored parameter range, Werbos's
@@ -56,8 +56,8 @@ PASS CRITERION (same as T9):
     max_nodes ≤ 4              (Lean stability)
 
 USAGE:
-    python3 m6_v4_4fn_lambda_bvp.py
-    python3 m6_v4_4fn_lambda_bvp.py --r-max 25 --n-grid 250 --verbose
+    python3 m6_v5_4fn_lambda_bvp.py
+    python3 m6_v5_4fn_lambda_bvp.py --r-max 25 --n-grid 250 --verbose
 """
 
 from __future__ import annotations
@@ -329,7 +329,7 @@ def main():
     t0 = time.time()
 
     print(f"\n{'='*92}")
-    print(f"M6 v4 T10 — COLLOCATION BVP (Werbos algorithm + Lagrange λ)")
+    print(f"M6 v5 — COLLOCATION BVP (Werbos algorithm + Lagrange λ)")
     print(f"{'='*92}")
     print(f"Fixed: m_J² = {args.m_J_sq}, λ_bench = {args.lam_bench}, "
           f"V(R_MIN) = {args.V_norm}")
@@ -393,7 +393,7 @@ def main():
 
     # Persist
     out_dir = Path(__file__).resolve().parent
-    out_path = out_dir / "m6_v4_4fn_lambda_bvp_results.json"
+    out_path = out_dir / "m6_v5_4fn_lambda_bvp_results.json"
     payload = {
         "config": vars(args),
         "I_target": I_TARGET,

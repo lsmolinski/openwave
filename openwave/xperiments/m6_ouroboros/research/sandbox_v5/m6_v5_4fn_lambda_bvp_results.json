@@ -1,0 +1,55 @@
+{
+  "config": {
+    "m_J_sq": 0.5,
+    "lam_bench": 1.0,
+    "omega_init": 1.0,
+    "lambda_init": 0.1,
+    "V_norm": 0.1,
+    "r_max": 12.0,
+    "n_grid": 400,
+    "max_nodes": 50000,
+    "tol": 0.005,
+    "verbose": 2
+  },
+  "I_target": 0.15915494309189535,
+  "solve_bvp": {
+    "status": 0,
+    "message": "The algorithm converged to the desired accuracy.",
+    "n_grid_final": 28597
+  },
+  "diag": {
+    "omega": 1.046902082346107,
+    "lambda_LM": -1.212062182566016,
+    "m_J_sq": 0.5,
+    "m_eff_sq": -0.596003970020615,
+    "lam_bench": 1.0,
+    "H": 52.63982048730628,
+    "Q_CS": 1.0,
+    "HQ_CS": 52.63982048730628,
+    "HQ_from_grid": 52.645241929873244,
+    "tail": 0.17219979766852272,
+    "peak_V": 0.1,
+    "peak_A": 0.26658653758799367,
+    "peak_Q": 0.13374609847221064,
+    "peak_J": 0.1756714549684475,
+    "nodes_V": 4,
+    "nodes_A": 17,
+    "nodes_Q": 4,
+    "nodes_J": 1,
+    "max_nodes": 17,
+    "V0": 0.1,
+    "A0": -0.2665776094754235,
+    "Q0": -0.13374609847221064,
+    "J0": 0.03031721605619205,
+    "r_min": 0.05,
+    "r_max": 12.0,
+    "n_grid": 28597
+  },
+  "passed": false,
+  "fail_reasons": [
+    "|H/Q-1.6969| = 50.9429 > 0.001",
+    "tail = 0.1722 > 0.05",
+    "max_nodes = 17 > 4"
+  ],
+  "elapsed_sec": 1.3643109798431396
+}

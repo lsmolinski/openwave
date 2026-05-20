@@ -375,6 +375,24 @@ Date       | Gate | Update
            |      | - Grid: 200 points non-uniform on [R_MIN, 20-30]
            |      | - Acceptance: |H/Q-1.6969|<0.001, |Q_CS-1|<0.01,
            |      |   tail<0.05, nodes≤4, no blowup. Same T9 criterion.
+2026-05-20 | TRIG | Question tracker reset for v5 (see 0b_sandbox_v5.md
+  PM       |      | tail). Status counts entering v6:
+           |      |   3 IMMEDIATE   Q22 (Q_CS normalization),
+           |      |                 Q23 (H functional kinetic factor),
+           |      |                 Q24 (sample converged profile)
+           |      |                 → all 3 in Werbos email v4 (sent PM)
+           |      |   1 ACTIVE     Q20 (Duda critique #3, half-addressed
+           |      |                 by v5; v6 closes if Q22-24 land)
+           |      |   5 OPEN       Q2, Q3, Q6, Q19 (Duda #2 editorial),
+           |      |                 Q21 (Duda #4, future v7+)
+           |      | Resolved by v5: Q1, Q9-Q15, Q16, Q17, Q25
+           |      |   (Hopf invariant proof complete; charge quantization
+           |      |    is now a theorem of differential topology).
+           |      | Archived: Q4 (= Duda #1, single vs two-field
+           |      |   ontology — unfalsifiable preference; if math
+           |      |   matches observation, two fields is just a
+           |      |   description, not a theory-killer).
+-----------|------|----------------------------------------------------------
 2026-05-20 | G2   | T10 PARTIAL SUCCESS. Built m6_v4_4fn_lambda_bvp.py.
   PM       |      | scipy.integrate.solve_bvp with:
            |      | - 9-state (8 fields + I = accumulated Q_CS integral)

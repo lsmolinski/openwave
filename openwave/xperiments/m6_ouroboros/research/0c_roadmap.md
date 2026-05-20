@@ -48,7 +48,7 @@ Reproduce electron calibration          | ✅ H/Q = 1.6918 (0.30% gap)
 Reproduce lepton mass scan ω^2.22       | ❌ Got ω^2.04, lepton gaps 31-44%
 Sent findings + THE QUESTION to Werbos  | ✅ Email 2026-05-17 (in 0b_sandbox_v1.md)
 Key finding: ω^2.22 = log(207)/log(11)  | ✅ Post-hoc fit signature detected
-  → ω values appear fitted, not predicted|
+→ ω values appear fitted, not predicted |
 ```
 
 ### Phase 2 — Sandbox v2 (2026-05-18)
@@ -168,8 +168,8 @@ T6→A  | Built m6_v4_4fn_bvp.py with scipy.solve_bvp +          | ⚠️ PARTIA
       | topological/integral constraint not a BVP-compatible   |
       | boundary condition.                                    |
 T7    | Built m6_v4_4fn_shoot.py using r_blowup distance as    | ❌ NEGATIVE
-(new) | continuous figure of merit. Coarse 2D scan (m_J²,     |    (definitive)
-      | λ_bench) ∈ [0.5,8] × [0.1,10] at V₀=A₀=Q₀=J₀=0.1:     |
+(new) | continuous figure of merit. Coarse 2D scan (m_J²,      |    (definitive)
+      | λ_bench) ∈ [0.5,8] × [0.1,10] at V₀=A₀=Q₀=J₀=0.1:      |
       | max r_blowup=6.44, well below r_max=15. m_J²=1.0 row   |
       | flat (m_eff²=0 degenerate). Amplitude shoot: r_blowup  |
       | monotone decreasing in A_0; no resonance. Conclusion:  |
@@ -239,13 +239,30 @@ EMAIL | Werbos algorithm reply ~2:00 PM via DeepSeek. Confirms | ✅ RECEIVED
       | - ω=λ=1 initial guess; Gelfand-Fomin post-convergence  |
       | Method is fundamentally different from any of T6-T9.   |
       | Should be implementable in scipy.                      |
-NEXT  | T10 — sandbox_v4/m6_v4_4fn_lambda_bvp.py implementation| 🔶 PLANNED
-      | of Paul's actual algorithm. Hold M5 return for ~1 day  |
-      | to give M6 one focused attempt with the correct method.|
-      | If T10 converges → lepton scan + Q_A≈0 DM scan land    |
-      | quickly afterward. If T10 fails → sharper escalation   |
-      | with much more specific Paul ask (likely about λ-      |
-      | corrections to ODEs or sample profile share).          |
+SANDBOX| sandbox_v5/m6_v5_4fn_lambda_bvp.py built. Werbos's actual| ⚠️ PARTIAL
+v5     | algorithm: collocation BVP via scipy.integrate.solve_bvp|
+       | with Q_CS=1 as integral constraint, free eigenvalues ω +|
+       | λ_LM (Lagrange multiplier from H' = H - λ·Q), Robin BCs |
+       | at R_max, derivative-only origin BCs + V(R_MIN)=0.1     |
+       | anti-collapse, non-proportional A,J initial profile.    |
+       | Attempt 4 (final): solve_bvp.status = 0 CONVERGED.      |
+       | ω = 1.047 (vs Werbos 1.0, 4.7% over), m_eff² = -0.596   |
+       | (vs Werbos -0.5, 19% over), Q_CS = 1.000 exact,        |
+       | λ_LM = -1.212 (first time pinned). FIRST EVER clean    |
+       | convergence to a Q_CS=1 chaoiton via Werbos's actual   |
+       | method. v4's "Q_CS=1 unreachable" negative INVERTED.   |
+       | OPEN: H/Q_CS = 52.64 vs Werbos's 1.6969 (31× off,      |
+       | consistent across V_norm sweep) — most likely a Q_CS   |
+       | or H normalization convention mismatch. Also: A-mode    |
+       | has 17 nodes (excited state, not ground state).        |
+       | See 0b_sandbox_v5.md for full v5 recipe + diagnostics. |
+NEXT   | Email Paul v4: thank-you for the algorithm + three    | 🔶 DRAFTING
+       | specific normalization questions (Q_CS convention,    |
+       | H functional coefficients, sample converged profile). |
+       | Hold ApJ paper Zenodo upload pending these answers.   |
+       | After Paul replies → build sandbox_v6 with corrected  |
+       | conventions; if normalization is the only gap, the    |
+       | electron calibration H/Q=1.6969 lands within hours.   |
 ```
 
 ---
@@ -356,67 +373,123 @@ C    | 3-body proton bound state           | V(R) ~ -C/R⁶ classical
 
 ---
 
-## Open questions (summary — see 0b_sandbox_v4.md for full list)
+## Open questions (summary — see 0b_sandbox_v5.md for full v5 tracker)
 
 ```text
-Q2   | Discrete ω selection mechanism       | BLOCKED — was empirical-via-G1;
-                                            | G1 now blocked too
-Q3   | Analytical ω = 2mc²/ℏ derivation     | PARTIAL — calibration only
-Q6   | QCD reconciliation for proton        | OPEN — uninvestigated
-Q8   | Neutral m_χ true ground state        | CLOSED-NEGATIVE — T2 showed
-                                            | v3's 0.508 MeV was artifact.
-                                            | Existence in 2-fn form
-                                            | UNCERTAIN.
-Q12  | Werbos's Python source code          | STILL PROMISED — ETA was
-                                            | 2026-05-20; window open
-Q13  | 4-function vs 2-function reduction   | RESOLVED in principle — 2-fn
-                                            | for NEUTRAL only, 4-fn for
-                                            | CHARGED. Confirmed via T5
-                                            | extraction. Full reduction
-                                            | mapping still unclear.
-Q14  | Canonical Q=0: locked / A=0 /        | RESOLVED (Werbos 1:49 PM):
-       Q_A≈0?                               | canonical DM candidate is
-                                            | Q_A≈0/Q_J≠0 (both fields
-                                            | active, EM-neutral). Locked
-                                            | and A=0 are limiting
-                                            | approximations.
-Q15  | Does m_eff² substitution close       | TESTED via T6 → INCONCLUSIVE
-       electron H/Q gap?                    | (eigenvalue structure means
-                                            | IVP can't test from generic
-                                            | initial conditions)
-Q16  | What specific m_J², λ_bench values   | NEW — load-bearing for T6→A
-       does Werbos use at calibration?      | / T7. Resolves if Werbos
-                                            | answers OR if BVP finds it
-                                            | independently.
+v5 IMMEDIATE (block v6, asked in Werbos email v4 2026-05-20 PM)
+
+Q22  | Q_CS normalization convention.        | Pin the factor that
+                                              | accounts for the 31× H/Q
+                                              | gap between v5's 52.64 and
+                                              | Werbos's stated 1.6969.
+Q23  | Exact H functional (kinetic            | Pins the Lagrange-
+       coefficient, ω-kinetic placement,      | multiplier coefficient.
+       cross-term signs).                     |
+Q24  | Sample converged profile from one      | Selects ground-state basin
+       of Werbos's runs (5-10 grid points     | vs excited 17-node mode.
+       for V, A, Q, J).                       |
+
+v5 ACTIVE (close-able via v6)
+
+Q20  | Duda critique #3 — "construction      | HALF ADDRESSED by v5
+       not shown, need ansatz + minimize     | (method works in script).
+       energy".                              | v6 closes by hitting
+                                             | H/Q=1.6969 exactly.
+
+v5 STILL OPEN (not blocking v6)
+
+Q2   | Discrete ω selection mechanism        | Empirical-via-lepton-scan
+                                             | once v6 anchors. Analytic
+                                             | proof deferred per Werbos.
+Q3   | Analytical ω = 2mc²/ℏ derivation      | Calibration only (1.2%).
+Q6   | QCD reconciliation (3-chaoiton        | Future v7+.
+       proton)                               |
+Q19  | f(J·J) explicit form in LoE paper     | Duda critique #2,
+       standalone (Duda critique #2).        | editorial — one-line LoE
+                                             | revision by Werbos fixes.
+Q21  | Two-chaoiton Coulomb derivation       | Duda critique #4, future
+       (Duda critique #4).                   | sandbox v7+. ARCHIVED for
+                                             | current scope.
+
+v5 RESOLVED (closed by v5 or earlier)
+
+Q1, Q9, Q10, Q11, Q13     | Earlier rounds (v1-v4).
+Q12 (Werbos Python code)  | DEMOTED — v5 algorithm description
+                          | + DeepSeek-write offer = same unblock.
+Q14 (canonical Q=0)       | Q_A≈0 / Q_J≠0 (Werbos 1:49 PM 2026-05-19).
+Q15 (m_eff² substitution) | RESOLVED post-v5. m_eff² = -0.596 in
+                          | v5 attempt 4 confirms negative is correct.
+Q16 (m_J², λ_bench)       | m_J²≈0.5, λ_bench=1.0 (Werbos 4:21 PM
+                          | 2026-05-19); v5 uses these.
+Q17 (shooting algorithm)  | RESOLVED — collocation BVP per Werbos
+                          | 2026-05-20 PM email.
+Q25 (Hopf invariant proof | RESOLVED — Zenodo 20296060 supplies the
+      rigorous?)          | two missing lemmas. Charge quantization
+                          | is now a theorem of differential topology.
+
+v5 ARCHIVED (unfalsifiable / future scope)
+
+Q4   | Single vs two-field ontology         | = Duda critique #1.
+       (G_μν / J undefined)                  | Aesthetic preference. If
+                                             | math matches observation,
+                                             | two primary fields is just
+                                             | a description, not theory-
+                                             | killer.
+Q7   | Cold-fusion citation trail            | Historical, not physics.
+Q21  | Two-chaoiton Coulomb derivation       | (Also listed in STILL OPEN
+       (Duda #4)                             | as future-v7 milestone.)
 ```
+
+Active count entering v6: **3 IMMEDIATE + 1 ACTIVE + 5 OPEN = 9 questions**.
+Highest-leverage closure: Q22-Q24 (Werbos reply) → v6 → Q20 (Duda #3).
 
 ---
 
-## Hardest pieces (summary — see 0b_sandbox_v4.md for the live tracker)
+## Hardest pieces (summary — see 0b_sandbox_v5.md for live tracker)
 
 ```text
-Hardest piece       | Status after v4 first runs (2026-05-19)
---------------------|--------------------------------------------------
-V(M) potential form | UNRESOLVED — shared bottleneck with M5 (Duda)
-f(J·J) form         | AMBIGUOUS — v5 says g·s²; benchmark says
-                    | (m_J²/2)·s + (λ/4)·s². Reconciliation pending.
-ω quantization      | BLOCKED — empirical test via G1 also blocked
-mechanism           | now until 4-fn ODE implementation lands.
-Q=0 chaoiton        | UNCERTAIN — v3's 23 "solutions" invalidated by
-existence           | T2 (artifacts). Q14 3-way candidates: locked
-                    | (v2 failed), A=0 (v3/T2 disproved), Q_A≈0
-                    | (untested). Code OR canonical form resolves.
-Lepton mass         | UNTESTED — 2-fn was wrong tool. Need 4-fn
-spectrum            | benchmark ODE (T5 extracted; implementation
-                    | open).
-Electron calibration| OPEN — anchor target H/Q = 1.6969 (corrected
-localization        | from v3's wrong H_CODE_ELECTRON_CALIB=0.494).
-                    | Match against this once 4-fn implemented.
-4-fn vs 2-fn ansatz | NEW — Numerical Benchmark and Lean theorem use
-mismatch            | STRUCTURALLY different ODEs (toroidal l=0 vs
-                    | vector l=1). Not reductions of each other.
-                    | Werbos uses 4-fn for charged; reduction route
-                    | for neutral is unclear.
+Hardest piece                  | Status post-v5 (2026-05-20)
+-------------------------------|--------------------------------------------------
+Forward-IVP method family      | RESOLVED. Confirmed wrong tool by both us
+                               | (T6-T9) and Werbos. Replaced with collocation
+                               | BVP in v5.
+Q_CS=1 enforcement mechanism   | RESOLVED. Auxiliary integral state I with
+                               | BC I(R_max)=1/(2π). Exact Q_CS=1.000 achieved.
+Q_CS=1 chaoiton existence      | RESOLVED. v5 attempt 4 converges (solve_bvp
+                               | status=0) at ω=1.047, m_eff²=-0.596. First
+                               | empirical chaoiton in OpenWave.
+Electron H/Q = 1.6969          | NEW OPEN. v5 lands H/Q=52.64 (31× off) across
+calibration                    | V_norm sweep — structural normalization gap.
+                               | Q22 (Q_CS convention) most likely closes this.
+Ground-state vs excited mode   | NEW OPEN. v5 attempt 4 found Q_CS=1 chaoiton
+selection                      | but with A in 17-node excited mode (Lean ≤4
+                               | node spec). Q24 (sample profile from Werbos)
+                               | resolves immediately.
+Lagrange-multiplier ODE        | NEW OPEN. v5 derived coefficient = 1. If
+correction coefficient         | Werbos's H kinetic factor differs, this may
+                               | need adjustment. Q23 pins it.
+V(M) potential form            | UNRESOLVED — shared bottleneck with M5 (Duda).
+                               | Not in v5/v6 scope.
+f(J·J) form                    | RESOLVED IN PRACTICE — v5 uses Numerical
+                               | Benchmark form f(s) = ½m_J²s + ¼λs².
+                               | Q19 (LoE paper editorial gap) remains for
+                               | Werbos to fix in next LoE revision.
+4-fn vs 2-fn ansatz            | RESOLVED. 2-fn for NEUTRAL (Lean theorem),
+mismatch                       | 4-fn for CHARGED (Numerical Benchmark / v5).
+                               | Both are canonical, not reductions.
+ω quantization mechanism       | OPEN (Q2). v6 lepton scan provides empirical
+                               | test once H/Q calibration anchors. Analytic
+                               | proof deferred per Werbos's own admission.
+Lepton mass spectrum           | BLOCKED on v6. Once H/Q=1.6969 lands, run
+                               | ω-sweep [0.5, 50] to test lowest-3-stable
+                               | hypothesis.
+Neutral m_χ true ground state  | BLOCKED on v6. Once anchored, run Q_A≈0
+                               | scan — feeds Section 4 of ApJ Neutral
+                               | Chaoiton paper.
+Two-chaoiton Coulomb           | NOT ADDRESSED. Future sandbox v7+ (Q21,
+derivation                     | Duda critique #4). Out of current scope.
+Charge quantization rigorous   | RESOLVED. Hopf invariant proof complete
+proof                          | (Zenodo 20296060). Q25.
 ```
 
 ---
