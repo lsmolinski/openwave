@@ -15,6 +15,13 @@
   - `Nuclear story.pdf` (4 pages) — Werbos's personal Schwinger / Teller / cold fusion history
   - `Werbos_Budapest_AI_Summit_2026.pdf` (38 pages) — AI summit talk (not yet read)
   - `chaoiton_theorem.lean.txt` — Lean 4 proof source
+- Later additions (2026-05-18 → 2026-05-20):
+  - `Werbos_Law_of_Everything_2026_v5.pdf` → `_Werbos_Law_of_Everything_2026_v8.txt` (v8 deposited 2026-05-20 as Zenodo 20313063; absorbs all 7 of our v6-review suggestions plus 3 §4 Hopf-invariant Zenodo references)
+  - `_Dark_Matter_in_Universe_v4.txt` — broad narrative DM paper, deposited 2026-05-19 as Zenodo 20298669
+  - `_The Neutral Chaoiton_ A Dark Matter Candidate from the Ouroboros Langrangian.txt` (2026-05-20) — compact ApJ-style DM paper, distinct from v4 above; cites both 20313063 + 20298669 as prior work; Acknowledgments thank Rodrigo by name for the helicity-structure dialogue
+  - `Numerical Benchmark for the Ouroboros Lagrangian.docx` — 4-fn benchmark ODE source for T5/T6+ work
+  - `Claude bosonization May18 4PM.txt` — Werbos's bosonization session log with the lepton-spectrum numbers (ω=1.0 / 12.78 / 40.7 hypothesis)
+  - `Competion_Of_Hopf_invariant_Ouroboros_proof.txt` — **Hopf invariant proof completion (Zenodo 20296060, 2026-05-19)**. Supplies Lemmas A (∇×J = B everywhere for finite-energy Lorenz-constrained solutions) and B (zeros of B made isolated by perturbation preserving Q[A,J]). Together with the main argument of Werbos 2026b (Zenodo 20181683), these establish Q[A,J] = H(Φ) ∈ ℤ as a theorem of differential topology. **Charge quantization is now rigorous.** Doesn't address existence of specific-Q chaoitons (the open T6-T10 problem).
 - Existing context: [1b_topological_defect.md](1b_topological_defect.md) (compares time-periodicity vs topology), [feedback_no_static_solitons](../../../../../../.claude/projects/-Users-xrodz-Documents-source-code-OPENWAVE-LABS-openwave/memory/feedback_no_static_solitons.md) (three Derrick escapes)
 
 ---
@@ -66,6 +73,23 @@ Two coupled Lorenz-constrained vector fields on Minkowski spacetime. Classical, 
 A **chaoiton** is a time-periodic, spatially-localized solution of the Ouroboros field equations. The "like a soliton but non-static" framing — energy is stored in oscillation rather than in a static gradient configuration. This is **the third Derrick escape** (time-periodicity) catalogued in [1b_topological_defect.md § Alternative stabilization](1b_topological_defect.md).
 
 Werbos's prior numerical work (Zenodo 20030162, **not yet read locally**) claims existence of 62 stable chaoiton families across 1280 parameter combinations, with L/Q ratio (angular momentum / charge) in the range 0.79–2.6 — overlapping the electron g-factor.
+
+#### How to pronounce "chaoiton"
+
+It's Werbos's portmanteau of **chaos** + **soliton**:
+
+```text
+Phonetic    | Syllables    | Notes
+------------|--------------|---------------------------------
+KAY-oh-     | chao-        | Like "chaos" (ch = k sound)
+  i-ton     |   i-ton      | Like end of "soliton"
+
+Full:       | KAY-oh-i-ton  (4 syllables)
+            |
+Alt:        | "kay-OH-i-ton" with stress on second syllable
+```
+
+Most natural: **"KAY-oh-i-ton"** — 4 syllables, primary stress on first ("KAY"), secondary on third ("i"). The "ch" is hard `k`, not `ch` like in "church".
 
 ### Charge quantization mechanism — the mutual Chern-Simons linking number
 
