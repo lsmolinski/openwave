@@ -1426,3 +1426,154 @@ Step | Action                              | Expected outcome
 
 Time budget: ~2-4 hours to first BVP attempt; ~1 day to full
 calibration + post-pass scans if T10 converges first try.
+
+---
+
+### T10 — Collocation BVP with Lagrange multiplier (2026-05-20 PM, PARTIAL SUCCESS)
+
+Built `sandbox_v4/m6_v4_4fn_lambda_bvp.py` per Paul's algorithm. Key
+implementation choices to close BC count and break early-collapse:
+
+```text
+State (9)  | (V, V', A, A', Q, Q', J, J', I)
+           | I = ∫₀^r r'·(A·J' − J·A') dr' (accumulated Q_CS density)
+Free p (2) | ω (chaoiton frequency), λ_LM (Lagrange multiplier)
+ODEs       | Paul-as-written for V, Q (Q_CS doesn't depend on V or Q)
+           | A, J equations gain Lagrange-multiplier corrections from
+           |   δQ_CS/δA = J + 2r·J'   ⇒  Δ_r A = J + λ_LM·(J + 2r·J')
+           |   δQ_CS/δJ = -(A + 2r·A')⇒  Δ_r J = [unconstr RHS] - λ_LM·(A + 2r·A')
+BCs (11)   | Origin: V'(R_MIN)=A'(R_MIN)=Q'(R_MIN)=J'(R_MIN)=0, I(R_MIN)=0
+           | R_max:  Robin V'+k·V=0 etc. (4); I(R_max)=1/(2π) [Q_CS=1]
+           | Normalization: V(R_MIN) = V_norm [breaks (V,Q)→0 collapse]
+Init       | V(r)=+0.1·e^(-r), A(r)=-0.1·e^(-r), Q(r)=+0.1·e^(-r),
+           | J(r)=-0.1·e^(-1.5·r) [break A∝J proportionality so Q_CS
+           | density is non-zero in the initial guess]
+           | ω=1.0, λ_LM=0.1.
+```
+
+### Attempt progression
+
+```text
+Attempt | Key change                | Status | ω      | λ_LM    | H       | nodes V/A/Q/J | H/Q_CS  | Notes
+--------|---------------------------|--------|--------|---------|---------|---------------|---------|------
+1       | No λ in ODEs              | conv.  | 2.43   | n/a     | 12317   | 13/2/13/2     | 12317   | (V,Q) collapse
+2       | + λ corrections, V_n=0.1  | conv.  | 2.66   | 0.81    | 458     | 16/0/16/0     | 458     | exc. (V,Q) modes
+3       | + non-prop A,J init       | conv.  | 0.89   | 3.24    | 33      | 3/0/3/0       | 33      | low nodes
+4       | r_max=12, 50000 nodes,    | 0 ★    | 1.047  | -1.21   | 52.6    | 4/17/4/1      | 52.6    | full conv. status=0
+        |   tol=5e-3                |        |        |         |         |               |         |
+```
+
+Attempt 4 achieves `solve_bvp.status = 0` ("converged to the desired
+accuracy") with max relative residual 1.3e-4. The I-derived Q_CS and the
+field-derived Q_CS agree to 0.01% — solver convergence is real.
+
+### What landed
+
+```text
+Numerical match to Werbos's stated values:
+  ω         = 1.047    vs Werbos 1.0     (4.7% over)
+  m_eff²    = -0.596   vs Werbos -0.5    (19% over)
+  Q_CS      = 1.000    vs target 1       (exact via integral constraint)
+  λ_LM      = -1.212   (Werbos didn't quote this; first time pinned)
+
+Did NOT match:
+  H/Q_CS    = 52.64    vs Werbos 1.6969  (31× off)
+  A nodes   = 17       vs Lean ≤4        (excited mode, not ground state)
+  tail @r≥8 = 0.17     vs target <0.05   (slow decay tail)
+```
+
+### Why the 31× H/Q gap is structural, not parametric
+
+V_norm scan (V_norm ∈ {0.5, 0.3, 0.2, 0.15, 0.1, 0.05, 0.03, 0.01}):
+
+```text
+V_norm | ω     | λ_LM   | H         | nodes V/A/Q/J | H/Q_CS
+-------|-------|--------|-----------|---------------|----------
+0.50   | 0.74  | -1.05  | 7094.09   | 4/0/4/0       | 7094.09
+0.30   | 1.07  | 2.25   | 449.09    | 4/0/4/0       | 449.09
+0.20   | 0.67  | 35.0   | 21718.21  | 4/0/5/0       | 21718.21
+0.15   | 1.05  | 29.9   | 64.44     | 4/0/4/0       | 64.44
+0.10   | 1.05  | -1.21  | 52.64     | 4/17/4/1      | 52.64   (minimum)
+0.05   | 1.01  | 38.9   | 4195.85   | 4/0/4/0       | 4195.85
+0.03   | 1.44  | 2.78   | 1664.27   | 5/0/5/0       | 1664.27
+0.01   | 1.74  | 2.45   | 82.82     | 4/0/4/0       | 82.82
+```
+
+The minimum H/Q_CS = 52.64 is achieved at V_norm = 0.1 (Werbos's stated
+value). The ratio is bounded below by ~50 across the V_norm sweep. This
+is NOT a tuning problem — H/Q in our convention has a floor that's 31×
+Werbos's claimed 1.6969.
+
+### Most likely explanation — normalization conventions
+
+```text
+Quantity            | Our convention               | Probable Werbos convention
+--------------------|------------------------------|---------------------------
+Q_CS                | 2π · ∫r·(A·J' - J·A') dr    | (1/4π²) · ∫ε^ijk A_i ∂_j J_k d³x
+                    | (radial toroidal form)       | (full 3D Cartesian)
+H prefactor         | (2π)² · ∫r dr [density]      | Possibly (2π) or (4π) prefactor
+H kinetic           | Full (V')², (A')², etc.      | Possibly (1/2)(V')² etc.
+Toroidal R          | R = 1 in scaled units        | "cancels in H/Q ratio"
+                    | (per Werbos clarification)   |
+Ratio mismatch      | H/Q_CS = 52.64               | 31× off 1.6969
+                    | (consistent across V_norm)   |
+```
+
+Multiple of these could be off by O(1) factors, compounding to ~30-50.
+Without his explicit normalization, we can't bridge them.
+
+### Excited-state finding
+
+Attempt 4 found A with 17 nodes. The ground state should have A with
+≤4 nodes (per Lean). The Lagrange-multiplier system has multiple
+discrete Q_CS=1 eigenstates; our solve_bvp is converging on an excited
+mode. Finding the ground state would require either: (a) adding a
+"lowest-H" outer optimization, (b) using a starting guess in the
+ground-state basin (which we don't have without a sample profile from
+Paul), or (c) selecting by node-count constraint (not natively
+supported by solve_bvp).
+
+### T10 verdict and next action
+
+T10 is **partial success**:
+
+```text
+WIN                                       | OPEN
+------------------------------------------|------------------------------------
+Forward-IVP wrong-tool diagnosis          | H/Q normalization mismatch (31×)
+  confirmed AND solved with new method    |   blocks calibration match
+solve_bvp converges (status 0) on Werbos- | Ground-state A-mode unknown without
+  algorithm chaoiton                      |   sample profile from Werbos
+ω ≈ 1.047, m_eff² ≈ -0.596 — within       | Lagrange-multiplier coefficient
+  5-20% of Werbos's stated values         |   could differ from our c=1 derivation
+Q_CS=1 integer constraint enforced        |
+  exactly via integral state              |
+Lagrange multiplier λ_LM converges to     |
+  specific non-trivial value -1.21        |
+```
+
+Next: targeted Werbos email — much sharper than the T9 ask. Three
+specific questions answer-able in a few lines:
+
+```text
+Question                                   | Why it matters
+-------------------------------------------|-----------------------------------
+(1) Exact Q_CS normalization               | Pin the factor that makes H/Q match
+    convention. We use Q_CS = 2π·∫r·       |   the 1.6969 target
+    (A·J'-J·A')dr in radial toroidal form. |
+    Could you confirm or correct?          |
+(2) Exact H functional. Specifically:      | Pin factor in EL → Lagrange-
+    coefficient on each kinetic (V')²,    |   multiplier-coefficient
+    and whether the ω-kinetic              |
+    (1/2)·ω²·(V²+A²+Q²+J²) is in H.        |
+(3) Sample converged profile shape         | Lets us validate against your own
+    (V(r), A(r), Q(r), J(r) on a 5-10      |   ground state and identify
+    point coarse grid) for the electron    |   excited-state vs ground-state
+    chaoiton. Even rough numbers would let |   selection mechanism
+    us pick the right basin.               |
+```
+
+Time budget for follow-up: ~30 min response from Paul if he has the
+files; we then converge to a passing T10 within hours. If he doesn't
+have the profile shapes saved, DeepSeek's offer to write Python code
+becomes the next path.

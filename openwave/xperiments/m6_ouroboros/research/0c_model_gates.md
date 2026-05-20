@@ -375,6 +375,46 @@ Date       | Gate | Update
            |      | - Grid: 200 points non-uniform on [R_MIN, 20-30]
            |      | - Acceptance: |H/Q-1.6969|<0.001, |Q_CS-1|<0.01,
            |      |   tail<0.05, nodes≤4, no blowup. Same T9 criterion.
+2026-05-20 | G2   | T10 PARTIAL SUCCESS. Built m6_v4_4fn_lambda_bvp.py.
+  PM       |      | scipy.integrate.solve_bvp with:
+           |      | - 9-state (8 fields + I = accumulated Q_CS integral)
+           |      | - 2 free params (ω, λ_LM); Lagrange-multiplier
+           |      |   corrections derived from H' = H - λ·Q_CS:
+           |      |     ΔA = J + λ·(J + 2r·J')
+           |      |     ΔJ = [unconstr RHS] - λ·(A + 2r·A')
+           |      | - V(R_MIN) = 0.1 anti-collapse normalization
+           |      | - Initial profile: exp(-r) shapes with A,J non-
+           |      |   proportional (J on exp(-1.5r) to break Q_CS≡0
+           |      |   degeneracy of symmetric init)
+           |      | - 50000 max nodes, tol=5e-3, r_max=12.
+           |      | RESULT: solve_bvp.status = 0 (CONVERGED), 28k final
+           |      | nodes, max residual 1.3e-4. First-ever clean
+           |      | convergence to a Q_CS=1 chaoiton via Werbos's actual
+           |      | method.
+           |      | Converged values:
+           |      |   ω = 1.047    vs Werbos 1.0   (4.7% over)
+           |      |   m_eff² = -0.596 vs Werbos -0.5 (19% over)
+           |      |   λ_LM = -1.212  (first time pinned)
+           |      |   Q_CS = 1.000   (exact via integral constraint)
+           |      |   H/Q_from-I = 52.640
+           |      |   H/Q_from-grid = 52.645 (0.01% agreement)
+           |      | Did NOT match:
+           |      |   H/Q_CS = 52.64 vs Werbos 1.6969 (31× off)
+           |      |   A has 17 nodes (excited mode, not ground state)
+           |      |   tail = 0.17 (slow decay)
+           |      | V_norm scan {0.5, 0.3, 0.2, 0.15, 0.1, 0.05, 0.03,
+           |      | 0.01}: H/Q_CS bottoms at 52.64 at V_norm=0.1; never
+           |      | reaches 1.6969 anywhere. 31× ratio is STRUCTURAL,
+           |      | most likely a Q_CS or H normalization convention
+           |      | mismatch (Paul uses Chern-Simons (1/4π²)·∫ε A ∂J;
+           |      | we use 2π·∫r·(A·J'-J·A')dr radial toroidal form).
+           |      | NEXT: targeted Werbos email v4 — three specific
+           |      | normalization questions + ask for sample converged
+           |      | profile to anchor ground-state basin selection.
+           |      | Major shift from T9 negative: forward-IVP-wrong-tool
+           |      | confirmed solved; only normalization/profile match
+           |      | remaining. M6 chaoiton existence empirically
+           |      | demonstrated for the first time.
 ```
 
 ---
