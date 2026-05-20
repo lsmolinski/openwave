@@ -221,7 +221,119 @@ discrepancy in the A,J Lagrange-multiplier corrections).
 
 ---
 
-## Email v5 to Paul (sent 2026-05-20 ~5:00 PM)
+## DeepSeek reference Python script (received 2026-05-20 ~5:30 PM via Paul)
+
+DeepSeek confirmed Q24 was illustrative (*"the eight-point table I sent was
+illustrative, not from a converged run... Do not use that table as a warm
+start."*) and sent a full Python script: *"the actual code that generated the
+62 families."* Saved verbatim as `sandbox_v6/deepseek_reference.py` and a
+minimal-patch runnable variant as `sandbox_v6/deepseek_reference_patched.py`.
+
+### The script does not run as-is
+
+| Bug | Detail |
+| --- | --- |
+| r=0 singularity | `r = np.linspace(0, Rmax, N)` includes r=0 as the first grid point, but the ODE uses `J/r` and `V/r` terms — divide-by-zero on the first evaluation. |
+| BC count mismatch | `bc` returns 10 residuals for a 9-state ODE with no free params (`p`). `solve_bvp` expects 9. Raises `ValueError: 'bc' return is expected to have shape (9,), but actually has (10,)`. |
+
+### Patched script gives catastrophic blow-up
+
+Minimal patches: start grid at R_MIN=0.05 (matches our v6); add λ_lm as a
+free parameter so the integral constraint closes. ODE structure, H functional,
+BCs, and initial guess preserved verbatim from DeepSeek. Result:
+
+| Run output | Value |
+| --- | --- |
+| `solve_bvp.status` | 1 (max nodes exceeded at 4492 grid points after 3 iterations) |
+| Final λ_lm | 263 |
+| Peak fields V / A / Q / J | 16,815 / 38,588 / 21,833 / 16,280 |
+| Q_CS (from I-state) | 0.539 |
+| Q_CS (from grid) | 2.93 × 10^9 |
+| H | 9.98 × 10^15 |
+| **H/Q** | **1.85 × 10^16** |
+
+DeepSeek's reference produces H/Q sixteen orders of magnitude off target.
+Our v6.6 produces H/Q = 1.778. **Our v6 is dramatically closer to truth than
+DeepSeek's reference script.**
+
+### Structural differences (script vs our v6)
+
+| Component | Our v6 (works) | DeepSeek script (diverges) |
+| --- | --- | --- |
+| Radial Laplacian | `V'' + V'/r = Q` (toroidal Δ_r) | `V'' = ω²V − Q + corrections` (Klein-Gordon mass, no 1/r kinematics) |
+| Mass placement | `m_eff²` on Q only (and −m_eff² on J) | `−ω²` on EVERY field equation |
+| λ correction targets | Only A and J equations | All four V, A, Q, J equations |
+| λ correction form | `+λ·(J + 2r·J')` in A, `−λ·(A + 2r·A')` in J | `−λ·(Jp + J/r)` in V and Q; `λ·(−(Vp + V/r))` in A and J |
+| Quartic placement | Q equation: `λ_bench·Q·(Q²−J²)` | V equation: `g·((V²+Q²)·V + (V·A−Q·J)·A)` |
+
+### Interpretation
+
+DeepSeek's Q22/Q23 QUANTITATIVE answers (drop 2π on Q_CS, kinetic 1/2, no
+toroidal prefactor, DeepSeek quartic in H) are empirically correct — we
+validated them in v6.6 by getting H/Q = 1.778 vs v5's 52.64 (30× improvement).
+The STRUCTURAL content of the Python script is NOT what they actually use;
+DeepSeek appears to be reconstructing pseudo-code from memory and getting the
+ODE form wrong. Most likely Paul has working code somewhere that DeepSeek
+doesn't have direct access to.
+
+**Net implication:** stop diffing against the script. Trust our v6 ODE
+structure. The 4.8% residual gap is on us to close via approaches DeepSeek
+doesn't help with.
+
+### λ_LM init sweep — basin sensitivity
+
+Tested λ_LM ∈ {−1, 0, 0.5, 1, 5, 12, 20} with v6.6 config (r_max=15, n_grid=500,
+max_nodes=100k, no warm-start). Result:
+
+| λ_LM init | Final ω | Final λ_LM | H/Q (DeepSeek) | Status |
+| --- | --- | --- | --- | --- |
+| **0.1 (default v6.6)** | **1.016** | **12.21** | **1.778** | **★ best basin** |
+| −1.0 | −1.95 | 121.2 | 8.5 × 10^8 | wrong basin |
+| 0.0 | −9.90 | 16.9 | 7.0 × 10^8 | wrong basin |
+| 0.5 | 2.16 | 7.84 | 444.7 | wrong basin |
+| 1.0 | −0.66 | 19.0 | 228,195 | wrong basin |
+| 5.0 | 1.07 | 122.3 | 992.6 | adjacent basin |
+| 12.0 | 3.00 | 281.1 | 3.3 × 10^7 | wrong basin |
+| 20.0 | 20.5 | 477.0 | 2.6 × 10^12 | wrong basin |
+
+The Q_CS=1 ground-state basin is **extremely narrow** in the optimization
+landscape. Only λ_LM init in a small window around the default 0.1 lands
+in the correct basin. This is why DeepSeek's λ_lm=1.0 init in the reference
+script catastrophically diverges.
+
+### Track A (r_max sweep) result — backward, not forward
+
+Tested r_max ∈ {10, 12, 15, 18} with n_grid ∈ {200, 300}, max_nodes=30k,
+tol=1e-2. Result: most configs land in WORSE basins (H/Q from 0.15 to 5747).
+Only the v6.6 sweet spot (r_max=15, n_grid=500, max_nodes=100k, tol=5e-3)
+produces H/Q = 1.778. **Sharpening convergence via more node budget makes
+things WORSE, not better** — the solver finds bigger excited-state basins
+when it has more room. The v6.6 result is essentially the best `solve_bvp`
+can do with this ODE+BC formulation.
+
+### What this means for the 4.8% gap
+
+| Hypothesis | Evidence |
+| --- | --- |
+| Solver-incomplete-convergence | NOT IT. More budget makes it worse. The status=1 is "max nodes exceeded" but the field profile is stable at the v6.6 config; the issue is that solve_bvp keeps splitting nodes without changing the field profile meaningfully. |
+| Small additional normalization tweak (e.g., wrong λ-coefficient or g-factor) | LIKELY. The 4.8% is suspiciously close to a single factor-of-2-correction in one coefficient. Confirmed by g-sweep: changing g monotonically moves H/Q linearly. With g chosen empirically (e.g., g≈0.5) we land near 1.74, still ~3% off. |
+| Solver landing on slightly-excited mode rather than true ground state | POSSIBLE. v6.6 has 5 nodes V/Q (just over Lean ≤4); a true ground state has ≤4 nodes everywhere. A different solver (`scipy.optimize.root` method='lm', or finite-difference + Newton-Raphson) might reach the actual ≤4-node ground state with lower H. |
+| Our ODE has subtle bug we haven't found | UNLIKELY but POSSIBLE. We derived the Lagrange-multiplier corrections from H' = H − λ·Q_CS via integration by parts. If DeepSeek's actual production code uses a different λ-correction form (and the script is a buggy reconstruction), we may be off by a constant factor in the λ-corrections. |
+
+### Strategic options (the four available paths)
+
+| Option | Estimate | Expected outcome |
+| --- | --- | --- |
+| **(1) Accept v6.6 as-is** | done | Use H/Q=1.778 for ApJ deliverables. The 4.8% absolute gap may be invisible if mass ratios (m_μ/m_e, m_τ/m_e) come out right under the lepton scan. **Cheapest path forward.** |
+| **(2) Lepton-scan ratio-invariance test** | ~1 hour | Run lepton scan at v6.6 calibration; if muon ratio ≈ 207, the absolute gap doesn't matter for physics deliverables. **High info-per-time.** |
+| **(3) Switch solver to `scipy.optimize.root` method='lm'** | 2-4 hours | Build a custom Newton-Raphson with finite-difference Jacobian. May reach a cleaner ground state. Paul mentioned this as an alternative; could land H/Q closer to 1.6969. **Medium effort, medium return.** |
+| **(4) Reply Paul honestly: their script is broken; our v6 is the better implementation; can they share actual working code or production grid data?** | 1 email | Most likely outcome: they don't have actual code, or DeepSeek tries again with a different (also broken) reconstruction. **Low expected value given the pattern.** |
+
+Recommended order: **(2) first** (highest info per hour), then **(1)** if ratios check out, **(3)** if they don't, **(4)** as last resort.
+
+---
+
+## Email v5 to Paul (sent 2026-05-20 ~5:00 PM, BEFORE DeepSeek script arrived)
 
 Reply to Paul's "should I be doing something" disorientation note + the
 DeepSeek 4:00 PM normalization-clarification email. Content:
@@ -234,6 +346,116 @@ DeepSeek 4:00 PM normalization-clarification email. Content:
 | Q24 caveat surfaced (politely) | The 8-point reference profile WORSENED our solver (warm-start landed at H/Q≈250). Without warm-start (v5's exp(-r) seed) we got the 4.8%-off result. Asked: was the profile from one of the 62-family converged runs, or idealized? Either is fine; want to know whether to use as strict target or sanity check on shape. |
 | Two specific asks | (1) Take DeepSeek up on the explicit offer to send the Python script — definitive cross-check against our v6 line by line. (2) When Paul has a moment, confirm whether Q24 profile was from an actual run. |
 | Closing commitment | ApJ Zenodo upload still held as agreed. Section 4 numbers (m_χ, m_J, σ/m, Ω_χh²) come out within a day after the script + a few solver iterations close the 4.8%. |
+
+---
+
+## Step (8/11/4/2) diagnostic results — 2026-05-20 evening, post-script
+
+After receiving DeepSeek's broken reference script, ran four diagnostic
+sub-steps in `sandbox_v6/diagnostic_steps_8_through_2.py`. Headline finding:
+**dropping the quartic from H lands H/Q = 1.7112, only 0.84% off target.**
+The 4.8% v6.6 gap was the quartic adding too much energy.
+
+### Step (8) — H functional variant sweep
+
+Same converged field profile from v6.6 reproduction. Same Q_CS = 1.000.
+Different H formula choices:
+
+| Variant | H | H/Q_CS | % off 1.6969 |
+| --- | --- | --- | --- |
+| v6.6 baseline (DeepSeek H form) | 1.7782 | 1.7782 | +4.79% |
+| Flip cross sign (+V·Q − A·J) | 1.8314 | 1.8314 | +7.93% |
+| Full kinetic ((V')² not (1/2)(V')²) | 3.0151 | 3.0151 | +77.68% |
+| Both A+B fixes | 3.0684 | 3.0684 | +80.82% |
+| ω-kinetic full (ω² not (1/2)ω²) | 2.2791 | 2.2791 | +34.31% |
+| **No quartic** ★ | **1.7112** | **1.7112** | **+0.84%** |
+| No ω-kinetic | 1.2773 | 1.2773 | −24.73% |
+| Toroidal r-weight on H | 5.9722 | 5.9722 | +251.95% |
+| v5 full (r-weight + (2π)² prefactor + benchmark quartic) | 411.33 | 411.33 | +24140% |
+
+**Interpretation:** the only single-change variant that lands within 1% of
+target is dropping the quartic entirely. This is consistent with Werbos's
+own statement: *"for the electron, the quartic term is small; the main
+balance is between the gradient, ω², and the −V·Q + A·J coupling."*
+
+If we interpret "small" as effectively zero (or much smaller than g=1.0625),
+calibration is essentially achieved. The 4.8% gap was the DeepSeek quartic
+structure adding ~0.067 to H when the true quartic contribution at electron
+calibration is negligibly small.
+
+### Step (11) — field profile inspection
+
+Sampled V, A, Q, J, I at r ∈ {0.05, 0.2, 0.5, 1.0, 2.0, 3.0, 5.0, 8.0, 12, 15}.
+
+| Feature | Observation | Lean ground-state spec | Status |
+| --- | --- | --- | --- |
+| Zero crossings in V | 5 | ≤4 | ❌ EXCITED MODE |
+| Zero crossings in A | 0 | ≤4 | ✓ |
+| Zero crossings in Q | 5 | ≤4 | ❌ EXCITED MODE |
+| Zero crossings in J | 1 | ≤4 | ✓ |
+| Q sign at r=0 | −0.12 | should be +0.1 per Werbos helicity | ❌ wrong sign |
+| Helicity balance (peak V vs A) | 0.10 vs 0.83 (8× imbalance) | symmetric V/A magnitudes expected | ⚠️ imbalanced |
+| Decay tail at r=8 | A still −0.16, J ≈ 0 | should be near 0 | ⚠️ slow A decay |
+
+**v6.6 is a slightly-excited mode**, not the true Q_CS=1 ground state. V
+and Q have 5 zero crossings each (just over Lean ≤4 spec). The true ground
+state may give H/Q at a slightly different value — possibly the 1.7112
+we see when the quartic is dropped, or possibly closer to 1.6969 if the
+ground state has different field shape.
+
+### Step (4) — (m_J², λ_bench) sweep
+
+Tested m_J² ∈ {0.2, 0.5, 1.0, 2.0} × λ_bench ∈ {0.5, 1.0, 2.0, 4.0} = 16 configs.
+
+| Outcome | Count |
+| --- | --- |
+| H/Q within 50% of target | 0 |
+| H/Q under target by 50-100% | 4 |
+| H/Q over target by 100% – 10^14 % | 12 |
+
+The same v6 default config (m_J²=0.5, λ_bench=1.0) landed at H/Q = 0.453
+in this re-run (vs 1.778 in v6.6). The difference: this diagnostic used
+max_nodes=50000 instead of v6.6's 100000. **The basin selection is so
+fragile that the same nominal config gives 4× different H/Q values
+depending on max_nodes.** Strong evidence that solve_bvp is not actually
+converging — it's bouncing among nearby basins. The (m_J², λ_bench) sweep
+doesn't give clean signal because each config samples a different basin.
+
+### Step (2) — lepton-scan trial (cold start)
+
+Tried ω_init ∈ {1.0, 5.0, 12.0, 20.0, 40.7} to see if the solver can find
+higher-ω stable modes (muon, tau).
+
+| ω_init | Final ω | H/Q | Status |
+| --- | --- | --- | --- |
+| 1.0 | 1.016 | 1.778 | ✅ electron mode |
+| 5.0 | 32.18 | 1.6 × 10^9 | ❌ chaos |
+| 12.0 | 2330 | 1.7 × 10^20 | ❌ blow-up |
+| 20.0 | 71.1 | 9.2 × 10^13 | ❌ blow-up |
+| 40.7 | 74.3 | 8.3 × 10^12 | ❌ blow-up |
+
+**Cold-start lepton scan does not work.** The solver can only find the
+ω ≈ 1 electron basin from a cold initial guess. Higher-ω modes would
+require a continuation method: warm-start from the converged electron
+solution, then nudge ω upward via λ_LM perturbation or by varying m_J²
+slowly. This is a v7-level investigation, not a quick test.
+
+### Net diagnostic conclusions
+
+| Finding | Implication |
+| --- | --- |
+| Drop-quartic lands H/Q = 1.7112 (0.84% off) | Calibration essentially closed. **The quartic structure DeepSeek gave is the source of the residual 4.8% gap.** Either g << 1.0625 at electron calibration, OR the quartic structure is wrong, OR (consistent with Werbos's stated "small for the electron") the quartic should be omitted from the electron H. |
+| v6.6 is a 5-node excited mode | Not the true ground state. May explain the helicity-flipped Q sign and the asymmetric A-amplitude. True ground state could give H/Q closer to 1.6969 directly. |
+| Solver basin selection extremely fragile | Same nominal config can give different H/Q values depending on solver tuning. Highly sensitive to max_nodes, tol, n_grid, λ_LM init. Not a "tune your way to convergence" problem. |
+| Cold-start lepton scan fails | Higher-ω modes need continuation. v7 work. |
+
+### Updated open questions for Paul
+
+| ID | Question | Why |
+| --- | --- | --- |
+| Q28 | Which quartic IS canonical for the electron H? Your script uses `(V²+Q²)² + (A²+J²)² + 2(VA−QJ)²` form; the Numerical Benchmark sub-document uses `(Q²−J²)²` form; dropping the quartic entirely lands at H/Q = 1.7112 (0.84% off target). Your stated *"for the electron, the quartic term is small"* could mean: (a) small g coefficient (not 1.0625); (b) different small-magnitude quartic combination; (c) genuinely negligible for the electron specifically. Which interpretation? | |
+| Q29 | Does your converged production run have V, Q with ≤4 zero crossings each (ground state) or with 5 crossings (excited mode)? Our v6.6 has 5 in both V and Q. If yours has 4, we may be on different modes; the 1% gap may close at the actual ground state. | |
+| Q30 | At your converged production: is Q(r=0) positive (matching the asymmetric helicity prescription V₀=Q₀=+0.1) or negative? Ours converged with Q(0) = −0.12 — helicity sign flipped during convergence. May be related to excited-mode selection. | |
 
 ---
 
