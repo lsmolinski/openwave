@@ -4,7 +4,7 @@ Three gates must pass before committing M6 to full Taichi production. The
 model is a credible scientific candidate; these gates determine whether it is
 a credible *engineering* candidate alongside M5.
 
-Last updated: 2026-05-19.
+Last updated: 2026-05-20 evening (post-sandbox_v5 partial success).
 
 ---
 
@@ -28,17 +28,19 @@ Last updated: 2026-05-19.
 
 ---
 
-## Gate dependencies
+## Gate dependencies (post-v5)
 
-```text
-G2 → depends on Werbos's code (waiting reply as of 2026-05-18)
-G1 → independent; can run sandbox v4 now with Lean ODE
-G3 → parallel; may be resolved by Werbos reply or remain open
+| Gate | Currently blocked by | Resolves via |
+| --- | --- | --- |
+| G1 (lepton scan) | sandbox_v6 calibration anchor (H/Q=1.6969 must land first) | v6 ω-sweep [0.5, 50] with calibrated (m_J², λ_bench) fixed. Tests "lowest 3 stable = leptons" hypothesis empirically. |
+| G2 (neutral m_χ) | sandbox_v6 calibration anchor | v6 Q_A≈0 / Q_J≠0 scan. Lands m_χ, m_J mediator mass, σ/m self-interaction. Feeds ApJ Section 4 numbers. |
+| G3 (discrete ω mechanism) | G1 (empirical-via-lepton-scan) | If v6 G1 lands the 3 lowest stable modes within 4-6% of e/μ/τ, G3 is empirically resolved. Analytic proof still deferred per Werbos's own admission. |
 
-Recommended sequence:
-  Run G1 first (days) → run G2 once code arrives (days) → G3 (weeks/open)
-  Don't wait for G3 before production decision — it may never close analytically.
-```
+**Critical chain:** v6 calibration anchor → G1+G2 lepton + DM scans → G3 empirical → production decision.
+
+**v6 calibration depends on:** Werbos reply to email v4 (Q22 Q_CS normalization, Q23 H functional, Q24 sample profile). Already sent 2026-05-20 PM; reply incoming as of evening.
+
+**Recommended sequence:** Wait for Paul reply (24-48h) → build sandbox_v6 (~2-3 hours solo work) → G1+G2 land same day → G3 empirically closes same day. If Paul reply slips past 48h, accept DeepSeek's offer to write reference Python code as fallback.
 
 ---
 
@@ -99,77 +101,89 @@ These justify maintaining M6 as a sandbox/research track even if production is d
 
 ---
 
-## Werbos reply update (2026-05-18 19:39)
+## Status revision 3 (2026-05-20 evening, post-sandbox_v5 partial success)
 
-The first round of gate-relevant clarification arrived. Key impacts:
+Major shift since the prior 2026-05-19 status revisions (now retired below):
+sandbox_v5 has produced a Q_CS=1 chaoiton via Werbos's actual algorithm
+(collocation BVP + Lagrange multiplier), inverting v4's "unreachable" negative.
+But the **H/Q electron calibration is 31× off** (52.64 vs 1.6969) due to a
+structural Q_CS or H normalization-convention mismatch. Three normalization
+questions sent to Paul in email v4; reply incoming.
 
-- **G1**: Sharper test designed — v4 lepton scan can falsify or confirm
-  Werbos's "lowest 3 stable modes = leptons" hypothesis directly.
-- **G2**: Code coming in 1-2 days. Will close calibration + verify neutral
-  ground state in one round.
-- **G3**: Analytic proof deferred indefinitely (Werbos's own admission).
-  Empirical G1 result becomes the effective gate.
-
-**Refined GO/NO-GO**: with G1 + G2 both within reach this week, the
-production decision can plausibly land by 2026-05-25.
-
----
-
-## Status revision (2026-05-19, post-v4 first runs)
-
-The 2026-05-18 "production decision by 2026-05-25" timeline is now too
-optimistic. Both G1 and G2 hit unexpected blockers in v4 first runs:
-
-| Gate | Was (2026-05-18) | Is (2026-05-19) |
+| Gate | Was (2026-05-19 PM, post-T6-T9) | Is (2026-05-20 evening, post-v5 attempt 4) |
 | --- | --- | --- |
-| G1 | READY — run lepton scan w/ Lean 2-fn ODE; expect muon@1.1% gap (Werbos bosonization) | BLOCKED — 2-fn ODE wrong tool for charged sector. Need 4-fn benchmark ODE first. |
-| G2 | CODE COMING — Werbos's source will close calibration + m_χ ground state in one round | v3 RESULT INVALIDATED. T2 showed 23 solutions are artifacts. Existence in 2-fn form uncertain. |
-| G3 | EMPIRICAL VIA G1 | BLOCKED with G1. |
+| G1 (lepton scan) | BLOCKED — forward-IVP family wrong tool. Path B (BVP) hitting partial results. | BLOCKED on v6 calibration anchor. v5 method works (`solve_bvp.status=0`); just need normalization fixes from Paul to hit H/Q=1.6969. Once anchored, ω-sweep [0.5, 50] runs in ~1 hour. |
+| G2 (neutral m_χ) | BLOCKED — v3 INVALIDATED, no working 4-fn anchor. | BLOCKED on v6 calibration anchor (same chain as G1). Once anchored, Q_A≈0 scan runs in ~1 hour and feeds ApJ Section 4 numbers. |
+| G3 (discrete ω) | BLOCKED with G1. | BLOCKED on G1. Empirical-via-lepton-scan path open. v6 lepton scan = effective G3 closure for production purposes. |
 
-**Why the optimism was wrong**: we assumed the Lean 2-fn ODE was the
-canonical form for both sectors. Per Werbos's Q13 reply, it is the
-reduced form for the NEUTRAL sector only; the charged calibration +
-lepton scan use the 4-function (φ, α, ρ, β) toroidal ansatz from his
-pre-Lean code. The two ODEs are structurally different (toroidal l=0
-vs vector l=1), not reductions of each other.
+**Why the gates moved from "method wrong" to "calibration normalization":**
+v5's `solve_bvp.status=0` convergence is real and self-consistent (I-integral
+and field-derived Q_CS agree to 0.01%). The chaoiton exists in our scripted
+form. The 31× H/Q gap is structural across the V_norm sweep, not a tuning
+issue — almost certainly a Q_CS-form convention difference between our radial-
+toroidal `2π·∫r·(A·J'-J·A')dr` and Paul's full 3D Chern-Simons `(1/4π²)·∫ε A ∂J d³x`.
+One factor-of-30 in normalization explains it cleanly.
 
-**Revised timeline**: production decision likely 2026-05-23 to
-2026-05-27 if Werbos's code arrives this week; 2026-05-25 to
-2026-05-30 if we have to implement the 4-fn ODE solo.
+### Revised timeline (post-v5)
 
-**Two unblock paths**:
+| Scenario | Calibration anchored | G1+G2 closed | Production decision |
+| --- | --- | --- | --- |
+| Paul reply lands within 24-48h with all three Q22/Q23/Q24 answers | ~1 hour after reply | Same day | Within 1-2 days |
+| Paul slips, DeepSeek writes Python fallback (his explicit offer) | 1-2 days post-fallback | +1-2 days | Within 3-4 days |
+| Paul slips past 96h, we park M6 and return to M5.4 | M6 stays parallel-research; no production decision | — | Deferred indefinitely |
+
+### Two paths to unblock v6 calibration
 
 | Path | Trigger | Resolves |
 | --- | --- | --- |
-| A | Werbos sends his Python source (in response to our 2026-05-19 ask) | G1 + G2 + Q12 + Q14 in one shot |
-| B | Solo: implement 4-fn benchmark ODE in `sandbox_v4/`, calibrate to H/Q=1.6969, then run scans | G1 + G2 paths (with risk from 3 open gaps: ω-in-static, f(s) form, R) |
+| A | Werbos reply on Q22/Q23/Q24 (24-48h expected) | All v6 normalization gaps in one round. Build v6 same day. |
+| B | DeepSeek-writes-Python (Paul's explicit offer in 2:00 PM email) | Cross-check reference. We rebuild v6 against it. Used if (A) slips past 48h. |
 
-The 2026-05-19 reply to Werbos was framed around Path A but acknowledges
-Path B is the fallback if his code doesn't materialize.
+The 2026-05-20 PM email v4 commits explicitly: "I will not push anything to
+Zenodo from our side until calibration lands." This protects both names from
+the "Griesi & AI in prep" ApJ reference converting to a real citation
+prematurely.
 
 ---
 
-## Status revision 2 (2026-05-19 PM, post-Werbos reply + T6)
+## Retired status snapshots (2026-05-18, 2026-05-19)
 
-Werbos resolved the 3 implementation gaps (m_eff² formula, f(s) mapping,
-R cancels) but T6 first run revealed the deeper problem: the 4-fn ODE
-is an **eigenvalue/shooting problem**, not solvable by plain IVP from
-generic initial conditions. Scan of (m_J², λ_bench) at V₀=A₀=Q₀=J₀=0.1
-across 40 grid points: ALL BLEW UP.
+These earlier status revisions are kept for historical reference. They reflect
+the model before the v5 chaoiton was empirically demonstrated and before the
+Hopf invariant proof completion landed.
 
-| Implementation reality | Status |
-| --- | --- |
-| Gaps from Werbos's reply | RESOLVED in formula. Need ONE more piece: the specific m_J², λ_bench values at his calibrated point. |
-| 4-fn ODE is eigenvalue-like | Generic IVP doesn't find bound state. Need BVP (`solve_bvp` with decay BC at r_max) or Newton-style shooting. |
-| Path B has new sub-paths | T6→A: BVP solver (2-4 hr, medium risk); T7: Newton shoot on (m_J², λ_bench); T8: ask Werbos for specific values (1-line email, lowest risk). |
+### 2026-05-18 Werbos-reply snapshot (retired)
 
-**Updated path sequence** (Rodrigo direction, 2026-05-19 PM):
+Werbos's first round of clarification (Q12 code promise, Q13 4-fn/2-fn reduction
+explained, Q2 leptons-as-lowest-3-modes hypothesis). Implications:
 
-| Step | Action | If succeeds | If fails |
-| --- | --- | --- | --- |
-| 1 | DONE — document T6 negative result | proceed to (2) | — |
-| 2 | T6→A: implement BVP solver | use to calibrate | → (3) |
-| 3 | T7: Newton shooting on (m_J², λ_bench) | use to calibrate | → (4) |
-| 4 | Ask Werbos for specific calibration values (m_J², λ_bench at canonical point) | resolves immediately | M6 parked |
+- G1 sharper test designed — v4 lepton scan would falsify/confirm Werbos's "lowest 3 stable = leptons" hypothesis.
+- G2: code coming in 1-2 days (later slipped indefinitely; v5 algorithm-reply replaced the code-share).
+- G3: analytic proof deferred indefinitely per Werbos's own admission.
 
-The escalation principle: prove what we tried before going back to him.
+**Refined GO/NO-GO at the time:** production decision plausibly by 2026-05-25.
+This optimism was wrong — see 2026-05-19 revision below.
+
+### 2026-05-19 post-v4-runs snapshot (retired)
+
+Both G1 and G2 hit unexpected blockers in v4 first runs.
+
+| Gate | Was (2026-05-18) | Was (2026-05-19) |
+| --- | --- | --- |
+| G1 | READY — run lepton scan w/ Lean 2-fn ODE; expect muon@1.1% gap | BLOCKED — 2-fn ODE wrong tool for charged sector. Need 4-fn benchmark ODE first. |
+| G2 | CODE COMING — Werbos's source will close calibration + m_χ in one round | v3 RESULT INVALIDATED. T2 showed 23 solutions are artifacts. |
+| G3 | EMPIRICAL VIA G1 | BLOCKED with G1. |
+
+The Lean 2-fn ODE was discovered to be the reduced NEUTRAL-only form; charged
+calibration needs the 4-fn (φ, α, ρ, β) toroidal ansatz from Werbos's pre-Lean
+code. Two unblock paths considered: Werbos's Python source (Path A) vs solo
+4-fn implementation (Path B). Path B was the fallback if code didn't arrive.
+
+### 2026-05-19 PM post-T6 snapshot (retired)
+
+T6 first run revealed forward-IVP doesn't solve the eigenvalue/shooting problem
+generically — scan of 40 (m_J², λ_bench) grid points at canonical V₀=A₀=Q₀=J₀=0.1
+all BLEW UP. T6→A (BVP), T7 (Newton shoot), T8 (helicity), T9 (two-stage)
+followed; all confirmed forward-IVP-family is the wrong method. Werbos's 2:00 PM
+2026-05-20 algorithm reply gave us the actual method (collocation BVP + Lagrange
+multiplier), which became sandbox_v5.

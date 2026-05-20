@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** 🔶 Active sandbox evaluation. Gate paths revised after v4 first runs invalidated key v3 claim. Production decision delayed pending 4-fn ODE anchoring.
+**Status:** 🔶 v5 PARTIAL SUCCESS — first-ever Q_CS=1 chaoiton converged via Werbos's collocation BVP algorithm at ω=1.047, m_eff²=-0.596, Q_CS=1.000 exact (`solve_bvp.status=0`). Open: H/Q=52.64 vs Werbos's stated 1.6969 (31× off, normalization-convention mismatch). Email v4 sent 2026-05-20 PM with three specific normalization questions (Q22 Q_CS convention, Q23 H functional, Q24 sample profile); awaiting reply to build sandbox_v6 and close calibration.
 
-Last updated: 2026-05-19.
+Last updated: 2026-05-20 evening.
 
 See `0c_model_gates.md` for the G1/G2/G3 production criteria.
 
@@ -78,77 +78,129 @@ Groups cc'd: Models-of-Particles, Jeff Yee, Robert Close, Jarek Duda
 | T3 | Werbos's Python source (1-2 days) | Werbos reply |
 | T4 | Reconcile Q14 (locked vs A=0) | T3 (code) |
 
-### Phase 5 — Sandbox v4 first runs (2026-05-19)
+### Phase 5 — Sandbox v4 attempts (2026-05-19 to 2026-05-20 PM)
+
+Six independent forward-IVP-family attempts (T1, T2, T6, T6→A, T7, T8, T9) plus
+two key Werbos clarification emails. **Net result: forward-IVP from value-BC
+origin DOES NOT reach a Q_CS=1 chaoiton in any parameter region we explored.**
+This negative result was load-bearing — it told Werbos his canonical method had
+never been written down in published form, and prompted the v5 algorithm reply.
 
 | Track | Outcome | Status |
 | --- | --- | --- |
-| T1 | Built `m6_v4_lepton_scan.py`, ran ω∈{1,5,..,45} quick scan + `diag_energy_functional.py` for H-scaling test. Found: 2-fn Lean ODE is WRONG TOOL for charged sector. H decreases with ω (opposite Werbos's bosonization); ω=1.0 marginally fails localization; m_μ/m_e ratio target 207 found 0.04. v3's H_CODE_ELECTRON_CALIB=0.494 also confirmed wrong. Per Q13: 2-fn for NEUTRAL, 4-fn (φ,α,ρ,β) for CHARGED. Bosonization muon@1.1% used 4-fn code, not Lean reduction. | ❌ BLOCKED |
-| T2 | Built `m6_v4_t2_neutral_ground.py`. Wide log-scan B₀ ∈ [1e-5, 1.0] × 60 points × 6 λ values; golden-section refinement. NEGATIVE RESULT: H is monotonic in B₀; no minimum exists. All "localized" scan points violate Lean ≤4-node regularity (found 13-29 nodes). Linear part β''+β'/r-β/r²+λβ=0 is J_1(√λr) Bessel — oscillatory not bound. v3's 23 solutions + m_χ=0.508 MeV are ARTIFACTS of permissive absolute-tail check. Q=0 ground-state existence now uncertain. Q14 expanded to 3-way: locked / A=0 / Q_A≈0. | ❌ CLOSED-NEGATIVE |
-| T5 (new) | Manual 4-fn ODE extraction via general-purpose agent across v5 paper + Numerical Benchmark §3 + bosonization logs. Found canonical 4-fn ODE: Δ_r V=Q, Δ_r A=J, Δ_r Q=V+m_J²Q+λQ(Q²−J²), Δ_r J=A−m_J²J−λJ(Q²−J²) with toroidal Δ_r=f''+f'/r (NO -f/r²), value BC f'(0)=0, toroidal volume (2π)²R·r dr. Calibration anchor: H/Q=1.6969 at (g=1.0625, λ=1.0, ω=1.0, V₀=A₀=Q₀=J₀=0.1). Confidence: medium. Three gaps: ω-in-static, f(s) two-form, R unspecified. | ✅ DONE |
-| NEW | Werbos 2026-05-19 10:51 AM sent DM paper draft for ApJ review citing Griesi v3 m_χ=0.508 MeV as load-bearing numerical input. Rodrigo replied 11:30ish with T2 invalidation + 4-fn extraction + honest code ask. Werbos reply 2026-05-19 1:49 PM (via DeepSeek): resolved all 3 implementation gaps (m_eff² formula, f(s) two-form mapping, R cancels in H/Q). Endorsed our Q14 → canonical Q=0 is Q_A≈0, Q_J≠0. Code "as soon as I can" (no committed date). | ✅ REPLY RECEIVED |
-| T6 (new) | Built `m6_v4_4fn.py` with Werbos's m_eff² substitution. Tried RK45, LSODA, RK45+max_step+blowup_event. Scanned (m_J², λ_bench) at canonical V₀=A₀=Q₀=J₀=0.1 across 40 grid points. RESULT: ALL 40 BLOW UP. Confirms 4-fn ODE is eigenvalue/shooting problem; generic IVP from canonical initial conditions doesn't find the bound state — that requires the SPECIFIC calibrated (m_J², λ_bench) which we don't yet have. | ❌ NEGATIVE |
-| T6→A (new) | Built `m6_v4_4fn_bvp.py` with `scipy.solve_bvp` + eigenvalue parameter(s). 1-eigenvalue mode converges to non-trivial (V,Q) bound state, but (A,J) collapses to zero spontaneously. Eigenvalue r_max-dependent (Bessel-zero artifact). 2-eigenvalue mode fails universally with singular Jacobian. Q_CS=1 is a topological/integral constraint not a BVP-compatible boundary condition. | ⚠️ PARTIAL |
-| T7 (new) | Built `m6_v4_4fn_shoot.py` using r_blowup distance as continuous figure of merit. Coarse 2D scan (m_J², λ_bench) ∈ [0.5,8] × [0.1,10] at V₀=A₀=Q₀=J₀=0.1: max r_blowup=6.44, well below r_max=15. m_J²=1.0 row flat (m_eff²=0 degenerate). Amplitude shoot: r_blowup monotone decreasing in A_0; no resonance. Conclusion: NO bound state in symmetric V₀=A₀=Q₀=J₀ regime anywhere we scanned. Werbos's calibration must use asymmetric initial values OR different parameters. | ❌ NEGATIVE (definitive) |
-| EMAIL (out) | Email sent ~5 PM 2026-05-19: T6/T6→A/T7 findings + ask for specific m_J², λ_bench, V₀, A₀, Q₀, J₀ values | ✅ SENT |
-| EMAIL (in) | Werbos reply ~4:21 PM (via DeepSeek): m_J²≈0.5, λ_bench=1.0, V₀=Q₀=+0.1, A₀=J₀=-0.1 (asymmetric helicity gives Q_CS=1). m_eff²=-0.5 correct. Shooting strategy: *"decay rate at infinity as target"* (algorithm not specified). + v2 of DM paper sent for review. | ✅ RECEIVED |
-| T8 (new) | Re-ran 4fn IVP, shoot, BVP scripts with Werbos's asymmetric helicity. FINDING: helicity is necessary (Q_CS goes from 0 → non-zero) but NOT SUFFICIENT. IVP still blows up (Q_CS=4483, not 1). Amplitude shoot: ~12% better than symmetric, but still monotone. BVP with 1-eigenvalue + asymmetric init guess: still collapses to (V,Q) sub bound state at m_J²=5.51 regardless of init. A,J drift to 0 without a BC forcing them. 2-eigenvalue BVP: singular Jacobian. | ⚠️ PARTIAL |
-| T9 (new) | 2026-05-20: Built `sandbox_v4/m6_v4_4fn_newton.py`. Two-stage optimizer over 6 vars (m_J², λ, \|V₀\|, \|A₀\|, \|Q₀\|, \|J₀\|) with helicity signs locked. Stage 1 DE global + Stage 2 Nelder-Mead local. Pre-scan: 2D grid at Werbos's exact \|amps\|=0.1 (324 pts, m_J²∈[0.05,10], λ∈[0.01,10], r_max=15): 0/324 reach r_max with peak<5. Max r_reached=7.24, peak=95. Wider scan (576 pts up to m_J²=50, λ down to 0.001, r_max=30): 0/576, max r_reached=8.06. Stage 1 6-var DE (6528 evals): r_reached=8.4, Q_CS=58662 — delayed-blowup regime, not a bound state. SIX independent attempts (T6 / T6→A 1-eig / T6→A 2-eig / T7 / T8 / T9) all confirm: Q_CS=1 chaoiton UNREACHABLE via forward-IVP from value-BC origin in any parameter region we have explored. | ❌ NEGATIVE DEFINITIVE |
-| TRIG (new) | 2026-05-20 PM: Paul email — new compact ApJ paper *"The Neutral Chaoiton: A Dark Matter Candidate from the Ouroboros Lagrangian"* arrived. Distinct from v4 DM (Zenodo 20298669); cites both v8 LoE (Zenodo 20313063) and v4 DM. Acknowledges Griesi for helicity-structure dialogue. Reference [14] = *"Griesi & AI in prep."* Paul holds "TRULY new" Zenodo upload pending OUR T9 / ground-state numbers. With T9 negative, the m_χ + m_J + σ/m numbers in his Section 4 depend on first resolving the shooting-algorithm question. | ✅ NOTED |
-| EMAIL (out) | Email Paul ~1:00 PM with definitive T9 negative + sharp algorithmic ask listing 4 candidate algorithms. | ✅ SENT |
-| DUDA (in) | Public reply 2026-05-20 ~1:15 PM on models-of-particles list to Paul's v8 LoE Zenodo announce. 4 substantive technical critiques: (1) G_μν undefined; (2) f(J·J) unspecified; (3) construction not shown for electron; (4) two-charge Coulomb derivation absent. Closing: *"LLM-generated word salad"*. (3) is what T9 just demonstrated empirically — Werbos has the algorithm offline but never published it. Now-resolved internally (see below); still unresolved in any public document. | ⚠️ NOTED |
-| EMAIL (in) | Werbos algorithm reply ~2:00 PM via DeepSeek. Confirms forward-IVP doesn't work. Specifies algorithm:<br>• Collocation BVP via `scipy.integrate.solve_bvp`<br>• Q_CS=1 as INTEGRAL CONSTRAINT (not BC)<br>• Two free eigenvalues: ω and Lagrange multiplier λ<br>• Robin BCs at R_max matching K_0(κr) decay<br>• Origin BCs: derivative=0 only; values free<br>• Initial profile: exp(-r) decay shapes with helicity signs (V,Q=+0.1·exp(-r); A,J=-0.1·exp(-r))<br>• ω=λ=1 initial guess; Gelfand-Fomin post-convergence<br>Method is fundamentally different from any of T6-T9. Should be implementable in scipy. | ✅ RECEIVED |
-| SANDBOX v5 | `sandbox_v5/m6_v5_4fn_lambda_bvp.py` built. Werbos's actual algorithm: collocation BVP via `scipy.integrate.solve_bvp` with Q_CS=1 as integral constraint, free eigenvalues ω + λ_LM (Lagrange multiplier from H' = H - λ·Q), Robin BCs at R_max, derivative-only origin BCs + V(R_MIN)=0.1 anti-collapse, non-proportional A,J initial profile. Attempt 4 (final): `solve_bvp.status` = 0 CONVERGED. ω = 1.047 (vs Werbos 1.0, 4.7% over), m_eff² = -0.596 (vs Werbos -0.5, 19% over), Q_CS = 1.000 exact, λ_LM = -1.212 (first time pinned). FIRST EVER clean convergence to a Q_CS=1 chaoiton via Werbos's actual method. v4's "Q_CS=1 unreachable" negative INVERTED. OPEN: H/Q_CS = 52.64 vs Werbos's 1.6969 (31× off, consistent across V_norm sweep) — most likely a Q_CS or H normalization convention mismatch. Also: A-mode has 17 nodes (excited state, not ground state). See `0b_sandbox_v5.md` for full v5 recipe + diagnostics. | ⚠️ PARTIAL |
-| NEXT | Email Paul v4: thank-you for the algorithm + three specific normalization questions (Q_CS convention, H functional coefficients, sample converged profile). Hold ApJ paper Zenodo upload pending these answers. After Paul replies → build sandbox_v6 with corrected conventions; if normalization is the only gap, the electron calibration H/Q=1.6969 lands within hours. | 🔶 DRAFTING |
+| T1 | Built `m6_v4_lepton_scan.py`, ran ω∈{1,5,..,45} quick scan + `diag_energy_functional.py`. Found 2-fn Lean ODE is WRONG TOOL for charged sector: H decreases with ω (opposite Werbos's bosonization); ω=1.0 marginally fails localization; m_μ/m_e ratio target 207 found 0.04. v3's H_CODE_ELECTRON_CALIB=0.494 also confirmed wrong. Per Q13: 2-fn for NEUTRAL, 4-fn (φ,α,ρ,β) for CHARGED. | ❌ BLOCKED |
+| T2 | Built `m6_v4_t2_neutral_ground.py`. Wide log-scan B₀ ∈ [1e-5, 1.0] × 60 points × 6 λ values; golden-section refinement. NEGATIVE: H is monotonic in B₀; no minimum exists. All "localized" scan points violate Lean ≤4-node regularity (found 13-29 nodes). v3's 23 solutions + m_χ=0.508 MeV are ARTIFACTS of permissive tail check. Q14 expanded to 3-way: locked / A=0 / Q_A≈0. | ❌ CLOSED-NEGATIVE |
+| T5 (new) | Manual 4-fn ODE extraction via general-purpose agent across v5 paper + Numerical Benchmark §3 + bosonization logs. Found canonical 4-fn ODE: Δ_r V=Q, Δ_r A=J, Δ_r Q=V+m_J²Q+λQ(Q²−J²), Δ_r J=A−m_J²J−λJ(Q²−J²) with toroidal Δ_r=f''+f'/r. Calibration anchor: H/Q=1.6969 at (g=1.0625, λ=1.0, ω=1.0). Three gaps: ω-in-static, f(s) two-form, R unspecified. | ✅ DONE |
+| EMAIL (in) 2026-05-19 1:49 PM | Werbos reply (via DeepSeek) resolved all 3 T5 gaps: m_eff² = m_J²−ω²; f(s) v5 ≡ benchmark with m_J²=0, λ=4g; toroidal R cancels in H/Q ratio. Endorsed Q14 → canonical Q=0 is Q_A≈0, Q_J≠0. Code "as soon as I can" (no committed date). | ✅ RECEIVED |
+| T6 (new) | Built `m6_v4_4fn.py` with Werbos's m_eff² substitution. Scanned (m_J², λ_bench) at canonical V₀=A₀=Q₀=J₀=0.1 across 40 grid points. RESULT: ALL 40 BLOW UP. Confirms 4-fn ODE is eigenvalue/shooting problem; generic IVP from canonical initial conditions doesn't find the bound state. | ❌ NEGATIVE |
+| T6→A (new) | Built `m6_v4_4fn_bvp.py` with `scipy.solve_bvp` + eigenvalue parameter(s). 1-eigenvalue mode converges to non-trivial (V,Q) bound state, but (A,J) collapses to zero spontaneously. Eigenvalue r_max-dependent (Bessel-zero artifact). 2-eigenvalue mode fails universally with singular Jacobian. Q_CS=1 is integral constraint, not BC. | ⚠️ PARTIAL |
+| T7 (new) | Built `m6_v4_4fn_shoot.py` using r_blowup as continuous figure of merit. Coarse 2D scan (m_J², λ_bench) ∈ [0.5,8] × [0.1,10] at V₀=A₀=Q₀=J₀=0.1: max r_blowup=6.44, well below r_max=15. Amplitude shoot monotone decreasing in A_0; no resonance. NO bound state in symmetric ansatz anywhere scanned. | ❌ NEGATIVE (definitive) |
+| EMAIL (in) 2026-05-19 4:21 PM | Werbos reply (via DeepSeek): asymmetric helicity gives Q_CS=1. V₀=Q₀=+0.1, A₀=J₀=-0.1; m_J²≈0.5, λ_bench=1.0, m_eff²=-0.5 (negative is correct, time-periodic). Shooting strategy: *"decay rate at infinity as target"* (algorithm not detailed). + v2 of DM paper sent for review. | ✅ RECEIVED |
+| T8 (new) | Re-ran 4fn IVP, shoot, BVP scripts with asymmetric helicity. Helicity is NECESSARY (Q_CS goes 0 → 4483) but NOT SUFFICIENT. IVP still blows up, no Q_CS=1. Amplitude shoot ~12% better than symmetric but still monotone. BVP with 1-eigenvalue + asymmetric init: still collapses to (V,Q) sub bound state at m_J²=5.51. A,J drift to 0. | ⚠️ PARTIAL |
+| T9 (new) 2026-05-20 PM | Built `m6_v4_4fn_newton.py`. Two-stage optimizer over 6 vars with helicity locked. Pre-scan 324 pts at \|amps\|=0.1: 0/324 reach r_max with peak<5. Wider scan 576 pts: 0/576. Stage 1 6-var DE (6528 evals): r_reached=8.4, Q_CS=58662 — delayed-blowup, not bound state. **DEFINITIVE NEGATIVE:** across 6 attempts, Q_CS=1 chaoiton UNREACHABLE via forward-IVP. Werbos's shooting must be a different method family. | ❌ DEFINITIVE NEGATIVE |
+
+### Phase 6 — Sandbox v5 (2026-05-20 PM)
+
+Triggered by Paul's algorithm-clarification email after T9 negative result. Built
+`sandbox_v5/m6_v5_4fn_lambda_bvp.py` implementing Werbos's actual method:
+collocation BVP via `scipy.integrate.solve_bvp` with Q_CS=1 as INTEGRAL CONSTRAINT.
+**Result: first-ever clean convergence to a Q_CS=1 chaoiton.** Open: 31× H/Q
+normalization gap blocking electron calibration.
+
+| Event | Outcome | Status |
+| --- | --- | --- |
+| TRIG 2026-05-20 PM | Paul email — new compact ApJ paper *"The Neutral Chaoiton: A Dark Matter Candidate from the Ouroboros Lagrangian"* arrived. Distinct from v4 DM (Zenodo 20298669); cites both v8 LoE (Zenodo 20313063) and v4 DM. Acknowledges Griesi for helicity-structure dialogue. Reference [14] = *"Griesi & AI in prep."* Paul holds "TRULY new" Zenodo upload pending OUR ground-state numbers. | ✅ NOTED |
+| EMAIL (out) ~1:00 PM | Email Paul with definitive T9 negative + sharp algorithmic ask listing 4 candidate algorithms (backward integration; BVP with Q_CS Lagrange multiplier; tabulated init profile; multi-shot connection). | ✅ SENT |
+| DUDA (in) ~1:15 PM | Public reply on models-of-particles list to Paul's v8 LoE announce. 4 substantive technical critiques: (1) G_μν undefined; (2) f(J·J) unspecified; (3) construction not shown for electron; (4) two-charge Coulomb derivation absent. Closing: *"LLM-generated word salad"*. Our internal read: #1 archived (unfalsifiable preference), #2 editorial, #3 v6 closes empirically, #4 future v7+. | ⚠️ NOTED |
+| EMAIL (in) ~2:00 PM | Werbos algorithm clarification via DeepSeek. Confirms forward-IVP doesn't work ("consistent with our experience"). Specifies algorithm:<br>• Collocation BVP via `scipy.integrate.solve_bvp` (or `scipy.optimize.root` method='lm')<br>• Q_CS=1 as INTEGRAL CONSTRAINT, not BC<br>• Two free eigenvalues: ω and Lagrange multiplier λ (from H' = H − λ·Q)<br>• Robin BCs at R_max: V'+k·V=0, k=√(ω²-m_J²)<br>• Origin BCs: derivative=0 only; values FREE<br>• Initial profile: V=+0.1·exp(-r), A=-0.1·exp(-r), Q=+0.1·exp(-r), J=-0.1·exp(-r); ω=λ=1 init guess<br>• Post-convergence: Gelfand-Fomin conjugate-point test | ✅ RECEIVED |
+| v5 attempt 1 | No λ in ODEs, Q_CS=1 via integral. solve_bvp converged but (V,Q) collapsed to noise; A,J huge; H=12317. Wrong basin. | ❌ wrong basin |
+| v5 attempt 2 | Added λ-corrections to A,J via δQ_CS variation + V(R_MIN)=0.1 anti-collapse. Converged with V,A,Q,J non-trivial. H=458, 16 nodes V/Q. Mid-basin progress. | ⚠️ excited mode |
+| v5 attempt 3 | Non-proportional A,J initial guess (J on exp(-1.5r) to break Q_CS≡0 degeneracy) + 20k node budget. Converged. ω=0.89, m_eff²=-0.28. H=32.8, 3 nodes V/Q, 0 nodes A/J. Closer to ground state. | ⚠️ partial |
+| v5 attempt 4 ★ | r_max=12, n_grid=400, max_nodes=50000, tol=5e-3. **`solve_bvp.status = 0` CONVERGED** (28k final nodes, max residual 1.3e-4). ω=1.047 (vs Werbos 1.0, 4.7% over). m_eff²=-0.596 (vs Werbos -0.5, 19% over). λ_LM=-1.212 (first time pinned). Q_CS=1.000 exact. H/Q-from-I and H/Q-from-grid agree to 0.01% — solver self-consistent. **WIN:** first-ever Q_CS=1 chaoiton in OpenWave; v4's "unreachable" inverted. **OPEN:** H/Q=52.64 vs target 1.6969 (31× off); A has 17 nodes (excited mode, not ground state); tail=0.17. | ⚠️ PARTIAL ★ |
+| V_norm sweep | Tested V_norm ∈ {0.5, 0.3, 0.2, 0.15, 0.1, 0.05, 0.03, 0.01}: H/Q_CS bottoms at 52.64 at V_norm=0.1; never approaches 1.6969 anywhere. 31× ratio is STRUCTURAL across all modes, not a tuning issue. Most likely Q_CS or H normalization-convention mismatch (Paul: (1/4π²)·∫ε A ∂J d³x; us: 2π·∫r·(A·J'-J·A')dr radial-toroidal form). | ⚠️ confirms structural gap |
+| Q_CS = 1.000 exact achieved | First-ever Q_CS=1 chaoiton in OpenWave. v4's "unreachable" definitively inverted. Chaoiton EXISTS as a `solve_bvp` solution — only the calibration mapping remains open. | ✅ WIN |
+| EMAIL (out) v4 ~PM | Sent Paul a thank-you + three specific normalization questions: Q22 (exact Q_CS normalization convention); Q23 (exact H functional kinetic coefficients, ω-kinetic placement, cross-term signs); Q24 (sample converged profile from one of his runs, even 5-10 grid points). Stated explicit commitment to hold ApJ Zenodo upload pending answers. | ✅ SENT |
+
+### Phase 7 plan — Sandbox v6 (planned, awaiting Paul reply to Q22/Q23/Q24)
+
+| Step | Action | Triggers | Estimate |
+| --- | --- | --- | --- |
+| 1 | Receive Paul reply on Q22/Q23/Q24 normalization questions | required — without this, v6 cannot start. DeepSeek-write-Python fallback if Paul slips ~48h. | 24-48h |
+| 2 | Fork v5 → `sandbox_v6/m6_v6_4fn_calibrated_bvp.py` | once #1 lands; mechanical | 5 min |
+| 3 | Apply Q22 fix (Q_CS normalization factor) | scalar coefficient adjustment on auxiliary integral state | 15 min |
+| 4 | Apply Q23 fix (H functional coefficients + Lagrange-multiplier coefficient in A,J equations) | edit to ODE rhs | 15 min |
+| 5 | Apply Q24 warm-start (Paul's sample profile as initial guess, interpolated onto our grid) | replaces exp(-r) seed; resolves ground-state basin selection | 15 min |
+| 6 | Re-converge attempt-4-style run | should give H/Q ≈ 1.6969 if normalization is the only gap; verify ≤4 nodes per Lean | 5 min solve + verify |
+| 7 | Lepton scan ω ∈ [0.5, 50] at calibrated (m_J², λ_bench) fixed | tests "lowest 3 stable modes = leptons" hypothesis; expect muon ω≈12.78 (1.1% gap), tau ω≈40.7 | ~1 hour |
+| 8 | Q_A ≈ 0 neutral chaoiton scan for m_χ | lands DM mass + m_J mediator mass + σ/m self-interaction; feeds ApJ Section 4 | ~1 hour |
+| 9 | Gelfand-Fomin stability check (conjugate-point test on converged second variation) | confirms ground state, not excited mode | ~30 min |
+| 10 | Handoff (m_χ, m_J, σ/m, relic abundance) to Paul for ApJ Section 4; lift Zenodo upload hold | "Griesi & AI in prep" reference becomes real citation | done |
 
 ---
 
-## Current state (2026-05-19, afternoon)
+## Current state (2026-05-20 evening)
 
 | Item | Status |
 | --- | --- |
-| Werbos collaboration | 🔶 Active — TWO emails today. AM: ApJ paper draft for review. PM: 3-gap clarifications + Q14 resolution + ApJ-revision intent. |
-| Email out (v4 findings + code ask) | ✅ Sent 2026-05-19 AM with T2 invalidation + 4-fn surface area |
-| Werbos reply (3 clarifications) | ✅ Received 2026-05-19 1:49 PM. m_eff²=m_J²-ω², f(s) mapping, R cancels. Q14 → Q_A≈0/Q_J≠0. |
-| Werbos's promised code | ⚠️ "as soon as I can" — no committed date in PM reply |
-| T6 — 4-fn IVP attempt | ❌ NEGATIVE — all 40 (m_J², λ) scan points blow up. Confirms eigenvalue structure; can't anchor with IVP from canonical initial conditions. |
-| Gate G1 (lepton scan) | ❌ BLOCKED — 4-fn implementation pending T6→A (BVP) and T7 (shoot) |
-| Gate G2 (neutral m_χ ground state) | ❌ v3 INVALIDATED. Werbos endorsed Q_A≈0 canonical; still need 4-fn anchor before running it. |
-| Gate G3 (discrete ω selection) | ⚠️ Empirical-via-G1 path still blocked (waiting for G1 path). |
-| M6 production in Taichi | 🚧 Production decision delayed past 2026-05-27 if T6→A and T7 land this week; or 2026-05-30+ if Werbos's code is the unblock |
-| M5 / Liquid Crystal | 🔶 Active — M5.4 substrate migration queued |
+| Werbos collaboration | 🔶 Active — three emails 2026-05-20: AM new compact ApJ Neutral Chaoiton paper + DM v4 deposit; PM algorithm reply (~2:00 PM via DeepSeek); evening "DeepSeek agrees we should upload nothing new until we hear from you". |
+| Email v4 (out) — Q22/Q23/Q24 | ✅ Sent 2026-05-20 PM. Three specific normalization questions: Q_CS convention, H functional coefficients + ω-kinetic + cross-term signs, sample converged profile from one of his runs. |
+| Werbos reply on v4 | 🔶 INCOMING — DeepSeek-mediated reply being reviewed next. Expected to unblock v6. |
+| sandbox_v5 Q_CS=1 chaoiton | ✅ DEMONSTRATED. `solve_bvp.status=0` at ω=1.047, m_eff²=-0.596, Q_CS=1.000 exact, λ_LM=-1.212. First-ever clean convergence in OpenWave. |
+| Electron H/Q = 1.6969 calibration | ❌ OPEN. v5 lands H/Q=52.64 (31× off). V_norm sweep confirms structural; most likely Q_CS or H normalization convention mismatch. v6 closes if Q22 lands. |
+| Ground-state vs excited mode | ❌ OPEN. v5 attempt 4 found Q_CS=1 chaoiton but with A in 17-node excited mode (Lean spec ≤4 nodes). Q24 sample profile resolves. |
+| Hopf invariant proof (charge quantization) | ✅ RESOLVED. Zenodo 20296060 supplies the two missing lemmas. Now a theorem of differential topology. |
+| Duda critiques (2026-05-20 thread) | #1 G_μν / single-field ontology — ARCHIVED (unfalsifiable). #2 f(J·J) unspecified — editorial OPEN. #3 construction not shown — HALF-ADDRESSED (v5 method works in script); v6 closes if H/Q=1.6969 lands. #4 two-charge Coulomb — FUTURE v7+. |
+| Gate G1 (lepton scan) | ❌ BLOCKED on v6 calibration anchor. v6 ω-sweep [0.5, 50] will test "lowest 3 stable = leptons" empirically. |
+| Gate G2 (neutral m_χ ground state) | ❌ BLOCKED on v6 calibration anchor. v6 Q_A≈0 scan lands DM candidate m_χ, m_J, σ/m for ApJ Section 4. |
+| Gate G3 (discrete ω selection) | ⚠️ BLOCKED on G1 (empirical-via-lepton-scan). Analytic proof still deferred per Werbos's admission. |
+| ApJ Neutral Chaoiton paper | 🔶 HOLD. Reference [14] *"Griesi & AI in prep"*. Paul + DeepSeek explicitly agreed: "upload nothing new until we hear from you". Numbers depend on v6 close. |
+| M6 production in Taichi | 🚧 Decision deferred until v6 calibration lands. Earliest realistic: 1-2 days post-Paul-reply if normalization is the only gap. |
+| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued post-v6 close. Cardinal rule: M5 is SABER's primary engineering track; M6 stays parallel-research. |
 
 ---
 
 ## Next steps
 
-### Immediate (waiting on Werbos's reply to 2026-05-19 ask)
+### Immediate (waiting on Paul's reply to Q22/Q23/Q24)
 
 | Step | Action | Gate | ETA |
 | --- | --- | --- | --- |
-| 1 | Receive Werbos response to T2 invalidation + 4-fn ODE ask. If code arrives: implement, run lepton scan + Q=0 ground state. If ODE-form only: implement benchmark 4-fn, calibrate to H/Q=1.6969, then run scans. If no response in ~24-48h: solo 4-fn implementation. | G1+G2 | 2026-05-20/21<br>• code → unblocks all<br>• ODE-form only → still need full scan code (~2 day)<br>• no response → fall back to T5 code (Path A) |
+| 1 | Receive Werbos reply on Q22/Q23/Q24. Most likely Q22 alone (Q_CS normalization) closes the 31× gap, but all three answers strengthen v6. | G1+G2 anchor | 24-48h post-email |
+| 2 | If Paul slips past ~48h: take DeepSeek up on its offer to write Python code directly — has Werbos's conventions in context. Cross-check v6 against its output. | fallback | 48-72h post-email |
+| 3 | If still stuck past ~96h: park M6, return to M5.4. M5 is SABER's primary track. | fallback | 96h+ |
 
-### Can run now (solo path, if Werbos slips)
+### v6 build sequence (triggered by Paul's reply)
 
-| Step | Action | Gate | ETA |
+| Step | Action | Gate | Estimate |
 | --- | --- | --- | --- |
-| 2 | Solo T5→code: implement 4-fn benchmark ODE in `sandbox_v4/`. Calibrate against H/Q = 1.6969 first; only proceed to lepton scan + Q=0 scan once anchored. Three gaps need empirical iter: ω in static ODE (try m_J² ← m_J² − ω² substitution); f(s) v5 vs benchmark form; toroidal R value (try R=1). | G1+G2 | 1-2 days |
-| 3 | After 4-fn anchored: run charged lepton scan over ω∈[0.5, 50] | G1 | +1 day post-anchor |
-| 4 | After 4-fn anchored: run Q=0 scan with Q_A≈0 constraint (the untested 3rd description from Q14) | G2 | +1 day post-anchor |
+| 1 | Fork v5 → `sandbox_v6/m6_v6_4fn_calibrated_bvp.py`. | — | 5 min |
+| 2 | Apply Q22 normalization fix (scalar factor on auxiliary integral state I, or on H prefactor). | — | 15 min |
+| 3 | Apply Q23 H-functional fix (kinetic coefficient + Lagrange-multiplier coefficient in A,J ODE corrections). | — | 15 min |
+| 4 | Apply Q24 warm-start (Paul's sample profile interpolated onto grid; replaces exp(-r) seed). | — | 15 min |
+| 5 | Re-converge target run. Expect H/Q = 1.6969 ± 0.001 at Q_CS=1, all fields ≤4 nodes. | G1+G2 anchor | 5 min solve |
+| 6 | Lepton scan ω ∈ [0.5, 50] with calibrated (m_J², λ_bench) fixed. Expected muon ω≈12.78 (1.1% gap target), tau ω≈40.7. | G1 | ~1 hour |
+| 7 | Q_A≈0 neutral chaoiton scan. Lands m_χ, m_J mediator mass, σ/m self-interaction for ApJ Section 4. | G2 | ~1 hour |
+| 8 | Gelfand-Fomin conjugate-point stability check. Confirms ground state vs excited. | G3 (empirical) | ~30 min |
+| 9 | Handoff (m_χ, m_J, σ/m, Ω_χh²) to Paul. Lift ApJ Zenodo upload hold. "Griesi & AI in prep" becomes a real citation. | — | done |
 
-### If G1 + G2 PASS (GO decision)
+**Total estimated time post-Paul-reply: 2-3 hours of solo work + solve runs.**
+
+### If G1 + G2 PASS (Taichi production GO)
 
 | Step | Action | ETA |
 | --- | --- | --- |
-| 4 | Scaffold M6 in Taichi: Vector(4) × 2 substrate (A, J); Lorenz constraint enforcer; Chern-Simons charge kernel; mirror M5's rendering pipeline. | post-M5.4 |
-| 5 | Gate 1 Taichi: Maxwell limit → A-field alone = standard EM | Week 1 of M6 build |
-| 6 | Gate 2 Taichi: charge quantization → Q[A,J] integer on seeded configs | Week 2 |
-| 7 | Gate 3 Taichi: chaoiton existence → localized time-periodic solution at same (g,λ,ω) as sandbox | Weeks 3-6 |
+| 1 | Scaffold M6 in Taichi: Vector(4) × 2 substrate (A, J); Lorenz constraint enforcer; Chern-Simons charge kernel; mirror M5's rendering pipeline. | post-M5.4 |
+| 2 | Gate 1 Taichi: Maxwell limit → A-field alone = standard EM | Week 1 of M6 build |
+| 3 | Gate 2 Taichi: charge quantization → Q[A,J] integer on seeded configs | Week 2 |
+| 4 | Gate 3 Taichi: chaoiton existence → localized time-periodic solution at same (g,λ,ω) as sandbox | Weeks 3-6 |
 
-### Parked (post-G1+G2)
+### Parked (post-G1+G2; future v7+ work)
 
 | Step | Action | Notes |
 | --- | --- | --- |
-| C | 3-body proton bound state | V(R) ~ -C/R⁶ classical 3-body problem; deferred |
+| C | Two-chaoiton Coulomb derivation (Duda critique #4) | Integrate H[Φ₁, Φ₂] for two topological charges at distance. New BVP scaffold. |
+| D | 3-body proton bound state | V(R) ~ -C/R⁶ classical 3-body problem; deferred |
+| E | Hopfion candidates for excited neutrino oscillation states | Liu et al. *Nature Physics* 2026 lab anchor; topology-as-particles frontier |
 
 ---
 
@@ -245,9 +297,10 @@ Highest-leverage closure: Q22-Q24 (Werbos reply) → v6 → Q20 (Duda #3).
 | --- | --- |
 | `sandbox_v1/` | 96-variant sweep, calibration, mass scan (wrong ODE) |
 | `sandbox_v2/` | IVP + BVP locked-ansatz attempts (superseded) |
-| `sandbox_v3/` | Lean ODE, neutral β, calibration (last completed) |
-| `sandbox_v4/` | T1 lepton scan (blocked, 2-fn wrong tool); T2 neutral ground state (negative); `diag_energy_functional`; T5 4-fn extracted; T6-T9 negative-result reference |
-| `sandbox_v5/` | `m6_v5_4fn_lambda_bvp.py` — Werbos algorithm: collocation BVP + Lagrange multiplier, status=0 converged on Q_CS=1 chaoiton |
+| `sandbox_v3/` | Lean ODE, neutral β, calibration (last completed pre-v4) |
+| `sandbox_v4/` | T1 lepton scan (blocked); T2 neutral ground state (negative); `diag_energy_functional`; T5 4-fn extracted; T6-T9 forward-IVP attempts — all negative; reference for definitive "forward-IVP wrong tool" result |
+| `sandbox_v5/` | `m6_v5_4fn_lambda_bvp.py` — Werbos's collocation BVP algorithm with Lagrange multiplier λ_LM. `solve_bvp.status=0` converged on Q_CS=1 chaoiton at ω=1.047, m_eff²=-0.596. H/Q=52.64 vs target 1.6969 (open: normalization gap). |
+| `sandbox_v6/` | PLANNED — `m6_v6_4fn_calibrated_bvp.py` (forks v5 + Q22/Q23/Q24 fixes from Paul's reply). Target: H/Q=1.6969, then lepton scan + Q_A≈0 DM scan. |
 
 **Theory papers:**
 
