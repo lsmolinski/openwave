@@ -249,6 +249,51 @@ Date       | Gate | Update
            |      | (c) Werbos's actual code.
            |      | Review of v2 paper sent ~4:30 PM same day.
            |      | Awaiting Werbos's follow-up.
+-----------|------|----------------------------------------------------------
+2026-05-20 | G2   | T9: Newton-residual two-stage shooter.
+  PM       |      | Built sandbox_v4/m6_v4_4fn_newton.py with
+           |      | scipy.optimize.differential_evolution (Stage 1
+           |      | global) + Nelder-Mead (Stage 2 local) over 6
+           |      | variables (m_J², λ_bench, |V₀|, |A₀|, |Q₀|, |J₀|)
+           |      | with helicity signs locked. Pre-scan: 2D grid
+           |      | at Werbos's exact |amps|=0.1, 324 points
+           |      | (m_J² ∈ [0.05, 10] log, λ ∈ [0.01, 10] log,
+           |      | r_max=15). RESULT: 0/324 reach r_max with peak<5.
+           |      | Max r_reached = 7.241 with peak=95 (catastrophic
+           |      | blowup). Wider scan 576 points (m_J² ∈ [0.01, 50],
+           |      | λ ∈ [0.001, 50], r_max=30): 0/576 reach r_max.
+           |      | Max r_reached = 8.06 with peak=98. Stage 1 6-var
+           |      | DE search (6528 evals): r_reached=8.4, Q_CS=58662
+           |      | — delayed-blow-up regime found, NOT bound state.
+           |      | DEFINITIVE NEGATIVE: forward-IVP from value-BC
+           |      | origin does NOT reach the Q_CS=1 chaoiton in any
+           |      | parameter region we have explored. Across 6
+           |      | independent attempts (T6/T6→A 1-eig/T6→A 2-eig/
+           |      | T7/T8/T9), no bound state found. Werbos's
+           |      | shooting algorithm is not forward-IVP — needs
+           |      | algorithmic clarification (most likely backward
+           |      | integration from K_0 asymptotic, OR BVP with
+           |      | Q_CS Lagrange multiplier, OR specific init
+           |      | profile shape, NOT just BC values). G2 path
+           |      | depends on Werbos's reply OR major BVP rework.
+2026-05-20 | TRIG | New paper arrived (12:53 PM): "The Neutral
+  PM       |      | Chaoiton: A Dark Matter Candidate from the
+           |      | Ouroboros Lagrangian" — ApJ-targeted compact
+           |      | dark matter paper, distinct from the broader
+           |      | Dark_Matter_in_Universe_v4 (Zenodo 20298669).
+           |      | Cites both prior depositions (v8 LoE @ 20313063
+           |      | and v4 DM @ 20298669). Acknowledgments thank
+           |      | Rodrigo Griesi for "independent numerical
+           |      | reproduction of the electron calibration and
+           |      | methodological dialogue on the asymmetric
+           |      | helicity structure required for Q_CS = 1."
+           |      | Reference [14]: "Griesi, R., & Anthropic AI
+           |      | 2026, in preparation (ground state computation)."
+           |      | Paul asked when to push a "TRULY new" Zenodo
+           |      | version of either paper — holds off pending
+           |      | our T9 / ground-state numbers. With T9 negative,
+           |      | the m_χ / m_J / σ/m numbers depend on resolving
+           |      | the shooting-algorithm question first.
 ```
 
 ---

@@ -192,11 +192,38 @@ T8    | Re-ran 4fn IVP, shoot, BVP scripts with Werbos's       | ⚠️ PARTIAL
       | collapses to (V,Q) sub bound state at m_J²=5.51        |
       | regardless of init. A,J drift to 0 without a BC        |
       | forcing them. 2-eigenvalue BVP: singular Jacobian.     |
-NEXT  | Wait for Werbos response to today's review reply.      | 🔶 WAITING
-      | The remaining open Q is the explicit shooting          |
-      | algorithm / Q_CS=1 constraint mechanism. With v2       |
-      | paper review feedback delivered, expect Werbos to      |
-      | follow up. If full code arrives, full unblock.         |
+T9    | 2026-05-20: Built sandbox_v4/m6_v4_4fn_newton.py.      | ❌ NEGATIVE
+(new) | Two-stage optimizer over 6 vars (m_J², λ, |V₀|, |A₀|,  |   DEFINITIVE
+      | |Q₀|, |J₀|) with helicity signs locked. Stage 1 DE     |
+      | global + Stage 2 Nelder-Mead local. Pre-scan: 2D grid  |
+      | at Werbos's exact |amps|=0.1 (324 pts, m_J²∈[0.05,10], |
+      | λ∈[0.01,10], r_max=15): 0/324 reach r_max with peak<5. |
+      | Max r_reached=7.24, peak=95. Wider scan (576 pts up to |
+      | m_J²=50, λ down to 0.001, r_max=30): 0/576, max        |
+      | r_reached=8.06. Stage 1 6-var DE (6528 evals):         |
+      | r_reached=8.4, Q_CS=58662 — delayed-blowup regime, not |
+      | a bound state. SIX independent attempts (T6/T6→A 1-eig |
+      | /T6→A 2-eig/T7/T8/T9) all confirm: Q_CS=1 chaoiton     |
+      | UNREACHABLE via forward-IVP from value-BC origin in    |
+      | any parameter region we have explored.                 |
+TRIG  | 2026-05-20 PM: Paul email — new compact ApJ paper      | ✅ NOTED
+(new) | "The Neutral Chaoiton: A Dark Matter Candidate from    |
+      | the Ouroboros Lagrangian" arrived. Distinct from v4 DM |
+      | (Zenodo 20298669); cites both v8 LoE (Zenodo 20313063) |
+      | and v4 DM. Acknowledges Griesi for helicity-structure  |
+      | dialogue. Reference [14] = "Griesi & AI in prep."      |
+      | Paul holds "TRULY new" Zenodo upload pending OUR T9 /  |
+      | ground-state numbers. With T9 negative, the m_χ + m_J  |
+      | + σ/m numbers in his Section 4 depend on first         |
+      | resolving the shooting-algorithm question.             |
+NEXT  | Email Paul v3: definitive 6-attempt negative + sharp   | 🔶 DRAFTING
+      | algorithmic question. Likely candidates to ask about:  |
+      | (a) backward integration from K_0 asymptotic at r→∞    |
+      | (b) BVP with Q_CS Lagrange multiplier                  |
+      | (c) tabulated init profile shape, not just BC values   |
+      | (d) multi-shot connection at intermediate r            |
+      | Hold any Zenodo upload of either paper until algorithm |
+      | clarified.                                             |
 ```
 
 ---

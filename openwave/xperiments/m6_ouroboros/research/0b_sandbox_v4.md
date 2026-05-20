@@ -1020,7 +1020,102 @@ But not sufficient               | All formulations we tried
                                  | This is genuine sub-physics.
 ```
 
-### Next action — wait for Werbos's response to today's email
+---
+
+### T9 — Newton-residual / two-stage shooter (2026-05-20 PM, DEFINITIVE NEGATIVE)
+
+Built `sandbox_v4/m6_v4_4fn_newton.py` after T8 closed with "helicity
+necessary but not sufficient." Design: two-stage optimizer over 6
+variables `(m_J², λ_bench, |V₀|, |A₀|, |Q₀|, |J₀|)` with helicity signs
+locked in evaluation wrapper (`V₀, Q₀ → +`; `A₀, J₀ → −`). Stage 1
+`differential_evolution` global search on a smooth blow-up-distance
+cost to find the bound-state basin. Stage 2 `Nelder-Mead` local polish
+on calibration cost `(H/Q − 1.6969)² + (Q_CS − 1)² + tail² + collapse
+penalties`. Pre-stage 2D grid scan at Werbos's exact amplitudes
+`|V|=|A|=|Q|=|J|=0.1`.
+
+**Pre-scan finding (324 points, m_J² ∈ [0.05, 10], λ ∈ [0.01, 10]
+log-spaced, r_max=15):**
+
+```text
+count(r_reached ≥ r_max - 0.5) :  0 / 324
+count(max_peak < 5)            :  0 / 324
+max r_reached observed         :  7.241  (at m_J²=1.13, λ=0.01)
+peak at that point             :  95.0   (catastrophic blow-up)
+```
+
+**Wider-scan finding (576 points, m_J² ∈ [0.01, 50], λ ∈ [0.001, 50]
+log-spaced, r_max=30):**
+
+```text
+count(r_reached ≥ r_max - 0.5) :  0 / 576
+count(max_peak < 5)            :  0 / 576
+max r_reached observed         :  8.062  (at m_J²=0.85, λ=0.001)
+peak at that point             :  98.4
+```
+
+**Stage 1 DE 6-variable search (popsize=20, maxiter=50, bounds m_J²,λ ∈
+[0.01, 10], amps ∈ [0.001, 1.0]):**
+
+```text
+nfev               :  6528
+best cost          :  493.4   (lower bound = 0 if r_reached = r_max)
+best r_reached     :  8.398   (vs r_max = 15)
+best θ*            :  m_J² = 0.404, λ_bench = 0.015,
+                      V₀ = +0.196, A₀ = -0.026,
+                      Q₀ = +0.006, J₀ = -0.004
+at θ*              :  Q_CS = 58662 (target 1), peak = 92.9,
+                      tail = 146.4, H = 1.2 × 10⁷
+```
+
+The 6-variable search slightly improved r_reached (8.4 vs 7.2 fixed amps)
+but found a delayed-blow-up regime, not a bound state. Allowing
+asymmetric amplitude *magnitudes* does not unlock the chaoiton.
+
+### T9 definitive finding
+
+Across **six independent attempts** (T6 IVP grid, T6→A 1-eigenvalue BVP,
+T6→A 2-eigenvalue BVP, T7 amplitude shoot, T8 helicity re-runs, T9
+pre-scan 324 pts + DE 6-var + wider-scan 576 pts), no parameter
+combination yields a localized solution with `peak < 5` reaching
+`r_max` under value-BC origin forward IVP. The Q_CS=1 chaoiton is
+**unreachable by forward-IVP shooting from origin BCs** within any
+parameter range we have explored.
+
+### Interpretation
+
+Possible explanations, ranked by likelihood:
+
+```text
+A | Werbos's "shooting method" is not forward-IVP from origin. He may   | most
+  | integrate inward from r=∞ with K_0(κr) asymptotics, or use a        | likely
+  | multi-shot connection at intermediate r, or fold Q_CS=1 in as a
+  | Lagrange multiplier inside a BVP collocation.
+B | The Q_CS=1 chaoiton has very narrow basin in 6-var space — our DE   | medium
+  | popsize=20 and 6500 evals didn't find it. A much larger search
+  | budget OR an analytical preconditioner is needed.
+C | The 4-fn benchmark ODE as we transcribed it has a subtle structural | medium
+  | error (sign in the (m_J²/2)·(Q² − J²) term, missing -f/r² piece for
+  | l ≠ 0 ansatz, wrong V·Q vs +V·Q cross term, etc.) that systematically
+  | prevents bound states from existing.
+D | The chaoiton truly does not exist as a static r-dependent solution; | unlikely
+  | it requires time-periodic ansatz coupling that the static benchmark
+  | ODE doesn't capture.
+```
+
+(C) is testable by re-deriving the ODE from the v5 Lagrangian (deferred —
+high-effort, low confidence we'd find an error Werbos missed). (D) is
+contradicted by Werbos's claim of a working calibration. (A) is by far
+the most productive next direction: ask Paul for algorithmic specifics.
+
+### T9 decision
+
+T9 is **CLOSED-NEGATIVE**. The systematic, multi-method evidence is
+strong enough to justify a sharp escalation to Paul: we have exhausted
+the natural solo approaches. The next email is a 1-screen note with the
+six-attempt summary and an unambiguous algorithmic question.
+
+### Next action — Werbos email v3
 
 Rodrigo's email (~5:00 PM 2026-05-19) asked for:
 
@@ -1092,6 +1187,25 @@ Q16 | What specific m_J² and λ_bench does     | v4 PM | NEW — surfaced by
     |                                         |       | answered. Ask
     |                                         |       | scheduled for
     |                                         |       | after T6+T7 attempt.
+Q17 | What is Werbos's shooting algorithm     | v4 PM | T9 CLOSED-NEGATIVE
+    | for Q_CS=1? Forward-IVP from origin     | 5-20  | (2026-05-20).
+    | does not reach a bound state across     |       | 6 independent
+    | (m_J², λ_bench, V₀, A₀, Q₀, J₀) at      |       | attempts found NO
+    | any tested values.                      |       | bound state with
+    |                                         |       | peak<5 reaching
+    |                                         |       | r_max. Werbos's
+    |                                         |       | algorithm cannot be
+    |                                         |       | forward-IVP. Need
+    |                                         |       | concrete algorithm
+    |                                         |       | description (most
+    |                                         |       | likely: backward
+    |                                         |       | from K_0 asymptotic,
+    |                                         |       | or 2-eigenvalue BVP
+    |                                         |       | with specific init
+    |                                         |       | profile shape, or
+    |                                         |       | Q_CS Lagrange
+    |                                         |       | multiplier in a
+    |                                         |       | collocation BVP).
 ```
 
 ### STILL OPEN-QUESTIONS
