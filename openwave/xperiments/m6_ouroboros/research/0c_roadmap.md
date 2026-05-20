@@ -216,14 +216,36 @@ TRIG  | 2026-05-20 PM: Paul email — new compact ApJ paper      | ✅ NOTED
       | ground-state numbers. With T9 negative, the m_χ + m_J  |
       | + σ/m numbers in his Section 4 depend on first         |
       | resolving the shooting-algorithm question.             |
-NEXT  | Email Paul v3: definitive 6-attempt negative + sharp   | 🔶 DRAFTING
-      | algorithmic question. Likely candidates to ask about:  |
-      | (a) backward integration from K_0 asymptotic at r→∞    |
-      | (b) BVP with Q_CS Lagrange multiplier                  |
-      | (c) tabulated init profile shape, not just BC values   |
-      | (d) multi-shot connection at intermediate r            |
-      | Hold any Zenodo upload of either paper until algorithm |
-      | clarified.                                             |
+EMAIL | Email Paul ~1:00 PM with definitive T9 negative +      | ✅ SENT
+(out) | sharp algorithmic ask listing 4 candidate algorithms.  |
+DUDA  | Public reply 2026-05-20 ~1:15 PM on models-of-particles| ⚠️ NOTED
+(in)  | list to Paul's v8 LoE Zenodo announce. 4 substantive   |
+      | technical critiques: (1) G_μν undefined; (2) f(J·J)    |
+      | unspecified; (3) construction not shown for electron;  |
+      | (4) two-charge Coulomb derivation absent. Closing:     |
+      | "LLM-generated word salad". (3) is what T9 just        |
+      | demonstrated empirically — Werbos has the algorithm    |
+      | offline but never published it. Now-resolved internally|
+      | (see below); still unresolved in any public document.  |
+EMAIL | Werbos algorithm reply ~2:00 PM via DeepSeek. Confirms | ✅ RECEIVED
+(in)  | forward-IVP doesn't work. Specifies algorithm:         |
+      | - Collocation BVP via scipy.integrate.solve_bvp        |
+      | - Q_CS=1 as INTEGRAL CONSTRAINT (not BC)               |
+      | - Two free eigenvalues: ω and Lagrange multiplier λ    |
+      | - Robin BCs at R_max matching K_0(κr) decay            |
+      | - Origin BCs: derivative=0 only; values free           |
+      | - Initial profile: exp(-r) decay shapes with helicity  |
+      |   signs (V,Q=+0.1·exp(-r); A,J=-0.1·exp(-r))           |
+      | - ω=λ=1 initial guess; Gelfand-Fomin post-convergence  |
+      | Method is fundamentally different from any of T6-T9.   |
+      | Should be implementable in scipy.                      |
+NEXT  | T10 — sandbox_v4/m6_v4_4fn_lambda_bvp.py implementation| 🔶 PLANNED
+      | of Paul's actual algorithm. Hold M5 return for ~1 day  |
+      | to give M6 one focused attempt with the correct method.|
+      | If T10 converges → lepton scan + Q_A≈0 DM scan land    |
+      | quickly afterward. If T10 fails → sharper escalation   |
+      | with much more specific Paul ask (likely about λ-      |
+      | corrections to ODEs or sample profile share).          |
 ```
 
 ---

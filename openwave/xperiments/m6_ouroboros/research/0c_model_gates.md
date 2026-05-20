@@ -294,6 +294,87 @@ Date       | Gate | Update
            |      | our T9 / ground-state numbers. With T9 negative,
            |      | the m_χ / m_J / σ/m numbers depend on resolving
            |      | the shooting-algorithm question first.
+-----------|------|----------------------------------------------------------
+2026-05-20 | TRIG | Duda public reply on models-of-particles list
+  ~1:15 PM |      | (responding to v8 LoE Zenodo 20313063 announce):
+           |      | Four substantive technical critiques:
+           |      | (1) G_μν has no microscopic definition — the G
+           |      |     curl tensor in -G^μν G_μν is just symbolically
+           |      |     given; J itself is a primary undefined field.
+           |      |     Same "single-field ontology" objection Duda
+           |      |     raised 2026-05-13 ("Fundamental model should
+           |      |     have a single field").
+           |      | (2) f(J_μ J^μ) is unspecified in the LoE paper.
+           |      |     "is it square? Higgs?" The Numerical Benchmark
+           |      |     sub-document does pin f(s) = ½ m_J² s + ¼ λ s²,
+           |      |     but the standalone LoE paper leaves it open.
+           |      | (3) The topological charge Q = (1/4π²)∫ε^μνρσ F G dx
+           |      |     "clearly G is crucial here, you don't specify".
+           |      |     For an electron, the paper asserts H/Q=1.6969 but
+           |      |     doesn't show the field configuration (ansatz +
+           |      |     energy minimization). T6-T9 confirm empirically
+           |      |     this construction is not available via forward IVP.
+           |      | (4) For Coulomb V~1/r between two charges, "you need
+           |      |     to integrate Hamiltonian for two topological
+           |      |     charges in distance" — Werbos asserts Yukawa
+           |      |     far-field but doesn't derive two-chaoiton
+           |      |     interaction. v5 §6 has the form V~-C·exp(-m_J r)/r
+           |      |     but as ansatz, not derived from H[Φ_1, Φ_2].
+           |      | Closing: "I still see LLM-generated word salad just
+           |      | to look nice for the user" — tonally harsh but
+           |      | technically the same construction critique. Consistent
+           |      | with Duda's 2026-05-08 "AI slop on zenodo" warning.
+           |      | Our internal read: (1) and (4) are structural; (2) is
+           |      | editorial gap fixable in next LoE revision; (3) is
+           |      | what T9 just demonstrated empirically — Werbos has
+           |      | the algorithm offline but had not described it in
+           |      | the canonical paper. Now-resolved-internally with
+           |      | Paul's 2:00 PM algorithm reply (see below); still
+           |      | unresolved in any public-facing Werbos document.
+-----------|------|----------------------------------------------------------
+2026-05-20 | REPLY| Werbos algorithm clarification (2:00 PM via
+  ~2:00 PM |      | DeepSeek). Response to our T9 definitive-negative
+           |      | + algorithmic ask. Key acknowledgments and content:
+           |      | - "forward shooting from the origin with decay
+           |      |   conditions at infinity does NOT work for this
+           |      |   system. That is consistent with our experience."
+           |      |   → confirms our T6-T9 negative result.
+           |      | - Method: collocation / finite-difference BVP via
+           |      |   `scipy.integrate.solve_bvp` or `scipy.optimize.root
+           |      |   (method='lm')`. Nonlinear eigenvalue problem with
+           |      |   Q_CS=1 as INTEGRAL CONSTRAINT (not BC).
+           |      | - Two free eigenvalues: ω and Lagrange multiplier λ
+           |      |   (from H' = H - λ·Q). Origin BCs are derivative=0
+           |      |   only (V'(0)=A'(0)=Q'(0)=J'(0)=0); values V(0),
+           |      |   A(0), Q(0), J(0) FREE.
+           |      | - R_max BCs are ROBIN (V'+k·V=0 etc., not zero
+           |      |   Dirichlet) matching K_0(κr) exponential decay.
+           |      |   k = √(ω²-m_J²), initial approximation k = ω.
+           |      | - Initial profile guess: V=+0.1·exp(-r), A=-0.1·exp(-r),
+           |      |   Q=+0.1·exp(-r), J=-0.1·exp(-r). Werbos's "V(0)=0.1"
+           |      |   was an init-profile amplitude, NOT a value BC.
+           |      | - Post-convergence: Gelfand-Fomin conjugate-point
+           |      |   test on second variation (per Lean theorem).
+           |      | - DeepSeek offered to write Python; Paul deferred
+           |      |   to us ("I suspect you want Claude involved").
+           |      | NEXT: T10 implementation — solve_bvp with Paul's
+           |      | recipe. Hold M5 return briefly, give M6 one more
+           |      | focused attempt with the correct method.
+-----------|------|----------------------------------------------------------
+2026-05-20 | NEXT | T10 plan: m6_v4_4fn_lambda_bvp.py
+  PM       |      | - State: (V, V', A, A', Q, Q', J, J', I) size 9
+           |      |   (I = accumulated Q_CS integral for closure)
+           |      | - Free params: ω, λ (Lagrange multiplier)
+           |      | - ODEs Paul-as-written (no explicit λ-terms in A, J;
+           |      |   if singular, retry with λ-corrections from
+           |      |   δQ_CS/δA = ∂_r J formulation)
+           |      | - BCs: V'=A'=Q'=J'=0 at r=0 (5 incl. I(0)=0);
+           |      |   Robin V'+k·V=0 etc. at R_max (4); I(R_max)=1 (1).
+           |      |   Add normalization (e.g. V(0)=0.1) if 1 BC short.
+           |      | - Init: exponential decay profiles, ω=λ=1
+           |      | - Grid: 200 points non-uniform on [R_MIN, 20-30]
+           |      | - Acceptance: |H/Q-1.6969|<0.001, |Q_CS-1|<0.01,
+           |      |   tail<0.05, nodes≤4, no blowup. Same T9 criterion.
 ```
 
 ---

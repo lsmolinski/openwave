@@ -1275,3 +1275,154 @@ localization      |              |    |    |    |    | T3 primary fix; T1
 Active question count at start of v4: 3 IMMEDIATE (Q12, Q13, Q14) + 4 STILL OPEN (Q2, Q3, Q6, Q8) = **7 load-bearing**.
 
 The single highest-value action: run Track 1 (lepton scan) tomorrow. If our 3 lowest stable ω match leptons within Werbos's 4-6% gap claim, Q2 is effectively resolved empirically — the framework's discrete spectrum claim has direct numerical backing.
+
+---
+
+### Duda public reply on models-of-particles (2026-05-20 ~1:15 PM)
+
+Duda responded on the public list to Paul's announcement of v8 LoE
+(Zenodo 20313063). Four substantive technical critiques, plus a tonal
+"LLM-generated word salad" closing.
+
+```text
+Critique                                | Internal verdict
+----------------------------------------|------------------------------------
+G_μν has no microscopic definition.     | RIGHT. G = ∂μ J ν − ∂ν J μ is curl of
+"in your Lagrangian I see EM term, but  | J, but J itself is a primary
+then G without explanation"             | undefined vector field. Same single-
+                                        | field-ontology objection Duda
+                                        | raised 2026-05-13.
+f(J μ J^μ) unspecified.                 | RIGHT but EDITORIAL. Numerical
+"is it square? Higgs?"                  | Benchmark sub-doc pins f(s) =
+                                        | ½ m_J² s + ¼ λ s². LoE paper as
+                                        | standalone leaves it open. Fixable
+                                        | in next LoE revision.
+Topological charge construction.        | RIGHT, AND DEEPER. Paper asserts
+"Clearly G is crucial here, you don't   | H/Q=1.6969 but doesn't show the
+specify... for e.g. electron you need   | field configuration (ansatz +
+to propose some field configuration —   | energy minimization). T6-T9
+e.g. by ansatz, minimizing energy"      | empirically confirm: the
+                                        | construction is offline-only in
+                                        | Werbos's workflow. Now-resolved
+                                        | internally by Paul's 2:00 PM
+                                        | algorithm reply; still unresolved
+                                        | in any public Werbos document.
+Two-charge Coulomb derivation.          | RIGHT. v5 §6 has V~-C·exp(-m_J r)/r
+"For Coulomb V ~ 1/r you need to        | Yukawa as ansatz, not derived from
+integrate Hamiltonian for two           | a 2-chaoiton Hamiltonian. The
+topological charges in distance"        | falsifiability argument (Bullet
+                                        | Cluster, halo cores) keys on this
+                                        | being a real derivation.
+"LLM-generated word salad"              | Tonally harsh. Technically the
+                                        | same construction critique;
+                                        | consistent with 2026-05-08 anti-
+                                        | AI-slop warning. Doesn't change
+                                        | what we have to do.
+```
+
+### Werbos algorithm clarification (2026-05-20 ~2:00 PM via DeepSeek)
+
+Reply to our T9 definitive-negative + algorithmic ask. Confirms our
+diagnosis and supplies the missing algorithm.
+
+Key acknowledgments:
+
+```text
+"forward shooting from the origin with decay conditions at infinity does
+ NOT work for this system. That is consistent with our experience."
+```
+
+Six-attempt negative result is consistent with Werbos's own development
+history; the canonical paper (v8 LoE) doesn't describe the actual method.
+
+### The actual method (Paul, verbatim summary)
+
+```text
+Method                                  | Detail
+----------------------------------------|------------------------------------
+Solver                                  | Collocation / finite-difference BVP
+                                        | via scipy.integrate.solve_bvp OR
+                                        | scipy.optimize.root method='lm'.
+Topology of the problem                 | Nonlinear eigenvalue problem with
+                                        | Q_CS = 1 as INTEGRAL CONSTRAINT
+                                        | (not a boundary condition).
+Free eigenvalues (2)                    | ω (the chaoiton frequency)
+                                        | λ (Lagrange multiplier from
+                                        |    H' = H - λ·Q)
+Origin BCs (4)                          | V'(0) = A'(0) = Q'(0) = J'(0) = 0
+                                        | (derivative-only; values free)
+R_max BCs (4)                           | Robin: V'(R_max) + k·V(R_max) = 0
+                                        | (same for A, Q, J).
+                                        | k = √(ω² - m_J²) (approx k = ω
+                                        | for first iteration)
+Integral constraint (1)                 | Q_CS = ∫ f(V,A,Q,J,r) dr = 1.
+                                        | Approximate via trapezoidal rule
+                                        | over the grid.
+Initial profile (CRITICAL)              | V(r) = +0.1·exp(-r)
+                                        | A(r) = -0.1·exp(-r)
+                                        | Q(r) = +0.1·exp(-r)
+                                        | J(r) = -0.1·exp(-r)
+                                        | ω = 1.0, λ = 1.0 initial guess.
+                                        | NOT V(0)=0.1 as a boundary value;
+                                        | these are PROFILE SHAPES seeding
+                                        | the right basin.
+Grid                                    | N=200 grid points on [0, R_max],
+                                        | R_max ~ 20-30. Non-uniform with
+                                        | more points near 0.
+Stability check (post-convergence)      | Gelfand-Fomin conjugate-point test
+                                        | on second variation (per Lean
+                                        | theorem ≤4-node regularity).
+```
+
+Two ambiguities remaining in Paul's description:
+
+```text
+Ambiguity                               | How we'll handle
+----------------------------------------|------------------------------------
+Does λ enter the ODEs explicitly?       | First attempt: ODEs as written
+Paul wrote the unconstrained Δ_r        | (no explicit λ-term). λ appears
+equations; if H' = H - λ·Q is the       | only in the residual-closure via
+constrained action, the EL equations    | the integral constraint. If BVP
+would have λ·δQ_CS/δfield terms in      | rank-deficient, add λ-corrections
+the A and J equations.                  | derived from H' EL: A equation
+                                        | gains -λ·∂_r J, J gains +λ·∂_r A.
+BC-count closure                        | Paul says 8 BCs + 1 integral = 9.
+8 origin + Robin + 1 integral = 9       | solve_bvp with 8-dim state + 2
+conditions; 8 state + 2 params needs    | params needs 10 BCs. Add a
+10. Where's the 10th?                   | normalization (e.g. V(0)=0.1
+                                        | OR ∫|V|²r dr = 1) as the 10th.
+```
+
+### T10 plan — sandbox_v4/m6_v4_4fn_lambda_bvp.py
+
+```text
+Step | Action                              | Expected outcome
+-----|-------------------------------------|------------------------------
+1    | Build script using scipy.integrate. | First-attempt convergence
+     | solve_bvp with state size 9 (the 8  | check.
+     | fields + I = accumulated Q_CS).     |
+     | Free params: ω, λ. Init: Paul's     |
+     | exponential profiles.               |
+2    | Add Robin BCs at R_max with k = ω   | If converges → check
+     | as first approximation. Then iterate| H/Q = 1.6969, Q_CS = 1.
+     | k = √(ω²-m_J²) once ω is solved.    |
+3    | Test ODEs Paul-as-written first;    | If singular Jacobian, fall
+     | add λ-corrections (-λ·∂_r J in A    | back to derived EL form.
+     | equation, +λ·∂_r A in J equation)   |
+     | only if needed.                     |
+4    | Normalization closure: V(0) = 0.1   | Removes 1 DOF and gives the
+     | as the 10th BC. Werbos's "0.1" can  | missing BC.
+     | be treated as a normalization, not  |
+     | a free amplitude.                   |
+5    | Acceptance: same T9 criterion       | Pass → calibration anchored.
+     | (|H/Q-1.6969|<0.001, |Q_CS-1|<0.01, | Move to lepton scan + Q_A≈0
+     | tail<0.05, nodes≤4).                | DM scan.
+6    | If T10 also fails: capture failure  | This would be a much sharper
+     | mode for one more targeted Paul ask | escalation than T9 — would
+     | (probably about the λ-modification  | likely warrant Paul writing
+     | of the ODEs or about a sample full  | sample code himself.
+     | converged profile he could share).  |
+```
+
+Time budget: ~2-4 hours to first BVP attempt; ~1 day to full
+calibration + post-pass scans if T10 converges first try.
