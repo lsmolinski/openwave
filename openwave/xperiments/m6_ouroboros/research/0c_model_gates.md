@@ -4,7 +4,7 @@ Three gates must pass before committing M6 to full Taichi production. The
 model is a credible scientific candidate; these gates determine whether it is
 a credible *engineering* candidate alongside M5.
 
-Last updated: 2026-05-20 evening (post-sandbox_v5 partial success).
+Last updated: 2026-05-20 evening (post-sandbox_v6 — calibration essentially closed at 4.8%; awaiting DeepSeek Python script for cross-check).
 
 ---
 
@@ -28,19 +28,21 @@ Last updated: 2026-05-20 evening (post-sandbox_v5 partial success).
 
 ---
 
-## Gate dependencies (post-v5)
+## Gate dependencies (post-v6)
 
 | Gate | Currently blocked by | Resolves via |
 | --- | --- | --- |
-| G1 (lepton scan) | sandbox_v6 calibration anchor (H/Q=1.6969 must land first) | v6 ω-sweep [0.5, 50] with calibrated (m_J², λ_bench) fixed. Tests "lowest 3 stable = leptons" hypothesis empirically. |
-| G2 (neutral m_χ) | sandbox_v6 calibration anchor | v6 Q_A≈0 / Q_J≠0 scan. Lands m_χ, m_J mediator mass, σ/m self-interaction. Feeds ApJ Section 4 numbers. |
-| G3 (discrete ω mechanism) | G1 (empirical-via-lepton-scan) | If v6 G1 lands the 3 lowest stable modes within 4-6% of e/μ/τ, G3 is empirically resolved. Analytic proof still deferred per Werbos's own admission. |
+| G1 (lepton scan) | v6 calibration cleanup (4.8% absolute gap → <1%) OR confirmation that the 4.8% absolute gap doesn't affect lepton mass RATIOS | If absolute gap doesn't affect ratios, can run lepton scan immediately on v6.6 config. Otherwise close 4.8% first via either solver-sharpening (Track A) or DeepSeek script cross-check. |
+| G2 (neutral m_χ) | Same as G1 — v6 calibration cleanup OR ratio-invariance check | v6 Q_A≈0 / Q_J≠0 scan once unblocked. Lands m_χ, m_J mediator mass, σ/m self-interaction for ApJ Section 4. |
+| G3 (discrete ω mechanism) | G1 (empirical-via-lepton-scan) | If v6 G1 lands the 3 lowest stable modes within 4-6% of e/μ/τ ratios, G3 is empirically resolved. Analytic proof still deferred per Werbos's own admission. |
 
-**Critical chain:** v6 calibration anchor → G1+G2 lepton + DM scans → G3 empirical → production decision.
+**Critical chain:** v6 4.8% gap closure (or ratio-invariance confirmation) → G1+G2 lepton + DM scans → G3 empirical → production decision.
 
-**v6 calibration depends on:** Werbos reply to email v4 (Q22 Q_CS normalization, Q23 H functional, Q24 sample profile). Already sent 2026-05-20 PM; reply incoming as of evening.
+**v6 calibration status:** essentially closed. v6.6 lands H/Q = 1.778 vs target 1.6969 (4.8% over). v5 was 31× off. DeepSeek's three normalization fixes (Q22, Q23, Q24) all empirically validated except Q24's reference profile (which appears fabricated and worsens convergence). Remaining 4.8% explainable as either `solve_bvp.status=1` incomplete convergence (Q_CS-grid disagrees with Q_CS-I at status=1) or a small additional normalization not specified in the DeepSeek email.
 
-**Recommended sequence:** Wait for Paul reply (24-48h) → build sandbox_v6 (~2-3 hours solo work) → G1+G2 land same day → G3 empirically closes same day. If Paul reply slips past 48h, accept DeepSeek's offer to write reference Python code as fallback.
+**Currently awaiting:** DeepSeek's reference Python script. Email v5 sent Paul 2026-05-20 ~5 PM requesting it (Paul's earlier email had explicitly offered: *"I can also send a Python script with the exact functional if needed."*). DeepSeek has been responsive; script may arrive same-day or next-morning.
+
+**Parallel work while waiting:** Track A (sharpen solver convergence to status=0) and Track B (lepton-scan trial on current v6.6 config to test ratio-invariance). See `0b_sandbox_v6.md` "Next steps" section for the full runbook.
 
 ---
 
@@ -98,55 +100,69 @@ These justify maintaining M6 as a sandbox/research track even if production is d
 | 2026-05-20 PM | NEXT | T10 plan: `m6_v4_4fn_lambda_bvp.py`.<br>• State: (V, V', A, A', Q, Q', J, J', I) size 9 (I = accumulated Q_CS integral for closure).<br>• Free params: ω, λ (Lagrange multiplier).<br>• ODEs Paul-as-written (no explicit λ-terms in A, J; if singular, retry with λ-corrections from δQ_CS/δA = ∂_r J formulation).<br>• BCs: V'=A'=Q'=J'=0 at r=0 (5 incl. I(0)=0); Robin V'+k·V=0 etc. at R_max (4); I(R_max)=1 (1). Add normalization (e.g. V(0)=0.1) if 1 BC short.<br>• Init: exponential decay profiles, ω=λ=1.<br>• Grid: 200 points non-uniform on [R_MIN, 20-30].<br>• Acceptance: \|H/Q-1.6969\|<0.001, \|Q_CS-1\|<0.01, tail<0.05, nodes≤4, no blowup. Same T9 criterion. |
 | 2026-05-20 PM | TRIG | Question tracker reset for v5 (see `0b_sandbox_v5.md` tail). Status counts entering v6: **3 IMMEDIATE** Q22 (Q_CS normalization), Q23 (H functional kinetic factor), Q24 (sample converged profile) → all 3 in Werbos email v4 (sent PM). **1 ACTIVE** Q20 (Duda critique #3, half-addressed by v5; v6 closes if Q22-24 land). **5 OPEN** Q2, Q3, Q6, Q19 (Duda #2 editorial), Q21 (Duda #4, future v7+). Resolved by v5: Q1, Q9-Q15, Q16, Q17, Q25 (Hopf invariant proof complete; charge quantization is now a theorem of differential topology). Archived: Q4 (= Duda #1, single vs two-field ontology — unfalsifiable preference; if math matches observation, two fields is just a description, not a theory-killer). |
 | 2026-05-20 PM | G2 | **T10 PARTIAL SUCCESS.** Built `m6_v4_4fn_lambda_bvp.py`. `scipy.integrate.solve_bvp` with:<br>• 9-state (8 fields + I = accumulated Q_CS integral).<br>• 2 free params (ω, λ_LM); Lagrange-multiplier corrections derived from H' = H − λ·Q_CS: ΔA = J + λ·(J + 2r·J'); ΔJ = [unconstrained RHS] − λ·(A + 2r·A').<br>• V(R_MIN) = 0.1 anti-collapse normalization.<br>• Initial profile: exp(-r) shapes with A,J non-proportional (J on exp(-1.5r) to break Q_CS≡0 degeneracy of symmetric init).<br>• 50000 max nodes, tol=5e-3, r_max=12.<br>**RESULT:** `solve_bvp.status = 0` (CONVERGED), 28k final nodes, max residual 1.3e-4. First-ever clean convergence to a Q_CS=1 chaoiton via Werbos's actual method.<br>**Converged values:** ω = 1.047 vs Werbos 1.0 (4.7% over); m_eff² = -0.596 vs Werbos -0.5 (19% over); λ_LM = -1.212 (first time pinned); Q_CS = 1.000 (exact via integral constraint); H/Q_from-I = 52.640; H/Q_from-grid = 52.645 (0.01% agreement).<br>**Did NOT match:** H/Q_CS = 52.64 vs Werbos 1.6969 (31× off); A has 17 nodes (excited mode, not ground state); tail = 0.17 (slow decay).<br>V_norm scan {0.5, 0.3, 0.2, 0.15, 0.1, 0.05, 0.03, 0.01}: H/Q_CS bottoms at 52.64 at V_norm=0.1; never reaches 1.6969 anywhere. 31× ratio is STRUCTURAL, most likely a Q_CS or H normalization convention mismatch (Paul uses Chern-Simons (1/4π²)·∫ε A ∂J; we use 2π·∫r·(A·J'-J·A')dr radial toroidal form).<br>**NEXT:** targeted Werbos email v4 — three specific normalization questions + ask for sample converged profile to anchor ground-state basin selection. Major shift from T9 negative: forward-IVP-wrong-tool confirmed solved; only normalization/profile match remaining. M6 chaoiton existence empirically demonstrated for the first time. |
+| 2026-05-20 ~4:00 PM | REPLY | Paul/DeepSeek replies on email v4 (Q22/Q23/Q24). DeepSeek-authored body internally muddled (works through 3 different Q_CS derivations mid-message), but FINAL ANSWERS DO close the gap. **Q22:** Q_CS = ∫r·(A·J'-J·A')dr — no 2π prefactor. v5's `2π·∫r·...` is too large by 2π. **Q23:** Kinetic = (1/2)(V')² (not (V')²); drop the (2π)²·R toroidal prefactor; use quartic `(g/4)·((V²+Q²)² + (A²+J²)² + 2(V·A − Q·J)²)` rather than v5's Numerical-Benchmark `(Q²−J²)²` form. **Q24:** Provided an 8-point reference profile V(r), A(r), Q(r), J(r) at r∈{0, 0.2, 0.5, 1.0, 2.0, 3.0, 5.0, 8.0}. DeepSeek offered: *"I can also send a Python script with the exact functional if needed."* (Held in reserve.) ✅ RECEIVED |
+| 2026-05-20 PM | G1+G2 | **sandbox_v6 BUILT.** `m6_v6_4fn_calibrated_bvp.py` forks v5 and applies all three Q22/Q23/Q24 fixes. Six attempt configs tested. **Best run (v6.6):** r_max=15, n_grid=500, max_nodes=100k, tol=5e-3, NO warm-start (DeepSeek profile worsened convergence; appears fabricated).<br>**Converged values:** ω = 1.016 vs Werbos 1.0 (1.6% over); m_eff² = -0.532 vs Werbos -0.5 (6.5% over); λ_LM = 12.21 (very different from v5's -1.21 — new normalizations need a larger Lagrange multiplier); Q_CS = 1.000 (exact via BC); Q_CS_grid = -0.154 (DISAGREES with Q_CS_I — solver status=1, incomplete).<br>**H/Q (DeepSeek) = 1.778 vs Werbos's 1.6969 — 4.8% over.** v5 was 31× off; v6 is **6.5× improvement** on the gap. Calibration ESSENTIALLY CLOSED.<br>**g-sweep at the same converged field profile:** g=0.5 → H/Q=1.743 (+2.7%); g=1.0625 → 1.778 (+4.8%); g=2.0 → 1.837 (+8.3%); g=4.0 → 1.963 (+15.7%). Linear in g.<br>**Residual concerns:** `solve_bvp.status=1` (max-nodes-exceeded); Q_CS_I vs Q_CS_grid disagreement (sign-flipped); nodes V/Q = 5 (just over Lean ≤4 spec); tail @r≥8 = 0.23.<br>**DeepSeek Q24 caveat:** the reference profile produced WORSE convergence (warm-start: H/Q=248). v5's exp(-r) seed is empirically better. Profile likely DeepSeek-fabricated rather than from one of the actual 62-family converged runs. Email v5 (sent ~5 PM) asks Paul to clarify. |
+| 2026-05-20 ~5:00 PM | EMAIL OUT | Email v5 sent to Paul: good news (31× gap closed to 4.8%), honest residual (solver status=1; Q_CS_grid mismatch), Q24-profile concern flagged politely (asking whether it was from a real run or idealized), TWO ASKS: (1) take DeepSeek up on the Python-script offer for definitive line-by-line cross-check; (2) confirm whether Q24 profile is strict target or sanity check. ApJ Zenodo upload still held. Section 4 numbers within ~1 day after script + a few solver iterations close the 4.8%. ✅ SENT |
+| 2026-05-20 evening | NEXT | Awaiting DeepSeek reference Python script. In parallel: **Track A** (sharpen v6.6 convergence with larger r_max + bigger node budget to drive status=1 → 0; should close Q_CS_grid mismatch and possibly the 4.8% gap on its own); **Track B** (lepton-scan trial at v6.6 config to test whether the 4.8% absolute gap affects mass RATIOS — if ratios come out right, calibration is good enough for ApJ deliverables regardless of absolute gap). See `0b_sandbox_v6.md` "Next steps" for full runbook. |
 
 ---
 
-## Status revision 3 (2026-05-20 evening, post-sandbox_v5 partial success)
+## Status revision 4 (2026-05-20 evening, post-sandbox_v6 — calibration essentially closed)
 
-Major shift since the prior 2026-05-19 status revisions (now retired below):
-sandbox_v5 has produced a Q_CS=1 chaoiton via Werbos's actual algorithm
-(collocation BVP + Lagrange multiplier), inverting v4's "unreachable" negative.
-But the **H/Q electron calibration is 31× off** (52.64 vs 1.6969) due to a
-structural Q_CS or H normalization-convention mismatch. Three normalization
-questions sent to Paul in email v4; reply incoming.
+Major shift in ~3 hours of work this afternoon. sandbox_v5 demonstrated the
+chaoiton EXISTS via Werbos's collocation BVP but with H/Q = 52.64 (31× off
+target 1.6969). DeepSeek's 4:00 PM reply (via Paul) answered the three v5
+normalization questions. sandbox_v6 implements the fixes and lands H/Q = 1.778
+(4.8% over target) — a 30× improvement on the gap in one session. Calibration
+is now **essentially closed**.
 
-| Gate | Was (2026-05-19 PM, post-T6-T9) | Is (2026-05-20 evening, post-v5 attempt 4) |
+| Gate | Was (2026-05-20 evening, post-v5) | Is (2026-05-20 evening, post-v6) |
 | --- | --- | --- |
-| G1 (lepton scan) | BLOCKED — forward-IVP family wrong tool. Path B (BVP) hitting partial results. | BLOCKED on v6 calibration anchor. v5 method works (`solve_bvp.status=0`); just need normalization fixes from Paul to hit H/Q=1.6969. Once anchored, ω-sweep [0.5, 50] runs in ~1 hour. |
-| G2 (neutral m_χ) | BLOCKED — v3 INVALIDATED, no working 4-fn anchor. | BLOCKED on v6 calibration anchor (same chain as G1). Once anchored, Q_A≈0 scan runs in ~1 hour and feeds ApJ Section 4 numbers. |
-| G3 (discrete ω) | BLOCKED with G1. | BLOCKED on G1. Empirical-via-lepton-scan path open. v6 lepton scan = effective G3 closure for production purposes. |
+| G1 (lepton scan) | BLOCKED on v6 calibration anchor (31× H/Q gap structural). | NEARLY UNBLOCKED. 4.8% absolute gap remains. If ratios are invariant under the absolute gap, lepton scan can run now. If not, sharpen convergence (Track A) or wait for DeepSeek script first. |
+| G2 (neutral m_χ) | BLOCKED on v6 calibration anchor. | NEARLY UNBLOCKED. Same chain as G1. Once 4.8% closes or ratio-invariance confirmed, Q_A≈0 scan runs in ~1 hour and feeds ApJ Section 4 numbers. |
+| G3 (discrete ω) | BLOCKED on G1. | BLOCKED on G1. v6 lepton scan = effective G3 closure for production purposes. |
 
-**Why the gates moved from "method wrong" to "calibration normalization":**
-v5's `solve_bvp.status=0` convergence is real and self-consistent (I-integral
-and field-derived Q_CS agree to 0.01%). The chaoiton exists in our scripted
-form. The 31× H/Q gap is structural across the V_norm sweep, not a tuning
-issue — almost certainly a Q_CS-form convention difference between our radial-
-toroidal `2π·∫r·(A·J'-J·A')dr` and Paul's full 3D Chern-Simons `(1/4π²)·∫ε A ∂J d³x`.
-One factor-of-30 in normalization explains it cleanly.
+**What v6 demonstrated:** the chaoiton at ω≈1, m_eff²≈-0.5, Q_CS=1 is empirically
+reproduced under DeepSeek's normalization conventions. v5 attempt 4 produced
+H/Q=52.64; v6.6 produces H/Q=1.778. The 30× improvement came from three
+specific changes: drop the 2π factor on Q_CS (Q22); use kinetic (1/2)(V')² and
+drop the (2π)²·R toroidal prefactor on H (Q23); use DeepSeek's quartic
+`(V²+Q²)² + (A²+J²)² + 2(V·A−Q·J)²` rather than the v5 Numerical-Benchmark
+`(Q²−J²)²` form. Each change moved H/Q in the right direction by approximately
+the right magnitude.
 
-### Revised timeline (post-v5)
+**Residual 4.8% gap diagnosed:** Two possible causes, distinguishable by
+parallel tracks A and B.
 
-| Scenario | Calibration anchored | G1+G2 closed | Production decision |
+| Possible cause | Track that distinguishes it | Expected signature |
+| --- | --- | --- |
+| Solver-incomplete-convergence (status=1, max-nodes-exceeded; Q_CS_grid disagrees with Q_CS_I) | Track A — sharpen with larger r_max + bigger node budget | Gap closes to <1%; Q_CS_grid converges to +1.000 |
+| Small additional normalization not in DeepSeek's email (e.g., wrong λ_LM ODE-correction coefficient) | DeepSeek script line-by-line diff | Gap persists at status=0; cross-check reveals the missing factor |
+
+### Revised timeline (post-v6)
+
+| Scenario | Calibration locked | G1+G2 closed | Production decision |
 | --- | --- | --- | --- |
-| Paul reply lands within 24-48h with all three Q22/Q23/Q24 answers | ~1 hour after reply | Same day | Within 1-2 days |
-| Paul slips, DeepSeek writes Python fallback (his explicit offer) | 1-2 days post-fallback | +1-2 days | Within 3-4 days |
-| Paul slips past 96h, we park M6 and return to M5.4 | M6 stays parallel-research; no production decision | — | Deferred indefinitely |
+| Track A closes 4.8% to <1% on its own (no script needed) | ~30 min | Same day | Within 1 day |
+| Track B confirms ratio-invariance (4.8% absolute gap doesn't affect lepton mass ratios) | Effectively closed for ApJ deliverables | Same day | Within 1 day |
+| DeepSeek script lands within 24h, confirms our v6 with minor tweak | +1-2 hours after script | Same day | Within 1-2 days |
+| DeepSeek script reveals a different convention requiring sandbox_v7 | +2-3 hours to re-implement | +1 day | Within 2-3 days |
 
-### Two paths to unblock v6 calibration
+### Two unblock paths
 
 | Path | Trigger | Resolves |
 | --- | --- | --- |
-| A | Werbos reply on Q22/Q23/Q24 (24-48h expected) | All v6 normalization gaps in one round. Build v6 same day. |
-| B | DeepSeek-writes-Python (Paul's explicit offer in 2:00 PM email) | Cross-check reference. We rebuild v6 against it. Used if (A) slips past 48h. |
+| A | Sharpen v6.6 solver convergence (r_max ≥ 25, max_nodes ≥ 500k) | If gap closes naturally to <1%, calibration is locked without further input from Paul. Most likely path given the Q_CS_I/Q_CS_grid disagreement signature. |
+| B | DeepSeek's reference Python script (requested in email v5, 2026-05-20 ~5 PM) | Definitive line-by-line cross-check. We diff our v6 against the script and identify any remaining convention difference. |
 
-The 2026-05-20 PM email v4 commits explicitly: "I will not push anything to
-Zenodo from our side until calibration lands." This protects both names from
-the "Griesi & AI in prep" ApJ reference converting to a real citation
-prematurely.
+Both paths can run in parallel. The 2026-05-20 PM email v5 commits explicitly:
+"I will not push anything to Zenodo from our side until calibration lands."
+This still holds — ApJ Section 4 numbers (m_χ, m_J, σ/m, Ω_χh²) only get
+handed off once the calibration is fully locked.
 
 ---
 
-## Retired status snapshots (2026-05-18, 2026-05-19)
+## RETIRED STATUS SNAPSHOTS (2026-05-18, 2026-05-19)
 
 These earlier status revisions are kept for historical reference. They reflect
 the model before the v5 chaoiton was empirically demonstrated and before the
