@@ -153,3 +153,112 @@ The direct-line implication for M5 design ([2a_path_to_m5.md](2a_path_to_m5.md))
 4. **Chirality handling is free.** M4's CW/CCW distinction (from the phase structure of the ellipse) already encodes spin — which is what Duda calls "topological charge + orientation"
 
 The take-away for intuition: **OpenWave has always been about granules moving in ellipses. The Lagrangian / topological framework just asks: "and what integer winds around each WC?" — which is a measurement on top of what we already compute, not a replacement for it.**
+
+---
+
+## Liquid Crystal Primer — the underlying medium of M5
+
+This section can be read first if you're unfamiliar with what a liquid
+crystal actually is. The M5 framework treats the vacuum as
+liquid-crystal-like; understanding the physical analog makes Duda's
+mathematical choices feel less arbitrary.
+
+### The physical material
+
+A **liquid crystal** is a state of matter that sits between a liquid (no
+positional order, fully fluid) and a crystal (rigid 3D lattice positional
+order). It has:
+
+| Property | Liquid | Liquid crystal | Crystal |
+| --- | --- | --- | --- |
+| Molecular positions | random | random | lattice |
+| Molecular orientations | random | **ordered** (aligned along an axis) | ordered |
+| Flow | yes | yes | no |
+
+The defining feature: **molecules align along a preferred direction** (the
+"director") even though they're not fixed in space. Think of cigar-shaped
+molecules in a soap bubble — they slosh around freely but their long axes
+point mostly the same way. LCD displays exploit this — applying voltage
+rotates the director, changing how light passes through.
+
+### The mathematical object — the order tensor
+
+Because molecules are aligned but free to slide, you describe the local
+ordering with a tensor (not just a vector). For uniaxial molecules with
+axis along unit vector `n̂`:
+
+```text
+Q_ij = S × (n̂_i n̂_j - δ_ij/3)
+```
+
+where `S` is the scalar order parameter (0 = isotropic liquid; 1 =
+perfectly aligned). For biaxial molecules (lower symmetry — two distinct
+transverse axes), you need a richer tensor:
+
+```text
+M = O · D · O^T
+```
+
+where:
+
+| Symbol | Meaning |
+| --- | --- |
+| `O` | 3×3 rotation matrix specifying local orientation of the principal axes |
+| `D = diag(λ₁, λ₂, λ₃)` | diagonal of "axis lengths" — the order parameter eigenvalues |
+| `M` | symmetric traceless 3×3 matrix (5 degrees of freedom) |
+
+This `M` is the **Landau–de Gennes (LdG) tensor**. The number of DOF (5
+per spatial point) is why M5's matrix-field substrate is "richer" than
+M6's two 4-vector fields (8 DOF with Lorenz constraints reducing further).
+
+### Why this is useful for particles — topological defects
+
+In an ordered medium with a director field, you can't always smoothly
+deform the orientation from one place to another. Sometimes the alignment
+breaks down at a point — that's a **topological defect**:
+
+| Defect type | What it looks like | Topological invariant |
+| --- | --- | --- |
+| **Hedgehog** | director points radially outward (or inward) at a 3D singularity | Brouwer degree ±1 (integer winding around S²) |
+| **Disclination** | director rotates by 180° or 360° around a 1D line | line winding number |
+| **Skyrmion** | localized topological texture (no singularity, but stable winding) | integer Hopf invariant |
+| **Biaxial twist** | the two transverse axes rotate around a structure | richer biaxial-symmetry invariants |
+
+These defects are **topologically stable** — you can't smoothly remove
+them without cutting the field. That's the analogy Duda exploits: **a
+particle is a topological defect in an underlying liquid-crystal-like
+field, and its quantum numbers (integer charge, integer spin) are the
+topological invariants of that defect.**
+
+### How M5 maps onto this
+
+| Liquid crystal concept | M5 (Duda's framework) interpretation |
+| --- | --- |
+| The medium (LC) | The vacuum — a Landau–de Gennes tensor field `M(x, t)` on 3D space, time-evolved |
+| Vacuum state | `D = diag(g, 1, δ, 0)` — preferred biaxial ground state shape |
+| Director rotation | The matrix `O(x, t)` |
+| Hedgehog defect | Charged lepton (electron) — Brouwer degree ±1 = electric charge ±1 |
+| Skyrmion / Hopfion | Candidate for excited states / neutrinos (Liu et al. 2026 lab anchor) |
+| Director oscillation | Klein-Gordon-like wave dynamics around vacuum → particle mass |
+| Standing-wave interference | Orbit quantization (atomic shells) |
+| Biaxial-axis hierarchy | Three lepton families (e/μ/τ map to choices of which axis dominates) |
+| LC distortion energy (Frank elastic) | Mass + gradient-energy terms in the Lagrangian |
+| Higgs-like potential V(M) | Forces M near the vacuum shape; sets symmetry breaking |
+
+### Why it's experimentally interesting
+
+| Real-world LC connection | Why it matters |
+| --- | --- |
+| LCDs use nematic liquid crystals; defects are visible under polarized light | Visualization analog — actual lab pictures of these defects exist |
+| Bush & Couder walking droplets reproduce pilot-wave behavior | Hydrodynamic analog of quantum mechanics in classical fluids |
+| Liu et al. *Nature Physics* 2026 — first direct laser creation of isolated hopfions and skyrmions in real LC | Lab anchor: the topological structures M5 hypothesizes for particles have been made in matter |
+| Schwinger 1969 + Faber regularization | Mainstream physics ancestry of the same math (see Schwinger family tree in SABER `1_model_selection.md`) |
+
+### One-line summary
+
+A liquid crystal is matter that has orientation order but no position
+order — molecules align without locking into a lattice. Duda's M5 takes
+the math of biaxial liquid crystals (the `M = ODO^T` tensor field) and
+applies it to the vacuum, treating particles as topological defects in
+the local orientation. Lab analogs (LCD displays, hopfion experiments)
+make the framework empirically grounded in a way M6 is not.
