@@ -4,63 +4,92 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-OpenWave is an open-source subatomic physics simulator to model the formation of matter and energy from energy wave interactions. The project simulates phenomena from spacetime emergence through particle formation to complex matter behavior.
+OpenWave is an open-source subatomic wave simulator for exploring fundamental physics through **classical field theory enriched with topology and nonlinearity** — the scientific tradition of de Broglie–Bohm pilot waves, wave structure of matter, and modern topological-soliton models. The platform tests whether particles and forces can emerge from deterministic field equations rather than being postulated.
+
+The simulator runs multiple candidate Lagrangian frameworks (scalar-field, vector-field) in a shared numerical engine, plus a granule-motion model for educational visualization. GPU acceleration uses Taichi Lang.
 
 ### Project Goals
 
-To develop OpenWave, an open-source computer simulator with objectives described in the text below, based on the papers attached as 9 files, with special attention to the file `Relationship of the Speed of Light to Aether Density` where there is a Planck mass correction from previous papers (affecting granule mass), using the `06. Constants and Equations - Waves.pdf` as constants reference, built in phases. Simulation physics, constants, and equations will be drawn from research papers located at the `/scientific_source` folder. For performance on the granular physics simulations we'll be using the Taichi Lang python library.
+OpenWave investigates, in one integrated simulator, four primary domains: **matter** (particle emergence from topological defects + wave dynamics), **forces** (electric, strong, magnetic, gravitational from one classical-field framework), **electromagnetic waves**, and **heat** (thermal mechanics at the defect-oscillation level). Each domain has concrete pass/fail criteria applied uniformly across candidate models.
 
 ### What is OpenWave?
 
-- Refer to `README.md` for a detailed description and scope of OpenWave.
-- Refer to `WELCOME.md` for a quick intro to OpenWave.
+| Reference | Purpose |
+| --- | --- |
+| `README.md` | Full description, scope, scientific position, installation |
+| `WELCOME.md` | Quick intro |
+| `SYS_ARCH.md` | Module structure and system architecture |
+
+### Theoretical Advisors and Candidate Frameworks
+
+| Contributor | Framework | OpenWave Model |
+| --- | --- | --- |
+| Jeff Yee | Energy Wave Theory (EWT) | M3 |
+| Dr. Jarek Duda | Liquid Crystal Particle Analogs (arxiv 2108.07896, 2501.04036) | M5 |
+| Dr. Robert Close | Classical elastic-solid / "Equation of Everything" | M5 (shared) |
+| Manfried Faber | LdG regularization (Universe 11/2025/113) | M5.6 baseline |
+| Dr. Paul Werbos | Ouroboros chaoiton Lagrangian | M6 |
+
+### Active Research Focus
+
+**M5 (Liquid Crystal)** is the current active model. Sandbox complete (2026-04-17); 9-phase plan M5.0–M5.8 in progress. See `openwave/xperiments/m5_liquid_crystal/research/0c_M5_roadmap.md` for phase status. M6 (Ouroboros) research is in early-stage parallel.
 
 ### Known Challenges & Limitations
 
-#### Granularity vs. Performance
-
-- Full Planck-scale fidelity may be computationally prohibitive; require user-tunable resolution.
-- This project will use a dedicated physics computational backend, independent of 3D modeling software.
+- Full Planck-scale fidelity is computationally prohibitive; resolution is user-tunable per xperiment.
+- Uses a dedicated physics computational backend (Taichi GPU), independent of 3D modeling software.
 
 ## Project Architecture
 
-### Modules Structure and Objects Map
+| Path | Contents |
+| --- | --- |
+| `openwave/xperiments/m1_granule_motion/` | Educational granule-motion model |
+| `openwave/xperiments/m2_free_wave/` | Free-wave propagation |
+| `openwave/xperiments/m3_wolff_lafreniere/` | Wolff-LaFreniere / EWT scalar model |
+| `openwave/xperiments/m4_vector_wave/` | Vector-wave model |
+| `openwave/xperiments/m5_liquid_crystal/` | **Active** — Duda LCB topological-defect model |
+| `openwave/xperiments/m6_ouroboros/` | Werbos chaoiton Lagrangian |
+| `openwave/xperiments/x1_anti_gravity/` | Speculative — gravity modulation xperiments |
+| `openwave/xperiments/x2_thermal_waves/` | Heat at the defect-oscillation level |
+| `openwave/xperiments/x3_time_dynamics/` | Time-dynamics xperiments |
+| `openwave/common/`, `i_o/`, `validations/`, `video_export/` | Shared utilities, rendering, physics-invariant tests |
 
-- Refer to `README.md` file for the Modules Structure, Objects Map and System Architecture.
-
-## Installation
-
-- Refer to `README.md` for installation guidance of OpenWave.
-
-## Usage (Work in Progress)
-
-- Refer to `README.md` for usage instructions.
-
-## Scientific Documentation & Requirements
+Refer to `README.md` and `SYS_ARCH.md` for the full Modules Structure and Objects Map.
 
 ### Scientific Source Material
 
-Each model directory under `openwave/xperiments/` (e.g. `m3_wolff_lafreniere/`, `m5_liquid_crystal/`) contains a `/research` subfolder with on-going research supporting that model.
+Each model directory under `openwave/xperiments/` contains a `/research` subfolder with active research notes, plus `/research/theory/` holding the foundational theorist papers for that model (e.g. `m5_liquid_crystal/research/theory/liquid_crystal_model.pdf`, `Equation-of-Everything.pdf`, `faber_universe_2025.pdf`).
 
-The `/scientific_source` directory contains foundational papers.
+Note: the legacy top-level `scientific_source/` folder was retired 2026-05-18 — papers now live per-model. M1/M2/M4 have no theory/ folder.
+
+## Installation & Usage
+
+Refer to `README.md` for installation, CLI usage (`openwave -x`), and the instrumentation framework.
 
 ## Physics Context
 
-This project implements Energy Wave Theory concepts:
+OpenWave implements classical-field-theory-with-topology-and-nonlinearity approaches:
 
-- Energy Wave as fundamental building blocks
-- Wave interactions forming particles and matter
-- Simulation from Planck scale to macroscopic phenomena
-- Validation against experimental observations
+- Topological defects provide static structure (integer charge, spin).
+- Klein-Gordon-like wave dynamics around the vacuum field provide mass and relativistic kinematics.
+- Standing-wave interference between defect emissions produces orbit quantization.
+- Particles are **time-periodic resonances** (Zitterbewegung clocks), NOT static solitons — Derrick's theorem forbids static stable solitons, confirmed empirically in M5.2.
 
 - Also refer to ../CLAUDE.md file to search for any available context to the OpenWave project in a parent directory.
 
 ## Code Style & Documentation Standards
 
-- Follow the [Markdown Style Guide](/dev_docs/MARKDOWN_STYLE_GUIDE.md) for all `.md` files
-- Adhere to [Coding Standards](/dev_docs/CODING_STANDARDS.md) for Python code
-- Apply [Performance Guidelines](/dev_docs/PERFORMANCE_GUIDELINES.md) for optimization
-- Use [Loop Optimization](/dev_docs/LOOP_OPTIMIZATION.md) patterns for critical loops
+| Doc | Purpose |
+| --- | --- |
+| [Markdown Style Guide](/dev_docs/MARKDOWN_STYLE_GUIDE.md) | All `.md` files |
+| [Coding Standards](/dev_docs/CODING_STANDARDS.md) | Python code |
+| [Performance Guidelines](/dev_docs/PERFORMANCE_GUIDELINES.md) | Optimization |
+| [Loop Optimization](/dev_docs/LOOP_OPTIMIZATION.md) | Critical loops |
+| [Coordinate System](/dev_docs/COORDINATE_SYSTEM.md) | Spatial conventions |
+| [Floating Point Precision](/dev_docs/FLOATING_POINT_PRECISION.md) | Numerical precision rules |
+| [Scaling Factor](/dev_docs/SCALING_FACTOR.md) | Physics unit scaling |
+| [Version Management](/dev_docs/VERSION_MANAGEMENT.md) | Release versioning |
+| [Wave Diagnostics](/dev_docs/WAVE_DIAGNOSTICS.md) | Validation diagnostics |
 
 ### Important: Markdown Linting Requirements
 
