@@ -1,0 +1,50 @@
+{
+  "config": {
+    "omega_init": 1.0,
+    "lambda_lm": 1.0,
+    "g": 1.0625,
+    "r_min": 0.05,
+    "r_max": 20.0,
+    "n_grid": 500,
+    "max_nodes": 5000,
+    "tol": 1e-06,
+    "verbose": 0
+  },
+  "lambda_lm_fixed": 1.0,
+  "solve_bvp": {
+    "status": 1,
+    "message": "The maximum number of mesh nodes is exceeded.",
+    "n_grid_final": 4492
+  },
+  "diag": {
+    "omega": -11.84306490744975,
+    "lambda_LM_fixed": 1.0,
+    "V0": -17.367456948195134,
+    "A0": -5.091881064088693,
+    "Q0": -4.433735403712908,
+    "J0": -14.253914768894013,
+    "peak_V": 17.367456948195134,
+    "peak_A": 24.049650317949943,
+    "peak_Q": 23.43173617236031,
+    "peak_J": 14.481001568759357,
+    "nodes_V": 5,
+    "nodes_A": 8,
+    "nodes_Q": 10,
+    "nodes_J": 8,
+    "max_nodes": 10,
+    "tail": 44.88009874156044,
+    "Q_CS": 1.0000000000000002,
+    "Q_CS_grid": -1099.4762374932589,
+    "H_full": 1235491.1738988515,
+    "H_electron": 519767.36106947996,
+    "HQ_full": 1235491.1738988513,
+    "HQ_electron": 519767.36106947984
+  },
+  "passed": false,
+  "fail_reasons": [
+    "|H_electron/Q - 1.6969| = 519765.6642 > 0.003",
+    "max_nodes = 10 > 4",
+    "Q(0) = -4.4337 (should be > 0)"
+  ],
+  "elapsed_sec": 0.3020491600036621
+}
