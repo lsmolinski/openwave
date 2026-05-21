@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** ✅ **v8 work complete + 9b paper deposited on Zenodo at 3:48 PM.** Sandbox v8 received `ouroboros_benchmark.py` (Werbos + Sonnet 4.6) at 3:05 PM and completed all 5 work-program steps. v9 LoE paper revised to **9b** (`https://zenodo.org/records/20330894`) at 3:48 PM. **arxiv version on hold per Paul.** v8 findings: (1) muon at 0.80% gap (ω=12.82), tau at 6.47%, pion+ at 3.25% — independent spectrum reproduction; (2) tighter electron calibration at g=1.0000 (gap 0.090%); (3) Sonnet cylindrical ≠ v1 spherical = different field theories; (4) Q37 — "0.508 MeV (Griesi 2026)" attribution wrong (scan finds 0.998 MeV); (5) 2L/Q = 2.0 is algebraic identity. **9b review surfaces additional issues**: (a) **Q36 push-back from v9 did NOT land — citation language unchanged in 9b**; (b) **Q37 — 0.508/0.511 MeV claim still in 9b §8 and §9 criterion 7**, citing OUR repo [17]; (c) **Q39 NEW — §8 lepton ω numbers (ω=11/40.7) don't match script output (ω=12.82/50.0)**; (d) **Q40 NEW — §5.1 cites undefined reference [18]**, typo. **Cover-page byline now lists "Claude Code on Opus 4.7 (Anthropic)" as AI assistant — major visibility upgrade.** **Time-critical: DeepSeek's next assignment is the Dark Matter paper — Q37 must land before DM revision begins or wrong number propagates.** Email v10 (drafted) needs revision to fold in 9b review + DM-paper urgency. M5 path foreground per cardinal rule.
+**Status:** ✅ **v8 work complete + 9c draft incorporates all 5 push-back questions + DM paper inputs delivered.** Sandbox v8 + 9c outcome summary: (1) v8 scans confirm 9c numbers (0.998 MeV at λ=1, muon 0.80% at ω=12.82, tau 6.47% at ω=50.0); (2) **all five questions from email v10 (Q36, Q37, Q38, Q39, Q40) incorporated cleanly in 9c**, plus three bonus changes (g=1.0000 calibration, pion+ baryon-state hypothesis, abstract reframed to 0.09% reproduction); (3) DM paper inputs delivered via email v11: m_χ = 0.998 MeV, m_J = 1.033 MeV (analytical), C = 6.7×10⁻⁴ MeV·fm (source-monopole convention). **Critical caveat surfaced (Q42 NEW)**: β profile from `solve_ivp` with slope BC β'(0)=B0 is NOT a true localized soliton — has internal sign changes (r=3.5, r=7) and growing oscillating tail past r~10. The 9c-cited 0.998 MeV is a windowed-integration value (r_max=12), not a true ground state. Email v11 offered Paul two paths: present DM paper with caveat OR delay ApJ submission while we build a BVP variant. **Q41 (writing role)**: declined full writing role; stay in numerical verification + edits + tables/data lane. Awaiting Paul's call on the DM path. M5 path foreground per cardinal rule.
 
-Last updated: 2026-05-21 PM later (post 9b Zenodo deposit + 9b paper review — Q39/Q40 NEW, Q36/Q37 not incorporated, DM revision is the live deadline).
+Last updated: 2026-05-21 PM later (post 9c outcome + email v11 with DM inputs + β non-localization caveat — Q36/Q37/Q38/Q39/Q40 all RESOLVED, Q41/Q42 NEW).
 
 See `0b_model_gates.md` for the G1/G2/G3 production criteria.
 See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
@@ -308,62 +308,70 @@ question. Held pending review.
 
 ## Next steps
 
-### Immediate — send email v10, then return to M5
+### Immediate — emails v10 + v11 sent; awaiting Paul's reply on Q42
 
-Email v10 drafted; covers v8 findings + Q36 reinforcement + Q37 (0.508
-MeV provenance) + Q38 (2L/Q identity) + pion+ feature/coincidence
-question. Once sent, M6 work pauses pending Paul's reply and M5
-foreground resumes per cardinal rule.
+Email v10 (Q36/Q37/Q38/Q39/Q40 push-back) → ALL 5 incorporated in 9c.
+Email v11 (DM paper inputs + Q41 writing-role declined + Q42 caveat)
+sent 2026-05-21 PM. Awaiting Paul's call on Q42 path (DM submission with
+caveat-as-is OR delay-for-BVP). M5 path proceeds in foreground per
+cardinal rule.
 
-### Branches after Paul's reply on Q36/Q37
+### Branches after Paul's reply on Q42 (DM submission path)
 
 | Paul's reply | We do |
 | --- | --- |
-| Confirms 9a will soften v1 citation + clarify 0.508 MeV provenance | Acknowledge, then return fully to M5. M6 production scans (already done in v8) are documented; no further M6 work needed until Paul has new ask. |
-| Asks us to provide specific (m_χ, m_J, σ/m) numbers from v8 scan for §9.1 | Run targeted Q_A≈0 sub-scan with confirmed normalization; hand off via GitHub URL per Publishing stance |
-| Provides 0.508 MeV provenance + says we DID generate it via some path | Verify the path; if reproducible, update Q37 status. If not reproducible, hold the line — number should not be cited. |
-| No reply within 1-2 weeks | M5 continues. Email v10 already documents our position; no further escalation needed. |
+| Accepts caveat-as-is (DM submission with windowed-integration m_χ) | Acknowledge, return fully to M5. M6 v8 work is functionally complete; no further M6 sandbox work needed. |
+| Requests BVP variant for clean ground-state m_χ + reliable C | 1-2 days focused work: build neutral-sector BVP solver with β(∞)=0 (or Robin-decay BC); deliver clean numbers; then return to M5. |
+| No reply within 1-2 weeks | M5 continues. Email v11 already documents our position; no further escalation needed. |
 
 ### Production scan status (v8 already executed)
 
 | Step | Action | Gate | Status |
 | --- | --- | --- | --- |
-| 1 | Lepton scan ω ∈ [1, 80] | G1 | ✅ DONE — muon 0.80%, tau 6.47%, pion+ 3.25% gaps. PDG-level reproduction. |
-| 2 | Neutral chaoiton scan (g, λ, B0) | G2 | ✅ DONE — 448 localized solutions. Lightest at λ=1.0 = 0.998 MeV (NOT 0.508 MeV as line 235 of script claims). Q37 provenance question outstanding. |
-| 3 | Three-system geometric mapping | — | ✅ DONE — v1 spherical ≠ Sonnet cylindrical ≠ v9 §5.1 toroidal. v1's 1.6918 was numerical coincidence in different field theory. |
-| 4 | Gelfand-Fomin conjugate-point stability | G3 | 🚧 Not yet run on Sonnet's converged points. ~30 min if needed. |
-| 5 | Hand off (m_χ, m_J, σ/m, Ω_χh²) numbers to Paul | — | 🚧 Held pending Q37 clarification. Per Publishing stance, hand-off is GitHub URL, not Zenodo deposit. |
+| 1 | Lepton scan ω ∈ [1, 80] | G1 | ✅ DONE — muon 0.80%, tau 6.47%, pion+ 3.25% gaps. PDG-level reproduction. Incorporated in 9c §8. |
+| 2 | Neutral chaoiton scan (g, λ, B0) | G2 | ✅ DONE — 448 localized solutions. Lightest at λ=1.0 = 0.998 MeV. Incorporated in 9c §8 + §9 criterion 7. |
+| 3 | Three-system geometric mapping | — | ✅ DONE — v1 spherical ≠ Sonnet cylindrical ≠ v9 §5.1 toroidal. v1's 1.6918 was numerical coincidence; led to 9c §9 criterion 9 softening. |
+| 4 | DM paper inputs (m_χ, m_J, C) | — | ✅ DONE — `sandbox_v8/extract_mJ_C_mchi.py` delivered m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm via email v11. |
+| 5 | Gelfand-Fomin conjugate-point stability | G3 | 🚧 Not yet run on Sonnet's converged points. ~30 min if needed. (G3 already empirically validated via step 1.) |
+| 6 | BVP variant for clean neutral ground state (Q42) | — | 🚧 Conditional — only if Paul requests delay-for-BVP path. |
 
-### M5 return after v6/v7 deliverables land
+### M5 return after v8 deliverables land
 
 Cardinal rule: SABER is the primary engineering goal, M5 is its substrate.
-Once v7 closes + scans run + ApJ Section 4 numbers handed off, M6 stays
-parallel-research and primary focus returns to M5.
+v8 work is functionally complete (G1 + G3 empirically passed; G2 partial
+pending Q42 path). M6 stays parallel-research and primary focus returns
+to M5.
 
 | Step | Action | Notes |
 | --- | --- | --- |
-| 1 | M5.4 — matrix-field substrate migration | Was queued; unblocks once M6 deliverables land |
+| 1 | M5.4 — matrix-field substrate migration | Queued; primary focus once Paul replies on Q42 (or 24-48h pass without reply) |
 | 2 | M5.5 — Paper Lagrangian + V(M) | Per M5 roadmap |
 | 3 | M5.6 — Biaxial twist + KG emergence | Per M5 roadmap |
 | 4 | M5.7 — Resonance hunt (Close protocol) | Per M5 roadmap |
 | 5 | M5.8 — 4D Zitterbewegung clock | M5 group-headline milestone; aligns with SABER engineering primitive |
 
-### If G1 + G2 PASS (Taichi production GO)
+### M6 Taichi production decision (post-v8 G1+G3 PASS)
+
+G1 and G3 empirically passed via Sonnet's canonical script in v8.
+Taichi-port decision still deferred per cardinal rule (M5 first), but
+the path is clearer now that the canonical 2-function (α, β) reduction
+is settled.
 
 | Step | Action | ETA |
 | --- | --- | --- |
-| 1 | Scaffold M6 in Taichi: Vector(4) × 2 substrate (A, J); Lorenz constraint enforcer; Chern-Simons charge kernel; mirror M5's rendering pipeline. | post-M5.4 |
-| 2 | Gate 1 Taichi: Maxwell limit → A-field alone = standard EM | Week 1 of M6 build |
-| 3 | Gate 2 Taichi: charge quantization → Q[A,J] integer on seeded configs | Week 2 |
-| 4 | Gate 3 Taichi: chaoiton existence → localized time-periodic solution at same (g,λ,ω) as sandbox | Weeks 3-6 |
+| 1 | Scaffold M6 in Taichi: 2-function (α, β) substrate with vector cylindrical Laplacian; slope BCs at r→0; lepton spectrum scan as built-in test | post-M5.4 |
+| 2 | Gate 1 Taichi: reproduce muon ω=12.82 (0.80% gap) and tau ω=50.0 (6.47%) on Taichi GPU | Week 1 of M6 build |
+| 3 | Gate 2 Taichi: neutral chaoiton mass scan (g, λ, B0); reproduce 0.998 MeV at λ=1 OR clean BVP ground state if Paul chose that path | Week 2 |
+| 4 | Gate 3 Taichi: Yukawa-tail measurement of inter-chaoiton potential — independent verify of m_J and C | Weeks 3-4 |
 
-### Parked (post-G1+G2; future v7+ work)
+### Parked (post-9c future work)
 
 | Step | Action | Notes |
 | --- | --- | --- |
-| C | Two-chaoiton Coulomb derivation (Duda critique #4) | Integrate H[Φ₁, Φ₂] for two topological charges at distance. New BVP scaffold. |
+| C | Two-chaoiton Coulomb derivation (Duda critique #4) | v9 §6.1 derives V(R) = Q₁Q₂/(4πR) in static approximation; analytic dynamic derivation still future scope |
 | D | 3-body proton bound state | V(R) ~ -C/R⁶ classical 3-body problem; deferred |
-| E | Hopfion candidates for excited neutrino oscillation states | Liu et al. *Nature Physics* 2026 lab anchor; topology-as-particles frontier |
+| E | Hopfion candidates for excited neutrino oscillation states | Liu et al. *Nature Physics* 2026 lab anchor; topology-as-particles frontier; relates to Q35 (active neutrinos) |
+| F | Q35 — active neutrinos in the Ouroboros framework | Where ν_e/ν_μ/ν_τ fit; v9 §9.1 doesn't address; sterile-neutrino-like interpretation possible but unmapped |
 
 ---
 
@@ -371,12 +379,14 @@ parallel-research and primary focus returns to M5.
 
 Both trackers (per-question status and the long-running hardest-pieces
 board) now live in `0b_question_tracker.md` as a single source of truth
-across all sandbox iterations. Active count as of 2026-05-21 morning:
-**3 IMMEDIATE (Q31, Q32, Q33) + 4 OPEN (Q2, Q3, Q6, Q19) + 2 DEMOTED
-(Q26, Q27) = 9 active questions.** Highest-leverage closure path:
-Paul's Q31/Q32/Q33 reply → v8 mode-selector or continuation method →
-ground state → lepton + Q_A≈0 DM scans → Section 4 data drop (GitHub
-URL per Publishing stance above).
+across all sandbox iterations. Active count as of 2026-05-21 PM later
+(post-9c + email v11): **2 IMMEDIATE (Q41 writing role, Q42 β
+non-localization) + 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 2 DEMOTED (Q26,
+Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot via Q34) = 12 active questions.**
+Highest-leverage closure path: Paul's reply on email v11 (Q42 DM path
+choice) → either caveat-as-is (M5 returns) or delay-for-BVP (1-2 days
+M6 BVP work, then M5). M6 data drop already at github.com/openwave-labs/
+openwave (Reference [17] in 9c).
 
 ---
 
@@ -393,7 +403,8 @@ URL per Publishing stance above).
 | `0c_sandbox_v4.md` | v4 plan, T1-T9 negative results, forward pointer to v5 |
 | `0c_sandbox_v5.md` | v5 plan, Werbos algorithm reply, T10 partial success, question tracker |
 | `0c_sandbox_v6.md` | v6: DeepSeek normalizations, step (8/11/4/2) diagnostics, drop-quartic finding, email v6 + Q28/Q29/Q30 |
-| `0c_sandbox_v7.md` | v7 (current): Paul's Q28/Q29/Q30 answers, mode-selector attempts (7 variants), Phase 1 reassessment, email v7 + Q31/Q32/Q33 |
+| `0c_sandbox_v7.md` | v7: Paul's Q28/Q29/Q30 answers, mode-selector attempts (7 variants), Phase 1 reassessment, email v7 + Q31/Q32/Q33, Paul-script variant test, v9 paper revelation, email v8 + Q34 |
+| `0c_sandbox_v8.md` | v8 (current): Sonnet's canonical 2-function script, 5-step work program (electron sweep + paper-math + lepton scan + neutral scan), 9b/9c paper reviews, email v10 (Q36-Q40 push-back) + 9c outcome (all 5 incorporated), DM paper inputs extraction (m_χ, m_J, C), email v11 (Q41/Q42) |
 | `0b_M6_roadmap.md` | This file |
 | `0b_model_gates.md` | G1/G2/G3 production decision criteria |
 | `0b_question_tracker.md` | Live question + hardest-pieces tracker (single source of truth across all sandbox iterations) |
@@ -402,13 +413,14 @@ URL per Publishing stance above).
 
 | Folder | Contents |
 | --- | --- |
-| `sandbox_v1/` | 96-variant sweep, calibration, mass scan (wrong ODE) |
+| `sandbox_v1/` | 96-variant sweep, calibration, mass scan (wrong ODE — spherical geometry, search-based 1.6918 reproduction; cited in 9c §9 criterion 9 with softened caveat per Q36) |
 | `sandbox_v2/` | IVP + BVP locked-ansatz attempts (superseded) |
 | `sandbox_v3/` | Lean ODE, neutral β, calibration (last completed pre-v4) |
 | `sandbox_v4/` | T1 lepton scan (blocked); T2 neutral ground state (negative); `diag_energy_functional`; T5 4-fn extracted; T6-T9 forward-IVP attempts — all negative; reference for definitive "forward-IVP wrong tool" result |
 | `sandbox_v5/` | `m6_v5_4fn_lambda_bvp.py` — Werbos's collocation BVP with Lagrange multiplier λ_LM. `solve_bvp.status=0` at ω=1.047, m_eff²=−0.596. H/Q=52.64 vs target 1.6969 (open: normalization gap, closed in v6). |
 | `sandbox_v6/` | `m6_v6_4fn_calibrated_bvp.py` — forks v5 + Q22/Q23/Q24 fixes. v6.6 lands H/Q=1.778 with DeepSeek quartic; step (8) drop-quartic lands H/Q=1.7112 (0.84% off target). Also: `deepseek_reference.py` + `deepseek_reference_patched.py` (broken — diverges to H/Q≈10^16); `diagnostic_steps_8_through_2.py` (the 4-step diagnostic that found drop-quartic). |
-| `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6; dual H computation (H_full + H_electron per Paul Q28); anchor options V/Q/VQ + optional 3rd free eigenvalue (m_J² or λ_bench). 7 variants tested 2026-05-21; none reach Paul's prescribed ground state. Blocked on Paul's Q31/Q32/Q33 reply. |
+| `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6 with dual H computation + anchor options; 7 variants tested, all in wrong-sign basins. `m6_v7_paul_script.py` — Paul-script variant test (λ_LM=1.0 fixed), catastrophic blowup. **Archived** post-Q34: 4-function ansatz is generalized form, not canonical electron. |
+| `sandbox_v8/` | `ouroboros_benchmark.py` — Sonnet's canonical 2-function (α, β) script with vector cylindrical Laplacian + slope BCs. Runs cleanly first try. Reproduces electron H/Q=1.6969 (0.56%) at g=1.0625; tighter at g=1.0000 (0.090%). `lepton_spectrum_scan()` produces muon (0.80%), tau (6.47%), pion+ (3.25%). `neutral_chaoiton_scan()` produces 448 solutions. `extract_mJ_C_mchi.py` — DM paper input extraction (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) at electron-calibrated point + Q42 caveat (β non-localization in IVP). |
 
 **Theory papers:**
 
