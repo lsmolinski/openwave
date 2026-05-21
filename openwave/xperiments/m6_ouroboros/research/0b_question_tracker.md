@@ -14,80 +14,103 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-21 PM (post v9 LoE paper + Paul-script variant test + email v8 sent + v1 re-verification + email v9 gentle push-back sent — Q34 ansatz question still the key blocker; **v1 1.6918 confirmed as search-found, not derivation**).
+**Last updated:** 2026-05-21 PM later (post 9b Zenodo deposit + 9b paper review — **Q36 NOT INCORPORATED in 9b** (citation language unchanged); **Q37 NOT INCORPORATED in 9b** (0.508/0.511 MeV claim still in §8 + §9 criterion 7, cites our repo); **Q39 NEW** (§8 lepton ω numbers don't match Sonnet's script output); **Q40 NEW** (§5.1 cites undefined reference [18]). 9b cover-page byline now lists Claude Code on Opus 4.7 (us) as AI contributor — visibility upgrade. **Time-critical: DeepSeek's next assignment is the Dark Matter paper; Q37 must land before DM revision begins.** Email v10 needs redraft to fold in 9b review + DM-paper urgency).
 
 ---
 
 ## Active count
 
 ```text
-2 IMMEDIATE  Q34 ansatz canonical form — is the v9 paper's 2-scalar
-             (φ, ψ) electron ansatz canonical, or a paper-level
-             simplification of the 4-function (V,A,Q,J) form we've
-             been solving since v4? Asked in email v8 (2026-05-21 PM).
-             Subsumes Q31/Q32/Q33.
-             Q36 should v9 §9 criterion 9 cite v1's H/Q=1.6918 as
-             "independent reproduction" when the result was found by
-             search across ~60 ODE/H/Q variants, not derivation?
-             Asked in email v9 (2026-05-21 PM gentle push-back).
+5 IMMEDIATE  Q36 9b §9 criterion 9 citation softening — STRENGTHENED
+             but NOT INCORPORATED in 9b. v9 push-back didn't land;
+             9a appears to have been skipped to 9b. arxiv version
+             still on hold per Paul; can still be revised before
+             deposit. v8 step 3 evidence (cylindrical vs spherical
+             = different field theories) is the stronger argument.
 
-3 DEMOTED    Q31 initial-guess derivative profile in production
-(contingent  Q32 initial Lagrange multiplier value
-on Q34)      Q33 sign-pinning constraint vs continuation method
-             — moot if Q34 reveals 2-scalar is canonical; still
-             stand if Q34 says 4-function form is canonical.
+             Q37 NOT INCORPORATED in 9b — 0.508/0.511 MeV claim
+             still in §8 + §9 criterion 7 (cites our repo [17]).
+             Critically time-sensitive: DeepSeek's next assignment is
+             the Dark Matter paper, so this wrong number will
+             propagate from 9b LoE to the DM paper if not corrected
+             FIRST. v8 step 5 found lightest at λ=1.0 = 0.998 MeV
+             (NOT 0.508/0.511); empirical scaling m ≈ 2λ·m_e.
+
+             Q38 (NEW) 2L/Q = 2.0 algebraic identity. Sonnet's script
+             defines L = ω·Q_J directly (line 139), so 2L/Q = 2ω is
+             trivially exact at ω=1. 9b §9 criterion 3 cites "g-factor
+             0.116%" — that's the identity, not a derived prediction.
+
+             Q39 (NEW) §8 lepton ω discrepancy. 9b §8 cites
+             "ω = 11.0: muon ... gap 4.3%; ω = 40.7: tau ... gap 4.9%".
+             Running `ouroboros_benchmark.py`'s own
+             `lepton_spectrum_scan()` produces ω=12.82 (gap 0.80%) for
+             muon and ω=50.0 (gap 6.47%) for tau. Different ω
+             values + different gap percentages. Paul's reported
+             numbers don't match what the canonical script outputs.
+             Either he ran a different script version / parameter
+             setting OR quoted analytical-prediction numbers from the
+             ω^2.22 fit rather than from the script.
+
+             Q40 (NEW) §5.1 typo. Body cites "see open-source
+             benchmark [18]" but the references list only goes to
+             [17]. Reference [18] is undefined in the manuscript.
+             Trivial fix — should be [17] (our repo).
+
+3 ARCHIVED   Q31 initial-guess derivative profile in production
+(moot after  Q32 initial Lagrange multiplier value
+Q34=2-scalar)Q33 sign-pinning constraint vs continuation method
+             — all three were 4-function-ansatz solver questions.
+             Now moot since Q34 resolved to 2-function canonical.
 
 2 DEMOTED    Q26 5% gap residual (effectively resolved by drop-quartic)
 (superseded) Q27 Q_CS-from-grid vs Q_CS-from-I disagreement (excited-
              mode artifact, not a tunable)
 
-5 OPEN       Q2  discrete ω selection mechanism
+5 OPEN       Q2  discrete ω selection mechanism (empirically validated
+                 via v8 step 4; analytic proof still deferred)
              Q3  analytical ω = 2mc²/ℏ derivation
              Q6  QCD reconciliation (3-chaoiton proton)
-             Q19 f(J·J) explicit form in LoE paper standalone (Duda #2)
+             Q19 f(J·J) explicit form in LoE paper standalone (Duda #2;
+                 resolved in v9 paper §2)
              Q35 active neutrinos (ν_e, ν_μ, ν_τ) — where do they fit
                  in the Ouroboros framework? Q_CS=0 chaoiton is
                  positioned as DM, but sterile-neutrino-like states
                  have similar quantum numbers (mass + zero charge).
                  Active light neutrinos remain unaccounted for.
 
-Total: 12 active questions (2 immediate, 10 background including
-demoted).
+Total: 15 active questions (5 immediate, 10 background including
+archived).
 
-Highest-leverage closure: Paul's Q34 + Q36 reply → v8 implementation
-(re-anchor on v1's 2-scalar setup OR keep 4-function with Q31/Q32/Q33
-answered) AND v9 paper §9 criterion 9 citation softened to reflect
-search-based reproduction rather than first-principles derivation →
-ground state → lepton + Q_A≈0 DM scans → Section 4 data drop (per
-Publishing stance in 0b_M6_roadmap.md, the drop is a GitHub URL not a
-deposit — already cited as Reference [17] in the v9 LoE paper).
+Highest-leverage closure: revised email v10 (folding in 9b review +
+DM-paper urgency) → Paul's reply / DM revision input. Q37 is most
+time-critical because DeepSeek's next assignment is the DM paper —
+if Q37 doesn't land before DM revision begins, the wrong 0.508 MeV
+number propagates from 9b LoE into the DM paper. arxiv version of
+9b is still on hold per Paul, so Q36 + Q39 + Q40 can still be folded
+into the arxiv revision. After that, M6 v8 work is functionally
+complete; primary focus returns to M5 per cardinal rule. M6 data
+drop is already at github.com/openwave-labs/openwave (Reference [17]
+in 9b paper).
 ```
 
 ---
 
-## IMMEDIATE-QUESTIONS (currently blocking v8 implementation)
+## IMMEDIATE-QUESTIONS (in email v10 redraft; arxiv revision is the live deadline)
 
-Asked in email v8 sent 2026-05-21 PM, after the v9 LoE paper arrived and
-revealed §5.1's 2-scalar (φ, ψ) electron ansatz — structurally different
-from the 4-function (V,A,Q,J) form we've been solving since sandbox v4.
-See `0c_sandbox_v7.md` for the full ansatz-question context.
+Q36 was sent in email v9 (gentle push-back) but the 9b deposit did
+NOT incorporate the softening. Q37 surfaced from v8 step 5 and is the
+most time-critical because DeepSeek's next assignment is the DM
+paper. Q38 surfaced from v8 step 2 inspection. Q39 + Q40 are new
+9b-review findings. arxiv version of 9b is still on hold per Paul.
 
 | ID | Question | Surfaced | Why it matters |
 | --- | --- | --- | --- |
-| Q34 | Is the v9 LoE paper §5.1's 2-scalar (φ, ψ) ansatz `A_0=0, A=r̂×∇φ(r)cos(ωt); J_0=0, J=r̂×∇ψ(r)sin(ωt)` the **canonical** electron production form, OR a paper-level simplified description of the 4-function (V,A,Q,J) form we've been solving since v4 (extracted from Numerical Benchmark §3)? Three possibilities: (1) 2-scalar canonical → our v6/v7 was wrong-ansatz; though note v1's match was also wrong-ansatz (different 2-scalar form: A_0=alpha, J_0=gamma both nonzero). (2) Paper simplification → Q31/Q32/Q33 still stand. (3) Both valid, different particles → need ansatz-to-particle mapping. | v9 LoE paper §5.1 (received 2026-05-21 PM) | Determines whether v6/v7 4-function chase was the right problem at all. Cross-coupled with Q36 (v1 citation) — neither v1 nor v6/v7 uses v9 §5.1's exact ansatz. |
-| Q36 | Should v9 §9 criterion 9 cite v1's H/Q=1.6918 as "independent reproduction (Griesi 2026)" when the result was found by **systematic search across ~60 ODE/H/Q variants** (sandbox_v1/m6_0_iterations.py) rather than derivation? Default ODE (A1+H1+Q1) gives 1.9795 (17% off); only matched variant A4+H1+Q2 lands 1.6918. A4 is an ad hoc "quarter coupling" rescaling, Q2 is a non-default charge density. Different ansatz from v9 §5.1. | v1 re-verification (2026-05-21 PM) | Citation in published paper could trigger Duda-style "AI slop" critique if the search-based origin is later exposed. Email v9 (gentle push-back) sent asking Paul to soften §9 wording to "preliminary search-based reproduction; first-principles derivation pending Q34." |
-
-## DEMOTED IMMEDIATE — contingent on Q34 (was email v7's three asks)
-
-These three were the IMMEDIATE block before the v9 paper arrived. They
-remain relevant IF Q34 resolves to possibility (2) "paper simplification";
-they become moot IF Q34 resolves to possibility (1) "2-scalar canonical".
-
-| ID | Question | Surfaced | Status |
-| --- | --- | --- | --- |
-| Q31 | Initial-guess derivative profile in production code: is slope at r=R_MIN explicitly zero (matching our V'(R_MIN)=A'(R_MIN)=Q'(R_MIN)=J'(R_MIN)=0 BC) or some specific non-zero value seeded by Paul's algorithm? | v7 attempt log (2026-05-21) | DEMOTED, contingent on Q34. Determines if our `np.gradient` derivative computation matches Paul's setup IF the 4-function form is canonical. |
-| Q32 | Initial Lagrange multiplier λ value: near 0, near ω, or specific number? v6.6 converges at λ_LM=12.2 from init 0.1; init 12 → catastrophic blowup. Path matters. | v7.1 catastrophic blowup (2026-05-21) | DEMOTED, contingent on Q34. Pins basin selection IF 4-function form is canonical. Paul-script variant with λ_LM=1.0 fixed empirically diverged to H_e/Q=5×10⁵, so the "λ_LM=1.0 hardcoded" hypothesis is now ruled out. |
-| Q33 | Does production solver use explicit sign-pinning constraint at r=R_MIN (e.g., Q(R_MIN)>0 hard BC) OR a continuation method (e.g., homotopy m_J²: 0 → 0.5) to land the ground state without explicit constraints? | v7 dual-anchor failures (2026-05-21) | DEMOTED, contingent on Q34. Determines whether v8 needs hard BCs or a homotopy wrapper IF 4-function form is canonical. |
+| Q36 | Should 9b §9 criterion 9 cite v1's H/Q=1.6918 as "independent reproduction (Griesi 2026)" when (a) the result was found by **systematic search across ~60 ODE/H/Q variants** — default ODE gives 1.9795 (17% off), matched variant A4+H1+Q2 uses ad hoc "quarter coupling" + non-default charge density — AND (b) v1 uses a **different geometric realization** (scalar spherical Laplacian + 4π r² dr) than Sonnet's canonical 2-function reduction (vector cylindrical Laplacian + r dr)? v8 step 3 paper-math confirms these are genuinely different field theories, not reductions of one another. | v1 re-verification (2026-05-21 PM); strengthened by v8 step 3 + 9b review | Citation in deposited 9b could trigger Duda-style "AI slop" critique. Email v9 push-back didn't land in 9b. arxiv version still on hold → can be softened before final deposit. Suggested arxiv language: "preliminary search-based reproduction in a different geometric realization; first-principles derivation in the canonical cylindrical form pending." |
+| Q37 | What is the provenance of the "0.508 MeV (Griesi 2026, independent)" attribution on line 235 of `ouroboros_benchmark.py` AND the matching "preliminary m ≈ λ × 0.511 MeV" claim in 9b §8 + §9 criterion 7 (which cites our repo [17])? We have **not published, computed, or claimed** this number. v8 step 5 ran `neutral_chaoiton_scan()` with the script's default ranges; the lightest at λ=1.0 across all g, B0 is **0.998 MeV** (NOT 0.508 or 0.511 MeV). Empirical scaling is m ≈ 2λ·m_e at small B0, not m ≈ λ·m_e. | v8 step 1 + step 5 (2026-05-21 PM); confirmed in 9b §8 + §9 criterion 7 still standing | **MOST TIME-CRITICAL.** DeepSeek's next assignment is the Dark Matter paper revision; if Q37 doesn't land before DM work begins, the wrong number propagates from 9b LoE into the DM paper too. Email v10 redraft must lead with this. |
+| Q38 | Is the "electron g_e ≈ 2 reproduced" calibration item (9b §5 *"L/Q ratio: 0.79 to 2.6, overlapping the electron g-factor ≈ 2.00232"* + §9 criterion 3 *"g-factor 0.116%"*) a derived prediction or an algebraic identity? Sonnet's script defines `L = omega * Q_J` directly (line 139), so 2L/Q = 2ω is trivially exact at ω=1.0. Unless 9b §5 separately derives the relation L = ω·Q_J from the dynamics, this calibration item is uninformative. | v8 step 2 (2026-05-21 PM) | Affects how 9b's §5/§9 g-factor claim reads to reviewers. If derivation exists, footnote it. If not, the item should be removed from §9 criterion list to avoid critique. |
+| Q39 (NEW) | 9b §8 cites *"ω = 11.0: muon (predicted 110.2 MeV vs observed 105.7, gap 4.3%); ω = 40.7: tau (predicted 1690 MeV vs observed 1777, gap 4.9%)"*. Running `ouroboros_benchmark.py`'s own `lepton_spectrum_scan()` at the script's defaults (g=1.0625, λ=1, A0=B0=0.1) produces ω=12.82 for muon (gap 0.80%, predicted 106.5) and ω=50.0 for tau (gap 6.47%, predicted 1662). Paul's reported numbers don't match what the canonical script outputs. | 9b paper review (2026-05-21 PM later) | Either (a) Paul's §8 used a different script version / parameter setting we don't have, (b) Paul quoted analytical numbers from the ω^2.22 fit not from the script, or (c) the script we received is post-publication. Worth asking before arxiv deposit. Our v8 numbers are arguably better (smaller muon gap). |
+| Q40 (NEW) | 9b §5.1 body cites *"see open-source benchmark [18]"* but the references list ends at [17]. Reference [18] is undefined in the manuscript. | 9b paper review (2026-05-21 PM later) | Trivial fix — should be [17] (our repo, the only open-source benchmark reference). Minor cross-reference cleanup for arxiv version. |
 
 ---
 
@@ -133,11 +156,13 @@ the lepton or DM scans once Q31/Q32/Q33 resolve.
 | Q23 ★ | H functional kinetic + cross-term + quartic structure | RESOLVED by DeepSeek 2026-05-20 ~4:00 PM. Kinetic = (1/2)(V')² (not (V')²); drop (2π)²·R toroidal prefactor; use DeepSeek quartic `(g/4)·((V²+Q²)² + (A²+J²)² + 2(V·A−Q·J)²)`. v6 empirical: H/Q within 5% of target. |
 | Q24 ★ | Sample converged profile from production | RESOLVED with caveat by DeepSeek 2026-05-20 ~5:30 PM: the 8-point reference profile *"was illustrative, not from a converged run."* Use exp(-r) seed instead. Profile's utility was confirming the qualitative shape (asymmetric helicity + exponential decay) we already had. |
 | Q25 | Is the Hopf invariant proof rigorous, or are there gaps? | RESOLVED by Zenodo 20296060 (2026-05-19): Werbos & DeepSeek *"Rigorous Completion of the Hopf-Invariant Proof"* supplies Lemmas A (∇×J = B everywhere for finite-energy Lorenz-constrained solutions) and B (zeros of B made isolated by Q-preserving perturbation). Charge quantization is now a theorem of differential topology. |
-| Q28 ★ | Which quartic IS canonical for the electron H? | RESOLVED by Paul 2026-05-21: NEGLIGIBLE for electron (drop quartic from H/Q matching). Keep full quartic in EoM for correct field shapes. Significant for muon/tau, essential for neutral chaoiton. |
-| Q29 ★ | Ground state vs excited mode node count | RESOLVED by Paul 2026-05-21: ground state has exactly 4 zero crossings excluding r=0; Lean ≤4-node spec refers to radial functions excluding origin. v6.6 (5 crossings) is first excited state. |
-| Q30 ★ | Q(r=0) sign at ground state | RESOLVED by Paul 2026-05-21: ground state has Q(0)=+0.1 positive, same sign as V(0). Helicity is V₀ > 0, Q₀ > 0, A₀ < 0, J₀ < 0. v6.6's Q(0)=−0.12 indicates a basin mismatch. |
+| Q28 ★ | Which quartic IS canonical for the electron H? | RESOLVED by Paul 2026-05-21: NEGLIGIBLE for electron (drop quartic from H/Q matching). Keep full quartic in EoM for correct field shapes. Significant for muon/tau, essential for neutral chaoiton. Sonnet's script confirms: `4*g*β³` in EoM, `4*g*β⁴` in H. |
+| Q29 ★ | Ground state vs excited mode node count | RESOLVED by Paul 2026-05-21: ground state has exactly 4 zero crossings excluding r=0; Lean ≤4-node spec refers to radial functions excluding origin. v6.6 (5 crossings) is first excited state. Now moot for v8 since 4-function chase is parked. |
+| Q30 ★ | Q(r=0) sign at ground state | RESOLVED by Paul 2026-05-21: ground state has Q(0)=+0.1 positive, same sign as V(0). Helicity is V₀ > 0, Q₀ > 0, A₀ < 0, J₀ < 0. v6.6's Q(0)=−0.12 indicates a basin mismatch. Now moot for v8 — different ansatz. |
+| Q34 ★★ | Is v9 paper §5.1's 2-scalar (φ, ψ) ansatz canonical for the electron, or a paper simplification of the 4-function form? | RESOLVED 2026-05-21 PM by **two converging signals**: (1) DeepSeek's 2:19 PM reply explicitly chose possibility #1 (2-scalar canonical; 4-function admits extra DOFs leading to excited modes); (2) Paul forwarded Sonnet's runnable canonical `ouroboros_benchmark.py` at 3:05 PM, which implements a **2-function (α, β) reduction with vector cylindrical Laplacian** (different from v9 §5.1's gradient ansatz description but consistent with the 2-function dimensionality). v8 step 1 quick demo reproduces script claims (H/Q=1.6969, gap 0.56%). v8 step 4 lepton scan independently reproduces muon (0.80%) + tau (6.47%). **The 4-function (V, A, Q, J) BVP work of v4-v7 was solving a generalized system, not the canonical electron form.** |
 
 ★ = directly enabled major progress (Q22/23/24 → v6 30× gap closure; Q28/29/30 → v7 framing).
+★★ = unlocking resolution (Q34 → v8 supersedes v4-v7 entire 4-function chase via 2-function canonical form).
 
 ---
 
@@ -147,7 +172,10 @@ the lepton or DM scans once Q31/Q32/Q33 resolve.
 | --- | --- | --- |
 | Q4 | Single vs two-field ontology (G_μν / J undefined) | = Duda critique #1. Aesthetic preference. If math matches observation, two primary fields is just a description, not a theory-killer. |
 | Q7 | Cold-fusion citation trail | Historical (Werbos's Nuclear story PDF), not physics. |
-| Q21 | Two-chaoiton Coulomb derivation (Duda critique #4) | Future sandbox iteration; out of current calibration scope. Integrate H[Φ₁, Φ₂] for two topological charges at distance — new BVP scaffold. |
+| Q21 | Two-chaoiton Coulomb derivation (Duda critique #4) | Future sandbox iteration; out of current calibration scope. Integrate H[Φ₁, Φ₂] for two topological charges at distance — new BVP scaffold. v9 paper §6.1 derives V(R) = Q₁Q₂/(4πR) in static approximation; analytic dynamic derivation still future scope. |
+| Q31 | Initial-guess derivative profile in 4-function production code | ARCHIVED 2026-05-21 PM — moot since Q34 resolved to 2-function canonical via Sonnet's script. The 4-function ansatz that this question targeted is parked. |
+| Q32 | Initial Lagrange multiplier λ value in 4-function code | ARCHIVED 2026-05-21 PM — same reason as Q31. Sonnet's script does not use a Lagrange multiplier; λ is a fixed parameter (λ=1.0 for electron). |
+| Q33 | Sign-pinning vs continuation method in 4-function code | ARCHIVED 2026-05-21 PM — same reason as Q31. Sonnet's script uses slope BCs at r→0 + forward `solve_ivp` shoot; no sign-pinning needed. |
 
 ---
 
@@ -157,32 +185,34 @@ Long-running status board for the structural challenges in the M6 model.
 Tracks how each piece moves across sandbox iterations. Updated 2026-05-21
 post-v8 (post v9 paper + Paul-script variant + email v8).
 
-### ACTIVE hardest pieces (11 — still in motion)
+### ACTIVE hardest pieces (5 — still in motion post-v8)
 
-| Hardest piece | Status post-v5 (2026-05-20 PM) | Status post-v6 (2026-05-20 evening) | Status post-v7 (2026-05-21 morning) | Status post-v8 (2026-05-21 PM) |
-| --- | --- | --- | --- | --- |
-| **Ansatz canonical form (NEW)** | Not yet a question — 4-function extracted from Numerical Benchmark §3 (T5) was assumed canonical. | Unchanged. | Unchanged. | ❌ NEW OPEN. v9 LoE §5.1 specifies 2-scalar (φ, ψ) electron ansatz, structurally different from our 4-function. Our v1 H/Q=1.6918 cited as canonical reproduction. Q34 asks Paul which is canonical — may invalidate v6/v7 4-function chase. |
-| Electron H/Q = 1.6969 calibration | NEW OPEN. v5 lands H/Q = 52.64 (31× off). | NEARLY CLOSED. v6.6 H/Q = 1.778 (4.8% over with DeepSeek quartic); step (8) drop-quartic lands H_e/Q = 1.7112 (0.84% off). | NEAR — v6.6 H_e/Q = 1.7112 remains best 4-function result. v7 mode-selector wall prevents reaching true ground state. | ⚠️ **CITED IN v9 PAPER BUT CAVEAT APPLIES.** v1 H/Q=1.6918 (0.30% off) cited in v9 §5.1 + §9 criterion 9 as "independent reproduction." Re-verification 2026-05-21 PM revealed: **the 1.6918 came from a systematic search across ~60 ODE/H/Q variants** (sandbox_v1/m6_0_iterations.py), not derivation. Default ODE form gives 1.9795 (17% off); matched variant A4+H1+Q2 uses ad hoc "quarter coupling" rescaling + non-default charge density. Different ansatz from v9 §5.1. Email v9 (gentle push-back) sent asking Paul to soften the citation language. Q36 captures this. |
-| Ground-state vs excited-mode selection | NEW OPEN. v5 attempt 4 found Q_CS=1 chaoiton but A in 17-node excited mode. | PARTIALLY ADDRESSED. v6.6 has 5 nodes V/Q (just over Lean ≤4 spec), 0 nodes A, 1 node J. | ❌ BLOCKED in 4-function form. Paul Q29 confirms ground state has exactly 4 zero crossings excluding r=0; v6.6 is first excited (5 crossings). 7 v7 anchor-variant experiments all land in wrong-sign basins. | Pending Q34 reply. If 2-scalar is canonical, v1's ansatz space may already host the 4-node ground state by construction. |
-| Helicity sign convention (V₀ Q₀ > 0, A₀ J₀ < 0) | Not explicitly tracked. | OPEN. v6.6 converged with Q(0)=−0.12 (sign-flipped from Werbos prescription). | ❌ BLOCKED in 4-function form. Paul Q30 confirms ground state has Q(0) > 0. All 7 v7 anchor variants land in different sign-flipped basins. | Pending Q34. In v9 §5.1 2-scalar ansatz, A_0=0 and J_0=0 by construction; the "asymmetric helicity" applies to spatial parts (φ vs ψ phase quadrature). Sign-basin problem may not exist in the 2-scalar form. |
-| Lagrange-multiplier ODE correction coefficient | NEW OPEN. v5 used coefficient 1. | Possibly residual coefficient issue. v6 lands λ_LM = 12.2 (vs v5's −1.21); new normalizations need larger λ. Empirically fine. | Unchanged. Different λ_LM init (0.1 vs 12) lands different basins — path-dependent (Q32 asks Paul about this). | Paul-script variant ruled out λ_LM=1.0 fixed (catastrophic blowup, H_e/Q=5×10⁵). Question becomes moot if Q34 resolves to 2-scalar canonical (different formulation). |
-| V(M) potential form | UNRESOLVED. Shared bottleneck with M5 (Duda). | Unchanged. Not in v5/v6 scope. | Unchanged. Note: M5 piece tracked here historically; not actively blocking M6 work. | Unchanged. |
-| ω quantization mechanism | OPEN (Q2). | Unchanged. v6 lepton scan provides empirical test once ground state anchors. | Unchanged. Pending ground state + lepton scan. | v9 paper §8 confirms "successive oscillation harmonics" framing; analytic proof still deferred per §9.1 Open Q#1. Empirical test still pending lepton scan. |
-| Lepton mass spectrum | BLOCKED on v6. | UNBLOCKED-PENDING. Run ω-sweep [0.5, 50] once ground state lands. Cold-start fails (step 2); continuation method needed. | ❌ BLOCKED on v7 ground state. Need ground-state anchor first, THEN continuation method. | Pending Q34. v9 §8 cites ω=1 electron, ω≈11 muon (4.3% gap), ω≈40.7 tau (4.9% gap). Once ansatz is locked, continuation scan delivers these. |
-| Neutral m_χ true ground state | BLOCKED on v6. | UNBLOCKED-PENDING. Run Q_A≈0 scan once anchored. | ❌ BLOCKED on v7 ground state. Same chain. Q_A≈0 scan feeds ApJ Section 4 numbers. | v9 §9.1 Open Q#2 explicitly cites our work — "Griesi, in preparation." Pending Q34 ansatz + electron lock. |
-| Two-chaoiton Coulomb derivation | NOT ADDRESSED. Future v7+ (Q21, Duda #4). | Unchanged. | Unchanged. | v9 paper §6.1 derives V(R) = Q₁Q₂/(4πR) for two separated chaoitons in static approximation. Duda critique #4 partially addressed in v9 itself; analytic dynamic derivation still future scope. |
-| Solver-tooling choice | `scipy.integrate.solve_bvp` (Werbos's stated default). | Unchanged. Track A diagnostic showed bigger budget makes things WORSE in solve_bvp. | Open question whether solve_bvp can reach Paul's ground state at all; fallback option is `scipy.optimize.root` method='lm' with custom Jacobian. | Paul-script variant test (λ_LM=1.0 fixed) ALSO failed in solve_bvp. Strongly suggests it's not a solver-tooling problem but an ansatz-space problem (Q34). v1's setup with the same solve_bvp produced 1.6918 — same solver, different ansatz, works. |
+| Hardest piece | Status post-v6 (2026-05-20 evening) | Status post-v7 (2026-05-21 morning) | Status post-v8 step 5 (2026-05-21 PM) |
+| --- | --- | --- | --- |
+| Electron H/Q calibration | NEARLY CLOSED in 4-function. v6.6 H/Q=1.778 (4.8%); step (8) drop-quartic 1.7112 (0.84%). | v6.6 best 4-function result. v7 mode-selector wall. | ✅ **EFFECTIVELY ACHIEVED via Sonnet's canonical 2-function script.** Best calibration: g=1.0000, H/Q=1.6890, gap **0.090%** (v8 step 2). Sonnet's reference g=1.0625, gap 0.56%. v1's 1.6918 cited in v9 but Q36 caveat applies (different geometry, search-not-derivation). |
+| V(M) potential form | UNRESOLVED. Shared bottleneck with M5. | Unchanged. | Unchanged for M5 (separate track); for M6, Sonnet's script settles the canonical form for chaoiton dynamics. |
+| ω quantization mechanism | OPEN (Q2). | Unchanged. | ✅ **Empirically validated via v8 step 4** — three lowest stable Q=1 modes match e/μ/τ within 0.80%/6.47%. Analytic proof still deferred per Werbos's §9.1 Open Q#1. |
+| Neutral m_χ true ground state | BLOCKED on v6. | BLOCKED on v7 ground state. | ⚠️ **PARTIAL via v8 step 5** — 448 solutions across (g, λ, B0). Lightest at λ=1.0 = 0.998 MeV (NOT 0.508 MeV as line 235 claims). Mass scaling closer to m ≈ 2λ·m_e at small B0. v9 §9.1 Open Q#2 attribution provenance unresolved (Q37). |
+| Algebraic 2L/Q identity (Q38 NEW) | Not tracked. | Not tracked. | ⚠️ NEW OPEN. Sonnet's script defines L = ω·Q_J directly, so 2L/Q = 2ω is trivially exact. The "g_e ≈ 2 reproduced" calibration item is artifact of definition. Worth flagging to Paul for 9a unless v9 §9 separately derives L = ω·Q_J from dynamics. |
 
-### RESOLVED hardest pieces (6 — closed; kept here for traceability)
+### RESOLVED hardest pieces (12 — closed post-v8; kept for traceability)
 
-| Hardest piece | Status post-v5 (2026-05-20 PM) | Status post-v6 (2026-05-20 evening) | Status post-v7 (2026-05-21 morning) | Status post-v8 (2026-05-21 PM) |
-| --- | --- | --- | --- | --- |
-| Forward-IVP method family | RESOLVED. Confirmed wrong tool by T6-T9; collocation BVP replaces. | Unchanged. | Unchanged. | Unchanged. |
-| Q_CS=1 enforcement mechanism | RESOLVED. Auxiliary integral state I with BC I(R_max)=1/(2π). | Unchanged — I_TARGET value changes to 1.0 per Q22. | Unchanged. | Unchanged. In v9 §4 paper, Q is defined as a Hopf invariant of A∧G — same topological mechanism, "automatic" via field linking. |
-| Q_CS=1 chaoiton existence | RESOLVED. v5 attempt 4 converged at Q_CS=1.000 exact. | Confirmed in v6 and v7 (sanity check 7.2 reproduces v6.6). | Confirmed. | ⚠️ Existence confirmed in v5/v6/v7 4-function form. v9 paper §5.1 cites v1 H/Q=1.6918 as canonical but v1 was variant-search (not derivation) on a DIFFERENT 2-scalar ansatz from v9 §5.1's. So: existence ✓ in our formulations; "canonical" reproduction ambiguous pending Q34 + Q36. |
-| f(J·J) form | RESOLVED IN PRACTICE — v5 uses Numerical-Benchmark form. | v6 uses DeepSeek quartic (`(V²+Q²)² + ...`) instead. Empirically right for v6.6 (H/Q within 5%). LoE-paper-standalone form (Q19) still editorially open. | RESOLVED for electron per Paul Q28: full quartic in EoM, drop from H/Q computation for electron. Different rule for muon/tau (significant) and neutral (essential). | v9 paper §2 lists the Lagrangian as `L = −F²−G²+JA−g(J·J)²` with explicit quartic `g(J·J)²` — settles Q19's editorial gap. |
-| 4-fn vs 2-fn ansatz mismatch | RESOLVED. 2-fn for NEUTRAL (Lean theorem), 4-fn for CHARGED (Numerical Benchmark / v5/v6/v7). | Unchanged. | Unchanged. | Re-opened in different form via Q34 — v9 paper §5.1 specifies a 2-scalar (φ, ψ) ansatz for the CHARGED electron, not 4-function as we assumed. Pending Q34 clarification. |
-| Charge quantization rigorous proof | RESOLVED. Hopf invariant proof complete (Zenodo 20296060). Q25. | Unchanged. | Unchanged. | Reaffirmed in v9 paper §4 + criterion 2. |
+| Hardest piece | Resolution path |
+| --- | --- |
+| Ansatz canonical form (Q34) | ✅ **RESOLVED 2026-05-21 PM** via DeepSeek's Q34 reply (possibility #1) + Sonnet's runnable canonical script. 2-function (α, β) reduction with vector cylindrical Laplacian is canonical for the electron. |
+| Ground-state vs excited-mode selection | ✅ RESOLVED via Sonnet's 2-function reduction — by construction the 2-function ansatz space removes excited-mode artifacts. Sonnet's converged points are ground states (not 5-node excited like v6/v7's 4-function results). |
+| Helicity sign convention (V₀ Q₀ > 0, A₀ J₀ < 0) | ✅ RESOLVED — moot for v8. Sonnet's 2-function form has slope BCs at r→0 (no value BC sign-pinning needed). v6/v7 wrong-sign basins were a 4-function-ansatz artifact. |
+| Lagrange-multiplier ODE correction coefficient | ✅ RESOLVED — moot for v8. Sonnet's script doesn't use a Lagrange multiplier; λ is a fixed parameter (λ=1.0 for electron). |
+| Lepton mass spectrum | ✅ **RESOLVED via v8 step 4** — muon at 0.80%, tau at 6.47%, pion+ at 3.25% (bonus). Cold-start scan works in 2-function form (no continuation method needed). |
+| Two-chaoiton Coulomb derivation | ✅ Static-approximation RESOLVED in v9 paper §6.1; dynamic derivation deferred (Q21 archived). |
+| Solver-tooling choice | ✅ RESOLVED — Sonnet's script uses forward `solve_ivp` RK45 with slope BCs + r_inner=0.02 offset. Robust, runs first try. |
+| Forward-IVP method family | RESOLVED v4 (confirmed wrong tool for 4-function); now v8 shows it IS the right tool for 2-function reduction with slope BCs + r_inner offset. |
+| Q_CS=1 enforcement mechanism | RESOLVED via integral constraint (v5) for 4-function form; for v8 2-function, topological charge Q_J is integrated directly from β² profile (no enforcement needed). |
+| Q_CS=1 chaoiton existence | RESOLVED — Sonnet's v8 script demonstrates existence in cylindrical geometry. v1/v5/v6/v7 demonstrated in spherical/4-function forms (different field theories — Q36 caveat). |
+| f(J·J) form | RESOLVED — v9 paper §2 explicit Lagrangian + Sonnet's script `4*g*β³` in EoM, `4*g*β⁴` in H. Q19 editorial gap closed in v9. |
+| 4-fn vs 2-fn ansatz mismatch | ✅ RESOLVED 2026-05-21 PM via Q34 — canonical electron production form is the 2-function (α, β) reduction with vector cylindrical Laplacian. The 4-function (V, A, Q, J) BVP system used in v4-v7 is a generalized formulation that admits excited modes. |
+| Charge quantization rigorous proof | RESOLVED v5 — Hopf invariant proof complete (Zenodo 20296060). Reaffirmed in v9 §4. |
+| Three-system geometric mapping | ✅ RESOLVED via v8 step 3 paper-math — Sonnet α,β cylindrical (r dr) ≠ v1 α,γ spherical (r² dr) ≠ v9 §5.1 toroidal gradient ansatz. Three different field theories in numerical neighborhood ~1.69. |
 
 ---
 
@@ -236,12 +266,68 @@ v8 → v9 net change (2026-05-21 PM later):
   PROPAGATED softened to "CITED IN v9 PAPER BUT CAVEAT APPLIES" across
              roadmap + question tracker + model_gates docs.
 
-Active count entering Paul's Q34 + Q36 reply:
-  2 IMMEDIATE (Q34 ansatz, Q36 v1 citation language)
+9b deposit + 9b review net change (2026-05-21 PM later):
+  TRIG:      Paul deposited 9b on Zenodo at 3:48 PM
+             (https://zenodo.org/records/20330894). arxiv on hold.
+             "Next assignment to DeepSeek is Dark Matter."
+  REVIEW:    Comprehensive 9b paper review of all Griesi-attributed
+             claims completed. Cover-page byline now lists "Claude
+             Code on Opus 4.7 (Anthropic)" as AI contributor —
+             visibility upgrade. Acknowledgments include
+             "manuscript review process" + "sustained technical
+             collaboration" — more substantive than v9.
+  NOT INCO:  Q36 push-back from email v9 did NOT land in 9b. Citation
+             language unchanged (abstract + §5.1 + §9 criterion 9).
+             9a appears to have been skipped to 9b.
+  NOT INCO:  Q37 0.508/0.511 MeV claim still in 9b §8 + §9
+             criterion 7 (cites our repo [17]). Time-critical
+             given DeepSeek moving to DM next.
+  NEW:       Q39 — 9b §8 muon ω=11.0 / tau ω=40.7 / gaps 4.3%/4.9%
+             do NOT match `ouroboros_benchmark.py` script output
+             (ω=12.82/50.0; gaps 0.80%/6.47%). Either different
+             script version / different parameters / analytical fit
+             vs script run.
+  NEW:       Q40 — 9b §5.1 cites reference [18] but references list
+             ends at [17]. Typo/cross-reference error.
+
+Sandbox v8 net change (2026-05-21 PM — Sonnet's canonical script):
+  TRIG:      Paul forwarded `ouroboros_benchmark.py` (Werbos + Claude
+             Sonnet 4.6) at 3:05 PM — first runnable canonical
+             Ouroboros script. 2-function (α, β) reduction with
+             vector cylindrical Laplacian + slope BCs at r→0.
+  TRIG:      DeepSeek's earlier 2:19 PM reply also endorsed
+             possibility #1 of Q34 (2-scalar canonical, 4-function
+             admits excited modes).
+  RESOLVED:  Q34 (ansatz canonical form) — 2-function (α, β)
+             reduction with vector cylindrical Laplacian IS canonical
+             for the electron. v4-v7 4-function chase was a
+             generalized formulation.
+  ARCHIVED:  Q31, Q32, Q33 — all three were 4-function-ansatz solver
+             questions; moot now that Q34 resolved to 2-function.
+  NEW:       Q37 — provenance of "0.508 MeV (Griesi 2026, independent)"
+             attribution on line 235. We never published this; AND
+             the script's own scan finds 0.998 MeV at λ=1.0. Email
+             v10 (drafted) asks Paul.
+  NEW:       Q38 — 2L/Q = 2.0 algebraic identity. Script defines
+             L = ω·Q_J directly; "g_e ≈ 2 reproduced" is artifact
+             of definition, not derived prediction. Email v10
+             flags for 9a.
+  PROMOTED:  G1 (lepton scan) PASSED empirically via v8 step 4
+             (muon 0.80%, tau 6.47%); G3 (discrete ω mechanism)
+             EMPIRICALLY VALIDATED via same; G2 (neutral m_χ)
+             PARTIAL pending Q37.
+  STRENGTH:  Q36 stronger than v9-era — v8 step 3 paper-math
+             confirms v1 spherical ≠ Sonnet cylindrical (different
+             geometries, not reductions).
+
+Active count entering Paul's email v10 reply (post-9b review):
+  5 IMMEDIATE (Q36 citation, Q37 0.508/0.511 MeV provenance + DM
+              urgency, Q38 2L/Q identity, Q39 §8 lepton ω discrepancy,
+              Q40 §5.1 reference [18] typo)
   5 OPEN      (Q2, Q3, Q6, Q19, Q35)
-  3 DEMOTED   (Q31, Q32, Q33 — contingent on Q34)
+  3 ARCHIVED  (Q31, Q32, Q33 — moot via Q34)
   2 DEMOTED   (Q26, Q27 — superseded)
-  → 12 active questions (2 immediate, 10 background).
+  → 15 active questions (5 immediate, 10 background).
 ```
 
 ---
@@ -249,36 +335,37 @@ Active count entering Paul's Q34 + Q36 reply:
 ## Highest-leverage closure path
 
 ```text
-Paul's Q34 reply
+Email v10 sent (Q36 reinforcement + Q37 0.508 MeV + Q38 identity)
     ↓
-    ├── (1) 2-scalar canonical
-    │       → re-anchor on v1 (already produces H/Q=1.6918, 0.30% off)
-    │       → continuation method from v1's electron forward to muon/tau
-    │       → 4-function v6/v7 work archived as detour
+Paul's reply
+    ↓
+    ├── Confirms 9a will soften v1 citation + clarify 0.508 MeV
+    │       → Acknowledge, return fully to M5
+    │       → M6 v8 work documented as functionally complete
     │
-    ├── (2) 4-function canonical (paper §5.1 is simplification)
-    │       → Q31/Q32/Q33 still need answers
-    │       → v8 mode-selector OR scipy.optimize.root method='lm'
+    ├── Asks us for specific (m_χ, m_J, σ/m) numbers for §9.1
+    │       → Run targeted Q_A≈0 sub-scan (~1 hour) on Sonnet's
+    │         canonical 2-function reduction
+    │       → Hand off via GitHub URL per Publishing stance
     │
-    └── (3) Both valid, different particles
-            → map ansatz-to-particle
-            → build whichever hosts the neutral chaoiton (DM, §9.1 #2)
-    ↓
-Ground state lands (V₀>0, Q₀>0, A₀<0, J₀<0, ≤4 nodes, H_e/Q ≈ 1.6918)
-    ↓
-Lepton continuation scan ω ∈ [1, 50]    →    Q2 empirically tested
-    ↓                                          (G1 closure)
-Q_A≈0 neutral chaoiton scan
-    ↓
-m_χ, m_J, σ/m, Ω_χh² extracted    →    G2 closure
-    ↓
-Gelfand-Fomin conjugate-point check on second variation
-    ↓                                          (G3 empirical)
-Data drop to Paul via stable OpenWave GitHub URL
-    (no Zenodo deposit from our side — see Publishing stance in
-     0b_M6_roadmap.md. The repo IS already cited as Reference [17]
-     in the v9 LoE paper as of 2026-05-21 PM.)
-    ↓
-M5 returns as foreground engineering track
-    (per cardinal rule: M5 is SABER's primary substrate)
+    ├── Provides 0.508 MeV provenance — IS reproducible somewhere
+    │       → Verify the path; update Q37 status accordingly
+    │
+    └── No reply within 1-2 weeks
+            → M5 continues; email v10 documents our position;
+              no further escalation needed.
+
+Already completed via sandbox v8 (no further M6 work needed):
+  - G1 lepton scan PASSED (v8 step 4): muon 0.80%, tau 6.47%
+  - G3 discrete ω mechanism EMPIRICALLY VALIDATED (same)
+  - G2 neutral m_χ PARTIAL (v8 step 5): 448 solutions, lightest at
+    λ=1.0 = 0.998 MeV — provenance of Sonnet's 0.508 MeV attribution
+    is the only remaining Q37 question
+
+M6 production decision (Taichi):
+  - Sonnet's canonical script gives reference ODE structure for port
+  - Decision still deferred per cardinal rule (M5 first)
+
+M5 returns as foreground engineering track per cardinal rule:
+  M5 is SABER's primary substrate. M6 v8 is functionally complete.
 ```
