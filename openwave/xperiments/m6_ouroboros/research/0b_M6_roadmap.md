@@ -1,11 +1,11 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** 🔶 v6 CALIBRATION ESSENTIALLY CLOSED — **step (8) diagnostic shows dropping the quartic from H lands H/Q = 1.7112, 0.84% off target** (matches Werbos's own *"for the electron, the quartic term is small"*). v6.6 with DeepSeek quartic lands H/Q = 1.778 (4.8% over). v5 was 52.64 (31× off) — net 31× → 0.84% in one session. Step (11) inspection: v6.6 is a 5-node excited mode (Lean spec ≤4), so true ground state may give H/Q even closer to 1.6969. Step (2) cold-start lepton scan fails (needs continuation method). DeepSeek's reference Python script received 2026-05-20 ~5:30 PM but does NOT run as-is (r=0 singularity + BC count mismatch); patched version diverges to H/Q≈10^16 — our v6 is dramatically closer to truth. Email v6 sent 2026-05-20 evening with Q28 (quartic interpretation), Q29 (≤4 nodes vs 5), Q30 (Q(r=0) sign). Hard stop tonight; sandbox_v7 tomorrow contingent on Paul's reply.
+**Status:** 🔶 v7 BLOCKED on mode-selector — Paul's 2026-05-21 reply resolved Q28/Q29/Q30 (quartic negligible for electron H, ground state has ≤4 nodes, helicity V₀>0 Q₀>0 A₀<0 J₀<0). v7 implemented warm-start + V/Q/VQ anchors + optional 3rd eigenvalue (m_J² or λ_bench), tried 7 variants — **none reached Paul's prescribed basin**. v6.6 at H_electron/Q = 1.7112 (0.84% off, 5-node first-excited) remains best result. Email v7 sent with Q31/Q32/Q33 (initial derivative profile, initial Lagrange multiplier, sign-pinning vs continuation method). v7 work parked until Paul's reply; M5 path unblocked for parallel foreground work.
 
-Last updated: 2026-05-20 evening (post step-(8/11/4/2) diagnostics + email v6 sent; hard stop).
+Last updated: 2026-05-21 morning (post v7 Phase 1 reassessment + email v7 sent; mode-selector wall hit).
 
-See `0c_model_gates.md` for the G1/G2/G3 production criteria.
-See `0d_m5vsM6.md` for the M5 vs M6 cross-evaluation in service of the SABER trigger.
+See `0b_model_gates.md` for the G1/G2/G3 production criteria.
+See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
 
 **Publishing stance (locked-in 2026-05-20):** OpenWave will NOT deposit M6
 work on Zenodo, arxiv, or any paper venue. The open-source GitHub repo IS
@@ -44,7 +44,7 @@ Groups cc'd: Models-of-Particles, Jeff Yee, Robert Close, Jarek Duda
 | Read all available Ouroboros papers | ✅ Full corpus in `theory/` |
 | Evaluated vs Duda's LdGS challenges | ✅ `0a_background.md` §1-8 |
 | Side-by-side M5 vs M6 comparison | ✅ `0a_background.md` §3 |
-| Verdict: viable M6 candidate? | ✅ YES — with caveats (`0c_model_gates.md`) |
+| Verdict: viable M6 candidate? | ✅ YES — with caveats (`0b_model_gates.md`) |
 
 ### Sandbox v1 (2026-05-17)
 
@@ -52,7 +52,7 @@ Groups cc'd: Models-of-Particles, Jeff Yee, Robert Close, Jarek Duda
 | --- | --- |
 | Reproduce electron calibration at (g=1.0625, ω=1.0) | ✅ H/Q = 1.6918 (0.30% gap) → ODE form A4+H1+Q2 calibrates |
 | Reproduce lepton mass scan ω^2.22 | ❌ Got ω^2.04, lepton gaps 31-44% |
-| Sent findings + THE QUESTION to Werbos | ✅ Email 2026-05-17 (in `0b_sandbox_v1.md`) |
+| Sent findings + THE QUESTION to Werbos | ✅ Email 2026-05-17 (in `0c_sandbox_v1.md`) |
 | Key finding: ω^2.22 = log(207)/log(11) → ω values appear fitted, not predicted | ✅ Post-hoc fit signature detected |
 
 ### Sandbox v2 (2026-05-18)
@@ -150,65 +150,97 @@ Calibration essentially closed; residual gap is the quartic interpretation
 | EMAIL (out) v6 2026-05-20 evening | Paul + DeepSeek. Lead with no-quartic finding (0.84% off target). Graceful script-status note (transcription/version artifact framing; quantitative answers validated empirically). Diagnostic summary (excited mode, cold-start lepton fail). Sonet acknowledgment (gracious, no flagging of stale numbers). Three new asks: **Q28** (which quartic interpretation for the electron — small g, different form, or zero?), **Q29** (does production have ≤4 nodes or 5?), **Q30** (is Q(r=0) positive or negative at production?). ApJ Zenodo upload still held. | ✅ SENT |
 | Open questions post-diagnostics | Q26 (4.8% gap) and Q27 (Q_CS-grid mismatch) DEMOTED — drop-quartic finding resolves Q26 to 0.84%; Q27 is now an excited-mode artifact, not a tunable. **New IMMEDIATE: Q28 (quartic interpretation), Q29 (mode), Q30 (Q sign).** All sent in email v6. Block v7 implementation. | 🔶 OPEN, awaiting Paul |
 
-### Sandbox v7 (planned for 2026-05-21, contingent on Paul's reply to Q28/Q29/Q30)
+### Sandbox v7 (2026-05-21 — Paul's reply lands; mode-selector blocked)
 
-Hard stop 2026-05-20 evening. Resume tomorrow morning. v7 implementation
-flows from which scenario branch (A/B/C/D) applies after Paul's reply.
-See `0b_sandbox_v6.md` "Tomorrow's v7 plan" for the full branching table.
+Paul's 2026-05-21 morning email answered Q28/Q29/Q30 directly:
 
-| Scenario | Paul confirms | sandbox_v7 focus | Estimate |
-| --- | --- | --- | --- |
-| A — best case | Quartic negligible + ≤4-node OK | Lock at v6.6 + drop-quartic H. Build lepton continuation (warm-start from electron, nudge ω). Q_A≈0 DM scan. Section 4 numbers in ~1 day. | ~1 day |
-| B — mode-selector | Quartic negligible BUT production has ≤4 nodes everywhere + Q(0) > 0 | Add ground-state mode-selector to v7 (continuation from known ground-state ansatz, OR Q(0) > 0 BC, OR node-penalty regularization). Re-converge before scans. | +1 day |
-| C — different quartic | Quartic structurally different | Re-implement H with new quartic. Re-test all 9 step-(8) variants. May also resolve excited-mode question. | +1-2 days |
-| D — no reply | — | Default plan A: build continuation + drop-quartic H. Re-evaluate when reply lands. | ~1 day |
+| Q | Paul's answer |
+| --- | --- |
+| Q28 (quartic) | Negligible for electron; keep full quartic in EoM for field shapes; drop from H/Q for electron-only. Significant for muon/tau, essential for neutral. |
+| Q29 (nodes) | Ground state has exactly 4 zero crossings excluding r=0. v6.6's 5-crossing solution is first excited state. |
+| Q30 (Q(0) sign) | Ground state has Q(0)=+0.1 (positive), same sign as V(0). Helicity is V₀>0, Q₀>0, A₀<0, J₀<0. |
 
-v7 implementation outline (provisional, drafted tomorrow):
+This maps to **Scenario B** from the v6 plan (quartic negligible BUT excited
+mode + sign mismatch). v7 implementation built sandbox_v7/m6_v7_4fn_ground_state_bvp.py
+with: full v6 ODE (with quartic) + dual H computation (H_full + H_electron) +
+anchor options (V / Q / VQ) + optional 3rd free eigenvalue (m_J² or λ_bench).
 
-| Component | v6 | v7 (planned) |
+**7 variants tested; none reached Paul's prescribed (V₀>0, Q₀>0, A₀<0, J₀<0,
+≤4 nodes) basin.** Solver landscape has multiple wrong-sign basins; each
+anchor fixes one sign but flips another. See `0c_sandbox_v7.md` Attempt log
+for full details. Highlights:
+
+| Attempt | Config | Result |
 | --- | --- | --- |
-| ODE structure | Toroidal Δ_r, mass on Q only, λ-corrections in A/J | Same (validated by v6 30× gap closure) |
-| H quartic | DeepSeek form `(g/4)·((V²+Q²)²+...)` | **TBD by Q28** — most likely g→0 (drop quartic) for electron |
-| Mode selection | Default `solve_bvp` finds 5-node mode | **NEW** — continuation from known ground-state ansatz, OR Q(0) > 0 BC, OR node-penalty regularization. TBD by Q29/Q30 |
-| Lepton scan | Cold-start fails (step 2) | **NEW** — continuation method: converge electron first, warm-start with ω nudged by λ_LM perturbation; sweep ω upward |
-| Q_A≈0 DM scan | Not yet run | **NEW** — set V₀=Q₀≈0, A₀+J₀ asymmetric. Sweep m_J²; find Q_J≠0 Q_A≈0 bound state |
-| Acceptance | H/Q within 5% (v6.6 ✓ at 4.8%) | H/Q within 1% (drop-quartic ✓ at 0.84%) AND nodes ≤ 4 everywhere AND Q_CS_grid matches Q_CS_I |
+| 7.1 | warm-start + λ_LM init 12 | Catastrophic blowup (ω=−1, λ_LM=185) |
+| 7.2 | no warm-start + λ_LM init 0.1 | Reproduces v6.6 exactly (H_e/Q=1.711, 5-node, Q(0)=−0.12) ✓ |
+| 7.3 | V anchor + warm-start | V₀=+0.10 ✓ but A₀=+1.48 flipped |
+| 7.4 | Q anchor + warm-start | Q₀=+0.10 ✓ but V₀=−0.08 flipped |
+| 7.5 | Q anchor + no warm-start | Q₀=+0.10 ✓ but V, J flipped |
+| 7.6 | VQ anchor + m_J² free | Singular Jacobian → 10^65 blowup |
+| 7.7 | VQ anchor + λ_bench free | λ_bench → −360k, A flipped to +16 |
+
+**Email v7 sent 2026-05-21 morning** with three algorithm questions:
+
+| Q | Question |
+| --- | --- |
+| Q31 | Initial-guess derivative profile in production code — slope at r=R_MIN explicitly zero or specific non-zero? |
+| Q32 | Initial Lagrange multiplier λ value — near 0, near ω, or specific number? |
+| Q33 | Does production solver use explicit sign-pinning constraint OR a continuation method (e.g., homotopy m_J²: 0 → 0.5)? |
+
+**v7 work parked until Paul's reply.** v6.6 H_electron/Q = 1.7112 (0.84% off
+target, 5-node first-excited) remains the best empirical result. M5 path
+unblocked for parallel foreground work.
 
 ---
 
-## Current state (2026-05-20 evening hard stop, post step-(8/11/4/2) diagnostics + email v6 sent)
+## Current state (2026-05-21 morning, post v7 Phase 1 reassessment + email v7 sent)
 
 | Item | Status |
 | --- | --- |
-| Werbos collaboration | 🔶 Active — five emails 2026-05-20: AM new compact ApJ Neutral Chaoiton paper + DM v4 deposit; ~2:00 PM algorithm reply; ~4:00 PM normalization clarifications (Q22/Q23/Q24); ~4:50 PM disorientation note; ~5:30 PM DeepSeek reference Python script. |
-| Email v6 (out) — no-quartic finding + Q28/Q29/Q30 | ✅ Sent 2026-05-20 evening. Lead with step (8) drop-quartic finding (0.84% off target). Graceful script-status note. Sonet acknowledgment. Three asks. Awaiting Paul reply. |
-| DeepSeek reference Python script | ⚠️ RECEIVED but BROKEN. r=0 singularity + BC count mismatch. Patched version diverges to H/Q≈10^16. Our v6.6 (H/Q=1.778) is 16 orders of magnitude closer to truth. Stop diffing against the script. |
-| sandbox_v6 Q_CS=1 chaoiton | ✅ DEMONSTRATED at ω=1.016, m_eff²=-0.532, Q_CS=1.000 exact, λ_LM=12.21. |
-| Electron H/Q = 1.6969 calibration | ✅ **ESSENTIALLY CLOSED.** Step (8) diagnostic: dropping the quartic from H lands H/Q = **1.7112 (0.84% off target).** With DeepSeek quartic: 1.778 (4.8% over). Matches Werbos's stated *"for the electron, the quartic term is small."* Pending Paul's Q28 confirmation. |
-| Quartic interpretation (Q28) | 🔶 OPEN, asked in email v6. Three possibilities: (a) small g (not 1.0625), (b) different small-magnitude combination, (c) genuinely negligible for the electron. Drop-quartic variant is the only one within 1% of target. |
-| Ground-state vs excited mode (Q29) | 🔶 OPEN, asked in email v6. v6.6 has 5 zero crossings in V and Q (just over Lean ≤4 spec); peak A is 8× peak V (imbalanced helicity). True ground state may give H/Q closer to 1.6969 directly without dropping the quartic. |
-| Q(r=0) sign at production (Q30) | 🔶 OPEN, asked in email v6. v6.6 converged with Q(0)=−0.12 (helicity flipped from Werbos's V₀=Q₀=+0.1 prescription). May be linked to excited-mode selection. |
-| Cold-start lepton scan | ❌ FAILS (step 2 diagnostic). ω_init ∈ {5, 12, 20, 40.7} diverges 9-20 orders of magnitude; only ω_init=1 lands electron basin. v7 needs continuation method. |
-| Basin fragility | ⚠️ CONFIRMED (step 4 + λ_LM sweep). Q_CS=1 basin extremely narrow; same nominal config gives 4× different H/Q values depending on max_nodes. Larger budget makes things worse, not better. v6.6 is the best `solve_bvp` produces with this ODE+BC formulation. |
-| DeepSeek normalization fixes Q22/Q23 | ✅ EMPIRICALLY VALIDATED. Drop-2π on Q_CS + (1/2) kinetic + no toroidal prefactor land H/Q at 1.778 (with DeepSeek quartic) or 1.7112 (without). Both within "essentially closed" tolerance. |
-| DeepSeek Q24 reference profile | ❌ CONFIRMED FABRICATED. DeepSeek itself acknowledged: *"the eight-point table I sent was illustrative, not from a converged run."* Use exp(-r) seed. |
-| Hopf invariant proof (charge quantization) | ✅ RESOLVED. Zenodo 20296060 supplies the two missing lemmas. Now a theorem of differential topology. |
-| Duda critiques (2026-05-20 thread) | #1 G_μν / single-field ontology — ARCHIVED (unfalsifiable). #2 f(J·J) unspecified — editorial OPEN (Q28 directly asks Paul to pin this). #3 construction not shown — NEARLY CLOSED (v6.6 + drop-quartic IS the construction shown empirically at 0.84% off). #4 two-charge Coulomb — FUTURE v7+. |
-| Gate G1 (lepton scan) | 🔶 NEARLY UNBLOCKED. Continuation method required (cold-start fails). v7 work. |
-| Gate G2 (neutral m_χ ground state) | 🔶 NEARLY UNBLOCKED. Q_A≈0 scan runs once v7 calibration mode is locked. |
+| Werbos collaboration | 🔶 Active — Paul's 2026-05-21 reply on Q28/Q29/Q30 was clear and actionable; email v7 sent same evening with three new algorithm questions. |
+| Email v7 (out) — v7 basin problem + Q31/Q32/Q33 | ✅ Sent 2026-05-21 morning. Reports 7 v7 variants tried, none reached prescribed ground-state basin. Three asks on solver setup. |
+| Q28 (quartic interpretation) | ✅ RESOLVED. Negligible for electron H; keep in EoM. Significant for muon/tau, essential for neutral. |
+| Q29 (ground state nodes) | ✅ RESOLVED. Ground state has exactly 4 zero crossings excluding r=0; v6.6 (5 crossings) is first excited state. |
+| Q30 (helicity signs) | ✅ RESOLVED. V₀ > 0, Q₀ > 0, A₀ < 0, J₀ < 0 at ground state. |
+| sandbox_v7 mode-selector | ❌ BLOCKED. 7 variants tested (V/Q/VQ anchor × warm-start × 3rd eigenvalue choice); none reach Paul's prescribed basin. Each anchor fixes one sign but flips another. Awaiting Paul's Q31/Q32/Q33 reply. |
+| Electron H/Q = 1.6969 calibration | 🔶 NEAR — v6.6 H_electron/Q = 1.7112 (0.84% off target) on first-excited 5-node mode. True ground state (4-node, Q(0)>0 per Paul) unreached. |
+| Q31 (initial-guess derivative profile) | 🔶 OPEN, asked in email v7. Whether slope at r=R_MIN is explicitly zero (our BC) or specific non-zero per Paul. |
+| Q32 (initial Lagrange multiplier λ) | 🔶 OPEN, asked in email v7. v6.6 converges at λ_LM=12.2 with init 0.1; warm-start + init 12 catastrophically blows up. Path matters. |
+| Q33 (sign-pinning vs continuation method) | 🔶 OPEN, asked in email v7. Whether Paul uses explicit sign-pinning OR a homotopy method to land the ground state. |
+| Cold-start lepton scan | ❌ FAILS (step 2 v6 diagnostic). ω_init ∈ {5, 12, 20, 40.7} diverges 9-20 orders of magnitude. v7 needs continuation method. |
+| Basin fragility | ⚠️ CONFIRMED. Q_CS=1 basin extremely narrow; sign conventions easily flip during solver convergence regardless of initial profile. |
+| DeepSeek normalization fixes Q22/Q23 | ✅ EMPIRICALLY VALIDATED in v6. Drop-2π on Q_CS + (1/2) kinetic + no toroidal prefactor land H/Q at 1.778 (with DeepSeek quartic) or 1.7112 (without). |
+| DeepSeek Q24 reference profile | ❌ CONFIRMED FABRICATED by DeepSeek. Use Paul's qualitative-shape guidance (single-peak monotonic decay) instead. |
+| Hopf invariant proof (charge quantization) | ✅ RESOLVED. Zenodo 20296060 supplies the two missing lemmas. |
+| DeepSeek reference Python script | ⚠️ RECEIVED but BROKEN (r=0 singularity + BC count mismatch). Our v6/v7 are dramatically closer to truth. Stop diffing against the script. |
+| Duda critiques (2026-05-20 thread) | #1 archived; #2 partially resolved by Paul's Q28; #3 NEARLY CLOSED (v6.6 + drop-quartic IS the construction at 0.84% off); #4 future v7+. |
+| Gate G1 (lepton scan) | 🔶 BLOCKED on v7 ground state. Continuation method required AND ground-state anchor needed first. |
+| Gate G2 (neutral m_χ ground state) | 🔶 BLOCKED on v7 ground state. Q_A≈0 scan runs once v7 lands. |
 | Gate G3 (discrete ω selection) | ⚠️ BLOCKED on G1. Empirical-via-lepton-scan path; analytic proof deferred per Werbos. |
-| ApJ Neutral Chaoiton paper (Paul's, not ours) | 🔶 HOLD on Paul's side. Paul is holding his ApJ Zenodo update pending our Section 4 numbers. Once we hand off (m_χ, m_J, σ/m, Ω_χh²), Paul's Ref [14] *"Griesi & Anthropic AI 2026, in preparation"* resolves to a stable GitHub URL (the OpenWave m6_ouroboros tree). We don't deposit anything ourselves — see Publishing stance at top. |
-| M6 production in Taichi | 🚧 Decision deferred until v7 locks + scans run. Earliest realistic: 2-3 days. |
-| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. With M6 calibration essentially closed pending Q28/Q29/Q30, M5 return is feasible after v7 + scans. Cardinal rule: M5 is SABER's primary engineering track. |
+| ApJ Neutral Chaoiton paper (Paul's) | 🔶 HOLD on Paul's side. He's waiting on our Section 4 numbers; v7 mode-selector wall delays this. Publishing stance: our deliverable is the GitHub repo, not a deposit. |
+| M6 production in Taichi | 🚧 Decision deferred until v7 locks + scans run. Earliest realistic depends on Paul's Q31/Q32/Q33 reply. |
+| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. M5 path remains unblocked; with v7 paused on Paul, M5 can proceed in foreground. Cardinal rule: M5 is SABER's primary engineering track. |
 
 ---
 
 ## Next steps
 
-### Immediate — hard stop, awaiting Paul reply
+### Immediate — hard stop, awaiting Paul's Q31/Q32/Q33 reply
 
-Email v6 (sent 2026-05-20 evening) is the next-action point. v7 scenarios
-A/B/C/D in the Sandbox v7 section above determine which branch runs tomorrow.
+Email v7 sent 2026-05-21 morning with three algorithm questions (initial
+derivative profile, initial Lagrange multiplier, sign-pinning vs continuation
+method). v7 work parked. M5 path proceeds in foreground per cardinal rule
+(M5 is SABER's primary engineering substrate).
+
+### Branches when Paul replies
+
+| If Paul says... | We do |
+| --- | --- |
+| "Use specific derivative profile X at r=R_MIN" | Update initial guess in v7; rerun |
+| "λ_LM starts at 0, not 12 or 0.1" | Try v7 with that init value |
+| "Use continuation in m_J² from 0 to 0.5" | Build continuation wrapper; this becomes v7.x |
+| Doesn't reply within 24-48 hrs | Switch to `scipy.optimize.root` method='lm' with custom Jacobian (Paul mentioned as alternative); ~3-4 hrs to implement |
 
 ### Production scans (post-v7 calibration lock)
 
@@ -223,8 +255,7 @@ A/B/C/D in the Sandbox v7 section above determine which branch runs tomorrow.
 
 Cardinal rule: SABER is the primary engineering goal, M5 is its substrate.
 Once v7 closes + scans run + ApJ Section 4 numbers handed off, M6 stays
-parallel-research and primary focus returns to M5. See `0d_m5vsM6.md` for
-the full M5 vs M6 evaluation against the SABER trigger.
+parallel-research and primary focus returns to M5.
 
 | Step | Action | Notes |
 | --- | --- | --- |
@@ -253,79 +284,16 @@ the full M5 vs M6 evaluation against the SABER trigger.
 
 ---
 
-## Open questions (snapshot — see `0b_sandbox_v6.md` for full v6 tracker)
+## Open questions + Hardest pieces — see `0b_question_tracker.md`
 
-### IMMEDIATE (block v7 implementation; all asked in email v6)
-
-| ID | Question | Why it matters |
-| --- | --- | --- |
-| Q28 | Which quartic interpretation for the electron? (a) small g, (b) different combination, (c) genuinely negligible. | Drop-quartic lands H/Q=1.7112 (0.84% off); DeepSeek form lands 1.778 (4.8% off). v7 quartic choice depends on this. |
-| Q29 | Does production have ≤4 zero crossings (ground state) or 5 (excited mode)? | v6.6 has 5 in V and Q. v7 may need mode-selector if production is ground state. |
-| Q30 | Is Q(r=0) positive (Werbos prescription V₀=Q₀=+0.1) or negative at production? | v6.6 converged with Q(0)=−0.12, helicity flipped. May be linked to excited-mode selection. |
-
-### DEMOTED (resolved or no longer urgent post-diagnostics)
-
-| ID | Status |
-| --- | --- |
-| Q26 (4.8% H/Q gap) | DEMOTED — drop-quartic finding (step 8) resolves to 0.84%, within tolerance. |
-| Q27 (Q_CS_grid vs Q_CS_I mismatch) | DEMOTED — excited-mode artifact (step 11), not a tunable. Track A sharpening backfired. |
-
-### STILL OPEN (not blocking v7)
-
-| ID | Question | Why it matters |
-| --- | --- | --- |
-| Q2 | Discrete ω selection mechanism | Empirical-via-lepton-scan in v7. Analytic proof deferred per Werbos. |
-| Q3 | Analytical ω = 2mc²/ℏ derivation | Calibration only (1.2% match via R^phys). |
-| Q6 | QCD reconciliation (3-chaoiton proton) | Future v7+. |
-| Q19 | f(J·J) explicit form in LoE paper standalone (Duda critique #2) | Editorial; partly addressed by Q28. |
-| Q21 | Two-chaoiton Coulomb derivation (Duda critique #4) | Future sandbox v7+. |
-
-### RESOLVED (closed by v5/v6 or earlier)
-
-| ID | Resolution |
-| --- | --- |
-| Q1, Q9, Q10, Q11, Q13 | Earlier rounds (v1-v4). |
-| Q12 (Werbos Python code) | DEMOTED — v5 algorithm description + DeepSeek script (broken) = same unblock; our v6 is independent. |
-| Q14 (canonical Q=0) | Q_A≈0 / Q_J≠0 (Werbos 2026-05-19 1:49 PM). |
-| Q15 (m_eff² substitution) | RESOLVED post-v5. m_eff²=−0.596 in v5 attempt 4; −0.532 in v6.6. Both negative as predicted. |
-| Q16 (m_J², λ_bench) | m_J²≈0.5, λ_bench=1.0 (Werbos 2026-05-19 4:21 PM). |
-| Q17 (shooting algorithm) | RESOLVED — collocation BVP per Werbos 2026-05-20 PM email. |
-| Q20 (Duda critique #3 — construction not shown) | NEARLY CLOSED — v6.6 + drop-quartic IS the construction at 0.84% off. |
-| **Q22 (Q_CS normalization)** | **RESOLVED by DeepSeek 2026-05-20 4:00 PM.** Drop the 2π. Validated empirically by v6. |
-| **Q23 (H functional)** | **RESOLVED by DeepSeek 2026-05-20 4:00 PM.** Kinetic 1/2, drop toroidal prefactor, DeepSeek quartic (or drop quartic per step 8). Validated empirically by v6. |
-| **Q24 (sample converged profile)** | **RESOLVED with caveat:** DeepSeek confirmed the 8-point table was illustrative, not from a real run. Use exp(-r) seed. |
-| Q25 (Hopf invariant proof) | RESOLVED — Zenodo 20296060 supplies the two missing lemmas. Theorem of differential topology. |
-
-### ARCHIVED (unfalsifiable / future scope)
-
-| ID | Why archived |
-| --- | --- |
-| Q4 (single vs two-field ontology) | = Duda critique #1. Aesthetic preference. Not a theory-killer if math matches observation. |
-| Q7 (cold-fusion citation trail) | Historical, not physics. |
-
-**Active count post-diagnostics: 3 IMMEDIATE + 5 OPEN = 8 questions.**
-**Highest-leverage closure: Paul's Q28/Q29/Q30 reply → v7 → lepton + DM scans → ApJ Section 4 handoff.**
-
----
-
-## Hardest pieces (snapshot — see `0b_sandbox_v6.md` for live tracker)
-
-| Hardest piece | Status post-diagnostics (2026-05-20 evening) |
-| --- | --- |
-| Forward-IVP method family | RESOLVED. Confirmed wrong tool by both us (T6-T9) and Werbos. Replaced with collocation BVP in v5. |
-| Q_CS=1 enforcement mechanism | RESOLVED. Auxiliary integral state I with BC I(R_max)=1.0 (v6) — also matches the field-derived integral when on the right basin. |
-| Q_CS=1 chaoiton existence | RESOLVED. v5 attempt 4 + v6.6 both converge with Q_CS=1.000 exact. First empirical chaoiton in OpenWave. |
-| **Electron H/Q = 1.6969 calibration** | **NEARLY RESOLVED.** v6.6 drop-quartic lands H/Q=1.7112 (0.84% off). Pending Q28 confirmation (which quartic is canonical for the electron). |
-| Ground-state vs excited mode selection | NEAR-PASS. v6.6 has 5 nodes V/Q (just over Lean ≤4 spec); 0 nodes A; 1 node J. Pending Q29 (does production have ≤4 nodes everywhere?). Mode-selector may be v7 work. |
-| Lagrange-multiplier ODE correction coefficient | EMPIRICALLY OK. v6 lands λ_LM=12.21 (vs v5's −1.21); the new normalizations need a larger Lagrange multiplier. Empirically right; analytic derivation may have a missing factor that doesn't affect the H/Q ratio. |
-| V(M) potential form | UNRESOLVED — shared bottleneck with M5 (Duda). Not in v6/v7 scope. |
-| f(J·J) form | RESOLVED IN PRACTICE — v6 uses DeepSeek quartic (or drop-quartic per step 8). Q19 (LoE paper editorial gap) remains for Werbos's next LoE revision; Q28 asks for the electron-specific interpretation. |
-| 4-fn vs 2-fn ansatz mismatch | RESOLVED. 2-fn for NEUTRAL (Lean theorem), 4-fn for CHARGED (Numerical Benchmark / v5/v6). |
-| ω quantization mechanism | OPEN (Q2). v7 lepton scan via continuation method provides empirical test. Analytic proof deferred per Werbos's own admission. |
-| Lepton mass spectrum | UNBLOCKED for v7. Cold-start fails (step 2); continuation method needed. |
-| Neutral m_χ true ground state | UNBLOCKED for v7. Q_A≈0 scan feeds Section 4 of ApJ Neutral Chaoiton paper. |
-| Two-chaoiton Coulomb derivation | NOT ADDRESSED. Future sandbox v7+ (Q21, Duda critique #4). |
-| Charge quantization rigorous proof | RESOLVED. Hopf invariant proof complete (Zenodo 20296060). |
+Both trackers (per-question status and the long-running hardest-pieces
+board) now live in `0b_question_tracker.md` as a single source of truth
+across all sandbox iterations. Active count as of 2026-05-21 morning:
+**3 IMMEDIATE (Q31, Q32, Q33) + 4 OPEN (Q2, Q3, Q6, Q19) + 2 DEMOTED
+(Q26, Q27) = 9 active questions.** Highest-leverage closure path:
+Paul's Q31/Q32/Q33 reply → v8 mode-selector or continuation method →
+ground state → lepton + Q_A≈0 DM scans → Section 4 data drop (GitHub
+URL per Publishing stance above).
 
 ---
 
@@ -336,15 +304,16 @@ the full M5 vs M6 evaluation against the SABER trigger.
 | Doc | Contents |
 | --- | --- |
 | `0a_background.md` | Technical evaluation (§1-10) + updates |
-| `0b_sandbox_v1.md` | v1 plan, results, emails, Q-list |
-| `0b_sandbox_v2.md` | v2 plan, IVP+BVP attempts, Q-list |
-| `0b_sandbox_v3.md` | v3 plan, Lean ODE, neutral scan, Q-list |
-| `0b_sandbox_v4.md` | v4 plan, T1-T9 negative results, forward pointer to v5 |
-| `0b_sandbox_v5.md` | v5 plan, Werbos algorithm reply, T10 partial success, question tracker |
-| `0b_sandbox_v6.md` | v6 plan (current), DeepSeek normalizations, step (8/11/4/2) diagnostics, drop-quartic finding, email v6 + Q28/Q29/Q30, v7 plan |
-| `0c_model_gates.md` | G1/G2/G3 production decision criteria |
-| `0c_roadmap.md` | This file |
-| `0d_m5vsM6.md` | M5 vs M6 evaluation in service of the SABER trigger; Duda/Werbos self-stated limitations |
+| `0c_sandbox_v1.md` | v1 plan, results, emails, Q-list |
+| `0c_sandbox_v2.md` | v2 plan, IVP+BVP attempts, Q-list |
+| `0c_sandbox_v3.md` | v3 plan, Lean ODE, neutral scan, Q-list |
+| `0c_sandbox_v4.md` | v4 plan, T1-T9 negative results, forward pointer to v5 |
+| `0c_sandbox_v5.md` | v5 plan, Werbos algorithm reply, T10 partial success, question tracker |
+| `0c_sandbox_v6.md` | v6: DeepSeek normalizations, step (8/11/4/2) diagnostics, drop-quartic finding, email v6 + Q28/Q29/Q30 |
+| `0c_sandbox_v7.md` | v7 (current): Paul's Q28/Q29/Q30 answers, mode-selector attempts (7 variants), Phase 1 reassessment, email v7 + Q31/Q32/Q33 |
+| `0b_M6_roadmap.md` | This file |
+| `0b_model_gates.md` | G1/G2/G3 production decision criteria |
+| `0b_question_tracker.md` | Live question + hardest-pieces tracker (single source of truth across all sandbox iterations) |
 
 **Sandbox scripts:**
 
@@ -356,7 +325,7 @@ the full M5 vs M6 evaluation against the SABER trigger.
 | `sandbox_v4/` | T1 lepton scan (blocked); T2 neutral ground state (negative); `diag_energy_functional`; T5 4-fn extracted; T6-T9 forward-IVP attempts — all negative; reference for definitive "forward-IVP wrong tool" result |
 | `sandbox_v5/` | `m6_v5_4fn_lambda_bvp.py` — Werbos's collocation BVP with Lagrange multiplier λ_LM. `solve_bvp.status=0` at ω=1.047, m_eff²=−0.596. H/Q=52.64 vs target 1.6969 (open: normalization gap, closed in v6). |
 | `sandbox_v6/` | `m6_v6_4fn_calibrated_bvp.py` — forks v5 + Q22/Q23/Q24 fixes. v6.6 lands H/Q=1.778 with DeepSeek quartic; step (8) drop-quartic lands H/Q=1.7112 (0.84% off target). Also: `deepseek_reference.py` + `deepseek_reference_patched.py` (broken — diverges to H/Q≈10^16); `diagnostic_steps_8_through_2.py` (the 4-step diagnostic that found drop-quartic). |
-| `sandbox_v7/` | PLANNED for 2026-05-21, contingent on Paul's Q28/Q29/Q30 reply. Scenarios A/B/C/D — see Sandbox v7 section above. |
+| `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6; dual H computation (H_full + H_electron per Paul Q28); anchor options V/Q/VQ + optional 3rd free eigenvalue (m_J² or λ_bench). 7 variants tested 2026-05-21; none reach Paul's prescribed ground state. Blocked on Paul's Q31/Q32/Q33 reply. |
 
 **Theory papers:**
 

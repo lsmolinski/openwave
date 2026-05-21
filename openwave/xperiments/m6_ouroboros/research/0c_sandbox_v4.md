@@ -1290,7 +1290,7 @@ initial profile.
 This is a structurally different method family from anything attempted
 in v4 — it is its own sandbox iteration. See:
 
-- `0b_sandbox_v5.md` — full v5 recipe + attempt log + the partial-
+- `0c_sandbox_v5.md` — full v5 recipe + attempt log + the partial-
   success / 31×-H/Q-gap diagnosis
 - `sandbox_v5/m6_v5_4fn_lambda_bvp.py` — implementation
 
@@ -1299,6 +1299,6 @@ convergence to a Q_CS=1 chaoiton at the stated (ω≈1, m_eff²≈-0.5)
 regime. Open question for v6: Q_CS / H normalization-convention
 mismatch giving a 31× H/Q calibration gap.
 
-Also documented in `0b_sandbox_v5.md`: the Duda public-list critique
+Also documented in `0c_sandbox_v5.md`: the Duda public-list critique
 of v8 LoE (2026-05-20 ~1:15 PM) and Werbos's algorithm reply
 (2026-05-20 ~2:00 PM).

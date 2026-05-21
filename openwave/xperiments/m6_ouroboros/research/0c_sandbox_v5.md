@@ -493,7 +493,7 @@ sandbox_v4/m6_v4_4fn_newton.py             — v4 two-stage Newton
 ```
 
 For full v4 history and the six-attempt negative result that justified
-this method change, see `0b_sandbox_v4.md`.
+this method change, see `0c_sandbox_v4.md`.
 
 ---
 

@@ -536,17 +536,23 @@ depends on the scenario branch above.
 | `sandbox_v6/m6_v6_4fn_calibrated_bvp_results.json` | Last run's full JSON output. Currently holds v6.6 best-run diagnostics. |
 
 For v5 history and the 31× normalization-gap diagnosis that motivated v6,
-see `0b_sandbox_v5.md`. For the broader sandbox v1-v4 history, see
-`0b_sandbox_v4.md` and the earlier sandbox docs.
+see `0c_sandbox_v5.md`. For the broader sandbox v1-v4 history, see
+`0c_sandbox_v4.md` and the earlier sandbox docs.
 
 ---
 
-## Question tracker (v6 snapshot)
+## Question tracker (v6 snapshot — migrated to `0b_question_tracker.md`)
 
-Continues numbering from v5 (which ran through Q25). v6 closes Q22/Q23/Q24
-(the three IMMEDIATE questions from v5 about normalization), partially closes
-Q20 (Duda critique #3 — construction shown empirically), and opens two new
-questions about the residual 5% gap.
+The full question + hardest-pieces tracker now lives in
+**`0b_question_tracker.md`** as the single source of truth across all
+sandbox iterations. The sections below are the v6-era snapshot, kept here
+for historical context only; **update `0b_question_tracker.md` for any new
+changes**, not this file.
+
+v6 net change (preserved for archaeology): closed Q22/Q23/Q24 (the three
+v5 IMMEDIATE about normalization), partially closed Q20 (Duda #3 —
+construction shown empirically), opened Q26 (5% gap) + Q27 (Q_CS grid
+mismatch), then opened Q28/Q29/Q30 after the step (8) diagnostic.
 
 ### IMMEDIATE-QUESTIONS (block v7 implementation; all asked in email v6)
 
