@@ -6,6 +6,10 @@ OpenWave is an open-source subatomic wave simulator for exploring fundamental ph
 
 The platform implements multiple candidate mathematical frameworks through complementary approaches: SCALAR-FIELD models (similar to lattice gauge theory), VECTOR-FIELD models, both for research simulations, and a GRANULE-MOTION model for educational visualization. Each framework runs in the same numerical engine, enabling direct comparison of model predictions against shared observables.
 
+### Beyond the granule demos — OpenWave for research
+
+The walkthrough below uses the GRANULE-MOTION model for an intuitive introduction to wave concepts. The research-oriented side of OpenWave goes further: scalar / vector / director-field models running on a Taichi GPU lattice, multiple candidate Lagrangians compared side-by-side on shared observables, and cause-effect experiments where you perturb the field and measure its dynamic response. If you want the research-platform framing, the M-model contributors, and the falsifiability framing, see the main [README](README.md) → "Scientific Position" and "Platform vs. model" sections.
+
 ![OpenWave Logo](images/openwave-white-small.png#gh-dark-mode-only)![OpenWave Logo](images/openwave-black-small.png#gh-light-mode-only)
 
 ## Computational Approaches

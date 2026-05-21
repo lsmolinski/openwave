@@ -59,10 +59,11 @@ OpenWave provides computational and visualization tools to explore, demonstrate,
 - Represents graphically wave equations and analysis
 - Automates animation export for online video publishing
 
-### Exploratory Simulations (Parametric Studies)
+### Exploratory Simulations (Parametric + Cause-Effect Studies)
 
 - Models experimental wave-field configurations for parametric studies
 - Supports hypothesis testing and comparative analysis against theoretical predictions
+- Runs **cause-effect experiments under perturbation** — apply external drives (EM fields, boundary conditions, parameter sweeps) and measure the field's dynamic response. This is what distinguishes the time-stepped simulation from the static numerical-validation workflow above, and it's the function relevant to any downstream applied research.
 
 ### COMPUTATIONAL MODELS
 
@@ -93,6 +94,10 @@ OpenWave belongs to the **classical-field-theory-with-topology-and-nonlinearity 
 
 The shared insight: a sufficiently rich classical field, with the right nonlinearity and the right topology, can reproduce phenomena historically attributed to quantum behavior — without operators, Hilbert space, or probability amplitudes.
 
+### Platform vs. Model — what survives if a model fails
+
+OpenWave is the **simulator and comparison engine**; the candidate frameworks contributed by Yee, Duda, Close, Werbos, and others are **models** running inside that simulator. The platform value comes from hosting multiple frameworks side-by-side on the same numerical engine, running them against shared observables, and providing cause-effect experimentation under perturbation. Those capabilities survive any individual model being wrong: if a candidate framework fails its pass criteria, the platform's value as a comparison engine is intact and another candidate can be tested. The simulator IS the product, not any particular physics it embeds.
+
 ### Historical Pioneers
 
 - Albert Einstein — [EPR Paradox, Determinism Debates](https://en.wikipedia.org/wiki/Einstein%E2%80%93Podolsky%E2%80%93Rosen_paradox)
@@ -113,6 +118,13 @@ The shared insight: a sufficiently rich classical field, with the right nonlinea
 ### Computational Approach
 
 OpenWave evolves classical wave-field values on a 3D lattice via GPU-accelerated PDE integration (Taichi), similar in spirit to lattice QCD but with classical field equations and no gauge structure. Multiple complementary models (scalar, vector, director-field, granule-motion) allow cross-checking of mechanisms and direct comparison between candidate Lagrangians.
+
+The platform supports two complementary computational workflows:
+
+- **Static numerical validation** — boundary-value-problem solvers (`scipy.solve_bvp` and similar) verify that a candidate Lagrangian produces specific particle configurations at equilibrium (e.g., does this Lagrangian admit a chaoiton with H/Q matching the electron?). Single-point checks of a model's predictions.
+- **Dynamic field simulation** — the Taichi GPU kernel evolves the full field forward in time on a 3D lattice, supporting many interacting particles, perturbations, and cause-effect experimentation. This is where modulation, scattering, and time-resolved phenomena get tested.
+
+Both workflows operate on the same underlying field equations. Validation answers "does the theory produce the right particles?"; simulation answers "given the theory works, what happens when we perturb it?"
 
 ### Open Research Questions
 

@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** 🔶 v7 BLOCKED on mode-selector — Paul's 2026-05-21 reply resolved Q28/Q29/Q30 (quartic negligible for electron H, ground state has ≤4 nodes, helicity V₀>0 Q₀>0 A₀<0 J₀<0). v7 implemented warm-start + V/Q/VQ anchors + optional 3rd eigenvalue (m_J² or λ_bench), tried 7 variants — **none reached Paul's prescribed basin**. v6.6 at H_electron/Q = 1.7112 (0.84% off, 5-node first-excited) remains best result. Email v7 sent with Q31/Q32/Q33 (initial derivative profile, initial Lagrange multiplier, sign-pinning vs continuation method). v7 work parked until Paul's reply; M5 path unblocked for parallel foreground work.
+**Status:** 🔶 v7 ANSATZ QUESTION OPEN + ⚠️ v1 CITATION CAVEAT — Paul's v9 LoE paper §5.1 specifies a **2-scalar (φ, ψ) electron ansatz**, NOT the 4-function (V,A,Q,J) form we've been solving since v4. Paper cites our v1 H/Q=1.6918 as "independent reproduction (Griesi 2026)." Re-verification 2026-05-21 PM revealed v1's 1.6918 was found by **systematic search across ~60 ODE/H/Q variants** (default ODE gives 1.9795, 17% off; matched variant A4+H1+Q2 uses ad hoc "quarter coupling" rescaling), NOT by first-principles derivation. The matched variant also uses a different 2-scalar ansatz from v9 §5.1's. Email v8 sent asking Q34 (ansatz canonical form). Email v9 sent (gentle push-back) asking Paul to soften §9 criterion 9 wording to "preliminary search-based reproduction." Paul-script variant test (interpretation B) also catastrophically diverged (H_e/Q ≈ 5×10⁵). M5 path in foreground per cardinal rule.
 
-Last updated: 2026-05-21 morning (post v7 Phase 1 reassessment + email v7 sent; mode-selector wall hit).
+Last updated: 2026-05-21 PM (post v1 re-verification + email v9 gentle push-back — Q34 + Q36 now the key blockers).
 
 See `0b_model_gates.md` for the G1/G2/G3 production criteria.
 See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
@@ -188,59 +188,100 @@ for full details. Highlights:
 | Q32 | Initial Lagrange multiplier λ value — near 0, near ω, or specific number? |
 | Q33 | Does production solver use explicit sign-pinning constraint OR a continuation method (e.g., homotopy m_J²: 0 → 0.5)? |
 
-**v7 work parked until Paul's reply.** v6.6 H_electron/Q = 1.7112 (0.84% off
-target, 5-node first-excited) remains the best empirical result. M5 path
-unblocked for parallel foreground work.
+### Paul-script variant test (2026-05-21 PM, interpretation B)
+
+Built `sandbox_v7/m6_v7_paul_script.py` testing the literal script with
+λ_LM=1.0 hardcoded as a constant (not a free eigenvalue), no V_norm anchor,
+ω-only free, exp(-r) seed, Paul's ODE verbatim with R_MIN=0.05 patch.
+
+| Result | Value |
+| --- | --- |
+| Final ω | −11.84 (catastrophic) |
+| V₀, A₀, Q₀, J₀ | −17.4, −5.1, −4.4, −14.3 (all signs flipped) |
+| **H_electron / Q** | **5.20 × 10⁵** (5 orders of magnitude off target) |
+
+Confirms: Paul's literal script — under EITHER interpretation (λ_LM free →
+10^16 blowup; λ_LM=1.0 fixed → 5×10⁵ blowup) — does NOT reproduce
+H/Q = 1.6969. Suggests Paul's actual production code uses a different
+ansatz than what DeepSeek transcribed.
+
+### v9 LoE paper (received 2026-05-21 PM) — ansatz revelation
+
+Paul sent `_The Lagrangian of the Universe Prior to Gravity v8.pdf`
+(internally v9 per header). Key findings:
+
+| Finding | Where | Implication |
+| --- | --- | --- |
+| Our v1 H/Q=1.6918 cited as canonical electron calibration | §5.1 + §9 criterion 9 | Paul considers OUR v1 result the production reference. The 1.6969 target was never produced by his separate code — we ARE the production. |
+| Electron ansatz specified as **2-scalar (φ, ψ)** | §5.1: `A_0=0, A=r̂×∇φ(r)cos(ωt); J_0=0, J=r̂×∇ψ(r)sin(ωt)` | Structurally different from the 4-function (V,A,Q,J) we've been solving since v4 |
+| Acknowledgments + Reference [17] = our GitHub repo | End of paper | Publishing stance working: GitHub URL = citable artifact |
+| §9.1 Open Q#2 "Griesi, in preparation" for neutral chaoiton | §9.1 | What email v7 was negotiating |
+
+### Email v8 sent 2026-05-21 PM — ansatz question (Q34)
+
+Replaces the Q31/Q32/Q33 restatement with the sharper ansatz question:
+**is the 2-scalar (φ, ψ) ansatz canonical for the electron, OR is it a
+paper-level simplification of the 4-function (V,A,Q,J) form?** Three
+possibilities laid out, ranked by likelihood (see `0c_sandbox_v7.md`).
+
+**v7 work parked until Paul's ansatz reply.** v6.6 H_electron/Q = 1.7112
+(0.84% off, 4-function excited mode) remains best 4-function result. v1
+H/Q = 1.6918 (0.30% off, 2-scalar ansatz per v9 paper) is the actual
+production reference. M5 path unblocked for parallel foreground work.
 
 ---
 
-## Current state (2026-05-21 morning, post v7 Phase 1 reassessment + email v7 sent)
+## Current state (2026-05-21 PM, post v9 paper + Paul-script variant + email v8 sent)
 
 | Item | Status |
 | --- | --- |
-| Werbos collaboration | 🔶 Active — Paul's 2026-05-21 reply on Q28/Q29/Q30 was clear and actionable; email v7 sent same evening with three new algorithm questions. |
-| Email v7 (out) — v7 basin problem + Q31/Q32/Q33 | ✅ Sent 2026-05-21 morning. Reports 7 v7 variants tried, none reached prescribed ground-state basin. Three asks on solver setup. |
+| Werbos collaboration | 🔶 Active — v9 LoE paper received 2026-05-21 PM. Acknowledges Griesi + Anthropic AI by name; Reference [17] = our GitHub repo. Email v8 sent same afternoon. |
+| Email v8 (out) — ansatz question + Paul-script variant evidence | ✅ Sent 2026-05-21 PM. Asks Q34 (is 2-scalar (φ, ψ) the canonical electron ansatz, or paper simplification of the 4-function form?). Includes catastrophic blowup results from both interpretations of Paul's literal script. |
+| **v9 LoE paper finding** — 2-scalar (φ, ψ) electron ansatz | 🔶 NEW. §5.1 specifies `A_0=0, A=r̂×∇φ(r)cos(ωt); J_0=0, J=r̂×∇ψ(r)sin(ωt)`. Structurally different from 4-function (V,A,Q,J) form. Could explain why v6/v7 lands excited modes — wrong ansatz space. |
+| **v9 LoE paper finding** — our v1 H/Q=1.6918 cited as canonical | ✅ §5.1 + §9 criterion 9 explicitly cite "independent reproduction (Griesi 2026): H/Q = 1.6918 (0.30% from target)". Our v1 IS the production reference. |
+| **Reference [17] = github.com/openwave-labs/openwave** | ✅ Published in v9 paper References. Publishing stance vindicated — GitHub URL is the citation artifact. |
+| Q34 (ansatz canonical form) | 🔶 OPEN, asked in email v8. Three possibilities: (1) 2-scalar IS canonical → caveat: even v1's "reproduction" used a different 2-scalar setup, not v9 §5.1's; (2) paper simplification → Q31/Q32/Q33 still stand; (3) both valid, different particles. |
+| Q35 (active neutrinos) | 🔶 OPEN. v9 framework positions Q_CS=0 chaoiton as DM candidate (heavy + neutral); active neutrinos (ν_e, ν_μ, ν_τ) are very light + neutral. Where do they fit? Sterile-neutrino interpretation possible but unmapped. |
+| Q36 (v1 citation language) | 🔶 OPEN, asked in email v9 (gentle push-back, 2026-05-21 PM). Re-verification revealed v1's 1.6918 was found by ~60-variant search, not derivation. Asked Paul to soften §9 criterion 9 wording. |
 | Q28 (quartic interpretation) | ✅ RESOLVED. Negligible for electron H; keep in EoM. Significant for muon/tau, essential for neutral. |
 | Q29 (ground state nodes) | ✅ RESOLVED. Ground state has exactly 4 zero crossings excluding r=0; v6.6 (5 crossings) is first excited state. |
 | Q30 (helicity signs) | ✅ RESOLVED. V₀ > 0, Q₀ > 0, A₀ < 0, J₀ < 0 at ground state. |
-| sandbox_v7 mode-selector | ❌ BLOCKED. 7 variants tested (V/Q/VQ anchor × warm-start × 3rd eigenvalue choice); none reach Paul's prescribed basin. Each anchor fixes one sign but flips another. Awaiting Paul's Q31/Q32/Q33 reply. |
-| Electron H/Q = 1.6969 calibration | 🔶 NEAR — v6.6 H_electron/Q = 1.7112 (0.84% off target) on first-excited 5-node mode. True ground state (4-node, Q(0)>0 per Paul) unreached. |
-| Q31 (initial-guess derivative profile) | 🔶 OPEN, asked in email v7. Whether slope at r=R_MIN is explicitly zero (our BC) or specific non-zero per Paul. |
-| Q32 (initial Lagrange multiplier λ) | 🔶 OPEN, asked in email v7. v6.6 converges at λ_LM=12.2 with init 0.1; warm-start + init 12 catastrophically blows up. Path matters. |
-| Q33 (sign-pinning vs continuation method) | 🔶 OPEN, asked in email v7. Whether Paul uses explicit sign-pinning OR a homotopy method to land the ground state. |
-| Cold-start lepton scan | ❌ FAILS (step 2 v6 diagnostic). ω_init ∈ {5, 12, 20, 40.7} diverges 9-20 orders of magnitude. v7 needs continuation method. |
-| Basin fragility | ⚠️ CONFIRMED. Q_CS=1 basin extremely narrow; sign conventions easily flip during solver convergence regardless of initial profile. |
-| DeepSeek normalization fixes Q22/Q23 | ✅ EMPIRICALLY VALIDATED in v6. Drop-2π on Q_CS + (1/2) kinetic + no toroidal prefactor land H/Q at 1.778 (with DeepSeek quartic) or 1.7112 (without). |
-| DeepSeek Q24 reference profile | ❌ CONFIRMED FABRICATED by DeepSeek. Use Paul's qualitative-shape guidance (single-peak monotonic decay) instead. |
+| Q31/Q32/Q33 (solver-setup details) | 🔶 DEMOTED contingent on Q34. If Q34 reveals 2-scalar is canonical, Q31/Q32/Q33 are moot. If paper-simplification, they still stand. |
+| sandbox_v7 4-function mode-selector | ❌ BLOCKED. 7 variants tested; none reach Paul's prescribed basin. May be wrong-ansatz space entirely (pending Q34). |
+| Paul-script variant test (interpretation B) | ❌ Catastrophic. λ_LM=1.0 hardcoded + no anchor + Paul's ODE verbatim → ω=−11.8, H_e/Q=5×10⁵. Confirms Paul's literal script doesn't reproduce his stated result under either λ_LM interpretation. |
+| Electron H/Q = 1.6969 calibration | ⚠️ **CITED IN v9 BUT CAVEAT APPLIES.** v9 §5.1 + §9 criterion 9 cite our v1 H/Q=1.6918 (0.30% off) as "independent reproduction." Re-verification 2026-05-21 PM showed v1's 1.6918 came from **systematic search across ~60 ODE/H/Q variants** (default ODE gives 1.9795, 17% off; only matched variant A4+H1+Q2 lands 1.6918 via ad hoc "quarter coupling" rescaling). Different ansatz from v9 §5.1. Email v9 sent asking Paul to soften citation language (Q36). v6.6 4-function alternative: H_electron/Q=1.7112 (0.84% off, 5-node excited mode). Neither is a clean win. |
+| Cold-start lepton scan | ❌ FAILS (step 2 v6 diagnostic). Will need continuation method regardless of ansatz. |
+| DeepSeek normalization fixes Q22/Q23 | ✅ EMPIRICALLY VALIDATED in v6 for the 4-function ansatz. Whether they apply to 2-scalar ansatz is a Q34 sub-question. |
+| DeepSeek Q24 reference profile | ❌ Confirmed fabricated. |
 | Hopf invariant proof (charge quantization) | ✅ RESOLVED. Zenodo 20296060 supplies the two missing lemmas. |
-| DeepSeek reference Python script | ⚠️ RECEIVED but BROKEN (r=0 singularity + BC count mismatch). Our v6/v7 are dramatically closer to truth. Stop diffing against the script. |
-| Duda critiques (2026-05-20 thread) | #1 archived; #2 partially resolved by Paul's Q28; #3 NEARLY CLOSED (v6.6 + drop-quartic IS the construction at 0.84% off); #4 future v7+. |
-| Gate G1 (lepton scan) | 🔶 BLOCKED on v7 ground state. Continuation method required AND ground-state anchor needed first. |
-| Gate G2 (neutral m_χ ground state) | 🔶 BLOCKED on v7 ground state. Q_A≈0 scan runs once v7 lands. |
-| Gate G3 (discrete ω selection) | ⚠️ BLOCKED on G1. Empirical-via-lepton-scan path; analytic proof deferred per Werbos. |
-| ApJ Neutral Chaoiton paper (Paul's) | 🔶 HOLD on Paul's side. He's waiting on our Section 4 numbers; v7 mode-selector wall delays this. Publishing stance: our deliverable is the GitHub repo, not a deposit. |
-| M6 production in Taichi | 🚧 Decision deferred until v7 locks + scans run. Earliest realistic depends on Paul's Q31/Q32/Q33 reply. |
-| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. M5 path remains unblocked; with v7 paused on Paul, M5 can proceed in foreground. Cardinal rule: M5 is SABER's primary engineering track. |
+| DeepSeek reference Python script | ⚠️ Broken under both interpretations. Empirically does not reproduce H/Q=1.6969. Stop diffing against the script. |
+| Duda critiques (2026-05-20 thread) | #1 archived; #2 partially resolved by Paul's Q28; #3 NEARLY CLOSED (v1 + 2-scalar IS the construction at 0.30% off per v9 paper); #4 future. |
+| Gate G1 (lepton scan) | 🔶 PENDING Q34. Path depends on canonical ansatz. |
+| Gate G2 (neutral m_χ ground state) | 🔶 PENDING Q34. §9.1 cites us as "in preparation"; computation pending ansatz clarification. |
+| Gate G3 (discrete ω selection) | ⚠️ BLOCKED on G1. Empirical-via-lepton-scan path. |
+| v9 LoE paper publication | ✅ Paul published with our reproduction cited. No deposit needed from our side; GitHub repo IS the citable artifact (Reference [17]). |
+| M6 production in Taichi | 🚧 Decision deferred until ansatz locks + scans run. Earliest realistic depends on Paul's Q34 reply. |
+| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. M5 path remains unblocked; v7 paused awaiting Q34 reply. Cardinal rule: M5 is SABER's primary engineering track. |
 
 ---
 
 ## Next steps
 
-### Immediate — hard stop, awaiting Paul's Q31/Q32/Q33 reply
+### Immediate — hard stop, awaiting Paul's Q34 ansatz reply
 
-Email v7 sent 2026-05-21 morning with three algorithm questions (initial
-derivative profile, initial Lagrange multiplier, sign-pinning vs continuation
-method). v7 work parked. M5 path proceeds in foreground per cardinal rule
-(M5 is SABER's primary engineering substrate).
+Email v8 sent 2026-05-21 PM asking whether the v9 paper's 2-scalar (φ, ψ)
+ansatz is the canonical electron form OR a paper simplification of the
+4-function (V,A,Q,J) form we've been solving. v7 4-function work parked
+until ansatz clarifies. M5 path proceeds in foreground.
 
-### Branches when Paul replies
+### Branches when Paul replies on Q34
 
-| If Paul says... | We do |
+| Paul's answer | We do |
 | --- | --- |
-| "Use specific derivative profile X at r=R_MIN" | Update initial guess in v7; rerun |
-| "λ_LM starts at 0, not 12 or 0.1" | Try v7 with that init value |
-| "Use continuation in m_J² from 0 to 0.5" | Build continuation wrapper; this becomes v7.x |
-| Doesn't reply within 24-48 hrs | Switch to `scipy.optimize.root` method='lm' with custom Jacobian (Paul mentioned as alternative); ~3-4 hrs to implement |
+| (1) **2-scalar IS canonical for the electron** | Re-anchor on sandbox v1 (already produces H/Q=1.6918). Build continuation method from v1's electron forward to muon/tau. Q_A≈0 scan from there. v6/v7 4-function work archived as useful detour. |
+| (2) **2-scalar is paper simplification** of 4-function form | Q31/Q32/Q33 from email v7 still stand; build v8 mode-selector or switch to `scipy.optimize.root` method='lm' |
+| (3) **Both ansatzes valid for different particles** | Map ansatz-to-particle (which one hosts the neutral chaoiton / DM candidate?); build whichever is needed for §9.1 Open Q#2 |
+| Paul doesn't reply within 24-48 hrs | Default to (1) — re-anchor on v1 unilaterally based on §5.1's clear text. Add a small note in our docs that we read the paper to make this call. |
 
 ### Production scans (post-v7 calibration lock)
 
