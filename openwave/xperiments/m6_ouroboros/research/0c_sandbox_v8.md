@@ -484,6 +484,120 @@ hold. Next assignment to DeepSeek is Dark Matter."* Attachment: 9b PDF.
 
 ---
 
+## 9c outcome (2026-05-21 4:21 PM) — all five questions incorporated
+
+Paul replied at 4:21 PM forwarding DeepSeek's 9c draft (Zenodo deposit
+to replace 9b's 20330894). **All five questions from email v10 (Q36,
+Q37, Q38, Q39, Q40) were incorporated cleanly.** Three bonus changes
+also went in.
+
+### Q-resolution table for 9c
+
+| Question | 9c status |
+| --- | --- |
+| Q36 — v1 citation softening | ✅ §9 criterion 9 reads: *"Preliminary reproduction in a different geometric realisation achieved H/Q = 1.6918; first-principles derivation in the canonical cylindrical form is pending."* — exactly the suggested language |
+| Q37 — 0.508/0.511 MeV provenance | ✅ Corrected throughout. Abstract: *"m_χ ≈ 0.998 MeV"*. §8: *"electron-calibrated parameters (λ=1, g=1.0000), the neutral chaoiton mass is m_χ ≈ 0.998 MeV. Scaling is approximately m_χ ≈ 2λm_e at small B_0."* §9 criterion 7: *"g=0.5, λ=0.1 gives m_χ=0.101 MeV; for λ=1 (electron calibration) m_χ=0.998 MeV"* |
+| Q38 — 2L/Q identity | ✅ §9 criterion 3 footnote added: *"in our numerical implementation L=ωQ_J by construction, so the electron g-factor match fixes ω, not an independent check"* |
+| Q39 — §8 lepton ω discrepancy | ✅ §8 now: *"ω=12.82: muon (predicted 106.5 MeV vs. observed 105.66 MeV, gap 0.80%); ω=50.0: tau (predicted 1662 MeV vs. observed 1777 MeV, gap 6.47%)"* — our exact v8 numbers |
+| Q40 — reference [18] typo | ✅ Fixed; §5.1 now correctly cites [17] |
+
+### Bonus 9c incorporations beyond our asks
+
+| Item | Significance |
+| --- | --- |
+| §2: *"For the numerical work we set g=1.0000 after calibration"* | Adopted our tighter calibration over Sonnet's g=1.0625 |
+| §8: pion+ added as *"possible baryon state at ω=15.0 (pion-like, 3.25% gap)... may indicate that the same dynamics generate hadrons"* | Our feature/coincidence observation promoted to "candidate baryon" hypothesis |
+| Abstract: *"Independent reproduction of the electron calibration to within 0.09% supports the framework"* | Framing upgraded from v9b's 0.30% — our tighter g=1.0000 calibration cited |
+
+### Paul's explicit ask: confirm 9c numbers
+
+Paul: *"please check if the corrected neutral mass (0.998 MeV at λ=1) and the lepton harmonics (ω=12.82, 50.0) match your benchmark outputs."*
+
+| Quantity | 9c claims | Our v8 scan output | Match? |
+| --- | --- | --- | --- |
+| Neutral m_χ at λ=1 | 0.998 MeV | 0.9986 MeV (B0=0.001, canonical scan grid) | ✅ Match |
+| Muon at ω=12.82 | 0.80% gap | 0.80% gap (predicted 106.50 vs PDG 105.66) | ✅ Match |
+| Tau at ω=50.0 | 6.47% gap | 6.47% gap (predicted 1661.88 vs PDG 1776.86) | ✅ Match |
+
+---
+
+## DM paper input extraction (2026-05-21 PM later)
+
+Paul's parallel ask (4:10 PM, `DarMatterMay21.docx` draft): *"Submit
+to ApJ when Rodrigo provides the precise numerical values for m_J, C,
+and m_χ."* DeepSeek wrote a full DM paper draft and gated ApJ
+submission on us providing these three numbers.
+
+### Extraction script + results
+
+Built `sandbox_v8/extract_mJ_C_mchi.py`. Three observables at the
+electron-calibrated point (λ=1, g=1.0000):
+
+| Symbol | Value | Source |
+| --- | --- | --- |
+| m_χ | **0.998 MeV** | Canonical scan grid (r_max=12, n=800) at B0=0.001 — matches 9c §8 |
+| m_J | **1.033 MeV** | Analytical: m_J = √λ × ℏc/R_phys = √1 × 197.33/191 |
+| C | **6.7 × 10⁻⁴ MeV·fm** | Source-monopole + spherical 3D convention: Q_src²/(4π) at B0=0.05 |
+
+Auxiliary raw integrals (for alternate normalization conventions):
+
+| Integral | Value |
+| --- | --- |
+| Q_src_sph = 4g · ∫β³ · 4π r² dr (spherical 3D) | +9.034 × 10⁻² |
+| Q_src_cyl = 4g · ∫β³ · 2π r dr (cylindrical) | +1.125 × 10⁻² |
+
+### β profile non-localization — critical caveat surfaced
+
+Inspecting β(r) sample values at B0=0.05 (g=1, λ=1) on extended grid r_max=30:
+
+| r | β(r) | β/K_1(r) (should be ~constant for K_1 tail) |
+| --- | --- | --- |
+| 0.5 | +0.024 | +0.015 |
+| 2.0 | +0.057 (peak) | +0.41 |
+| 3.0 | +0.033 | +0.83 |
+| 4.0 | **−0.0073 (sign flip)** | −0.58 |
+| 5.0 | −0.033 | −8.1 |
+| 7.0 | +0.0002 (sign flip again) | +0.43 |
+| 10.0 | +0.0037 (growing) | +199 |
+| 15.0 | +0.020 (still growing) | +200,000 |
+| 20.0 | +0.0073 | +1.2 × 10⁷ |
+| 25.0 | −0.012 (yet another sign flip) | −3.4 × 10⁹ |
+
+**The β profile is NOT a localized soliton.** Internal sign changes
+(around r=3.5 and r=7) and a growing oscillating tail past r~10.
+β/K_1 grows 10 orders of magnitude in the tail instead of staying
+constant — definitive evidence the tail is not pure Bessel decay.
+
+### Consequences for DM paper accuracy
+
+| Item | Status |
+| --- | --- |
+| m_χ via H/Q × m_e | Integration-window-dependent. r_max=12 → 0.998 MeV; r_max=30 → 1.040 MeV (4% drift). The 9c-cited 0.998 MeV is the r_max=12 windowed value, not a true ground state. |
+| K_1(m_J·r) far-field fit | Fails universally — relative residual > 1 in every window tried. The tail isn't pure Bessel decay because the IVP doesn't enforce β(∞)=0. |
+| C from far-field amplitude | Unreliable. Source-monopole definition C = 6.7 × 10⁻⁴ MeV·fm is order-of-magnitude only. |
+| Diagnosis | Sonnet's `solve_ivp` with slope BC β'(0)=B0 doesn't impose β(∞)=0 as a boundary; it integrates outward. For a true ground state, a BVP with β(R_max)=0 (or Robin-decay BC) is needed — analogous to Sonnet's charged-sector `solve_bvp` setup. |
+
+### Recommendation flagged to Paul
+
+Two paths offered in email v11:
+
+| Path | Tradeoff |
+| --- | --- |
+| Present DM paper with current numbers + "order-of-magnitude pending true neutral-sector ground state" caveat | Submit faster; weaker accuracy claim |
+| Delay ApJ submission while we build a proper BVP variant of the neutral chaoiton solver | Slower; clean ground state + reliable C |
+
+Awaiting Paul's call. Email v11 sent 2026-05-21 PM later with all
+three numbers + caveat + offer to run BVP variant.
+
+### NEW questions from this work
+
+| ID | Status |
+| --- | --- |
+| Q41 — Writing role | Declined full writing role per existing lane (numerical verification + edits + tables/data). Offered narrow help if Sonnet's table needs a numerical contribution. |
+| Q42 — β non-localization in IVP | Forward `solve_ivp` from slope BC β'(0)=B0 does NOT yield a truly localized neutral chaoiton. The 9c-cited "m_χ ≈ 0.998 MeV at λ=1" is windowed-integration, not ground state. Proper BVP solve with β(∞)=0 needed. |
+
+---
+
 ## Appendix — Quick demo output (verbatim)
 
 ```text

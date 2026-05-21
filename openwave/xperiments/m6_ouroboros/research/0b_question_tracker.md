@@ -14,48 +14,55 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-21 PM later (post 9b Zenodo deposit + 9b paper review — **Q36 NOT INCORPORATED in 9b** (citation language unchanged); **Q37 NOT INCORPORATED in 9b** (0.508/0.511 MeV claim still in §8 + §9 criterion 7, cites our repo); **Q39 NEW** (§8 lepton ω numbers don't match Sonnet's script output); **Q40 NEW** (§5.1 cites undefined reference [18]). 9b cover-page byline now lists Claude Code on Opus 4.7 (us) as AI contributor — visibility upgrade. **Time-critical: DeepSeek's next assignment is the Dark Matter paper; Q37 must land before DM revision begins.** Email v10 needs redraft to fold in 9b review + DM-paper urgency).
+**Last updated:** 2026-05-21 PM later (post 9c outcome + DM extraction + email v11 sent — **ALL 5 push-back questions (Q36, Q37, Q38, Q39, Q40) RESOLVED in 9c** via email v10. DM paper inputs delivered: m_χ = 0.998 MeV, m_J = 1.033 MeV, C = 6.7×10⁻⁴ MeV·fm. **Q41 NEW** (writing role declined). **Q42 NEW** (β profile not localized in IVP — 9c-cited m_χ is windowed-integration value, not true ground state). Email v11 offers two paths: DM caveat-as-is OR delay for BVP variant. Awaiting Paul's reply).
 
 ---
 
 ## Active count
 
 ```text
-5 IMMEDIATE  Q36 9b §9 criterion 9 citation softening — STRENGTHENED
-             but NOT INCORPORATED in 9b. v9 push-back didn't land;
-             9a appears to have been skipped to 9b. arxiv version
-             still on hold per Paul; can still be revised before
-             deposit. v8 step 3 evidence (cylindrical vs spherical
-             = different field theories) is the stronger argument.
+2 IMMEDIATE  Q41 (NEW) Writing role question. Paul asked
+             "I wonder whether your Claude does writing." Declined
+             full writing role; staying in numerical verification +
+             edits + tables/data lane per cardinal-rule scope.
+             Offered narrow help if Sonnet's table needs a numerical
+             contribution. Sent in email v11.
 
-             Q37 NOT INCORPORATED in 9b — 0.508/0.511 MeV claim
-             still in §8 + §9 criterion 7 (cites our repo [17]).
-             Critically time-sensitive: DeepSeek's next assignment is
-             the Dark Matter paper, so this wrong number will
-             propagate from 9b LoE to the DM paper if not corrected
-             FIRST. v8 step 5 found lightest at λ=1.0 = 0.998 MeV
-             (NOT 0.508/0.511); empirical scaling m ≈ 2λ·m_e.
+             Q42 (NEW) β profile non-localization in IVP. Forward
+             solve_ivp with slope BC β'(0)=B0 does NOT yield a true
+             localized neutral chaoiton — β has internal sign changes
+             (r=3.5, r=7) and growing oscillating tail past r~10.
+             β/K_1(r) ratio grows 10 orders of magnitude in tail
+             instead of constant. Consequences: m_χ integration-window-
+             dependent (r_max=12 → 0.998 MeV; r_max=30 → 1.040 MeV);
+             K_1 far-field fit fails (resid > 1 everywhere); C from
+             far-field unreliable. **9c-cited m_χ = 0.998 MeV is a
+             windowed-integration value, not a true ground state.**
+             Proper BVP with β(∞)=0 needed for clean ground state.
+             Flagged to Paul in email v11; Paul's call on path.
 
-             Q38 (NEW) 2L/Q = 2.0 algebraic identity. Sonnet's script
-             defines L = ω·Q_J directly (line 139), so 2L/Q = 2ω is
-             trivially exact at ω=1. 9b §9 criterion 3 cites "g-factor
-             0.116%" — that's the identity, not a derived prediction.
+5 RESOLVED   Q36 ✅ Incorporated in 9c §9 criterion 9 — reads exactly
+in 9c        the suggested wording "Preliminary reproduction in a
+             different geometric realisation achieved H/Q = 1.6918;
+             first-principles derivation in the canonical cylindrical
+             form is pending."
 
-             Q39 (NEW) §8 lepton ω discrepancy. 9b §8 cites
-             "ω = 11.0: muon ... gap 4.3%; ω = 40.7: tau ... gap 4.9%".
-             Running `ouroboros_benchmark.py`'s own
-             `lepton_spectrum_scan()` produces ω=12.82 (gap 0.80%) for
-             muon and ω=50.0 (gap 6.47%) for tau. Different ω
-             values + different gap percentages. Paul's reported
-             numbers don't match what the canonical script outputs.
-             Either he ran a different script version / parameter
-             setting OR quoted analytical-prediction numbers from the
-             ω^2.22 fit rather than from the script.
+             Q37 ✅ Incorporated in 9c throughout. Abstract,
+             §8, §9 criterion 7 all corrected to 0.998 MeV at λ=1
+             (plus 0.101 MeV at λ=0.1 as overall lightest). Scaling
+             rule corrected to m_χ ≈ 2λ·m_e at small B_0.
 
-             Q40 (NEW) §5.1 typo. Body cites "see open-source
-             benchmark [18]" but the references list only goes to
-             [17]. Reference [18] is undefined in the manuscript.
-             Trivial fix — should be [17] (our repo).
+             Q38 ✅ Incorporated in 9c §9 criterion 3 footnote:
+             "in our numerical implementation L=ωQ_J by construction,
+             so the electron g-factor match fixes ω, not an
+             independent check."
+
+             Q39 ✅ Incorporated in 9c §8 — exact v8 numbers
+             (ω=12.82 muon 0.80%, ω=50.0 tau 6.47%) replace Paul's
+             approximate ω=11/40.7 with 4.3%/4.9% gaps.
+
+             Q40 ✅ Incorporated in 9c §5.1 — reference now [17]
+             (was undefined [18] in 9b).
 
 3 ARCHIVED   Q31 initial-guess derivative profile in production
 (moot after  Q32 initial Lagrange multiplier value
@@ -79,45 +86,36 @@ Q34=2-scalar)Q33 sign-pinning constraint vs continuation method
                  have similar quantum numbers (mass + zero charge).
                  Active light neutrinos remain unaccounted for.
 
-Total: 15 active questions (5 immediate, 10 background including
-archived).
+Total: 12 active questions (2 immediate Q41/Q42, 10 background).
 
-Highest-leverage closure: revised email v10 (folding in 9b review +
-DM-paper urgency) → Paul's reply / DM revision input. Q37 is most
-time-critical because DeepSeek's next assignment is the DM paper —
-if Q37 doesn't land before DM revision begins, the wrong 0.508 MeV
-number propagates from 9b LoE into the DM paper. arxiv version of
-9b is still on hold per Paul, so Q36 + Q39 + Q40 can still be folded
-into the arxiv revision. After that, M6 v8 work is functionally
-complete; primary focus returns to M5 per cardinal rule. M6 data
-drop is already at github.com/openwave-labs/openwave (Reference [17]
-in 9b paper).
+Highest-leverage closure: Paul's reply on email v11 (DM path
+decision: caveat-as-is vs delay-for-BVP). If caveat-as-is: M6 v8
+work is functionally complete; M5 returns to foreground. If
+delay-for-BVP: 1-2 days of focused BVP-variant work to deliver
+clean ground-state m_χ + reliable C, then return to M5. M6 data
+drop is at github.com/openwave-labs/openwave (Reference [17] in
+9b paper; 9c retains it).
 ```
 
 ---
 
-## IMMEDIATE-QUESTIONS (in email v10 redraft; arxiv revision is the live deadline)
+## IMMEDIATE-QUESTIONS (post-9c — both new; in email v11)
 
-Q36 was sent in email v9 (gentle push-back) but the 9b deposit did
-NOT incorporate the softening. Q37 surfaced from v8 step 5 and is the
-most time-critical because DeepSeek's next assignment is the DM
-paper. Q38 surfaced from v8 step 2 inspection. Q39 + Q40 are new
-9b-review findings. arxiv version of 9b is still on hold per Paul.
+Q36-Q40 all RESOLVED in 9c — see RESOLVED section below. Q41 and Q42
+surfaced from email v11 work today.
 
 | ID | Question | Surfaced | Why it matters |
 | --- | --- | --- | --- |
-| Q36 | Should 9b §9 criterion 9 cite v1's H/Q=1.6918 as "independent reproduction (Griesi 2026)" when (a) the result was found by **systematic search across ~60 ODE/H/Q variants** — default ODE gives 1.9795 (17% off), matched variant A4+H1+Q2 uses ad hoc "quarter coupling" + non-default charge density — AND (b) v1 uses a **different geometric realization** (scalar spherical Laplacian + 4π r² dr) than Sonnet's canonical 2-function reduction (vector cylindrical Laplacian + r dr)? v8 step 3 paper-math confirms these are genuinely different field theories, not reductions of one another. | v1 re-verification (2026-05-21 PM); strengthened by v8 step 3 + 9b review | Citation in deposited 9b could trigger Duda-style "AI slop" critique. Email v9 push-back didn't land in 9b. arxiv version still on hold → can be softened before final deposit. Suggested arxiv language: "preliminary search-based reproduction in a different geometric realization; first-principles derivation in the canonical cylindrical form pending." |
-| Q37 | What is the provenance of the "0.508 MeV (Griesi 2026, independent)" attribution on line 235 of `ouroboros_benchmark.py` AND the matching "preliminary m ≈ λ × 0.511 MeV" claim in 9b §8 + §9 criterion 7 (which cites our repo [17])? We have **not published, computed, or claimed** this number. v8 step 5 ran `neutral_chaoiton_scan()` with the script's default ranges; the lightest at λ=1.0 across all g, B0 is **0.998 MeV** (NOT 0.508 or 0.511 MeV). Empirical scaling is m ≈ 2λ·m_e at small B0, not m ≈ λ·m_e. | v8 step 1 + step 5 (2026-05-21 PM); confirmed in 9b §8 + §9 criterion 7 still standing | **MOST TIME-CRITICAL.** DeepSeek's next assignment is the Dark Matter paper revision; if Q37 doesn't land before DM work begins, the wrong number propagates from 9b LoE into the DM paper too. Email v10 redraft must lead with this. |
-| Q38 | Is the "electron g_e ≈ 2 reproduced" calibration item (9b §5 *"L/Q ratio: 0.79 to 2.6, overlapping the electron g-factor ≈ 2.00232"* + §9 criterion 3 *"g-factor 0.116%"*) a derived prediction or an algebraic identity? Sonnet's script defines `L = omega * Q_J` directly (line 139), so 2L/Q = 2ω is trivially exact at ω=1.0. Unless 9b §5 separately derives the relation L = ω·Q_J from the dynamics, this calibration item is uninformative. | v8 step 2 (2026-05-21 PM) | Affects how 9b's §5/§9 g-factor claim reads to reviewers. If derivation exists, footnote it. If not, the item should be removed from §9 criterion list to avoid critique. |
-| Q39 (NEW) | 9b §8 cites *"ω = 11.0: muon (predicted 110.2 MeV vs observed 105.7, gap 4.3%); ω = 40.7: tau (predicted 1690 MeV vs observed 1777, gap 4.9%)"*. Running `ouroboros_benchmark.py`'s own `lepton_spectrum_scan()` at the script's defaults (g=1.0625, λ=1, A0=B0=0.1) produces ω=12.82 for muon (gap 0.80%, predicted 106.5) and ω=50.0 for tau (gap 6.47%, predicted 1662). Paul's reported numbers don't match what the canonical script outputs. | 9b paper review (2026-05-21 PM later) | Either (a) Paul's §8 used a different script version / parameter setting we don't have, (b) Paul quoted analytical numbers from the ω^2.22 fit not from the script, or (c) the script we received is post-publication. Worth asking before arxiv deposit. Our v8 numbers are arguably better (smaller muon gap). |
-| Q40 (NEW) | 9b §5.1 body cites *"see open-source benchmark [18]"* but the references list ends at [17]. Reference [18] is undefined in the manuscript. | 9b paper review (2026-05-21 PM later) | Trivial fix — should be [17] (our repo, the only open-source benchmark reference). Minor cross-reference cleanup for arxiv version. |
+| Q41 (NEW) | Paul asked *"I wonder whether your Claude does writing. Mine said it had a table to add to the universe paper... but timed out before it could show it to me!"* Should Claude Code on Opus 4.7 take on a full writing role like Sonnet 4.6 and DeepSeek do? Decision: **DECLINED** full writing role. Staying in numerical verification + edits + tables/data lane per cardinal-rule scope. Offered narrow help if Sonnet's table needs a numerical contribution. | Paul's reply 4:10 PM (2026-05-21) | Defines our scope of contribution to Paul's papers going forward. Cover-page byline + Acknowledgments + Reference [17] (GitHub repo) remain unchanged — we're listed as AI contributor for "sustained technical collaboration on the radial ODE implementation, the BVP/shooting formulations, and the manuscript review process." Writing role is the boundary we don't cross. |
+| Q42 (NEW) | Forward `solve_ivp` with slope BC β'(0)=B0 in Sonnet's canonical script does NOT yield a true localized neutral chaoiton. Inspection of β(r) at electron-calibrated (λ=1, g=1.0) with B0=0.05 shows internal sign changes at r=3.5 and r=7, plus growing oscillating tail past r~10. β/K_1(m_J·r) ratio grows 10 orders of magnitude in tail instead of staying constant — definitive evidence the tail is not pure Bessel decay. Consequences: m_χ via H/Q × m_e is window-dependent (r_max=12 → 0.998 MeV; r_max=30 → 1.040 MeV); K_1 far-field fit fails (rel_resid > 1 everywhere); C extraction from far-field amplitude unreliable. **The 9c-cited m_χ = 0.998 MeV at λ=1 is a windowed-integration value, not a true ground state.** Proper BVP with β(∞)=0 (or Robin-decay BC at R_max) needed for clean ground state. | v8 DM paper input extraction (2026-05-21 PM later) | Affects DM paper accuracy. Email v11 offers Paul two paths: (a) submit ApJ with "order-of-magnitude pending true ground state" caveat — faster; (b) delay submission while we build BVP variant — slower but cleaner ground-state m_χ + reliable C. Paul's call. |
 
 ---
 
 ## STILL-OPEN QUESTIONS (active but not blocking calibration close)
 
 Carried forward from v5/v6 unchanged. Long-tail items that don't block
-the lepton or DM scans once Q31/Q32/Q33 resolve.
+the M6 v8 deliverables (lepton spectrum reproduced; DM inputs delivered).
+None of these block SABER engineering trigger either.
 
 | ID | Question | Surfaced | Status |
 | --- | --- | --- | --- |
@@ -137,7 +135,7 @@ the lepton or DM scans once Q31/Q32/Q33 resolve.
 
 ---
 
-## RESOLVED QUESTIONS (full chronology, Q1–Q30)
+## RESOLVED QUESTIONS (full chronology, Q1–Q40)
 
 | ID | Question | Resolution |
 | --- | --- | --- |
@@ -160,9 +158,14 @@ the lepton or DM scans once Q31/Q32/Q33 resolve.
 | Q29 ★ | Ground state vs excited mode node count | RESOLVED by Paul 2026-05-21: ground state has exactly 4 zero crossings excluding r=0; Lean ≤4-node spec refers to radial functions excluding origin. v6.6 (5 crossings) is first excited state. Now moot for v8 since 4-function chase is parked. |
 | Q30 ★ | Q(r=0) sign at ground state | RESOLVED by Paul 2026-05-21: ground state has Q(0)=+0.1 positive, same sign as V(0). Helicity is V₀ > 0, Q₀ > 0, A₀ < 0, J₀ < 0. v6.6's Q(0)=−0.12 indicates a basin mismatch. Now moot for v8 — different ansatz. |
 | Q34 ★★ | Is v9 paper §5.1's 2-scalar (φ, ψ) ansatz canonical for the electron, or a paper simplification of the 4-function form? | RESOLVED 2026-05-21 PM by **two converging signals**: (1) DeepSeek's 2:19 PM reply explicitly chose possibility #1 (2-scalar canonical; 4-function admits extra DOFs leading to excited modes); (2) Paul forwarded Sonnet's runnable canonical `ouroboros_benchmark.py` at 3:05 PM, which implements a **2-function (α, β) reduction with vector cylindrical Laplacian** (different from v9 §5.1's gradient ansatz description but consistent with the 2-function dimensionality). v8 step 1 quick demo reproduces script claims (H/Q=1.6969, gap 0.56%). v8 step 4 lepton scan independently reproduces muon (0.80%) + tau (6.47%). **The 4-function (V, A, Q, J) BVP work of v4-v7 was solving a generalized system, not the canonical electron form.** |
+| Q36 ★★ | v9 §9 criterion 9 citation language softening | RESOLVED 2026-05-21 PM in 9c. §9 criterion 9 now reads exactly the suggested wording from email v10: *"Preliminary reproduction in a different geometric realisation achieved H/Q = 1.6918; first-principles derivation in the canonical cylindrical form is pending."* Geometric distinction (cylindrical vs spherical) acknowledged in the paper. |
+| Q37 ★★ | 0.508/0.511 MeV "Griesi 2026, independent" attribution | RESOLVED 2026-05-21 PM in 9c. All instances corrected: abstract, §8, §9 criterion 7 now cite 0.998 MeV at λ=1 (and 0.101 MeV at λ=0.1). Scaling rule corrected to m_χ ≈ 2λ·m_e at small B_0. |
+| Q38 ★★ | 2L/Q = 2.0 algebraic identity | RESOLVED 2026-05-21 PM in 9c. §9 criterion 3 now carries footnote: *"in our numerical implementation L=ωQ_J by construction, so the electron g-factor match fixes ω, not an independent check."* The artifact-of-definition concern is documented. |
+| Q39 ★★ | §8 lepton ω values don't match canonical script output | RESOLVED 2026-05-21 PM in 9c. §8 now uses our v8 numbers exactly: ω=12.82 muon at 0.80%, ω=50.0 tau at 6.47%. Replaces 9b's approximate ω=11/40.7 with 4.3%/4.9%. Bonus: pion+ at ω=15.0 added as *"possible baryon state... may indicate that the same dynamics generate hadrons."* |
+| Q40 ★★ | Reference [18] typo in §5.1 | RESOLVED 2026-05-21 PM in 9c. §5.1 now correctly cites [17] (our GitHub repo). |
 
 ★ = directly enabled major progress (Q22/23/24 → v6 30× gap closure; Q28/29/30 → v7 framing).
-★★ = unlocking resolution (Q34 → v8 supersedes v4-v7 entire 4-function chase via 2-function canonical form).
+★★ = unlocking resolution (Q34 → v8 supersedes v4-v7 entire 4-function chase via 2-function canonical form; Q36-Q40 → all 5 incorporated in 9c via email v10 in a single round-trip).
 
 ---
 
@@ -183,7 +186,8 @@ the lepton or DM scans once Q31/Q32/Q33 resolve.
 
 Long-running status board for the structural challenges in the M6 model.
 Tracks how each piece moves across sandbox iterations. Updated 2026-05-21
-post-v8 (post v9 paper + Paul-script variant + email v8).
+PM later (post 9c outcome + email v11 + Q41/Q42; all Q36-Q40 resolved
+in 9c).
 
 ### ACTIVE hardest pieces (5 — still in motion post-v8)
 
@@ -328,6 +332,37 @@ Active count entering Paul's email v10 reply (post-9b review):
   3 ARCHIVED  (Q31, Q32, Q33 — moot via Q34)
   2 DEMOTED   (Q26, Q27 — superseded)
   → 15 active questions (5 immediate, 10 background).
+
+9c outcome + DM extraction net change (2026-05-21 PM later):
+  TRIG:      Paul replied 4:21 PM with DeepSeek's 9c draft;
+             4:10 PM with `DarMatterMay21.docx` + ApJ submission
+             gate (need m_J, C, m_χ).
+  RESOLVED:  Q36, Q37, Q38, Q39, Q40 — ALL FIVE incorporated in 9c
+             via email v10. Plus three bonus changes (g=1.0000 in
+             §2, pion+ baryon-state in §8, abstract 0.09%
+             reframing).
+  EXTRACTED: DM paper inputs at electron-calibrated (λ=1, g=1.0):
+             m_χ = 0.998 MeV (matches 9c §8); m_J = 1.033 MeV
+             (analytical: √λ × ℏc/R_phys); C = 6.7×10⁻⁴ MeV·fm
+             (source-monopole + spherical 3D convention).
+  NEW:       Q41 — writing role question. Declined full role per
+             cardinal-rule scope.
+  NEW:       Q42 — β profile non-localization in IVP. Forward
+             solve_ivp doesn't enforce β(∞)=0; β has internal sign
+             changes + growing oscillating tail. 9c-cited m_χ is
+             windowed-integration value, not true ground state.
+             Email v11 offers two paths: caveat-as-is vs BVP.
+  EMAIL v11: SENT 2026-05-21 PM later. Confirms 9c numbers,
+             declines writing role, delivers DM inputs with caveat,
+             offers BVP variant. Rodrigo signed off for business
+             event.
+
+Active count post-9c + email v11 (entering Paul's reply):
+  2 IMMEDIATE (Q41 writing role declined; Q42 β non-localization)
+  5 OPEN      (Q2, Q3, Q6, Q19, Q35)
+  3 ARCHIVED  (Q31, Q32, Q33 — moot via Q34)
+  2 DEMOTED   (Q26, Q27 — superseded)
+  → 12 active questions (2 immediate, 10 background).
 ```
 
 ---
