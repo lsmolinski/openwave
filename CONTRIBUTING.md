@@ -52,6 +52,9 @@ See `/dev_docs` for coding standards and development guidelines
 
 # Install OpenWave & Dependencies for Development (-e = edit mode)
    pip install -e .  # installs dependencies from pyproject.toml
+
+# Activate the auto-DCO-sign-off git hook (one-time per clone)
+   git config core.hooksPath .githooks
    ```
 
 - **Create a Branch to Develop Your Feature**

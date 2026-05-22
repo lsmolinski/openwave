@@ -1,11 +1,8 @@
 """Core package for the OpenWave project.
 
-OpenWave is an open-source subatomic wave simulator that supports exploration
-of fundamental physics theories.
-
-It's built as a computational physics toolkit applying classical wave mechanics
-for modeling matter and energy phenomena using wave-field dynamics.
+Open-source subatomic simulator using classical wave-field methods with topology
+and nonlinear potentials to study particle and force emergence. GPU-accelerated.
 
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
