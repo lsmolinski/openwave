@@ -14,32 +14,42 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-21 PM later (post 9c outcome + DM extraction + email v11 sent — **ALL 5 push-back questions (Q36, Q37, Q38, Q39, Q40) RESOLVED in 9c** via email v10. DM paper inputs delivered: m_χ = 0.998 MeV, m_J = 1.033 MeV, C = 6.7×10⁻⁴ MeV·fm. **Q41 NEW** (writing role declined). **Q42 NEW** (β profile not localized in IVP — 9c-cited m_χ is windowed-integration value, not true ground state). Email v11 offers two paths: DM caveat-as-is OR delay for BVP variant. Awaiting Paul's reply).
+**Last updated:** 2026-05-22 morning (post sandbox v9 BVP work — Paul replied 2026-05-21 ~5:10 PM accepting delay-for-BVP path; built BOTH interpretations (A=4-fn Q_CS=0, B=2-fn Dirichlet/Robin); **NEITHER produces clean ≤4-node ground state — Townes-soliton pathology in 2D cubic NLS** (Interpretation B); **only excited modes** (Interpretation A). Email v12 drafted with empirical no-go + Q43 (sign convention) + Q44 (geometry) structural questions).
 
 ---
 
 ## Active count
 
 ```text
-2 IMMEDIATE  Q41 (NEW) Writing role question. Paul asked
-             "I wonder whether your Claude does writing." Declined
-             full writing role; staying in numerical verification +
-             edits + tables/data lane per cardinal-rule scope.
-             Offered narrow help if Sonnet's table needs a numerical
-             contribution. Sent in email v11.
+2 IMMEDIATE  Q43 (NEW 2026-05-22) Sign convention in canonical
+             `neutral_ode`. Sonnet's β-equation has `+λβ` term, which
+             means the linear far-field is β'' + λβ = 0 → oscillatory
+             J_1 Bessel (no exponential decay). For K_1 decay at
+             infinity (what Paul promises will give "clean K_1
+             amplitude" for Yukawa coupling C), the term should be
+             `-λβ`. v9 Interpretation B confirmed empirically: with
+             `+λβ`, BVP collapses to trivial amplitude → 0 (no
+             nonlinear soliton survives). Sent in email v12.
 
-             Q42 (NEW) β profile non-localization in IVP. Forward
-             solve_ivp with slope BC β'(0)=B0 does NOT yield a true
-             localized neutral chaoiton — β has internal sign changes
-             (r=3.5, r=7) and growing oscillating tail past r~10.
-             β/K_1(r) ratio grows 10 orders of magnitude in tail
-             instead of constant. Consequences: m_χ integration-window-
-             dependent (r_max=12 → 0.998 MeV; r_max=30 → 1.040 MeV);
-             K_1 far-field fit fails (resid > 1 everywhere); C from
-             far-field unreliable. **9c-cited m_χ = 0.998 MeV is a
-             windowed-integration value, not a true ground state.**
-             Proper BVP with β(∞)=0 needed for clean ground state.
-             Flagged to Paul in email v11; Paul's call on path.
+             Q44 (NEW 2026-05-22) Cylindrical 2D vs spherical 3D
+             geometry. Sonnet's β-equation has `-β/r²` term, which
+             is the 2D cylindrical m=1 azimuthal centrifugal piece.
+             In 2D cylindrical, cubic NLS is CRITICAL (2D Townes
+             soliton) — supports only unstable saddle solitons; BVP
+             relaxation finds trivial energy minimum. For stable 3D
+             classical solitons need spherical s-wave (∇² = f'' +
+             2f'/r) or p-wave. v9 Interpretation B confirmed: no
+             stable localized state exists in 2D cylindrical with
+             cubic nonlinearity for any λ tested. Sent in email v12.
+
+2 RESOLVED   Q41 (writing role) — declined; staying in numerical
+in v11/v9    verification lane. Sent in email v11. Settled.
+
+             Q42 (β profile non-localization in IVP) — v9 BVP work
+             confirmed this is a structural issue, not a tunable.
+             Both interpretations of the canonical neutral BVP fail.
+             Q42 subsumed into Q43+Q44 which ask the underlying
+             structural questions (sign convention, geometry).
 
 5 RESOLVED   Q36 ✅ Incorporated in 9c §9 criterion 9 — reads exactly
 in 9c        the suggested wording "Preliminary reproduction in a
