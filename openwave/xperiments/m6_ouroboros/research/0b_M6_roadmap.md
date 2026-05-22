@@ -350,39 +350,122 @@ characterization + asks two follow-up questions:
 ### Pending plan — Acknowledgments-update ask on next email (v14)
 
 **To be bundled with the reply to Paul's Q45/Q46 answers — NOT a
-standalone ask, NOT personal-interest, business-positioning driven.**
+standalone ask, NOT personal-interest, business-positioning driven,
+AND honest about role separation.**
 
-After v9 phase 2's contribution (diagnosed Q43+Q44 errors, fixed
-DeepSeek's template BC error, produced first empirical demonstration
-of the neutral chaoiton ground state), the current Acknowledgments
-text in 9c reads generically: *"sustained technical collaboration on
-the radial ODE implementation, the BVP/shooting formulations, and the
-manuscript review process."* This doesn't reflect the specific
-diagnose + correct + first-demonstration contribution shape.
+### Role honesty (the key constraint)
 
-When replying to Paul's Q45/Q46 answers (whatever those are), include
-a one-sentence proposed update to the Acknowledgments paragraph in
-both the DM paper draft and the next LoE revision (9d). Suggested
-language:
+OpenWave is a **multi-contributor open-source platform**, not a
+one-person project and not an "AI-native" project (that misframes
+identity). The contributor stack:
 
-> *"...for diagnosing and correcting the canonical neutral-sector
-> ODE sign convention and geometry, and producing the first empirical
-> demonstration of the neutral chaoiton ground state with clean
-> K_1 decay."*
-
-**Reason to flag in roadmap:**
-
-| Why this matters | Detail |
+| Contributor | Role |
 | --- | --- |
-| Visibility for future business opportunities | Grants, investors, partnerships read specific named contributions differently than generic "Acknowledgments". "First empirical demonstration" is a concrete, citable contribution. |
-| NOT changing author/contributor status | We stay validators per Q41 declined writing role + cross-validation mission posture. Co-authorship would compromise the OpenWave-as-independent-platform pitch. |
-| NOT personal-interest | This is the cardinal-rule kind of update: factually accurate, low-friction for Paul to fold in, preserves SABER engineering focus. |
-| Bundle with deliverable | Asking for credit alongside delivering definite (m_χ, m_J, C) makes the ask read as "here's what you wanted, and here's the language that reflects what we did to get it" — not "give me credit". |
-| Cross-validation framing preserved | An accurate record of "OpenWave's numerical platform diagnosed and corrected Werbos's canonical formulation" actually STRENGTHENS the cross-validation pitch (we're shown to be substantively independent verifiers, not rubber-stampers). |
+| OpenWave Labs | Org that funds + hosts the work |
+| Rodrigo Griesi (OpenWave Labs) | Founder, lead engineer, project director, sets vision and methodology. Mechanical-engineering background, NOT physics PhD. Uses AI agents to **automate** routine tasks, **augment** existing engineering skills, and provide **agency** for skills outside his expertise (e.g., physics-PhD-level numerical analysis). |
+| Physics advisors (Yee, Duda, Close, Werbos) | Contribute theoretical frameworks (EWT, LdGS, elastic-solid, Ouroboros) that OpenWave implements and tests |
+| AI agent contributors (Anthropic Claude Code on Opus 4.7, also Claude Sonnet, DeepSeek in cross-team contexts) | First-class participants in code, numerical analysis, derivations, documentation, manuscript review |
+| Future developers | Repo open to external contributions under Apache 2.0 |
 
-**Anti-pattern to avoid:** asking for higher authorship, asking for a separate paper byline, asking for recognition without a deliverable attached. None of those serve the
-business positioning; all would compromise OpenWave's independent-
-platform mission. The Acknowledgments-update is the right scope.
+The numerical work in v9 phase 2 — BVP formulations, Townes-soliton
+diagnosis, K_1 asymptotics, sign/geometry corrections — was performed
+by Claude Code, not by Griesi personally. Griesi led the engineering
+direction, framed Q43/Q44, made strategic decisions about what to
+test and how to communicate with Paul. The platform is open-source
+so any physicist can independently reproduce or refute the math.
+
+**Three-tier credit structure (for paper Acknowledgments):**
+
+| Tier | Who | Role |
+| --- | --- | --- |
+| Org | OpenWave Labs | Funds + hosts the work |
+| Human | Rodrigo Griesi | Founder + lead engineer + project director |
+| AI | Anthropic Claude Code (Opus 4.7) | AI agent contributor performing numerical analysis |
+
+This honest framing is intentionally STRONGER positioning than
+overclaiming "physics verification":
+
+| Risk | Mitigation via honest framing |
+| --- | --- |
+| critique (no physics PhD, can't verify) | Pre-empted — Griesi doesn't claim to verify physics personally; the platform hosts open-source analysis any physicist can run. Math is reproducibility-checkable, not credential-validated. |
+| Grant/investor reviewer pulls credentials | Lands on "multi-contributor open-source platform with AI agents as first-class contributors" — a real and fundable category. Not "lone physicist." |
+| Co-authorship demand undermines cross-validation independence | We're NOT asking for authorship. We're asking for Acknowledgments to accurately reflect the contributor mix. |
+
+### Suggested Acknowledgments language (honest version)
+
+Replace the current generic Acknowledgments language with:
+
+> *"OpenWave Labs (Griesi, with Anthropic Claude Code on Opus 4.7 as
+> AI agent contributor) for diagnosing and correcting the canonical
+> neutral-sector ODE sign convention and geometry, and for
+> producing an open-source BVP demonstration of the neutral chaoiton
+> ground state with clean K_1 decay. Griesi leads OpenWave platform
+> engineering and direction; Claude Code performed the numerical
+> analysis. All scripts and diagnostics are at
+> github.com/openwave-labs/openwave for community verification."*
+
+| Element | Reason |
+| --- | --- |
+| "OpenWave Labs (Griesi, with Anthropic Claude Code on Opus 4.7 as AI agent contributor)" | Three-tier: org + human + AI agent. AI is a **contributor/partner**, not the platform's identity. |
+| "for diagnosing and correcting" | Describes what we did concretely; no "first" claim. |
+| "an open-source BVP demonstration" (NOT "the first") | Honesty — we don't know what's been done in private; drop "first" entirely. |
+| "Griesi leads OpenWave platform engineering and direction" | Lead-engineer role explicit. NOT "orchestrator" (too vague), NOT "verifier" (overclaim). |
+| "Claude Code performed the numerical analysis" | AI did the math; explicit and accurate; positioned as a contributor not as the platform itself. |
+| "for community verification" | Math is reproducibility-checkable, not credential-validated. |
+
+### How Griesi personally uses AI agents (the three A's)
+
+Internal framing for grant/investor pitches when describing the
+human-AI collaboration model:
+
+| Function | What it means for Griesi |
+| --- | --- |
+| **Automate** | Routine work (code scaffolding, doc maintenance, repetitive scans) — AI agents do faster than human-only |
+| **Augment** | Extend existing engineering skills — AI accelerates tasks Griesi could do, slower or less thoroughly |
+| **Agency** | Provide skills Griesi doesn't have (physics-PhD-level numerical analysis, BVP formulation, soliton theory) — AI agents act as expert contributors |
+
+This three-A framing is honest about the augmentation pattern without
+overclaiming Griesi has skills he doesn't, and without underclaiming
+his actual role (which is real: lead engineer + director).
+
+### Why this serves the business case better than overclaim
+
+Grant/investor pitch: *"OpenWave is a multi-contributor open-source
+platform for testing emergent-particle field theories. Griesi
+(OpenWave Labs) is founder and lead engineer; physics advisors
+(Yee, Duda, Close, Werbos) contribute theoretical frameworks; AI
+agents (notably Anthropic Claude Code) contribute numerical analysis
+and code as first-class participants. The open-source repo lets any
+researcher reproduce or refute. Through this collaboration, we
+identified and corrected canonical-formulation errors in Werbos's
+published framework, and produced the BVP demonstration of his DM
+candidate."*
+
+"Multi-contributor open-source platform with AI agents as first-class
+contributors" is a real and fundable category — a genuinely novel
+artifact pattern. "PhD-physicist verification" is a category Griesi
+doesn't credibly occupy, and overclaiming there invites the credentials
+critique.
+
+### Anti-patterns to avoid
+
+| Anti-pattern | Why it fails |
+| --- | --- |
+| Claiming Griesi "verified" the physics | False; Claude Code did the math, Griesi can't independently check it |
+| Claiming "first" anything | We don't know what's been done in private; drop "first" entirely |
+| Asking for co-authorship or higher-tier byline | Compromises cross-validation independence; cardinal rule violated |
+| Calling Griesi "orchestrator" or "project manager" | Too vague; "lead engineer + project director" is more accurate |
+| Calling OpenWave "AI-native" or "AI-driven" | Misframes identity as primarily AI. Reality: multi-contributor (human founder + physics advisors + AI agents + future devs); AI is a contributor, not the platform's identity. |
+| Painting Griesi as "lone founder" | False; physics advisors (Yee, Duda, Close, Werbos) and AI agents are real contributors |
+| Hiding that Claude Code did the numerical analysis | Eventually surfaces and damages trust; honesty is cheaper |
+
+### When to apply
+
+When Paul replies to Q45 + Q46, the v14 email reply should include:
+(1) the requested (m_χ, m_J, C) numbers under whichever canonical
+point Paul picks; (2) the proposed Acknowledgments-update language
+above as a low-friction one-paragraph suggestion. NOT as a separate
+standalone ask; bundled with the deliverable.
 
 ---
 
@@ -500,10 +583,8 @@ Both trackers (per-question status and the long-running hardest-pieces
 board) now live in `0b_question_tracker.md` as a single source of truth
 across all sandbox iterations. Active count as of 2026-05-22 mid-morning
 (post-v9 ground state found + email v13 sent): **2 IMMEDIATE (Q45
-canonical point in family, Q46 H/Q normalization across geometries)
-+ 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 4 RESOLVED-this-session (Q41 writing
-role declined, Q42 superseded, Q43 sign + Q44 geometry confirmed)
-+ 2 DEMOTED (Q26, Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot via Q34)
+canonical point in family, Q46 H/Q normalization across geometries) + 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 4 RESOLVED-this-session (Q41 writing
+role declined, Q42 superseded, Q43 sign + Q44 geometry confirmed) + 2 DEMOTED (Q26, Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot via Q34)
 = 16 active questions.** Highest-leverage closure path: Paul's Q45/Q46
 reply lets us extract definite (m_χ, m_J, C) for the DM paper. M5
 path foreground while we wait. M6 data drop already at github.com/
