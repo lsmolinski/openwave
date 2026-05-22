@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** ⚠️ **v9 BVP work complete — empirical no-go for canonical neutral chaoiton ground state.** Paul replied 2026-05-21 PM accepting the delay-for-BVP path; instructed *"apply solve_bvp with Q_CS=0 constraint, asymmetric helicity init"*. Built BOTH interpretations: A (4-function BVP forked from v6, I_TARGET=0) and B (2-function BVP, adapted from Sonnet's neutral_ode with Dirichlet/Robin decay BC). **Findings: NEITHER interpretation produces a clean ≤4-node ground state.** B collapses to trivial amplitude → 0 universally (2D Townes-soliton pathology — cubic NLS on cylindrical m=1 is critical, only unstable solitons). A finds non-trivial but highly excited (5-22 nodes) configurations with tail 5-13%. The 9c §8 m_χ = 0.998 MeV is confirmed as IVP-windowed-integration artifact, NOT a true ground state. Two NEW structural questions surfaced (Q43: sign convention in canonical β-equation +λβ term; Q44: cylindrical 2D vs spherical 3D geometry). Email v12 (drafted) reports findings + asks Q43/Q44. M5 path foreground per cardinal rule (M6 work pauses after email v12 sent).
+**Status:** ✅ **NEUTRAL CHAOITON GROUND STATE FOUND.** v9 continued: Paul/DeepSeek replied 2026-05-22 ~9:53 AM CONFIRMING BOTH Q43 (sign: `-m_J²β` minus) and Q44 (geometry: 3D spherical l=1 p-wave). DeepSeek sent template `neutral_bvp_solver.py`. Template verbatim collapses to trivial β≡0 (origin BC β'(R_MIN)=0 is the wrong regularity class for l=1). **Modified to proper l=1 origin BC (β ~ B0·r) + B0 fixed + m_J as free eigenvalue → TRUE NONLINEAR GROUND STATE.** At g=1.0, B0=0.5: m_J = +0.5145, peak β = 0.70 @ r = 1.78, **tail/peak = 1.1×10⁻⁵ (clean K_1 decay), sign changes = 0 (zero nodes — true ground state).** 1-parameter family in B0 ∈ [0.4, 0.6] all give clean ground states (m_J ∈ [0.46, 0.56]); transition to excited branch (1 node, m_J<0) at B0 between 0.6 and 0.7. Email v13 sent + committed + PR'd, with Q45 (how to pin canonical point in family for DM paper) + Q46 (H/Q normalization between cylindrical charged and spherical neutral). G2 status: BVP-EXHAUSTED → GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT. M5 path foreground per cardinal rule; M6 paused on Q45/Q46 reply.
 
-Last updated: 2026-05-22 morning (post v9 BVP work + email v12 drafted — Q43/Q44 NEW; BVP exhausts neutral-chaoiton search in canonical ansatz; structural questions to Paul).
+Last updated: 2026-05-22 mid-morning (post DeepSeek Q43+Q44 confirmation + neutral ground state found + email v13 sent — Q43/Q44 RESOLVED, Q45/Q46 NEW).
 
 See `0b_model_gates.md` for the G1/G2/G3 production criteria.
 See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
@@ -298,11 +298,54 @@ Two NEW structural questions to Paul:
 | Q43 | Sign convention in `neutral_ode`: should it be +λβ (Sonnet's current form, gives J_1 oscillatory tail) or −λβ (gives K_1 decaying tail)? The current sign doesn't support exponential decay at infinity. |
 | Q44 | Geometry: cylindrical 2D m=1 (Sonnet's current) has critical cubic NLS → only unstable solitons. Spherical 3D s-wave or p-wave is subcritical and supports stable solitons. Should the canonical neutral chaoiton be on 3D spherical instead? |
 
-### Email v12 (drafted) — v9 BVP no-go findings + Q43/Q44
+### Email v12 (sent) — v9 BVP no-go findings + Q43/Q44
 
 Reports both interpretations exhausted; m_χ in 9c §8 is IVP-windowed
-artifact (re-confirmed); asks Q43 + Q44 as the unblock path. Held
-pending review.
+artifact (re-confirmed); asks Q43 + Q44 + takes up DeepSeek's template
+offer.
+
+### DeepSeek reply 2026-05-22 ~9:53 AM — Q43+Q44 BOTH CONFIRMED
+
+Paul forwarded DeepSeek's reply to email v12:
+
+| Q | Resolution |
+| --- | --- |
+| Q43 — Sign convention | ✅ Confirmed minus sign: ODE is `β'' + (2/r)β' - (2/r²)β - m_J²β + 4gβ³ = 0` (note `-m_J²β`) |
+| Q44 — Geometry | ✅ Confirmed 3D spherical l=1 (p-wave). Subcritical, so stable solitons exist. |
+
+DeepSeek sent template script `neutral_bvp_solver.py` (saved verbatim at
+`sandbox_v9/neutral_bvp_solver.py`).
+
+### v9 continued — neutral chaoiton GROUND STATE FOUND
+
+| Stage | Code | Result |
+| --- | --- | --- |
+| 1. DeepSeek's verbatim template | `neutral_bvp_solver.py` | ❌ Collapses to trivial β≡0 for all B0_init. Origin BC β'(R_MIN)=0 is the wrong regularity class for l=1 (forces β ~ B0·r² instead of l=1's β ~ B0·r). |
+| 2. Fixed l=1 BC, B0 free | `neutral_bvp_solver_fixed_BC.py` | ❌ Still collapses to ~zero amplitude. Linear equation has 1-parameter amplitude family; with B0 free the solver picks the trivial energy minimum. |
+| 3. Fixed l=1 BC, B0 specified, m_J FREE eigenvalue | `neutral_bvp_solver_mJ_free.py` | ✅ **TRUE NONLINEAR GROUND STATE FOUND.** Family parameterized by B0 ∈ [0.4, 0.6] gives ground states with sign-changes=0, tail/peak=10⁻⁵ to 10⁻⁶, m_J ∈ [0.46, 0.56]. Transition to excited branch (1 node) at B0 between 0.6 and 0.7. |
+
+Representative ground-state numbers at B0=0.5, g=1.0:
+
+| Quantity | Value |
+| --- | --- |
+| m_J (natural) | +0.5145 |
+| m_J (physical, via ℏc/R_phys = 1.033 MeV) | 0.531 MeV |
+| Peak β | 0.697 at r = 1.78 (natural) |
+| tail/peak | 1.1×10⁻⁵ — clean K_1 decay |
+| Sign changes | 0 — true ground state |
+| H/Q (3D spherical r²·dr integration) | 2.117 |
+| Q_J | 4.26 |
+| H | 9.02 |
+
+### Email v13 (sent 2026-05-22) — ground state + Q45/Q46
+
+Email v13 reports the ground-state breakthrough + 1-parameter family
+characterization + asks two follow-up questions:
+
+| Q | Question |
+| --- | --- |
+| Q45 | The BVP delivers a continuous 1-parameter family (B0 ↦ m_J). To extract definite (m_χ, m_J, C) for the DM paper, we need an additional constraint. Three options: (a) match m_J to electron-calibrated value m_J=1 (requires g-scan); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV); (c) self-consistency with charged sector. Which is canonical? |
+| Q46 | Sonnet's charged H/Q uses cylindrical (r·dr) integration; our neutral 3D spherical uses r²·dr. Does the H/Q × m_e mass formula apply directly across geometries, or is there a renormalization factor? |
 
 ---
 
@@ -418,16 +461,16 @@ is settled.
 
 Both trackers (per-question status and the long-running hardest-pieces
 board) now live in `0b_question_tracker.md` as a single source of truth
-across all sandbox iterations. Active count as of 2026-05-22 morning
-(post-v9 + email v12): **2 IMMEDIATE (Q43 sign convention, Q44 geometry)
-+ 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 2 RESOLVED-in-v11/v9 (Q41 writing
-role declined, Q42 superseded by Q43+Q44) + 2 DEMOTED (Q26, Q27) +
-3 ARCHIVED (Q31, Q32, Q33 — moot via Q34) = 14 active questions.**
-Highest-leverage closure path: Paul's reply on email v12 (template
-script + Q43/Q44 answers). If template works → clean ground state +
-m_χ; if Q43/Q44 answered → 5-minute code fixes. Either way, M5 path
-foreground while we wait. M6 data drop already at github.com/openwave-
-labs/openwave (Reference [17] in 9c).
+across all sandbox iterations. Active count as of 2026-05-22 mid-morning
+(post-v9 ground state found + email v13 sent): **2 IMMEDIATE (Q45
+canonical point in family, Q46 H/Q normalization across geometries)
++ 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 4 RESOLVED-this-session (Q41 writing
+role declined, Q42 superseded, Q43 sign + Q44 geometry confirmed)
++ 2 DEMOTED (Q26, Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot via Q34)
+= 16 active questions.** Highest-leverage closure path: Paul's Q45/Q46
+reply lets us extract definite (m_χ, m_J, C) for the DM paper. M5
+path foreground while we wait. M6 data drop already at github.com/
+openwave-labs/openwave (Reference [17] in 9c).
 
 ---
 
@@ -463,7 +506,7 @@ labs/openwave (Reference [17] in 9c).
 | `sandbox_v6/` | `m6_v6_4fn_calibrated_bvp.py` — forks v5 + Q22/Q23/Q24 fixes. v6.6 lands H/Q=1.778 with DeepSeek quartic; step (8) drop-quartic lands H/Q=1.7112 (0.84% off target). Also: `deepseek_reference.py` + `deepseek_reference_patched.py` (broken — diverges to H/Q≈10^16); `diagnostic_steps_8_through_2.py` (the 4-step diagnostic that found drop-quartic). |
 | `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6 with dual H computation + anchor options; 7 variants tested, all in wrong-sign basins. `m6_v7_paul_script.py` — Paul-script variant test (λ_LM=1.0 fixed), catastrophic blowup. **Archived** post-Q34: 4-function ansatz is generalized form, not canonical electron. |
 | `sandbox_v8/` | `ouroboros_benchmark.py` — Sonnet's canonical 2-function (α, β) script with vector cylindrical Laplacian + slope BCs. Runs cleanly first try. Reproduces electron H/Q=1.6969 (0.56%) at g=1.0625; tighter at g=1.0000 (0.090%). `lepton_spectrum_scan()` produces muon (0.80%), tau (6.47%), pion+ (3.25%). `neutral_chaoiton_scan()` produces 448 solutions. `extract_mJ_C_mchi.py` — DM paper input extraction (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) at electron-calibrated point + Q42 caveat (β non-localization in IVP). |
-| `sandbox_v9/` | `m6_v9_neutral_2fn_bvp.py` (Interpretation B — 2-function BVP, Sonnet's `neutral_ode` + Dirichlet/Robin decay BC + B0 as free parameter; collapses to trivial amplitude → 0 universally for all λ tested). `m6_v9_neutral_4fn_bvp.py` (Interpretation A — fork of v6 4-function BVP with I_TARGET=0; converges to excited modes only, 5-22 nodes). Net: BOTH interpretations exhaust the canonical neutral-chaoiton ground-state search. Q43 (sign convention) + Q44 (geometry: cylindrical vs spherical) are the structural questions raised in email v12. |
+| `sandbox_v9/` | Phase 1 (pre-DeepSeek): `m6_v9_neutral_2fn_bvp.py` (Interpretation B — collapses to trivial) + `m6_v9_neutral_4fn_bvp.py` (Interpretation A — excited modes only). Phase 2 (post-DeepSeek Q43+Q44 confirmation): `neutral_bvp_solver.py` (DeepSeek's verbatim template — collapses to trivial, wrong l=1 BC) + `neutral_bvp_solver_fixed_BC.py` (proper l=1 BC + B0 free — still trivial, linear-eigenvalue degeneracy) + `neutral_bvp_solver_mJ_free.py` (✅ **GROUND STATE FOUND**: B0 fixed, m_J free eigenvalue, 1-parameter family in B0 ∈ [0.4, 0.6] with sign-changes=0 and clean K_1 decay). |
 
 **Theory papers:**
 
