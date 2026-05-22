@@ -129,7 +129,7 @@ ironbow_palette = [
 # Blueprint Gradient: PALETTE [used in get_blueprint_color()]
 # ================================================================
 blueprint_palette = [
-    ["#0D1A46", (0.051, 0.102, 0.271)],  # dark blue
+    ["#182962", (0.094, 0.161, 0.384)],  # dark blue
     ["#667DC0", (0.400, 0.490, 0.753)],  # medium blue
     ["#8CA1CF", (0.549, 0.631, 0.812)],  # blue
     ["#BDCAE7", (0.741, 0.792, 0.906)],  # light blue
