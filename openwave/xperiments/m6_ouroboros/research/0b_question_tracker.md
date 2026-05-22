@@ -14,7 +14,7 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-22 mid-morning (post DeepSeek Q43+Q44 confirmation + neutral chaoiton GROUND STATE FOUND. DeepSeek confirmed Q43 (sign: `-m_J²β`) + Q44 (3D spherical l=1 p-wave). DeepSeek's verbatim template collapses to trivial (wrong l=1 BC); modified to proper l=1 + B0 fixed + m_J free eigenvalue → **true nonlinear soliton with sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay**. 1-parameter family in B0 ∈ [0.4, 0.6]. Email v13 sent asking Q45 (canonical point in family) + Q46 (H/Q normalization across geometries)).
+**Last updated:** 2026-05-22 PM (post email v14 sent — v13 content resent verbatim + Acknowledgments-update ask bundled. Trigger: Paul's PM reply ack'd the arxiv quant-ph endorsement news but didn't forward v13's ground-state results to DeepSeek; v14 gives DeepSeek the substance AND lands the Acknowledgments wording in one shot. Q45/Q46 still IMMEDIATE; Acknowledgments-update ask now SENT — awaiting Paul + DeepSeek reaction in next DM paper revision. Earlier today: DeepSeek Q43+Q44 confirmation + neutral chaoiton GROUND STATE FOUND via `neutral_bvp_solver_mJ_free.py` — true nonlinear soliton with sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay; 1-parameter family in B0 ∈ [0.4, 0.6]).
 
 ---
 
@@ -104,28 +104,31 @@ Q34=2-scalar)Q33 sign-pinning constraint vs continuation method
                  have similar quantum numbers (mass + zero charge).
                  Active light neutrinos remain unaccounted for.
 
-Total: 12 active questions (2 immediate Q41/Q42, 10 background).
+Total: 16 active questions (2 immediate Q45/Q46, 10 background, 4 resolved-this-session).
 
-Highest-leverage closure: Paul's reply on email v11 (DM path
-decision: caveat-as-is vs delay-for-BVP). If caveat-as-is: M6 v8
-work is functionally complete; M5 returns to foreground. If
-delay-for-BVP: 1-2 days of focused BVP-variant work to deliver
-clean ground-state m_χ + reliable C, then return to M5. M6 data
-drop is at github.com/openwave-labs/openwave (Reference [17] in
-9b paper; 9c retains it).
+Highest-leverage closure: Paul's reply on email v14 (Q45 canonical
+point in 1-parameter family + Q46 H/Q normalization across geometries
++ Acknowledgments-update ask bundled). Reply unlocks definite
+(m_χ, m_J, C) extraction for the DM paper via targeted run of
+`neutral_bvp_solver_mJ_free.py` (~1 hour). M6 v9 phase 2 is
+functionally complete; M5 returns to foreground per cardinal rule
+while we wait. M6 data drop is at github.com/openwave-labs/openwave
+(Reference [17] in 9c paper).
 ```
 
 ---
 
-## IMMEDIATE-QUESTIONS (post-9c — both new; in email v11)
+## IMMEDIATE-QUESTIONS (post-v9 phase 2 + email v14 — both new; in email v13/v14)
 
-Q36-Q40 all RESOLVED in 9c — see RESOLVED section below. Q41 and Q42
-surfaced from email v11 work today.
+Q36-Q40 all RESOLVED in 9c — see RESOLVED section below. Q41/Q42 RESOLVED
+this session — see RESOLVED section. Q43/Q44 RESOLVED 2026-05-22 ~9:53 AM
+by DeepSeek confirmation. Q45 and Q46 surfaced from v9 phase 2 ground-state
+discovery and are now the only IMMEDIATE items.
 
 | ID | Question | Surfaced | Why it matters |
 | --- | --- | --- | --- |
-| Q41 (NEW) | Paul asked *"I wonder whether your Claude does writing. Mine said it had a table to add to the universe paper... but timed out before it could show it to me!"* Should Claude Code on Opus 4.7 take on a full writing role like Sonnet 4.6 and DeepSeek do? Decision: **DECLINED** full writing role. Staying in numerical verification + edits + tables/data lane per cardinal-rule scope. Offered narrow help if Sonnet's table needs a numerical contribution. | Paul's reply 4:10 PM (2026-05-21) | Defines our scope of contribution to Paul's papers going forward. Cover-page byline + Acknowledgments + Reference [17] (GitHub repo) remain unchanged — we're listed as AI contributor for "sustained technical collaboration on the radial ODE implementation, the BVP/shooting formulations, and the manuscript review process." Writing role is the boundary we don't cross. |
-| Q42 (NEW) | Forward `solve_ivp` with slope BC β'(0)=B0 in Sonnet's canonical script does NOT yield a true localized neutral chaoiton. Inspection of β(r) at electron-calibrated (λ=1, g=1.0) with B0=0.05 shows internal sign changes at r=3.5 and r=7, plus growing oscillating tail past r~10. β/K_1(m_J·r) ratio grows 10 orders of magnitude in tail instead of staying constant — definitive evidence the tail is not pure Bessel decay. Consequences: m_χ via H/Q × m_e is window-dependent (r_max=12 → 0.998 MeV; r_max=30 → 1.040 MeV); K_1 far-field fit fails (rel_resid > 1 everywhere); C extraction from far-field amplitude unreliable. **The 9c-cited m_χ = 0.998 MeV at λ=1 is a windowed-integration value, not a true ground state.** Proper BVP with β(∞)=0 (or Robin-decay BC at R_max) needed for clean ground state. | v8 DM paper input extraction (2026-05-21 PM later) | Affects DM paper accuracy. Email v11 offers Paul two paths: (a) submit ApJ with "order-of-magnitude pending true ground state" caveat — faster; (b) delay submission while we build BVP variant — slower but cleaner ground-state m_χ + reliable C. Paul's call. |
+| Q45 (NEW) | The 3D spherical l=1 BVP (per Q43+Q44 confirmed) delivers a CONTINUOUS 1-parameter family of ground states parameterized by B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56] (all sign-changes=0, clean K_1 decay). To extract definite (m_χ, m_J, C) for the DM paper, we need an additional constraint. Three options: (a) match m_J to electron-calibrated value m_J=1 (requires g-scan); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV); (c) self-consistency with charged sector. | v9 phase 2 ground state found (2026-05-22 mid-morning) | Gates the ApJ DM paper submission. Paul holds DM paper pending our (m_χ, m_J, C) deliverable. Once Paul picks the canonical point, the targeted extraction script runs in ~1 hour and delivers definite numbers. Sent in email v13 + v14. |
+| Q46 (NEW) | H/Q normalization across geometries. Sonnet's charged sector uses cylindrical r·dr; our neutral 3D spherical uses r²·dr. The H/Q × m_e mass formula was calibrated on charged cylindrical. Does it apply directly across geometries, or is there a renormalization factor between cylindrical-charged-electron and spherical-neutral-DM? | v9 phase 2 ground state found (2026-05-22 mid-morning) | Affects DM paper m_χ in MeV. If renormalization factor needed, the 0.866-MeV-or-similar numbers shift. Smaller question than Q45 but needed for clean physical-units handoff. Sent in email v13 + v14. |
 
 ---
 
@@ -203,19 +206,19 @@ None of these block SABER engineering trigger either.
 ## HARDEST-PIECES TRACKER
 
 Long-running status board for the structural challenges in the M6 model.
-Tracks how each piece moves across sandbox iterations. Updated 2026-05-21
-PM later (post 9c outcome + email v11 + Q41/Q42; all Q36-Q40 resolved
-in 9c).
+Tracks how each piece moves across sandbox iterations. Updated 2026-05-22
+PM (post v9 phase 2 ground state found + emails v13/v14 sent; Q43/Q44
+resolved by DeepSeek; Q45/Q46 NEW IMMEDIATE).
 
-### ACTIVE hardest pieces (5 — still in motion post-v8)
+### ACTIVE hardest pieces (5 — still in motion post-v9 phase 2)
 
-| Hardest piece | Status post-v6 (2026-05-20 evening) | Status post-v7 (2026-05-21 morning) | Status post-v8 step 5 (2026-05-21 PM) |
+| Hardest piece | Status post-v7 (2026-05-21 morning) | Status post-v8 step 5 (2026-05-21 PM) | Status post-v9 phase 2 (2026-05-22 PM) |
 | --- | --- | --- | --- |
-| Electron H/Q calibration | NEARLY CLOSED in 4-function. v6.6 H/Q=1.778 (4.8%); step (8) drop-quartic 1.7112 (0.84%). | v6.6 best 4-function result. v7 mode-selector wall. | ✅ **EFFECTIVELY ACHIEVED via Sonnet's canonical 2-function script.** Best calibration: g=1.0000, H/Q=1.6890, gap **0.090%** (v8 step 2). Sonnet's reference g=1.0625, gap 0.56%. v1's 1.6918 cited in v9 but Q36 caveat applies (different geometry, search-not-derivation). |
-| V(M) potential form | UNRESOLVED. Shared bottleneck with M5. | Unchanged. | Unchanged for M5 (separate track); for M6, Sonnet's script settles the canonical form for chaoiton dynamics. |
-| ω quantization mechanism | OPEN (Q2). | Unchanged. | ✅ **Empirically validated via v8 step 4** — three lowest stable Q=1 modes match e/μ/τ within 0.80%/6.47%. Analytic proof still deferred per Werbos's §9.1 Open Q#1. |
-| Neutral m_χ true ground state | BLOCKED on v6. | BLOCKED on v7 ground state. | ⚠️ **PARTIAL via v8 step 5** — 448 solutions across (g, λ, B0). Lightest at λ=1.0 = 0.998 MeV (NOT 0.508 MeV as line 235 claims). Mass scaling closer to m ≈ 2λ·m_e at small B0. v9 §9.1 Open Q#2 attribution provenance unresolved (Q37). |
-| Algebraic 2L/Q identity (Q38 NEW) | Not tracked. | Not tracked. | ⚠️ NEW OPEN. Sonnet's script defines L = ω·Q_J directly, so 2L/Q = 2ω is trivially exact. The "g_e ≈ 2 reproduced" calibration item is artifact of definition. Worth flagging to Paul for 9a unless v9 §9 separately derives L = ω·Q_J from dynamics. |
+| Electron H/Q calibration | v6.6 best 4-function result. v7 mode-selector wall. | ✅ **EFFECTIVELY ACHIEVED via Sonnet's canonical 2-function script.** Best calibration: g=1.0000, H/Q=1.6890, gap **0.090%** (v8 step 2). | ✅ Unchanged — Sonnet's 2-function reduction remains canonical for charged sector. |
+| V(M) potential form | Unchanged. | Unchanged for M5 (separate track); for M6, Sonnet's script settles the canonical form for chaoiton dynamics (charged). | ✅ Neutral sector settled too — 3D spherical l=1 p-wave ODE `β'' + (2/r)β' - (2/r²)β - m_J²β + 4gβ³ = 0`. |
+| ω quantization mechanism | Unchanged. | ✅ **Empirically validated via v8 step 4** — three lowest stable Q=1 modes match e/μ/τ within 0.80%/6.47%. Analytic proof still deferred. | ✅ Unchanged. |
+| Neutral m_χ true ground state | BLOCKED on v7 ground state. | ⚠️ **PARTIAL via v8 step 5** — 448 IVP solutions, lightest at λ=1.0 = 0.998 MeV (windowed-integration value, not true ground state per Q42). | 🚧 **GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT** via `neutral_bvp_solver_mJ_free.py`. True nonlinear soliton: sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay. 1-parameter family in B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56]. Definite (m_χ, m_J, C) extraction awaiting Q45 (canonical point) + Q46 (H/Q normalization) reply via email v14. |
+| Algebraic 2L/Q identity (Q38) | Not tracked. | ⚠️ NEW OPEN. Sonnet's script defines L = ω·Q_J directly, so 2L/Q = 2ω is trivially exact. | ✅ RESOLVED in 9c §9 criterion 3 footnote: *"in our numerical implementation L=ωQ_J by construction"*. |
 
 ### RESOLVED hardest pieces (12 — closed post-v8; kept for traceability)
 
@@ -388,37 +391,51 @@ Active count post-9c + email v11 (entering Paul's reply):
 ## Highest-leverage closure path
 
 ```text
-Email v10 sent (Q36 reinforcement + Q37 0.508 MeV + Q38 identity)
+Email v13 + v14 sent (neutral chaoiton GROUND STATE FOUND + Q45/Q46
++ Acknowledgments-update ask bundled)
     ↓
-Paul's reply
+Paul's reply on Q45 + Q46 (via DeepSeek)
     ↓
-    ├── Confirms 9a will soften v1 citation + clarify 0.508 MeV
-    │       → Acknowledge, return fully to M5
-    │       → M6 v8 work documented as functionally complete
+    ├── (Q45a) "Match m_J to electron-calibrated λ=1"
+    │       → Run g-scan via neutral_bvp_solver_mJ_free.py until
+    │         m_J=1 lands at some (g, B0)
+    │       → Deliver definite (m_χ, m_J, C) under Q46 normalization
+    │       → Email v15 with deliverable
     │
-    ├── Asks us for specific (m_χ, m_J, σ/m) numbers for §9.1
-    │       → Run targeted Q_A≈0 sub-scan (~1 hour) on Sonnet's
-    │         canonical 2-function reduction
-    │       → Hand off via GitHub URL per Publishing stance
+    ├── (Q45b) "Pick lightest in family (B0=0.40, m_χ ≈ 0.866 MeV)"
+    │       → Report lightest directly with Q46-corrected normalization
+    │       → Email v15 with deliverable
     │
-    ├── Provides 0.508 MeV provenance — IS reproducible somewhere
-    │       → Verify the path; update Q37 status accordingly
+    ├── (Q45c) "Self-consistency with charged sector"
+    │       → Solve over-determined system: same (g, m_J) as charged,
+    │         find which B0 lands. ~few hours.
+    │       → Email v15 with deliverable
+    │
+    ├── (Q45d) Custom DeepSeek/Paul constraint
+    │       → Implement on receipt; deliver under specified constraint
     │
     └── No reply within 1-2 weeks
-            → M5 continues; email v10 documents our position;
+            → M5 continues; v14 already documents our position;
               no further escalation needed.
 
-Already completed via sandbox v8 (no further M6 work needed):
+Completed via v9 phase 2 (neutral chaoiton ground state):
+  - G2 GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT via
+    neutral_bvp_solver_mJ_free.py: true nonlinear soliton, clean K_1
+    decay, 1-parameter family in B0 ∈ [0.4, 0.6]
+  - Q43 + Q44 resolved by DeepSeek 2026-05-22 ~9:53 AM
+
+Completed via sandbox v8 (already in 9c):
   - G1 lepton scan PASSED (v8 step 4): muon 0.80%, tau 6.47%
   - G3 discrete ω mechanism EMPIRICALLY VALIDATED (same)
-  - G2 neutral m_χ PARTIAL (v8 step 5): 448 solutions, lightest at
-    λ=1.0 = 0.998 MeV — provenance of Sonnet's 0.508 MeV attribution
-    is the only remaining Q37 question
+  - Q36-Q40 all 5 incorporated in 9c (single round-trip)
 
 M6 production decision (Taichi):
-  - Sonnet's canonical script gives reference ODE structure for port
+  - Sonnet's canonical script gives reference ODE for charged sector
+  - neutral_bvp_solver_mJ_free.py gives reference ODE for neutral
+    sector (3D spherical l=1 p-wave)
   - Decision still deferred per cardinal rule (M5 first)
 
 M5 returns as foreground engineering track per cardinal rule:
-  M5 is SABER's primary substrate. M6 v8 is functionally complete.
+  M5 is SABER's primary substrate. M6 v9 phase 2 is functionally
+  complete; awaiting Q45/Q46 reply for definite numbers handoff.
 ```
