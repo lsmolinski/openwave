@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** ✅ **v8 work complete + 9c draft incorporates all 5 push-back questions + DM paper inputs delivered.** Sandbox v8 + 9c outcome summary: (1) v8 scans confirm 9c numbers (0.998 MeV at λ=1, muon 0.80% at ω=12.82, tau 6.47% at ω=50.0); (2) **all five questions from email v10 (Q36, Q37, Q38, Q39, Q40) incorporated cleanly in 9c**, plus three bonus changes (g=1.0000 calibration, pion+ baryon-state hypothesis, abstract reframed to 0.09% reproduction); (3) DM paper inputs delivered via email v11: m_χ = 0.998 MeV, m_J = 1.033 MeV (analytical), C = 6.7×10⁻⁴ MeV·fm (source-monopole convention). **Critical caveat surfaced (Q42 NEW)**: β profile from `solve_ivp` with slope BC β'(0)=B0 is NOT a true localized soliton — has internal sign changes (r=3.5, r=7) and growing oscillating tail past r~10. The 9c-cited 0.998 MeV is a windowed-integration value (r_max=12), not a true ground state. Email v11 offered Paul two paths: present DM paper with caveat OR delay ApJ submission while we build a BVP variant. **Q41 (writing role)**: declined full writing role; stay in numerical verification + edits + tables/data lane. Awaiting Paul's call on the DM path. M5 path foreground per cardinal rule.
+**Status:** ⚠️ **v9 BVP work complete — empirical no-go for canonical neutral chaoiton ground state.** Paul replied 2026-05-21 PM accepting the delay-for-BVP path; instructed *"apply solve_bvp with Q_CS=0 constraint, asymmetric helicity init"*. Built BOTH interpretations: A (4-function BVP forked from v6, I_TARGET=0) and B (2-function BVP, adapted from Sonnet's neutral_ode with Dirichlet/Robin decay BC). **Findings: NEITHER interpretation produces a clean ≤4-node ground state.** B collapses to trivial amplitude → 0 universally (2D Townes-soliton pathology — cubic NLS on cylindrical m=1 is critical, only unstable solitons). A finds non-trivial but highly excited (5-22 nodes) configurations with tail 5-13%. The 9c §8 m_χ = 0.998 MeV is confirmed as IVP-windowed-integration artifact, NOT a true ground state. Two NEW structural questions surfaced (Q43: sign convention in canonical β-equation +λβ term; Q44: cylindrical 2D vs spherical 3D geometry). Email v12 (drafted) reports findings + asks Q43/Q44. M5 path foreground per cardinal rule (M6 work pauses after email v12 sent).
 
-Last updated: 2026-05-21 PM later (post 9c outcome + email v11 with DM inputs + β non-localization caveat — Q36/Q37/Q38/Q39/Q40 all RESOLVED, Q41/Q42 NEW).
+Last updated: 2026-05-22 morning (post v9 BVP work + email v12 drafted — Q43/Q44 NEW; BVP exhausts neutral-chaoiton search in canonical ansatz; structural questions to Paul).
 
 See `0b_model_gates.md` for the G1/G2/G3 production criteria.
 See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
@@ -265,9 +265,48 @@ vs spherical); (5) Q37 — 0.508 MeV provenance; (6) 2L/Q algebraic
 identity observation; (7) pion+ at 3.25% gap as feature/coincidence
 question. Held pending review.
 
+### Sandbox v9 (2026-05-22, neutral BVP both interpretations)
+
+Triggered by Paul's 2026-05-21 PM reply (via DeepSeek), accepting the
+delay-for-BVP path: *"apply the same solve_bvp method (Robin BCs at large
+r, integral constraint Q_CS=0) to the neutral sector. The ODEs are the
+same as for the charged case but with the topological charge fixed to
+zero and with the asymmetric helicity initial guess (V and Q positive,
+A and J negative)."*
+
+Paul's phrase "same ODEs as the charged case" admits two interpretations,
+so built both:
+
+| Variant | Code | Result |
+| --- | --- | --- |
+| A — 4-function BVP, Q_CS=0 (I_TARGET=0), asymmetric helicity init verbatim from v6 | `sandbox_v9/m6_v9_neutral_4fn_bvp.py` (forked from v6) | Non-trivial converged solutions BUT all in excited modes (5-22 nodes); best case tail = 5%, ω=0.67, m_eff²=+0.06 |
+| B — 2-function BVP (Sonnet's neutral_ode + Dirichlet/Robin decay BC + B0 free param) | `sandbox_v9/m6_v9_neutral_2fn_bvp.py` | Collapses to trivial amplitude → 0 universally for ALL λ tested (positive AND negative) |
+
+**Combined verdict:** the canonical neutral chaoiton "ground state"
+cited as m_χ = 0.998 MeV in 9c §8 does NOT survive proper BVP scrutiny
+in either interpretation.
+
+| Diagnosis | Detail |
+| --- | --- |
+| B-trivial-collapse cause | 2D Townes-soliton pathology: cubic NLS in cylindrical m=1 geometry is CRITICAL, supports only unstable saddle solutions; BVP relaxation finds the trivial energy minimum |
+| A-excited-only cause | Q_CS=0 with 4-function asymmetric-helicity init has no natural ≤4-node ground configuration; the helicity prescription was designed for Q_CS=1 |
+
+Two NEW structural questions to Paul:
+
+| Q | Question |
+| --- | --- |
+| Q43 | Sign convention in `neutral_ode`: should it be +λβ (Sonnet's current form, gives J_1 oscillatory tail) or −λβ (gives K_1 decaying tail)? The current sign doesn't support exponential decay at infinity. |
+| Q44 | Geometry: cylindrical 2D m=1 (Sonnet's current) has critical cubic NLS → only unstable solitons. Spherical 3D s-wave or p-wave is subcritical and supports stable solitons. Should the canonical neutral chaoiton be on 3D spherical instead? |
+
+### Email v12 (drafted) — v9 BVP no-go findings + Q43/Q44
+
+Reports both interpretations exhausted; m_χ in 9c §8 is IVP-windowed
+artifact (re-confirmed); asks Q43 + Q44 as the unblock path. Held
+pending review.
+
 ---
 
-## Current state (2026-05-21 PM, post sandbox v8 complete)
+## Current state (2026-05-22 morning, post sandbox v9 complete)
 
 | Item | Status |
 | --- | --- |
@@ -379,14 +418,16 @@ is settled.
 
 Both trackers (per-question status and the long-running hardest-pieces
 board) now live in `0b_question_tracker.md` as a single source of truth
-across all sandbox iterations. Active count as of 2026-05-21 PM later
-(post-9c + email v11): **2 IMMEDIATE (Q41 writing role, Q42 β
-non-localization) + 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 2 DEMOTED (Q26,
-Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot via Q34) = 12 active questions.**
-Highest-leverage closure path: Paul's reply on email v11 (Q42 DM path
-choice) → either caveat-as-is (M5 returns) or delay-for-BVP (1-2 days
-M6 BVP work, then M5). M6 data drop already at github.com/openwave-labs/
-openwave (Reference [17] in 9c).
+across all sandbox iterations. Active count as of 2026-05-22 morning
+(post-v9 + email v12): **2 IMMEDIATE (Q43 sign convention, Q44 geometry)
++ 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 2 RESOLVED-in-v11/v9 (Q41 writing
+role declined, Q42 superseded by Q43+Q44) + 2 DEMOTED (Q26, Q27) +
+3 ARCHIVED (Q31, Q32, Q33 — moot via Q34) = 14 active questions.**
+Highest-leverage closure path: Paul's reply on email v12 (template
+script + Q43/Q44 answers). If template works → clean ground state +
+m_χ; if Q43/Q44 answered → 5-minute code fixes. Either way, M5 path
+foreground while we wait. M6 data drop already at github.com/openwave-
+labs/openwave (Reference [17] in 9c).
 
 ---
 
@@ -404,7 +445,8 @@ openwave (Reference [17] in 9c).
 | `0c_sandbox_v5.md` | v5 plan, Werbos algorithm reply, T10 partial success, question tracker |
 | `0c_sandbox_v6.md` | v6: DeepSeek normalizations, step (8/11/4/2) diagnostics, drop-quartic finding, email v6 + Q28/Q29/Q30 |
 | `0c_sandbox_v7.md` | v7: Paul's Q28/Q29/Q30 answers, mode-selector attempts (7 variants), Phase 1 reassessment, email v7 + Q31/Q32/Q33, Paul-script variant test, v9 paper revelation, email v8 + Q34 |
-| `0c_sandbox_v8.md` | v8 (current): Sonnet's canonical 2-function script, 5-step work program (electron sweep + paper-math + lepton scan + neutral scan), 9b/9c paper reviews, email v10 (Q36-Q40 push-back) + 9c outcome (all 5 incorporated), DM paper inputs extraction (m_χ, m_J, C), email v11 (Q41/Q42) |
+| `0c_sandbox_v8.md` | v8: Sonnet's canonical 2-function script, 5-step work program (electron sweep + paper-math + lepton scan + neutral scan), 9b/9c paper reviews, email v10 (Q36-Q40 push-back) + 9c outcome (all 5 incorporated), DM paper inputs extraction (m_χ, m_J, C), email v11 (Q41/Q42) |
+| `0c_sandbox_v9.md` | v9 (current): neutral chaoiton BVP per Paul's Q42 delay-for-BVP reply. Two interpretations of "same ODEs as charged case" both empirically exhausted: A (4-fn, Q_CS=0, asymmetric helicity) → excited modes only; B (2-fn Sonnet's neutral_ode + Dirichlet/Robin decay BC) → trivial amplitude → 0 (2D Townes-soliton pathology). Email v12 (drafted) asks Q43 sign convention + Q44 geometry + takes up DeepSeek's template offer. |
 | `0b_M6_roadmap.md` | This file |
 | `0b_model_gates.md` | G1/G2/G3 production decision criteria |
 | `0b_question_tracker.md` | Live question + hardest-pieces tracker (single source of truth across all sandbox iterations) |
@@ -421,6 +463,7 @@ openwave (Reference [17] in 9c).
 | `sandbox_v6/` | `m6_v6_4fn_calibrated_bvp.py` — forks v5 + Q22/Q23/Q24 fixes. v6.6 lands H/Q=1.778 with DeepSeek quartic; step (8) drop-quartic lands H/Q=1.7112 (0.84% off target). Also: `deepseek_reference.py` + `deepseek_reference_patched.py` (broken — diverges to H/Q≈10^16); `diagnostic_steps_8_through_2.py` (the 4-step diagnostic that found drop-quartic). |
 | `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6 with dual H computation + anchor options; 7 variants tested, all in wrong-sign basins. `m6_v7_paul_script.py` — Paul-script variant test (λ_LM=1.0 fixed), catastrophic blowup. **Archived** post-Q34: 4-function ansatz is generalized form, not canonical electron. |
 | `sandbox_v8/` | `ouroboros_benchmark.py` — Sonnet's canonical 2-function (α, β) script with vector cylindrical Laplacian + slope BCs. Runs cleanly first try. Reproduces electron H/Q=1.6969 (0.56%) at g=1.0625; tighter at g=1.0000 (0.090%). `lepton_spectrum_scan()` produces muon (0.80%), tau (6.47%), pion+ (3.25%). `neutral_chaoiton_scan()` produces 448 solutions. `extract_mJ_C_mchi.py` — DM paper input extraction (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) at electron-calibrated point + Q42 caveat (β non-localization in IVP). |
+| `sandbox_v9/` | `m6_v9_neutral_2fn_bvp.py` (Interpretation B — 2-function BVP, Sonnet's `neutral_ode` + Dirichlet/Robin decay BC + B0 as free parameter; collapses to trivial amplitude → 0 universally for all λ tested). `m6_v9_neutral_4fn_bvp.py` (Interpretation A — fork of v6 4-function BVP with I_TARGET=0; converges to excited modes only, 5-22 nodes). Net: BOTH interpretations exhaust the canonical neutral-chaoiton ground-state search. Q43 (sign convention) + Q44 (geometry: cylindrical vs spherical) are the structural questions raised in email v12. |
 
 **Theory papers:**
 
