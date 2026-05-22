@@ -121,7 +121,7 @@ OpenWave is a multi-contributor open-source platform. Alongside the theoretical 
 
 | Contributor | Role |
 | --- | --- |
-| [Rodrigo Griesi](https://github.com/xrodz) (OpenWave Labs) | Founder, lead engineer, project director — sets vision, methodology, and engineering direction |
+| [Rodrigo Griesi](https://github.com/xrodz) (OpenWave Labs) | Founder, lead engineer/researcher, project director — sets vision, methodology, and engineering direction |
 | [Anthropic Claude Code](https://claude.com/product/claude-code) (Opus 4.7) | AI agent contributor — code, numerical analysis, derivations, documentation, manuscript review |
 | Community contributors | Repo open to external contributions under [Apache 2.0](LICENSE) |
 
