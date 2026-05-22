@@ -114,6 +114,22 @@ This appends a line like:
 Signed-off-by: Your Name <your.email@example.com>
 ```
 
+### Optional: auto-sign every commit via a local hook
+
+To avoid having to remember `-s` (and to add sign-off automatically when committing from GUIs like GitHub Desktop), the repo ships a `prepare-commit-msg` hook in [`.githooks/`](./.githooks/). Activate it in your clone with a one-time command:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This is a per-clone setting — run it once after cloning. Verify with:
+
+```bash
+git config --get core.hooksPath  # should print: .githooks
+```
+
+The hook reads your `git config user.name` and `user.email` and appends the `Signed-off-by:` line automatically on every commit. It is idempotent and skips merge / squash commits.
+
 By signing off, you certify the full text of the DCO v1.1:
 
 1. The contribution was created in whole or in part by you, and you have the right to submit it under the open-source license indicated in the file.

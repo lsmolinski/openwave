@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Auto-append a DCO Signed-off-by line to commit messages.
+#
+# Triggered by every commit in this repo (including from GitHub Desktop,
+# CLI, IDE integrations — anything that goes through git). Idempotent:
+# does nothing if the message already contains a matching Signed-off-by.
+#
+# The DCO (Developer Certificate of Origin v1.1) is what OpenWave uses
+# instead of a CLA. See CONTRIBUTING.md for details.
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+
+# Skip for merges, squashes, amends with existing messages, and rebases —
+# git already handles the message in those cases.
+case "$COMMIT_SOURCE" in
+    merge|squash) exit 0 ;;
+esac
+
+NAME=$(git config user.name)
+EMAIL=$(git config user.email)
+
+if [ -z "$NAME" ] || [ -z "$EMAIL" ]; then
+    echo "prepare-commit-msg: git user.name or user.email not set; skipping DCO sign-off" >&2
+    exit 0
+fi
+
+SIGNOFF="Signed-off-by: $NAME <$EMAIL>"
+
+# Skip if this exact sign-off line is already present
+if grep -qF "$SIGNOFF" "$COMMIT_MSG_FILE"; then
+    exit 0
+fi
+
+# Append the sign-off, preserving a blank line separator before it
+printf '\n%s\n' "$SIGNOFF" >> "$COMMIT_MSG_FILE"
