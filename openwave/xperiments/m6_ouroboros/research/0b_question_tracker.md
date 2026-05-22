@@ -14,42 +14,50 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-22 morning (post sandbox v9 BVP work — Paul replied 2026-05-21 ~5:10 PM accepting delay-for-BVP path; built BOTH interpretations (A=4-fn Q_CS=0, B=2-fn Dirichlet/Robin); **NEITHER produces clean ≤4-node ground state — Townes-soliton pathology in 2D cubic NLS** (Interpretation B); **only excited modes** (Interpretation A). Email v12 drafted with empirical no-go + Q43 (sign convention) + Q44 (geometry) structural questions).
+**Last updated:** 2026-05-22 mid-morning (post DeepSeek Q43+Q44 confirmation + neutral chaoiton GROUND STATE FOUND. DeepSeek confirmed Q43 (sign: `-m_J²β`) + Q44 (3D spherical l=1 p-wave). DeepSeek's verbatim template collapses to trivial (wrong l=1 BC); modified to proper l=1 + B0 fixed + m_J free eigenvalue → **true nonlinear soliton with sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay**. 1-parameter family in B0 ∈ [0.4, 0.6]. Email v13 sent asking Q45 (canonical point in family) + Q46 (H/Q normalization across geometries)).
 
 ---
 
 ## Active count
 
 ```text
-2 IMMEDIATE  Q43 (NEW 2026-05-22) Sign convention in canonical
-             `neutral_ode`. Sonnet's β-equation has `+λβ` term, which
-             means the linear far-field is β'' + λβ = 0 → oscillatory
-             J_1 Bessel (no exponential decay). For K_1 decay at
-             infinity (what Paul promises will give "clean K_1
-             amplitude" for Yukawa coupling C), the term should be
-             `-λβ`. v9 Interpretation B confirmed empirically: with
-             `+λβ`, BVP collapses to trivial amplitude → 0 (no
-             nonlinear soliton survives). Sent in email v12.
+2 IMMEDIATE  Q45 (NEW 2026-05-22 mid-morning) The 3D spherical l=1
+             BVP (per Q43+Q44 confirmed) delivers a CONTINUOUS
+             1-parameter family of ground states parameterized by
+             B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56] (all sign-
+             changes=0, clean K_1 decay). To extract definite
+             (m_χ, m_J, C) for the DM paper, need additional
+             constraint to pin canonical point. Three options:
+             (a) match m_J to electron-calibrated value (g-scan
+             needed); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV);
+             (c) self-consistency with charged sector (over-
+             determined system). Sent in email v13.
 
-             Q44 (NEW 2026-05-22) Cylindrical 2D vs spherical 3D
-             geometry. Sonnet's β-equation has `-β/r²` term, which
-             is the 2D cylindrical m=1 azimuthal centrifugal piece.
-             In 2D cylindrical, cubic NLS is CRITICAL (2D Townes
-             soliton) — supports only unstable saddle solitons; BVP
-             relaxation finds trivial energy minimum. For stable 3D
-             classical solitons need spherical s-wave (∇² = f'' +
-             2f'/r) or p-wave. v9 Interpretation B confirmed: no
-             stable localized state exists in 2D cylindrical with
-             cubic nonlinearity for any λ tested. Sent in email v12.
+             Q46 (NEW 2026-05-22 mid-morning) H/Q normalization
+             across geometries. Sonnet's charged sector uses
+             cylindrical r·dr; our neutral 3D spherical uses r²·dr.
+             The H/Q × m_e mass formula was calibrated on charged
+             cylindrical. Does it apply directly across geometries,
+             or is there a renormalization factor between
+             cylindrical-charged-electron and spherical-neutral-DM?
+             Sent in email v13.
 
-2 RESOLVED   Q41 (writing role) — declined; staying in numerical
-in v11/v9    verification lane. Sent in email v11. Settled.
+4 RESOLVED   Q41 (writing role) — declined; staying in numerical
+this session verification lane. Sent in email v11. Settled.
 
              Q42 (β profile non-localization in IVP) — v9 BVP work
-             confirmed this is a structural issue, not a tunable.
-             Both interpretations of the canonical neutral BVP fail.
-             Q42 subsumed into Q43+Q44 which ask the underlying
-             structural questions (sign convention, geometry).
+             + DeepSeek Q43+Q44 reply confirmed this was a STRUCTURAL
+             issue: wrong sign convention + wrong geometry. Resolved
+             via Q43+Q44.
+
+             Q43 (sign convention) — RESOLVED 2026-05-22 ~9:53 AM
+             by DeepSeek confirmation: `-m_J²β` (minus sign).
+             Empirically validated in v9 ground state.
+
+             Q44 (geometry) — RESOLVED 2026-05-22 ~9:53 AM by
+             DeepSeek confirmation: 3D spherical l=1 p-wave (NOT
+             2D cylindrical). Subcritical NLS supports stable
+             solitons; empirically validated in v9 ground state.
 
 5 RESOLVED   Q36 ✅ Incorporated in 9c §9 criterion 9 — reads exactly
 in 9c        the suggested wording "Preliminary reproduction in a

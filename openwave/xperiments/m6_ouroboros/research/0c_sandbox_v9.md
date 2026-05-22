@@ -287,7 +287,7 @@ Paul forwarded DeepSeek's reply to email v12. Quoted verbatim:
 >
 > ***Q43 – Sign convention:** The linear term in the neutral ODE should
 > have a MINUS sign for exponential decay. The correct form is:*
->     *β'' + (2/r)β' - (2/r²)β - m_J² β + 4g β³ = 0*
+> *β'' + (2/r)β' - (2/r²)β - m_J² β + 4g β³ = 0*
 > *(Note the minus sign on m_J².)*
 >
 > ***Q44 – Geometry:** The correct geometry is 3D spherical, not 2D
