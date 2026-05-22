@@ -92,6 +92,6 @@ We may update this Code of Conduct over time. Major changes will be discussed op
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
-**Note:** GNU AGPL-3.0 is a strong copyleft license. If you modify and distribute this software (including use over a network), you must release your modifications under the same license.
+**Note:** Apache 2.0 is a permissive license. Redistributions must retain copyright, license, and NOTICE files; derivative works may be distributed under different terms, including proprietary.

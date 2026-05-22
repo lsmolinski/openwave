@@ -2,7 +2,7 @@
 
 <div align = "center">
 
-  [![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg?style=for-the-badge)](https://www.gnu.org/licenses/)
+  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://www.apache.org/licenses/LICENSE-2.0)
   [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
   [![openwave](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/openwave-labs/openwave)
   [![openwave](https://img.shields.io/badge/Reddit-%23FF4500.svg?style=for-the-badge&logo=Reddit&logoColor=white)](https://www.reddit.com/r/openwave/)
@@ -287,14 +287,15 @@ Check **[SYSTEM ARCHITECTURE](SYS_ARCH.md)** for more details on OpenWave's Pack
 
 ## LICENSE & ATTRIBUTION
 
-OpenWave is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).
+OpenWave is licensed under the [Apache License, Version 2.0](LICENSE).
 
 This means:
 
 - ✅ You can use, modify, and distribute OpenWave
 - ✅ Commercial use is permitted
-- ⚠️ If you distribute modified versions (including as a web service), you must release your source code under AGPL-3.0
-- ⚠️ You cannot create closed-source proprietary versions (this PROTECTS against misuse while keeping the project truly open-source)
+- ✅ Contributors grant a patent license for their contributions; defensive termination protects all users
+- ✅ Derivative works may be distributed under different terms, including proprietary, provided attribution and NOTICE requirements are met
+- ⚠️ Redistributions must retain copyright, license, and [NOTICE](NOTICE) files
 
 ### Third-Party Software
 
@@ -306,7 +307,7 @@ OpenWave uses several open-source libraries. See [THIRD_PARTY_NOTICES](THIRD_PAR
 - **Matplotlib** (BSD-compatible) - Visualization
 - **PyAutoGUI** (BSD-3) - GUI automation
 
-All dependencies use licenses compatible with AGPL-3.0.
+All dependencies use licenses compatible with Apache 2.0.
 
 ### Trademark
 

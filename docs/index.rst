@@ -1,8 +1,8 @@
 OpenWave Documentation
 ======================
 
-.. image:: https://img.shields.io/badge/License-AGPL%20v3-blue.svg
-   :target: https://www.gnu.org/licenses/
+.. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+   :target: https://www.apache.org/licenses/LICENSE-2.0
    :alt: License
 
 .. image:: https://img.shields.io/badge/python-3.12+-blue.svg
@@ -134,6 +134,6 @@ Community & Support
 License
 -------
 
-OpenWave is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+OpenWave is licensed under the Apache License, Version 2.0.
 
 See the :doc:`license` page for details.

@@ -98,43 +98,46 @@ See `/dev_docs` for coding standards and development guidelines
 - Open a Pull Request (PR) on GitHub.
 - Be ready to discuss and revise your PR after review.
 
-## Contributor License Agreement (CLA)
+## Sign-Off — Developer Certificate of Origin (DCO)
 
-By contributing to OpenWave, you agree that:
+OpenWave uses the [Developer Certificate of Origin (DCO) v1.1](https://developercertificate.org/) instead of a Contributor License Agreement. Every commit must include a `Signed-off-by:` line certifying you wrote the patch (or otherwise have the right to contribute it) under the project's license.
 
-1. **You own the rights** to your contribution, or have permission to contribute it.
-1. **You grant OpenWave Labs** a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license to use, modify, and distribute your contribution under the project's license.
-1. **Your contribution is voluntary** and you receive no compensation.
-1. **You understand** that OpenWave is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0), which is a strong copyleft license.
-1. **You agree** that your contributions will be subject to the same license as the project.
-1. **You represent** that your contribution is your original work and does not violate any third-party rights.
+Add the sign-off automatically with the `-s` flag:
 
-### Why We Need This
+```bash
+git commit -s -m "your commit message"
+```
 
-This agreement ensures:
+This appends a line like:
 
-- OpenWave Labs can maintain and distribute the project
-- All contributions remain under the same license
-- The project is legally protected
-- Contributors retain credit for their work
+```text
+Signed-off-by: Your Name <your.email@example.com>
+```
+
+By signing off, you certify the full text of the DCO v1.1:
+
+1. The contribution was created in whole or in part by you, and you have the right to submit it under the open-source license indicated in the file.
+1. The contribution is based upon previous work that is covered under an appropriate open-source license, and you have the right under that license to submit that work with modifications.
+1. The contribution was provided directly to you by some other person who certified (1) or (2), and you have not modified it.
+1. You understand and agree that the project and the contribution are public and that a record of the contribution (including all personal information you submit with it) is maintained indefinitely and may be redistributed consistent with this project or the open-source license(s) involved.
 
 ### Attribution
 
-All contributors will be credited in project documentation and/or a CONTRIBUTORS file.
+All contributors are credited via commit history. A CONTRIBUTORS file may be maintained for project-wide acknowledgment.
 
 ## License Notice
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+This project is licensed under the **Apache License, Version 2.0**.
 
 This means:
 
-- ✅ **Open-Source:** Free to use, modify, and distribute
-- ✅ **Commercial use allowed:** Businesses can use OpenWave
-- ✅ **Strong copyleft:** If you distribute modified versions (including use over a network/SaaS), you MUST share your source code under GNU AGPL-3.0
-- ✅ **Network protection:** Even cloud/web services must disclose source
-- ⚠️ **No proprietary forks:** You cannot create closed-source versions (this PROTECTS against misuse while keeping the project truly open-source)
+- ✅ **Open-source:** Free to use, modify, and distribute
+- ✅ **Commercial use allowed:** Anyone — companies, labs, individuals — can use OpenWave
+- ✅ **Patent grant:** Contributors grant a patent license for their contributions; defensive termination protects all users from patent litigation
+- ✅ **Permissive:** Derivative works may be distributed under different terms, including proprietary, provided attribution and NOTICE requirements are met
+- ⚠️ **Attribution required:** Redistributions must retain copyright, license, and NOTICE files
 
-See the [LICENSE](LICENSE) file for full terms.
+See the [LICENSE](LICENSE) and [NOTICE](NOTICE) files for full terms.
 
 ## Trademark Notice
 

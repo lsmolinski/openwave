@@ -91,14 +91,14 @@ PyAutoGUI is licensed under the BSD 3-Clause License. Full license text availabl
 
 ## License Compatibility Statement
 
-OpenWave is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+OpenWave is licensed under the Apache License, Version 2.0.
 
-All third-party dependencies listed above use licenses that are compatible with AGPL-3.0:
+All third-party dependencies listed above use permissive licenses that are compatible with Apache 2.0:
 
-- **Apache 2.0** is compatible with GPL v3 and AGPL v3
-- **BSD 3-Clause** is a permissive license compatible with all GPL/AGPL versions
+- **Apache 2.0** is the same license as the project — fully compatible
+- **BSD 3-Clause** is a permissive license fully compatible with Apache 2.0
 
-This means OpenWave can legally use these libraries while maintaining its AGPL-3.0 license.
+This means OpenWave can legally use these libraries under matching permissive terms.
 
 ---
 
@@ -108,7 +108,7 @@ When using or distributing OpenWave, you must:
 
 1. Include this THIRD_PARTY_NOTICES file
 1. Maintain all copyright notices from dependencies
-1. Comply with AGPL-3.0 license terms for OpenWave
+1. Comply with Apache 2.0 license terms for OpenWave (including retention of LICENSE and NOTICE files)
 1. Comply with individual license terms for each dependency
 
 ---

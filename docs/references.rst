@@ -204,7 +204,7 @@ License Information
 
 **OpenWave License:**
 
-GNU Affero General Public License v3.0 (AGPL-3.0)
+Apache License, Version 2.0
 
 See :doc:`license` for details.
 

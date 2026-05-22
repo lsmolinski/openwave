@@ -344,7 +344,7 @@ Resources
 License
 -------
 
-By contributing, you agree that your contributions will be licensed under AGPL-3.0.
+By contributing, you agree that your contributions will be licensed under Apache 2.0. Sign off commits with ``git commit -s`` per the Developer Certificate of Origin (see ``CONTRIBUTING.md``).
 
 See `LICENSE <../LICENSE>`_ for details.
 

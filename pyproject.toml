@@ -21,7 +21,7 @@ keywords = [
   "Matter Formation", "Energy Formation", "Physics Simulation"
 ]
 
-license = { text = "GNU-AGPL-3.0" }
+license = { text = "Apache-2.0" }
 authors = [
   { name = "Rodrigo Griesi", email = "hello@openwavelabs.com" },
   { name = "Jeff Yee",     email = "hello@openwavelabs.com" }
