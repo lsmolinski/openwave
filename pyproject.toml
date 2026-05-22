@@ -14,7 +14,7 @@ version = "1.1.1"
 
 requires-python = ">=3.12"
 
-description = "Open-source subatomic simulator."
+description = "Open-source subatomic physics simulator."
 readme = "README.md"
 keywords = [
   "Energy Wave Theory", "Subatomic Simulation", "Quantum Mechanics",

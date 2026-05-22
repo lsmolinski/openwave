@@ -1,7 +1,7 @@
 """Core package for the OpenWave project.
 
-Open-source subatomic simulator using classical wave-field methods with topology
-and nonlinear potentials to study particle and force emergence. GPU-accelerated.
+Open-source subatomic physics simulator using classical field methods with topology
+to study particle and force emergence. GPU-accelerated.
 
 """
 
