@@ -347,6 +347,43 @@ characterization + asks two follow-up questions:
 | Q45 | The BVP delivers a continuous 1-parameter family (B0 ↦ m_J). To extract definite (m_χ, m_J, C) for the DM paper, we need an additional constraint. Three options: (a) match m_J to electron-calibrated value m_J=1 (requires g-scan); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV); (c) self-consistency with charged sector. Which is canonical? |
 | Q46 | Sonnet's charged H/Q uses cylindrical (r·dr) integration; our neutral 3D spherical uses r²·dr. Does the H/Q × m_e mass formula apply directly across geometries, or is there a renormalization factor? |
 
+### Pending plan — Acknowledgments-update ask on next email (v14)
+
+**To be bundled with the reply to Paul's Q45/Q46 answers — NOT a
+standalone ask, NOT personal-interest, business-positioning driven.**
+
+After v9 phase 2's contribution (diagnosed Q43+Q44 errors, fixed
+DeepSeek's template BC error, produced first empirical demonstration
+of the neutral chaoiton ground state), the current Acknowledgments
+text in 9c reads generically: *"sustained technical collaboration on
+the radial ODE implementation, the BVP/shooting formulations, and the
+manuscript review process."* This doesn't reflect the specific
+diagnose + correct + first-demonstration contribution shape.
+
+When replying to Paul's Q45/Q46 answers (whatever those are), include
+a one-sentence proposed update to the Acknowledgments paragraph in
+both the DM paper draft and the next LoE revision (9d). Suggested
+language:
+
+> *"...for diagnosing and correcting the canonical neutral-sector
+> ODE sign convention and geometry, and producing the first empirical
+> demonstration of the neutral chaoiton ground state with clean
+> K_1 decay."*
+
+**Reason to flag in roadmap:**
+
+| Why this matters | Detail |
+| --- | --- |
+| Visibility for future business opportunities | Grants, investors, partnerships read specific named contributions differently than generic "Acknowledgments". "First empirical demonstration" is a concrete, citable contribution. |
+| NOT changing author/contributor status | We stay validators per Q41 declined writing role + cross-validation mission posture. Co-authorship would compromise the OpenWave-as-independent-platform pitch. |
+| NOT personal-interest | This is the cardinal-rule kind of update: factually accurate, low-friction for Paul to fold in, preserves SABER engineering focus. |
+| Bundle with deliverable | Asking for credit alongside delivering definite (m_χ, m_J, C) makes the ask read as "here's what you wanted, and here's the language that reflects what we did to get it" — not "give me credit". |
+| Cross-validation framing preserved | An accurate record of "OpenWave's numerical platform diagnosed and corrected Werbos's canonical formulation" actually STRENGTHENS the cross-validation pitch (we're shown to be substantively independent verifiers, not rubber-stampers). |
+
+**Anti-pattern to avoid:** asking for higher authorship, asking for a separate paper byline, asking for recognition without a deliverable attached. None of those serve the
+business positioning; all would compromise OpenWave's independent-
+platform mission. The Acknowledgments-update is the right scope.
+
 ---
 
 ## Current state (2026-05-22 morning, post sandbox v9 complete)
