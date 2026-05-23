@@ -1,0 +1,118 @@
+========================================================================
+M6 v10 — canonical neutral chaoiton (per Paul/DeepSeek Q45+Q46 reply)
+========================================================================
+  Constants: m_e = 0.5109989461 MeV, R_phys = 386.159 fm
+  BVP: g = 1.0, R in [0.02, 20.0], N = 500
+
+STEP 1 — Re-run v9 phase 2 ground state at B0=0.5
+------------------------------------------------------------------------
+  m_J (raw)       = +0.514461
+  Peak beta       = 6.9703e-01 at r = 1.782
+  tail/peak       = 1.102e-05
+  sign changes    = 0
+  H_spherical     = 9.016753e+00
+  Q_J_spherical   = 4.258594e+00
+  (H/Q)_spherical = 2.117308
+
+STEP 2 — Geometry conversion factor eta (Q46)
+------------------------------------------------------------------------
+  int beta^2 r dr        = 1.810286e+00
+  int beta^2 r^2 dr      = 4.258594e+00
+  eta = (cyl) / (spher)  = 0.425090
+
+STEP 3 — m_J after geometry correction (Q46)
+------------------------------------------------------------------------
+  m_J_corrected = m_J_raw / eta = 0.5145 / 0.4251
+                = 1.2102
+  Target: m_J_corrected = 1.0 (same as electron-sector lambda)
+  Deviation: 21.02% from target
+
+STEP 4a — Wider B0 scan (m_J_corrected vs B0)
+------------------------------------------------------------------------
+      B0     m_J_raw       eta    m_J_corr     H/Q_eff
+    0.10    -0.21713    0.1853    -1.17156     0.07661
+    0.15  FAILED (The maximum number of mesh nod)
+    0.20  FAILED (The maximum number of mesh nod)
+    0.25    -0.36369    0.3006    -1.20996     0.31826
+    0.30    -0.39847    0.3293    -1.21015     0.41834
+    0.35    +0.43043    0.3557     1.21023     0.52714
+    0.40    +0.46015    0.3802     1.21023     0.64404
+    0.45    +0.48806    0.4033     1.21024     0.76848
+    0.50    +0.51446    0.4251     1.21024     0.90005
+    0.55    +0.53957    0.4458     1.21024     1.03837
+    0.60    +0.56356    0.4657     1.21024     1.18313
+
+STEP 4b — g-scan at B0=0.5 (test g-dependence of m_J_corrected)
+------------------------------------------------------------------------
+      g     m_J_raw       eta    m_J_corr     H/Q_eff  m_chi(MeV)   nodes
+   0.50    +0.43261    0.3575     1.21024     0.53518      0.2735       0
+   0.70    +0.47057    0.3888     1.21023     0.68882      0.3520       0
+   1.00    +0.51446    0.4251     1.21024     0.90005      0.4599       0
+   1.20    +0.53845    0.4449     1.21024     1.03193      0.5273       0
+   1.40    +0.55961    0.4624     1.21023     1.15843      0.5920       0
+   1.60    +0.57860    0.4781     1.21023     1.28045      0.6543       0
+
+  EMPIRICAL FINDING: m_J_corrected = m_J/eta is INVARIANT at +/- 1.21024
+  across both B0 (Step 4a) and g (Step 4b) at clean ground-state convergence.
+  This looks like a virial-type identity for the 3D spherical l=1 cubic NLS,
+  not a free parameter we can tune to match electron-sector lambda = 1.0.
+
+  Interpretation: DeepSeek's 'm_J should scale to 1.0' was a heuristic.
+  The actual geometry-corrected value at clean ground state is 1.21024 (21%
+  above 1.0). Either (a) accept 1.21 as the canonical value (virial-fixed),
+  or (b) the geometry correction formula needs refinement.
+
+STEP 4c — Lock canonical at (g=1.0, B0=0.5) — v9 phase 2 reference
+------------------------------------------------------------------------
+  g_canonical       = 1.0
+  B0_canonical      = 0.5
+  m_J (raw)         = +0.514461
+  m_J_corrected     = 1.210241  (vs target 1.0; actual = 1.21)
+  eta               = 0.425090
+  (H/Q)_spherical   = 2.117308
+  H/Q_eff           = 0.900047
+  peak beta @ r     = 0.6970 @ 1.782
+  tail/peak         = 1.102e-05  (clean K_1 decay)
+  sign changes      = 0  (true ground state)
+
+STEP 5 — m_chi extraction (Q46 recipe)
+------------------------------------------------------------------------
+  HQ_eff (natural) = eta * (H/Q)_spherical
+                  = 0.4251 * 2.1173
+                  = 0.900047
+  m_chi = HQ_eff * m_e
+        = 0.9000 * 0.5109989461 MeV
+        = 0.459923 MeV
+
+STEP 6 — m_J in physical units
+------------------------------------------------------------------------
+  m_J (natural, corrected) = 1.210241
+  m_J (physical)           = 1.2102 * 0.5109989461 MeV
+                           = 0.618432 MeV
+
+STEP 7 — C extraction from spherical-measure far-field K_1 tail
+------------------------------------------------------------------------
+  Fit: beta(r) ~ C * exp(-m_J*r) * (1 + 1/(m_J*r)) / r  (l=1 modified Bessel)
+  C (natural)   = 3.902733e+00
+  C (MeV*fm)    = 7.701145e+02
+  Fit rel. residual (max) = 5.246e-02
+
+========================================================================
+FINAL DM PAPER INPUTS (v10 canonical)
+========================================================================
+  Canonical point: g = 1.0, B0 = 0.500000
+  Geometry factor eta   = 0.425090
+  m_chi                 = 0.4599 MeV
+  m_J                   = 0.6184 MeV
+  C                     = 7.7011e+02 MeV*fm
+  Ground-state quality:
+    sign changes        = 0
+    tail/peak           = 1.102e-05
+    peak beta @ r       = 0.6970 @ 1.782
+
+  Compare to v9 phase 2 reference (B0=0.5, no geometry correction):
+    raw m_J             = +0.5145  (vs canonical = 1.2102 corrected)
+    raw (H/Q)_spherical = 2.1173
+    raw eta * (H/Q)     = 0.9000
+    raw m_chi           = 0.4599 MeV
+
