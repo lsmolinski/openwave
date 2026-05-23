@@ -225,9 +225,7 @@ def show_menu_interactive(experiments):
         print("Exiting...")
         sys.exit(0)
 
-    # Map from spaced menu index back to experiments index
-    experiment_idx = choice_idx // 2
-    return experiments[experiment_idx]
+    return experiments[choice_idx]
 
 
 def run_experiment(display_name, file_path):
