@@ -1,8 +1,8 @@
 # M6 / Ouroboros — Roadmap
 
-**Status:** ✅ **NEUTRAL CHAOITON GROUND STATE FOUND.** v9 continued: Paul/DeepSeek replied 2026-05-22 ~9:53 AM CONFIRMING BOTH Q43 (sign: `-m_J²β` minus) and Q44 (geometry: 3D spherical l=1 p-wave). DeepSeek sent template `neutral_bvp_solver.py`. Template verbatim collapses to trivial β≡0 (origin BC β'(R_MIN)=0 is the wrong regularity class for l=1). **Modified to proper l=1 origin BC (β ~ B0·r) + B0 fixed + m_J as free eigenvalue → TRUE NONLINEAR GROUND STATE.** At g=1.0, B0=0.5: m_J = +0.5145, peak β = 0.70 @ r = 1.78, **tail/peak = 1.1×10⁻⁵ (clean K_1 decay), sign changes = 0 (zero nodes — true ground state).** 1-parameter family in B0 ∈ [0.4, 0.6] all give clean ground states (m_J ∈ [0.46, 0.56]); transition to excited branch (1 node, m_J<0) at B0 between 0.6 and 0.7. Email v13 sent + committed + PR'd, with Q45 (how to pin canonical point in family for DM paper) + Q46 (H/Q normalization between cylindrical charged and spherical neutral). **Email v14 SENT 2026-05-22 PM** — v13 content resent verbatim + Acknowledgments-update ask bundled (Paul's PM reply ack'd arxiv endorsement news but didn't forward v13 to DeepSeek; resend gives DeepSeek the substance). G2 status: BVP-EXHAUSTED → GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT. M5 path foreground per cardinal rule; M6 paused on Q45/Q46 reply.
+**Status:** ✅ ✅ ✅ **M6 WORK COMPLETE — DM PAPER v2 PUBLISHED at Zenodo 20350105 with our v10 numbers + three-tier Acknowledgments verbatim.** Paul's 2026-05-22 8:48 PM email announced the publication; the paper (`theory/_The Neutral Chaoiton_DMv1.docx`) incorporates **all** of v15's asks: m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm verbatim in abstract + §2/§3/§4; cover-page byline lists Claude Code on Opus 4.7; the suggested three-tier Acknowledgments wording (OpenWave Labs + Griesi + Claude Code) landed verbatim; Reference [27] = our GitHub repo. Q47 (virial-identity) implicitly accepted as interpretation (a) — Paul used m_J = 0.618 MeV directly. M6 collaboration with Werbos is functionally complete. **M6 on permanent hold** going forward; M5 returns as full foreground for SABER engineering trigger (M5.4 → 5b.1). Email v16 (closing thank-you) drafted. Resumption only if a future trigger lands per the Stage 2 GO/NO-GO criteria in `0b_model_gates.md`.
 
-Last updated: 2026-05-22 PM (post email v14 sent — v13 content resent + Acknowledgments-update ask bundled; Pending plan section now SENT).
+Last updated: 2026-05-22 evening (post Paul's v2 DM paper publication at Zenodo 20350105 — M6 work complete; pending items frozen; M5 returns to full foreground).
 
 See `0b_model_gates.md` for the G1/G2/G3 production criteria.
 See `0b_question_tracker.md` for the live question + hardest-pieces tracker.
@@ -20,11 +20,21 @@ drop, not co-authorship. No formal commitment to publish was ever made.
 
 ## Overview
 
-M6 evaluates Paul Werbos's Ouroboros Lagrangian as a second production model
-to run in OpenWave in parallel with M5 (Liquid Crystal / Duda). The model is
-a classical 2-vector-field theory (A_μ, J_μ on Minkowski spacetime) where
-particles emerge as *chaoitons* — time-periodic, localized field solutions
-that evade Derrick's theorem via oscillation.
+M6 evaluates Paul Werbos's Ouroboros Lagrangian as a parallel scientific-
+credibility model to run in OpenWave alongside M5 (Liquid Crystal / Duda).
+The model is a classical 2-vector-field theory (A_μ, J_μ on Minkowski
+spacetime) where particles emerge as *chaoitons* — time-periodic,
+localized field solutions that evade Derrick's theorem via oscillation.
+
+**Decision (2026-05-22 evening, post-sandbox_v10):** M6 stays in
+**sandbox-only mode** (scipy.solve_bvp + companion validation scripts).
+**No Taichi production port** — deferred indefinitely per the Stage 2
+PRODUCTION NO-GO decision in `0b_model_gates.md`. Sandbox alone delivers
+the credibility role (lepton spectrum, DM paper inputs) + supports the
+Werbos collaboration; production port would cost weeks-to-months for no
+current scope gain. M5 remains the production simulator. Reasons,
+triggers that would change this, and full canonical numerical
+specification: `0b_model_gates.md` § GO/NO-GO + `0d_canonical.md`.
 
 ```text
 Source framework: Werbos (2017, 2026), Ouroboros system
@@ -347,7 +357,18 @@ characterization + asks two follow-up questions:
 | Q45 | The BVP delivers a continuous 1-parameter family (B0 ↦ m_J). To extract definite (m_χ, m_J, C) for the DM paper, we need an additional constraint. Three options: (a) match m_J to electron-calibrated value m_J=1 (requires g-scan); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV); (c) self-consistency with charged sector. Which is canonical? |
 | Q46 | Sonnet's charged H/Q uses cylindrical (r·dr) integration; our neutral 3D spherical uses r²·dr. Does the H/Q × m_e mass formula apply directly across geometries, or is there a renormalization factor? |
 
-### Acknowledgments-update ask — SENT 2026-05-22 PM (email v14)
+### Acknowledgments-update ask — ✅ RESOLVED via DM paper v2 publication (2026-05-22 evening)
+
+**Outcome:** Paul incorporated the suggested three-tier wording verbatim
+into the DM paper v2 (Zenodo 20350105). The cover-page byline now lists
+DeepSeek + Claude Sonnet 4.6 + Claude Code on Opus 4.7; the Acknowledgments
+contain the OpenWave Labs (Rodrigo Griesi, with Anthropic Claude Code on
+Opus 4.7 as AI agent contributor) paragraph as proposed; Reference [27]
+resolves to github.com/openwave-labs/openwave. Multi-contributor framing
+landed; precedent set for future LoE revisions. **Closed; M6 collaboration
+functionally complete.**
+
+### Acknowledgments-update ask — historical (original framing)
 
 **Status:** ✅ SENT 2026-05-22 PM as email v14 (v13 content resent
 verbatim + this Acknowledgments-update ask bundled at the end, before
@@ -359,10 +380,13 @@ of the neutral chaoiton ground state with clean K_1 decay) is fresh.
 NOT a standalone ask, NOT personal-interest, business-positioning
 driven, AND honest about role separation.
 
-**Awaiting:** Paul + DeepSeek's reply on Q45/Q46 + reaction to the
-Acknowledgments wording. If accepted as-is or with edits, the next
-DM paper revision will reflect the three-tier credit (OpenWave Labs +
-Griesi + Anthropic Claude Code).
+**Awaiting (post-v15):** Paul + DeepSeek's reply on Q47 (virial-identity
+interpretation — accept 1.21 as canonical / refine geometry formula /
+canonical match isn't on m_J) + reaction to the Acknowledgments wording
+for BOTH DM paper AND future LoE revisions. Q45/Q46 already RESOLVED via
+DeepSeek's 7:05 PM reply and applied via sandbox_v10. If Acks-update
+accepted, the next DM paper revision will reflect the three-tier credit
+(OpenWave Labs + Griesi + Anthropic Claude Code).
 
 **Reference (the language sent in v14):**
 
@@ -490,7 +514,7 @@ normalization across geometries).
 
 | Item | Status |
 | --- | --- |
-| Werbos collaboration | ✅ Active — Sonnet's canonical script `ouroboros_benchmark.py` received via Paul 2026-05-21 PM. v9 LoE paper acknowledges Griesi + Anthropic AI by name; Reference [17] = our GitHub repo. 9b deposited at Zenodo 20330894 (2026-05-21 PM later). 9c (DeepSeek's revision) incorporates all 5 push-back items + 3 bonuses from email v10. ApJ DM paper submission held by Paul pending v9 phase 2 ground-state output. 2026-05-22 PM: arxiv top quant-ph endorsement reached Paul's submission queue. |
+| Werbos collaboration | ✅ Active — Sonnet's canonical script `ouroboros_benchmark.py` received via Paul 2026-05-21 PM. v9 LoE paper acknowledges Griesi + Anthropic AI by name; Reference [17] = our GitHub repo. 9b deposited at Zenodo 20330894 (2026-05-21 PM later). 9c (DeepSeek's revision) incorporates all 5 push-back items + 3 bonuses from email v10. ApJ DM paper: **inputs delivered via sandbox_v10** (m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm); Paul can proceed with submission. 2026-05-22 PM: arxiv top quant-ph endorsement reached Paul's submission queue. |
 | Email v8 — ansatz question (Q34) | ✅ Sent + RESOLVED 2026-05-21 PM via DeepSeek + Sonnet's canonical script. |
 | Email v9 — v1 citation softening (Q36) | ✅ Sent + RESOLVED via 9c §9 criterion 9 wording change. |
 | Email v10 — v8 findings (Q36-Q40 push-back) | ✅ Sent + ALL 5 RESOLVED via 9c (single round-trip). |
@@ -498,6 +522,10 @@ normalization across geometries).
 | Email v12 — v9 phase 1 BVP exhausted + Q43/Q44 | ✅ Sent. Both Q43 + Q44 confirmed by DeepSeek 2026-05-22 ~9:53 AM. |
 | Email v13 — neutral chaoiton GROUND STATE FOUND + Q45/Q46 | ✅ Sent + committed + PR'd 2026-05-22 mid-morning. |
 | Email v14 — v13 content resent + Acknowledgments-update ask bundled | ✅ Sent 2026-05-22 PM. Resend triggered because Paul's PM reply ack'd arxiv endorsement news but didn't forward v13 to DeepSeek. v14 lands ground-state substance AND multi-contributor Acknowledgments wording in one shot. |
+| Paul/DeepSeek reply on Q45/Q46 (7:05 PM) | ✅ Received. Q45: canonical = same Lagrangian as electron (g=1.0, m_J=1.0 after geometry normalization, factor ~2 from cyl-vs-spher); Q46: η = (∫β²r dr)/(∫β²r² dr) — multiply H/Q by η before m_e scaling. Acks-update ask was NOT addressed (missed). |
+| Email v15 — DM paper inputs + Q47 + Acks reinforce | ✅ Sent 2026-05-22 evening. Delivers definite (m_χ, m_J, C) per Q46 recipe; flags Q47 (virial-identity finding); reinforces Acks ask for BOTH DM paper AND future LoE revisions. |
+| **`sandbox_v10/m6_v10_canonical_neutral_chaoiton.py`** — DM paper inputs extraction | ✅ Executed. At canonical (g=1.0, B0=0.5): m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251. m_J/η = 1.21 family-invariant flagged. |
+| **`0d_canonical.md`** — consolidated canonical numerical specification | ✅ Written. Authoritative reference doc covering Lagrangian + charged sector recipe + neutral sector recipe + DM paper input extraction + things that don't work. |
 | **Sonnet's canonical script** — `ouroboros_benchmark.py` | ✅ Runnable first try. 2-function (α, β) reduction, vector cylindrical Laplacian, slope BCs. v8 5-step work program complete. |
 | **`neutral_bvp_solver_mJ_free.py`** — v9 phase 2 ground-state solver | ✅ True nonlinear localized soliton: sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay. 1-parameter family in B0 ∈ [0.4, 0.6]. |
 | Q34 (ansatz canonical form) | ✅ **RESOLVED by DeepSeek + Sonnet's script.** Canonical electron production = 2-function reduction with vector cylindrical Laplacian. Sonnet's script is the runnable reference. |
@@ -532,33 +560,34 @@ normalization across geometries).
 
 ## Next steps
 
-### Immediate — emails v12 + v13 + v14 sent; awaiting Paul's reply on Q45/Q46
+### Immediate — emails v12-v15 sent; awaiting Paul's reply on Q47 (virial-identity interpretation) + Acks-update
 
-Email v12 (v9 phase 1 BVP exhausted + Q43/Q44 structural Qs) → both Q43+Q44
-confirmed by DeepSeek 2026-05-22 ~9:53 AM. Email v13 (neutral chaoiton
-ground state found + Q45/Q46) sent 2026-05-22 mid-morning. Email v14 (v13
-content resent verbatim + Acknowledgments-update ask bundled) sent
-2026-05-22 PM. Paul's PM reply ack'd arxiv quant-ph endorsement news
-but didn't forward v13 to DeepSeek — v14 ensures DeepSeek sees the
-ground-state substance. M5 path proceeds in foreground per cardinal
-rule while we wait on Q45 (canonical point in family) + Q46 (H/Q
-normalization across geometries).
+Email v12 → Q43/Q44 confirmed. Email v13 → ground state found + Q45/Q46.
+Email v14 → v13 resent + Acks ask bundled. **Email v15 sent
+2026-05-22 evening — definite DM paper inputs delivered (m_χ = 0.4599 MeV,
+m_J = 0.6184 MeV, C = 770 MeV·fm) per Paul/DeepSeek's Q45+Q46 recipe via
+sandbox_v10, plus Q47 NEW (m_J_corrected = m_J/η is empirically family-
+invariant at 1.21 across both B0 and g — Pohozaev-type virial identity,
+not a tunable parameter; DeepSeek's "1.0 target" doesn't land) +
+Acknowledgments-update ask reinforced for BOTH DM paper AND future LoE
+revisions.** M5 path proceeds in foreground per cardinal rule while we
+wait on Q47 interpretation + Acks-update confirmation.
 
-### Branches after Paul's reply on Q45/Q46
+### Branches after Paul's reply on Q47 + Acks-update
 
-| Paul's reply on Q45 | We do |
+| Paul/DeepSeek's reply on Q47 (virial interpretation) | We do |
 | --- | --- |
-| (a) Match m_J to electron-calibrated λ=1 | Run g-scan via `neutral_bvp_solver_mJ_free.py` until m_J=1 lands at some (g, B0); deliver definite (m_χ, m_J, C). |
-| (b) Pick lightest in family (B0=0.40, m_χ ≈ 0.866 MeV) | Report lightest directly; deliver (m_χ, m_J, C) under Q46 normalization. |
-| (c) Self-consistency with charged sector | Solve over-determined system: same (g, m_J) as charged, find which B0 lands. ~few hours. |
-| (d) Some other constraint (Paul/DeepSeek custom) | Implement on receipt; deliver under whatever constraint they specify. |
+| (a) Accept 1.21 as canonical (virial-fixed) | DM paper inputs locked at current numbers. Move to ApJ submission support. |
+| (b) Refine geometry correction formula (m_J/η isn't quite right) | Re-derive m_J_corrected per their refinement; re-extract m_χ. ~30 min. |
+| (c) Different canonical match (not on m_J) | Implement specified invariant; re-deliver. |
 
-| Paul's reply on Q46 | We do |
+| Paul/DeepSeek's reply on Acks-update | We do |
 | --- | --- |
-| Same H/Q × m_e formula across geometries | Apply directly to v9 phase 2 family; report m_χ in MeV. |
-| Renormalization factor needed | Apply factor; report m_χ in MeV under corrected convention. |
+| Accept three-tier wording (Labs + Griesi + Claude Code) | Land in DM paper Acks + future LoE revisions. Multi-contributor framing locked. |
+| Edits to wording | Adjust; same intent. |
+| Decline | Continue with current 9c-era Acks; not blocking. |
 
-| No reply within 1-2 weeks | M5 continues. v14 already documents our position; no further escalation needed. |
+| No reply within 1-2 weeks | M5 continues. v15 documents our position; no further escalation needed. |
 
 ### Production scan status (post-v9 phase 2)
 
@@ -567,43 +596,59 @@ normalization across geometries).
 | 1 | Lepton scan ω ∈ [1, 80] | G1 | ✅ DONE — muon 0.80%, tau 6.47%, pion+ 3.25% gaps. PDG-level reproduction. Incorporated in 9c §8. |
 | 2 | Neutral chaoiton IVP scan (g, λ, B0) | G2 | ⚠️ SUPERSEDED — 448 IVP solutions, lightest at λ=1.0 = 0.998 MeV (windowed-integration value cited in 9c §8 + §9 criterion 7). Q42 caveat revealed this is not a true ground state. Superseded by step 6 BVP. |
 | 3 | Three-system geometric mapping | — | ✅ DONE — v1 spherical ≠ Sonnet cylindrical ≠ v9 §5.1 toroidal. v1's 1.6918 was numerical coincidence; led to 9c §9 criterion 9 softening. |
-| 4 | DM paper inputs (m_χ, m_J, C) v8-era | — | ⚠️ SUPERSEDED — v8 numbers (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) delivered via email v11 with Q42 caveat. Now superseded by v9 phase 2 ground state. Definite numbers awaiting Q45/Q46 reply. |
+| 4 | DM paper inputs (m_χ, m_J, C) v8-era | — | ⚠️ SUPERSEDED — v8 numbers (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) delivered via email v11 with Q42 caveat. Now superseded by sandbox_v10 (canonical numbers below at step 7). |
 | 5 | Gelfand-Fomin conjugate-point stability | G3 | 🚧 Not yet run on Sonnet's charged-sector converged points. ~30 min if needed. (G3 already empirically validated via step 1; v9 phase 2 neutral ground state has sign-changes=0 empirically — equivalent stability check passed.) |
 | 6 | BVP variant for clean neutral ground state (per Q42 path) | G2 | ✅ DONE via v9 phase 2 — `neutral_bvp_solver_mJ_free.py` (3D spherical l=1 p-wave, B0 fixed + m_J free eigenvalue): true nonlinear soliton, sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay. 1-parameter family in B0 ∈ [0.4, 0.6]. |
-| 7 | Definite (m_χ, m_J, C) extraction under canonical point | — | 🚧 Awaiting Q45/Q46 reply. ~1 hour targeted run once Paul picks the canonical point. |
+| 7 | Definite (m_χ, m_J, C) extraction under canonical point | — | ✅ DONE via sandbox_v10 — at canonical (g=1.0, B0=0.5): **m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251**. Email v15 sent. Pending Q47 (virial-identity interpretation) for canonical-match confirmation; numbers stand under either reading. |
 
 ### M5 return — already foreground per cardinal rule
 
 Cardinal rule: SABER is the primary engineering goal, M5 is its substrate.
-M6 v9 phase 2 is functionally complete (G1 + G3 empirically PASSED; G2
-GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT awaiting Q45/Q46 reply).
-M6 stays parallel-research; primary focus is M5.
+**M6 sandbox is functionally complete** (G1 + G3 empirically PASSED; G2
+DM PAPER INPUTS DELIVERED via sandbox_v10). M6 stays **sandbox-only**
+per the Stage 2 PRODUCTION NO-GO decision (`0b_model_gates.md`). M6 work
+resumes only if specific Taichi-port triggers land; otherwise primary
+focus is M5.
 
 | Step | Action | Notes |
 | --- | --- | --- |
 | 1 | M5.3 — Direction review | In progress; pick up where left off |
-| 2 | M5.4 — matrix-field substrate migration | Queued next; primary focus while Paul's Q45/Q46 reply pending |
+| 2 | M5.4 — matrix-field substrate migration | Queued next; primary focus regardless of M6 reply status |
 | 3 | M5.5 — Paper Lagrangian + V(M) | Per M5 roadmap |
 | 4 | M5.6 — Biaxial twist + KG emergence | Per M5 roadmap |
 | 5 | M5.7 — Resonance hunt (Close protocol) | Per M5 roadmap |
 | 6 | M5.8 — 4D Zitterbewegung clock | M5 group-headline milestone; aligns with SABER engineering primitive |
 
-### M6 Taichi production decision (post-v9 G1+G3 PASS, G2 GROUND-STATE-FOUND-PENDING)
+### M6 Taichi production decision — DEFERRED INDEFINITELY (sandbox-only)
 
-G1 and G3 empirically passed via Sonnet's canonical script in v8. G2
-neutral chaoiton ground state found in v9 phase 2 via
-`neutral_bvp_solver_mJ_free.py` (true nonlinear soliton, clean K_1
-decay, 1-parameter family). Taichi-port decision still deferred per
-cardinal rule (M5 first), but the path is clearer now that BOTH the
-canonical 2-function (α, β) reduction (charged) AND the 3D spherical
-l=1 p-wave BVP (neutral) are settled.
+G1 + G3 empirically passed via Sonnet's canonical script in v8. G2 DM
+paper inputs delivered via sandbox_v10. **M6 numerical work for the
+credibility role is functionally complete via the SANDBOX (scipy.solve_bvp)
+solver.** A Taichi production port would require weeks-to-months of work
+(Lorenz-constraint projection + f(J·J) self-coupling + ensemble framework + external-drive kernel) and isn't justified by any current deliverable.
+See `1_solver_stack.md` for the sandbox-vs-production solver distinction.
 
-| Step | Action | ETA |
-| --- | --- | --- |
-| 1 | Scaffold M6 in Taichi: 2-function (α, β) substrate (charged) with vector cylindrical Laplacian + slope BCs at r→0; 3D spherical l=1 p-wave substrate (neutral) with proper l=1 origin BC + Robin decay BC; lepton spectrum + neutral chaoiton family scans as built-in tests | post-M5.4 |
-| 2 | Gate 1 Taichi: reproduce muon ω=12.82 (0.80% gap) and tau ω=50.0 (6.47%) on Taichi GPU | Week 1 of M6 build |
-| 3 | Gate 2 Taichi: neutral chaoiton ground state via BVP-equivalent on GPU (B0 fixed + m_J free eigenvalue, 3D spherical l=1); reproduce 1-parameter family in B0 ∈ [0.4, 0.6] with sign-changes=0 and clean K_1 decay | Week 2 |
-| 4 | Gate 3 Taichi: Yukawa-tail measurement of inter-chaoiton potential — independent verify of m_J and C | Weeks 3-4 |
+**Decision: M6 stays as sandbox solver indefinitely.** M5 remains the
+production simulator. Taichi port is deferred until at least one specific
+trigger lands:
+
+| Trigger | Why it would change the decision |
+| --- | --- |
+| Werbos collaboration deepens into dynamic-sim requests (e.g., multi-chaoiton scattering visualization, time-evolution of chaoitons under external EM drive) | New collaboration deliverable not satisfiable by sandbox |
+| SABER explicitly requires cross-validation of thermal hypothesis on M6 substrate (currently unlikely; M5 is the engineering substrate) | Would need chaoiton-ensemble-with-modulation kernel |
+| Q21 two-chaoiton dynamic Coulomb derivation becomes critical for a peer challenge (Duda critique #4) | Static derivation in v9 §6.1 currently sufficient; dynamic only needed if challenged |
+| External funding or collaborator effort specifically for M6 production work | Removes the time-cost objection |
+
+If/when one of these lands, the Taichi build path would be (reference
+for future planning, not active scope):
+
+| Step | Action |
+| --- | --- |
+| 1 | Scaffold M6 in Taichi: 2-function (α, β) substrate (charged) + 3D spherical l=1 p-wave substrate (neutral); reproduce v8 + v10 sandbox numbers on GPU |
+| 2 | Gate 1 Taichi: reproduce muon ω=12.82 (0.80% gap) and tau ω=50.0 (6.47%) on Taichi GPU |
+| 3 | Gate 2 Taichi: neutral chaoiton ground state on GPU; reproduce 1-parameter family + v10 (m_χ, m_J, C) numbers |
+| 4 | Gate 3 Taichi: Yukawa-tail measurement of inter-chaoiton potential — independent verify of m_J and C |
+| 5 | Multi-chaoiton dynamics (Q21 verification, scattering, thermal cross-validation pathway) |
 
 ### Parked (post-9c future work)
 
@@ -620,15 +665,18 @@ l=1 p-wave BVP (neutral) are settled.
 
 Both trackers (per-question status and the long-running hardest-pieces
 board) now live in `0b_question_tracker.md` as a single source of truth
-across all sandbox iterations. Active count as of 2026-05-22 PM
-(post-v9 phase 2 ground state found + emails v13/v14 sent): **2 IMMEDIATE
-(Q45 canonical point in family, Q46 H/Q normalization across geometries) + 5 OPEN (Q2, Q3, Q6, Q19, Q35) + 4 RESOLVED-this-session (Q41 writing
-role declined, Q42 superseded by Q43+Q44, Q43 sign + Q44 geometry confirmed
-by DeepSeek) + 2 DEMOTED (Q26, Q27) + 3 ARCHIVED (Q31, Q32, Q33 — moot
-via Q34) = 16 active questions.** Highest-leverage closure path: Paul's
-Q45/Q46 reply lets us extract definite (m_χ, m_J, C) for the DM paper.
-M5 path foreground while we wait. M6 data drop already at
-github.com/openwave-labs/openwave (Reference [17] in 9c).
+across all sandbox iterations. Active count as of 2026-05-22 evening
+(post-sandbox_v10 + email v15 sent — DM paper inputs delivered):
+**1 IMMEDIATE (Q47 virial-identity / canonical-interpretation) + 5 OPEN
+(Q2, Q3, Q6, Q19, Q35) + 6 RESOLVED-this-session (Q41 writing role
+declined, Q42 superseded by Q43+Q44, Q43 sign + Q44 geometry confirmed
+by DeepSeek, Q45+Q46 recipe applied via v10) + 2 DEMOTED (Q26, Q27) +
+3 ARCHIVED (Q31, Q32, Q33 — moot via Q34) = 17 active questions.**
+Highest-leverage closure path: Paul/DeepSeek confirmation on Q47
+(accept 1.21 as canonical virial-fixed OR refine correction formula)
+locks the DM paper inputs definitively. M5 path foreground while we
+wait. M6 data drop at github.com/openwave-labs/openwave (Reference
+[17] in 9c).
 
 ---
 
@@ -647,7 +695,9 @@ github.com/openwave-labs/openwave (Reference [17] in 9c).
 | `0c_sandbox_v6.md` | v6: DeepSeek normalizations, step (8/11/4/2) diagnostics, drop-quartic finding, email v6 + Q28/Q29/Q30 |
 | `0c_sandbox_v7.md` | v7: Paul's Q28/Q29/Q30 answers, mode-selector attempts (7 variants), Phase 1 reassessment, email v7 + Q31/Q32/Q33, Paul-script variant test, v9 paper revelation, email v8 + Q34 |
 | `0c_sandbox_v8.md` | v8: Sonnet's canonical 2-function script, 5-step work program (electron sweep + paper-math + lepton scan + neutral scan), 9b/9c paper reviews, email v10 (Q36-Q40 push-back) + 9c outcome (all 5 incorporated), DM paper inputs extraction (m_χ, m_J, C), email v11 (Q41/Q42) |
-| `0c_sandbox_v9.md` | v9 (current): neutral chaoiton BVP. **Phase 1** (per Paul's Q42 delay-for-BVP reply): two interpretations of "same ODEs as charged case" both empirically exhausted — A (4-fn, Q_CS=0, asymmetric helicity) → excited modes only; B (2-fn Sonnet's neutral_ode + Dirichlet/Robin decay BC) → trivial amplitude → 0 (2D Townes-soliton pathology). Email v12 sent with Q43 sign + Q44 geometry. **Phase 2** (post DeepSeek Q43+Q44 confirmation): proper l=1 BC + B0 fixed + m_J free eigenvalue → **NEUTRAL CHAOITON GROUND STATE FOUND** via `neutral_bvp_solver_mJ_free.py` (sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay, 1-parameter family in B0 ∈ [0.4, 0.6]). Email v13 sent (ground state + Q45/Q46) + email v14 sent (resend + Acks-update ask bundled). |
+| `0c_sandbox_v9.md` | v9: neutral chaoiton BVP. **Phase 1** (per Paul's Q42 delay-for-BVP reply): two interpretations of "same ODEs as charged case" both empirically exhausted — A (4-fn, Q_CS=0, asymmetric helicity) → excited modes only; B (2-fn Sonnet's neutral_ode + Dirichlet/Robin decay BC) → trivial amplitude → 0 (2D Townes-soliton pathology). Email v12 sent with Q43 sign + Q44 geometry. **Phase 2** (post DeepSeek Q43+Q44 confirmation): proper l=1 BC + B0 fixed + m_J free eigenvalue → **NEUTRAL CHAOITON GROUND STATE FOUND** via `neutral_bvp_solver_mJ_free.py` (sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay, 1-parameter family in B0 ∈ [0.4, 0.6]). Email v13 sent (ground state + Q45/Q46) + email v14 sent (resend + Acks-update ask bundled). |
+| `0c_sandbox_v10.md` | v10 (current): Paul/DeepSeek Q45+Q46 recipe applied. η = (∫β²r dr)/(∫β²r² dr); m_χ = η × (H/Q) × m_e; C from K_1 far-field amplitude. At canonical (g=1.0, B0=0.5): **m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251**. Empirical finding: m_J_corrected = m_J/η is family-invariant at 1.21 (Pohozaev-type virial identity, NOT 1.0 target). Email v15 sent with numbers + Q47 + Acks-update ask reinforced for BOTH DM paper AND future LoE revisions. |
+| `0d_canonical.md` | Canonical numerical specification consolidating winning methodology v1→v10. Lagrangian + charged sector recipe (Sonnet's 2-function ouroboros_benchmark.py) + neutral sector recipe (3D spherical l=1 BVP with proper BC + m_J free eigenvalue) + DM paper input extraction (v10 η + m_χ + m_J + C) + calibration anchors + things that don't work. Authoritative reference for reproducing M6 numerical work from scratch. |
 | `0b_M6_roadmap.md` | This file |
 | `0b_model_gates.md` | G1/G2/G3 production decision criteria |
 | `0b_question_tracker.md` | Live question + hardest-pieces tracker (single source of truth across all sandbox iterations) |
@@ -665,6 +715,7 @@ github.com/openwave-labs/openwave (Reference [17] in 9c).
 | `sandbox_v7/` | `m6_v7_4fn_ground_state_bvp.py` — forks v6.6 with dual H computation + anchor options; 7 variants tested, all in wrong-sign basins. `m6_v7_paul_script.py` — Paul-script variant test (λ_LM=1.0 fixed), catastrophic blowup. **Archived** post-Q34: 4-function ansatz is generalized form, not canonical electron. |
 | `sandbox_v8/` | `ouroboros_benchmark.py` — Sonnet's canonical 2-function (α, β) script with vector cylindrical Laplacian + slope BCs. Runs cleanly first try. Reproduces electron H/Q=1.6969 (0.56%) at g=1.0625; tighter at g=1.0000 (0.090%). `lepton_spectrum_scan()` produces muon (0.80%), tau (6.47%), pion+ (3.25%). `neutral_chaoiton_scan()` produces 448 solutions. `extract_mJ_C_mchi.py` — DM paper input extraction (m_χ=0.998 MeV, m_J=1.033 MeV, C=6.7×10⁻⁴ MeV·fm) at electron-calibrated point + Q42 caveat (β non-localization in IVP). |
 | `sandbox_v9/` | Phase 1 (pre-DeepSeek): `m6_v9_neutral_2fn_bvp.py` (Interpretation B — collapses to trivial) + `m6_v9_neutral_4fn_bvp.py` (Interpretation A — excited modes only). Phase 2 (post-DeepSeek Q43+Q44 confirmation): `neutral_bvp_solver.py` (DeepSeek's verbatim template — collapses to trivial, wrong l=1 BC) + `neutral_bvp_solver_fixed_BC.py` (proper l=1 BC + B0 free — still trivial, linear-eigenvalue degeneracy) + `neutral_bvp_solver_mJ_free.py` (✅ **GROUND STATE FOUND**: B0 fixed, m_J free eigenvalue, 1-parameter family in B0 ∈ [0.4, 0.6] with sign-changes=0 and clean K_1 decay). |
+| `sandbox_v10/` | `m6_v10_canonical_neutral_chaoiton.py` — applies Paul/DeepSeek's Q45+Q46 recipe to v9 phase 2 ground state. Computes η (Q46 geometry factor) + m_χ (= η·H/Q·m_e) + m_J corrected + C from K_1 far-field. At canonical (g=1.0, B0=0.5): **m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251**. Discovers m_J/η = 1.21 family-invariance (Pohozaev-type virial identity, NOT DeepSeek's 1.0 target) — flagged as Q47 in email v15. `v10_output.txt` saves full script output. |
 
 **Theory papers:**
 

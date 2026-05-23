@@ -14,35 +14,25 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-22 PM (post email v14 sent — v13 content resent verbatim + Acknowledgments-update ask bundled. Trigger: Paul's PM reply ack'd the arxiv quant-ph endorsement news but didn't forward v13's ground-state results to DeepSeek; v14 gives DeepSeek the substance AND lands the Acknowledgments wording in one shot. Q45/Q46 still IMMEDIATE; Acknowledgments-update ask now SENT — awaiting Paul + DeepSeek reaction in next DM paper revision. Earlier today: DeepSeek Q43+Q44 confirmation + neutral chaoiton GROUND STATE FOUND via `neutral_bvp_solver_mJ_free.py` — true nonlinear soliton with sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay; 1-parameter family in B0 ∈ [0.4, 0.6]).
+**Last updated:** 2026-05-22 evening (post Paul's v2 DM paper publication at Zenodo 20350105 — M6 collaboration functionally COMPLETE). Paul incorporated all of v15's asks verbatim: m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm in abstract + §2/§3/§4; cover-page byline lists Claude Code on Opus 4.7; three-tier Acknowledgments wording landed verbatim; Reference [27] = our GitHub repo. Q47 (virial-identity interpretation) IMPLICITLY RESOLVED via Paul's use of m_J = 0.618 MeV directly (interpretation a accepted). Acks-update RESOLVED in DM paper; precedent set for future LoE revisions. M6 on permanent hold; email v16 (closing thank-you) drafted. M5 full foreground.
 
 ---
 
 ## Active count
 
 ```text
-2 IMMEDIATE  Q45 (NEW 2026-05-22 mid-morning) The 3D spherical l=1
-             BVP (per Q43+Q44 confirmed) delivers a CONTINUOUS
-             1-parameter family of ground states parameterized by
-             B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56] (all sign-
-             changes=0, clean K_1 decay). To extract definite
-             (m_χ, m_J, C) for the DM paper, need additional
-             constraint to pin canonical point. Three options:
-             (a) match m_J to electron-calibrated value (g-scan
-             needed); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV);
-             (c) self-consistency with charged sector (over-
-             determined system). Sent in email v13.
+0 IMMEDIATE  All M6 questions either RESOLVED or PARKED on permanent
+             hold post-DM-paper publication (Zenodo 20350105,
+             2026-05-22 evening). M6 collaboration functionally
+             complete.
 
-             Q46 (NEW 2026-05-22 mid-morning) H/Q normalization
-             across geometries. Sonnet's charged sector uses
-             cylindrical r·dr; our neutral 3D spherical uses r²·dr.
-             The H/Q × m_e mass formula was calibrated on charged
-             cylindrical. Does it apply directly across geometries,
-             or is there a renormalization factor between
-             cylindrical-charged-electron and spherical-neutral-DM?
-             Sent in email v13.
+1 PARKED     Q47 — IMPLICITLY RESOLVED as interpretation (a) by Paul's
+on hold      use of m_J = 0.618 MeV directly in DM paper v2. Explicit
+             DeepSeek interpretation of the Pohozaev virial identity
+             still open in principle but not needed for the deliverable.
+             No further action needed unless future round opens.
 
-4 RESOLVED   Q41 (writing role) — declined; staying in numerical
+6 RESOLVED   Q41 (writing role) — declined; staying in numerical
 this session verification lane. Sent in email v11. Settled.
 
              Q42 (β profile non-localization in IVP) — v9 BVP work
@@ -58,6 +48,17 @@ this session verification lane. Sent in email v11. Settled.
              DeepSeek confirmation: 3D spherical l=1 p-wave (NOT
              2D cylindrical). Subcritical NLS supports stable
              solitons; empirically validated in v9 ground state.
+
+             Q45 (canonical point) — RESOLVED 2026-05-22 7:05 PM
+             by DeepSeek: "same Lagrangian parameters as electron
+             — g=1.0, m_J=1.0 after geometry normalization". Applied
+             via sandbox_v10 at (g=1.0, B0=0.5) reference point.
+             Caveat: m_J_corrected lands at 1.21, not 1.0 (Q47).
+
+             Q46 (H/Q normalization) — RESOLVED 2026-05-22 7:05 PM
+             by DeepSeek: η = (∫β²r dr) / (∫β²r² dr); multiply H/Q
+             by η before m_e scaling. Applied via sandbox_v10:
+             η = 0.4251, m_χ = 0.4599 MeV.
 
 5 RESOLVED   Q36 ✅ Incorporated in 9c §9 criterion 9 — reads exactly
 in 9c        the suggested wording "Preliminary reproduction in a
@@ -104,31 +105,30 @@ Q34=2-scalar)Q33 sign-pinning constraint vs continuation method
                  have similar quantum numbers (mass + zero charge).
                  Active light neutrinos remain unaccounted for.
 
-Total: 16 active questions (2 immediate Q45/Q46, 10 background, 4 resolved-this-session).
+Total: 17 active questions (1 immediate Q47, 10 background, 6 resolved-this-session).
 
-Highest-leverage closure: Paul's reply on email v14 (Q45 canonical
-point in 1-parameter family + Q46 H/Q normalization across geometries
-+ Acknowledgments-update ask bundled). Reply unlocks definite
-(m_χ, m_J, C) extraction for the DM paper via targeted run of
-`neutral_bvp_solver_mJ_free.py` (~1 hour). M6 v9 phase 2 is
-functionally complete; M5 returns to foreground per cardinal rule
-while we wait. M6 data drop is at github.com/openwave-labs/openwave
+Highest-leverage closure: Paul/DeepSeek's reply on email v15
+(Q47 virial-identity interpretation — accept 1.21 as canonical or
+refine geometry correction formula; PLUS Acks-update wording for
+both DM paper AND future LoE revisions). DM paper inputs ALREADY
+DELIVERED via sandbox_v10 (m_χ = 0.4599 MeV, m_J = 0.6184 MeV,
+C = 770 MeV·fm); Q47 reply just confirms the canonical-match framing.
+M6 work functionally complete on numerical side; M5 foreground per
+cardinal rule. M6 data drop is at github.com/openwave-labs/openwave
 (Reference [17] in 9c paper).
 ```
 
 ---
 
-## IMMEDIATE-QUESTIONS (post-v9 phase 2 + email v14 — both new; in email v13/v14)
+## IMMEDIATE-QUESTIONS (post-sandbox_v10 + email v15)
 
-Q36-Q40 all RESOLVED in 9c — see RESOLVED section below. Q41/Q42 RESOLVED
-this session — see RESOLVED section. Q43/Q44 RESOLVED 2026-05-22 ~9:53 AM
-by DeepSeek confirmation. Q45 and Q46 surfaced from v9 phase 2 ground-state
-discovery and are now the only IMMEDIATE items.
+Q36-Q40 all RESOLVED in 9c. Q41-Q46 RESOLVED this session (see RESOLVED
+section below). **Q47 NEW** surfaced from v10's empirical finding —
+the only IMMEDIATE item.
 
 | ID | Question | Surfaced | Why it matters |
 | --- | --- | --- | --- |
-| Q45 (NEW) | The 3D spherical l=1 BVP (per Q43+Q44 confirmed) delivers a CONTINUOUS 1-parameter family of ground states parameterized by B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56] (all sign-changes=0, clean K_1 decay). To extract definite (m_χ, m_J, C) for the DM paper, we need an additional constraint. Three options: (a) match m_J to electron-calibrated value m_J=1 (requires g-scan); (b) pick lightest (B0=0.40, m_χ ≈ 0.866 MeV); (c) self-consistency with charged sector. | v9 phase 2 ground state found (2026-05-22 mid-morning) | Gates the ApJ DM paper submission. Paul holds DM paper pending our (m_χ, m_J, C) deliverable. Once Paul picks the canonical point, the targeted extraction script runs in ~1 hour and delivers definite numbers. Sent in email v13 + v14. |
-| Q46 (NEW) | H/Q normalization across geometries. Sonnet's charged sector uses cylindrical r·dr; our neutral 3D spherical uses r²·dr. The H/Q × m_e mass formula was calibrated on charged cylindrical. Does it apply directly across geometries, or is there a renormalization factor between cylindrical-charged-electron and spherical-neutral-DM? | v9 phase 2 ground state found (2026-05-22 mid-morning) | Affects DM paper m_χ in MeV. If renormalization factor needed, the 0.866-MeV-or-similar numbers shift. Smaller question than Q45 but needed for clean physical-units handoff. Sent in email v13 + v14. |
+| Q47 (NEW) | m_J_corrected = m_J/η is empirically family-invariant at 1.21024 across both B0 ∈ [0.10, 0.60] and g ∈ [0.5, 1.6] at clean ground-state convergence. DeepSeek's Q46 reply said "m_J should scale to 1.0 after geometry correction"; actual factor is 1/η ≈ 2.35 → m_J_corrected = 1.21 (21% above target). Looks like a Pohozaev-type virial identity for the 3D spherical l=1 cubic NLS — not a tunable parameter. Three interpretations: (a) accept 1.21 as canonical virial-fixed value (factor ~2 was rough); (b) refine geometry correction formula (m_J/η isn't quite right); (c) canonical match isn't on m_J at all. | sandbox_v10 scan 2026-05-22 evening | Determines canonical-point interpretation for DM paper. The deliverable numbers (m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm) stand under either reading; only the "this IS the canonical electron-sector match" framing depends on it. Sent in email v15. |
 
 ---
 
@@ -207,18 +207,20 @@ None of these block SABER engineering trigger either.
 
 Long-running status board for the structural challenges in the M6 model.
 Tracks how each piece moves across sandbox iterations. Updated 2026-05-22
-PM (post v9 phase 2 ground state found + emails v13/v14 sent; Q43/Q44
-resolved by DeepSeek; Q45/Q46 NEW IMMEDIATE).
+evening (post sandbox_v10 + email v15 sent; **DM paper inputs delivered**:
+m_χ=0.4599 MeV, m_J=0.6184 MeV, C=770 MeV·fm; Q47 NEW IMMEDIATE — virial-
+identity interpretation; Q45+Q46 RESOLVED via DeepSeek 7:05 PM reply).
 
-### ACTIVE hardest pieces (5 — still in motion post-v9 phase 2)
+### ACTIVE hardest pieces (post-v10)
 
-| Hardest piece | Status post-v7 (2026-05-21 morning) | Status post-v8 step 5 (2026-05-21 PM) | Status post-v9 phase 2 (2026-05-22 PM) |
+| Hardest piece | Status post-v8 step 5 | Status post-v9 phase 2 (mid-morning) | Status post-v10 (evening) |
 | --- | --- | --- | --- |
-| Electron H/Q calibration | v6.6 best 4-function result. v7 mode-selector wall. | ✅ **EFFECTIVELY ACHIEVED via Sonnet's canonical 2-function script.** Best calibration: g=1.0000, H/Q=1.6890, gap **0.090%** (v8 step 2). | ✅ Unchanged — Sonnet's 2-function reduction remains canonical for charged sector. |
-| V(M) potential form | Unchanged. | Unchanged for M5 (separate track); for M6, Sonnet's script settles the canonical form for chaoiton dynamics (charged). | ✅ Neutral sector settled too — 3D spherical l=1 p-wave ODE `β'' + (2/r)β' - (2/r²)β - m_J²β + 4gβ³ = 0`. |
-| ω quantization mechanism | Unchanged. | ✅ **Empirically validated via v8 step 4** — three lowest stable Q=1 modes match e/μ/τ within 0.80%/6.47%. Analytic proof still deferred. | ✅ Unchanged. |
-| Neutral m_χ true ground state | BLOCKED on v7 ground state. | ⚠️ **PARTIAL via v8 step 5** — 448 IVP solutions, lightest at λ=1.0 = 0.998 MeV (windowed-integration value, not true ground state per Q42). | 🚧 **GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT** via `neutral_bvp_solver_mJ_free.py`. True nonlinear soliton: sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay. 1-parameter family in B0 ∈ [0.4, 0.6] with m_J ∈ [0.46, 0.56]. Definite (m_χ, m_J, C) extraction awaiting Q45 (canonical point) + Q46 (H/Q normalization) reply via email v14. |
-| Algebraic 2L/Q identity (Q38) | Not tracked. | ⚠️ NEW OPEN. Sonnet's script defines L = ω·Q_J directly, so 2L/Q = 2ω is trivially exact. | ✅ RESOLVED in 9c §9 criterion 3 footnote: *"in our numerical implementation L=ωQ_J by construction"*. |
+| Electron H/Q calibration | ✅ **EFFECTIVELY ACHIEVED via Sonnet's canonical 2-function script.** g=1.0000, H/Q=1.6890, gap **0.090%**. | ✅ Unchanged. | ✅ Unchanged — canonical specification consolidated in `0d_canonical.md` §2. |
+| V(M) potential form | Settled for charged via Sonnet's script. | ✅ Neutral sector settled too — 3D spherical l=1 p-wave ODE `β'' + (2/r)β' - (2/r²)β - m_J²β + 4gβ³ = 0`. | ✅ Unchanged. Both ODEs canonical. |
+| ω quantization mechanism | ✅ **Empirically validated via v8 step 4** — three lowest stable Q=1 modes match e/μ/τ. | ✅ Unchanged. | ✅ Unchanged. Analytic proof of discrete-ω selection still deferred (Q2). |
+| Neutral m_χ true ground state | ⚠️ PARTIAL — 448 IVP solutions, windowed-integration values. | 🚧 GROUND-STATE-FOUND via `neutral_bvp_solver_mJ_free.py`. True nonlinear soliton; 1-parameter family in B0. | ✅ **DM PAPER INPUTS DELIVERED via sandbox_v10**: m_χ=0.4599 MeV, m_J=0.6184 MeV, C=770 MeV·fm at canonical (g=1.0, B0=0.5). Pending Q47 interpretation. |
+| Algebraic 2L/Q identity (Q38) | ⚠️ NEW OPEN — 2L/Q = 2ω trivially. | ✅ RESOLVED in 9c §9 criterion 3 footnote. | ✅ Unchanged. |
+| **Geometry conversion m_J/η** | Not tracked. | Not tracked. | 🔶 **NEW (Q47)** — m_J_corrected = m_J/η is empirically family-invariant at 1.21 (NOT 1.0 as DeepSeek heuristically predicted). Pohozaev-type virial identity. DM paper inputs stand under either interpretation; canonical-match framing depends on Paul/DeepSeek reply. |
 
 ### RESOLVED hardest pieces (12 — closed post-v8; kept for traceability)
 
@@ -391,51 +393,60 @@ Active count post-9c + email v11 (entering Paul's reply):
 ## Highest-leverage closure path
 
 ```text
-Email v13 + v14 sent (neutral chaoiton GROUND STATE FOUND + Q45/Q46
-+ Acknowledgments-update ask bundled)
+Email v15 sent (DM paper inputs DELIVERED + Q47 virial-identity flag
++ Acks-update ask reinforced for BOTH DM paper AND future LoE revisions)
     ↓
-Paul's reply on Q45 + Q46 (via DeepSeek)
+Paul/DeepSeek's reply on Q47 (canonical-interpretation)
     ↓
-    ├── (Q45a) "Match m_J to electron-calibrated λ=1"
-    │       → Run g-scan via neutral_bvp_solver_mJ_free.py until
-    │         m_J=1 lands at some (g, B0)
-    │       → Deliver definite (m_χ, m_J, C) under Q46 normalization
-    │       → Email v15 with deliverable
+    ├── (Q47a) "Accept 1.21 as canonical virial-fixed value"
+    │       → Current numbers (m_chi=0.4599, m_J=0.6184, C=770) lock
+    │       → ApJ DM paper submission proceeds
     │
-    ├── (Q45b) "Pick lightest in family (B0=0.40, m_χ ≈ 0.866 MeV)"
-    │       → Report lightest directly with Q46-corrected normalization
-    │       → Email v15 with deliverable
+    ├── (Q47b) "Geometry correction formula needs refinement"
+    │       → Re-derive m_J_corrected per their refinement (~30 min)
+    │       → Re-extract m_chi if it shifts
     │
-    ├── (Q45c) "Self-consistency with charged sector"
-    │       → Solve over-determined system: same (g, m_J) as charged,
-    │         find which B0 lands. ~few hours.
-    │       → Email v15 with deliverable
-    │
-    ├── (Q45d) Custom DeepSeek/Paul constraint
-    │       → Implement on receipt; deliver under specified constraint
-    │
-    └── No reply within 1-2 weeks
-            → M5 continues; v14 already documents our position;
-              no further escalation needed.
+    └── (Q47c) "Canonical match isn't on m_J; some other invariant"
+            → Implement specified invariant; re-deliver
+            → ~few hours
 
-Completed via v9 phase 2 (neutral chaoiton ground state):
-  - G2 GROUND-STATE-FOUND-PENDING-CALIBRATION-POINT via
-    neutral_bvp_solver_mJ_free.py: true nonlinear soliton, clean K_1
-    decay, 1-parameter family in B0 ∈ [0.4, 0.6]
-  - Q43 + Q44 resolved by DeepSeek 2026-05-22 ~9:53 AM
+Paul/DeepSeek's reply on Acks-update (separate, bundled in v15)
+    ↓
+    ├── Accept three-tier wording (Labs + Griesi + Claude Code)
+    │       → Land in DM paper Acks + future LoE revisions
+    │
+    ├── Edits to wording
+    │       → Adjust; same intent
+    │
+    └── Decline
+            → Continue with current 9c-era Acks; not blocking
 
-Completed via sandbox v8 (already in 9c):
-  - G1 lepton scan PASSED (v8 step 4): muon 0.80%, tau 6.47%
-  - G3 discrete ω mechanism EMPIRICALLY VALIDATED (same)
+DM paper inputs ALREADY DELIVERED via sandbox_v10:
+  - m_chi = 0.4599 MeV  (sub-MeV, lighter than electron)
+  - m_J   = 0.6184 MeV  (Yukawa mediator mass)
+  - C     = 770 MeV·fm  (Yukawa coupling, 5% fit residual)
+  - eta   = 0.4251      (geometry conversion factor)
+  - Pohozaev-virial empirical finding: m_J/eta = 1.21 constant
+    across B0 ∈ [0.10, 0.60] and g ∈ [0.5, 1.6]
+
+Completed via v9 phase 2:
+  - G2 GROUND-STATE-FOUND via neutral_bvp_solver_mJ_free.py
+  - Q43 + Q44 resolved by DeepSeek
+  - True nonlinear soliton, clean K_1 decay, 1-parameter family
+
+Completed via sandbox v8 (in 9c):
+  - G1 lepton scan PASSED: muon 0.80%, tau 6.47%
+  - G3 discrete ω mechanism EMPIRICALLY VALIDATED
   - Q36-Q40 all 5 incorporated in 9c (single round-trip)
 
 M6 production decision (Taichi):
-  - Sonnet's canonical script gives reference ODE for charged sector
-  - neutral_bvp_solver_mJ_free.py gives reference ODE for neutral
-    sector (3D spherical l=1 p-wave)
-  - Decision still deferred per cardinal rule (M5 first)
+  - Sonnet's canonical script: reference ODE for charged sector
+  - neutral_bvp_solver_mJ_free.py: reference ODE for neutral sector
+  - Decision deferred per cardinal rule (M5 first)
+  - Full canonical specification in 0d_canonical.md
 
 M5 returns as foreground engineering track per cardinal rule:
-  M5 is SABER's primary substrate. M6 v9 phase 2 is functionally
-  complete; awaiting Q45/Q46 reply for definite numbers handoff.
+  M5 is SABER's primary substrate. M6 functionally complete on the
+  numerical side (numbers delivered); awaiting Q47 interpretation +
+  Acks-update for the final paper-side framing.
 ```
