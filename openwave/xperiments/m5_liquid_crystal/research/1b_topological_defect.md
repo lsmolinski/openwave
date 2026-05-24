@@ -5,7 +5,7 @@ A focused, foundational walk-through of what a **topological defect** is in M5 �
 1. **What a defect IS** — its definition, the geometric forms it can take (hedgehog, kink, vortex, knot), how it differs from a "WC placed in a field", how its winding number quantizes charge, and how it stores rest-mass energy
 2. **How a defect OSCILLATES** — the time-crystal / Zitterbewegung mechanism that gives the defect its intrinsic clock at `ω = 2mc²/ℏ`, the rotational nature of that oscillation, and how mass + spin + de Broglie wavelength + magnetic moment all derive from this one rotating-defect mechanism
 
-The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [0b_overview.md § What is the time-crystal concept?](0b_overview.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [2a_path_to_m5.md § Phase M5.8](2a_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
+The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [_overview.md § What is the time-crystal concept?](_overview.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [2a_path_to_m5.md § Phase M5.8](2a_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
 
 **Status** (2026-04-19): conceptual framework complete (this document); empirical validation scheduled for **M5.8** (single defect, intrinsic oscillation measurement, target `ω = 2mc²/ℏ` for electron + neutrino).
 
@@ -13,7 +13,7 @@ Related reading:
 
 - [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — master spec + group email thread (paraphrased)
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results
-- [0b_overview.md](0b_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
+- [_overview.md](_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
 - [2a_path_to_m5.md](2a_path_to_m5.md) — M5 implementation plan (M5.8 tests this physics)
 - Dr. Duda's φ⁴ time-crystal toy model: <https://arxiv.org/pdf/2501.04036>
 - Wikipedia Zitterbewegung: <https://en.wikipedia.org/wiki/Zitterbewegung>
@@ -152,7 +152,7 @@ You can't "remove" a defect by deleting some parameter. You can only:
 
 The defect's "position" is not a tracked state variable; it's wherever the winding-number integral is concentrated at that instant. The defect moves because the field moves; the field has a topological feature, not a foreign body.
 
-This is structurally different from M3/M4 and is the architectural break between methods. See [0b_overview.md § How do topological defects move? (particle motion)](0b_overview.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
+This is structurally different from M3/M4 and is the architectural break between methods. See [_overview.md § How do topological defects move? (particle motion)](_overview.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
 
 ### M3/M4 vs M5 paradigm — what changes mechanically
 

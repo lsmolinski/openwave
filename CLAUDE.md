@@ -30,10 +30,6 @@ OpenWave investigates, in one integrated simulator, four primary domains: **matt
 | Manfried Faber | LdG regularization (Universe 11/2025/113) | M5.6 baseline |
 | Dr. Paul Werbos | Ouroboros chaoiton Lagrangian | M6 |
 
-### Active Research Focus
-
-**M5 (Liquid Crystal)** is the current active model. Sandbox complete (2026-04-17); 9-phase plan M5.0–M5.8 in progress. See `openwave/xperiments/m5_liquid_crystal/research/0c_M5_roadmap.md` for phase status. M6 (Ouroboros) research is in early-stage parallel.
-
 ### Known Challenges & Limitations
 
 - Full Planck-scale fidelity is computationally prohibitive; resolution is user-tunable per xperiment.

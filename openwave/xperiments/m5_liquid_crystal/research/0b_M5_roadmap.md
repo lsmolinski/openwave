@@ -54,7 +54,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 #### M5.0a — Module rename + alias ✅ (commit `bdd96dd` 2026-05-06)
 
 - ✅ Create `openwave/xperiments/m5_liquid_crystal/` directory (cloned M4 + M3 features merged)
-- ✅ **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py`. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py`. See [3b § What wave equation does M5 solve?](0b_overview.md#what-wave-equation-does-m5-solve-is-force-still-e)
+- ✅ **Rename the engine module**: `wave_engine.py` → `lagrangian_engine.py`. Rationale: M5's core loop integrates a Lagrangian-derived PDE (`∂²_tψ = c²∇²ψ − ∂V/∂ψ`) that simultaneously handles wave propagation *and* preserves topology via the potential `V(ψ)`. "Wave" is only one of the two channels the engine produces, so `lagrangian_engine.py` reflects what the module actually is to a new reader. M1–M4 keep `wave_engine.py`. See [3b § What wave equation does M5 solve?](_overview.md#what-wave-equation-does-m5-solve-is-force-still-e)
 - ✅ Module alias `ewave` → `lagrange` across launcher (the engine evolves the field ψ via the Lagrangian, not "the energy-wave"; alias rename improves call-site readability)
 
 #### M5.0b — Triple buffer + AMR-ready field-storage abstraction ✅ (commit `c832e90` 2026-05-06)

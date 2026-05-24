@@ -2,7 +2,7 @@
 
 Implementation plan for **M5 / LIQUID-CRYSTAL MODEL** (directory `openwave/xperiments/m5_liquid_crystal/`), the production field engine that graduates sandbox-validated Lagrangian / topological physics onto the GPU-accelerated OpenWave platform. This document references concrete code in the current engines and defines what M5 inherits, replaces, and adds.
 
-**Naming**: **M5 / LIQUID-CRYSTAL MODEL**. History — originally "Lagrangian-Wave Model", renamed 2026-04-19 to "Lagrangian-Field Model", renamed again 2026-05-15 to "Liquid-Crystal Model". The current name identifies the **framework** the method implements (the Landau-de Gennes liquid-crystal-based particle framework of Duda's `arxiv:2108.07896` v7) rather than the mathematical formalism. This matters because M6 (Ouroboros, Werbos's chaoiton framework) is also a Lagrangian field theory — calling M5 "Lagrangian Field" would conflict. Methods are named after the candidate framework they implement (M3 = Wolff-LaFreniere, M5 = Liquid-Crystal, M6 = Ouroboros), not after the math they share. The Python module stays as `lagrangian_engine.py` because the module name describes *what the code does* (integrates a Lagrangian-derived PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` on the matrix field `M = ODO^T`), which is still accurate. See [3b § What wave equation does M5 solve?](0b_overview.md#what-wave-equation-does-m5-solve-is-force-still-e) for the engine architecture.
+**Naming**: **M5 / LIQUID-CRYSTAL MODEL**. History — originally "Lagrangian-Wave Model", renamed 2026-04-19 to "Lagrangian-Field Model", renamed again 2026-05-15 to "Liquid-Crystal Model". The current name identifies the **framework** the method implements (the Landau-de Gennes liquid-crystal-based particle framework of Duda's `arxiv:2108.07896` v7) rather than the mathematical formalism. This matters because M6 (Ouroboros, Werbos's chaoiton framework) is also a Lagrangian field theory — calling M5 "Lagrangian Field" would conflict. Methods are named after the candidate framework they implement (M3 = Wolff-LaFreniere, M5 = Liquid-Crystal, M6 = Ouroboros), not after the math they share. The Python module stays as `lagrangian_engine.py` because the module name describes *what the code does* (integrates a Lagrangian-derived PDE `∂²_tψ = c²∇²ψ − ∂V/∂ψ` on the matrix field `M = ODO^T`), which is still accurate. See [3b § What wave equation does M5 solve?](_overview.md#what-wave-equation-does-m5-solve-is-force-still-e) for the engine architecture.
 
 **Spec inputs**:
 
@@ -430,7 +430,7 @@ This integrated layered scope is what differentiates OpenWave from comparable si
 
 The integration is the value. Reading the layered table top-to-bottom is also a reading-order suggestion for new contributors: validated primitives at the top, frontier work at the bottom.
 
-For the conceptual companion to this roadmap, see [0b_overview.md § Where do quarks, protons, nuclei, and atoms fit?](0b_overview.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
+For the conceptual companion to this roadmap, see [_overview.md § Where do quarks, protons, nuclei, and atoms fit?](_overview.md#where-do-quarks-protons-nuclei-and-atoms-fit) — same hierarchy, framed as a Q&A explanation rather than an implementation checklist.
 
 ### Long-term research directions — phase, Berry, and entanglement experiments
 
