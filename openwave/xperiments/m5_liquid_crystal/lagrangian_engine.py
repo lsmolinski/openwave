@@ -1583,7 +1583,7 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1 or 4)
+        else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
                 disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
             )
@@ -1647,7 +1647,7 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1 or 4)
+        else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
                 disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
             )
@@ -1711,7 +1711,7 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1 or 4)
+        else:  # default to orange (wave_menu == 1)
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
                 disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
             )
@@ -1728,7 +1728,7 @@ def update_flux_mesh_values(
 
 
 # ================================================================
-# DIRECTOR-GLYPH RENDERING (M5.1)
+# DIRECTOR-GLYPH RENDERING
 # ================================================================
 # The flux mesh maps every voxel to ONE scalar (color + Z-warp). For a
 # director field where |ψ|=1 by construction, scalar magnitude is uninformative

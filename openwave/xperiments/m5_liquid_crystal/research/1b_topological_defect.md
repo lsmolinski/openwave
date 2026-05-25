@@ -5,7 +5,7 @@ A focused, foundational walk-through of what a **topological defect** is in M5 �
 1. **What a defect IS** — its definition, the geometric forms it can take (hedgehog, kink, vortex, knot), how it differs from a "WC placed in a field", how its winding number quantizes charge, and how it stores rest-mass energy
 2. **How a defect OSCILLATES** — the time-crystal / Zitterbewegung mechanism that gives the defect its intrinsic clock at `ω = 2mc²/ℏ`, the rotational nature of that oscillation, and how mass + spin + de Broglie wavelength + magnetic moment all derive from this one rotating-defect mechanism
 
-The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [0b_overview.md § What is the time-crystal concept?](0b_overview.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [2a_path_to_m5.md § Phase M5.8](2a_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
+The two halves are sequential: first you need to know what the object is, then how it oscillates. This document expands on the conceptual Q&A entries in [_overview.md § What is the time-crystal concept?](_overview.md#what-is-the-time-crystal-concept) and provides the full physics rationale for [2a_path_to_m5.md § Phase M5.8](2a_path_to_m5.md#phase-m58--de-broglie-clock--zitterbewegung-test-new-per-jareks-guidance), the M5 phase that empirically tests the oscillation mechanism.
 
 **Status** (2026-04-19): conceptual framework complete (this document); empirical validation scheduled for **M5.8** (single defect, intrinsic oscillation measurement, target `ω = 2mc²/ℏ` for electron + neutrino).
 
@@ -13,7 +13,7 @@ Related reading:
 
 - [1a_lagrangian_framework.md](1a_lagrangian_framework.md) — master spec + group email thread (paraphrased)
 - [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md) — sandbox numerical results
-- [0b_overview.md](0b_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
+- [_overview.md](_overview.md) — full concept Q&A (this is a deep-dive on one specific entry there)
 - [2a_path_to_m5.md](2a_path_to_m5.md) — M5 implementation plan (M5.8 tests this physics)
 - Dr. Duda's φ⁴ time-crystal toy model: <https://arxiv.org/pdf/2501.04036>
 - Wikipedia Zitterbewegung: <https://en.wikipedia.org/wiki/Zitterbewegung>
@@ -152,7 +152,7 @@ You can't "remove" a defect by deleting some parameter. You can only:
 
 The defect's "position" is not a tracked state variable; it's wherever the winding-number integral is concentrated at that instant. The defect moves because the field moves; the field has a topological feature, not a foreign body.
 
-This is structurally different from M3/M4 and is the architectural break between methods. See [0b_overview.md § How do topological defects move? (particle motion)](0b_overview.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
+This is structurally different from M3/M4 and is the architectural break between methods. See [_overview.md § How do topological defects move? (particle motion)](_overview.md#how-do-topological-defects-move-particle-motion) for the implementation consequence.
 
 ### M3/M4 vs M5 paradigm — what changes mechanically
 
@@ -971,6 +971,28 @@ Other research programs that share the topology-quantization picture but realize
 - **Faber's running-coupling regularization** — already integrated into M5.6 plan; provides an alternative regularization scheme for the LdG potential
 
 These adjacent frameworks are useful as cross-validation references: if multiple independent substrate proposals (Cosserat quasicrystal, LdG biaxial, Faber regularization) all reproduce the same observables (charge quantization, α, Lorentz invariance, particle-mass hierarchy) from different starting points, the convergence is itself evidence that the underlying topological + clock-propulsion structure is correct, regardless of which substrate model wins on calibration.
+
+---
+
+## FOUNDATIONAL STANCE — M5 AS A LOCAL-REALISTIC FIELD (Bell / Kochen-Specker)
+
+M5's defect has a **definite orientation** — a real spin axis, a definite clock phase — and the field `M = ODO^T` evolves by a deterministic, local PDE. That makes M5 a *local-realistic classical field theory*, which invites the standard objection. A 2026-05 Models-of-Particles thread (graphene spin-transport news) crystallized both sides:
+
+| Position | Argument |
+| --- | --- |
+| **Mark Hadley** (objection) | EPR/Bell + **Kochen-Specker** ⇒ an electron *cannot* have a well-defined spin; it is contextual. A definite direction independent of the measurement = local hidden variables ⇒ `\|S\| ≤ 2`, contradicting the measured `\|S\| = 2√2`. |
+| **Jarek Duda** (defense) | The electron *is* a tiny magnet with a definite spin axis (polarized beams, Stern-Gerlach, and the Dirac bispinor "literally encodes boost + spin direction"). Definite orientation does **not** preclude QM statistics. |
+
+Duda's resolution — the template M5 adopts:
+
+- **The field evolution is local-realistic and cannot violate Bell.** *"Schrödinger/Dirac are local, realistic — cannot violate Bell"*; they satisfy Kolmogorov. Bell violation enters only at the **measurement / wavefunction-collapse layer**, where one switches to the deeper Feynman-ensemble (superdeterministic) description that QFT is built on.
+- **Malus's-law analogy.** Photons have a definite polarization *direction*, yet a polarizer still yields the cos²-squared (Malus) statistics. A definite underlying orientation is fully compatible with Born-rule squares — the squares come from the measurement projection, not from indefiniteness of the field.
+- **Measurement is a destructive, distributive process**, not a passive read-out: Stern-Gerlach applies a torque `τ = μ × B` → precession, actively reshaping the state.
+- **The classical → Born-rule bridge** is Duda's **MERW** (Maximal Entropy Random Walk): a time-symmetric max-entropy path ensemble whose stationary density is `ρ = |ψ|²` (combining past `ρ∝ψ` and future `ρ∝ψ` trajectories), reproducing the QM ground state with Anderson-like localization (see [4a § 11b.4](4a_convo_2026.05.12.md#11b--couderbush-walking-droplet-deck-theorycouderpdf)).
+
+Robert Close (M5's elastic-solid advisor) is independently building the same defense in a parallel 2026-05 thread — Adenier's *"A refutation of Bell's theorem"* and the loophole in the Eq. 10 → Eq. 11 factoring assumption used to derive `|S| ≤ 2`.
+
+**Net for M5:** a definite-orientation defect is **not** ruled out by Bell / Kochen-Specker *provided the QM statistics live in the measurement/ensemble layer, not in the field evolution*. This is an open foundational program (tracked as Q12 in [`0b_question_tracker.md`](0b_question_tracker.md)), not a settled result. Experimental anchor: ultra-clean-graphene spin transport preserves spin information over distance — confirming spin direction is a real, transportable, conserved property, consistent with topological-defect spin.
 
 ---
 

@@ -2,6 +2,8 @@
 
 **Status**: ✅ **shipped 2026-05-09** as part of M5.1 task 4. This doc was design-stage (2026-05-08); the as-shipped variant differs in a few details documented in the "AS-SHIPPED CHANGES" section at the end.
 
+> **M5.4 readers**: the substrate migration (Vector(3) ψ → 3×3 matrix `M = ODO^T`) repurposes the *entire* rendering stack, not just glyphs. The full feature catalog + per-feature repurposing plan lives in [`4b_rendering_features.md`](4b_rendering_features.md). This doc stays focused on director-glyph design + as-shipped specifics.
+
 **Purpose**: visualize the **vector orientation** of ψ at each voxel — the structure that carries topology — distinct from `flux_mesh` which renders only scalar projections (magnitude, energy density). Without this, you can compute a winding number but you can't *see* a hedgehog. Critical for M5.1 validation (does the relaxed seed actually look like a hedgehog?) and persists through M5.4 (multi-defect dynamics) and M5.8 (Zitterbewegung at the defect core).
 
 ## Background — why scalar visualization is insufficient for topology
@@ -217,3 +219,9 @@ Fix applied to all 4 seeders: write all three buffers (`psi_prev_am`, `psi_am`, 
 - 1e-12 epsilon in n̂ denominator avoids /0 at vacuum-degenerate voxels ✅
 - M5.4+ "glyphs only near defects" (Option C) still deferred ✅
 - Arrowheads still skipped (line-offset encodes direction) ✅
+
+---
+
+## Forward: matrix-substrate migration (M5.4+)
+
+When M5.4 replaces Vector(3) ψ with the matrix field `M = ODO^T`, director glyphs survive and get richer (sourced from the principal eigenvector(s) of M; up to 3 glyph families; arrowheads retire since the nematic director is apolar, n ≡ −n). The full rendering-stack repurposing plan — glyphs, flux_mesh, scalar/vector warp, granule render, and all color-coding modes — lives in [`4b_rendering_features.md`](4b_rendering_features.md).

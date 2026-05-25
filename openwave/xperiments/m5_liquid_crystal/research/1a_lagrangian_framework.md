@@ -10,7 +10,7 @@ A research phase evaluating whether a Lagrangian formulation could replace OpenW
 >
 > **Documentation correction from Exp 5**: the docs' Combined W-L product form `2A·sin(kr/2)·cos(kr/2−(ωt+φ))/r` is NOT a free-wave solution — its quadrature term leaves a residual `−c²k²·sin(ωt+φ)/r ≠ 0`. The M4 code's equivalent *sum form* `A·[sin(kr+ωt+φ)+sin(kr−ωt−φ)]/(kr)` IS valid. M5 uses the sum form.
 >
-> This document is the **experimental plan & spec** — written before the sandbox; preserved for context. For live results see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md); conceptual walk-through in [0b_overview.md](0b_overview.md); topology / time-crystal / Zitterbewegung deep-dive in [1b_topological_defect.md](1b_topological_defect.md); M5 implementation plan in [2a_path_to_m5.md](2a_path_to_m5.md); current phase status in [0c_roadmap.md](0c_roadmap.md).
+> This document is the **experimental plan & spec** — written before the sandbox; preserved for context. For live results see [1c_lagrangian_experiments.md](1c_lagrangian_experiments.md); conceptual walk-through in [_overview.md](_overview.md); topology / time-crystal / Zitterbewegung deep-dive in [1b_topological_defect.md](1b_topological_defect.md); M5 implementation plan in [2a_path_to_m5.md](2a_path_to_m5.md); current phase status in [0c_roadmap.md](0c_roadmap.md).
 
 ---
 

@@ -66,6 +66,22 @@ The chain is simple: `λ → f → rate of change → time`
 
 The energy starvation mechanism is the most novel insight: destructive interference drops amplitude → energy conservation forces frequency up → that IS time dilation, emerging from wave mechanics rather than imposed by relativity.
 
+## The de Broglie clock is intrinsic — group consensus on clock propulsion (2026-05)
+
+The de Broglie / Zitterbewegung clock `ω = 2mc²/ℏ` IS the defect's local time-rate — the `f` in `time = rate of change = f = c/λ`. So *why the clock never stops* is a time-dynamics cornerstone, not a side issue. A 2026-05 Models-of-Particles / Nature-of-Time thread (Duda, Arjen Dijksman, Werbos) converged on a sharp point worth recording:
+
+| Analogue | Needs external drive? | Outcome |
+| --- | --- | --- |
+| Couder walking droplets (hydrodynamic) | yes — vibrating bath ("shaker") | oscillation sustained only while driven |
+| Spinning-needle discrete analogues (Dijksman, 1997 J.Phys.A) | no — just an initial collision | damp like a pendulum, "stop with energy reduction" |
+| Electron / neutrino de Broglie clock | **no external drive, never damps** | the property that must be explained |
+
+Duda's framing (2026-05): *"spinning needles, like a pendulum, would stop with energy reduction… electron, neutrinos cannot — we need some nontrivial propulsion mechanism."* Every **macroscopic** analogue fails at intrinsic, non-damping oscillation; only the elementary-particle clock has it. This externally validates M5's design choice: the propulsion must be **intrinsic**, and M5.8's **4D Lorentz negative-energy auto-propulsion** (paper Fig. 10) is exactly that kind of mechanism — the energy is borrowed from the rest-mass budget, no external pump (full treatment in [1b § TWO-REQUIREMENT TEST](1b_topological_defect.md#two-requirement-test-for-any-viable-single-particle-field-theory) and [1b § WHY DEFECTS OSCILLATE](1b_topological_defect.md#why-defects-oscillate--the-mechanism)). The **time-crystal template** — "oscillating already in the lowest energy state" ([arxiv:2501.04036](https://arxiv.org/pdf/2501.04036)) — is the conceptual anchor.
+
+**Positioning note (same thread):** a high-profile "compute quantum waves *exactly* from classical least-action" paper (Slotine/MIT, RSPA 2026) was dismissed by the group — Sabine Hossenfelder graded it "10/10 on the BS scale"; Hadley flagged "lack of a clear short narrative = signs of nonsense." M5 is also a least-action (Lagrangian) theory, so the lesson is defensive: **M5's claim is structured** (topology + clock-resonance + pilot-wave), not a bare "QM emerges from least-action alone." Clarity and a clean narrative are themselves credibility (echoes Duda's "AI slop" warning).
+
+**Time-symmetry cross-ref (Duda 2026-05-23, FTL/time-travel course post):** Duda floated that a T-symmetric length measurement (LIGO) "should see gravitational waves traveling in both time directions: retarded *and* advanced." This retarded+advanced theme is the same time-symmetry that already lives in OpenWave's **in-wave / out-wave** standing-wave structure (a standing wave *is* retarded + advanced) and in Duda's **MERW** past×future path ensemble ([4a § 11b.4](4a_convo_2026.05.12.md#11b--couderbush-walking-droplet-deck-theorycouderpdf)). The LIGO advanced-wave test is speculative and GR-frontier (M5.8/GEM-adjacent) — logged, not adopted.
+
 ## Connection to Medium Pressure and Gravity
 
 Changing λ/frequency changes the rate at which granules cycle through their elliptical motion — meaning different granule velocities. In wave mechanics and particle-fluid simulations (e.g., sound waves), granule velocity is directly related to **localized medium pressure**. Faster cycling = higher pressure, slower cycling = lower pressure.
