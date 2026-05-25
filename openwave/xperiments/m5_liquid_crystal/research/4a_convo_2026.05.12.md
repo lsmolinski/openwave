@@ -18,9 +18,10 @@ Working overview consolidating the multi-day exchange with Jarek Duda on the mod
 6. [3D vs 4D — what the 4D extension actually adds](#6-3d-vs-4d--what-the-4d-extension-actually-adds)
 7. [Force unification — the corrected mapping](#7-force-unification--the-corrected-mapping)
 8. [Eigenvalue → physics mapping (Duda's direct text + curvature layer)](#8-eigenvalue--physics-mapping-dudas-direct-text--curvature-layer)
-9. [Topology on Close + Yee frameworks (Duda's reciprocal ask)](#9-topology-on-close--yee-frameworks-dudas-reciprocal-ask)
+9. [Topology on Close + Yee frameworks](#9-topology-on-close--yee-frameworks)
 10. [Refactor strategy — two refactors, sized differently](#10-refactor-strategy--two-refactors-sized-differently)
 11. [Slides content (51 pages) — instrumental beyond the paper](#11-slides-content-51-pages--instrumental-beyond-the-paper)
+11b. [Couder/Bush walking-droplet deck (theory/Couder.pdf)](#11b--couderbush-walking-droplet-deck-theorycouderpdf)
 12. [Open questions & implications](#12-open-questions--implications)
 
 ---
@@ -436,7 +437,7 @@ This corrects our prior memory framing that mapped electron=δ, muon=1, tau=g as
 
 ---
 
-## 9. Topology on Close + Yee frameworks (Duda's reciprocal ask)
+## 9. Topology on Close + Yee frameworks
 
 | Approach | Substrate | Topology natural? |
 | --- | --- | --- |
@@ -588,6 +589,92 @@ His pitch: same kinetic and potential structure as standard LC/Skyrmion, plus to
 | M5.8 | clock toy model numerical anchors |
 | M5.9 | Cornell + quark-string conflict diagrams |
 | M5.4–M5.6 | 3-lepton mass mechanism is spatial axis choice |
+
+---
+
+## 11b — Couder/Bush walking-droplet deck (theory/Couder.pdf)
+
+Duda's **second** deck (45 slides, *"Hydrodynamical analogues of some quantum phenomena"*) — distinct from the §11 LdGS slides. This one is the walking-droplet / pilot-wave catalog (de Broglie–Bohm, Couder–Fort–Bush). Most of it confirms things we already have; the items below are what's **instrumental beyond our current docs**, mapped to M5 phases.
+
+### 11b.1 Hydrodynamics ↔ EM dictionary (alternative M5.5 route)
+
+The deck gives an explicit superfluid (ν = 0 viscosity) hydrodynamics ↔ electromagnetism dictionary — a *second* derivation route for M5.5's "EM from tilts", independent of the matrix-curvature one:
+
+| Hydrodynamics (superfluid) | Electromagnetism | Analog |
+| --- | --- | --- |
+| vorticity `ω = ∇ × u` | `B = ∇ × A` | `ω ↔ B`, `u ↔ A` |
+| Lamb vector `l = ω × u` | electric field `E` | `l ↔ E` |
+| Navier-Stokes `∂u/∂t = −l − ∇φ_p + ν∇²u` | `∂A/∂t = −E − ∇φ` | vector + scalar potential |
+| vorticity tendency `∂ω/∂t = −∇×l` | Faraday `∂B/∂t = −∇×E` | — |
+| Coriolis force `−m(V × 2Ω)` | Lorentz `q(v × B)` | force law |
+| turbulent charge `∇·l = u·∇×ω − \|ω\|² = ρ_n` | `∇·(ε₀E) = ρ_e` | charge density |
+
+Gauge-condition parallel: electrodynamics Lorenz gauge `∇·A + (1/c²)∂φ/∂t = 0` ↔ hydrodynamics `∇·v + (1/c_s²)∂χ/∂t = 0` with `χ = v²/2`. **Relevance:** if the matrix-curvature EM derivation (M5.5) stalls, the superfluid-vorticity reading is a cross-check; both should yield Maxwell. Note also the Zeeman-as-Coriolis empirical plot (the walker Zeeman, §11b.3).
+
+### 11b.2 Faber's explicit quantized-EM Lagrangian (concrete M5.5 target)
+
+The deck states Faber's EM Lagrangian in the local-rotation-axis form — more concrete than what we had, and from **Faber himself** (our M5.6 regularization advisor):
+
+```text
+Γ_i = (∂_i u) × u          local rotation-axis "connection"
+R_μν = Γ_μ × Γ_ν           curvature
+L_EM = −(αℏc / 16π) R_μν · R^μν      with  F_μν ~ R*_μν   (E ↔ B dual)
+```
+
+**Relevance:** this is essentially the M5.5 EM term written for the director/rotation field. Pairs with the §11 paper's `A_μ = [M, ∂_μ M]`, `F_μν` curvature — same idea, Faber's normalization with the explicit `αℏc/16π` prefactor. Worth porting alongside the LdG potential in M5.5.
+
+### 11b.3 Walking-droplet path-memory kernel + quantization-law catalog (the standing-wave / orbit-quantization side)
+
+The deck's most reusable artifact is the **wave-memory kernel** that reproduces the entire walker phenomenology (Couder/Fort/Bush simulations):
+
+```text
+h(r, t_i) = Σ_p  A / |r − r_p|^(1/2)  ·  exp( −|r − r_p|/δ − (t_i − t_p)/τ )  ·  cos( 2π|r − r_p|/λ_F + φ )
+```
+
+sum over past bounce points `r_p` at times `t_p`; `δ` spatial decay, `τ` memory time (`τ ∝ |γ − γ_F|^(-1)` near Faraday instability), `λ_F` Faraday wavelength. With this kernel + free-flight + Coriolis, droplets reproduce a catalog of **standing-wave (orbit) quantization laws**:
+
+| Phenomenon | Quantization law | QM analog |
+| --- | --- | --- |
+| Cyclotron orbits (rotating bath) | `2R_n ≈ (n + 1/2) λ_F` | Landau levels |
+| Two-walker orbits | `d_n = (n − ε₀) λ_F` (ε₀≈0.2) | bound-state quantization |
+| Level splitting in rotating cell | `δ_d = C·Ω` (cc vs clockwise split) | Zeeman effect |
+| Droplet in harmonic trap (ferrofluid) | double quantization `(n, m)` — radius + angular momentum; Cassini-oval orbits | atomic `(n, ℓ, m)` |
+| Lattice of corrals | spontaneous **antiferromagnetic** (Néel) order | spin lattice |
+| Circular corral statistics | trajectory histogram = Faraday-mode maxima | quantum corral (STM) |
+
+**Relevance:** this is the concrete realization of the **standing-wave / orbit-quantization** half that Jeff Yee flagged is needed *alongside* topology (the M3-in-M5 retention). If we ever build an orbit-quantization sub-experiment, this kernel is the reference model — and these laws are ready-made validation targets. It is the "Couder side" that complements M5's "Duda topology side."
+
+### 11b.4 MERW — classical max-entropy paths → Born rule ρ = |ψ|² (statistics bridge)
+
+Duda's own **Maximal Entropy Random Walk**: a time-symmetric (Boltzmann) path ensemble whose stationary density is the **QM ground state** with Anderson-like localization. The Born rule emerges as `ρ ∝ ψ²` from combining past (`ρ ∝ ψ`) and future (`ρ ∝ ψ`) trajectory ensembles — verified against STM electron-density maps of Ga₁₋ₓMnₓAs.
+
+**Relevance — two M5 touch-points:** (a) it is Duda's answer to the *"`ρ = |ψ|²` statistics"* question — the classical→Born-rule bridge that complements the topology + clock bridges; (b) it is a natural framing for **5b thermal statistics** (the per-defect `(A, ω)` ensemble → macroscopic distribution is a max-entropy path-ensemble problem). Candidate tool, not yet on the roadmap.
+
+### 11b.5 The "two-ingredient Schrödinger" framing (conceptual scaffold)
+
+The deck's clean articulation of the classical → QM bridge: **Schrödinger's equation = (1)** a coupled standing wave `ψ₀ e^{iEt/ℏ}` *resonant with the electron's clock* **+ (2)** `ρ = |ψ|²` statistics (MERW). Stable field configurations = solitons (topological); varying particle number = QFT "algebra for particles" / ensemble of Feynman scenarios. **Relevance:** situates M5's three pillars cleanly — the clock (M5.8) supplies ingredient (1), MERW supplies ingredient (2), topology supplies the stable configurations. A good framing paragraph for the M5 overview / any outreach.
+
+### 11b.6 Already covered (no action) + one speculative aside
+
+| Deck content | Where we already have it |
+| --- | --- |
+| de Broglie clock via electron channeling (Catillon 2008, 81 MeV, ~10²¹ Hz) | M5.8 experimental anchors (`0b_M5_roadmap`) |
+| Faber Coulomb Mathematica code, `V(d) ≈ 1589.56 − 25.16/d` | §11 of this doc / M5.4 cross-validation target |
+| Topology charge = covering degree / Gauss-Bonnet `∮K dS = 2πχ(S)` | `1a`, `1b` |
+| Couder orbit quantization as the droplet analog | `1a` (extensively) |
+| Zitterbewegung in BEC (Qu 2013, LeBlanc 2013), Dirac `x_k(t)` ZB term | M5.8 anchors |
+
+Speculative aside (low priority, noted not adopted): the deck floats electron substructure — Dehmelt's Penning-trap bound `R < 10⁻²² m`, the Brodsky–Drell "three heavier fermions" idea, and an `e⁺e⁻` cross-section extrapolation to rest giving `r ≈ 2 fm`. Interesting context for "how big is the electron defect" but not a current M5 target.
+
+### 11b.7 Net adds for the plan
+
+| New item | Informs | Action |
+| --- | --- | --- |
+| Hydro↔EM dictionary (§11b.1) | M5.5 | cross-check route for EM-from-tilts |
+| Faber quantized-EM Lagrangian (§11b.2) | M5.5 | port alongside LdG potential |
+| Path-memory kernel + quantization laws (§11b.3) | M3-in-M5 orbit quantization | reference model + validation targets |
+| MERW → Born rule (§11b.4) | `ρ=\|ψ\|²` question; 5b statistics | candidate tool |
+| Two-ingredient Schrödinger framing (§11b.5) | M5 overview / outreach | framing paragraph |
 
 ---
 

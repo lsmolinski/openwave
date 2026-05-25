@@ -974,6 +974,28 @@ These adjacent frameworks are useful as cross-validation references: if multiple
 
 ---
 
+## FOUNDATIONAL STANCE — M5 AS A LOCAL-REALISTIC FIELD (Bell / Kochen-Specker)
+
+M5's defect has a **definite orientation** — a real spin axis, a definite clock phase — and the field `M = ODO^T` evolves by a deterministic, local PDE. That makes M5 a *local-realistic classical field theory*, which invites the standard objection. A 2026-05 Models-of-Particles thread (graphene spin-transport news) crystallized both sides:
+
+| Position | Argument |
+| --- | --- |
+| **Mark Hadley** (objection) | EPR/Bell + **Kochen-Specker** ⇒ an electron *cannot* have a well-defined spin; it is contextual. A definite direction independent of the measurement = local hidden variables ⇒ `\|S\| ≤ 2`, contradicting the measured `\|S\| = 2√2`. |
+| **Jarek Duda** (defense) | The electron *is* a tiny magnet with a definite spin axis (polarized beams, Stern-Gerlach, and the Dirac bispinor "literally encodes boost + spin direction"). Definite orientation does **not** preclude QM statistics. |
+
+Duda's resolution — the template M5 adopts:
+
+- **The field evolution is local-realistic and cannot violate Bell.** *"Schrödinger/Dirac are local, realistic — cannot violate Bell"*; they satisfy Kolmogorov. Bell violation enters only at the **measurement / wavefunction-collapse layer**, where one switches to the deeper Feynman-ensemble (superdeterministic) description that QFT is built on.
+- **Malus's-law analogy.** Photons have a definite polarization *direction*, yet a polarizer still yields the cos²-squared (Malus) statistics. A definite underlying orientation is fully compatible with Born-rule squares — the squares come from the measurement projection, not from indefiniteness of the field.
+- **Measurement is a destructive, distributive process**, not a passive read-out: Stern-Gerlach applies a torque `τ = μ × B` → precession, actively reshaping the state.
+- **The classical → Born-rule bridge** is Duda's **MERW** (Maximal Entropy Random Walk): a time-symmetric max-entropy path ensemble whose stationary density is `ρ = |ψ|²` (combining past `ρ∝ψ` and future `ρ∝ψ` trajectories), reproducing the QM ground state with Anderson-like localization (see [4a § 11b.4](4a_convo_2026.05.12.md#11b--couderbush-walking-droplet-deck-theorycouderpdf)).
+
+Robert Close (M5's elastic-solid advisor) is independently building the same defense in a parallel 2026-05 thread — Adenier's *"A refutation of Bell's theorem"* and the loophole in the Eq. 10 → Eq. 11 factoring assumption used to derive `|S| ≤ 2`.
+
+**Net for M5:** a definite-orientation defect is **not** ruled out by Bell / Kochen-Specker *provided the QM statistics live in the measurement/ensemble layer, not in the field evolution*. This is an open foundational program (tracked as Q12 in [`0b_question_tracker.md`](0b_question_tracker.md)), not a settled result. Experimental anchor: ultra-clean-graphene spin transport preserves spin information over distance — confirming spin direction is a real, transportable, conserved property, consistent with topological-defect spin.
+
+---
+
 ## REFERENCES
 
 - **Wilczek, F. (2012)** "Quantum time crystals." Phys. Rev. Lett. 109, 160401 — original time-crystal proposal
