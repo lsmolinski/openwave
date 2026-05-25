@@ -238,7 +238,7 @@ class WaveField:
         # shaft tip to a perpendicular offset, so direction (head vs tail) is
         # visually unambiguous. Same indexing scheme + plane offsets as the
         # main shaft buffer; rendered separately by the launcher (gated on
-        # lagrangian_engine.SHOW_DIRECTOR_ARROWHEAD) so it can be toggled
+        # engine4_render.SHOW_DIRECTOR_ARROWHEAD) so it can be toggled
         # without re-running the kernel.
         self.director_glyph_arrow_vertices = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
         self.director_glyph_arrow_colors = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
@@ -588,7 +588,7 @@ class FieldObservables:
         # Naming: quantity is *energy*; the "_H" prefix denotes the formula
         # (Hamiltonian). Future formulas would parallel: `_L` for Lagrangian
         # density, `_K` for kinetic-only.
-        # Populated each frame by lagrangian_engine.compute_energyH_density.
+        # Populated each frame by engine3_observables.compute_energyH_density.
         # Consumed by:
         #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
         #     postulated F = −∇E with E = ρV(fA)² formula). E is computed
@@ -597,12 +597,12 @@ class FieldObservables:
         #   - sample_avg_observables  →  3-plane-sampled global mean
         #   - launcher WAVE_MENU=4 flux-mesh visualization
         # In M5.0g–M5.1 the V(ψ) term is zero; M5.2 plugs in Klein-Gordon
-        # mass + Close Eq. 23 + LdG via the V_psi hook in lagrangian_engine.
+        # mass + Close Eq. 23 + LdG via the V_psi hook in engine2_pde.
         self.energyH_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
 
         # Per-voxel FRANK ELASTIC energy density (M5.1):
         #     H_F = (K/2) · |∇n̂|²
-        # Computed by lagrangian_engine.compute_energyF_density. Same _aJ
+        # Computed by engine3_observables.compute_energyF_density. Same _aJ
         # convention as energyH_density_aJ (the "_F" denotes the Frank
         # formula). The K_frank coupling is hard-coded to 1.0 (Exp 2 baseline);
         # physical value lands with M5.6 LdG elastic constants.

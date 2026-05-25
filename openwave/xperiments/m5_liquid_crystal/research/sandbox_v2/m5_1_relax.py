@@ -1,7 +1,7 @@
 """
 M5.1 task 6 — Gradient-Descent Relaxation Validation (headless regression test)
 
-Validates `lagrangian_engine.relax_director_step` against:
+Validates `engine2_pde.relax_director_step` against:
 
     Test 1 — MONOTONE DECREASE:  Frank elastic energy F decreases at every
                      step (or stays constant in steady state). Any increase
@@ -42,7 +42,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 
 # ================================================================
@@ -118,7 +120,7 @@ def main():
     signs[0] = 1
 
     D_quarter = wf.nx / 4.0
-    lagrange.seed_hedgehog(wf, centers, signs, D_quarter, 1)
+    seeds.seed_hedgehog(wf, centers, signs, D_quarter, 1)
 
     # Stability parameters
     cfl_bound = (wf.dx_am**2) / 6.0
@@ -129,7 +131,7 @@ def main():
     print(f"Steps: {N_STEPS}")
 
     # Compute initial F + boundary + pin baselines
-    lagrange.compute_energyF_density(wf, obs, lagrange.K_FRANK)
+    observables.compute_energyF_density(wf, obs, observables.K_FRANK)
     F0 = float(obs.energyF_density_aJ.to_numpy().sum())
     print(f"Initial F_total: {F0:.4e}")
 
@@ -146,10 +148,10 @@ def main():
     F_history = [F0]
     print(f"\n[Relaxing for {N_STEPS} steps...]")
     for step in range(1, N_STEPS + 1):
-        lagrange.relax_director_step(wf, tau, centers, signs, 1)
+        pde.relax_director_step(wf, tau, centers, signs, 1)
         wf.psi_am.copy_from(wf.psi_new_am)
         wf.psi_prev_am.copy_from(wf.psi_new_am)
-        lagrange.compute_energyF_density(wf, obs, lagrange.K_FRANK)
+        observables.compute_energyF_density(wf, obs, observables.K_FRANK)
         F_step = float(obs.energyF_density_aJ.to_numpy().sum())
         F_history.append(F_step)
         if step % 30 == 0 or step == 1 or step == N_STEPS:

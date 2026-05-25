@@ -7,7 +7,7 @@ integration.
 Physics Foundation (M5.0g):
 - Per-voxel energy density (Hamiltonian formula):
     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
-  populated by lagrangian_engine.compute_energyH_density into
+  populated by engine3_observables.compute_energyH_density into
   observables.energyH_density_aJ (FieldObservables class, post-2026-05-11
   refactor that split derived scalars out of Trackers)
 - Force: F = −∇E sampled at the wave-center's grid position
@@ -76,7 +76,7 @@ def compute_force_vector(
     Compute force on each wave-center from the energy-density gradient.
 
     F = −∇E where E is `observables.energyH_density_aJ` (per-voxel energy density
-    populated each step by lagrangian_engine.compute_energyH_density). The `_H`
+    populated each step by engine3_observables.compute_energyH_density). The `_H`
     suffix on the field name tags the formula used (Hamiltonian); the physics
     statement F = −∇E is independent of the formula choice. Uses a weighted
     multi-shell
@@ -101,7 +101,7 @@ def compute_force_vector(
     Args:
         wave_field: WaveField instance (used for dx_am and grid dims)
         observables: FieldObservables instance — reads `energyH_density_aJ`
-            (populated by lagrangian_engine.compute_energyH_density before
+            (populated by engine3_observables.compute_energyH_density before
             this kernel)
         wave_center: WaveCenter instance — writes computed forces into
             `wave_center.force[wc_idx]`

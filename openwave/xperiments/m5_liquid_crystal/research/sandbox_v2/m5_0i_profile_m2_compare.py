@@ -35,7 +35,9 @@ from openwave.xperiments.m2_free_wave import medium as m2_medium  # noqa: E402
 from openwave.xperiments.m2_free_wave import wave_engine as m2_engine  # noqa: E402
 
 # M5
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium as m5_medium  # noqa: E402
 
 UNIVERSE_EDGE = 1e-15  # m
@@ -95,23 +97,23 @@ def profile_m5(target_voxels_per_axis):
     c_amrs = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND
     dt_rs = wave_field.dx_am * cfl_safety / (c_amrs * np.sqrt(3.0))
 
-    lagrange.seed_gaussian(wave_field, c_amrs, dt_rs, 5.0, 24.0, ti.Vector([0.0, 1.0, 0.0]), 0)
+    seeds.seed_gaussian(wave_field, c_amrs, dt_rs, 5.0, 24.0, ti.Vector([0.0, 1.0, 0.0]), 0)
     ti.sync()
 
     for _ in range(WARMUP_STEPS):
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         wave_field.swap_buffers()
-        lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
+        observables.update_trackers(wave_field, trackers, dt_rs, 0.0)
+        observables.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
     ti.sync()
 
     step_ms = []
     for s in range(N_PROFILE_STEPS):
         t0 = time.perf_counter()
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         wave_field.swap_buffers()
-        lagrange.update_trackers(wave_field, trackers, dt_rs, float(s) * dt_rs)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
+        observables.update_trackers(wave_field, trackers, dt_rs, float(s) * dt_rs)
+        observables.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
         ti.sync()
         step_ms.append((time.perf_counter() - t0) * 1000.0)
 

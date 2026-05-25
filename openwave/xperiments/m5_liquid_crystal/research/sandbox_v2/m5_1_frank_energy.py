@@ -1,7 +1,7 @@
 """
 M5.1 — Frank Elastic Energy Validation (headless regression test)
 
-Validates `lagrangian_engine.compute_energyF_density` against:
+Validates `engine3_observables.compute_energyF_density` against:
 
     Test 1 — VACUUM:  uniform n̂ = ẑ everywhere → F = 0 at all voxels
                      (within f32 round-off; tolerance 1e-6).
@@ -58,7 +58,8 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 
 # ================================================================
@@ -168,8 +169,8 @@ def radial_profile(F, center_vox, r_min, r_max):
 
 def test_vacuum(wf, obs):
     """Test 1: uniform n̂ = ẑ → F = 0 everywhere."""
-    lagrange.seed_vacuum(wf)
-    lagrange.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
+    seeds.seed_vacuum(wf)
+    observables.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
     F = obs.energyF_density_aJ.to_numpy()
     F_max = float(np.abs(F).max())
     F_mean = float(np.abs(F).mean())
@@ -190,7 +191,7 @@ def test_hedgehog_profile(wf, obs):
     cy = wf.ny // 2
     cz = wf.nz // 2
     _seed_pure_hedgehog(wf, float(cx), float(cy), float(cz))
-    lagrange.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
+    observables.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
     F = obs.energyF_density_aJ.to_numpy()
 
     # Sample radial profile in voxel-space units; expect F ~ K/(r·dx_am)²
@@ -236,7 +237,7 @@ def test_K_linearity(wf, obs):
     Ks = [0.5, 1.0, 2.0, 4.0]
     totals = []
     for K in Ks:
-        lagrange.compute_energyF_density(wf, obs, K)
+        observables.compute_energyF_density(wf, obs, K)
         F = obs.energyF_density_aJ.to_numpy()
         totals.append(float(F.sum()))
     # Ratio totals[i] / Ks[i] should be a constant (the unit-K total)
@@ -259,7 +260,7 @@ def test_numpy_parity(wf, obs):
     """Test 4: Taichi kernel output matches numpy reference per-voxel."""
     cx, cy, cz = wf.nx // 2, wf.ny // 2, wf.nz // 2
     _seed_pure_hedgehog(wf, float(cx), float(cy), float(cz))
-    lagrange.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
+    observables.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
     F_ti = obs.energyF_density_aJ.to_numpy()
 
     # Numpy reference on the same seeded field
@@ -300,8 +301,8 @@ def test_pair_superposition(wf, obs):
     centers[0, 2] = wf.nz // 2
     signs[0] = 1
     D_quarter = wf.nx / 4.0
-    lagrange.seed_hedgehog(wf, centers, signs, D_quarter, n_def)
-    lagrange.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
+    seeds.seed_hedgehog(wf, centers, signs, D_quarter, n_def)
+    observables.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
     F_single = float(obs.energyF_density_aJ.to_numpy().sum())
 
     # Pair at d = D/3 separation along x
@@ -317,8 +318,8 @@ def test_pair_superposition(wf, obs):
     centers2[1, 2] = wf.nz // 2
     signs2[0] = 1
     signs2[1] = -1
-    lagrange.seed_hedgehog(wf, centers2, signs2, D_quarter, n_def_2)
-    lagrange.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
+    seeds.seed_hedgehog(wf, centers2, signs2, D_quarter, n_def_2)
+    observables.compute_energyF_density(wf, obs, K_FRANK_DEFAULT)
     F_pair = float(obs.energyF_density_aJ.to_numpy().sum())
 
     # Expected (additive) = 2 × F_single (both defects energy-equivalent)

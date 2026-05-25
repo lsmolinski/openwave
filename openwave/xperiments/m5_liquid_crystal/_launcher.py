@@ -22,7 +22,10 @@ from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m5_liquid_crystal.medium as medium
 import openwave.xperiments.m5_liquid_crystal.particle as particle
-import openwave.xperiments.m5_liquid_crystal.lagrangian_engine as lagrange
+import openwave.xperiments.m5_liquid_crystal.engine1_seeds as seeds
+import openwave.xperiments.m5_liquid_crystal.engine2_pde as pde
+import openwave.xperiments.m5_liquid_crystal.engine3_observables as observables
+import openwave.xperiments.m5_liquid_crystal.engine4_render as viz
 import openwave.xperiments.m5_liquid_crystal.xforce_motion as force_motion
 import openwave.xperiments.m5_liquid_crystal.instrumentation as instrument
 
@@ -574,7 +577,7 @@ def initialize_xperiment(state):
     if state.TEST_SEED is not None:
         seed = state.TEST_SEED
         polarization = ti.Vector(seed["POLARIZATION"], dt=ti.f32)
-        lagrange.seed_gaussian(
+        seeds.seed_gaussian(
             state.wave_field,
             state.c_amrs,
             state.dt_rs,
@@ -590,7 +593,7 @@ def initialize_xperiment(state):
         seed_mode = topo.get("MODE", "vacuum")  # "vacuum" or "hedgehog"
 
         if seed_mode == "vacuum":
-            lagrange.seed_vacuum(state.wave_field)
+            seeds.seed_vacuum(state.wave_field)
             print("[M5.1] seeded vacuum (n = ẑ everywhere)")
 
         elif seed_mode == "hedgehog":
@@ -619,7 +622,7 @@ def initialize_xperiment(state):
             domain_quarter_fraction = topo.get("DOMAIN_QUARTER_FRACTION", 0.25)
             domain_quarter_voxels = float(domain_quarter_fraction * max(wf.nx, wf.ny, wf.nz))
 
-            lagrange.seed_hedgehog(
+            seeds.seed_hedgehog(
                 wf, centers_field, signs_field, domain_quarter_voxels, n_defects
             )
             # Stash pin info for relaxation kernel (M5.1 task 6)
@@ -669,7 +672,7 @@ def relax_field(state, n_steps):
     cfl_bound = (wf.dx_am**2) / 6.0  # τ < dx²/(2·dim·K) with dim=3, K=1
     tau = 0.4 * cfl_bound
     for _ in range(n_steps):
-        lagrange.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
+        pde.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
         # Copy relaxed field back into psi_am (and psi_prev_am to keep ψ̇=0).
         # NOT swap_buffers — that would cycle prev←curr which we don't want
         # for a static (non-time-evolving) update.
@@ -691,7 +694,7 @@ def compute_propagation(state):
 
     # ψ PROPAGATION =======================================
     # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    lagrange.evolve_psi(
+    pde.evolve_psi(
         state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs, state.lambda_phi4
     )
     # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
@@ -699,7 +702,7 @@ def compute_propagation(state):
 
     # TRACKERS (per-voxel amp / freq from ψ) ==============
     # Time-dependent EMA — only meaningful during dynamics, so kept here.
-    lagrange.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
+    observables.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
 
 
 def compute_field_observables(state):
@@ -717,7 +720,7 @@ def compute_field_observables(state):
     # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ============================
     # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
     # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
-    lagrange.compute_energyH_density(
+    observables.compute_energyH_density(
         state.wave_field,
         state.observables,
         state.c_amrs,
@@ -730,7 +733,7 @@ def compute_field_observables(state):
     # F = (K/2)·|∇n̂|²  → observables.energyF_density_aJ.
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
-    lagrange.compute_energyF_density(state.wave_field, state.observables, lagrange.K_FRANK)
+    observables.compute_energyF_density(state.wave_field, state.observables, observables.K_FRANK)
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ================================
     # Frame skip reduces GPU->CPU transfer overhead during dynamics; when
@@ -739,8 +742,8 @@ def compute_field_observables(state):
     # Two separate samplers per the 2026-05-11 SoC refactor: Trackers and
     # FieldObservables each own their own 3-plane pass.
     if state.frame % 60 == 0 or state.frame == 10 or state.PAUSED:
-        lagrange.sample_avg_trackers(state.wave_field, state.trackers)
-        lagrange.sample_avg_observables(state.wave_field, state.observables)
+        observables.sample_avg_trackers(state.wave_field, state.trackers)
+        observables.sample_avg_observables(state.wave_field, state.observables)
         state.energyH_total = (
             state.observables.energyH_global_avg_aJ[None] * state.wave_field.voxel_count
         ) * constants.ATTOJOULE  # J
@@ -801,7 +804,7 @@ def render_elements(state):
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
-        lagrange.update_flux_mesh_values(
+        viz.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
             state.observables,
@@ -816,11 +819,11 @@ def render_elements(state):
     if state.SHOW_DIRECTORS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
         arrow_length = (
-            glyph_length * lagrange.ARROWHEAD_LENGTH_FRAC
-            if lagrange.SHOW_DIRECTOR_ARROWHEAD
+            glyph_length * viz.ARROWHEAD_LENGTH_FRAC
+            if viz.SHOW_DIRECTOR_ARROWHEAD
             else 0.0
         )
-        lagrange.update_director_glyphs(
+        viz.update_director_glyphs(
             state.wave_field, glyph_length, arrow_length, state.SHOW_DIRECTORS
         )
         render.scene.lines(
@@ -828,8 +831,8 @@ def render_elements(state):
             per_vertex_color=state.wave_field.director_glyph_colors,
             width=2.0,
         )
-        # Half-arrowhead barb pass — toggled by lagrangian_engine.SHOW_DIRECTOR_ARROWHEAD.
-        if lagrange.SHOW_DIRECTOR_ARROWHEAD:
+        # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
+        if viz.SHOW_DIRECTOR_ARROWHEAD:
             render.scene.lines(
                 state.wave_field.director_glyph_arrow_vertices,
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
@@ -880,7 +883,7 @@ def render_elements(state):
         sampled_nx = (nx + stride - 1) // stride
         sampled_ny = (ny + stride - 1) // stride
         num_render = sampled_nx * sampled_ny
-        lagrange.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
+        viz.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
         pos_np = state.wave_field.position_render.to_numpy()[:num_render]
         render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
 

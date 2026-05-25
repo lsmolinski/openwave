@@ -41,7 +41,9 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from openwave.common import constants  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
 
 # ================================================================
@@ -84,7 +86,7 @@ def profile_at_grid(target_voxels_per_axis):
     print(f"  c={c_amrs:.4f} am/rs  dt={dt_rs:.4f} rs  cfl={cfl_factor:.4f}")
 
     # ── Seed Gaussian packet (realistic per-step load) ──────────
-    lagrange.seed_gaussian(
+    seeds.seed_gaussian(
         wave_field,
         c_amrs,
         dt_rs,
@@ -98,10 +100,10 @@ def profile_at_grid(target_voxels_per_axis):
     # ── Warmup (kernel compile + GPU clock ramp) ────────────────
     print(f"  warmup ({WARMUP_STEPS} steps)...", flush=True)
     for _ in range(WARMUP_STEPS):
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         wave_field.swap_buffers()
-        lagrange.update_trackers(wave_field, trackers, dt_rs, 0.0)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
+        observables.update_trackers(wave_field, trackers, dt_rs, 0.0)
+        observables.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
     ti.sync()
 
     # ── PER-KERNEL pass: sync between every kernel ─────────────
@@ -116,16 +118,16 @@ def profile_at_grid(target_voxels_per_axis):
     for step in range(N_PROFILE_STEPS):
         ti.sync()
         t0 = time.perf_counter()
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         ti.sync()
         t1 = time.perf_counter()
         wave_field.swap_buffers()
         ti.sync()
         t2 = time.perf_counter()
-        lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
+        observables.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
         ti.sync()
         t3 = time.perf_counter()
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
+        observables.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
         ti.sync()
         t4 = time.perf_counter()
 
@@ -139,7 +141,7 @@ def profile_at_grid(target_voxels_per_axis):
     for _ in range(10):  # 10 samples is plenty for this kernel
         ti.sync()
         t0 = time.perf_counter()
-        lagrange.sample_avg_trackers(wave_field, trackers)
+        observables.sample_avg_trackers(wave_field, trackers)
         ti.sync()
         sample_times_ms.append((time.perf_counter() - t0) * 1000.0)
     times["sample_avg_trackers (per call)"] = sample_times_ms
@@ -149,10 +151,10 @@ def profile_at_grid(target_voxels_per_axis):
     end_to_end_ms = []
     for step in range(N_PROFILE_STEPS):
         t0 = time.perf_counter()
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         wave_field.swap_buffers()
-        lagrange.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
-        lagrange.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
+        observables.update_trackers(wave_field, trackers, dt_rs, float(step) * dt_rs)
+        observables.compute_energyH_density(wave_field, trackers, c_amrs, dt_rs, 0.0, 0.0)
         ti.sync()
         end_to_end_ms.append((time.perf_counter() - t0) * 1000.0)
 
