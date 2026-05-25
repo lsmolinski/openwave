@@ -1,7 +1,7 @@
 """
 M5.1 task 8 — Winding-Number Tracker Validation (headless)
 
-Validates `lagrangian_engine.compute_winding_number` produces integer winding
+Validates `engine3_observables.compute_winding_number` produces integer winding
 charges for seeded + relaxed director fields. Diagnostic test only — not a
 gating criterion for M5.2.
 
@@ -37,7 +37,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 
 # ================================================================
@@ -73,11 +75,11 @@ def seed_pair_and_relax(wf, n_defects, centers_vox, signs_list):
         centers[d, 2] = centers_vox[d][2]
         signs[d] = signs_list[d]
     D_quarter = float(DOMAIN_QUARTER_FRACTION * max(wf.nx, wf.ny, wf.nz))
-    lagrange.seed_hedgehog(wf, centers, signs, D_quarter, n_defects)
+    seeds.seed_hedgehog(wf, centers, signs, D_quarter, n_defects)
     cfl_bound = (wf.dx_am**2) / 6.0
     tau = 0.4 * cfl_bound
     for _ in range(N_RELAX):
-        lagrange.relax_director_step(wf, tau, centers, signs, n_defects)
+        pde.relax_director_step(wf, tau, centers, signs, n_defects)
         wf.psi_am.copy_from(wf.psi_new_am)
         wf.psi_prev_am.copy_from(wf.psi_new_am)
     return wf.psi_am.to_numpy()
@@ -97,10 +99,10 @@ def main():
 
     # Test 1: vacuum
     print("[Test 1] Vacuum (uniform n=ẑ) — expect Q ≈ 0")
-    lagrange.seed_vacuum(wf)
+    seeds.seed_vacuum(wf)
     psi_np = wf.psi_am.to_numpy()
     center = (wf.nx // 2, wf.ny // 2, wf.nz // 2)
-    Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+    Q = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
     expected = 0.0
     passed = abs(Q - expected) < Q_TOLERANCE
     print(f"  Q = {Q:+.4f}  expected = {expected:+.1f}  → {'PASS' if passed else 'FAIL'}")
@@ -112,7 +114,7 @@ def main():
     psi_np = seed_pair_and_relax(
         wf, 1, [(wf.nx // 2, wf.ny // 2, wf.nz // 2)], [+1]
     )
-    Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+    Q = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
     expected = +1.0
     passed = abs(Q - expected) < Q_TOLERANCE
     print(f"  Q = {Q:+.4f}  expected = {expected:+.1f}  → {'PASS' if passed else 'FAIL'}")
@@ -124,7 +126,7 @@ def main():
     psi_np = seed_pair_and_relax(
         wf, 1, [(wf.nx // 2, wf.ny // 2, wf.nz // 2)], [-1]
     )
-    Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+    Q = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
     expected = -1.0
     passed = abs(Q - expected) < Q_TOLERANCE
     print(f"  Q = {Q:+.4f}  expected = {expected:+.1f}  → {'PASS' if passed else 'FAIL'}")
@@ -145,8 +147,8 @@ def main():
         [(cx_left, cy, cz), (cx_right, cy, cz)],
         [+1, -1],
     )
-    Q_left = lagrange.compute_winding_number(psi_np, (cx_left, cy, cz), WINDING_RADIUS)
-    Q_right = lagrange.compute_winding_number(psi_np, (cx_right, cy, cz), WINDING_RADIUS)
+    Q_left = observables.compute_winding_number(psi_np, (cx_left, cy, cz), WINDING_RADIUS)
+    Q_right = observables.compute_winding_number(psi_np, (cx_right, cy, cz), WINDING_RADIUS)
     Q_both = 0.0  # placeholder; see comment above
 
 

@@ -41,18 +41,21 @@ if str(REPO_ROOT) not in sys.path:
 
 from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as operators  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 # ================================================================
-# BIHARMONIC KERNELS — sandbox-only, not in production lagrangian_engine
+# BIHARMONIC KERNELS — sandbox-only, not in production engine2_pde
 # ================================================================
 # The biharmonic stabilizer (M5.2 Step 4b experiment) produced a negative
 # result, so the kernels live HERE rather than in production. If a future
 # experiment validates a 4th-derivative term as part of the working V(ψ)
-# recipe, promote these into lagrangian_engine.py at that point.
+# recipe, promote these into engine2_pde.py at that point.
 #
 # Two-pass design: compute Laplacian into a scratch field, then compute the
-# Laplacian-of-Laplacian inline. Reuses `lagrange.compute_laplacian` (the
+# Laplacian-of-Laplacian inline. Reuses `operators.compute_laplacian` (the
 # @ti.func used by evolve_psi) for the first pass.
 
 
@@ -64,7 +67,7 @@ def compute_psi_laplacian(
     """Fill lap_field[i,j,k] with ∇²ψ from wave_field.psi_am."""
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        lap_field[i, j, k] = lagrange.compute_laplacian(wave_field, i, j, k)
+        lap_field[i, j, k] = operators.compute_laplacian(wave_field, i, j, k)
 
 
 @ti.kernel
@@ -113,11 +116,11 @@ def seed_and_relax(wf, n_relax):
     centers[0, 2] = wf.nz // 2
     signs[0] = +1
     D_quarter = float(DOMAIN_QUARTER_FRACTION * max(wf.nx, wf.ny, wf.nz))
-    lagrange.seed_hedgehog(wf, centers, signs, D_quarter, 1)
+    seeds.seed_hedgehog(wf, centers, signs, D_quarter, 1)
     cfl_bound = (wf.dx_am**2) / 6.0
     tau = 0.4 * cfl_bound
     for _ in range(n_relax):
-        lagrange.relax_director_step(wf, tau, centers, signs, 1)
+        pde.relax_director_step(wf, tau, centers, signs, 1)
         wf.psi_am.copy_from(wf.psi_new_am)
         wf.psi_prev_am.copy_from(wf.psi_new_am)
     return wf.nx // 2, wf.ny // 2, wf.nz // 2
@@ -126,12 +129,12 @@ def seed_and_relax(wf, n_relax):
 def propagate(wf, lap_field, c_amrs, dt_rs, m_freq_rs, lambda_phi4, kappa_bi, center):
     samples = []
     psi_np = wf.psi_am.to_numpy()
-    Q0 = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+    Q0 = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
     n0 = np.linalg.norm(psi_np, axis=-1)
     samples.append((0, Q0, n0.mean(), n0.max()))
 
     for step in range(1, N_PROPAGATE_STEPS + 1):
-        lagrange.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs, lambda_phi4)
+        pde.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs, lambda_phi4)
         if kappa_bi > 0:
             compute_psi_laplacian(wf, lap_field)
             apply_biharmonic_correction(wf, lap_field, dt_rs, kappa_bi)
@@ -141,7 +144,7 @@ def propagate(wf, lap_field, c_amrs, dt_rs, m_freq_rs, lambda_phi4, kappa_bi, ce
             if np.isnan(psi_np).any():
                 samples.append((step, float("nan"), float("nan"), float("nan")))
                 break
-            Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+            Q = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
             n = np.linalg.norm(psi_np, axis=-1)
             samples.append((step, Q, n.mean(), n.max()))
 

@@ -57,7 +57,9 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 
 # ================================================================
@@ -109,10 +111,10 @@ def setup_defect_pair(wf, d_vox, sign_pair):
 def relax_and_measure(wf, obs, centers, signs, n_defects, n_steps, tau):
     """Run N relax steps then return total Frank energy."""
     for _ in range(n_steps):
-        lagrange.relax_director_step(wf, tau, centers, signs, n_defects)
+        pde.relax_director_step(wf, tau, centers, signs, n_defects)
         wf.psi_am.copy_from(wf.psi_new_am)
         wf.psi_prev_am.copy_from(wf.psi_new_am)
-    lagrange.compute_energyF_density(wf, obs, lagrange.K_FRANK)
+    observables.compute_energyF_density(wf, obs, observables.K_FRANK)
     return float(obs.energyF_density_aJ.to_numpy().sum())
 
 
@@ -159,7 +161,7 @@ def main():
     E_opp = []
     for d in SEPARATIONS:
         centers, signs = setup_defect_pair(wf, d, (+1, -1))
-        lagrange.seed_hedgehog(wf, centers, signs, domain_quarter_voxels, 2)
+        seeds.seed_hedgehog(wf, centers, signs, domain_quarter_voxels, 2)
         E_total = relax_and_measure(wf, obs, centers, signs, 2, N_RELAX, tau)
         E_opp.append(E_total)
         print(f"  d = {d:3d}  E = {E_total:.4e}")
@@ -179,7 +181,7 @@ def main():
     E_same = []
     for d in SEPARATIONS:
         centers, signs = setup_defect_pair(wf, d, (+1, +1))
-        lagrange.seed_hedgehog(wf, centers, signs, domain_quarter_voxels, 2)
+        seeds.seed_hedgehog(wf, centers, signs, domain_quarter_voxels, 2)
         E_total = relax_and_measure(wf, obs, centers, signs, 2, N_RELAX, tau)
         E_same.append(E_total)
         print(f"  d = {d:3d}  E = {E_total:.4e}")

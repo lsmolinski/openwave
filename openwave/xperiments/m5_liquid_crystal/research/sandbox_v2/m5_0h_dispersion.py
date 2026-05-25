@@ -47,7 +47,8 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from openwave.common import constants  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
 
 # ================================================================
@@ -209,7 +210,7 @@ def main():
     polarization = ti.Vector([0.0, 0.0, 1.0])
 
     # ── Seed initial condition ───────────────────────────────────
-    lagrange.seed_dispersion_modes(
+    seeds.seed_dispersion_modes(
         wave_field,
         mode_indices_field,
         mode_amp_field,
@@ -229,7 +230,7 @@ def main():
     print(f"[M5.0h] propagating...", flush=True)
     progress_every = max(1, N_STEPS // 20)
     for step in range(N_STEPS):
-        lagrange.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
+        pde.evolve_psi(wave_field, c_amrs, dt_rs, 0.0, 0.0)
         wave_field.swap_buffers()
         record_sample_points(
             wave_field,

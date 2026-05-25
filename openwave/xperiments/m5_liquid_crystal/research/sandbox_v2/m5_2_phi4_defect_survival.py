@@ -41,7 +41,9 @@ if str(REPO_ROOT) not in sys.path:
 
 from openwave.common import constants  # noqa: E402
 from openwave.xperiments.m5_liquid_crystal import medium  # noqa: E402
-from openwave.xperiments.m5_liquid_crystal import lagrangian_engine as lagrange  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine1_seeds as seeds  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine2_pde as pde  # noqa: E402
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as observables  # noqa: E402
 
 # ================================================================
 # CONFIG
@@ -64,11 +66,11 @@ def seed_single_hedgehog(wf):
     centers[0, 2] = wf.nz // 2
     signs[0] = +1
     D_quarter = float(DOMAIN_QUARTER_FRACTION * max(wf.nx, wf.ny, wf.nz))
-    lagrange.seed_hedgehog(wf, centers, signs, D_quarter, 1)
+    seeds.seed_hedgehog(wf, centers, signs, D_quarter, 1)
     for _ in range(N_RELAX):
         cfl_bound = (wf.dx_am**2) / 6.0
         tau = 0.4 * cfl_bound
-        lagrange.relax_director_step(wf, tau, centers, signs, 1)
+        pde.relax_director_step(wf, tau, centers, signs, 1)
         wf.psi_am.copy_from(wf.psi_new_am)
         wf.psi_prev_am.copy_from(wf.psi_new_am)
     return wf.nx // 2, wf.ny // 2, wf.nz // 2
@@ -77,7 +79,7 @@ def seed_single_hedgehog(wf):
 def propagate_and_measure(wf, obs, c_amrs, dt_rs, m_freq_rs, lambda_phi4, center):
     samples = []  # list of (step, Q, |psi|_avg, V_avg)
     psi_np = wf.psi_am.to_numpy()
-    Q0 = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+    Q0 = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
     psi_norm = np.linalg.norm(psi_np, axis=-1).mean()
     # Initial V contribution: just compute energyH and subtract kinetic+gradient
     # Simpler: compute (|ψ|²−1)² mean as a proxy for φ⁴ stress
@@ -86,11 +88,11 @@ def propagate_and_measure(wf, obs, c_amrs, dt_rs, m_freq_rs, lambda_phi4, center
     samples.append((0, Q0, psi_norm, v_phi4_proxy))
 
     for step in range(1, N_PROPAGATE_STEPS + 1):
-        lagrange.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs, lambda_phi4)
+        pde.evolve_psi(wf, c_amrs, dt_rs, m_freq_rs, lambda_phi4)
         wf.swap_buffers()
         if step % SAMPLE_EVERY == 0 or step == N_PROPAGATE_STEPS:
             psi_np = wf.psi_am.to_numpy()
-            Q = lagrange.compute_winding_number(psi_np, center, WINDING_RADIUS)
+            Q = observables.compute_winding_number(psi_np, center, WINDING_RADIUS)
             psi_norm = np.linalg.norm(psi_np, axis=-1).mean()
             psi_sq = (psi_np**2).sum(axis=-1)
             v_phi4 = (0.25 * lambda_phi4 * (psi_sq - 1.0) ** 2).mean()
