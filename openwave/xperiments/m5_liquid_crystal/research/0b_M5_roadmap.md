@@ -251,9 +251,13 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### 🚧 Phase M5.5 — Paper Lagrangian + Higgs-like V(M)
+### 🔶 Phase M5.5 — Paper Lagrangian + Higgs-like V(M)
 
 > Implement Duda paper Eq. 18: `L = Σ ‖F_μ0‖²_F − Σ ‖F_μν‖²_F − V(M)`. Subsumes the old "Skyrme stabilizer" phase since the Eq. 42 4D Skyrme-like kinetic is part of the same Lagrangian family — there is no separate Skyrme add-on phase in the new structure.
+>
+> **Math foundation: [5a_lagrangian_evolution.md](5a_lagrangian_evolution.md)** — the confirmed action (Eq.18) + `A_μ=[M,∂_μM]` (Eq.19) + `F_μν` (Eq.20) + the Eq.35 Euler–Lagrange evolution + matrix Hamiltonian (Eq.23) + the hedgehog→KG reduction, with Duda's Fig.9 Mathematica source transcribed. Prototyped in `sandbox_v4` (scipy/sympy → numpy → Taichi). Math reading confirmed 2026-05-26.
+>
+> ✅ **M5.5.0** — math extracted + confirmed; Duda Mathematica source located (canonical `liquid crystal particles - 3D equations and hedgehog.nb`, Fig.9 transcribed into 5a); `sandbox_v4/` scaffolded. **Next: M5.5.1** — sympy mirror of Eq.35 → KG-from-hedgehog.
 
 - [ ] Implement Eq. 18 action on the M field from M5.4
 - [ ] Choose V(M) — start with the simpler eigenvalue-preference variant `V(M) = Σ_i (λ_i − Λ_i)²` (Eq. 12), then graduate to the LdG Higgs-like `V_LG(M) = a Tr(M²) − b Tr(M³) + c (Tr(M²))²` (Eq. 13)
