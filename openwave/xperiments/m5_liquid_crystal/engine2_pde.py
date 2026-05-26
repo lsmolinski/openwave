@@ -403,6 +403,98 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
 
 
 # ================================================================
+# MATRIX EVOLUTION (M5.5) — Eq.18 action leapfrog
+# ================================================================
+# The first LIVE matrix-field dynamics: evolve M under Duda's Eq.18 action with a
+# simple ½‖Ṁ‖² kinetic + the FAITHFUL Eq.18 potential (decision 2026-05-26):
+#     U(M) = 4 Σ_{μ<ν} ‖[M_μ, M_ν]‖²_F  +  V_M(M)          (M_μ = ∂_μ M)
+#     EOM:  ∂²_t M = c²·force_curv − dV_M/dM ,   force_curv = Σ_α ∂_α G_α
+#     G_α = ∂U_curv/∂M_α = 8 Σ_ν [[M_α,M_ν], M_ν]          (symmetric)
+# Validated in sandbox_v4 (m5_5_2/3); see 5a §9. The faithful curvature kinetic
+# (F_μ0² = 4‖[M_μ,Ṁ]‖², degenerate metric) is the M5.6 refinement.
+#
+# Two-pass per step: compute_curvature_flux (G_α everywhere, 1-cell halo) → evolve_M
+# (divergence of G + V-force, leapfrog, 2-cell halo) → wave_field.swap_matrix_buffers().
+
+
+@ti.func
+def V_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
+    """Eq.13 Landau–de Gennes Higgs-like potential V = a·Tr(M²) − b·Tr(M³) + c·(Tr(M²))².
+
+    Exact (a,b,c) giving the Λ=(1,δ,0) vacuum is Q7 (Duda open); a=b=c=0 → free-curvature
+    dynamics (V off). Rotation-invariant ⇒ acts only on the eigenvalue/regularization
+    sector (m5_5_3 finding).
+    """
+    m2 = m @ m
+    tr2 = m2.trace()
+    tr3 = (m2 @ m).trace()
+    return a * tr2 - b * tr3 + c * tr2 * tr2
+
+
+@ti.func
+def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
+    """∂V_LG/∂M = 2a·M − 3b·M² + 4c·Tr(M²)·M  (clean matrix derivative for symmetric M)."""
+    m2 = m @ m
+    tr2 = m2.trace()
+    return 2.0 * a * m - 3.0 * b * m2 + 4.0 * c * tr2 * m
+
+
+@ti.kernel
+def compute_curvature_flux(wave_field: ti.template()):  # type: ignore
+    """Curvature flux G_α = 8 Σ_ν [[M_α,M_ν],M_ν] = ∂U_curv/∂M_α → curv_flux_{x,y,z}.
+
+    M_α = ∂_α M (central diff of M_am). [[A,B],B] is symmetric (antisym⊗sym), so each
+    G_α is symmetric. 1-cell halo (caller skips boundary). Run before evolve_M.
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        mx = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+        # G_α = 8 Σ_{ν≠α} [[M_α,M_ν],M_ν]  (ν=α term is zero)
+        wave_field.curv_flux_x[i, j, k] = 8.0 * (
+            commutator(commutator(mx, my), my) + commutator(commutator(mx, mz), mz))
+        wave_field.curv_flux_y[i, j, k] = 8.0 * (
+            commutator(commutator(my, mx), mx) + commutator(commutator(my, mz), mz))
+        wave_field.curv_flux_z[i, j, k] = 8.0 * (
+            commutator(commutator(mz, mx), mx) + commutator(commutator(mz, my), my))
+
+
+@ti.kernel
+def evolve_M(
+    wave_field: ti.template(),  # type: ignore
+    c_amrs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    a: ti.f32,  # type: ignore
+    b: ti.f32,  # type: ignore
+    c: ti.f32,  # type: ignore
+):
+    """Leapfrog M one step under the Eq.18 action: ∂²_t M = c²·(Σ_α ∂_α G_α) − dV_M/dM.
+
+    M_new = 2M − M_prev + (dt)²·[c²·div(G) − dV_M(M)].  Reads M_am, M_prev_am,
+    curv_flux_* (from compute_curvature_flux); writes M_new_am. Caller then calls
+    wave_field.swap_matrix_buffers(). 2-cell halo (G is a 1-cell-halo quantity, its
+    divergence needs one more). Dirichlet BC: boundary M_new left untouched (seeders
+    write all three M buffers, per the triple-buffer BC rule).
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    c2 = c_amrs * c_amrs
+    dt2 = dt_rs * dt_rs
+    for i, j, k in ti.ndrange((2, nx - 2), (2, ny - 2), (2, nz - 2)):
+        div_G = (
+            (wave_field.curv_flux_x[i + 1, j, k] - wave_field.curv_flux_x[i - 1, j, k])
+            + (wave_field.curv_flux_y[i, j + 1, k] - wave_field.curv_flux_y[i, j - 1, k])
+            + (wave_field.curv_flux_z[i, j, k + 1] - wave_field.curv_flux_z[i, j, k - 1])
+        ) * inv_2dx
+        force = c2 * div_G - dV_M(wave_field.M_am[i, j, k], a, b, c)
+        wave_field.M_new_am[i, j, k] = (
+            2.0 * wave_field.M_am[i, j, k] - wave_field.M_prev_am[i, j, k] + dt2 * force
+        )
+
+
+# ================================================================
 # ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION  (DORMANT LEGACY, M5.4)
 # ================================================================
 # DORMANT LEGACY (M5.4 vector→matrix migration): evolve_psi (wave leapfrog) + V_psi

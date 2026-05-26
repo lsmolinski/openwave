@@ -128,6 +128,12 @@ class SimulationState:
         #                  moves the potential minimum to the unit sphere.
         self.m_freq_kg_rs = 0.0
         self.lambda_phi4 = 0.0
+        # M5.5.4 — Eq.13 LdG V(M)=a·Tr(M²)−b·Tr(M³)+c·(Tr(M²))² couplings for evolve_M /
+        # compute_energyH_density_M. Default 0 → free curvature dynamics (V off); the exact
+        # Λ=(1,δ,0)-producing values are Q7 (Duda open). Expose as xparameters later.
+        self.ldg_a = 0.0
+        self.ldg_b = 0.0
+        self.ldg_c = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -429,7 +435,7 @@ def display_controls(state):
 def display_wave_menu(state):
     """Display wave properties selection menu."""
     with render.gui.sub_window("WAVE MENU", 0.00, 0.80, 0.15, 0.20) as sub:
-        if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
+        if sub.checkbox("Deviation (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
             state.wave_field.create_flux_mesh()
         if sub.checkbox("Thermal Amp (EMA RMS)", state.WAVE_MENU == 2):
@@ -684,23 +690,25 @@ def relax_field(state, n_steps):
 
 
 def compute_propagation(state):
-    """Per-step field evolution — NO-OP in M5.4 (the matrix field M is static).
+    """Per-step field evolution — M5.5.4: the Eq.18 matrix-action leapfrog ("Evolve PDE").
 
-    M5.4 MIGRATION (2026-05-26): the displacement-wave leapfrog (`evolve_psi` on the
-    Vector(3) ψ) is RETIRED from the live path — the ψ substrate it stepped is
-    superseded by the Landau–de Gennes order parameter M. In M5.4 the "particle" is
-    seeded + relaxed (static); there is no per-step dynamics, so this is a no-op.
+    Evolves the Landau–de Gennes order parameter M under Duda's Eq.18 action
+    (simple ½‖Ṁ‖² kinetic + faithful potential, validated symplectic in
+    sandbox_v4/m5_5_4_matrix_evolution_check.py):
 
-    The matrix-field leapfrog (`∂²_t M = …` from the paper's Eq.18 action) lands in
-    M5.5 and wires in HERE. The matrix amplitude/clock trackers (`‖M−D‖_F`, `‖Ṁ‖_F`)
-    run every frame in `compute_field_observables` via `update_trackers_M`.
+        ∂²_t M = c²·Σ_α ∂_α G_α − dV_M(M) ,   G_α = 8 Σ_ν [[M_α,M_ν],M_ν]
 
-    (The retired `evolve_psi` / `update_trackers` / `swap_buffers` remain in the
-    engine as dormant legacy — the vector operators they share, `curl`/`curl_curl`,
-    are repointed onto M for Close's Eq.23 at M5.7.)
+    Two-pass: compute_curvature_flux (G_α) → evolve_M (leapfrog) → swap_matrix_buffers,
+    then eigen_decompose refreshes the derived director_nhat from the evolved M so the
+    render + the ‖M−D‖_F/‖Ṁ‖_F trackers reflect the new field. V off (ldg_a/b/c=0) →
+    free curvature dynamics; the faithful curvature kinetic (degenerate metric, O-DoF)
+    is the M5.6 refinement. (The retired ψ leapfrog stays dormant; see engine2_pde.)
     """
-    # Intentionally empty until the M5.5 matrix leapfrog lands.
-    return
+    wf = state.wave_field
+    pde.compute_curvature_flux(wf)
+    pde.evolve_M(wf, state.c_amrs, state.dt_rs, state.ldg_a, state.ldg_b, state.ldg_c)
+    wf.swap_matrix_buffers()
+    pde.eigen_decompose(wf)  # refresh director_nhat from the evolved M (for render + trackers)
 
 
 def compute_field_observables(state):
@@ -715,16 +723,20 @@ def compute_field_observables(state):
     is zero and H reduces to ½c²|∇ψ|² + V(ψ) — structurally similar to F up
     to a c² factor (with V=0 in M5.1).
     """
-    # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ============================
-    # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
-    # Consumed by force_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
-    observables.compute_energyH_density(
+    # PER-VOXEL MATRIX HAMILTONIAN (M5.5.4) =============================
+    # H = ½‖Ṁ‖² + c²·4Σ‖[M_μ,M_ν]‖² + V_M(M)  → observables.energyH_density_aJ.
+    # Replaces the dormant-ψ placeholder (uniform ¼λ) — resolves the M5.4 WAVE_MENU=4
+    # carry-over. e_scale=1.0 (bare units; the physical-energy calibration is tied to a
+    # reference mass scale → deferred to M5.9). Consumed by flux-mesh WAVE_MENU=4.
+    observables.compute_energyH_density_M(
         state.wave_field,
         state.observables,
         state.c_amrs,
         state.dt_rs,
-        state.m_freq_kg_rs,
-        state.lambda_phi4,
+        state.ldg_a,
+        state.ldg_b,
+        state.ldg_c,
+        1.0,
     )
 
     # PER-VOXEL FRANK ELASTIC ENERGY DENSITY (M5.1 task 5) ===============
