@@ -45,7 +45,7 @@
               Q5  substrate: full M = ODO^T vs Q-tensor (full M)
               Q6  eigenvalue → physics mapping (1=EM, δ=QM, g=gravity)
 
-Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.4 substrate + gate done.
+Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.5 core complete; M5.6 next.
 ```
 
 ---
@@ -139,11 +139,11 @@ found in **sandbox v9 phase 2** by treating `m_J` as a free eigenvalue with a pr
 
 | M6 lesson (v9 phase 2 + v10) | M5 application |
 | --- | --- |
-| Forward-IVP/shooting does NOT find localized soliton ground states; **BVP with the mass parameter as a free eigenvalue does** | M5.5/M5.7 — solve the matrix-field defect radial profile as a BVP-eigenvalue problem, not by guessing V(M) and forward-stepping |
+| Forward-IVP/shooting does NOT find localized soliton ground states; **BVP with the mass parameter as a free eigenvalue does** | M5.6/M5.7 — solve the matrix-field defect radial profile as a BVP-eigenvalue problem, not by guessing V(M) and forward-stepping (note: M5.5.4's *forward* leapfrog confirms this — an unregularized hedgehog sloshes, energy-conserving, but does not settle into a localized profile without the M5.6 regularized BVP) |
 | Correct `l=1` p-wave origin BC (`β ~ B0·r`) is what unlocked the ground state | M5's hedgehog is an `l=1`-class structure — the BC handling transfers directly |
 | `η` geometry-conversion factor `(∫β²r dr)/(∫β²r² dr)` reconciles cylindrical vs spherical energy integrals | M5 will compare matrix-field energies across defect geometries — same conversion needed |
 | Pohozaev-type virial identity as a self-consistency diagnostic (M6's `m_J/η = 1.21` family-invariant, Q47) | A scaling identity is a cheap correctness check on any M5 soliton profile |
-| Sandbox-first: prototype in scipy, validate, *then* port to production | Prototype the M5 V(M) + matrix-defect-profile BVP in a scipy M5-sandbox before the Taichi M5.4+ kernels |
+| Sandbox-first: prototype in scipy, validate, *then* port to production | Prototype the M5 V(M) + matrix-defect-profile BVP in a scipy M5-sandbox before the Taichi M5.6+ kernels (the path M5.5 followed: `sandbox_v4` scipy/numpy → Taichi port) |
 
 Canonical M6 numerical recipe (charged sector via 2-function IVP, neutral sector via the BVP above) is consolidated in `m6_ouroboros/research/0d_canonical.md` — the reference if we want to mirror the methodology.
 
@@ -166,4 +166,4 @@ Imported from `m6_ouroboros/research/0b_model_gates.md` § "What M6 offers regar
 ## Notes on scope
 
 - This tracker covers **M5 physics/framework questions for the group** (Duda / Close / Yee) plus the hardest-pieces board. M5.4 implementation decisions (Taichi storage layout, eigen-kernel design, granule/glyph UX calls) are tracked as **roadmap tasks** in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and [`4b_rendering_features.md`](4b_rendering_features.md), not here — same split as M6 (questions here, sandbox tasks in the work log).
-- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. The OPEN questions above are candidates for a future outreach when M5.4/M5.5 results give us something concrete to ask about — but none blocks current work.
+- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. **M5.5 (core complete 2026-05-26) now gives concrete results to seed a Q7/Q8 outreach**: the Eq.18 action runs in production + is energy-conserving, and the **V(M)-is-rotation-invariant finding** (V acts only on the eigenvalue/regularization sector, not the twist) sharpens the Q7 ask — Duda's exact `Λ=(1,δ,0)` Eq.13 coeffs + Faber's exact running-coupling scheme (Q8) become the natural questions once M5.6 needs them turned on. None blocks current work.
