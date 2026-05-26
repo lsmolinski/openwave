@@ -221,6 +221,140 @@ def compute_curl_curl(
     return grad_div - laplacian
 
 
+# ================================================================
+# MATRIX OPERATORS (M5.4 — Landau–de Gennes substrate M = O·D·O^T)
+# ================================================================
+# The Vector(3) toolkit above operates on the retiring ψ field. These operate on
+# the real-symmetric 3×3 order parameter M stored in wave_field.M_am. All three
+# primitives were de-risked in research/sandbox_v2/m5_3_matrix_feasibility.py
+# (storage round-trip, commutator vs analytic, ti.sym_eig director recovery 0.9995)
+# before this production port.
+#
+#   commutator         — [A, B] = A·B − B·A           pure matrix @ti.func
+#   principal_director — M → (principal eigenvector, eigenvalues) via ti.sym_eig
+#   matrix_laplacian   — ∇²M component-wise            → 3×3; 1-cell halo
+#   antisym_A_mu       — A_μ = [M, ∂_μ M] (paper Eq.19) → (A_x, A_y, A_z); 1-cell halo
+#   eigen_decompose    — full-grid kernel: M_am → director_nhat + eigenvalues
+#
+# INDEX-GENERIC NOTE (M5.8): these are written for 3×3 so the eventual 4×4 SO(1,3)
+# promotion (D = diag(g,1,δ,0)) is a type change, not a rewrite. matrix_laplacian
+# and antisym_A_mu are dimension-agnostic; only principal_director / eigen_decompose
+# assume a 3-vector director (the 4D clock readout gets its own kernel in M5.8).
+#
+# WHAT M5.4 USES vs DEFERS: the M5.4 Coulomb gate is director-equivalent (relax the
+# eigenvector with the existing M5.1 relax, rebuild M), so eigen_decompose is on the
+# critical path and commutator / matrix_laplacian / antisym_A_mu are built + unit-
+# tested here but NOT yet driving dynamics. The curvature F_μν = ∂_μA_ν − ∂_νA_μ
+# (Eq.20) and the full Eq.18 action that consume A_μ land in M5.5.
+
+
+@ti.func
+def commutator(a, b):  # type: ignore
+    """Matrix commutator [A, B] = A·B − B·A — building block of Eq.19 A_μ + Eq.20 F_μν."""
+    return a @ b - b @ a
+
+
+@ti.func
+def principal_director(m):  # type: ignore
+    """M (3×3 symmetric) → (principal eigenvector n̂, eigenvalues vec3).
+
+    Principal = eigenvector of the LARGEST eigenvalue. `ti.sym_eig` returns
+    eigenvectors as COLUMNS (evecs[:, i] ↔ evals[i]); the eigenvalues are NOT
+    sorted, so we scan for the max index. Verified in the M5.3 spike against a
+    known O·diag(2,1,0.5)·O^T (director err ~1e-7) and a seeded hedgehog (0.9995).
+    """
+    evals, evecs = ti.sym_eig(m)
+    imax = 0
+    if evals[1] > evals[imax]:
+        imax = 1
+    if evals[2] > evals[imax]:
+        imax = 2
+    n = ti.Vector([evecs[0, imax], evecs[1, imax], evecs[2, imax]])
+    return n, evals
+
+
+@ti.func
+def matrix_laplacian(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """∇²M at voxel [i, j, k] — the 6-point stencil applied entry-wise to M.
+
+    Taichi matrix arithmetic is element-wise for + and scalar ·, so the same
+    stencil that gives the Vector(3) Laplacian gives the matrix Laplacian with no
+    per-component loop. Reads wave_field.M_am; returns a 3×3 matrix in [1/am].
+    1-cell halo (caller skips boundary). Used by the matrix evolution (M5.5) and
+    by operator-verification tests in M5.4.
+    """
+    face_sum = (
+        wave_field.M_am[i + 1, j, k]
+        + wave_field.M_am[i - 1, j, k]
+        + wave_field.M_am[i, j + 1, k]
+        + wave_field.M_am[i, j - 1, k]
+        + wave_field.M_am[i, j, k + 1]
+        + wave_field.M_am[i, j, k - 1]
+    )
+    center = wave_field.M_am[i, j, k]
+    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+
+
+@ti.func
+def antisym_A_mu(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """Paper Eq.19 antisymmetric connection A_μ = [M, ∂_μ M] for μ ∈ {x, y, z}.
+
+    Central-differences M along each axis, then commutes with M at the voxel.
+    Returns the three antisymmetric 3×3 matrices (A_x, A_y, A_z). The M5.3 spike
+    verified the spatial-derivative commutator [∂_xM, ∂_yM] over a field; this is
+    the same machinery in the [M, ∂_μM] arrangement. 1-cell halo. Consumed by the
+    Eq.20 curvature F_μν and the Eq.18 action — both assembled in M5.5.
+    """
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    m = wave_field.M_am[i, j, k]
+    dM_x = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
+    dM_y = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
+    dM_z = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+    return commutator(m, dM_x), commutator(m, dM_y), commutator(m, dM_z)
+
+
+@ti.kernel
+def eigen_decompose(wave_field: ti.template()):  # type: ignore
+    """THE LYNCHPIN (4b_rendering_features.md): refresh director_nhat + eigenvalues from M_am.
+
+    Per voxel: eigen-decompose M_am, store the sorted spectrum (λ₁≥λ₂≥λ₃) in
+    `eigenvalues` and the principal eigenvector in `director_nhat`. The whole
+    rendering stack (glyphs, vector_warp, granule director) and the redefined
+    amplitude tracker (‖M−D‖_F) read these derived fields, so this runs once/frame
+    after M changes — never in an inner loop (M5.3 cost: ~1.1× a Vector(3)
+    Laplacian at 256³).
+
+    SIGN CONTINUITY: a nematic director is apolar (n ≡ −n), and `ti.sym_eig`
+    returns an arbitrary eigenvector sign per voxel. A spurious sign flip between
+    neighbours fakes a huge ∇n̂ (wrong Frank energy). We resolve it by aligning the
+    fresh eigenvector to the EXISTING director_nhat (flip if n̂·n̂_prev < 0). The
+    matrix seeders write director_nhat with the correct physical sign first, so the
+    branch stays smooth from seed onward; on a cold field (n̂_prev = 0) the dot is 0
+    and no flip occurs.
+    """
+    for i, j, k in wave_field.M_am:
+        n, evals = principal_director(wave_field.M_am[i, j, k])
+        # sort eigenvalues descending λ₁≥λ₂≥λ₃ (3-element selection sort)
+        e0, e1, e2 = evals[0], evals[1], evals[2]
+        lo = ti.min(e0, ti.min(e1, e2))
+        hi = ti.max(e0, ti.max(e1, e2))
+        mid = e0 + e1 + e2 - lo - hi
+        wave_field.eigenvalues[i, j, k] = ti.Vector([hi, mid, lo])
+        # sign-continuous principal director
+        if n.dot(wave_field.director_nhat[i, j, k]) < 0.0:
+            n = -n
+        wave_field.director_nhat[i, j, k] = n
+
 
 # ================================================================
 # ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION
@@ -319,7 +453,6 @@ def evolve_psi(
         )
 
 
-
 # ================================================================
 # POTENTIAL ENERGY HOOK — V(ψ)
 # ================================================================
@@ -398,7 +531,6 @@ def V_psi(
     diff = psi_sq - 1.0
     v_phi4 = 0.25 * lambda_phi4 * diff * diff
     return v_kg + v_phi4
-
 
 
 # ================================================================
@@ -494,5 +626,3 @@ def relax_director_step(
         ck = pin_centers[d, 2]
         sgn = ti.cast(pin_signs[d], ti.f32)
         wave_field.psi_new_am[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
-
-

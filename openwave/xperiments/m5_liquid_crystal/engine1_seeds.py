@@ -336,3 +336,124 @@ def seed_hedgehog(
         wave_field.psi_new_am[i, j, k] = n_unit
 
 
+# ================================================================
+# MATRIX-FIELD SEEDERS (M5.4 — order parameter M = O·D·O^T)
+# ================================================================
+# Matrix-substrate analogs of seed_vacuum / seed_hedgehog. The director n̂ is
+# computed exactly as in the ψ versions (same blend, same soft-core), then
+# embedded in the uniaxial order parameter
+#     M = δ·I + (1−δ)·n̂⊗n̂        (eigenvalues 1, δ, δ; principal eigvec = n̂)
+# Each seeder writes BOTH the matrix triple buffer (M_prev/M/M_new — triple-buffer
+# BC rule, so the matrix leapfrog landing in M5.5 starts BC-consistent) AND the
+# derived director_nhat with the correct PHYSICAL sign. Seeding director_nhat
+# directly keeps eigen_decompose's sign-continuity branch smooth from t=0 and lets
+# the M5.4 director-equivalent Coulomb relaxation operate on a clean director.
+
+
+@ti.func
+def uniaxial_M(n, delta):  # type: ignore
+    """Uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from a unit director n̂.
+
+    Eigenvalues (1, δ, δ), principal eigenvector = n̂ — the M5.4 embedding of a
+    director into the matrix substrate. Verified by the eigen_decompose round-trip
+    (spectrum recovers (1, δ, δ); director recovers n̂ at 0.9995).
+    """
+    eye = ti.Matrix.identity(ti.f32, 3)
+    return delta * eye + (1.0 - delta) * n.outer_product(n)
+
+
+@ti.kernel
+def seed_vacuum_M(
+    wave_field: ti.template(),  # type: ignore
+    delta: ti.f32,  # type: ignore
+):
+    """Fill the matrix field with the topological-vacuum ground state (n̂ = ẑ).
+
+    M_vac = δ·I + (1−δ)·ẑ⊗ẑ everywhere (uniform orientation = no defects). Writes
+    all three matrix buffers + director_nhat (= ẑ). Matrix analog of seed_vacuum.
+
+    Args:
+        wave_field: WaveField (writes M_am, M_prev_am, M_new_am, director_nhat)
+        delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta)
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    z_hat = ti.Vector([0.0, 0.0, 1.0])
+    m_vac = uniaxial_M(z_hat, delta)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        wave_field.M_am[i, j, k] = m_vac
+        wave_field.M_prev_am[i, j, k] = m_vac
+        wave_field.M_new_am[i, j, k] = m_vac
+        wave_field.director_nhat[i, j, k] = z_hat
+        wave_field.director_nhat_new[i, j, k] = z_hat
+
+
+@ti.kernel
+def seed_hedgehog_M(
+    wave_field: ti.template(),  # type: ignore
+    centers_voxel: ti.template(),  # type: ignore
+    signs: ti.template(),  # type: ignore
+    domain_quarter_voxels: ti.f32,  # type: ignore
+    n_defects: ti.i32,  # type: ignore
+    delta: ti.f32,  # type: ignore
+):
+    """Seed N hedgehog defects on the matrix substrate.
+
+    Identical director construction to seed_hedgehog (weighted radial superposition
+    + vacuum blend + renormalization — see that kernel's docstring for the math and
+    caveats), then embeds the unit director via uniaxial_M and writes the matrix
+    triple buffer + director_nhat. The multi-defect API drives the M5.4 Coulomb-pair
+    gate directly (centers ±d/2 along x, signs ±1).
+
+    Args:
+        wave_field: WaveField (writes M_am, M_prev_am, M_new_am, director_nhat)
+        centers_voxel: ti.field (n_defects, 3) i32 — centers in voxel coords
+        signs: ti.field (n_defects,) i32 — +1 outward / −1 inward per defect
+        domain_quarter_voxels: f32 — D/4 in voxel units (w_vac falloff radius)
+        n_defects: i32 — number of active defects
+        delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta)
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    z_hat = ti.Vector([0.0, 0.0, 1.0])
+    soft_core_voxels = ti.cast(0.2, ti.f32)
+    proximity_floor = ti.cast(0.5, ti.f32)
+
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        x = ti.cast(i, ti.f32)
+        y = ti.cast(j, ti.f32)
+        z = ti.cast(k, ti.f32)
+
+        n_combined = ti.Vector([0.0, 0.0, 0.0])
+        r_nearest = ti.cast(1e10, ti.f32)
+
+        for d in range(n_defects):
+            cx = ti.cast(centers_voxel[d, 0], ti.f32)
+            cy = ti.cast(centers_voxel[d, 1], ti.f32)
+            cz = ti.cast(centers_voxel[d, 2], ti.f32)
+            sgn = ti.cast(signs[d], ti.f32)
+
+            ddx = x - cx
+            ddy = y - cy
+            ddz = z - cz
+            r = ti.sqrt(ddx * ddx + ddy * ddy + ddz * ddz)
+            r_safe = ti.max(r, soft_core_voxels)
+
+            n_radial = ti.Vector(
+                [sgn * ddx / r_safe, sgn * ddy / r_safe, sgn * ddz / r_safe]
+            )
+            w_defect = 1.0 / (r + proximity_floor)
+            n_combined += w_defect * n_radial
+            r_nearest = ti.min(r_nearest, r)
+
+        ratio = r_nearest / domain_quarter_voxels
+        w_vac = 1.0 / (1.0 + ratio * ratio * ratio * ratio)
+        n_blended = w_vac * n_combined + (1.0 - w_vac) * z_hat
+        n_unit = n_blended / (n_blended.norm() + 1e-12)
+
+        m = uniaxial_M(n_unit, delta)
+        wave_field.M_am[i, j, k] = m
+        wave_field.M_prev_am[i, j, k] = m
+        wave_field.M_new_am[i, j, k] = m
+        wave_field.director_nhat[i, j, k] = n_unit
+        wave_field.director_nhat_new[i, j, k] = n_unit
+
+
