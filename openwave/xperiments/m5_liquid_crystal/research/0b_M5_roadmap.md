@@ -257,7 +257,10 @@ The paper/slides reading task produces this assignment table — confirmation th
 >
 > **Math foundation: [5a_lagrangian_evolution.md](5a_lagrangian_evolution.md)** — the confirmed action (Eq.18) + `A_μ=[M,∂_μM]` (Eq.19) + `F_μν` (Eq.20) + the Eq.35 Euler–Lagrange evolution + matrix Hamiltonian (Eq.23) + the hedgehog→KG reduction, with Duda's Fig.9 Mathematica source transcribed. Prototyped in `sandbox_v4` (scipy/sympy → numpy → Taichi). Math reading confirmed 2026-05-26.
 >
-> ✅ **M5.5.0** — math extracted + confirmed; Duda Mathematica source located (canonical `liquid crystal particles - 3D equations and hedgehog.nb`, Fig.9 transcribed into 5a); `sandbox_v4/` scaffolded. **Next: M5.5.1** — sympy mirror of Eq.35 → KG-from-hedgehog.
+> ✅ **M5.5.0** — math extracted + confirmed; Duda Mathematica source located (canonical `liquid crystal particles - 3D equations and hedgehog.nb`, Fig.9 transcribed into 5a); `sandbox_v4/` scaffolded.
+> ✅ **M5.5.1** — sympy foundation (`sandbox_v4/m5_5_1_evolution_symbolic.py`, 3/3 PASS): operator identity `F_μν=2[M_μ,M_ν]` (Eq.20) ✓, radial hedgehog ✓, `~1/r` gauge connection ✓. Full action→KG reduction moved to numerical (dispersion `ω(k)` in M5.5.2/M5.6). Fixed a Fig.9 angle-transcription error (5a §7b).
+> ✅ **M5.5.2 EOM derived** — `F_μ0=2[M_μ,Ṁ]` → `ℒ=T−U`, `T=4Σ‖[M_μ,Ṁ]‖²_F` (5a §9, confirmed). **Finding:** the kinetic metric is degenerate → evolve `O(x)∈SO(3)` (not M's 6 components); a uniform-axis twist is non-dynamical (`T=0`), so the KG test needs the 3D hedgehog+twist (converges with M5.6).
+> 🚧 **NEXT (fresh session): M5.5.2 build** — the 3D `O(x)∈SO(3)` hedgehog+twist evolution solver: leapfrog with the field-dependent kinetic metric `T=4Σ‖[M_μ,Ṁ]‖²`, validate Eq.23 energy conservation + KG dispersion `ω(k)`. Static Coulomb already validated (M5.4 page-18 energy = `¼Σ‖F_μν‖²`). Substantial numerical build — the M5.5↔M5.6 core. Start from 5a §9.
 
 - [ ] Implement Eq. 18 action on the M field from M5.4
 - [ ] Choose V(M) — start with the simpler eigenvalue-preference variant `V(M) = Σ_i (λ_i − Λ_i)²` (Eq. 12), then graduate to the LdG Higgs-like `V_LG(M) = a Tr(M²) − b Tr(M³) + c (Tr(M²))²` (Eq. 13)
