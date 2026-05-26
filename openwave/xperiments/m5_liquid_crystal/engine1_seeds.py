@@ -11,8 +11,15 @@ lagrangian_engine.py (2026-05-25 SoC refactor). Concern order:
 import taichi as ti
 
 # ================================================================
-# INITIAL-CONDITION SEEDING
+# INITIAL-CONDITION SEEDING  (ψ wave/director seeders — DORMANT LEGACY, M5.4)
 # ================================================================
+# DORMANT LEGACY (M5.4 vector→matrix migration): seed_gaussian / seed_dispersion_modes
+# (wave packets) and seed_vacuum / seed_hedgehog (Vector(3) director) prime the
+# retiring ψ triple-buffer. No LIVE xperiment uses them anymore — topology xperiments
+# now use the MATRIX seeders (seed_vacuum_M / seed_hedgehog_M, below). Retained because
+# the historical M5.0–M5.2 research validation scripts (sandbox_v2) depend on them.
+# Not deleted; superseded.
+#
 # Seed kernels prime the triple-buffer (psi_prev, psi at t−dt and t) with a
 # known analytical solution so evolve_psi can step it forward. Used by:
 #   - test/UI xperiments to verify the leapfrog kernel visually

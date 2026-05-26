@@ -684,26 +684,23 @@ def relax_field(state, n_steps):
 
 
 def compute_propagation(state):
-    """Step ψ one timestep via leapfrog, then update trackers.
+    """Per-step field evolution — NO-OP in M5.4 (the matrix field M is static).
 
-    Dynamics-only: runs the wave propagation + buffer swap + per-voxel
-    amp/freq EMA. Per-voxel ENERGY DENSITIES (H, F) and the global aggregates
-    are computed by `compute_field_observables`, which runs every frame
-    regardless of pause state so visualization reflects the current ψ
-    (including the static seeded state when PAUSED=True).
+    M5.4 MIGRATION (2026-05-26): the displacement-wave leapfrog (`evolve_psi` on the
+    Vector(3) ψ) is RETIRED from the live path — the ψ substrate it stepped is
+    superseded by the Landau–de Gennes order parameter M. In M5.4 the "particle" is
+    seeded + relaxed (static); there is no per-step dynamics, so this is a no-op.
+
+    The matrix-field leapfrog (`∂²_t M = …` from the paper's Eq.18 action) lands in
+    M5.5 and wires in HERE. The matrix amplitude/clock trackers (`‖M−D‖_F`, `‖Ṁ‖_F`)
+    run every frame in `compute_field_observables` via `update_trackers_M`.
+
+    (The retired `evolve_psi` / `update_trackers` / `swap_buffers` remain in the
+    engine as dormant legacy — the vector operators they share, `curl`/`curl_curl`,
+    are repointed onto M for Close's Eq.23 at M5.7.)
     """
-
-    # ψ PROPAGATION =======================================
-    # Leapfrog/Verlet step: ψ_new = 2·ψ − ψ_prev + (c·dt)²·∇²ψ
-    pde.evolve_psi(
-        state.wave_field, state.c_amrs, state.dt_rs, state.m_freq_kg_rs, state.lambda_phi4
-    )
-    # Cycle the triple buffer: psi_prev ← psi, psi ← psi_new
-    state.wave_field.swap_buffers()
-
-    # TRACKERS (per-voxel amp / freq from ψ) ==============
-    # Time-dependent EMA — only meaningful during dynamics, so kept here.
-    observables.update_trackers(state.wave_field, state.trackers, state.dt_rs, state.elapsed_t_rs)
+    # Intentionally empty until the M5.5 matrix leapfrog lands.
+    return
 
 
 def compute_field_observables(state):

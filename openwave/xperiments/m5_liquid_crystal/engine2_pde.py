@@ -403,8 +403,16 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
 
 
 # ================================================================
-# ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION
+# ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION  (DORMANT LEGACY, M5.4)
 # ================================================================
+# DORMANT LEGACY (M5.4 vector→matrix migration): evolve_psi (wave leapfrog) + V_psi
+# are RETIRED from the live path — the launcher's compute_propagation is now a no-op,
+# and the matrix field M is static in M5.4 (seed + relax). The matrix-field leapfrog
+# (∂²_t M from the Eq.18 action) replaces this in M5.5. Retained, not deleted, because
+# the M5.0–M5.3 research validation scripts (sandbox_v2/v3) drive evolve_psi directly,
+# and the shared ψ differential operators (compute_laplacian / divergence / curl /
+# curl_curl, above) get repointed onto M for Close's Eq.23 at M5.7.
+#
 # evolve_psi evolves the field ψ via leapfrog/Verlet integration of the
 # wave equation:
 #     ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ

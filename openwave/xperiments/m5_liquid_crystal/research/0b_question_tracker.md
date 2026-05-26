@@ -11,17 +11,17 @@
 | [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) | Duda thread study — substrate decision, eigenvalue map, slides |
 | [`1a_lagrangian_framework.md`](1a_lagrangian_framework.md) | Framework + the full email thread history |
 
-**Last updated:** 2026-05-26 (M5.4 substrate + Coulomb gate COMPLETE). Substrate-gating question CLOSED (full 3×3 `M = ODO^T`, Duda 2026-05-15); M5.3 feasibility spike PASSED → in-place migration; resonance smoke test NULL; thermal prerequisites confirmed. **M5.4 substrate + Coulomb gate COMPLETE (2026-05-26)**: matrix triple buffer + `eigen_decompose` lynchpin + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers landed; **M5.1 Coulomb reproduced on M** (R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive); operators verified vs analytic. Rendering repurposing + ψ-buffer cleanup remain (non-gating). First *question* that gates forward progress is Q7 (exact V(M) form) at M5.5. **Added this session:** hardest-pieces status board + Duda's stated limitations + M6 → M5 cross-pollination (the closed M6 sandbox's transferable methodology for M5's V(M) search). **Q12 added** (Bell / Kochen-Specker vs M5's definite-orientation defect) from the 2026-05 group threads — foundational note lives in `1b § Foundational stance`.
+**Last updated:** 2026-05-26 (**M5.4 COMPLETE**). Substrate-gating question CLOSED (full 3×3 `M = ODO^T`, Duda 2026-05-15); M5.3 feasibility spike PASSED → in-place migration; resonance smoke test NULL; thermal prerequisites confirmed. **M5.4 matrix-field migration COMPLETE (2026-05-26)**: matrix triple buffer + `eigen_decompose` lynchpin + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers; **M5.1 Coulomb reproduced on M** (R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive); operators verified vs analytic; rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine kept as dormant legacy). **M5.5 (paper Lagrangian + V(M)) is the next phase.** First *question* that gates forward progress is Q7 (exact V(M) form) at M5.5. **Added this session:** hardest-pieces status board + Duda's stated limitations + M6 → M5 cross-pollination (the closed M6 sandbox's transferable methodology for M5's V(M) search). **Q12 added** (Bell / Kochen-Specker vs M5's definite-orientation defect) from the 2026-05 group threads — foundational note lives in `1b § Foundational stance`.
 
 ---
 
 ## Active count
 
 ```text
-0 IMMEDIATE   Nothing blocks current M5.4 work. Substrate + Coulomb gate
-              DONE (2026-05-26); rendering repurposing (needs Rodrigo's
-              4b UX calls) + ψ-buffer cleanup remain — neither is gating.
-              Next gating question is Q7 (V(M)) at M5.5.
+0 IMMEDIATE   M5.4 COMPLETE (2026-05-26) — substrate + Coulomb gate +
+              rendering + cleanup all done. M5.5 (paper Lagrangian + V(M))
+              is the next phase; its gating question Q7 (exact V(M) form)
+              is OPEN but not blocking — we start from the Eq.13 LdG baseline.
 
 2 NEAR-TERM   Q7  exact V(M) form — gates M5.5 (Duda's own open research
 (gate M5.5/6)     question; we start from Eq.13 LdG + Faber baseline)
@@ -80,7 +80,7 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 
 | Hardest piece | Gates | Status (2026-05-26) | M6 lend? |
 | --- | --- | --- | --- |
-| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | ✅ **DONE (2026-05-26).** Substrate live: `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering + ψ-cleanup remain (non-gating). | — |
+| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
 | **V(M) potential form** (Duda's #1 limitation, Q7) | M5.5 | OPEN — the central unknown. Start from Eq.13 LdG + Eq.12 eigenvalue-preference. | ✅ strong (see below) |
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.5 / M5.6 | OPEN — "the hardest part" per Duda. Port + adapt Faber. | 🔶 partial |
 | First metastable resonance (no static soliton) | M5.7 | Design locked (time-periodic per Close); awaiting M5.4–M5.6. | ✅ strong |
