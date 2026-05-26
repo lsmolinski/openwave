@@ -19,7 +19,7 @@ Localization metric: L(t) = Σ_{r<R_core} |ψ|²  /  Σ_all |ψ|²  (energy-inte
 fraction inside a core sphere). Lifetime = first step where L(t) < ½·L(0).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v2.m5_3_resonance_smoke
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v3.m5_3_resonance_smoke
 """
 
 import sys

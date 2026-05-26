@@ -32,6 +32,13 @@ def sample_position_to_render(
 
     Samples every `stride`-th voxel from the XY plane at the z flux mesh index,
     capping output at `num_render` particles for performance.
+
+    M5.4 — DIRECTOR POINT-CLOUD (interim): the granule sphere sits at voxel + amp_boost·n̂,
+    where n̂ = director_nhat (principal eigenvector of M). The old "granule pushed by the
+    displacement wave" has no meaning on an orientation field. This is the cheap 4b interim;
+    the full biaxial-ellipsoid showcase is deferred to M5.6 (in uniaxial M5.4 the two minor
+    eigen-axes are degenerate, so only a surface-of-revolution reads correctly — premature
+    until δ≠g). amp_boost = WARP_MESH (dimensionless director offset; no /dx_am — n̂ is unit).
     """
     k = int(wave_field.flux_mesh_planes[2] * wave_field.grid_size[2])
     max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
@@ -42,7 +49,7 @@ def sample_position_to_render(
         sj = render_idx % sampled_ny  # sampled col index
         i = si * stride
         j = sj * stride
-        displaced = amp_boost * wave_field.psi_am[i, j, k] / wave_field.dx_am + ti.Vector(
+        displaced = amp_boost * wave_field.director_nhat[i, j, k] + ti.Vector(
             [ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]
         )
         wave_field.position_render[render_idx] = displaced / max_dim
@@ -115,8 +122,8 @@ def update_flux_mesh_values(
     # wave_menu == 5 renders the Frank elastic density `observables.energyF_density_aJ`,
     # populated by compute_energyF_density (M5.1 task 5).
     for i, j in ti.ndrange(wave_field.nx, wave_field.ny):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[i, j, wave_field.fm_plane_z_idx]
+        # Sample director (M5.4: orientation, not displacement) + matrix observables
+        dir_value = wave_field.director_nhat[i, j, wave_field.fm_plane_z_idx]
         amp_value = trackers.amp_local_emarms_am[i, j, wave_field.fm_plane_z_idx]
         freq_value = trackers.freq_local_cross_rHz[i, j, wave_field.fm_plane_z_idx]
         energyH_value = observables.energyH_density_aJ[i, j, wave_field.fm_plane_z_idx]
@@ -160,27 +167,20 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1)
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_xy_vertices[i, j] = ti.Vector(
-                [
-                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
+        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
 
     # ================================================================
     # XZ Plane: Sample at y = fm_plane_y_idx
     # ================================================================
     for i, k in ti.ndrange(wave_field.nx, wave_field.nz):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[i, wave_field.fm_plane_y_idx, k]
+        # Sample director (M5.4: orientation, not displacement) + matrix observables
+        dir_value = wave_field.director_nhat[i, wave_field.fm_plane_y_idx, k]
         amp_value = trackers.amp_local_emarms_am[i, wave_field.fm_plane_y_idx, k]
         freq_value = trackers.freq_local_cross_rHz[i, wave_field.fm_plane_y_idx, k]
         energyH_value = observables.energyH_density_aJ[i, wave_field.fm_plane_y_idx, k]
@@ -224,27 +224,20 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1)
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_xz_vertices[i, k] = ti.Vector(
-                [
-                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
+        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
 
     # ================================================================
     # YZ Plane: Sample at x = fm_plane_x_idx
     # ================================================================
     for j, k in ti.ndrange(wave_field.ny, wave_field.nz):
-        # Sample displacement at this voxel
-        disp_value = wave_field.psi_am[wave_field.fm_plane_x_idx, j, k]
+        # Sample director (M5.4: orientation, not displacement) + matrix observables
+        dir_value = wave_field.director_nhat[wave_field.fm_plane_x_idx, j, k]
         amp_value = trackers.amp_local_emarms_am[wave_field.fm_plane_x_idx, j, k]
         freq_value = trackers.freq_local_cross_rHz[wave_field.fm_plane_x_idx, j, k]
         energyH_value = observables.energyH_density_aJ[wave_field.fm_plane_x_idx, j, k]
@@ -288,19 +281,12 @@ def update_flux_mesh_values(
                 amp_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-        else:  # default to orange (wave_menu == 1)
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
-                disp_value.norm(), 0, trackers.amp_global_emarms_am[None] * 4
-            )
-            wave_field.fluxmesh_yz_vertices[j, k] = ti.Vector(
-                [
-                    wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-                    + disp_value[0] / wave_field.universe_size_am[0] * warp_mesh,
-                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[1] / wave_field.universe_size_am[1] * warp_mesh,
-                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size
-                    + disp_value[2] / wave_field.universe_size_am[2] * warp_mesh,
-                ]
+        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
 
 
@@ -425,9 +411,7 @@ def update_director_glyphs(
             # (nx_s − 1) * stride > nx − 1 for some grid/stride combos.
             i = ti.min(si * stride, nx - 1)
             j = ti.min(sj * stride, ny - 1)
-            psi = wave_field.psi_am[i, j, z_plane_idx]
-            norm = psi.norm() + 1e-12
-            n_hat = psi / norm
+            n_hat = wave_field.director_nhat[i, j, z_plane_idx]  # M5.4: principal eigenvector of M
 
             pos = ti.Vector(
                 [
@@ -479,9 +463,7 @@ def update_director_glyphs(
         if show_level >= 2:
             i = ti.min(si * stride, nx - 1)
             k = ti.min(sk * stride, nz - 1)
-            psi = wave_field.psi_am[i, y_plane_idx, k]
-            norm = psi.norm() + 1e-12
-            n_hat = psi / norm
+            n_hat = wave_field.director_nhat[i, y_plane_idx, k]  # M5.4: principal eigenvector of M
 
             pos = ti.Vector(
                 [
@@ -530,9 +512,7 @@ def update_director_glyphs(
         if show_level >= 3:
             j = ti.min(sj * stride, ny - 1)
             k = ti.min(sk * stride, nz - 1)
-            psi = wave_field.psi_am[x_plane_idx, j, k]
-            norm = psi.norm() + 1e-12
-            n_hat = psi / norm
+            n_hat = wave_field.director_nhat[x_plane_idx, j, k]  # M5.4: principal eigenvector of M
 
             pos = ti.Vector(
                 [

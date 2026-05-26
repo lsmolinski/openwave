@@ -9,11 +9,36 @@ LIQUID-CRYSTAL evolves the field ψ via a Lagrangian-derived PDE:
 The field stores granule displacement (M3/M4 conceptual continuity) but is named ψ
 to reflect its M5 role as the configuration variable of the Lagrangian. Time
 evolution uses a triple-buffer leapfrog scheme (psi_prev_am, psi_am, psi_new_am).
+
+────────────────────────────────────────────────────────────────────────────
+M5.4 MATRIX-FIELD SUBSTRATE MIGRATION (in progress, 2026-05-26)
+────────────────────────────────────────────────────────────────────────────
+M5.2 closed as an informative negative: the Vector(3) director ψ cannot host
+the paper's physics. The substrate becomes the Landau–de Gennes order parameter
+    M(x) = O(x)·D·O^T(x)            (real-symmetric 3×3)
+where D = diag(g, 1, δ) is the frozen global eigenvalue spectrum and O(x) is the
+per-voxel dynamical rotation. M5.4 carries the M5.1 static-topology results onto
+this substrate (feasibility proven in research/sandbox_v3/m5_3_matrix_feasibility.py).
+
+Migration is ADDITIVE-then-cleanup to keep the engine runnable at every step:
+  - M_am / M_prev_am / M_new_am  — the matrix triple buffer (the new substrate)
+  - director_nhat / eigenvalues  — DERIVED per-frame via eigen_decompose (the
+    principal eigenvector of M is the director the M5.1 machinery consumes)
+  - psi_am / psi_prev_am / psi_new_am  — RETIRING. The wave-displacement role
+    dies (no displacement vector in an orientation field); the director role
+    moves to director_nhat. These Vector(3) buffers are removed in the final
+    M5.4 cleanup once every consumer reads director_nhat. See 4b_rendering_features.md.
 """
 
 import taichi as ti
 
 from openwave.common import colormap, constants, utils
+
+# Uniaxial minor-axis eigenvalue for M5.4 (placeholder). The order parameter is
+# M = δ·I + (1−δ)·n̂⊗n̂ → eigenvalues (1, δ, δ), principal eigenvector = n̂.
+# The physical biaxial δ ~ ℏ (and the gravity boost g) land in M5.6 / M5.8; M5.4
+# only needs a uniaxial spectrum to reproduce the M5.1 Coulomb topology on M.
+LC_DELTA = 0.5
 
 
 @ti.data_oriented
@@ -129,6 +154,35 @@ class WaveField:
         self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t−dt
         self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
+
+        # ================================================================
+        # MATRIX-FIELD SUBSTRATE (M5.4) — the Landau–de Gennes order parameter
+        # ================================================================
+        # M(x) = O(x)·D·O^T(x), real-symmetric 3×3, stored as the full 9-component
+        # ti.Matrix.field(3,3) (decided 2026-05-26: matches the proven feasibility
+        # spike, ti.sym_eig-ready, no reassembly; the 6-component symmetric packing
+        # can swap in behind this accessor later if memory binds). Triple buffer
+        # mirrors the psi leapfrog convention — M_prev/M/M_new — for the matrix
+        # evolution that lands in M5.5. In M5.4 only M_am is populated (by the
+        # matrix seeders) and read (by eigen_decompose); M_prev/M_new are allocated
+        # now so the buffer layout is final.
+        self.M_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t
+        self.M_prev_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
+        self.M_new_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
+
+        # DERIVED per-frame from M_am by engine2_pde.eigen_decompose (the lynchpin
+        # kernel — see 4b_rendering_features.md). director_nhat is the principal
+        # eigenvector (the apolar nematic director the M5.1 Frank/Coulomb/glyph
+        # machinery consumes); eigenvalues are the (λ₁≥λ₂≥λ₃) spectrum, used by the
+        # ‖M−D‖_F amplitude tracker and the biaxial-ellipsoid render option.
+        # These are stateless caches: recomputed every frame, valid even when paused.
+        self.director_nhat = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # eigvec
+        self.eigenvalues = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # λ₁≥λ₂≥λ₃/voxel
+        # Working buffer for the director-equivalent Coulomb relaxation (M5.4 gate):
+        # relax_director_step writes the next director here, then M is rebuilt from it.
+        self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
+        self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
+
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
         # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s

@@ -221,10 +221,198 @@ def compute_curl_curl(
     return grad_div - laplacian
 
 
+# ================================================================
+# MATRIX OPERATORS (M5.4 — Landau–de Gennes substrate M = O·D·O^T)
+# ================================================================
+# The Vector(3) toolkit above operates on the retiring ψ field. These operate on
+# the real-symmetric 3×3 order parameter M stored in wave_field.M_am. All three
+# primitives were de-risked in research/sandbox_v3/m5_3_matrix_feasibility.py
+# (storage round-trip, commutator vs analytic, ti.sym_eig director recovery 0.9995)
+# before this production port.
+#
+#   commutator         — [A, B] = A·B − B·A           pure matrix @ti.func
+#   principal_director — M → (principal eigenvector, eigenvalues) via ti.sym_eig
+#   matrix_laplacian   — ∇²M component-wise            → 3×3; 1-cell halo
+#   antisym_A_mu       — A_μ = [M, ∂_μ M] (paper Eq.19) → (A_x, A_y, A_z); 1-cell halo
+#   eigen_decompose    — full-grid kernel: M_am → director_nhat + eigenvalues
+#
+# INDEX-GENERIC NOTE (M5.8): these are written for 3×3 so the eventual 4×4 SO(1,3)
+# promotion (D = diag(g,1,δ,0)) is a type change, not a rewrite. matrix_laplacian
+# and antisym_A_mu are dimension-agnostic; only principal_director / eigen_decompose
+# assume a 3-vector director (the 4D clock readout gets its own kernel in M5.8).
+#
+# WHAT M5.4 USES vs DEFERS: the M5.4 Coulomb gate is director-equivalent (relax the
+# eigenvector with the existing M5.1 relax, rebuild M), so eigen_decompose is on the
+# critical path and commutator / matrix_laplacian / antisym_A_mu are built + unit-
+# tested here but NOT yet driving dynamics. The curvature F_μν = ∂_μA_ν − ∂_νA_μ
+# (Eq.20) and the full Eq.18 action that consume A_μ land in M5.5.
+
+
+@ti.func
+def commutator(a, b):  # type: ignore
+    """Matrix commutator [A, B] = A·B − B·A — building block of Eq.19 A_μ + Eq.20 F_μν."""
+    return a @ b - b @ a
+
+
+@ti.func
+def principal_director(m):  # type: ignore
+    """M (3×3 symmetric) → (principal eigenvector n̂, eigenvalues vec3).
+
+    Principal = eigenvector of the LARGEST eigenvalue. `ti.sym_eig` returns
+    eigenvectors as COLUMNS (evecs[:, i] ↔ evals[i]); the eigenvalues are NOT
+    sorted, so we scan for the max index. Verified in the M5.3 spike against a
+    known O·diag(2,1,0.5)·O^T (director err ~1e-7) and a seeded hedgehog (0.9995).
+    """
+    evals, evecs = ti.sym_eig(m)
+    imax = 0
+    if evals[1] > evals[imax]:
+        imax = 1
+    if evals[2] > evals[imax]:
+        imax = 2
+    n = ti.Vector([evecs[0, imax], evecs[1, imax], evecs[2, imax]])
+    return n, evals
+
+
+@ti.func
+def matrix_laplacian(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """∇²M at voxel [i, j, k] — the 6-point stencil applied entry-wise to M.
+
+    Taichi matrix arithmetic is element-wise for + and scalar ·, so the same
+    stencil that gives the Vector(3) Laplacian gives the matrix Laplacian with no
+    per-component loop. Reads wave_field.M_am; returns a 3×3 matrix in [1/am].
+    1-cell halo (caller skips boundary). Used by the matrix evolution (M5.5) and
+    by operator-verification tests in M5.4.
+    """
+    face_sum = (
+        wave_field.M_am[i + 1, j, k]
+        + wave_field.M_am[i - 1, j, k]
+        + wave_field.M_am[i, j + 1, k]
+        + wave_field.M_am[i, j - 1, k]
+        + wave_field.M_am[i, j, k + 1]
+        + wave_field.M_am[i, j, k - 1]
+    )
+    center = wave_field.M_am[i, j, k]
+    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+
+
+@ti.func
+def antisym_A_mu(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """Paper Eq.19 antisymmetric connection A_μ = [M, ∂_μ M] for μ ∈ {x, y, z}.
+
+    Central-differences M along each axis, then commutes with M at the voxel.
+    Returns the three antisymmetric 3×3 matrices (A_x, A_y, A_z). The M5.3 spike
+    verified the spatial-derivative commutator [∂_xM, ∂_yM] over a field; this is
+    the same machinery in the [M, ∂_μM] arrangement. 1-cell halo. Consumed by the
+    Eq.20 curvature F_μν and the Eq.18 action — both assembled in M5.5.
+    """
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    m = wave_field.M_am[i, j, k]
+    dM_x = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
+    dM_y = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
+    dM_z = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+    return commutator(m, dM_x), commutator(m, dM_y), commutator(m, dM_z)
+
+
+@ti.func
+def compute_laplacian_director(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """∇²n̂ at voxel [i, j, k] — 6-point stencil on the DERIVED director field.
+
+    Identical form to compute_laplacian, but reads wave_field.director_nhat (the
+    matrix-substrate director, eigenvector of M) rather than the retiring ψ. The
+    M5.4 director-equivalent relaxation gradient-descends the Frank energy on this
+    field. 1-cell halo (caller skips boundary). (compute_laplacian on ψ stays for
+    the retiring wave leapfrog until the M5.4 cleanup deletes it.)
+    """
+    face_sum = (
+        wave_field.director_nhat[i + 1, j, k]
+        + wave_field.director_nhat[i - 1, j, k]
+        + wave_field.director_nhat[i, j + 1, k]
+        + wave_field.director_nhat[i, j - 1, k]
+        + wave_field.director_nhat[i, j, k + 1]
+        + wave_field.director_nhat[i, j, k - 1]
+    )
+    center = wave_field.director_nhat[i, j, k]
+    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+
+
+@ti.kernel
+def rebuild_M_from_director(wave_field: ti.template(), delta: ti.f32):  # type: ignore
+    """Rebuild the uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from director_nhat.
+
+    Called after the director-equivalent relaxation so M_am, the `‖M−D‖_F`/`‖Ṁ‖_F`
+    trackers, and the flux-mesh orientation-deviation mode stay consistent with the
+    relaxed director. Writes all three M buffers (M_prev = M = M_new) — BC-consistent
+    for the M5.5 matrix leapfrog, and `Ṁ = 0` for a static relaxation (clock ω = 0).
+    The uniaxial inverse of eigen_decompose.
+    """
+    eye = ti.Matrix.identity(ti.f32, 3)
+    for i, j, k in wave_field.director_nhat:
+        n = wave_field.director_nhat[i, j, k]
+        m = delta * eye + (1.0 - delta) * n.outer_product(n)
+        wave_field.M_am[i, j, k] = m
+        wave_field.M_prev_am[i, j, k] = m
+        wave_field.M_new_am[i, j, k] = m
+
+
+@ti.kernel
+def eigen_decompose(wave_field: ti.template()):  # type: ignore
+    """THE LYNCHPIN (4b_rendering_features.md): refresh director_nhat + eigenvalues from M_am.
+
+    Per voxel: eigen-decompose M_am, store the sorted spectrum (λ₁≥λ₂≥λ₃) in
+    `eigenvalues` and the principal eigenvector in `director_nhat`. The whole
+    rendering stack (glyphs, vector_warp, granule director) and the redefined
+    amplitude tracker (‖M−D‖_F) read these derived fields, so this runs once/frame
+    after M changes — never in an inner loop (M5.3 cost: ~1.1× a Vector(3)
+    Laplacian at 256³).
+
+    SIGN CONTINUITY: a nematic director is apolar (n ≡ −n), and `ti.sym_eig`
+    returns an arbitrary eigenvector sign per voxel. A spurious sign flip between
+    neighbours fakes a huge ∇n̂ (wrong Frank energy). We resolve it by aligning the
+    fresh eigenvector to the EXISTING director_nhat (flip if n̂·n̂_prev < 0). The
+    matrix seeders write director_nhat with the correct physical sign first, so the
+    branch stays smooth from seed onward; on a cold field (n̂_prev = 0) the dot is 0
+    and no flip occurs.
+    """
+    for i, j, k in wave_field.M_am:
+        n, evals = principal_director(wave_field.M_am[i, j, k])
+        # sort eigenvalues descending λ₁≥λ₂≥λ₃ (3-element selection sort)
+        e0, e1, e2 = evals[0], evals[1], evals[2]
+        lo = ti.min(e0, ti.min(e1, e2))
+        hi = ti.max(e0, ti.max(e1, e2))
+        mid = e0 + e1 + e2 - lo - hi
+        wave_field.eigenvalues[i, j, k] = ti.Vector([hi, mid, lo])
+        # sign-continuous principal director
+        if n.dot(wave_field.director_nhat[i, j, k]) < 0.0:
+            n = -n
+        wave_field.director_nhat[i, j, k] = n
+
 
 # ================================================================
-# ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION
+# ψ EVOLVING ENGINE — LAGRANGIAN FIELD EVOLUTION  (DORMANT LEGACY, M5.4)
 # ================================================================
+# DORMANT LEGACY (M5.4 vector→matrix migration): evolve_psi (wave leapfrog) + V_psi
+# are RETIRED from the live path — the launcher's compute_propagation is now a no-op,
+# and the matrix field M is static in M5.4 (seed + relax). The matrix-field leapfrog
+# (∂²_t M from the Eq.18 action) replaces this in M5.5. Retained, not deleted, because
+# the M5.0–M5.3 research validation scripts (sandbox_v2/v3) drive evolve_psi directly,
+# and the shared ψ differential operators (compute_laplacian / divergence / curl /
+# curl_curl, above) get repointed onto M for Close's Eq.23 at M5.7.
+#
 # evolve_psi evolves the field ψ via leapfrog/Verlet integration of the
 # wave equation:
 #     ∂²ψ/∂t² = c²·∇²ψ − ∂V/∂ψ
@@ -319,7 +507,6 @@ def evolve_psi(
         )
 
 
-
 # ================================================================
 # POTENTIAL ENERGY HOOK — V(ψ)
 # ================================================================
@@ -400,7 +587,6 @@ def V_psi(
     return v_kg + v_phi4
 
 
-
 # ================================================================
 # GRADIENT-DESCENT RELAXATION (M5.1 task 6)
 # ================================================================
@@ -449,11 +635,17 @@ def relax_director_step(
     """
     One gradient-descent step on the Frank elastic energy `H_F = (K/2)·|∇n̂|²`.
 
-    Reads:  wave_field.psi_am
-    Writes: wave_field.psi_new_am  (caller copies → psi_am AND psi_prev_am)
+    Reads:  wave_field.director_nhat
+    Writes: wave_field.director_nhat_new  (caller copies → director_nhat)
+
+    M5.4: repointed from the retiring ψ buffers onto the matrix-substrate director
+    (director_nhat = principal eigenvector of M). The math is byte-identical to the
+    M5.1 relaxation — tangent-projected gradient descent on (K/2)|∇n̂|² + soft-core
+    pin — so the Coulomb result carries over. Caller rebuilds M from the relaxed
+    director via rebuild_M_from_director.
 
     Args:
-        wave_field: WaveField with the director field in psi_am
+        wave_field: WaveField with the director field in director_nhat
         tau: step size (must satisfy τ < dx²/(6·K) for stability)
         pin_centers: ti.field shape (n_defects, 3) i32 — defect centers in voxel coords
         pin_signs: ti.field shape (n_defects,) i32 — ±1 per defect (pin direction)
@@ -468,24 +660,24 @@ def relax_director_step(
 
     # ---- Interior: tangent-projected gradient step + renormalization ----
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        n = wave_field.psi_am[i, j, k]
-        lap = compute_laplacian(wave_field, i, j, k)
+        n = wave_field.director_nhat[i, j, k]
+        lap = compute_laplacian_director(wave_field, i, j, k)
         n_dot_lap = n.dot(lap)
         dn = lap - n_dot_lap * n  # tangent projection (remove component along n)
         n_new = n + tau * dn
         norm = n_new.norm() + 1e-12
-        wave_field.psi_new_am[i, j, k] = n_new / norm
+        wave_field.director_nhat_new[i, j, k] = n_new / norm
 
-    # ---- Boundary: preserve Dirichlet BC by copying from current ψ ----
+    # ---- Boundary: preserve Dirichlet BC by copying from current director ----
     for j, k in ti.ndrange(ny, nz):
-        wave_field.psi_new_am[0, j, k] = wave_field.psi_am[0, j, k]
-        wave_field.psi_new_am[nx - 1, j, k] = wave_field.psi_am[nx - 1, j, k]
+        wave_field.director_nhat_new[0, j, k] = wave_field.director_nhat[0, j, k]
+        wave_field.director_nhat_new[nx - 1, j, k] = wave_field.director_nhat[nx - 1, j, k]
     for i, k in ti.ndrange(nx, nz):
-        wave_field.psi_new_am[i, 0, k] = wave_field.psi_am[i, 0, k]
-        wave_field.psi_new_am[i, ny - 1, k] = wave_field.psi_am[i, ny - 1, k]
+        wave_field.director_nhat_new[i, 0, k] = wave_field.director_nhat[i, 0, k]
+        wave_field.director_nhat_new[i, ny - 1, k] = wave_field.director_nhat[i, ny - 1, k]
     for i, j in ti.ndrange(nx, ny):
-        wave_field.psi_new_am[i, j, 0] = wave_field.psi_am[i, j, 0]
-        wave_field.psi_new_am[i, j, nz - 1] = wave_field.psi_am[i, j, nz - 1]
+        wave_field.director_nhat_new[i, j, 0] = wave_field.director_nhat[i, j, 0]
+        wave_field.director_nhat_new[i, j, nz - 1] = wave_field.director_nhat[i, j, nz - 1]
 
     # ---- Pin defect cores (soft Dirichlet at single closest voxel) ----
     for d in range(n_defects):
@@ -493,6 +685,4 @@ def relax_director_step(
         cj = pin_centers[d, 1]
         ck = pin_centers[d, 2]
         sgn = ti.cast(pin_signs[d], ti.f32)
-        wave_field.psi_new_am[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
-
-
+        wave_field.director_nhat_new[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
