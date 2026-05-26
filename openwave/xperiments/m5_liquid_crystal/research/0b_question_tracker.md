@@ -85,7 +85,7 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.5 / M5.6 | OPEN — "the hardest part" per Duda. Port + adapt Faber. | 🔶 partial |
 | First metastable resonance (no static soliton) | M5.7 | Design locked (time-periodic per Close); awaiting M5.4–M5.6. | ✅ strong |
 | KG-from-twist emergence | M5.6 | Closed-form available (slide p.32); port not yet done. | — |
-| Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. See [5c § clock propulsion](5c_time_dynamics.md#the-de-broglie-clock-is-intrinsic--group-consensus-on-clock-propulsion-2026-05). | 🔶 partial |
+| Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. See [9c § clock propulsion](9c_time_dynamics.md#the-de-broglie-clock-is-intrinsic--group-consensus-on-clock-propulsion-2026-05). | 🔶 partial |
 | Biaxial eigenvalue hierarchy → lepton masses (Duda #3/#9/#10) | M5.9 | Calibration parameters; post-SABER-trigger. | — |
 | Weak-force clean SU(2) mechanism (Duda #7, Q10) | — | GAP. Beta decay as topology reconnection is partial. Out of SABER scope. | — |
 | Deeper substrate beneath M (Duda #8, Q9) | — | PARKED. Matches granule-level picture. | — |
@@ -109,7 +109,7 @@ Physics limitations Duda (or his papers, as quoted in our notes) flags about his
 
 ### Which M5 phase each limitation gates (physics roadmap)
 
-SABER engineering-timeline impact is analyzed in the private `1_model_selection.md` (§ "How the limitations affect SABER timeline"); here we keep only the OpenWave-physics phase-gating. The chain `M5.5 → M5.6 → M5.7 → 5b` is the documented bridge to the SABER thermal counterpart (see [`5b_thermal_energy.md`](5b_thermal_energy.md)).
+SABER engineering-timeline impact is analyzed in the private `1_model_selection.md` (§ "How the limitations affect SABER timeline"); here we keep only the OpenWave-physics phase-gating. The chain `M5.5 → M5.6 → M5.7 → 9b` is the documented bridge to the SABER thermal counterpart (see [`9b_thermal_energy.md`](9b_thermal_energy.md)).
 
 | Limitation | Gates | Reading |
 | --- | --- | --- |

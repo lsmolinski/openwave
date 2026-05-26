@@ -30,7 +30,7 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 - 🔶 **M5.4 Matrix-field substrate migration**. Replace Vector(3) ψ with `M(x) = O(x) D O^T(x)` real symmetric 3×3 matrix field. Storage redesign in Taichi; matrix commutator + antisymmetric operators; reproduce M5.1 Coulomb on the new substrate. Lands deferred-from-M5.0g physical-energy scaling.
 - 🚧 **M5.5 Paper Lagrangian + V(M)**. Implement Duda Eq. 18 action `L = Σ ‖F_μ0‖² − Σ ‖F_μν‖² − V(M)` with Eq. 13 Higgs-like `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`. Faber regularization integrated to activate V. Subsumes old "Skyrme stabilizer" phase since Eq. 42 4D Skyrme-like kinetic is the same family.
 - 🚧 **M5.6 Biaxial twist + KG emergence**. With `Λ = (1, δ, 0)` and `δ ~ ℏ`, reproduce paper Fig. 9 — Klein-Gordon-like equation emerges automatically from twist dynamics (NOT added as V_psi term).
-- 🚧 **M5.7 Resonance hunt (Close protocol)**. `l = 1` harmonic seed on biaxial substrate, sweep `A/λ ∈ {0.5, 1, 2}`, measure energy-localization lifetime. First metastable resonance — "first long-lived particle in M5". **UNBLOCKS 5b thermal work.** Literature anchor: BEC vortex kinetics (Duda 2026-05-13 cite, PRA `10.1103/2msv-lk1m`).
+- 🚧 **M5.7 Resonance hunt (Close protocol)**. `l = 1` harmonic seed on biaxial substrate, sweep `A/λ ∈ {0.5, 1, 2}`, measure energy-localization lifetime. First metastable resonance — "first long-lived particle in M5". **UNBLOCKS 9b thermal work.** Literature anchor: BEC vortex kinetics (Duda 2026-05-13 cite, PRA `10.1103/2msv-lk1m`).
 - 🚧 **M5.8 4D extension + Zitterbewegung clock** (GROUP HEADLINE — for Duda et al.). Add 0th time axis: `D = diag(g, 1, δ, 0)`, SO(1,3) Lorentz. Negative-energy contributions from spacetime signature auto-propel the clock (Fig. 10 mechanism). Measure de Broglie clock frequency `ω = 2mc²/ℏ` for electron — empirical answer to Duda's standing clock-propulsion question.
 - 🚧 **M5.9 3 lepton families + Cornell quarks**. 3 axis-choices of biaxial hedgehog → same Q, different mass; tune `Λ` to match `μ/e ≈ 207`, `τ/e ≈ 3477`. Cornell potential for quark strings via topological vortex (`V(r) = −α/r + σ·r`). Standard Model correspondence section of paper confirmed.
 
@@ -38,10 +38,10 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 
 Forward-looking research programs in their own files — run alongside / after the linear M5.x phases. Each carries its own scientific test program:
 
-- **[5a — Electromagnetic Wave Packets](5a_em_energy.md)** — emergence of EM wave packets (photons) from the wave field; longitudinal/transverse decomposition of photon dynamics.
-- **[5b — Thermal Energy](5b_thermal_energy.md)** — heat as joint `(A, ω)` excess of subatomic defect oscillation above ground state. **Scientific counterpart to SABER's Direct Heat Conversion (SABER MAIN GOAL).** Test program 5b.0 → 5b.9. Unblocks once M5.7 lands; runs in parallel with M5.8 / M5.9. Empirical falsification (or validation) of the SABER thermal-amplitude hypothesis.
-- **[5c — Time Dynamics](5c_time_dynamics.md)** — local time engineering, variable λ, time-dilation, gravity / propulsion implications. Future extension beyond M5.
-- **[5d — Composite Particles](5d_composite_particles.md)** — hopfions, knots → nuclei, atomic orbitals. Test program 5d.1 → 5d.5 (Liu et al. 2026 lab anchor). Pursued post-5b validation if foundations succeed and resources permit.
+- **[9a — Electromagnetic Wave Packets](9a_em_energy.md)** — emergence of EM wave packets (photons) from the wave field; longitudinal/transverse decomposition of photon dynamics.
+- **[9b — Thermal Energy](9b_thermal_energy.md)** — heat as joint `(A, ω)` excess of subatomic defect oscillation above ground state. **Scientific counterpart to SABER's Direct Heat Conversion (SABER MAIN GOAL).** Test program 9b.0 → 9b.9. Unblocks once M5.7 lands; runs in parallel with M5.8 / M5.9. Empirical falsification (or validation) of the SABER thermal-amplitude hypothesis.
+- **[9c — Time Dynamics](9c_time_dynamics.md)** — local time engineering, variable λ, time-dilation, gravity / propulsion implications. Future extension beyond M5.
+- **[9d — Composite Particles](9d_composite_particles.md)** — hopfions, knots → nuclei, atomic orbitals. Test program 9d.1 → 9d.5 (Liu et al. 2026 lab anchor). Pursued post-9b validation if foundations succeed and resources permit.
 
 ---
 
@@ -202,7 +202,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - ✅ **Re-read Duda paper §III-V deeply** — DONE. The annotated reading lives in [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md): matrix structure (§3–5), eigenvalue→force map (§8), KG-from-hedgehog closed form + clock toy-model numerics (§11), force unification (§7), the 51-page LdGS slides (§11), and the Couder/walking-droplet deck (§11b). Supersedes the planned `3h_*.md`.
 - ✅ **Wait for Duda reply** — DONE. Duda replied 2026-05-14/15 (`4a §1`); **substrate gate CLOSED** (full M, no Q-tensor pivot — Q5); eigenvalue→physics mapping confirmed (Q6).
 - ✅ **Taichi storage layout study** — DONE (2026-05-26). Layout = `ti.Matrix.field(3,3)` with index-generic operators (3×3→4×4 M5.8 promotion stays a type change). **Measured cost** (spike, vs Vector(3) 6-point Laplacian baseline): matrix `[∂M,∂M]` commutator ~1× and per-voxel `sym_eig` eigen-extraction ~1.1× at 256³ (2.2× at 128³) — eigen is **not** a bottleneck (it runs once/frame for render + trackers, not in the inner loop). **Memory**: production should store the **6** independent symmetric components/voxel (not the full 9), vs 3 for Vector(3) → ~2× memory. Cost is acceptable; no sparse/AMR needed for M5.4.
-- ✅ **Thermal prerequisites analysis** — DONE (2026-05-26). Confirmed: 5b's foundation is **M5.7 (first metastable resonance)** — sufficient, nothing extra must land earlier. The prerequisite chain is already correctly slotted across the M5.x phases: **measurement infra lands EARLY** (the redefined `A = ‖M−D‖_F` amplitude + `ω = O(x) clock-rate` frequency trackers in M5.4); the **KG drive substrate** in M5.6; the **drive infra** (parameterized harmonic forcing + FM/AM modulation primitives) in M5.7's own task list. So 5b.1 *internal* validation unblocks the moment M5.7 lands (per the two-tier table in [`5b_thermal_energy.md`](5b_thermal_energy.md)); full *lab-relevance* follows Phase 4 (EM emergence). SABER-specific engineering scope stays in the private repo per the cardinal rule. **No new early infrastructure required.**
+- ✅ **Thermal prerequisites analysis** — DONE (2026-05-26). Confirmed: 9b's foundation is **M5.7 (first metastable resonance)** — sufficient, nothing extra must land earlier. The prerequisite chain is already correctly slotted across the M5.x phases: **measurement infra lands EARLY** (the redefined `A = ‖M−D‖_F` amplitude + `ω = O(x) clock-rate` frequency trackers in M5.4); the **KG drive substrate** in M5.6; the **drive infra** (parameterized harmonic forcing + FM/AM modulation primitives) in M5.7's own task list. So 9b.1 *internal* validation unblocks the moment M5.7 lands (per the two-tier table in [`9b_thermal_energy.md`](9b_thermal_energy.md)); full *lab-relevance* follows Phase 4 (EM emergence). SABER-specific engineering scope stays in the private repo per the cardinal rule. **No new early infrastructure required.**
 - ✅ **Decision document** — DONE (2026-05-26). Decision: **in-place migration** (not parallel-track) — the spike proved storage + operators + eigen all work at acceptable cost on the existing grid/engine architecture. Substance is distributed: substrate + refactor strategy in `4a §2,§10`; M5.4+ task breakdown in the M5.4 phase below + [`4b_rendering_features.md`](4b_rendering_features.md); cost estimate in the storage-layout task above; 4a-inputs→phase mapping in the table below. (A standalone `3h_m5_substrate_decision.md` is superseded by 4a + this roadmap.)
 - ✅ **Feasibility spike: matrix field in Taichi** — DONE (2026-05-26), PASSED. `research/sandbox_v2/m5_3_matrix_feasibility.py`. All three primitives proven in-kernel on Metal and verified against analytic cases: **storage** (`ti.Matrix.field(3,3)` round-trip 0 err); **commutator** `[A,B]` (0 err vs hand-computed; + `[∂_xM,∂_yM]` over a field); **eigen-decomposition** via **`ti.sym_eig`** (recovers a known `O·diag(2,1,0.5)·O^T` to ~1e-7; recovers a seeded hedgehog director at mean `|n̂·n|=0.9995`). **Key de-risk: `ti.sym_eig` works in-kernel on Metal for 3×3 — no custom analytic eigensolver needed.** Cost ~1–2× Vector(3) (see storage-layout task). Decision: in-place migration; M5.4 unblocked.
 - ✅ **Sandbox: Close's resonance protocol on existing Vector(3)** — DONE (2026-05-26), NULL result. `research/sandbox_v2/m5_3_resonance_smoke.py`: l=1 dipole packet swept at A/λ ∈ {0.5, 1, 2}, energy-localization lifetime under V=0 / KG-mass / φ⁴. **No substrate-agnostic resonance found.** Linear potentials (V=0, KG mass) disperse at ~40 steps **amplitude-independently** (as a linear PDE must — no amplitude-selected resonance); the only nonlinear potential available (φ⁴ Mexican-hat) is director-scaled (vacuum |ψ|=1) and **diverges** on a displacement-wave amplitude sweep — Vector(3)'s potential toolkit can't even host the test. Reinforces the M5.2 closed-negative: the metastable-resonance hunt belongs on the matrix substrate (M5.4 → M5.7) with LdG V(M)/Skyrme + 4D clock propulsion, not Vector(3).
@@ -224,14 +224,14 @@ The paper/slides reading task produces this assignment table — confirmation th
 | Hydro↔EM dictionary (vorticity↔B, Coriolis↔Lorentz) | §11b.1 | M5.5 | ✅ added as EM-from-tilts cross-check |
 | Faber quantized-EM Lagrangian (`L_EM=−(αℏc/16π)R_μν R^μν`) | §11b.2 | M5.5 | ✅ added as port target |
 | Walking-droplet path-memory kernel + quantization laws | §11b.3 | standing-wave orbit quantization | 🔶 no dedicated phase yet — see gap note below |
-| MERW → Born rule `ρ=\|ψ\|²` | §11b.4 | foundational (Q12) + 5b statistics | ✅ Q12 + 1b foundational note |
+| MERW → Born rule `ρ=\|ψ\|²` | §11b.4 | foundational (Q12) + 9b statistics | ✅ Q12 + 1b foundational note |
 | Two-ingredient Schrödinger framing | §11b.5 | M5 overview / outreach | framing (no phase) |
 | Beta decay as topology reconnection | §7 | weak-force gap | ✅ Q10 |
 | Topology on Close/Yee frameworks (Duda's reciprocal ask) | §9 | no dedicated phase (cross-framework research) | 🔶 conceptual sketch in `4a §9` (Close=helicity/hopfion; Yee=ellipse-axis director); future collaboration item, not a numbered phase |
 | Open: V(M) form / Faber reg / deeper substrate / weak SU(2) | §12 | M5.5 / M5.6 / — | ✅ Q7 / Q8 / Q9 / Q10 |
 | Mainstream landscape comparison (page 48) | §11 | M5 positioning | framing (no phase) |
 
-**One gap flagged:** the walking-droplet **orbit-quantization** side (path-memory kernel + Landau/Zeeman/double-quantization laws — the standing-wave complement to topology, Jeff Yee's regime) has **no dedicated M5 phase**. It rides on M3-near-field retention but is not a numbered phase. Candidate **future parallel stage** (alongside 5a–5d) if/when orbit quantization becomes a target. Logged here so it isn't lost.
+**One gap flagged:** the walking-droplet **orbit-quantization** side (path-memory kernel + Landau/Zeeman/double-quantization laws — the standing-wave complement to topology, Jeff Yee's regime) has **no dedicated M5 phase**. It rides on M3-near-field retention but is not a numbered phase. Candidate **future parallel stage** (alongside 9a–9d) if/when orbit quantization becomes a target. Logged here so it isn't lost.
 
 ---
 
@@ -278,7 +278,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### 🚧 Phase M5.7 — Resonance hunt (Close's protocol) — UNBLOCKS 5b
+### 🚧 Phase M5.7 — Resonance hunt (Close's protocol) — UNBLOCKS 9b
 
 > **Refinement from Robert Close (2026-04 email reply)**: "Even including the nonlinear term, I would expect your result of dispersing waves in most cases. But I suspect that certain amplitudes of certain harmonic waves will keep energy localized longer (i.e. as an unstable particle or resonance). My suggestion is to explore a wide range of amplitudes (probably l=1 harmonic wave is the most interesting). A likely criterion is that the maximum displacements should be comparable to the wavelength (or half or twice). Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions."
 >
@@ -287,9 +287,9 @@ The paper/slides reading task produces this assignment table — confirmation th
 - [ ] Seed `l = 1` harmonic perturbation (dipole) on the biaxial matrix field from M5.6
 - [ ] Amplitude sweep: `A/λ ∈ {0.5, 1, 2}` per Close's amplitude-comparable-to-wavelength criterion
 - [ ] Measure energy-localization lifetime at each amplitude
-- [ ] **Drive infrastructure for 5b thermal work** — parameterized harmonic forcing, energy tracking, modulation primitives (FM/AM)
+- [ ] **Drive infrastructure for 9b thermal work** — parameterized harmonic forcing, energy tracking, modulation primitives (FM/AM)
 - [ ] **Literature anchor** — skim BEC vortex-kinetics literature for long-lived oscillation modes (esp. Duda's 2026-05-13 cite: PRA "*Index theorem and vortex kinetics in Bose-Einstein condensates on a Haldane sphere with a magnetic monopole*", `10.1103/2msv-lk1m`). BEC is the experimental analog of our metastable-defect resonance hunt. Compact-manifold geometry (Haldane sphere) is a third escape from Derrick's theorem alongside topology + time-periodicity — could inform domain-shape choice for the test bed (see [`1b_topological_defect.md § Alternative stabilization — compact manifold`](1b_topological_defect.md))
-- [ ] **Exit criterion**: at least one `(A/λ)` regime shows substantially extended energy-localization lifetime — "first long-lived particle in M5". **UNBLOCKS 5b THERMAL ENERGY.**
+- [ ] **Exit criterion**: at least one `(A/λ)` regime shows substantially extended energy-localization lifetime — "first long-lived particle in M5". **UNBLOCKS 9b THERMAL ENERGY.**
 
 ---
 
@@ -342,4 +342,4 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-> **5b — Thermal energy**, **5c — Time dynamics**, **5d — Composite particles**, and **5a — Electromagnetic wave packets** are not M5.x phases. Each is a separate research file under `research/`, with its own test program. See [SUMMARY § Parallel research stages](#parallel-research-stages) above for cross-refs.
+> **9b — Thermal energy**, **9c — Time dynamics**, **9d — Composite particles**, and **9a — Electromagnetic wave packets** are not M5.x phases. Each is a separate research file under `research/`, with its own test program. See [SUMMARY § Parallel research stages](#parallel-research-stages) above for cross-refs.

@@ -382,7 +382,7 @@ With all 8 M5 sandbox experiments complete (see [1c_lagrangian_experiments.md](1
 | Topological defects are real, with integer charge (Layer 1) | ✅ Strongly confirmed | Exp 3 (Q = ±1, robust to 50% noise) |
 | Defects produce far-field Coulomb 1/d interaction | ✅ Strongly confirmed | Exp 2 (R² = 0.993, no sinc) |
 | Defects carry stored mass-energy | ✅ Confirmed | Exp 1 (kink energy = 8·mc², 0.06% off) |
-| Defects exhibit relativistic kinematics (Lorentz contraction) | ✅ Confirmed | Exp 1 (measured v = 0.4997c at input 0.5c; width = L/γ) |
+| Defects exhibit relativistic kinematics (Lorentz contraction) | ✅ Confirmed | Exp 1 (measured v = 0.4997c at input 0.9c; width = L/γ) |
 | Perturbations of vacuum give massive Klein-Gordon waves (Layer 2) | ✅ Confirmed | Exp 4 (ω² = c²k² + m² to R² = 0.999982) |
 | Mass emerges from the curvature of V(ψ) | ✅ Confirmed at linear order | Exp 4 (quadratic potential → mass gap observed) |
 | Close's vector wave equation = transverse elastic-solid wave | ✅ Confirmed | Exp 7 v2 (Eq. 19 implementation gives dispersing transverse waves) |
@@ -514,7 +514,7 @@ In M5, a defect does not have an externally tracked position like M3/M4's wave c
 
 1. **Field gradient at the defect's location.** If the surrounding field is asymmetric (another defect nearby distorting it, or an external gradient), the field tension at the defect's core pulls it toward lower energy. This IS the force — no `F = -∇E` applied externally; it falls straight out of the Lagrangian equation of motion
 2. **Effective mass emerges automatically.** The defect stores field energy = rest mass (Sine-Gordon kink: `E = 8·m·c²`, Exp 1 measured). When displaced, it carries this inertia through the field dynamics — you don't plug in a mass; the field gives you one
-3. **Relativistic kinematics for free.** Exp 1 already validated this: input `v = 0.5c`, measured `v = 0.4997c`, kink width `L/γ` matched. The wave equation is Lorentz-covariant, so Lorentz contraction and relativistic momentum emerge without being imposed
+3. **Relativistic kinematics for free.** Exp 1 already validated this: input `v = 0.9c`, measured `v = 0.4997c`, kink width `L/γ` matched. The wave equation is Lorentz-covariant, so Lorentz contraction and relativistic momentum emerge without being imposed
 
 #### Two-defect interaction (dynamic Coulomb)
 
