@@ -183,6 +183,16 @@ class WaveField:
         self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
         self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
 
+        # M5.5.4 — Eq.18 matrix-action leapfrog (simple ½‖Ṁ‖² kinetic + faithful
+        # potential U = 4Σ‖[M_μ,M_ν]‖² + V(M)). The curvature flux
+        #     G_α = ∂U_curv/∂M_α = 8 Σ_ν [[M_α,M_ν], M_ν]   (symmetric)
+        # is computed everywhere by compute_curvature_flux from M_am; evolve_M then
+        # takes its divergence Σ_α ∂_α G_α as the force. Two-pass (G field, then
+        # divergence) keeps each kernel a 1-cell halo instead of one 2-cell mega-kernel.
+        self.curv_flux_x = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_y = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_z = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
+
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
         # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s
@@ -334,6 +344,15 @@ class WaveField:
         """
         self.psi_prev_am.copy_from(self.psi_am)
         self.psi_am.copy_from(self.psi_new_am)
+
+    def swap_matrix_buffers(self):
+        """Cycle the matrix triple buffer after evolve_M (M5.5.4): M_prev ← M, M ← M_new.
+
+        Matrix analog of swap_buffers, called once per evolve_M step. Same caveat as
+        swap_buffers re: ti.template attribute caching — use copy_from, not pointer rotation.
+        """
+        self.M_prev_am.copy_from(self.M_am)
+        self.M_am.copy_from(self.M_new_am)
 
     @ti.kernel
     def populate_grid_lines(self):

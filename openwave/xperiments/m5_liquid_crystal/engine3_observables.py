@@ -257,6 +257,52 @@ def compute_energyH_density(
         observables.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
 
 
+@ti.kernel
+def compute_energyH_density_M(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+    c_amrs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    a: ti.f32,  # type: ignore
+    b: ti.f32,  # type: ignore
+    c: ti.f32,  # type: ignore
+    e_scale: ti.f32,  # type: ignore
+):
+    """Matrix Hamiltonian density (M5.5.4) — the Eq.18 ℋ for the matrix substrate.
+
+        H = ½‖Ṁ‖²_F  +  c²·4 Σ_{μ<ν}‖[M_μ,M_ν]‖²_F  +  V_M(M)
+            kinetic        curvature (= ¼Σ‖F_μν‖², the page-18 energy)   potential
+
+    Replaces the dormant-ψ placeholder (uniform ¼λ) for matrix xperiments — resolves
+    the M5.4 WAVE_MENU=4 carry-over. Matches the evolve_M force so energy is conserved
+    (simple ½‖Ṁ‖² kinetic per the 2026-05-26 decision). `e_scale` = physical-energy
+    factor (ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ); pass 1.0 for bare units.
+
+    Reads:  wave_field.M_am, wave_field.M_prev_am
+    Writes: observables.energyH_density_aJ
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    inv_dt = 1.0 / dt_rs
+    c2 = c_amrs * c_amrs
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        m = wave_field.M_am[i, j, k]
+        m_dot = (m - wave_field.M_prev_am[i, j, k]) * inv_dt
+        kinetic = 0.5 * m_dot.norm_sqr()                      # ½‖Ṁ‖²_F
+
+        mx = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+        cxy = pde.commutator(mx, my)
+        cxz = pde.commutator(mx, mz)
+        cyz = pde.commutator(my, mz)
+        curvature = 4.0 * (cxy.norm_sqr() + cxz.norm_sqr() + cyz.norm_sqr())
+
+        potential = pde.V_M(m, a, b, c)
+        observables.energyH_density_aJ[i, j, k] = e_scale * (kinetic + c2 * curvature + potential)
+
+
 # Note: the global energy aggregate (mean per voxel + grid total) is computed
 # by the 3-plane sample_avg_trackers below alongside amp / freq — single pass
 # over the slice planes, single GPU↔CPU sync per dashboard cadence. The launcher

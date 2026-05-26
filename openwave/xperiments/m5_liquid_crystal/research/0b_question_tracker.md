@@ -11,22 +11,24 @@
 | [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) | Duda thread study — substrate decision, eigenvalue map, slides |
 | [`1a_lagrangian_framework.md`](1a_lagrangian_framework.md) | Framework + the full email thread history |
 
-**Last updated:** 2026-05-26 (**M5.4 COMPLETE**). Substrate-gating question CLOSED (full 3×3 `M = ODO^T`, Duda 2026-05-15); M5.3 feasibility spike PASSED → in-place migration; resonance smoke test NULL; thermal prerequisites confirmed. **M5.4 matrix-field migration COMPLETE (2026-05-26)**: matrix triple buffer + `eigen_decompose` lynchpin + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers; **M5.1 Coulomb reproduced on M** (R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive); operators verified vs analytic; rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine kept as dormant legacy). **M5.5 (paper Lagrangian + V(M)) is the next phase.** First *question* that gates forward progress is Q7 (exact V(M) form) at M5.5. **Added this session:** hardest-pieces status board + Duda's stated limitations + M6 → M5 cross-pollination (the closed M6 sandbox's transferable methodology for M5's V(M) search). **Q12 added** (Bell / Kochen-Specker vs M5's definite-orientation defect) from the 2026-05 group threads — foundational note lives in `1b § Foundational stance`.
+**Last updated:** 2026-05-26 (**M5.5 CORE COMPLETE**). M5.4 matrix-field migration is done + merged (full 3×3 `M = ODO^T`; matrix triple buffer + `eigen_decompose` lynchpin + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers; **M5.1 Coulomb reproduced on M**, R²=0.9704 relaxed + R²=0.9959 analytical page-18, both attractive). **M5.5 (paper Lagrangian + V(M)) core complete (2026-05-26)**: Duda's Eq.18 action ported to production (`compute_curvature_flux` + `evolve_M` + matrix Hamiltonian) — "Evolve PDE" is LIVE and **energy-conserving** (symplectic; GUI "bounded-not-bug" verified — a hedgehog *sloshes* under bounded, H-conserving nonlinear curvature dynamics, NOT a blow-up); `V(M)` Eq.13 LdG implemented (off by default); Faber `F²`=Skyrme-family-kinetic + Derrick-stability validated. **M5.5.5 (EM-from-tilts + Faber EM Lagrangian) folds into M5.6.** **Next phase = M5.6** (biaxial twist + KG emergence); the *questions* that gate it are Q7 (exact V(M) coeffs) + Q8 (Faber regularization exact form) — both Duda-open, neither blocking (Eq.13 baseline + Faber port proceed). **Added earlier this arc:** hardest-pieces board + Duda's stated limitations + M6 → M5 cross-pollination. **Q12** (Bell / Kochen-Specker vs M5's definite-orientation defect) — foundational note in `1b § Foundational stance`.
 
 ---
 
 ## Active count
 
 ```text
-0 IMMEDIATE   M5.4 COMPLETE (2026-05-26) — substrate + Coulomb gate +
-              rendering + cleanup all done. M5.5 (paper Lagrangian + V(M))
-              is the next phase; its gating question Q7 (exact V(M) form)
-              is OPEN but not blocking — we start from the Eq.13 LdG baseline.
+0 IMMEDIATE   M5.5 CORE COMPLETE (2026-05-26) — Eq.18 action live in
+              production ("Evolve PDE"), energy-conserving (bounded-not-bug
+              verified); V(M) Eq.13 implemented (off by default). M5.4
+              substrate + Coulomb gate done + merged. Next phase = M5.6
+              (biaxial twist + KG); Q7/Q8 gate it but neither blocks.
 
-2 NEAR-TERM   Q7  exact V(M) form — gates M5.5 (Duda's own open research
-(gate M5.5/6)     question; we start from Eq.13 LdG + Faber baseline)
-              Q8  Faber regularization exact form — gates M5.5/M5.6
-                  (port + adapt baseline; exact form still open)
+2 NEAR-TERM   Q7  exact V(M) form — now gates M5.6 (Duda's own open research
+(gate M5.6)       question; Eq.13 LdG baseline implemented + off by default)
+              Q8  Faber regularization exact form — gates M5.6
+                  (mechanism validated: F²=Skyrme kinetic, Derrick-stable;
+                  exact running-coupling scheme still open)
 
 5 BACKGROUND  Q4  Liu et al. lab anchor — does it change sim priority?
 (long-tail)   Q9  deeper substrate beneath M (anisotropic fluid?)
@@ -43,7 +45,7 @@
               Q5  substrate: full M = ODO^T vs Q-tensor (full M)
               Q6  eigenvalue → physics mapping (1=EM, δ=QM, g=gravity)
 
-Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.4 substrate + gate done.
+Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.5 core complete; M5.6 next.
 ```
 
 ---
@@ -52,8 +54,8 @@ Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.4 substrate + gate don
 
 | ID | Question | Surfaced | Gates | Status |
 | --- | --- | --- | --- | --- |
-| Q7 | Exact V(M) form — Duda's Eq.13 Landau-de Gennes `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`, or "slightly different"? Duda calls this "the most difficult" part and an open research question. | Duda 2026-05-15 (`4a §12`) | M5.5 | OPEN. We start from the Eq.13 LdG baseline + the simpler eigenvalue-preference variant Eq.12, then graduate. Not blocking M5.4. |
-| Q8 | Faber regularization — exact form to "activate" V(M) and produce the running-coupling effect. Duda points to Faber's two papers as the starting scheme. | Duda 2026-04-19 / 05-15 | M5.5 / M5.6 | OPEN. Port + adapt Faber (`reference_faber_regularization`); exact M5-adapted form is open research. |
+| Q7 | Exact V(M) form — Duda's Eq.13 Landau-de Gennes `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`, or "slightly different"? Duda calls this "the most difficult" part and an open research question. | Duda 2026-05-15 (`4a §12`) | M5.6 | OPEN. Eq.13 LdG + Eq.12 eigenvalue-preference **both implemented in production** (`V_M`/`dV_M`, off by default at `ldg_a/b/c=0`); exact `Λ=(1,δ,0)` coeffs still Duda-open. Not blocking — M5.6 turns it on with the biaxial vacuum. |
+| Q8 | Faber regularization — exact form to "activate" V(M) and produce the running-coupling effect. Duda points to Faber's two papers as the starting scheme. | Duda 2026-04-19 / 05-15 | M5.6 | OPEN. **Mechanism validated (M5.5.3)**: Eq.18 `F²` is the Skyrme-family 4th-order kinetic → Derrick-stable (`E(L)=E_F/L+E_V·L³`, finite core+mass), no separate Skyrme term. Faber's exact running-coupling scheme (`reference_faber_regularization`) still open — port + adapt in M5.6. |
 | Q11 | Close's Eq.23 exact implementation form — direct form vs vector-potential `s = ∇×A` vs divergence-cleaning projection; and should the resonance amplitude sweep span the full `m ∈ {−1, 0, +1}` dipole family? | Rodrigo → Close 2026-04-19 (`1a`) | M5.7 | OPEN, pending Close. Resonance-hunt protocol can proceed on best-current reading (`l=1`, `A/λ ∈ {0.5, 1, 2}`). |
 | Q4 | Liu et al. *Nature Physics* 2026 (first direct laser creation of isolated hopfions + skyrmions) — does the lab confirmation change what the framework should simulate first (hedgehog before hopfion? simpler stabilizer before LdG?)? | `3b` (2026-05-12) | — | OPEN. Lab-existence anchor for topology-as-particles. Current plan keeps hedgehog-first; hopfion is post-M5.8 frontier (`project_particle_defect_correspondence`). |
 | Q10 | Weak force — is there a clean matrix mechanism (SU(2) chiral) the way EM/gravity/strong have one? | `4a §7` | — | OPEN GAP. Partial answer in slides: beta decay appears as a topology-reconnection event (defect-class transition), not a force in the EM/gravity sense. No clean SU(2) mechanism yet. |
@@ -81,10 +83,10 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 | Hardest piece | Gates | Status (2026-05-26) | M6 lend? |
 | --- | --- | --- | --- |
 | Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
-| **V(M) potential form** (Duda's #1 limitation, Q7) | M5.5 | OPEN — the central unknown. Start from Eq.13 LdG + Eq.12 eigenvalue-preference. | ✅ strong (see below) |
-| Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.5 / M5.6 | OPEN — "the hardest part" per Duda. Port + adapt Faber. | 🔶 partial |
-| First metastable resonance (no static soliton) | M5.7 | Design locked (time-periodic per Close); awaiting M5.4–M5.6. | ✅ strong |
-| KG-from-twist emergence | M5.6 | Closed-form available (slide p.32); port not yet done. | — |
+| **V(M) potential form** (Duda's #1 limitation, Q7) | M5.6 | 🔶 Eq.13 LdG + Eq.12 eigenvalue-preference **both implemented in production** (`V_M`/`dV_M`, off by default); exact `Λ=(1,δ,0)` coeffs = Q7 (Duda open). M5.6 turns it on. | ✅ strong (see below) |
+| Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.6 | 🔶 **Mechanism validated (M5.5.3)**: Eq.18 `F²` IS the Skyrme-family kinetic → Derrick-stable (finite core+mass), no separate term. Faber's exact running-coupling scheme still open — port + adapt in M5.6. | 🔶 partial |
+| First metastable resonance (no static soliton) | M5.7 | Design locked (time-periodic per Close); awaiting M5.6. **M5.5.4 shipped the live energy-conserving Eq.18 evolution** the hunt runs on. | ✅ strong |
+| KG-from-twist emergence | M5.6 | Closed-form available (slide p.32 + `5a §5`); **evolution machinery validated (M5.5.2 twist evolution, energy drift 0.21%)**. Biaxial-hedgehog port (incl. the z-axis disclination handling) not yet done. | — |
 | Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. See [9c § clock propulsion](9c_time_dynamics.md#the-de-broglie-clock-is-intrinsic--group-consensus-on-clock-propulsion-2026-05). | 🔶 partial |
 | Biaxial eigenvalue hierarchy → lepton masses (Duda #3/#9/#10) | M5.9 | Calibration parameters; post-SABER-trigger. | — |
 | Weak-force clean SU(2) mechanism (Duda #7, Q10) | — | GAP. Beta decay as topology reconnection is partial. Out of SABER scope. | — |
@@ -137,11 +139,11 @@ found in **sandbox v9 phase 2** by treating `m_J` as a free eigenvalue with a pr
 
 | M6 lesson (v9 phase 2 + v10) | M5 application |
 | --- | --- |
-| Forward-IVP/shooting does NOT find localized soliton ground states; **BVP with the mass parameter as a free eigenvalue does** | M5.5/M5.7 — solve the matrix-field defect radial profile as a BVP-eigenvalue problem, not by guessing V(M) and forward-stepping |
+| Forward-IVP/shooting does NOT find localized soliton ground states; **BVP with the mass parameter as a free eigenvalue does** | M5.6/M5.7 — solve the matrix-field defect radial profile as a BVP-eigenvalue problem, not by guessing V(M) and forward-stepping (note: M5.5.4's *forward* leapfrog confirms this — an unregularized hedgehog sloshes, energy-conserving, but does not settle into a localized profile without the M5.6 regularized BVP) |
 | Correct `l=1` p-wave origin BC (`β ~ B0·r`) is what unlocked the ground state | M5's hedgehog is an `l=1`-class structure — the BC handling transfers directly |
 | `η` geometry-conversion factor `(∫β²r dr)/(∫β²r² dr)` reconciles cylindrical vs spherical energy integrals | M5 will compare matrix-field energies across defect geometries — same conversion needed |
 | Pohozaev-type virial identity as a self-consistency diagnostic (M6's `m_J/η = 1.21` family-invariant, Q47) | A scaling identity is a cheap correctness check on any M5 soliton profile |
-| Sandbox-first: prototype in scipy, validate, *then* port to production | Prototype the M5 V(M) + matrix-defect-profile BVP in a scipy M5-sandbox before the Taichi M5.4+ kernels |
+| Sandbox-first: prototype in scipy, validate, *then* port to production | Prototype the M5 V(M) + matrix-defect-profile BVP in a scipy M5-sandbox before the Taichi M5.6+ kernels (the path M5.5 followed: `sandbox_v4` scipy/numpy → Taichi port) |
 
 Canonical M6 numerical recipe (charged sector via 2-function IVP, neutral sector via the BVP above) is consolidated in `m6_ouroboros/research/0d_canonical.md` — the reference if we want to mirror the methodology.
 
@@ -152,7 +154,7 @@ Imported from `m6_ouroboros/research/0b_model_gates.md` § "What M6 offers regar
 | M6 strength | Relevance to M5 |
 | --- | --- |
 | Neutral chaoiton **ground state reachable** via BVP (v9 phase 2) | Proof-of-method that a topological soliton's ground state IS findable numerically — encouragement + recipe for M5.7's metastable resonance hunt |
-| DM mass prediction delivered (`m_χ = 0.46 MeV`, `m_J = 0.62 MeV`, `C = 770 MeV·fm`) | Independent topology-as-particles result; cross-validates the shared "no static soliton / time-periodic" premise M5 also relies on |
+| DM mass prediction **published** (DM paper v2, Zenodo 20350105, 2026-05-22): `m_χ = 0.460 MeV`, `m_J = 0.618 MeV`, `C = 770 MeV·fm` (canonical g=1.0, B0=0.5; `0d_canonical.md`). Supersedes the earlier v8 scan numbers (0.998/1.033/6.7e-4) | Independent topology-as-particles result; cross-validates the shared "no static soliton / time-periodic" premise M5 also relies on |
 | Lepton spectrum at PDG precision via 2-function reduction | Demonstrates the ansatz-reduction discipline (collapse DoF before solving) that M5.5 can borrow for the matrix field |
 | Charge quantization via Chern-Simons / Hopf (Lean-proved) | Different topological flavor (Hopf-linking) from M5's Brouwer-winding — but confirms charge-from-topology is robust across frameworks |
 | Methodology cross-pollination (η, `l=1` BC, virial diagnostic) | Listed above — the concrete transferable pieces |
@@ -164,4 +166,4 @@ Imported from `m6_ouroboros/research/0b_model_gates.md` § "What M6 offers regar
 ## Notes on scope
 
 - This tracker covers **M5 physics/framework questions for the group** (Duda / Close / Yee) plus the hardest-pieces board. M5.4 implementation decisions (Taichi storage layout, eigen-kernel design, granule/glyph UX calls) are tracked as **roadmap tasks** in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and [`4b_rendering_features.md`](4b_rendering_features.md), not here — same split as M6 (questions here, sandbox tasks in the work log).
-- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. The OPEN questions above are candidates for a future outreach when M5.4/M5.5 results give us something concrete to ask about — but none blocks current work.
+- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. **M5.5 (core complete 2026-05-26) now gives concrete results to seed a Q7/Q8 outreach**: the Eq.18 action runs in production + is energy-conserving, and the **V(M)-is-rotation-invariant finding** (V acts only on the eigenvalue/regularization sector, not the twist) sharpens the Q7 ask — Duda's exact `Λ=(1,δ,0)` Eq.13 coeffs + Faber's exact running-coupling scheme (Q8) become the natural questions once M5.6 needs them turned on. None blocks current work.
