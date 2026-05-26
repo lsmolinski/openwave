@@ -11,7 +11,7 @@
 | [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) | Duda thread study — substrate decision, eigenvalue map, slides |
 | [`1a_lagrangian_framework.md`](1a_lagrangian_framework.md) | Framework + the full email thread history |
 
-**Last updated:** 2026-05-25 (M5 restart, M6 closed). Substrate-gating question CLOSED (full 3×3 `M = ODO^T`, confirmed by Duda 2026-05-15). M5.3 direction review wrapping; M5.4 matrix-field migration is next. Nothing blocks M5.4 (substrate decision is locked + mechanical). First question that gates forward progress is Q7 (exact V(M) form) at M5.5. **Added this session:** hardest-pieces status board + Duda's stated limitations + M6 → M5 cross-pollination (the closed M6 sandbox's transferable methodology for M5's V(M) search). **Q12 added** (Bell / Kochen-Specker vs M5's definite-orientation defect) from the 2026-05 group threads — foundational note lives in `1b § Foundational stance`.
+**Last updated:** 2026-05-26 (M5.3 COMPLETE — M5.4 active). Substrate-gating question CLOSED (full 3×3 `M = ODO^T`, Duda 2026-05-15); M5.3 feasibility spike PASSED (matrix storage + commutator + `ti.sym_eig` eigen all work in-kernel on Metal, ~1–2× Vector(3) cost) → in-place migration; resonance smoke test NULL; thermal prerequisites confirmed. **M5.4 matrix-field migration is now the active phase.** First *question* that gates forward progress is Q7 (exact V(M) form) at M5.5. **Added this session:** hardest-pieces status board + Duda's stated limitations + M6 → M5 cross-pollination (the closed M6 sandbox's transferable methodology for M5's V(M) search). **Q12 added** (Bell / Kochen-Specker vs M5's definite-orientation defect) from the 2026-05 group threads — foundational note lives in `1b § Foundational stance`.
 
 ---
 
@@ -80,7 +80,7 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 
 | Hardest piece | Gates | Status (2026-05-25) | M6 lend? |
 | --- | --- | --- | --- |
-| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | 🚧 Green-lit, mechanical, next. Substrate locked (Q5). | — |
+| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | 🚧 **De-risked + active.** M5.3 spike (2026-05-26) PASSED: `ti.Matrix.field(3,3)` storage + commutator + `ti.sym_eig` eigen all work in-kernel on Metal (verified), ~1–2× Vector(3) cost. Decision: in-place migration. | — |
 | **V(M) potential form** (Duda's #1 limitation, Q7) | M5.5 | OPEN — the central unknown. Start from Eq.13 LdG + Eq.12 eigenvalue-preference. | ✅ strong (see below) |
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.5 / M5.6 | OPEN — "the hardest part" per Duda. Port + adapt Faber. | 🔶 partial |
 | First metastable resonance (no static soliton) | M5.7 | Design locked (time-periodic per Close); awaiting M5.4–M5.6. | ✅ strong |

@@ -25,14 +25,14 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 
 - ✅ **M5.0 Scaffold** — all 11 sub-phases complete as of 2026-05-08
 - ✅ **M5.1 Port topology from Exps 2, 3** — 8 of 8 tasks complete as of 2026-05-11. 1/d Coulomb R² = 0.978 (attractive, monotone, threshold 0.95). Visual confirmation in [3a_coulomb_visual_geometry.md](3a_coulomb_visual_geometry.md)
-- ⚠️ **M5.2 V(ψ) escalation on Vector(3)** — **CLOSED as negative result (2026-05-12)**. Tested 4 V(ψ) recipes (V=0, KG, φ⁴ Mexican-hat, biharmonic); all collapse Q identically at step 4-5. Diagnosis: matrix substrate `M = ODO^T` + time-periodic resonance required (triple-confirmed: Duda paper Fig. 10, Close email, Werbos chaoiton paper). See [3b_lagrangian_roadblocks.md](3b_lagrangian_roadblocks.md)
-- 🔶 **M5.3 Direction review** (started 2026-05-12, substantially complete 2026-05-25). Two hard blockers CLEARED: substrate locked (full `M = ODO^T`, Q5) + Duda reply in (2026-05-14/15); the deep paper + slides reading is captured in [4a_convo_2026.05.12.md](4a_convo_2026.05.12.md), with every 4a input mapped to a phase (see M5.3 § deliverable table). Remaining: the Taichi feasibility spike (matrix ops + eigen-kernel + cost estimate) + optional resonance smoke test. Exit when the spike lands.
-- [ ] **M5.4 Matrix-field substrate migration**. Replace Vector(3) ψ with `M(x) = O(x) D O^T(x)` real symmetric 3×3 matrix field. Storage redesign in Taichi; matrix commutator + antisymmetric operators; reproduce M5.1 Coulomb on the new substrate. Lands deferred-from-M5.0g physical-energy scaling.
-- [ ] **M5.5 Paper Lagrangian + V(M)**. Implement Duda Eq. 18 action `L = Σ ‖F_μ0‖² − Σ ‖F_μν‖² − V(M)` with Eq. 13 Higgs-like `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`. Faber regularization integrated to activate V. Subsumes old "Skyrme stabilizer" phase since Eq. 42 4D Skyrme-like kinetic is the same family.
-- [ ] **M5.6 Biaxial twist + KG emergence**. With `Λ = (1, δ, 0)` and `δ ~ ℏ`, reproduce paper Fig. 9 — Klein-Gordon-like equation emerges automatically from twist dynamics (NOT added as V_psi term).
-- [ ] **M5.7 Resonance hunt (Close protocol)**. `l = 1` harmonic seed on biaxial substrate, sweep `A/λ ∈ {0.5, 1, 2}`, measure energy-localization lifetime. First metastable resonance — "first long-lived particle in M5". **UNBLOCKS 5b thermal work.** Literature anchor: BEC vortex kinetics (Duda 2026-05-13 cite, PRA `10.1103/2msv-lk1m`).
-- [ ] **M5.8 4D extension + Zitterbewegung clock** (GROUP HEADLINE — for Duda et al.). Add 0th time axis: `D = diag(g, 1, δ, 0)`, SO(1,3) Lorentz. Negative-energy contributions from spacetime signature auto-propel the clock (Fig. 10 mechanism). Measure de Broglie clock frequency `ω = 2mc²/ℏ` for electron — empirical answer to Duda's standing clock-propulsion question.
-- [ ] **M5.9 3 lepton families + Cornell quarks**. 3 axis-choices of biaxial hedgehog → same Q, different mass; tune `Λ` to match `μ/e ≈ 207`, `τ/e ≈ 3477`. Cornell potential for quark strings via topological vortex (`V(r) = −α/r + σ·r`). Standard Model correspondence section of paper confirmed.
+- ❌ **M5.2 V(ψ) escalation on Vector(3)** — **CLOSED as negative result (2026-05-12)**. Tested 4 V(ψ) recipes (V=0, KG, φ⁴ Mexican-hat, biharmonic); all collapse Q identically at step 4-5. Diagnosis: matrix substrate `M = ODO^T` + time-periodic resonance required (triple-confirmed: Duda paper Fig. 10, Close email, Werbos chaoiton paper). See [3b_lagrangian_roadblocks.md](3b_lagrangian_roadblocks.md)
+- ✅ **M5.3 Direction review** (2026-05-12 → COMPLETE 2026-05-26). Substrate locked (full `M = ODO^T`, Q5); Duda reply in (2026-05-14/15); paper + slides digested ([4a_convo_2026.05.12.md](4a_convo_2026.05.12.md)) with every input mapped to a phase; thermal prerequisites confirmed; resonance smoke test NULL; **feasibility spike PASSED** (`ti.Matrix.field` + commutator + `ti.sym_eig` all work in-kernel on Metal, verified, ~1–2× Vector(3) cost). **Decision: in-place migration → M5.4 unblocked.**
+- 🔶 **M5.4 Matrix-field substrate migration**. Replace Vector(3) ψ with `M(x) = O(x) D O^T(x)` real symmetric 3×3 matrix field. Storage redesign in Taichi; matrix commutator + antisymmetric operators; reproduce M5.1 Coulomb on the new substrate. Lands deferred-from-M5.0g physical-energy scaling.
+- 🚧 **M5.5 Paper Lagrangian + V(M)**. Implement Duda Eq. 18 action `L = Σ ‖F_μ0‖² − Σ ‖F_μν‖² − V(M)` with Eq. 13 Higgs-like `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`. Faber regularization integrated to activate V. Subsumes old "Skyrme stabilizer" phase since Eq. 42 4D Skyrme-like kinetic is the same family.
+- 🚧 **M5.6 Biaxial twist + KG emergence**. With `Λ = (1, δ, 0)` and `δ ~ ℏ`, reproduce paper Fig. 9 — Klein-Gordon-like equation emerges automatically from twist dynamics (NOT added as V_psi term).
+- 🚧 **M5.7 Resonance hunt (Close protocol)**. `l = 1` harmonic seed on biaxial substrate, sweep `A/λ ∈ {0.5, 1, 2}`, measure energy-localization lifetime. First metastable resonance — "first long-lived particle in M5". **UNBLOCKS 5b thermal work.** Literature anchor: BEC vortex kinetics (Duda 2026-05-13 cite, PRA `10.1103/2msv-lk1m`).
+- 🚧 **M5.8 4D extension + Zitterbewegung clock** (GROUP HEADLINE — for Duda et al.). Add 0th time axis: `D = diag(g, 1, δ, 0)`, SO(1,3) Lorentz. Negative-energy contributions from spacetime signature auto-propel the clock (Fig. 10 mechanism). Measure de Broglie clock frequency `ω = 2mc²/ℏ` for electron — empirical answer to Duda's standing clock-propulsion question.
+- 🚧 **M5.9 3 lepton families + Cornell quarks**. 3 axis-choices of biaxial hedgehog → same Q, different mass; tune `Λ` to match `μ/e ≈ 207`, `τ/e ≈ 3477`. Cornell potential for quark strings via topological vortex (`V(r) = −α/r + σ·r`). Standard Model correspondence section of paper confirmed.
 
 ### Parallel research stages
 
@@ -47,7 +47,7 @@ Forward-looking research programs in their own files — run alongside / after t
 
 ## DETAILED
 
-### Phase M5.0 — Scaffold
+### ✅ Phase M5.0 — Scaffold
 
 Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separately-committable unit with its own test gate before progressing.
 
@@ -158,7 +158,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 
 - 🚧 **Re-profile trigger**: when M5.2's V(ψ) (Klein-Gordon mass + Close Eq. 23 + LdG potential) lands and per-step time grows. If 384³ drops below 20 fps, decide between (1) rotating-pointer refactor for ~35 % win, (2) full fusion for ~50 % win + M2-equivalent step time, (3) BlockLocal Laplacian / dirty-tile mask. The M5.0i baseline numbers above are the comparison reference.
 
-### Phase M5.1 — Port topology (from Exps 2, 3)
+### ✅ Phase M5.1 — Port topology (from Exps 2, 3)
 
 - ✅ `seed_vacuum()` — fills psi_am, psi_prev_am, AND psi_new_am with `n = ẑ` everywhere (writes all three buffers per `feedback_triple_buffer_bc.md` — required for fixed-value Dirichlet BC at vacuum)
 - ✅ `seed_hedgehog(centers, signs, D/4, n_defects)` — N-defect kernel, port of Exp 2's weighted superposition + renormalization (`sandbox_phase3_lagrangian/exp2_hedgehog_energy.py:71-108`). Radial structure concentrated within ~D/4 via `w_vac = 1/(1 + (r/(D/4))⁴)`, smoothly blends to `n = ẑ` at boundary. Multi-defect API supports M5.4 pair tests directly (no kernel refactor needed)
@@ -175,7 +175,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 >
 > **Frank elastic energy is a measurement, not a dynamics** (same review): the elastic behavior is *already* in the wave equation — the `c²·∇²ψ` term IS the gradient of the Frank density `(K/2)|∇n|²`. Computing the Frank energy as an explicit kernel (task 5) doesn't add new physics; it provides the scalar `E(t)` needed for the downstream tests that *depend on having an E to fit*: task 6 needs `E` falling monotonically as a convergence diagnostic; task 7 needs `E(d)` as a function of pair separation to fit the 1/d Coulomb law; future visualization can colormap the per-voxel elastic density. Parallel to how `compute_energyH_density` (M5.0g) is the measurement scalar that goes with the wave dynamics — same logic, different formula component.
 
-### Phase M5.2 — V(ψ) escalation on Vector(3) — CLOSED as informative negative (2026-05-12)
+### ❌ Phase M5.2 — V(ψ) escalation on Vector(3) — CLOSED as informative negative (2026-05-12)
 
 > **Status**: closed. The four V(ψ) escalations we tested (V=0, KG mass `½m²|ψ|²`, φ⁴ Mexican-hat `¼λ(|ψ|²−1)²`, biharmonic `½κ|∇²ψ|²`) all collapse the topological charge Q identically within 4-5 propagation steps. The result is documented as an informative negative; phase moves out of the critical path. Path forward absorbed into M5.3 (direction review) + M5.4 (matrix-field substrate) + M5.5 (paper Lagrangian).
 >
@@ -195,19 +195,19 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 
 ---
 
-### Phase M5.3 — Direction review (active 2026-05-12+) 🔶
+### ✅ Phase M5.3 — Direction review (2026-05-12 → COMPLETE 2026-05-26)
 
-> Study, sandbox, decide, wait. Goal: lock the M5.4 implementation plan with a clear substrate choice before code commitment. **Status (2026-05-25): the two hard blockers are CLEARED** — substrate decision locked (full 3×3 `M = ODO^T`, Q5) and Duda's reply is in (2026-05-14/15). The deep paper + slides reading is done and captured in [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md). Remaining before M5.4: the Taichi feasibility spike (which also yields the storage cost estimate) and the optional resonance smoke test.
+> Study, sandbox, decide, wait. Goal: lock the M5.4 implementation plan with a clear substrate choice before code commitment. **COMPLETE (2026-05-26): all legs met — M5.4 is unblocked.** Substrate locked (full 3×3 `M = ODO^T`, Q5); Duda's reply in (2026-05-14/15); paper + slides digested ([`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md)); thermal prerequisites confirmed; resonance smoke test NULL (no Vector(3) resonance); **feasibility spike PASSED** — `ti.Matrix.field(3,3)` storage + matrix commutator + `ti.sym_eig` eigen-decomposition all work in-kernel on Metal, verified, at ~1–2× the Vector(3) Laplacian cost. **Decision: in-place migration.**
 
 - ✅ **Re-read Duda paper §III-V deeply** — DONE. The annotated reading lives in [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md): matrix structure (§3–5), eigenvalue→force map (§8), KG-from-hedgehog closed form + clock toy-model numerics (§11), force unification (§7), the 51-page LdGS slides (§11), and the Couder/walking-droplet deck (§11b). Supersedes the planned `3h_*.md`.
 - ✅ **Wait for Duda reply** — DONE. Duda replied 2026-05-14/15 (`4a §1`); **substrate gate CLOSED** (full M, no Q-tensor pivot — Q5); eigenvalue→physics mapping confirmed (Q6).
-- 🔶 **Taichi storage layout study** — PARTIAL. Recommendation locked in `4a §10`: `ti.Matrix.field` with index-generic operators (makes the 3×3→4×4 M5.8 promotion a type change, not a rewrite). Outstanding: the measured cost estimate at 65³ / 128³ / 256³ — produced by the feasibility spike below.
-- 🔶 **Thermal prerequisites analysis** — PARTIAL. Covered conceptually (`4a §7` force map + [`5b_thermal_energy.md`](5b_thermal_energy.md)): 5b needs M5.7 (metastable resonance) plus the drive/measurement infra that lands inside M5.7. SABER-specific scope items stay in the private repo.
-- 🔶 **Decision document** — SUBSTANTIALLY DONE. `4a_convo` carries the decision substance (substrate locked; refactor strategy §10); the M5.4+ task breakdown lives in the M5.4 phase below + [`4b_rendering_features.md`](4b_rendering_features.md); the 4a-inputs→phase mapping is the table below. Formal cost-estimate finalization pends the spike. (A standalone `3h_m5_substrate_decision.md` is superseded by 4a + this roadmap.)
-- [ ] **Feasibility spike: matrix field in Taichi** — **THE NEXT M5.3 TASK.** Minimal `M(x) = O(x) D O^T(x)` storage + matrix commutator `[M_μ, M_ν]` **+ the eigen-decomposition `@ti.func`** (`M → director_nhat + eigenvalues`). The eigen-kernel is the one genuinely new primitive the entire rendering stack + redefined amp/freq trackers depend on (see [4b_rendering_features.md](4b_rendering_features.md)), so proving it here de-risks physics operators AND visualization in one spike. Verify all three against analytic small-cases; measure cost vs Vector(3) (→ the storage cost estimate). Decide in-place migration vs parallel-track.
-- [ ] **Sandbox: Close's resonance protocol on existing Vector(3)** — OPTIONAL, not gating. `research/scripts/m5_3_resonance_smoke.py`. l=1 harmonic seed at A/λ ∈ {0.5, 1, 2}; measure energy-localization lifetime. Informative — if even Vector(3) shows extended lifetime at specific amplitudes, the resonance mechanism is substrate-agnostic.
+- ✅ **Taichi storage layout study** — DONE (2026-05-26). Layout = `ti.Matrix.field(3,3)` with index-generic operators (3×3→4×4 M5.8 promotion stays a type change). **Measured cost** (spike, vs Vector(3) 6-point Laplacian baseline): matrix `[∂M,∂M]` commutator ~1× and per-voxel `sym_eig` eigen-extraction ~1.1× at 256³ (2.2× at 128³) — eigen is **not** a bottleneck (it runs once/frame for render + trackers, not in the inner loop). **Memory**: production should store the **6** independent symmetric components/voxel (not the full 9), vs 3 for Vector(3) → ~2× memory. Cost is acceptable; no sparse/AMR needed for M5.4.
+- ✅ **Thermal prerequisites analysis** — DONE (2026-05-26). Confirmed: 5b's foundation is **M5.7 (first metastable resonance)** — sufficient, nothing extra must land earlier. The prerequisite chain is already correctly slotted across the M5.x phases: **measurement infra lands EARLY** (the redefined `A = ‖M−D‖_F` amplitude + `ω = O(x) clock-rate` frequency trackers in M5.4); the **KG drive substrate** in M5.6; the **drive infra** (parameterized harmonic forcing + FM/AM modulation primitives) in M5.7's own task list. So 5b.1 *internal* validation unblocks the moment M5.7 lands (per the two-tier table in [`5b_thermal_energy.md`](5b_thermal_energy.md)); full *lab-relevance* follows Phase 4 (EM emergence). SABER-specific engineering scope stays in the private repo per the cardinal rule. **No new early infrastructure required.**
+- ✅ **Decision document** — DONE (2026-05-26). Decision: **in-place migration** (not parallel-track) — the spike proved storage + operators + eigen all work at acceptable cost on the existing grid/engine architecture. Substance is distributed: substrate + refactor strategy in `4a §2,§10`; M5.4+ task breakdown in the M5.4 phase below + [`4b_rendering_features.md`](4b_rendering_features.md); cost estimate in the storage-layout task above; 4a-inputs→phase mapping in the table below. (A standalone `3h_m5_substrate_decision.md` is superseded by 4a + this roadmap.)
+- ✅ **Feasibility spike: matrix field in Taichi** — DONE (2026-05-26), PASSED. `research/sandbox_v2/m5_3_matrix_feasibility.py`. All three primitives proven in-kernel on Metal and verified against analytic cases: **storage** (`ti.Matrix.field(3,3)` round-trip 0 err); **commutator** `[A,B]` (0 err vs hand-computed; + `[∂_xM,∂_yM]` over a field); **eigen-decomposition** via **`ti.sym_eig`** (recovers a known `O·diag(2,1,0.5)·O^T` to ~1e-7; recovers a seeded hedgehog director at mean `|n̂·n|=0.9995`). **Key de-risk: `ti.sym_eig` works in-kernel on Metal for 3×3 — no custom analytic eigensolver needed.** Cost ~1–2× Vector(3) (see storage-layout task). Decision: in-place migration; M5.4 unblocked.
+- ✅ **Sandbox: Close's resonance protocol on existing Vector(3)** — DONE (2026-05-26), NULL result. `research/sandbox_v2/m5_3_resonance_smoke.py`: l=1 dipole packet swept at A/λ ∈ {0.5, 1, 2}, energy-localization lifetime under V=0 / KG-mass / φ⁴. **No substrate-agnostic resonance found.** Linear potentials (V=0, KG mass) disperse at ~40 steps **amplitude-independently** (as a linear PDE must — no amplitude-selected resonance); the only nonlinear potential available (φ⁴ Mexican-hat) is director-scaled (vacuum |ψ|=1) and **diverges** on a displacement-wave amplitude sweep — Vector(3)'s potential toolkit can't even host the test. Reinforces the M5.2 closed-negative: the metastable-resonance hunt belongs on the matrix substrate (M5.4 → M5.7) with LdG V(M)/Skyrme + 4D clock propulsion, not Vector(3).
 
-**Exit criterion**: substrate decision locked ✅ + Duda reply in ✅ + feasibility spike done (cost estimate + eigen-kernel proven). Two of three met; the spike is the remaining gate before M5.4 plan is fully concrete.
+**Exit criterion** — ✅ **MET (2026-05-26)**: substrate decision locked ✅ + Duda reply in ✅ + feasibility spike done (cost estimate measured + commutator & `sym_eig` eigen-kernel proven in-kernel) ✅. M5.4 plan is fully concrete; **M5.3 closes, M5.4 begins.**
 
 #### M5.3 deliverable — every 4a input mapped to a phase
 
@@ -235,7 +235,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.4 — Matrix-field substrate migration
+### 🔶 Phase M5.4 — Matrix-field substrate migration
 
 > Replace Vector(3) ψ with the paper's `M(x) = O(x) D O^T(x)` real symmetric 3×3 matrix field. The architectural shift identified in M5.3.
 
@@ -251,7 +251,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.5 — Paper Lagrangian + Higgs-like V(M)
+### 🚧 Phase M5.5 — Paper Lagrangian + Higgs-like V(M)
 
 > Implement Duda paper Eq. 18: `L = Σ ‖F_μ0‖²_F − Σ ‖F_μν‖²_F − V(M)`. Subsumes the old "Skyrme stabilizer" phase since the Eq. 42 4D Skyrme-like kinetic is part of the same Lagrangian family — there is no separate Skyrme add-on phase in the new structure.
 
@@ -265,7 +265,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.6 — Biaxial twist + KG emergence
+### 🚧 Phase M5.6 — Biaxial twist + KG emergence
 
 > With biaxial axes `Λ = (1, δ, 0)` and `δ ~ ℏ` (small twist), reproduce paper Fig. 9: Klein-Gordon-like equation emerges automatically from twist dynamics, NOT as an added V_psi term. This was the conceptual error in M5.2 Step 2.
 
@@ -278,7 +278,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.7 — Resonance hunt (Close's protocol) — UNBLOCKS 5b
+### 🚧 Phase M5.7 — Resonance hunt (Close's protocol) — UNBLOCKS 5b
 
 > **Refinement from Robert Close (2026-04 email reply)**: "Even including the nonlinear term, I would expect your result of dispersing waves in most cases. But I suspect that certain amplitudes of certain harmonic waves will keep energy localized longer (i.e. as an unstable particle or resonance). My suggestion is to explore a wide range of amplitudes (probably l=1 harmonic wave is the most interesting). A likely criterion is that the maximum displacements should be comparable to the wavelength (or half or twice). Unless you have a good way to model an infinite system, I doubt that you will find completely stable non-radiating solutions."
 >
@@ -293,7 +293,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.8 — 4D extension + Zitterbewegung clock (GROUP HEADLINE)
+### 🚧 Phase M5.8 — 4D extension + Zitterbewegung clock (GROUP HEADLINE)
 
 > **GROUP HEADLINE**: M5.8 passing IS the empirical answer to Duda's standing clock-propulsion question. External-comms framing: "M5.8 complete — Zitterbewegung clock at ω = 2mc²/ℏ confirmed empirically." This is the load-bearing test of clock propulsion (per `project_clock_propulsion` memory).
 >
@@ -330,7 +330,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 ---
 
-### Phase M5.9 — 3 lepton families + Cornell quark strings
+### 🚧 Phase M5.9 — 3 lepton families + Cornell quark strings
 
 > Standard Model correspondence. The biaxial Λ = (g, 1, δ, 0) gives 3 axis-choices → 3 lepton families with the same Q but different masses (e/μ/τ). Cornell potential for quark strings via topological vortex.
 
