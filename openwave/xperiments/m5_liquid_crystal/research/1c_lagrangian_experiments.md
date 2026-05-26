@@ -78,8 +78,8 @@ The Sine-Gordon equation `∂²φ/∂t² - c²∂²φ/∂x² + (m²c⁴/ℏ²)·
 - **Time evolution**: leapfrog, dt=0.05, N_STEPS=2000 (t_final=100), CFL = c·dt/dx = 0.5
 - **Initial conditions**:
   - Test 1 (static): kink at x₀=0, v=0
-  - Test 2 (moving): kink at x₀=-20, v=0.5c → γ=1.1547
-  - Test 3 (pair): kink at x_L=-15 moving +0.5c, anti-kink at x_R=+15 moving -0.5c
+  - Test 2 (moving): kink at x₀=-20, v=0.9c → γ=1.1547
+  - Test 3 (pair): kink at x_L=-15 moving +0.9c, anti-kink at x_R=+15 moving -0.9c
 - **Boundary**: fixed endpoints (kink starts far from edges)
 
 ### 1.3 Results
@@ -92,7 +92,7 @@ The Sine-Gordon equation `∂²φ/∂t² - c²∂²φ/∂x² + (m²c⁴/ℏ²)·
 - Measured kink width: L = 1.002 vs predicted L = ℏ/(mc) = 1.000
 - Shape invariant across full simulation (see `exp1_results/test1_static_kink.png`)
 
-**Test 2 — Moving kink with Lorentz contraction** (v=0.5c):
+**Test 2 — Moving kink with Lorentz contraction** (v=0.9c):
 
 - Lorentz factor: γ = 1/√(1-0.25) = 1.1547
 - Measured velocity (linear fit of kink x(t) over t=[5, 90]): **0.4997 c** (0.06% off input)
@@ -101,7 +101,7 @@ The Sine-Gordon equation `∂²φ/∂t² - c²∂²φ/∂x² + (m²c⁴/ℏ²)·
 - Energy drift: 1.16e-5
 - Position vs time plot shows straight line overlapping predicted x₀+v·t (see `exp1_results/test2_moving_kink.png`)
 
-**Test 3 — Kink + anti-kink collision** (v=±0.5c, meeting at t=30):
+**Test 3 — Kink + anti-kink collision** (v=±0.9c, meeting at t=30):
 
 - Initial pair energy: 18.4615 vs predicted 2·γ·8·mc² = 18.475 (0.07% off)
 - Final pair energy: 18.4613
@@ -134,7 +134,7 @@ Plots in `sandbox_phase3_lagrangian/exp1_results/`:
 | --- | --- | --- | --- |
 | Kink rest energy | E = 8·m·c² = 8.000 | 7.996 | ✅ |
 | Kink width | L = ℏ/(mc) = 1.000 | 1.002 | ✅ |
-| Lorentz contraction | L/γ = 0.866 at v=0.5c | 0.867 | ✅ |
+| Lorentz contraction | L/γ = 0.866 at v=0.9c | 0.867 | ✅ |
 | Velocity fidelity (input vs propagated) | 0.500 c | 0.4997 c | ✅ |
 | Topological stability (kink lifetime) | infinite (Q=±1 protected) | stable > 100 t-units, no shape decay | ✅ |
 | Energy conservation (leapfrog) | machine-precision-like drift | rel drift 1.5e-6 (static), 1.2e-5 (moving), 1.7e-4 (collision) | ✅ |

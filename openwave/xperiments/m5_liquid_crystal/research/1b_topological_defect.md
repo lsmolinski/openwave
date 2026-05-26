@@ -90,7 +90,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 | Photon emission | Waves | Energy release from topology event |
 | Thermal excess (per-defect) | Waves | Per-defect oscillation above ground state |
 
-**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its 5b.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` 5b.1](../../m3_wolff_lafreniere/research/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
+**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its 9b.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` 9b.1](../../m3_wolff_lafreniere/research/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
 
 ### Strategic implication — where to look when
 
@@ -833,7 +833,7 @@ All four were *separate postulates* in EWT and quantum mechanics. In M5, they're
 
 ## OUTGOING-WAVE L+T DECOMPOSITION — MAGNETISM AS THE TRANSVERSE CHANNEL
 
-The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (5b.7 / 5b.8 / 5b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)) all build on it.
+The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (9b.7 / 9b.8 / 9b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)) all build on it.
 
 ### The decomposition
 
@@ -888,7 +888,7 @@ Mainstream phenomena consistent with this prediction:
 - **Magnetocaloric effect** — applied magnetic-field changes produce temperature changes at fixed pressure
 - **Pyromagnetic / thermomagnetic coefficients** — per-material temperature-magnetization coupling constants
 
-In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **5b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
+In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **9b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
 
 ### Note on engineering operationalization
 

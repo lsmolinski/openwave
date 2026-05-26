@@ -650,7 +650,7 @@ def propagate_wave(
 
         # ================================================================
         # LOCAL ENERGY PER VOXEL: E = ρ·V·(f·A)² in aJ (attojoules)
-        # F = -∇E (force = negative energy gradient, computed in xforce_motion)
+        # F = -∇E (force = negative energy gradient, computed in force_motion)
         # ================================================================
         # rho_qgam (qg/am³), dx_am³ (am³), f_rHz (1/rs), rms_am (am)
         # Internal units: qg·am²/rs² × 1000 → aJ

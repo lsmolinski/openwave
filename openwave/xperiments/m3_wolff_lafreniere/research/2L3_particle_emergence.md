@@ -175,9 +175,9 @@ Scripts at `openwave/xperiments/m3_wolff_lafreniere/`. Launched from `_launcher.
 ### Per-frame computation
 
 1. **`wave_engine.propagate_wave()`** — displacement (Combined W-L), phasor RMS, signed envelope, EMA-RMS, energy
-1. **`xforce_motion.compute_force_vector()`** — `F = -∇E` weighted multi-shell gradient (R=3, 1/d²). Energy switchable: signed envelope or phasor
-1. **`xforce_motion.integrate_motion_leapfrog()`** — symplectic, velocity clamp at c, configurable damping
-1. **`xforce_motion.detect_annihilation()`** — opposite-phase pairs within 1.2λ
+1. **`force_motion.compute_force_vector()`** — `F = -∇E` weighted multi-shell gradient (R=3, 1/d²). Energy switchable: signed envelope or phasor
+1. **`force_motion.integrate_motion_leapfrog()`** — symplectic, velocity clamp at c, configurable damping
+1. **`force_motion.detect_annihilation()`** — opposite-phase pairs within 1.2λ
 
 ### Xperiments
 

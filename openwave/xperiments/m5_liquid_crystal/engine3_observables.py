@@ -112,7 +112,6 @@ def update_trackers(
         trackers.freq_local_cross_rHz[i, j, k] = trackers.freq_local_cross_rHz[i, j, k] * decay
 
 
-
 # ================================================================
 # ENERGY DENSITY (HAMILTONIAN) — PER-VOXEL ENERGY FIELD
 # ================================================================
@@ -125,7 +124,7 @@ def update_trackers(
 #
 # Populated by compute_energyH_density into observables.energyH_density_aJ
 # each step; consumed by:
-#   - xforce_motion.compute_force_vector  → F = −∇E per wave-center
+#   - force_motion.compute_force_vector  → F = −∇E per wave-center
 #   - sample_avg_trackers (below)         → 3-plane mean → dashboard total
 #   - launcher WAVE_MENU=4 flux mesh      → visualization
 #
@@ -203,7 +202,6 @@ def compute_energyH_density(
 # multiplies the returned mean by voxel_count to get the grid-total scalar.
 
 
-
 # ================================================================
 # FRANK ELASTIC ENERGY DENSITY (M5.1)
 # ================================================================
@@ -267,7 +265,6 @@ def compute_energyF_density(
         d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
         grad_n_sqr = d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr()
         observables.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
-
 
 
 # ================================================================
@@ -355,7 +352,6 @@ def compute_winding_number(
     cross = np.cross(dn_dtheta, dn_dphi, axis=-1)
     integrand = (n_s * cross).sum(axis=-1)
     return float(integrand.sum() * dth * dph / (4.0 * np.pi))
-
 
 
 # ================================================================
@@ -609,5 +605,3 @@ def sample_avg_observables(
     # Plain mean for Frank elastic energy density F (per voxel).
     total_energyF = xy_energyF.sum() + xz_energyF.sum() + yz_energyF.sum()
     observables.energyF_global_avg_aJ[None] = float(total_energyF / n_samples)
-
-

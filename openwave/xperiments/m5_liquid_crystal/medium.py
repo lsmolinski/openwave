@@ -590,7 +590,7 @@ class FieldObservables:
         # density, `_K` for kinetic-only.
         # Populated each frame by engine3_observables.compute_energyH_density.
         # Consumed by:
-        #   - xforce_motion.compute_force_vector  →  F = −∇E (replaces M4's
+        #   - force_motion.compute_force_vector  →  F = −∇E (replaces M4's
         #     postulated F = −∇E with E = ρV(fA)² formula). E is computed
         #     via the Hamiltonian formula (hence _H prefix); the physics
         #     statement F = −∇E is canonical regardless of how E is derived.
