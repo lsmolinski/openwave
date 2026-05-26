@@ -226,7 +226,7 @@ def compute_curl_curl(
 # ================================================================
 # The Vector(3) toolkit above operates on the retiring ψ field. These operate on
 # the real-symmetric 3×3 order parameter M stored in wave_field.M_am. All three
-# primitives were de-risked in research/sandbox_v2/m5_3_matrix_feasibility.py
+# primitives were de-risked in research/sandbox_v3/m5_3_matrix_feasibility.py
 # (storage round-trip, commutator vs analytic, ti.sym_eig director recovery 0.9995)
 # before this production port.
 #

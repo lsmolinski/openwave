@@ -25,7 +25,7 @@ Finding (pre-run): ti.sym_eig works in-kernel on Metal for 3×3 (probed
 2026-05-26) — no custom analytic eigensolver required.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v2.m5_3_matrix_feasibility
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v3.m5_3_matrix_feasibility
 """
 
 import sys

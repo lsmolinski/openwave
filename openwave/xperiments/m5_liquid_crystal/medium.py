@@ -18,7 +18,7 @@ the paper's physics. The substrate becomes the Landau–de Gennes order paramete
     M(x) = O(x)·D·O^T(x)            (real-symmetric 3×3)
 where D = diag(g, 1, δ) is the frozen global eigenvalue spectrum and O(x) is the
 per-voxel dynamical rotation. M5.4 carries the M5.1 static-topology results onto
-this substrate (feasibility proven in research/sandbox_v2/m5_3_matrix_feasibility.py).
+this substrate (feasibility proven in research/sandbox_v3/m5_3_matrix_feasibility.py).
 
 Migration is ADDITIVE-then-cleanup to keep the engine runnable at every step:
   - M_am / M_prev_am / M_new_am  — the matrix triple buffer (the new substrate)

@@ -113,6 +113,67 @@ def update_trackers(
 
 
 # ================================================================
+# MATRIX-SUBSTRATE TRACKERS (M5.4) — amplitude ‖M−D‖_F + clock ‖Ṁ‖_F
+# ================================================================
+# The matrix-world replacement for update_trackers' ψ observables (4b
+# tracker-redefinitions table). Reuses the SAME Trackers fields, EMA cadence, and
+# 3-plane aggregation (sample_avg_trackers) — only the sampled quantity changes:
+#   - amplitude = ‖M − D_vac‖_F  (Frobenius deviation from the ẑ-vacuum order
+#       parameter D_vac = diag(δ, δ, 1)) → thermal A of SABER's joint (A, ω)
+#   - frequency = ‖Ṁ‖_F = ‖M − M_prev‖_F / dt  (order-parameter rotation rate)
+#       → de Broglie clock ω (M5.8 headline) / thermal ω. Zero for a static
+#         configuration; becomes the genuine clock once M is leapfrogged (M5.6+).
+# The ψ_z zero-crossing it replaces was always a convention hack (the update_trackers
+# docstring admits it) — the matrix rotation rate is the real thing. This is the
+# "measurement infra lands EARLY" deliverable from the M5.3 thermal-prereq analysis.
+
+
+@ti.kernel
+def update_trackers_M(
+    wave_field: ti.template(),  # type: ignore
+    trackers: ti.template(),  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    delta: ti.f32,  # type: ignore
+):
+    """Matrix-substrate amplitude/frequency trackers (see section header).
+
+    Reads:  wave_field.M_am, wave_field.M_prev_am
+    Writes: trackers.amp_local_emarms_am  (EMA of ‖M − D_vac‖_F — thermal A)
+            trackers.freq_local_cross_rHz (EMA of ‖Ṁ‖_F        — clock ω / thermal ω)
+
+    Args:
+        wave_field: WaveField (reads M_am, M_prev_am)
+        trackers: Trackers (writes the per-voxel amp/freq EMA fields)
+        dt_rs: timestep (rs) — divides ‖M − M_prev‖_F to give the rate ‖Ṁ‖_F
+        delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta) → D_vac diagonal
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    decay = ti.cast(0.999, ti.f32)
+    alpha_rms = ti.cast(0.005, ti.f32)
+    alpha_freq = ti.cast(0.05, ti.f32)
+    inv_dt = 1.0 / dt_rs
+    # ẑ-vacuum order parameter D_vac = δ·I + (1−δ)·ẑ⊗ẑ = diag(δ, δ, 1)
+    d_vac = ti.Matrix([[delta, 0.0, 0.0], [0.0, delta, 0.0], [0.0, 0.0, 1.0]])
+
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        m = wave_field.M_am[i, j, k]
+
+        # Amplitude: EMA of ‖M − D_vac‖_F² (Frobenius), then √ — same RMS form as
+        # update_trackers but on the order-parameter deviation instead of |ψ|².
+        dev2 = (m - d_vac).norm_sqr()
+        rms2_old = trackers.amp_local_emarms_am[i, j, k] ** 2
+        rms2_new = alpha_rms * dev2 + (1.0 - alpha_rms) * rms2_old
+        trackers.amp_local_emarms_am[i, j, k] = ti.sqrt(rms2_new) * decay
+
+        # Frequency: EMA of ‖Ṁ‖_F = ‖M − M_prev‖_F / dt (frame rotation rate).
+        mdot_mag = (m - wave_field.M_prev_am[i, j, k]).norm() * inv_dt
+        old_freq = trackers.freq_local_cross_rHz[i, j, k]
+        trackers.freq_local_cross_rHz[i, j, k] = (
+            alpha_freq * mdot_mag + (1.0 - alpha_freq) * old_freq
+        ) * decay
+
+
+# ================================================================
 # ENERGY DENSITY (HAMILTONIAN) — PER-VOXEL ENERGY FIELD
 # ================================================================
 # H(x) = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
