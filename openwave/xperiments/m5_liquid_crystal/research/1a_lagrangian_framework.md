@@ -828,7 +828,7 @@ Wikipedia / background:
 
 ## INTEGRATING THE LAGRANGIAN CONCEPT IN OPENWAVE
 
-## Impact on Force & Motion (xforce_motion.py) — None
+## Impact on Force & Motion (force_motion.py) — None
 
 Lagrangian mechanics does NOT replace `F = -∇E` and `F = ma`. It's the layer **above** them that *derives* them.
 
@@ -845,12 +845,12 @@ NEWTON'S LAWS (what falls out)
     m·a = -∇V  →  F = -∇E  →  F = ma
            │
            ▼
-LEAPFROG INTEGRATOR (numerical solution)  ← xforce_motion.py lives HERE
+LEAPFROG INTEGRATOR (numerical solution)  ← force_motion.py lives HERE
     v(t+½dt) = v(t-½dt) + a·dt
     x(t+dt)  = x(t) + v(t+½dt)·dt
 ```
 
-What we have now (xforce_motion.py): we compute `E = ρV(fA)²` from the wave field, then `F = -∇E` via finite differences, then integrate with leapfrog. This is correct Newtonian mechanics. The force-motion script stays.
+What we have now (force_motion.py): we compute `E = ρV(fA)²` from the wave field, then `F = -∇E` via finite differences, then integrate with leapfrog. This is correct Newtonian mechanics. The force-motion script stays.
 
 What a Lagrangian adds: it tells us *what E should be*. Right now we chose `E = ρV(fA)²` from EWT reasoning and our wave equation empirically. A Lagrangian would derive both:
 
@@ -866,7 +866,7 @@ What a Lagrangian adds: it tells us *what E should be*. Right now we chose `E = 
 | Integration | Leapfrog (correct) | Same — leapfrog is still the numerical method |
 | Conservation | Checked manually | Guaranteed by Noether's theorem |
 
-So `xforce_motion.py` doesn't change. What changes is the **justification** for why we compute energy the way we do, and the **wave equation** that feeds into it. The Lagrangian sits upstream of everything in that script.
+So `force_motion.py` doesn't change. What changes is the **justification** for why we compute energy the way we do, and the **wave equation** that feeds into it. The Lagrangian sits upstream of everything in that script.
 
 The real payoff: if Duda's LdG Lagrangian is correct, it would tell us:
 
@@ -892,7 +892,7 @@ EULER-LAGRANGE  →  wave_engine.py lives HERE
     ∂²ψ/∂t² = c²∇²ψ - V'(ψ)
            │
            ▼
-FORCE & MOTION  →  xforce_motion.py lives HERE
+FORCE & MOTION  →  force_motion.py lives HERE
     F = -∇E,  leapfrog
 ```
 
@@ -915,7 +915,7 @@ Right now, wave_engine.py has 5 wave equations chosen empirically — and most o
 
 - Grid infrastructure (Taichi fields, voxel layout)
 - Rendering / visualization
-- xforce_motion.py (`F = -∇E`, leapfrog)
+- force_motion.py (`F = -∇E`, leapfrog)
 - xparameters / experiment design
 - The launcher
 

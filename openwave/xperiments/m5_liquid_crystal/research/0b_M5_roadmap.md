@@ -90,7 +90,7 @@ Broken into nine sub-phases (M5.0a → M5.0i) so each lands as a tight, separate
 - ✅ `Trackers.__init__` no longer takes `scale_factor`; globals init to zero; EMA + sample_avg_trackers populate them during sim
 - ✅ Introduce `state.wave_res` (xperiment-driven, populated from `TEST_SEED["VOXELS_PER_WAVELENGTH"]` if a seed exists; else 0.0 / "n/a"). Defect-driven λ from λ_C lands in M5.2
 - ✅ Strip all `scale_factor` arithmetic from launcher dashboard; `instrumentation.py` cleaned of EWT-scaled axhline references and the broken transverse subplot
-- ✅ `xforce_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇E), so the placeholder is intentional dead-end code until then
+- ✅ `force_motion.py` `S²` placeholder (= 1) — kernel is being fully rewritten in M5.0g (F = −∇E), so the placeholder is intentional dead-end code until then
 - ✅ `annihilation_threshold` hardcoded to 6 voxels (M5.2 will replace with per-defect Compton-wavelength threshold); particle shell radius set to fixed 0.02 of normalized universe edge
 
 #### M5.0e — Curl, divergence, curl-curl operators ✅ (committed 2026-05-08)
@@ -122,7 +122,7 @@ This sub-phase was originally scoped as "add kernel-internal natural-unit scalin
 - ✅ Per-voxel field `trackers.energyH_density_aJ` (replaces deprecated `energy_local_aJ`); populated each step by `lagrangian_engine.compute_energyH_density`
 - ✅ Mean per-voxel cache `trackers.energyH_global_avg_aJ` (filled by `compute_energy_total_H`; matches M4's `_global_avg_` semantics; used as the flux-mesh colormap range for WAVE_MENU=4)
 - ✅ Grid-total scalar `state.energy_total_H_aJ` (= mean × voxel_count) on the dashboard
-- ✅ Rewrote `xforce_motion.compute_force_vector` as **`F = −∇E`** sampling `energyH_density_aJ` (the `_H` suffix tags how E is computed; the physics statement F=−∇E is canonical regardless of formula). Dropped the placeholder `S²=1`, all hardcoded EWT particle constants (`EWAVE_AMPLITUDE`, `EWAVE_LENGTH`, `MEDIUM_DENSITY`, `ELECTRON_K`/`OUTER_SHELL`/`ORBITAL_G`, `COULOMB_CONSTANT`, `ELEMENTARY_CHARGE`, `WAVE_SPEED`), the `compute_ewt_electric_force` reference function, and the `numpy` import that only it needed
+- ✅ Rewrote `force_motion.compute_force_vector` as **`F = −∇E`** sampling `energyH_density_aJ` (the `_H` suffix tags how E is computed; the physics statement F=−∇E is canonical regardless of formula). Dropped the placeholder `S²=1`, all hardcoded EWT particle constants (`EWAVE_AMPLITUDE`, `EWAVE_LENGTH`, `MEDIUM_DENSITY`, `ELECTRON_K`/`OUTER_SHELL`/`ORBITAL_G`, `COULOMB_CONSTANT`, `ELEMENTARY_CHARGE`, `WAVE_SPEED`), the `compute_ewt_electric_force` reference function, and the `numpy` import that only it needed
 - ✅ `V_psi(psi)` `@ti.func` hook — returns 0 in M5.0g; M5.2 swaps in Klein-Gordon mass + Close Eq. 23 + LdG terms (alongside the kernel-internal natural-unit scaling deferred from M5.0f). Both the potential value AND its functional form will land here
 - ✅ `compute_energy_total_H` refactored to 3-plane-sample the new per-voxel field (instead of recomputing kinetic+gradient per voxel three times) — three lightweight `_energy_slice_*` slice-copy kernels
 - ✅ Flux-mesh `WAVE_MENU == 4` activated to render `energyH_density_aJ` (was a placeholder rendering `|ψ|`)

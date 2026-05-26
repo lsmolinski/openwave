@@ -26,7 +26,7 @@ import openwave.xperiments.m5_liquid_crystal.engine1_seeds as seeds
 import openwave.xperiments.m5_liquid_crystal.engine2_pde as pde
 import openwave.xperiments.m5_liquid_crystal.engine3_observables as observables
 import openwave.xperiments.m5_liquid_crystal.engine4_render as viz
-import openwave.xperiments.m5_liquid_crystal.xforce_motion as force_motion
+import openwave.xperiments.m5_liquid_crystal.force_motion as force_motion
 import openwave.xperiments.m5_liquid_crystal.instrumentation as instrument
 
 # ================================================================
@@ -622,9 +622,7 @@ def initialize_xperiment(state):
             domain_quarter_fraction = topo.get("DOMAIN_QUARTER_FRACTION", 0.25)
             domain_quarter_voxels = float(domain_quarter_fraction * max(wf.nx, wf.ny, wf.nz))
 
-            seeds.seed_hedgehog(
-                wf, centers_field, signs_field, domain_quarter_voxels, n_defects
-            )
+            seeds.seed_hedgehog(wf, centers_field, signs_field, domain_quarter_voxels, n_defects)
             # Stash pin info for relaxation kernel (M5.1 task 6)
             state.pin_centers = centers_field
             state.pin_signs = signs_field
@@ -719,7 +717,7 @@ def compute_field_observables(state):
     """
     # PER-VOXEL ENERGY DENSITY (HAMILTONIAN) ============================
     # H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)  → observables.energyH_density_aJ.
-    # Consumed by xforce_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
+    # Consumed by force_motion (F = −∇E) and flux-mesh WAVE_MENU=4.
     observables.compute_energyH_density(
         state.wave_field,
         state.observables,
@@ -819,9 +817,7 @@ def render_elements(state):
     if state.SHOW_DIRECTORS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
         arrow_length = (
-            glyph_length * viz.ARROWHEAD_LENGTH_FRAC
-            if viz.SHOW_DIRECTOR_ARROWHEAD
-            else 0.0
+            glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
         )
         viz.update_director_glyphs(
             state.wave_field, glyph_length, arrow_length, state.SHOW_DIRECTORS
