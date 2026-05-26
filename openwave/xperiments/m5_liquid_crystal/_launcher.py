@@ -417,7 +417,7 @@ def display_controls(state):
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         if state.PAUSED:
-            if sub.button(">> EVOLVE PSI >>"):
+            if sub.button(">> EVOLVE PDE >>"):
                 state.PAUSED = False
         else:
             if sub.button("Pause"):
@@ -432,10 +432,10 @@ def display_wave_menu(state):
         if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
+        if sub.checkbox("Thermal Amp (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
             state.wave_field.create_flux_mesh()
-        if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
+        if sub.checkbox("Thermal Clock (omega)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
             state.wave_field.create_flux_mesh()
         if sub.checkbox("ENERGY (Hamiltonian)", state.WAVE_MENU == 4):
@@ -449,13 +449,13 @@ def display_wave_menu(state):
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
-        if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
+        if state.WAVE_MENU == 2:  # Thermal Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
-        if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
+        if state.WAVE_MENU == 3:  # Thermal Clock on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
-            with render.gui.sub_window("frequency", 0.00, 0.74, 0.08, 0.06) as sub:
+            with render.gui.sub_window("omega", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
         if state.WAVE_MENU == 4:  # Energy density (Hamiltonian) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
@@ -593,8 +593,8 @@ def initialize_xperiment(state):
         seed_mode = topo.get("MODE", "vacuum")  # "vacuum" or "hedgehog"
 
         if seed_mode == "vacuum":
-            seeds.seed_vacuum(state.wave_field)
-            print("[M5.1] seeded vacuum (n = ẑ everywhere)")
+            seeds.seed_vacuum_M(state.wave_field, state.wave_field.lc_delta)
+            print("[M5.4] seeded matrix vacuum (M = δI + (1−δ)ẑ⊗ẑ everywhere)")
 
         elif seed_mode == "hedgehog":
             # Defects are specified in normalized [0,1] domain coordinates;
@@ -622,7 +622,9 @@ def initialize_xperiment(state):
             domain_quarter_fraction = topo.get("DOMAIN_QUARTER_FRACTION", 0.25)
             domain_quarter_voxels = float(domain_quarter_fraction * max(wf.nx, wf.ny, wf.nz))
 
-            seeds.seed_hedgehog(wf, centers_field, signs_field, domain_quarter_voxels, n_defects)
+            seeds.seed_hedgehog_M(
+                wf, centers_field, signs_field, domain_quarter_voxels, n_defects, wf.lc_delta
+            )
             # Stash pin info for relaxation kernel (M5.1 task 6)
             state.pin_centers = centers_field
             state.pin_signs = signs_field
@@ -671,11 +673,12 @@ def relax_field(state, n_steps):
     tau = 0.4 * cfl_bound
     for _ in range(n_steps):
         pde.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
-        # Copy relaxed field back into psi_am (and psi_prev_am to keep ψ̇=0).
-        # NOT swap_buffers — that would cycle prev←curr which we don't want
-        # for a static (non-time-evolving) update.
-        wf.psi_am.copy_from(wf.psi_new_am)
-        wf.psi_prev_am.copy_from(wf.psi_new_am)
+        # M5.4: relaxation operates on director_nhat (the principal eigenvector of M).
+        # Copy the relaxed director back. NOT swap_buffers — static update.
+        wf.director_nhat.copy_from(wf.director_nhat_new)
+    # Rebuild M from the relaxed director so M_am, the ‖M−D‖/‖Ṁ‖ trackers, and the
+    # flux-mesh orientation mode stay consistent with the relaxed director.
+    pde.rebuild_M_from_director(wf, wf.lc_delta)
     # Refresh observables so dashboard + flux mesh reflect the relaxed field
     compute_field_observables(state)
 
@@ -732,6 +735,15 @@ def compute_field_observables(state):
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
     observables.compute_energyF_density(state.wave_field, state.observables, observables.K_FRANK)
+
+    # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
+    # ‖M−D‖_F amplitude (thermal A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
+    # every frame (incl. paused) so the flux-mesh "Thermal Amp"/"Thermal Clock"
+    # modes + dashboard reflect the static seeded/relaxed state. Replaces the
+    # ψ-based update_trackers (which now only fires on the retiring EVOLVE PSI path).
+    observables.update_trackers_M(
+        state.wave_field, state.trackers, state.dt_rs, state.wave_field.lc_delta
+    )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ================================
     # Frame skip reduces GPU->CPU transfer overhead during dynamics; when

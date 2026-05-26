@@ -295,8 +295,9 @@ def compute_energyF_density(
     Compute per-voxel Frank elastic energy density H_F = (K/2)·|∇n̂|² into
     observables.energyF_density_aJ.
 
-    Reads:  wave_field.psi_am  (director field n̂; |n̂|=1 enforced by seeders
-            and by gradient-descent relaxation step in M5.1 task 6)
+    Reads:  wave_field.director_nhat  (the matrix-substrate director n̂ = principal
+            eigenvector of M; |n̂|=1 by construction. M5.4: repointed from the
+            retiring ψ — Frank energy is now the elastic energy of the eigenvector.)
     Writes: observables.energyF_density_aJ
 
     Same central-difference gradient stencil as compute_energyH_density's
@@ -320,10 +321,10 @@ def compute_energyF_density(
     inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
 
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        # Gradient: 9 central-difference terms — ∂_x/y/z applied to each of 3 components
-        d_dx = (wave_field.psi_am[i + 1, j, k] - wave_field.psi_am[i - 1, j, k]) * inv_2dx
-        d_dy = (wave_field.psi_am[i, j + 1, k] - wave_field.psi_am[i, j - 1, k]) * inv_2dx
-        d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
+        # Gradient: 9 central-difference terms — ∂_x/y/z applied to each director component
+        d_dx = (wave_field.director_nhat[i + 1, j, k] - wave_field.director_nhat[i - 1, j, k]) * inv_2dx
+        d_dy = (wave_field.director_nhat[i, j + 1, k] - wave_field.director_nhat[i, j - 1, k]) * inv_2dx
+        d_dz = (wave_field.director_nhat[i, j, k + 1] - wave_field.director_nhat[i, j, k - 1]) * inv_2dx
         grad_n_sqr = d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr()
         observables.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
 

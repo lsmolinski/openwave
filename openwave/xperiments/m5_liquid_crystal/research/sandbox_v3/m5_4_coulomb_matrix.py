@@ -84,23 +84,20 @@ def setup_defect_pair(wf, d_vox, sign_pair):
 def relax_and_measure_matrix(wf, obs, centers, signs, n_defects, n_steps, tau, dq, delta):
     """Matrix-substrate director-equivalent relaxation → total Frank energy.
 
-    Seeds M, extracts the director from M via eigen_decompose, flows it into the
-    M5.1 working buffer, then runs the UNCHANGED M5.1 relax + Frank kernels.
+    Seeds M, extracts the director from M via eigen_decompose, then relaxes the
+    director directly — relax_director_step + compute_energyF_density operate on
+    director_nhat (= principal eigenvector of M), the same gradient-descent math
+    as M5.1, so the Coulomb result carries over.
     """
     # 1. seed the matrix order parameter (writes M_am + director_nhat)
     seeds.seed_hedgehog_M(wf, centers, signs, dq, n_defects, delta)
     # 2. extract the director from M (the bridge: director_nhat ← eigenvector(M_am))
     pde.eigen_decompose(wf)
-    # 3. flow the extracted director into the validated M5.1 working buffer
-    wf.psi_am.copy_from(wf.director_nhat)
-    wf.psi_prev_am.copy_from(wf.director_nhat)
-    wf.psi_new_am.copy_from(wf.director_nhat)
-    # 4. relax (byte-identical M5.1 gradient descent on the director)
+    # 3. relax the director directly (M5.4 relax gradient-descends director_nhat)
     for _ in range(n_steps):
         pde.relax_director_step(wf, tau, centers, signs, n_defects)
-        wf.psi_am.copy_from(wf.psi_new_am)
-        wf.psi_prev_am.copy_from(wf.psi_new_am)
-    # 5. Frank elastic energy of the relaxed director (byte-identical M5.1 kernel)
+        wf.director_nhat.copy_from(wf.director_nhat_new)
+    # 4. Frank elastic energy of the relaxed director
     observables.compute_energyF_density(wf, obs, observables.K_FRANK)
     return float(obs.energyF_density_aJ.to_numpy().sum())
 

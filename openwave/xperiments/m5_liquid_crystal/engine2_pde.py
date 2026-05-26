@@ -323,6 +323,52 @@ def antisym_A_mu(
     return commutator(m, dM_x), commutator(m, dM_y), commutator(m, dM_z)
 
 
+@ti.func
+def compute_laplacian_director(
+    wave_field: ti.template(),  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+):
+    """∇²n̂ at voxel [i, j, k] — 6-point stencil on the DERIVED director field.
+
+    Identical form to compute_laplacian, but reads wave_field.director_nhat (the
+    matrix-substrate director, eigenvector of M) rather than the retiring ψ. The
+    M5.4 director-equivalent relaxation gradient-descends the Frank energy on this
+    field. 1-cell halo (caller skips boundary). (compute_laplacian on ψ stays for
+    the retiring wave leapfrog until the M5.4 cleanup deletes it.)
+    """
+    face_sum = (
+        wave_field.director_nhat[i + 1, j, k]
+        + wave_field.director_nhat[i - 1, j, k]
+        + wave_field.director_nhat[i, j + 1, k]
+        + wave_field.director_nhat[i, j - 1, k]
+        + wave_field.director_nhat[i, j, k + 1]
+        + wave_field.director_nhat[i, j, k - 1]
+    )
+    center = wave_field.director_nhat[i, j, k]
+    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+
+
+@ti.kernel
+def rebuild_M_from_director(wave_field: ti.template(), delta: ti.f32):  # type: ignore
+    """Rebuild the uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from director_nhat.
+
+    Called after the director-equivalent relaxation so M_am, the `‖M−D‖_F`/`‖Ṁ‖_F`
+    trackers, and the flux-mesh orientation-deviation mode stay consistent with the
+    relaxed director. Writes all three M buffers (M_prev = M = M_new) — BC-consistent
+    for the M5.5 matrix leapfrog, and `Ṁ = 0` for a static relaxation (clock ω = 0).
+    The uniaxial inverse of eigen_decompose.
+    """
+    eye = ti.Matrix.identity(ti.f32, 3)
+    for i, j, k in wave_field.director_nhat:
+        n = wave_field.director_nhat[i, j, k]
+        m = delta * eye + (1.0 - delta) * n.outer_product(n)
+        wave_field.M_am[i, j, k] = m
+        wave_field.M_prev_am[i, j, k] = m
+        wave_field.M_new_am[i, j, k] = m
+
+
 @ti.kernel
 def eigen_decompose(wave_field: ti.template()):  # type: ignore
     """THE LYNCHPIN (4b_rendering_features.md): refresh director_nhat + eigenvalues from M_am.
@@ -581,11 +627,17 @@ def relax_director_step(
     """
     One gradient-descent step on the Frank elastic energy `H_F = (K/2)·|∇n̂|²`.
 
-    Reads:  wave_field.psi_am
-    Writes: wave_field.psi_new_am  (caller copies → psi_am AND psi_prev_am)
+    Reads:  wave_field.director_nhat
+    Writes: wave_field.director_nhat_new  (caller copies → director_nhat)
+
+    M5.4: repointed from the retiring ψ buffers onto the matrix-substrate director
+    (director_nhat = principal eigenvector of M). The math is byte-identical to the
+    M5.1 relaxation — tangent-projected gradient descent on (K/2)|∇n̂|² + soft-core
+    pin — so the Coulomb result carries over. Caller rebuilds M from the relaxed
+    director via rebuild_M_from_director.
 
     Args:
-        wave_field: WaveField with the director field in psi_am
+        wave_field: WaveField with the director field in director_nhat
         tau: step size (must satisfy τ < dx²/(6·K) for stability)
         pin_centers: ti.field shape (n_defects, 3) i32 — defect centers in voxel coords
         pin_signs: ti.field shape (n_defects,) i32 — ±1 per defect (pin direction)
@@ -600,24 +652,24 @@ def relax_director_step(
 
     # ---- Interior: tangent-projected gradient step + renormalization ----
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        n = wave_field.psi_am[i, j, k]
-        lap = compute_laplacian(wave_field, i, j, k)
+        n = wave_field.director_nhat[i, j, k]
+        lap = compute_laplacian_director(wave_field, i, j, k)
         n_dot_lap = n.dot(lap)
         dn = lap - n_dot_lap * n  # tangent projection (remove component along n)
         n_new = n + tau * dn
         norm = n_new.norm() + 1e-12
-        wave_field.psi_new_am[i, j, k] = n_new / norm
+        wave_field.director_nhat_new[i, j, k] = n_new / norm
 
-    # ---- Boundary: preserve Dirichlet BC by copying from current ψ ----
+    # ---- Boundary: preserve Dirichlet BC by copying from current director ----
     for j, k in ti.ndrange(ny, nz):
-        wave_field.psi_new_am[0, j, k] = wave_field.psi_am[0, j, k]
-        wave_field.psi_new_am[nx - 1, j, k] = wave_field.psi_am[nx - 1, j, k]
+        wave_field.director_nhat_new[0, j, k] = wave_field.director_nhat[0, j, k]
+        wave_field.director_nhat_new[nx - 1, j, k] = wave_field.director_nhat[nx - 1, j, k]
     for i, k in ti.ndrange(nx, nz):
-        wave_field.psi_new_am[i, 0, k] = wave_field.psi_am[i, 0, k]
-        wave_field.psi_new_am[i, ny - 1, k] = wave_field.psi_am[i, ny - 1, k]
+        wave_field.director_nhat_new[i, 0, k] = wave_field.director_nhat[i, 0, k]
+        wave_field.director_nhat_new[i, ny - 1, k] = wave_field.director_nhat[i, ny - 1, k]
     for i, j in ti.ndrange(nx, ny):
-        wave_field.psi_new_am[i, j, 0] = wave_field.psi_am[i, j, 0]
-        wave_field.psi_new_am[i, j, nz - 1] = wave_field.psi_am[i, j, nz - 1]
+        wave_field.director_nhat_new[i, j, 0] = wave_field.director_nhat[i, j, 0]
+        wave_field.director_nhat_new[i, j, nz - 1] = wave_field.director_nhat[i, j, nz - 1]
 
     # ---- Pin defect cores (soft Dirichlet at single closest voxel) ----
     for d in range(n_defects):
@@ -625,4 +677,4 @@ def relax_director_step(
         cj = pin_centers[d, 1]
         ck = pin_centers[d, 2]
         sgn = ti.cast(pin_signs[d], ti.f32)
-        wave_field.psi_new_am[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
+        wave_field.director_nhat_new[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])

@@ -127,15 +127,17 @@ Amplitude/frequency trackers are not retired — re-derived against M, and physi
 
 Tracker *infrastructure* (per-voxel EMA fields, crossing detection, global aggregates) carries over unchanged; only the sampled quantity changes. The ψ_z zero-crossing was always a convention hack (the kernel docstring admits it) — the matrix clock-rate is the genuine article.
 
-### Decisions that need Rodrigo's input (UX calls, not mechanical ports)
+### Decisions taken (Rodrigo, 2026-05-26 — M5.4 step 5)
 
-| Decision | Options |
-| --- | --- |
-| Granule repurpose | retire / director point-cloud / biaxial ellipsoid |
-| Glyph multiplicity | principal eigenvector only / all 3 eigenvector families |
-| Arrowheads | retire (apolar director) / keep as motion hint |
-| "Displacement" mode | rename to "Orientation deviation" / drop |
-| Envelope mode | add now (M5.7-ready) / defer |
+| Decision | Chosen | Implementation |
+| --- | --- | --- |
+| Granule repurpose | biaxial ellipsoid (showcase) — **deferred to M5.6**; director point-cloud interim now | M5.4 uniaxial → the two minor eigen-axes are DEGENERATE (λ₂=λ₃=δ), so a biaxial ellipsoid's minor axes are arbitrary per voxel. Only a surface-of-revolution reads correctly, and it's a heavy GGUI mesh feature that shows its value only once `δ≠g` (M5.6). `sample_position_to_render` now does the cheap interim: granule at voxel + `amp_boost·n̂`. Full ellipsoid surface → M5.6. |
+| Glyph multiplicity | principal-only (forced) | M5.4 is uniaxial — the 3-eigenvector (biaxial) glyph view is degenerate/meaningless until M5.6. Glyphs read `director_nhat`. |
+| Arrowheads | **keep** as motion hint | `SHOW_DIRECTOR_ARROWHEAD` unchanged; the half-barb stays even though the director is formally apolar. |
+| "Displacement" mode | rename "Orientation deviation" | WAVE_MENU=1 now colors by `‖n̂−ẑ‖` (0 at vacuum, →2 at −ẑ) + perpendicular warp (matches the modes 2–5 scalar pattern; the old 3-axis vector ripple dropped — restore later if wanted). |
+| Envelope mode | **defer to M5.7** | M5.4 is static (no oscillation to envelope). Lands when M5.7 dynamics arrive. |
+
+**Granule degeneracy finding (M5.4 step 5):** the biaxial ellipsoid is genuinely premature in uniaxial M5.4 — recommend building the prolate-spheroid → biaxial-ellipsoid *surface* mesh at M5.6 when the structure becomes truly biaxial. The director point-cloud is the faithful interim.
 
 ### What does NOT change
 
