@@ -154,7 +154,7 @@ Imported from `m6_ouroboros/research/0b_model_gates.md` § "What M6 offers regar
 | M6 strength | Relevance to M5 |
 | --- | --- |
 | Neutral chaoiton **ground state reachable** via BVP (v9 phase 2) | Proof-of-method that a topological soliton's ground state IS findable numerically — encouragement + recipe for M5.7's metastable resonance hunt |
-| DM mass prediction delivered (`m_χ = 0.46 MeV`, `m_J = 0.62 MeV`, `C = 770 MeV·fm`) | Independent topology-as-particles result; cross-validates the shared "no static soliton / time-periodic" premise M5 also relies on |
+| DM mass prediction **published** (DM paper v2, Zenodo 20350105, 2026-05-22): `m_χ = 0.460 MeV`, `m_J = 0.618 MeV`, `C = 770 MeV·fm` (canonical g=1.0, B0=0.5; `0d_canonical.md`). Supersedes the earlier v8 scan numbers (0.998/1.033/6.7e-4) | Independent topology-as-particles result; cross-validates the shared "no static soliton / time-periodic" premise M5 also relies on |
 | Lepton spectrum at PDG precision via 2-function reduction | Demonstrates the ansatz-reduction discipline (collapse DoF before solving) that M5.5 can borrow for the matrix field |
 | Charge quantization via Chern-Simons / Hopf (Lean-proved) | Different topological flavor (Hopf-linking) from M5's Brouwer-winding — but confirms charge-from-topology is robust across frameworks |
 | Methodology cross-pollination (η, `l=1` BC, virial diagnostic) | Listed above — the concrete transferable pieces |
