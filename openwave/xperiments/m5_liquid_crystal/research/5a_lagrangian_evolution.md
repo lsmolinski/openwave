@@ -1,10 +1,10 @@
-# M5.5 — Paper Lagrangian + Evolution Equation (math reference)
+# M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for M5.5 — Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, and the `V(M)` options. Plus the transcription of Duda's Mathematica source (paper Fig.9) that derives the evolution equation symbolically and reduces it to the hedgehog Klein–Gordon — the reference we mirror in the `sandbox_v4` sympy prototype.
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a/§5b/§5c: the **M5.6 sandbox_v5 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), and Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3).
 
-**Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9. Math reading **confirmed by Rodrigo 2026-05-26**.
+**Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
-**Sister docs:** [4a_convo_2026.05.12.md](4a_convo_2026.05.12.md) (paper digest, eigenvalue map), [0b_M5_roadmap.md § M5.5](0b_M5_roadmap.md), [1a_lagrangian_framework.md](1a_lagrangian_framework.md).
+**Sister docs:** [4a_convo_2026.05.12.md](4a_convo_2026.05.12.md) (paper digest, eigenvalue map), [0b_M5_roadmap.md § M5.5–M5.6](0b_M5_roadmap.md), [1a_lagrangian_framework.md](1a_lagrangian_framework.md), [[reference_faber_regularization]].
 
 ---
 
@@ -136,6 +136,39 @@ hedgehog, disclination-masked:
 intrinsically oscillates. This is the *no-static-soliton / time-periodic* principle made dynamical
 ([[feedback_no_static_solitons]]) and is the plausible **M5.8 Zitterbewegung-clock seed** — the
 clock *frequency* (`ω=2mc²/ℏ`) is M5.8's measurement, after M5.6.3 (Faber) pins the mass scale.
+
+### 5c. M5.6.3a findings (`sandbox_v5/m5_6_3a_faber_regularization.py`, 2026-05-27) — Faber's regularization pins the mass scale
+
+Faber's *Model of Topological Fermions* (Faber & Golubich, *Universe* 11/2025/113) gives the
+**physical** regularization that sets the mass scale M5.6.1/.2 left as an ad-hoc `r_c`. Ported
+natively (per [[reference_faber_regularization]], "port don't reinvent"):
+
+| Faber (his Eq.) | Mapping / result |
+| --- | --- |
+| Field `Q = q₀ − iσ·q⃗`, unit 4-vector on S³ (`q₀=cos α`, `q⃗=n̂ sin α`) | the SU(2)/SO(3) twist field; `α` = rotation angle, `n̂` = orientation |
+| **Regularization potential `Λ = q₀⁶/r₀⁴`** (Eq.4) | depends on `q₀=cos α`, i.e. the order-parameter **amplitude** `‖q⃗‖=sin α` — **not** the rotation direction. Consistent with the M5.5.3 finding that `V(M)` is rotation-invariant (acts on the eigenvalue/amplitude sector only). |
+| Soliton `n̂=x̂`, `α=arctan(r/r₀)` ⇒ `q⃗ = x⃗/√(r₀²+r²)` | `‖q⃗‖→0` at the core (radial vector shrinks) — **identical to the M5.6.2a disclination/core melt**. Faber independently validates that core handling. |
+| **Rest energy `E₀ = α_f ℏc · π/(4r₀)`** (Eq.8) | reproduced numerically (units `α_f ℏc=1`): `E₀ → π/4` as N↑ (**4.6% at N=181**, finite-difference + box-truncation limited); **`E₀·r₀` exactly constant (CV 0.0%) ⇒ `E₀ ∝ 1/r₀`**. |
+| Physical anchor: `r₀ = 2.2132 fm` (= `π/4 ×` classical e⁻ radius) | `⇒ E₀ = 0.511 MeV` (electron). The regularization radius `r₀` IS the mass knob. |
+
+**The deliverable:** the mass scale is no longer an ad-hoc `r_c` — it's `r₀`, fixed by the `Λ=q₀⁶/r₀⁴`
+potential and tied to `α_f` + the mass via `E₀ ∝ 1/r₀`. This is the M5.9 lepton-mass-calibration handle.
+
+**M5.6.3b — Faber's `Λ` mapped onto Duda's M** (`sandbox_v5/m5_6_3b_faber_on_M.py`): the
+amplitude mapping is realized by spatially-melting eigenvalues. With `s(r)=sin α=r/√(r₀²+r²)`,
+`D(s) = D_iso + s·(D_full − D_iso)` (`D_full=diag(1,δ,0)`, `D_iso=(1+δ)/3·I`), `M = O·D(s)·O^T`:
+
+| Result | Detail |
+| --- | --- |
+| amplitude = eigenvalue spread | `mean\|spread − s(r)\| = 8e-16` — the melt makes M's eigenvalue spread *exactly* `s(r)`, →0 at the core. |
+| both singularities melt | `M→scalar·I` at the core ⇒ point core **and** z-axis disclination regularized together; curvature energy `∫‖[M_μ,M_ν]‖²` drops **67%** vs the rigid `D_full` and is finite. |
+| mass pinned `E ∝ 1/r₀` | `E·r₀` constant across `r₀` — Faber's `E₀∝1/r₀` reproduced on Duda's matrix substrate. |
+
+**Caveat (honest):** `E·r₀` is *exactly* constant because the construction imposes Faber's
+scale-covariant profile (`s=r/√(r₀²+r²)`, box `∝r₀`) rather than dynamically minimizing — so
+`E∝1/r₀` is analytic for that profile, exactly as in Faber's own setup (he imposes `α=arctan(r/r₀)`).
+This confirms the **M-framework reproduces Faber's scaling**; independently re-deriving the profile
+via energy minimization is an M5.9-calibration BVP, not done here.
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
