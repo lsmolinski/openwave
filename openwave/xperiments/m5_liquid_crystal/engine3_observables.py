@@ -384,6 +384,61 @@ def compute_energyF_density(
 
 
 # ================================================================
+# EM-FROM-TILTS OBSERVABLES (M5.6.5b — "see EM")
+# ================================================================
+# Distortion modes of the principal director n̂ that map onto the EM sector
+# verified in M5.6.4 (5a §5d): SPLAY ∇·n̂ is Coulomb-charge-like (peaks ±at
+# defect cores; for a hedgehog n̂=r̂, ∇·n̂=2/r), TWIST+BEND ∇×n̂ is the B-like
+# circulation. Same central-difference stencil as compute_energyF_density.
+
+
+@ti.kernel
+def compute_director_em(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+):
+    """Per-voxel ∇·n̂ (signed splay) + ‖∇×n̂‖ (twist+bend magnitude) of director_nhat.
+
+    Reads:  wave_field.director_nhat
+    Writes: observables.director_div_field (signed), observables.director_curl_mag_field (≥0)
+    1-cell halo; boundary left at 0 (consistent with energyF/energyH).
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        d_dx = (wave_field.director_nhat[i + 1, j, k] - wave_field.director_nhat[i - 1, j, k]) * inv_2dx
+        d_dy = (wave_field.director_nhat[i, j + 1, k] - wave_field.director_nhat[i, j - 1, k]) * inv_2dx
+        d_dz = (wave_field.director_nhat[i, j, k + 1] - wave_field.director_nhat[i, j, k - 1]) * inv_2dx
+        # div = ∂_x n_x + ∂_y n_y + ∂_z n_z
+        observables.director_div_field[i, j, k] = d_dx[0] + d_dy[1] + d_dz[2]
+        # curl = (∂_y n_z − ∂_z n_y, ∂_z n_x − ∂_x n_z, ∂_x n_y − ∂_y n_x)
+        curl = ti.Vector([d_dy[2] - d_dz[1], d_dz[0] - d_dx[2], d_dx[1] - d_dy[0]])
+        observables.director_curl_mag_field[i, j, k] = curl.norm()
+
+
+@ti.kernel
+def compute_director_em_scale(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+):
+    """Color-scale maxes from the 3 center planes only (light atomic_max over ~plane voxels,
+    NOT a full-grid reduction — avoids the Metal atomic-contention stall, feedback_taichi_metal_atomics).
+    Writes observables.director_div_absmax (max|∇·n̂|) + director_curl_max (max‖∇×n̂‖)."""
+    observables.director_div_absmax[None] = 1e-12
+    observables.director_curl_max[None] = 1e-12
+    mid_x, mid_y, mid_z = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
+    for i, j in ti.ndrange((1, wave_field.nx - 1), (1, wave_field.ny - 1)):  # XY plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[i, j, mid_z]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[i, j, mid_z])
+    for i, k in ti.ndrange((1, wave_field.nx - 1), (1, wave_field.nz - 1)):  # XZ plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[i, mid_y, k]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[i, mid_y, k])
+    for j, k in ti.ndrange((1, wave_field.ny - 1), (1, wave_field.nz - 1)):  # YZ plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[mid_x, j, k]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[mid_x, j, k])
+
+
+# ================================================================
 # WINDING-NUMBER DIAGNOSTIC (M5.1 task 8)
 # ================================================================
 # Compute the topological charge Q of a director field on a sphere around

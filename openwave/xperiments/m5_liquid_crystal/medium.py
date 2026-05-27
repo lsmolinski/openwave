@@ -690,6 +690,17 @@ class FieldObservables:
         self.energyH_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (H)
         self.energyF_global_avg_aJ = ti.field(dtype=ti.f32, shape=())  # mean energy density (F)
 
+        # EM-from-tilts observables (M5.6.5b, "see EM"): distortion modes of the
+        # principal director n̂ that map onto the EM sector verified in M5.6.4 (5a §5d).
+        #   director_div   = ∇·n̂  (signed SPLAY → Coulomb-charge-like; +/− at ± defects)
+        #   director_curl_mag = ‖∇×n̂‖  (TWIST+BEND → B-like circulation magnitude)
+        # Stateless, recomputed each frame by engine3_observables.compute_director_em.
+        # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered diverging) / 7 (‖∇×n̂‖, ironbow).
+        self.director_div_field = ti.field(dtype=ti.f32, shape=grid_size)        # 1/am, signed
+        self.director_curl_mag_field = ti.field(dtype=ti.f32, shape=grid_size)   # 1/am, ≥0
+        self.director_div_absmax = ti.field(dtype=ti.f32, shape=())   # max|∇·n̂| for symmetric color scale
+        self.director_curl_max = ti.field(dtype=ti.f32, shape=())     # max‖∇×n̂‖ for color scale
+
 
 if __name__ == "__main__":
     print("\n================================================================")

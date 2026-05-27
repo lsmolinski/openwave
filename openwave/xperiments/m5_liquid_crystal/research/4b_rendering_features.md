@@ -22,9 +22,9 @@
 
 | Mode | Palette | Reads |
 | --- | --- | --- |
-| 1 Displacement (Magnitude) | orange | `ψ.norm()` (+ vector_warp) |
-| 2 Amplitude (EMA RMS) | ironbow | `amp_local_emarms_am` |
-| 3 Frequency (L&T) | blueprint | `freq_local_cross_rHz` |
+| 1 Deviation (Magnitude) | orange | `ψ.norm()` (+ vector_warp) |
+| 2 Thermal Amp (EMA RMS) | ironbow | `amp_local_emarms_am` |
+| 3 Thermal Clock (omega) | blueprint | `freq_local_cross_rHz` |
 | 4 ENERGY (Hamiltonian) | ironbow | `energyH_density_aJ` |
 | 5 ENERGY (Frank Elastic) | ironbow | `energyF_density_aJ` |
 
@@ -148,3 +148,61 @@ Tracker *infrastructure* (per-voxel EMA fields, crossing detection, global aggre
 - GGUI `scene.lines` / mesh primitives
 
 Net: the rendering layer is **not a rewrite**. It is "add the eigen-decomposition kernel, recompute the scalar observables from M, re-point ~5 reads." The real M5.4 cost stays in the substrate + operators (matrix triple buffer in `medium.py`, commutator `[M_μ, M_ν]`, matrix Laplacian, matrix seeders, Frank/Coulomb on M).
+
+---
+
+## Part 3 — Wiring viz to physical observables (M5.6.5b): "how do I *see* X?"
+
+**Premise (Rodrigo, 2026-05-27).** Through M5.5 the viz channels were mostly placeholders — only the energy flux-meshes (`WAVE_MENU` 4/5) carried real signal. The channels are general-purpose *displays*; the value comes from **wiring each to the observable that builds physical intuition** for the phenomena OpenWave investigates (matter / forces / EM / heat). This part is the observable→channel map: pick a physics question, pick the channel + observable that answers it visually.
+
+> **Repo-discipline note** (per `feedback_repo_discipline`, cardinal rule): this doc frames the wiring by **physics intuition** only. The thermal observables are the `(A, ω)` excess of `project_thermal_amplitude_hypothesis` (hypothesis *name* used as a physics cross-ref, OK in OpenWave). SABER Direct-Heat-Conversion device specs / engineering targets / product framing — the *applied motivation* — stay in the **private SABER repo**, never here.
+
+### The map — physics question → channel + observable
+
+| Phenomenon | "How do I see it?" | Channel | Observable | Status |
+| --- | --- | --- | --- | --- |
+| **EM — electric / charge** | where is the charge, `∇·E`? | flux_mesh color (signed/diverging palette) | `∇·n̂` (director splay) — diverges at defect cores like Coulomb charge | 🚧 NEW (M5.6.5b) |
+| **EM — magnetic / circulation** | where is `B`, the circulation? | flux_mesh color (magnitude) + **vector_warp** (direction) | `∇×n̂` (twist+bend) — magnitude colors, the curl vector ripples the mesh | 🚧 NEW (M5.6.5b) |
+| **Thermal energy `A`** | where is the heat *amplitude*? | flux_mesh color (ironbow) | `‖M−D‖_F` EMA = thermal **A** | ✅ wired (WAVE_MENU 2) |
+| **Thermal clock `ω`** | how fast does it tick (heat↔time)? | flux_mesh color (blueprint) | `‖Ṁ‖_F` EMA = clock **ω** | ✅ wired (WAVE_MENU 3) |
+| **Thermal energy (joint)** | the `(A·ω)` heat content in one view | flux_mesh color | `A·ω` product (combine the two trackers) | 🚧 NEW |
+| **Field energy** | total Hamiltonian / elastic energy | flux_mesh color + scalar warp | `energyH`, `energyF` | ✅ wired (4/5) |
+| **Modulation response** | apply an EM-wave lever → see the thermal `(A,ω)` shift | time-trace / before-after of A,ω under an EM-wave seed | `Δ(A,ω)` vs an applied tilt-wave | 🚧 FUTURE (dynamic; needs M5.7 + an EM-wave seeder) |
+
+### Channel assignments — what each viz primitive is *best* at
+
+| Channel | Best physical use | Current | Target |
+| --- | --- | --- | --- |
+| flux_mesh **color** | any scalar field on the 3 planes | energy H/F + thermal A/ω | + EM `∇·n̂`, `‖∇×n̂‖`, `A·ω` |
+| flux_mesh **scalar warp** | lift the plane by a scalar (3D relief of a field) | energy/amp | pair with whichever color scalar is active |
+| **vector_warp** | ripple the mesh by a *vector* field — best for showing a field *direction* | director deviation `n̂−ẑ` | the **EM curl vector** `∇×n̂` (see B-field direction) |
+| **director glyphs** | the orientation field itself = the LC "field lines" | principal `n̂` | unchanged — these ARE the EM-analog field lines |
+| **granules** | point cloud at voxels; cheap scalar carrier | `voxel + L·n̂` | color each granule by local thermal `A` (a sparse "heat map") |
+
+### Why `∇·n̂` and `∇×n̂` are the right "see EM" observables
+
+The director `n̂` is the LC analog of the field; its **distortion modes** map onto the EM sector verified in M5.6.4 (`5a §5d`): **splay** `∇·n̂` localizes at defect cores exactly like Coulomb charge density (M5.1 already showed the splay/dumbbell geometry around `±` defects, `3a_coulomb_visual_geometry.md`), and **twist+bend** `∇×n̂` is the circulation/`B`-like mode. Computing `∇·n̂` (signed scalar) and `∇×n̂` (vector + magnitude) as production observables turns the abstract "EM emerges from tilts" result into something you can *look at* on the flux mesh. Cheap: the `∇·`/`∇×` kernels already exist (`divergence`/`curl` on the dormant ψ); they re-point onto `director_nhat`.
+
+### Implementation order (M5.6.5b)
+
+1. **EM div/curl first** (freshest — M5.6.4 just validated the EM sector): `compute_director_em` → `director_div` (scalar), `director_curl` (vector) + `director_curl_mag` (scalar). Wire as new WAVE_MENU color modes + route the curl vector to vector_warp.
+2. **`A·ω` joint-thermal product** — a combined color mode from the two existing trackers.
+3. **Modulation experiment** — deferred (dynamic; pairs with M5.7 + an EM-wave seeder).
+
+### As-built log (update as features land)
+
+**✅ EM div/curl — "see charge / see B" (2026-05-27).**
+
+| Aspect | As shipped |
+| --- | --- |
+| Observable | `compute_director_em` (`engine3_observables.py`): `∇·n̂` → `director_div_field` (signed), `‖∇×n̂‖` → `director_curl_mag_field`. Central-diff stencil, 1-cell halo. |
+| Color scale | `compute_director_em_scale`: single-plane `atomic_max` over the 3 render planes → `director_div_absmax`, `director_curl_max` (no full-grid reduction, per `feedback_taichi_metal_atomics`). |
+| WAVE_MENU 6 | **EM div (charge/E)** — `∇·n̂` on greenyellow diverging, symmetric scale `[−div_absmax, +div_absmax]` (signed: ± charge). |
+| WAVE_MENU 7 | **EM curl (circ/B)** — `‖∇×n̂‖` on orange, scaled against the **shared** distortion magnitude `max(div_absmax, curl_max)` — NOT its own max. |
+| Validation | hedgehog `n̂=r̂`: `∇·n̂ = 2/r` (charge), matched to 0.02%; `‖∇×n̂‖ ≈ 0` (radial is curl-free). Headless: render branches compile, finite. |
+
+**The shared-scale design (why curl isn't self-normalized).** A static hedgehog is a *pure charge* — its director is curl-free, so `‖∇×n̂‖` is zero up to ~5e-4 grid-discretization noise. If curl is colored against *its own* max, that noise stretches to full brightness → spurious "rings" around the core (the near-degenerate eigenvector zone amplifies it). Scaling curl against `max(div, curl)` instead makes the B view **honest**: for a static charge `curl/div ≈ 1.6%` → near-black (correctly "no B"); real circulation (a twisting director under Evolve-PDE, or a moving/biaxial-dynamic charge) grows curl to ~div and lights it up. This is the right physics reading — **a static charge has E but no B; B appears with motion/twist**.
+
+**Reading the views.** WAVE_MENU 6 = where the charge is (red/blue ± at defect cores, neutral bulk). WAVE_MENU 7 = where circulation is (dark for a static defect; lights up where the director twists). Under **Evolve PDE** both evolve in real time — that is *not* a glitch, it is the dynamical field: the charge redistributes and the curl/B grows as the director twists (the circulation generated by the moving/oscillating defect). Pausing freezes them.
+
+**🚧 Next:** `A·ω` joint-thermal product mode; route the curl *vector* (`director_curl`) to vector_warp to see B *direction*; granule heat-map color by local thermal `A`.

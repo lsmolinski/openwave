@@ -83,9 +83,9 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 1,
+        "SHOW_FLUX_MESH": 2,
         "WARP_MESH": 0,
-        "SHOW_DIRECTORS": 3,  # all three planes — principal axis of the biaxial frame
+        "SHOW_DIRECTORS": 2,  # all three planes — principal axis of the biaxial frame
         "VIZ_STRIDE": 1,
         "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,

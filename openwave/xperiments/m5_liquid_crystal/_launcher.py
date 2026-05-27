@@ -475,6 +475,12 @@ def display_wave_menu(state):
         if sub.checkbox("ENERGY (Frank Elastic)", state.WAVE_MENU == 5):
             state.WAVE_MENU = 5
             state.wave_field.create_flux_mesh()
+        if sub.checkbox("EM div (charge/E)", state.WAVE_MENU == 6):
+            state.WAVE_MENU = 6
+            state.wave_field.create_flux_mesh()
+        if sub.checkbox("EM curl (circ/B)", state.WAVE_MENU == 7):
+            state.WAVE_MENU = 7
+            state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
@@ -503,6 +509,14 @@ def display_wave_menu(state):
                 # Same "rel." caveat as WAVE_MENU=4 — K_frank=1.0 dimensionless
                 # until M5.6 physical elastic constants land.
                 sub.text(f"0      {state.energyF_global_avg*4:.0e}rel.")
+        if state.WAVE_MENU == 6:  # EM divergence ∇·n̂ on greenyellow diverging gradient (signed)
+            render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
+            with render.gui.sub_window("div (charge/E)", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text(" -           +")
+        if state.WAVE_MENU == 7:  # EM curl ‖∇×n̂‖ on orange gradient
+            render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
+            with render.gui.sub_window("curl (circ/B)", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text("0          max")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -590,6 +604,7 @@ def initialize_xperiment(state):
     global og_palette_vertices, og_palette_colors
     global ib_palette_vertices, ib_palette_colors
     global bp_palette_vertices, bp_palette_colors
+    global gy_palette_vertices, gy_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
@@ -601,6 +616,9 @@ def initialize_xperiment(state):
     )
     bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
         colormap.blueprint, 0.00, 0.73, 0.079, 0.01
+    )
+    gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
+        colormap.greenyellow, 0.00, 0.73, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -789,6 +807,12 @@ def compute_field_observables(state):
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
     observables.compute_energyF_density(state.wave_field, state.observables, observables.K_FRANK)
+
+    # EM-FROM-TILTS OBSERVABLES (M5.6.5b "see EM") ======================
+    # ∇·n̂ (splay = Coulomb-charge-like) + ‖∇×n̂‖ (twist+bend = B-like circulation).
+    # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered) / 7 (‖∇×n̂‖, ironbow).
+    observables.compute_director_em(state.wave_field, state.observables)
+    observables.compute_director_em_scale(state.wave_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
     # ‖M−D‖_F amplitude (thermal A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
