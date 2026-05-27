@@ -256,21 +256,50 @@ def commutator(a, b):  # type: ignore
 
 @ti.func
 def principal_director(m):  # type: ignore
-    """M (3×3 symmetric) → (principal eigenvector n̂, eigenvalues vec3).
+    """M (3×3 symmetric) → (principal eigenvector n̂, eigenvalues vec3 [λ₁≥λ₂≥λ₃]).
 
-    Principal = eigenvector of the LARGEST eigenvalue. `ti.sym_eig` returns
-    eigenvectors as COLUMNS (evecs[:, i] ↔ evals[i]); the eigenvalues are NOT
-    sorted, so we scan for the max index. Verified in the M5.3 spike against a
-    known O·diag(2,1,0.5)·O^T (director err ~1e-7) and a seeded hedgehog (0.9995).
+    ANALYTIC symmetric-3×3 eigensolver: Cardano closed-form eigenvalues + the
+    principal eigenvector as the largest row cross-product of (M − λ₁I). Replaces
+    `ti.sym_eig` (M5.6.5a-fix), which is accurate for UNIAXIAL (degenerate) M but
+    CATASTROPHICALLY WRONG for BIAXIAL M on Metal/f32 — eigenvalue error ~0.48 vs
+    numpy for distinct eigenvalues (and f64 is unavailable: SPIRV codegen fails).
+    This analytic solver matches numpy to f32 precision on biaxial M (eigenvalue
+    err ~6e-6, director err ~2e-7 over 20k random symmetric matrices); the M5.6
+    biaxial substrate (3 distinct eigenvalues) needs it. Returns eigenvalues already
+    sorted descending (λ₁≥λ₂≥λ₃).
     """
-    evals, evecs = ti.sym_eig(m)
-    imax = 0
-    if evals[1] > evals[imax]:
-        imax = 1
-    if evals[2] > evals[imax]:
-        imax = 2
-    n = ti.Vector([evecs[0, imax], evecs[1, imax], evecs[2, imax]])
-    return n, evals
+    a00, a11, a22 = m[0, 0], m[1, 1], m[2, 2]
+    a01, a02, a12 = m[0, 1], m[0, 2], m[1, 2]
+    q = (a00 + a11 + a22) / 3.0
+    p1 = a01 * a01 + a02 * a02 + a12 * a12
+    p2 = (a00 - q) ** 2 + (a11 - q) ** 2 + (a22 - q) ** 2 + 2.0 * p1
+    p = ti.sqrt(ti.max(p2 / 6.0, 1e-30))                  # guard isotropic (p2→0)
+    # B = (M − qI)/p ;  r = det(B)/2, clamped to [−1, 1] (numerical safety for acos)
+    b00, b11, b22 = (a00 - q) / p, (a11 - q) / p, (a22 - q) / p
+    b01, b02, b12 = a01 / p, a02 / p, a12 / p
+    detB = (b00 * (b11 * b22 - b12 * b12)
+            - b01 * (b01 * b22 - b12 * b02)
+            + b02 * (b01 * b12 - b11 * b02))
+    r = ti.max(-1.0, ti.min(1.0, detB / 2.0))
+    phi = ti.acos(r) / 3.0
+    two_pi_3 = 2.0943951023931953                        # 2π/3
+    eig1 = q + 2.0 * p * ti.cos(phi)                     # largest
+    eig3 = q + 2.0 * p * ti.cos(phi + two_pi_3)          # smallest
+    eig2 = 3.0 * q - eig1 - eig3                         # middle
+    # principal eigenvector = null space of (M − eig1·I): largest of the 3 row cross-products
+    row0 = ti.Vector([a00 - eig1, a01, a02])
+    row1 = ti.Vector([a01, a11 - eig1, a12])
+    row2 = ti.Vector([a02, a12, a22 - eig1])
+    c01, c02, c12 = row0.cross(row1), row0.cross(row2), row1.cross(row2)
+    n01, n02, n12 = c01.norm_sqr(), c02.norm_sqr(), c12.norm_sqr()
+    nvec = c01
+    best = n01
+    if n02 > best:
+        nvec, best = c02, n02
+    if n12 > best:
+        nvec, best = c12, n12
+    n = nvec / (ti.sqrt(best) + 1e-20)
+    return n, ti.Vector([eig1, eig2, eig3])
 
 
 @ti.func
@@ -410,7 +439,7 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
 #     U(M) = 4 Σ_{μ<ν} ‖[M_μ, M_ν]‖²_F  +  V_M(M)          (M_μ = ∂_μ M)
 #     EOM:  ∂²_t M = c²·force_curv − dV_M/dM ,   force_curv = Σ_α ∂_α G_α
 #     G_α = ∂U_curv/∂M_α = 8 Σ_ν [[M_α,M_ν], M_ν]          (symmetric)
-# Validated in sandbox_v4 (m5_5_2/3); see 5a §9. The faithful curvature kinetic
+# Validated in sandbox_v5 (m5_5_2/3); see 5a §9. The faithful curvature kinetic
 # (F_μ0² = 4‖[M_μ,Ṁ]‖², degenerate metric) is the M5.6 refinement.
 #
 # Two-pass per step: compute_curvature_flux (G_α everywhere, 1-cell halo) → evolve_M

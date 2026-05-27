@@ -134,6 +134,7 @@ class SimulationState:
         self.ldg_a = 0.0
         self.ldg_b = 0.0
         self.ldg_c = 0.0
+        self.ldg_v0 = 0.0  # vacuum potential V_M(D), subtracted in the energyH display (M5.6.5c)
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -176,11 +177,15 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.SHOW_DIRECTORS = 0  # M5.1: director-glyph overlay (0=off, 1=XY, 2=+XZ, 3=all)
-        self.VIZ_STRIDE = (
-            4  # M5.1: shared sampling stride for directors AND granules (every Nth voxel)
+        self.GLYPH_VECTOR = 0  # glyph vector source — 0=director (E field lines), 1=∇×n̂ (B field)
+        self.GLYPH_SIZE = (
+            0  # glyph shaft — 0=unit (director), 1=field magnitude (E:|∇·n̂|, B:‖∇×n̂‖)
         )
-        self.PARTICLE_SHELL = False
+        self.GLYPH_COLOR = (
+            1  # glyph color — 0=single (COLOR_MEDIUM, see far field), 1=field gradient
+        )
+        self.SHOW_GLYPHS = 0  # director-glyph planes (0=off, 1=XY, 2=+XZ, 3=all)
+        self.VIZ_STRIDE = 4  # sampling stride for directors AND granules (every Nth voxel)
         self.SHOW_GRANULES = False
         self.SIM_SPEED = 1.0
         self.PAUSED = False
@@ -243,9 +248,8 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
-        self.SHOW_DIRECTORS = ui.get("SHOW_DIRECTORS", 0)
+        self.SHOW_GLYPHS = ui.get("SHOW_GLYPHS", 0)
         self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
-        self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
         self.PAUSED = ui["PAUSED"]
@@ -344,11 +348,34 @@ class SimulationState:
             # 400 steps vs [0.73, 1.21] for free-wave). 0.3·(c/dx)² is the
             # marginal stability ceiling at the production grid.
             self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
+            # M5.6.5c — Eq.13 LdG V(M) coupling for the matrix substrate (evolve_M /
+            # compute_energyH_density_M). The b=0 amplitude well V = a·Tr(M²) + c·(Tr(M²))²
+            # pins Tr(M²)→s₂*=1+δ² — confines the energy seen diluting under Evolve PDE —
+            # while leaving the biaxiality δ EXACTLY flat (the canonical 3-term Eq.13 has NO
+            # biaxial minimum: for any (a,b,c) the nonzero eigenvalues collapse to one λ*;
+            # 5a §5f). Natural cubic-balance unit is c²/dx⁴ (production sweep m5_6_5c_prod_scale:
+            # confines 3.3× across k∈[0.5,25] with no blow-up, dt²-stable). OFF unless the
+            # xperiment sets LDG_STIFFNESS_K > 0. b=0 is the interim — a fully biaxial-STABLE
+            # vacuum needs an extra invariant in V (Q7, flagged to Duda).
+            ldg_k = float(self.TOPOLOGY_SEED.get("LDG_STIFFNESS_K", 0.0))
+            if ldg_k > 0.0:
+                delta = float(self.TOPOLOGY_SEED.get("BIAXIAL_DELTA", 0.3))
+                self.ldg_c = ldg_k * self.c_amrs**2 / self.wave_field.dx_am**4
+                self.ldg_a = -2.0 * self.ldg_c * (1.0 + delta * delta)  # min at s₂*=1+δ²
+                self.ldg_b = 0.0
+                # vacuum potential V_M(D=diag(1,δ,0)) — subtracted in the energyH display so
+                # the negative well bottom doesn't swamp the structure (kernel docstring).
+                tr2_vac = 1.0 + delta * delta
+                tr3_vac = 1.0 + delta * delta * delta
+                self.ldg_v0 = self.ldg_a * tr2_vac - self.ldg_b * tr3_vac + self.ldg_c * tr2_vac**2
+            else:
+                self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         else:
             # Wave-class seed (TEST_SEED plane wave) — disable V(ψ) entirely
             # so evolve_psi runs the free-wave equation `∂²ψ/∂t² = c²·∇²ψ`.
             self.m_freq_kg_rs = 0.0
             self.lambda_phi4 = 0.0
+            self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -359,6 +386,7 @@ class SimulationState:
         self.cfl_factor = 0.0
         self.m_freq_kg_rs = 0.0
         self.lambda_phi4 = 0.0
+        self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -417,8 +445,22 @@ def display_controls(state):
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
-        state.SHOW_DIRECTORS = sub.slider_int("Directors", state.SHOW_DIRECTORS, 0, 3)
-        state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
+        # glyph shows the director (E-field lines) or ∇×n̂ (B-field direction)
+        if sub.checkbox("EM Field Glyph (off=E/on=B)", state.GLYPH_VECTOR == 1):
+            state.GLYPH_VECTOR = 1
+        else:
+            state.GLYPH_VECTOR = 0
+        # shaft length: unit (director, all glyphs visible) vs field magnitude (E: |∇·n̂| charge
+        # density, B: ‖∇×n̂‖); color: single flat COLOR_MEDIUM (see far field) vs field gradient.
+        if sub.checkbox("Glyph Size (unit/magnitude)", state.GLYPH_SIZE == 1):
+            state.GLYPH_SIZE = 1
+        else:
+            state.GLYPH_SIZE = 0
+        if sub.checkbox("Glyph Color (single/gradient)", state.GLYPH_COLOR == 1):
+            state.GLYPH_COLOR = 1
+        else:
+            state.GLYPH_COLOR = 0
+        state.SHOW_GLYPHS = sub.slider_int("Planes", state.SHOW_GLYPHS, 0, 3)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
@@ -450,6 +492,12 @@ def display_wave_menu(state):
         if sub.checkbox("ENERGY (Frank Elastic)", state.WAVE_MENU == 5):
             state.WAVE_MENU = 5
             state.wave_field.create_flux_mesh()
+        if sub.checkbox("EM div (charge/E)", state.WAVE_MENU == 6):
+            state.WAVE_MENU = 6
+            state.wave_field.create_flux_mesh()
+        if sub.checkbox("EM curl (circ/B)", state.WAVE_MENU == 7):
+            state.WAVE_MENU = 7
+            state.wave_field.create_flux_mesh()
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
@@ -478,6 +526,14 @@ def display_wave_menu(state):
                 # Same "rel." caveat as WAVE_MENU=4 — K_frank=1.0 dimensionless
                 # until M5.6 physical elastic constants land.
                 sub.text(f"0      {state.energyF_global_avg*4:.0e}rel.")
+        if state.WAVE_MENU == 6:  # EM divergence ∇·n̂ on greenyellow diverging gradient (signed)
+            render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
+            with render.gui.sub_window("div (charge/E)", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text(" -           +")
+        if state.WAVE_MENU == 7:  # EM curl ‖∇×n̂‖ on orange gradient
+            render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
+            with render.gui.sub_window("curl (circ/B)", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text("0          max")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -565,6 +621,7 @@ def initialize_xperiment(state):
     global og_palette_vertices, og_palette_colors
     global ib_palette_vertices, ib_palette_colors
     global bp_palette_vertices, bp_palette_colors
+    global gy_palette_vertices, gy_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
@@ -576,6 +633,9 @@ def initialize_xperiment(state):
     )
     bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
         colormap.blueprint, 0.00, 0.73, 0.079, 0.01
+    )
+    gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
+        colormap.greenyellow, 0.00, 0.73, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -640,6 +700,25 @@ def initialize_xperiment(state):
                 f"D/4 = {domain_quarter_voxels:.1f} voxels"
             )
 
+        elif seed_mode == "biaxial_hedgehog":
+            # M5.6.5a: a single BIAXIAL hedgehog M = O·D(s(r))·Oᵀ, D = diag(1, δ, 0)
+            # (frame O=[r̂|e_Θ|e_Φ] + disclination smoothstep + radial eigenvalue melt).
+            wf = state.wave_field
+            center = topo.get("CENTER", [0.5, 0.5, 0.5])
+            cx = int(round(center[0] * (wf.nx - 1)))
+            cy = int(round(center[1] * (wf.ny - 1)))
+            cz = int(round(center[2] * (wf.nz - 1)))
+            r0_vox = float(topo.get("R0_FRACTION", 0.06) * max(wf.nx, wf.ny, wf.nz))
+            rhoc_vox = float(topo.get("RHOC_VOXELS", 3.0))
+            biaxial_delta = float(topo.get("BIAXIAL_DELTA", 0.3))
+            seeds.seed_biaxial_hedgehog_M(wf, cx, cy, cz, r0_vox, rhoc_vox, biaxial_delta)
+            # NO auto-relax: the biaxial M is constructed directly; relax_director_step would
+            # rebuild M uniaxially from the director and destroy the biaxial structure.
+            print(
+                f"[M5.6.5a] seeded biaxial hedgehog D=diag(1,{biaxial_delta},0) at "
+                f"({cx},{cy},{cz}); r0={r0_vox:.1f}, ρc={rhoc_vox:.1f} voxels (no relax)"
+            )
+
         else:
             print(f"[M5.1] WARNING: unknown TOPOLOGY_SEED mode: {seed_mode!r}")
 
@@ -694,7 +773,7 @@ def compute_propagation(state):
 
     Evolves the Landau–de Gennes order parameter M under Duda's Eq.18 action
     (simple ½‖Ṁ‖² kinetic + faithful potential, validated symplectic in
-    sandbox_v4/m5_5_4_matrix_evolution_check.py):
+    sandbox_v5/m5_5_4_matrix_evolution_check.py):
 
         ∂²_t M = c²·Σ_α ∂_α G_α − dV_M(M) ,   G_α = 8 Σ_ν [[M_α,M_ν],M_ν]
 
@@ -736,6 +815,7 @@ def compute_field_observables(state):
         state.ldg_a,
         state.ldg_b,
         state.ldg_c,
+        state.ldg_v0,
         1.0,
     )
 
@@ -744,6 +824,12 @@ def compute_field_observables(state):
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
     observables.compute_energyF_density(state.wave_field, state.observables, observables.K_FRANK)
+
+    # EM-FROM-TILTS OBSERVABLES (M5.6.5b "see EM") ======================
+    # ∇·n̂ (splay = Coulomb-charge-like) + ‖∇×n̂‖ (twist+bend = B-like circulation).
+    # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered) / 7 (‖∇×n̂‖, ironbow).
+    observables.compute_director_em(state.wave_field, state.observables)
+    observables.compute_director_em_scale(state.wave_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
     # ‖M−D‖_F amplitude (thermal A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
@@ -835,58 +921,61 @@ def render_elements(state):
     # M5.1 director-glyph overlay — line segments showing n̂ orientation,
     # signed-component RGB so opposite directions are visually opposite.
     # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
-    if state.SHOW_DIRECTORS > 0:
+    if state.SHOW_GLYPHS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
-        arrow_length = (
-            glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
-        )
-        viz.update_director_glyphs(
-            state.wave_field, glyph_length, arrow_length, state.SHOW_DIRECTORS
-        )
-        render.scene.lines(
-            state.wave_field.director_glyph_vertices,
-            per_vertex_color=state.wave_field.director_glyph_colors,
-            width=2.0,
-        )
-        # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
-        if viz.SHOW_DIRECTOR_ARROWHEAD:
+        if state.GLYPH_VECTOR == 1:  # M5.6.5b: B-field vectors (∇×n̂) — reuse glyph buffers
+            em_scale = max(
+                state.observables.director_div_absmax[None],
+                state.observables.director_curl_max[None],
+            )  # shared distortion scale (matches WAVE_MENU 7)
+            viz.update_em_vector_glyphs(
+                state.wave_field,
+                state.observables,
+                glyph_length,
+                em_scale,
+                state.SHOW_GLYPHS,
+                state.GLYPH_SIZE,
+                state.GLYPH_COLOR,
+            )
+            render.scene.lines(
+                state.wave_field.director_glyph_vertices,
+                per_vertex_color=state.wave_field.director_glyph_colors,
+                width=2.0,
+            )
+            # half-arrow barb pass — B vectors are polar; the tip shows circulation direction
             render.scene.lines(
                 state.wave_field.director_glyph_arrow_vertices,
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
-
-    if state.PARTICLE_SHELL:
-        # Convert wave-centers positions from [ijk] to [screen_normalization]
-        # Use position_float for smooth rendering (position_grid is integer, causes jumpy motion)
-        # Normalize by max_grid_size to respect asymmetric universes (like flux_mesh does)
-        max_dim = float(state.wave_field.max_grid_size)
-        for wc_idx in range(state.wave_center.num_sources):
-            # Skip inactive (annihilated) WCs
-            if state.wave_center.active[wc_idx] == 0:
-                continue
-
-            wc_pos_screen = ti.Vector(
-                [
-                    state.wave_center.position_float[wc_idx][0] / max_dim,
-                    state.wave_center.position_float[wc_idx][1] / max_dim,
-                    state.wave_center.position_float[wc_idx][2] / max_dim,
-                ],
-                dt=ti.f32,
+        else:  # director / E-field lines (the LC field lines)
+            arrow_length = (
+                glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
             )
-            position = np.array(
-                [[wc_pos_screen[0], wc_pos_screen[1], wc_pos_screen[2]]], dtype=np.float32
+            # M5.6.5b: glyphs colored by ∇·n̂ (charge, greenyellow — matches WM6 mesh)
+            div_scale = state.observables.director_div_absmax[None]
+            viz.update_director_glyphs(
+                state.wave_field,
+                state.observables,
+                glyph_length,
+                arrow_length,
+                state.SHOW_GLYPHS,
+                div_scale,
+                state.GLYPH_SIZE,
+                state.GLYPH_COLOR,
             )
-            # Particle shell radius — fixed-fraction-of-universe-edge default.
-            # M5.2 replaces with per-defect-type Compton wavelength sizing.
-            radius = 0.02  # ~2% of normalized universe edge
-            color = (
-                colormap.COLOR_PARTICLE[1]
-                if state.SOURCES_OFFSET_DEG[wc_idx] == 180
-                else colormap.COLOR_ANTI[1]
+            render.scene.lines(
+                state.wave_field.director_glyph_vertices,
+                per_vertex_color=state.wave_field.director_glyph_colors,
+                width=2.0,
             )
-            # Render particle shell at wave-center position
-            render.scene.particles(position, radius, color=color)
+            # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
+            if viz.SHOW_DIRECTOR_ARROWHEAD:
+                render.scene.lines(
+                    state.wave_field.director_glyph_arrow_vertices,
+                    per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                    width=2.0,
+                )
 
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)
@@ -922,7 +1011,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topology1"
+    default_xperiment = selected_xperiment_arg or "_topo_biaxial1_von"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

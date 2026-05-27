@@ -16,6 +16,11 @@ import taichi as ti
 
 from openwave.common import colormap
 
+# Single-color glyph mode (M5.6.5b "Glyph Color = single"): a flat color so weak/far-field
+# glyphs stay visible (the gradient palettes fade them toward black). Sourced from the
+# colormap module (COLOR_MEDIUM = light blue) — single source of truth, no hardcoded RGB.
+_GLYPH_SINGLE_COLOR = colormap.COLOR_MEDIUM[1]  # (r, g, b) tuple, resolved at kernel compile time
+
 # ================================================================
 # POSITION RENDER
 # ================================================================
@@ -53,7 +58,6 @@ def sample_position_to_render(
             [ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]
         )
         wave_field.position_render[render_idx] = displaced / max_dim
-
 
 
 # ================================================================
@@ -132,23 +136,20 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # Frank elastic density on ironbow (defect-focused palette)
-            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+        if wave_menu == 1:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                energyF_value, 0.0, F_max
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                energyF_value / F_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
-            )
-        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                energyH_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                energyH_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
+                amp_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # blueprint
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_blueprint_color(
@@ -159,19 +160,48 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[2] * (
                 wave_field.nz / wave_field.max_grid_size
             )
-        elif wave_menu == 2:  # ironbow
+        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+                energyH_value, 0.0, H_max
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                amp_value / univ_edge_z * warp_mesh
+                energyH_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
+            )
+        elif wave_menu == 5:  # Frank elastic density on ironbow (defect-focused palette)
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
+                energyF_value, 0.0, F_max
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                energyF_value / F_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size))
+            )
+        elif (
+            wave_menu == 6
+        ):  # EM divergence ∇·n̂ (splay = Coulomb charge) on greenyellow diverging
+            div_s = observables.director_div_absmax[None] + 1e-12
+            div_v = observables.director_div_field[i, j, wave_field.fm_plane_z_idx]
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
+                div_v, -div_s, div_s
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                div_v / div_s * 0.3 * warp_mesh / 300.0
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
-            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(dev, 0.0, 2.0)
+        elif wave_menu == 7:  # EM curl ‖∇×n̂‖ (twist+bend = circulation/B) on orange
+            # Shared director-distortion scale (M5.6.5b): scale curl against max(|∇·n̂|, ‖∇×n̂‖),
+            # NOT its own max — so a static hedgehog's tiny discretization-noise curl reads
+            # near-black (no circulation = no B for a static charge); real twist/dynamics lights it.
+            curl_s = (
+                ti.max(observables.director_div_absmax[None], observables.director_curl_max[None])
+                + 1e-12
+            )
+            curl_v = observables.director_curl_mag_field[i, j, wave_field.fm_plane_z_idx]
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(curl_v, 0.0, curl_s)
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                curl_v / curl_s * 0.3 * warp_mesh / 300.0
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
 
@@ -189,23 +219,20 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # Frank elastic density on ironbow
-            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+        if wave_menu == 1:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                energyF_value, 0.0, F_max
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                energyF_value / F_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
-            )
-        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                energyH_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                energyH_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
+                amp_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # blueprint
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_blueprint_color(
@@ -216,19 +243,48 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[1] * (
                 wave_field.ny / wave_field.max_grid_size
             )
-        elif wave_menu == 2:  # ironbow
+        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+                energyH_value, 0.0, H_max
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                amp_value / univ_edge_y * warp_mesh
+                energyH_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
+            )
+        elif wave_menu == 5:  # Frank elastic density on ironbow
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
+                energyF_value, 0.0, F_max
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                energyF_value / F_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size))
+            )
+        elif (
+            wave_menu == 6
+        ):  # EM divergence ∇·n̂ (splay = Coulomb charge) on greenyellow diverging
+            div_s = observables.director_div_absmax[None] + 1e-12
+            div_v = observables.director_div_field[i, wave_field.fm_plane_y_idx, k]
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
+                div_v, -div_s, div_s
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                div_v / div_s * 0.3 * warp_mesh / 300.0
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
-            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+        elif wave_menu == 7:  # EM curl ‖∇×n̂‖ (twist+bend = circulation/B) on orange
+            # Shared director-distortion scale (M5.6.5b): scale curl against max(|∇·n̂|, ‖∇×n̂‖),
+            # NOT its own max — so a static hedgehog's tiny discretization-noise curl reads
+            # near-black (no circulation = no B for a static charge); real twist/dynamics lights it.
+            curl_s = (
+                ti.max(observables.director_div_absmax[None], observables.director_curl_max[None])
+                + 1e-12
+            )
+            curl_v = observables.director_curl_mag_field[i, wave_field.fm_plane_y_idx, k]
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                curl_v / curl_s * 0.3 * warp_mesh / 300.0
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
 
@@ -246,23 +302,20 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # Frank elastic density on ironbow
-            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+        if wave_menu == 1:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
+            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # ironbow
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                energyF_value, 0.0, F_max
+                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                energyF_value / F_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
-            )
-        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
-            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                energyH_value, 0.0, H_max
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                energyH_value / H_max * 0.3 * warp_mesh / 300.0
-                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
+                amp_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
         elif wave_menu == 3:  # blueprint
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_blueprint_color(
@@ -273,22 +326,50 @@ def update_flux_mesh_values(
             ] / 3000 * warp_mesh + wave_field.flux_mesh_planes[0] * (
                 wave_field.nx / wave_field.max_grid_size
             )
-        elif wave_menu == 2:  # ironbow
+        elif wave_menu == 4:  # Energy density (Hamiltonian) on ironbow
+            H_max = observables.energyH_global_avg_aJ[None] * 4.0 + 1e-10
             wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                amp_value, 0, trackers.amp_global_emarms_am[None] * 2
+                energyH_value, 0.0, H_max
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                amp_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+                energyH_value / H_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
             )
-        else:  # Orientation deviation ‖n̂−ẑ‖ on orange (wave_menu == 1)
-            dev = (dir_value - ti.Vector([0.0, 0.0, 1.0])).norm()  # 0 at vacuum ẑ, →2 at −ẑ
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(dev, 0.0, 2.0)
+        elif wave_menu == 5:  # Frank elastic density on ironbow
+            F_max = observables.energyF_global_avg_aJ[None] * 4.0 + 1e-10
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
+                energyF_value, 0.0, F_max
+            )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                dev / 2.0 * 0.3 * warp_mesh / 300.0
+                energyF_value / F_max * 0.3 * warp_mesh / 300.0
+                + (wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size))
+            )
+        elif (
+            wave_menu == 6
+        ):  # EM divergence ∇·n̂ (splay = Coulomb charge) on greenyellow diverging
+            div_s = observables.director_div_absmax[None] + 1e-12
+            div_v = observables.director_div_field[wave_field.fm_plane_x_idx, j, k]
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
+                div_v, -div_s, div_s
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                div_v / div_s * 0.3 * warp_mesh / 300.0
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-
+        elif wave_menu == 7:  # EM curl ‖∇×n̂‖ (twist+bend = circulation/B) on orange
+            # Shared director-distortion scale (M5.6.5b): scale curl against max(|∇·n̂|, ‖∇×n̂‖),
+            # NOT its own max — so a static hedgehog's tiny discretization-noise curl reads
+            # near-black (no circulation = no B for a static charge); real twist/dynamics lights it.
+            curl_s = (
+                ti.max(observables.director_div_absmax[None], observables.director_curl_max[None])
+                + 1e-12
+            )
+            curl_v = observables.director_curl_mag_field[wave_field.fm_plane_x_idx, j, k]
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                curl_v / curl_s * 0.3 * warp_mesh / 300.0
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
 
 
 # ================================================================
@@ -337,9 +418,13 @@ ARROWHEAD_PERP_COMP = math.sin(_arrow_rad)  # component along perpendicular axis
 @ti.kernel
 def update_director_glyphs(
     wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
     length: ti.f32,  # type: ignore
     arrow_length: ti.f32,  # type: ignore
     show_level: ti.i32,  # type: ignore
+    div_scale: ti.f32,  # type: ignore
+    size_mode: ti.i32,  # type: ignore
+    color_mode: ti.i32,  # type: ignore
 ):
     """
     Update the director-glyph line-segment field by sampling ψ on the
@@ -412,15 +497,23 @@ def update_director_glyphs(
             i = ti.min(si * stride, nx - 1)
             j = ti.min(sj * stride, ny - 1)
             n_hat = wave_field.director_nhat[i, j, z_plane_idx]  # M5.4: principal eigenvector of M
+            div_v = observables.director_div_field[i, j, z_plane_idx]
 
+            # +0.5 on the two in-plane axes aligns the glyph origin with the
+            # flux-mesh cell center (create_flux_mesh: verts at (idx+0.5)/max_dim).
+            # Perpendicular uses the mesh's own continuous plane coord (fm_plane_z_pos),
+            # not z_plane_idx/max_dim — keeps the glyph welded to the sheet on any grid.
             pos = ti.Vector(
                 [
-                    ti.cast(i, ti.f32) / max_dim,
-                    ti.cast(j, ti.f32) / max_dim,
-                    ti.cast(z_plane_idx, ti.f32) / max_dim,
+                    (ti.cast(i, ti.f32) + 0.5) / max_dim,
+                    (ti.cast(j, ti.f32) + 0.5) / max_dim,
+                    wave_field.fm_plane_z_pos,
                 ]
             )
-            tip = pos + length * n_hat
+            shaft = length
+            if size_mode == 1:  # magnitude = |∇·n̂| charge density
+                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
+            tip = pos + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -428,7 +521,10 @@ def update_director_glyphs(
             # CHANGE THIS LINE to test palettes (both start dark, end bright):
             #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            # M5.6.5b: color by ∇·n̂ (charge), greenyellow signed — matches WM6 mesh
+            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
+            if color_mode == 1:
+                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
             wave_field.director_glyph_vertices[idx + 0] = pos
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
@@ -442,7 +538,7 @@ def update_director_glyphs(
                 ref = ti.Vector([1.0, 0.0, 0.0])
             perp = n_hat.cross(ref).normalized()
             barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * barb_dir
+            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
             wave_field.director_glyph_arrow_vertices[idx + 0] = tip
             wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
             wave_field.director_glyph_arrow_colors[idx + 0] = color
@@ -464,15 +560,20 @@ def update_director_glyphs(
             i = ti.min(si * stride, nx - 1)
             k = ti.min(sk * stride, nz - 1)
             n_hat = wave_field.director_nhat[i, y_plane_idx, k]  # M5.4: principal eigenvector of M
+            div_v = observables.director_div_field[i, y_plane_idx, k]
 
+            # +0.5 in-plane (i, k); perpendicular = mesh's continuous fm_plane_y_pos.
             pos = ti.Vector(
                 [
-                    ti.cast(i, ti.f32) / max_dim,
-                    ti.cast(y_plane_idx, ti.f32) / max_dim,
-                    ti.cast(k, ti.f32) / max_dim,
+                    (ti.cast(i, ti.f32) + 0.5) / max_dim,
+                    wave_field.fm_plane_y_pos,
+                    (ti.cast(k, ti.f32) + 0.5) / max_dim,
                 ]
             )
-            tip = pos + length * n_hat
+            shaft = length
+            if size_mode == 1:  # magnitude = |∇·n̂| charge density
+                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
+            tip = pos + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -480,7 +581,9 @@ def update_director_glyphs(
             # CHANGE THIS LINE to test palettes (both start dark, end bright):
             #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
+            if color_mode == 1:
+                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
             wave_field.director_glyph_vertices[idx + 0] = pos
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
@@ -491,7 +594,7 @@ def update_director_glyphs(
                 ref = ti.Vector([1.0, 0.0, 0.0])
             perp = n_hat.cross(ref).normalized()
             barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * barb_dir
+            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
             wave_field.director_glyph_arrow_vertices[idx + 0] = tip
             wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
             wave_field.director_glyph_arrow_colors[idx + 0] = color
@@ -513,15 +616,20 @@ def update_director_glyphs(
             j = ti.min(sj * stride, ny - 1)
             k = ti.min(sk * stride, nz - 1)
             n_hat = wave_field.director_nhat[x_plane_idx, j, k]  # M5.4: principal eigenvector of M
+            div_v = observables.director_div_field[x_plane_idx, j, k]
 
+            # +0.5 in-plane (j, k); perpendicular = mesh's continuous fm_plane_x_pos.
             pos = ti.Vector(
                 [
-                    ti.cast(x_plane_idx, ti.f32) / max_dim,
-                    ti.cast(j, ti.f32) / max_dim,
-                    ti.cast(k, ti.f32) / max_dim,
+                    wave_field.fm_plane_x_pos,
+                    (ti.cast(j, ti.f32) + 0.5) / max_dim,
+                    (ti.cast(k, ti.f32) + 0.5) / max_dim,
                 ]
             )
-            tip = pos + length * n_hat
+            shaft = length
+            if size_mode == 1:  # magnitude = |∇·n̂| charge density
+                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
+            tip = pos + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -529,7 +637,9 @@ def update_director_glyphs(
             # CHANGE THIS LINE to test palettes (both start dark, end bright):
             #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
             #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            color = colormap.get_blueprint_color(1.0 - n_hat[2], 0.0, 2.0)
+            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
+            if color_mode == 1:
+                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
             wave_field.director_glyph_vertices[idx + 0] = pos
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
@@ -540,7 +650,7 @@ def update_director_glyphs(
                 ref = ti.Vector([1.0, 0.0, 0.0])
             perp = n_hat.cross(ref).normalized()
             barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * barb_dir
+            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
             wave_field.director_glyph_arrow_vertices[idx + 0] = tip
             wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
             wave_field.director_glyph_arrow_colors[idx + 0] = color
@@ -554,3 +664,111 @@ def update_director_glyphs(
             wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
             wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
             wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+
+@ti.kernel
+def update_em_vector_glyphs(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+    length: ti.f32,  # type: ignore
+    scale: ti.f32,  # type: ignore
+    show_level: ti.i32,  # type: ignore
+    size_mode: ti.i32,  # type: ignore
+    color_mode: ti.i32,  # type: ignore
+):
+    """M5.6.5b — B-direction glyphs: half-arrow segments along ∇×n̂ (the curl/circulation vector).
+
+    Reuses the director-glyph BUFFERS (shaft + arrowhead) + 3-plane sampling, but the segment
+    points along the curl vector observables.director_curl_field, colored by ‖∇×n̂‖ on the
+    BLUERED gradient. Shaft length ∝ min(‖curl‖/scale, 1) so the view declutters where there is
+    no circulation (static charge ⇒ ~zero-length, invisible; real twist ⇒ visible arrows with a
+    half-barb tip showing the B direction). The barb scales with the shaft (also vanishes at
+    curl≈0). `scale` = the shared distortion magnitude max(|∇·n̂|, ‖∇×n̂‖) (matches WAVE_MENU 7).
+    show_level mirrors SHOW_DIRECTORS (0 off, 1 XY, 2 +XZ, 3 all). Writes director_glyph_vertices/
+    colors + director_glyph_arrow_vertices/colors; the launcher renders both via scene.lines.
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    stride = wave_field.GLYPH_STRIDE
+    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
+    nx_s, ny_s, nz_s = wave_field.glyph_nx_s, wave_field.glyph_ny_s, wave_field.glyph_nz_s
+    z_idx, y_idx, x_idx = wave_field.fm_plane_z_idx, wave_field.fm_plane_y_idx, wave_field.fm_plane_x_idx
+    inv_s = 1.0 / (scale + 1e-12)
+    zero_v = ti.Vector([0.0, 0.0, 0.0])
+
+    for plane in range(3):
+        n_si = nx_s if plane < 2 else ny_s          # plane 0=XY, 1=XZ, 2=YZ
+        n_sj = ny_s if plane == 0 else nz_s
+        base = wave_field.glyph_offset_xy
+        if plane == 1:
+            base = wave_field.glyph_offset_xz
+        if plane == 2:
+            base = wave_field.glyph_offset_yz
+        for sa, sb in ti.ndrange(n_si, n_sj):
+            idx = (base + sa * n_sj + sb) * 2
+            on = (plane == 0 and show_level >= 1) or (plane == 1 and show_level >= 2) \
+                or (plane == 2 and show_level >= 3)
+            if on:
+                # map (sa, sb) → voxel (i, j, k) on the active plane
+                i = ti.min(sa * stride, nx - 1) if plane < 2 else x_idx
+                j = y_idx
+                k = z_idx
+                if plane == 0:
+                    j = ti.min(sb * stride, ny - 1)
+                if plane == 1:
+                    k = ti.min(sb * stride, nz - 1)
+                if plane == 2:
+                    j = ti.min(sa * stride, ny - 1)
+                    k = ti.min(sb * stride, nz - 1)
+                curl = observables.director_curl_field[i, j, k]
+                mag = curl.norm()
+                dirv = curl / (mag + 1e-12)
+                # +0.5 on the two in-plane axes (flux-mesh cell center); the
+                # perpendicular axis is then snapped to the mesh's continuous plane
+                # coord (fm_plane_*_pos) so glyphs sit exactly on the sheet.
+                half = ti.Vector([0.5, 0.5, 0.5])
+                if plane == 0:      # XY slice → k is perpendicular
+                    half[2] = 0.0
+                elif plane == 1:    # XZ slice → j is perpendicular
+                    half[1] = 0.0
+                else:               # YZ slice → i is perpendicular
+                    half[0] = 0.0
+                pos = (ti.Vector([ti.cast(i, ti.f32), ti.cast(j, ti.f32),
+                                  ti.cast(k, ti.f32)]) + half) / max_dim
+                if plane == 0:
+                    pos[2] = wave_field.fm_plane_z_pos
+                elif plane == 1:
+                    pos[1] = wave_field.fm_plane_y_pos
+                else:
+                    pos[0] = wave_field.fm_plane_x_pos
+                # shaft: unit (dirv≈unit wherever curl detectable) or field magnitude (declutters)
+                shaft = length
+                if size_mode == 1:
+                    shaft = length * ti.min(mag * inv_s, 1.0)
+                tip = pos + shaft * dirv
+                color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
+                if color_mode == 1:
+                    color = colormap.get_orange_color(mag, 0.0, scale + 1e-12)  # magnitude, matches WM7
+                wave_field.director_glyph_vertices[idx + 0] = pos
+                wave_field.director_glyph_vertices[idx + 1] = tip
+                wave_field.director_glyph_colors[idx + 0] = color
+                wave_field.director_glyph_colors[idx + 1] = color
+                # half-arrow barb at the tip (stable perp; /(norm+eps) avoids NaN at curl≈0)
+                ref = ti.Vector([0.0, 0.0, 1.0])
+                if ti.abs(dirv[2]) > 0.9:
+                    ref = ti.Vector([1.0, 0.0, 0.0])
+                perp = dirv.cross(ref)
+                perp = perp / (perp.norm() + 1e-12)
+                barb_dir = ARROWHEAD_BACK_COMP * dirv + ARROWHEAD_PERP_COMP * perp
+                barb_end = tip + (ARROWHEAD_LENGTH_FRAC * shaft) * barb_dir
+                wave_field.director_glyph_arrow_vertices[idx + 0] = tip
+                wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
+                wave_field.director_glyph_arrow_colors[idx + 0] = color
+                wave_field.director_glyph_arrow_colors[idx + 1] = color
+            else:
+                wave_field.director_glyph_vertices[idx + 0] = zero_v
+                wave_field.director_glyph_vertices[idx + 1] = zero_v
+                wave_field.director_glyph_colors[idx + 0] = zero_v
+                wave_field.director_glyph_colors[idx + 1] = zero_v
+                wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+                wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+                wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+                wave_field.director_glyph_arrow_colors[idx + 1] = zero_v

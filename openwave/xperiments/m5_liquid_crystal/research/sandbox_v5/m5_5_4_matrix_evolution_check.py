@@ -13,7 +13,7 @@ Background: a smooth, non-singular tilt M = O(x)·D·O(x)^T, O=Ry(γ(x)), γ a l
 3D bump (curvature ≠ 0 ⇒ dynamics; no disclination). Start at rest (M_prev = M_am).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_5_4_matrix_evolution_check
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_5_4_matrix_evolution_check
 """
 import sys
 import numpy as np

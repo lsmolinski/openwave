@@ -266,17 +266,25 @@ def compute_energyH_density_M(
     a: ti.f32,  # type: ignore
     b: ti.f32,  # type: ignore
     c: ti.f32,  # type: ignore
+    v0: ti.f32,  # type: ignore
     e_scale: ti.f32,  # type: ignore
 ):
     """Matrix Hamiltonian density (M5.5.4) — the Eq.18 ℋ for the matrix substrate.
 
-        H = ½‖Ṁ‖²_F  +  c²·4 Σ_{μ<ν}‖[M_μ,M_ν]‖²_F  +  V_M(M)
+        H = ½‖Ṁ‖²_F  +  c²·4 Σ_{μ<ν}‖[M_μ,M_ν]‖²_F  +  (V_M(M) − v0)
             kinetic        curvature (= ¼Σ‖F_μν‖², the page-18 energy)   potential
 
     Replaces the dormant-ψ placeholder (uniform ¼λ) for matrix xperiments — resolves
     the M5.4 WAVE_MENU=4 carry-over. Matches the evolve_M force so energy is conserved
     (simple ½‖Ṁ‖² kinetic per the 2026-05-26 decision). `e_scale` = physical-energy
     factor (ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ); pass 1.0 for bare units.
+
+    `v0` = vacuum potential V_M(D_vacuum), subtracted so the displayed energy is measured
+    from the vacuum (M5.6.5c): the LdG well bottom is NEGATIVE (V_min = −c·s₂*² for the b=0
+    well), so with V on the constant floor (~−1.8e-6) swamps the tiny curvature (~1e-11) and
+    the field renders as a uniform "zero". Subtracting v0 zeroes the vacuum and reveals the
+    defect structure (curvature rods + the V-deviation core). A constant shift does NOT touch
+    the force (−dV_M, unchanged) so dynamics/conservation are identical; pass 0.0 for V off.
 
     Reads:  wave_field.M_am, wave_field.M_prev_am
     Writes: observables.energyH_density_aJ
@@ -299,7 +307,7 @@ def compute_energyH_density_M(
         cyz = pde.commutator(my, mz)
         curvature = 4.0 * (cxy.norm_sqr() + cxz.norm_sqr() + cyz.norm_sqr())
 
-        potential = pde.V_M(m, a, b, c)
+        potential = pde.V_M(m, a, b, c) - v0
         observables.energyH_density_aJ[i, j, k] = e_scale * (kinetic + c2 * curvature + potential)
 
 
@@ -373,6 +381,62 @@ def compute_energyF_density(
         d_dz = (wave_field.director_nhat[i, j, k + 1] - wave_field.director_nhat[i, j, k - 1]) * inv_2dx
         grad_n_sqr = d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr()
         observables.energyF_density_aJ[i, j, k] = half_K * grad_n_sqr
+
+
+# ================================================================
+# EM-FROM-TILTS OBSERVABLES (M5.6.5b — "see EM")
+# ================================================================
+# Distortion modes of the principal director n̂ that map onto the EM sector
+# verified in M5.6.4 (5a §5d): SPLAY ∇·n̂ is Coulomb-charge-like (peaks ±at
+# defect cores; for a hedgehog n̂=r̂, ∇·n̂=2/r), TWIST+BEND ∇×n̂ is the B-like
+# circulation. Same central-difference stencil as compute_energyF_density.
+
+
+@ti.kernel
+def compute_director_em(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+):
+    """Per-voxel ∇·n̂ (signed splay) + ‖∇×n̂‖ (twist+bend magnitude) of director_nhat.
+
+    Reads:  wave_field.director_nhat
+    Writes: observables.director_div_field (signed), observables.director_curl_mag_field (≥0)
+    1-cell halo; boundary left at 0 (consistent with energyF/energyH).
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        d_dx = (wave_field.director_nhat[i + 1, j, k] - wave_field.director_nhat[i - 1, j, k]) * inv_2dx
+        d_dy = (wave_field.director_nhat[i, j + 1, k] - wave_field.director_nhat[i, j - 1, k]) * inv_2dx
+        d_dz = (wave_field.director_nhat[i, j, k + 1] - wave_field.director_nhat[i, j, k - 1]) * inv_2dx
+        # div = ∂_x n_x + ∂_y n_y + ∂_z n_z
+        observables.director_div_field[i, j, k] = d_dx[0] + d_dy[1] + d_dz[2]
+        # curl = (∂_y n_z − ∂_z n_y, ∂_z n_x − ∂_x n_z, ∂_x n_y − ∂_y n_x)
+        curl = ti.Vector([d_dy[2] - d_dz[1], d_dz[0] - d_dx[2], d_dx[1] - d_dy[0]])
+        observables.director_curl_mag_field[i, j, k] = curl.norm()
+        observables.director_curl_field[i, j, k] = curl     # B-direction vector (for glyphs)
+
+
+@ti.kernel
+def compute_director_em_scale(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+):
+    """Color-scale maxes from the 3 center planes only (light atomic_max over ~plane voxels,
+    NOT a full-grid reduction — avoids the Metal atomic-contention stall, feedback_taichi_metal_atomics).
+    Writes observables.director_div_absmax (max|∇·n̂|) + director_curl_max (max‖∇×n̂‖)."""
+    observables.director_div_absmax[None] = 1e-12
+    observables.director_curl_max[None] = 1e-12
+    mid_x, mid_y, mid_z = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
+    for i, j in ti.ndrange((1, wave_field.nx - 1), (1, wave_field.ny - 1)):  # XY plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[i, j, mid_z]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[i, j, mid_z])
+    for i, k in ti.ndrange((1, wave_field.nx - 1), (1, wave_field.nz - 1)):  # XZ plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[i, mid_y, k]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[i, mid_y, k])
+    for j, k in ti.ndrange((1, wave_field.ny - 1), (1, wave_field.nz - 1)):  # YZ plane
+        ti.atomic_max(observables.director_div_absmax[None], ti.abs(observables.director_div_field[mid_x, j, k]))
+        ti.atomic_max(observables.director_curl_max[None], observables.director_curl_mag_field[mid_x, j, k])
 
 
 # ================================================================

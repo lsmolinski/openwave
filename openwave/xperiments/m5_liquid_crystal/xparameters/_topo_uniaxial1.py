@@ -29,8 +29,8 @@ TARGET_VOXELS = 64**3  # ~262k voxels — small for fast smoke-test
 
 # Switch the mode here:
 # TOPOLOGY_MODE = "vacuum"
-# TOPOLOGY_MODE = "hedgehog_1"
-TOPOLOGY_MODE = "hedgehog_2"
+TOPOLOGY_MODE = "hedgehog_1"
+# TOPOLOGY_MODE = "hedgehog_2"
 
 # M5.1 task 6 — auto-relax steps on seed. Relaxation is the numerical
 # ground-state finder for the Frank elastic energy; always run after seeding
@@ -70,7 +70,7 @@ else:
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Topology ({TOPOLOGY_MODE})",
+        "X_NAME": f"Hedgehog-Uniaxial (1)",
         "DESCRIPTION": "Seeded director field — visual verification of seed_vacuum / seed_hedgehog",
     },
     "camera": {
@@ -93,11 +93,10 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 1,  # off by default — directors are the primary view in M5.1
+        "SHOW_FLUX_MESH": 2,  # off by default — directors are the primary view in M5.1
         "WARP_MESH": 0,  # no Z-warp — director field has |n|=1 uniformly, warp would be misleading
-        "SHOW_DIRECTORS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
+        "SHOW_GLYPHS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
         "VIZ_STRIDE": 1,  # shared every-Nth-voxel sampling stride for directors AND granules
-        "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
         "PAUSED": True,  # static field, no time evolution in M5.1

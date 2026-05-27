@@ -20,7 +20,7 @@ each independently meaningful:
      points (sidesteps non-closing symbolic simplify).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_5_1_evolution_symbolic
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_5_1_evolution_symbolic
 """
 
 import sympy as sp
