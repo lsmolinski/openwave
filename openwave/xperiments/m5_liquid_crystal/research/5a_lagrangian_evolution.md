@@ -170,6 +170,32 @@ scale-covariant profile (`s=r/√(r₀²+r²)`, box `∝r₀`) rather than dynam
 This confirms the **M-framework reproduces Faber's scaling**; independently re-deriving the profile
 via energy minimization is an M5.9-calibration BVP, not done here.
 
+### 5d. M5.6.4 findings — the EM/Maxwell sector (the "1"-axis tilts)
+
+The QM/twist (δ) sector gave Klein–Gordon (§5/§5a). The **EM sector is the "1"-axis tilts** (Duda's
+eigenvalue map, `4a §8`): voxel-to-voxel tilts around the unity-eigenvalue axis. M5.6.4 verifies
+these obey Maxwell, by two routes (`4a §11b`). **Structural note (the abelian/non-abelian split):**
+Faber's curvature `R_μν=Γ_μ×Γ_ν` is *intrinsically non-abelian* (quadratic in the connection),
+with `*F_μν = −(e₀/4πε₀c₀)R_μν` (Faber Eq.9) — the curvature is the **dual** field strength. Ordinary
+Maxwell is the **long-range abelian limit**; the short-range non-abelian corrections are exactly
+Faber's **running coupling** (`α_sol(d)`, reproduced in §5c/3a). The soliton is a *dual monopole* —
+the topological winding sources Gauss's law.
+
+**M5.6.4a — hydrodynamics ↔ EM dictionary** (`sandbox_v5/m5_6_4a_hydro_em.py`, the clean abelian
+route, `4a §11b.1`): an incompressible tilt-flow `u=∇×A` with `ω=∇×u` (↔`B`), Lamb `l=ω×u` (↔`E`),
+verified spectrally (periodic box) to reproduce Maxwell's structure to machine precision:
+
+| Correspondence | Result |
+| --- | --- |
+| `∇·ω = 0` (↔ `∇·B=0`, no monopoles) | `3e-13` (kinematic) |
+| `∇·l = u·(∇×ω) − ‖ω‖²` (↔ `∇·E=ρ`) | rel err `7.7e-14` — the turbulent-charge (Gauss) identity |
+| `∂_tω = −∇×l` (↔ Faraday) via Euler step | rel err `2e-15` — vorticity transport = Faraday (curl of Lamb-form Euler; `∇×∇φ=0`) |
+| Coriolis `−2(v×Ω)` ↔ Lorentz `q(v×B)` | `F∝v×ω`, magnitudes equal — the `v×field` force law (`Ω=ω/2 ⇒ B↔ω`) |
+
+⇒ the hydro reading of "tilt = flow, vorticity = B" reproduces sourceless Maxwell + the Gauss
+charge + the Lorentz force, all abelian and exact. **M5.6.4b** does the Faber matrix-curvature route
+(`R=Γ×Γ` → abelian `F` at long range; the non-abelian correction = the running-coupling onset).
+
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
 ```text
