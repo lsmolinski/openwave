@@ -122,9 +122,20 @@ in the tangent plane). Verified numerically:
 | **`‖C‖ ∝ r^(−1.96)`** | the matrix curvature scales as **`1/r²`** — the same profile as §5a's scalar geometric mass `‖Â‖²=1/r²`. Two independent routes (scalar twist operator + matrix background curvature) give the same position-dependent mass. `C_μν` IS the matrix-level realization of the geometric KG mass. |
 | **z-axis disclination** | biaxiality forces a hairy-ball line singularity on the z-axis (`e_Φ` winds). Regularized by a clamped smoothstep: the secondary `(δ, 0)` axes are full-length for `ρ ≥ ρ_c` (exact hedgehog) and **melt smoothly to 0 inside `ρ < ρ_c`** (biaxiality melts in the disclination core, like a nematic). Frame stays orthonormal outside the core; `‖∂O‖²` peak is **capped `∝ 1/ρ_c`** (sweep: `24→9.3→4.9` for `ρ_c = 0.4/0.8/1.2`). |
 
-**Hand-off to M5.6.2b:** the dynamical part — evolve a twist on this background (the validated
-M5.5.2 leapfrog, now with `C_μν ≠ 0`), disclination-masked, and show the `C_μν` term produces the
-restoring/mass behavior absent in the massless M5.5.2 bump.
+**M5.6.2b — dynamical confirmation** (`sandbox_v5/m5_6_2b_biaxial_evolution.py`): running the
+validated M5.5.2 leapfrog (`2K ψ_tt = Σ_μ ∂_μ J_μ`, `J_μ=−32Σ_ν F̃_μν•P_ν`) on the biaxial
+hedgehog, disclination-masked:
+
+| Result | Detail |
+| --- | --- |
+| **`C_μν` SOURCES the twist** | The `C_μν` piece of `J_μ` is a ψ-independent source `S_μ=−32Σ_ν C_μν•P_ν`. At ψ=0: `max\|force\|` = **0.74 with `C_μν`, exactly 0.000 with `C=0`**; from ψ=0 the twist grows to 0.127 with `C` and stays **0.000** without. The biaxial hedgehog cannot sit static at ψ=0 — it drives its own twist. |
+| **restoring / mass** | a seeded twist grows then oscillates around a balance (bounded, `0.12→0.22→0.17`); the massless M5.5.2 bump (`C=0`) had no restoring force. The mass scale tracks `‖C‖ ~ 1/r²`. |
+| **conservation** | the FULL Hamiltonian `H=Σ(Kψ_t²+U)` drifts **0.76%** over 1500 steps (conservative). The ψ-sector energy grows +131% — NOT a drift: it's the `C`-drive pumping energy from the background curvature into the twist. (0.76% is non-tiny because the system is driven + disclination-masked; some leakage at the active-region Dirichlet boundary.) |
+
+**Interpretation (flagged, not claimed):** `C_μν≠0` ⇒ ψ=0 is not a static solution ⇒ the defect
+intrinsically oscillates. This is the *no-static-soliton / time-periodic* principle made dynamical
+([[feedback_no_static_solitons]]) and is the plausible **M5.8 Zitterbewegung-clock seed** — the
+clock *frequency* (`ω=2mc²/ℏ`) is M5.8's measurement, after M5.6.3 (Faber) pins the mass scale.
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
