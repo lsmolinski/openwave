@@ -851,12 +851,30 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # ironbow
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
-                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
+        if wave_menu == 1:  # greenyellow (wave_menu == 1)
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
+                disp_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                energy_value / univ_edge_z * warp_mesh
+                disp_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                ampE_value / univ_edge_z * warp_mesh
+                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            )
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xy_vertices[i, j][2] = (
+                ampP_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
         elif wave_menu == 4:  # greenyellow
@@ -869,30 +887,12 @@ def update_flux_mesh_values(
                 ampS_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
-                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+        elif wave_menu == 5:  # ironbow
+            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_ironbow_color(
+                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                ampP_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_viridis_color(
-                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                ampE_value / univ_edge_z * warp_mesh
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_greenyellow_color(
-                disp_value,
-                -trackers.amp_global_emarms_am[None] * 2,
-                trackers.amp_global_emarms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                disp_value / univ_edge_z * warp_mesh
+                energy_value / univ_edge_z * warp_mesh
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
 
@@ -910,12 +910,30 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # ironbow
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
-                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
+        if wave_menu == 1:  #  greenyellow (wave_menu == 1)
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
+                disp_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                energy_value / univ_edge_y * warp_mesh
+                disp_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                ampE_value / univ_edge_y * warp_mesh
+                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            )
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_xz_vertices[i, k][1] = (
+                ampP_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
         elif wave_menu == 4:  # greenyellow
@@ -928,30 +946,12 @@ def update_flux_mesh_values(
                 ampS_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
-                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+        elif wave_menu == 5:  # ironbow
+            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_ironbow_color(
+                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                ampP_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_viridis_color(
-                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                ampE_value / univ_edge_y * warp_mesh
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_greenyellow_color(
-                disp_value,
-                -trackers.amp_global_emarms_am[None] * 2,
-                trackers.amp_global_emarms_am[None] * 2,
-            )
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                disp_value / univ_edge_y * warp_mesh
+                energy_value / univ_edge_y * warp_mesh
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
 
@@ -969,12 +969,30 @@ def update_flux_mesh_values(
 
         # Map value to color/vertex using selected gradient
         # Scale range to 2× average for headroom without saturation (allows peak visualization)
-        if wave_menu == 5:  # ironbow
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
-                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
+        if wave_menu == 1:  # greenyellow (wave_menu == 1)
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
+                disp_value,
+                -trackers.amp_global_emarms_am[None] * 2,
+                trackers.amp_global_emarms_am[None] * 2,
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                energy_value / univ_edge_x * warp_mesh
+                disp_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        elif wave_menu == 2:  # viridis
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
+                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                ampE_value / univ_edge_x * warp_mesh
+                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            )
+        elif wave_menu == 3:  # viridis
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
+                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+            )
+            wave_field.fluxmesh_yz_vertices[j, k][0] = (
+                ampP_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
         elif wave_menu == 4:  # greenyellow
@@ -987,29 +1005,11 @@ def update_flux_mesh_values(
                 ampS_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
-        elif wave_menu == 3:  # viridis
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
-                ampP_value, 0, trackers.amp_global_emarms_am[None] * 2
+        elif wave_menu == 5:  # ironbow
+            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_ironbow_color(
+                energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                ampP_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
-        elif wave_menu == 2:  # viridis
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_viridis_color(
-                ampE_value, 0, trackers.amp_global_emarms_am[None] * 2
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                ampE_value / univ_edge_x * warp_mesh
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
-            )
-        else:  # default to greenyellow (wave_menu == 1)
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_greenyellow_color(
-                disp_value,
-                -trackers.amp_global_emarms_am[None] * 2,
-                trackers.amp_global_emarms_am[None] * 2,
-            )
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                disp_value / univ_edge_x * warp_mesh
+                energy_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
