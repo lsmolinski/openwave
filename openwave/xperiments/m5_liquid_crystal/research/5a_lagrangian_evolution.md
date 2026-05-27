@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5f: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), and turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5f: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -325,6 +325,33 @@ is not achievable from V alone — V confines the amplitude component only.
 3-term Eq.13 has only uniaxial minima). The `b=0` amplitude well is the interim — it confines
 without uniaxializing, but leaves δ as a flat (un-pinned) direction. The biaxiality-stabilizing
 term is an open question for Duda.
+
+### §5g — M5.6.5d: the faithful (gauge-correct) kinetic vs the simple `½‖Ṁ‖²` we ship
+
+Production `evolve_M` uses the simple kinetic `½‖Ṁ‖²` ⇒ `M̈ = c²·div(G) − dV` (every one of M's
+6 symmetric components gets inertia ½). Duda's Eq.18 time-curvature gives the faithful kinetic
+(§9): `T = 4Σ_μ‖[M_μ,Ṁ]‖² = ⟨Ṁ, G Ṁ⟩`, with the per-voxel metric `G = 4Σ_μ(−ad²_{M_μ})`.
+`m5_6_5d_faithful_kinetic.py` characterizes the difference on the biaxial hedgehog:
+
+| Finding | Result |
+| --- | --- |
+| **G is degenerate** | exactly **1 null mode per voxel** (median eigenvalues `[0, 0.08, 0.13, 0.27, 0.31, 0.90]`); the simple `½·I₆` has none |
+| **The null mode is the TRACE** | null eigenvector · `(I/√3)` = **1.000** — `[M_μ, I]=0`, so the isotropic/dilation direction is non-dynamical under the faithful kinetic |
+| **Simple kinetic stays physical** | the curvature force `div(G)` is **traceless**, so it never sources the trace mode: the simple scheme's motion is **0%** in the null space. ⇒ `½‖Ṁ‖²` does **NOT** generate spurious gauge slosh — it is a well-behaved approximation |
+| **The real gap is physical-mode inertia (dispersion)** | the 5 physical eigenvalues span (5–95%) `[0.05, 1.45]` vs the simple uniform `0.5` ⇒ the twist/clock frequency is mis-set by **×[0.6, 3.0]** under `½‖Ṁ‖²` (`ω ∝ 1/√inertia`) |
+
+**Consequences (corrects the earlier framing).** The on-screen director slosh under Evolve-PDE is
+**physical twist** (the dynamical clock), not a gauge artifact — `½‖Ṁ‖²` does not animate spurious
+modes. What the simple kinetic gets wrong is the **frequency** of that physical twist (an O(1)
+inertia-weighting error), which matters only for the **M5.8 quantitative clock** `ω = 2mc²/ℏ`. The
+faithful kinetic is the `O(x)∈SO(3)` metric already validated on the twist ψ DoF in `m5_6_1b`/`m5_6_2b`
+(`2Kψ_tt = Σ∂_μ J_μ`, `K = 4Σ‖[M_μ,M_ψ]‖²`).
+
+**Production recommendation:** do NOT rewrite `evolve_M` to the faithful kinetic — its degenerate
+metric makes a full-M leapfrog implicit (per-voxel project onto `range(G)` + invert), a large change
+that would not alter the qualitative GUI behaviour. Keep `½‖Ṁ‖²` for qualitative production runs;
+measure the M5.8 clock frequency with the faithful **ψ-evolution** (`m5_6_2b` path). This closes
+M5.6.5d as a *diagnosis* and routes the faithful kinetic to where it is actually needed (M5.8).
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
