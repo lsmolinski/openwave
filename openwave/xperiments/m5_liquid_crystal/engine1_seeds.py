@@ -464,3 +464,70 @@ def seed_hedgehog_M(
         wave_field.director_nhat_new[i, j, k] = n_unit
 
 
+@ti.kernel
+def seed_biaxial_hedgehog_M(
+    wave_field: ti.template(),  # type: ignore
+    cx: ti.i32,  # type: ignore
+    cy: ti.i32,  # type: ignore
+    cz: ti.i32,  # type: ignore
+    r0_vox: ti.f32,  # type: ignore
+    rhoc_vox: ti.f32,  # type: ignore
+    delta: ti.f32,  # type: ignore
+):
+    """Seed a single BIAXIAL hedgehog: M = O·D(s(r))·Oᵀ, D = diag(1, δ, 0) (M5.6.5a).
+
+    The production port of the sandbox biaxial hedgehog (M5.6.2a frame + M5.6.3b melt,
+    `5a §5b/§5c`). Unlike the uniaxial `seed_hedgehog_M` (eigenvalues (1,δ,δ)), this gives
+    THREE distinct eigenvalues — the genuine biaxial substrate of the eigenvalue map
+    (1 = EM tilt axis, δ ~ ℏ = QM twist axis, 0 = null axis):
+
+      frame O = [r̂ | e_Θ | e_Φ]:  r̂ = principal (EM/1) axis = unit radial;
+        e_Φ = azimuthal (the z-axis DISCLINATION), melted by a clamped smoothstep over ρ_c
+        (secondary axes shrink inside the disclination core — biaxiality melts like a nematic);
+        e_Θ = e_Φ × r̂.
+      radial eigenvalue melt s(r) = r/√(r²+r0²):  D → isotropic at the core (singularity
+        regularized, Faber `‖q⃗‖→0`), → diag(1,δ,0) far out.   M = Σ_a d_a · col_a ⊗ col_a.
+
+    Writes all three M buffers + director_nhat (= r̂) per the triple-buffer BC rule.
+
+    Args:
+        cx, cy, cz: defect center in voxel coords
+        r0_vox: radial eigenvalue-melt scale (core size, voxels)
+        rhoc_vox: z-axis disclination-melt scale (voxels)
+        delta: middle eigenvalue δ (D = diag(1, δ, 0))
+    """
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    d_iso = (1.0 + delta) / 3.0                          # isotropic value, trace-preserving
+    eps = ti.cast(1e-6, ti.f32)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        px = ti.cast(i - cx, ti.f32)
+        py = ti.cast(j - cy, ti.f32)
+        pz = ti.cast(k - cz, ti.f32)
+        r2 = px * px + py * py + pz * pz
+        r = ti.sqrt(r2)
+        rho = ti.sqrt(px * px + py * py)
+
+        rinv = 1.0 / ti.max(r, eps)
+        rhat = ti.Vector([px * rinv, py * rinv, pz * rinv])           # unit radial = EM/1 axis
+        ainv = 1.0 / ti.sqrt(rho * rho + eps)
+        azim = ti.Vector([-py * ainv, px * ainv, 0.0])                # azimuthal (z-disclination)
+        sdisc = ti.min(rho / rhoc_vox, 1.0)
+        shrink = sdisc * sdisc * (3.0 - 2.0 * sdisc)                  # clamped smoothstep melt
+        ephi = azim * shrink
+        ephi = ephi - ephi.dot(rhat) * rhat                          # ⟂ r̂ (no renorm → melts)
+        etheta = ephi.cross(rhat)
+
+        srad = r / ti.sqrt(r2 + r0_vox * r0_vox)                     # radial melt (Faber sin α)
+        d0 = d_iso + srad * (1.0 - d_iso)
+        d1 = d_iso + srad * (delta - d_iso)
+        d2 = d_iso + srad * (0.0 - d_iso)
+        m = (d0 * rhat.outer_product(rhat)
+             + d1 * etheta.outer_product(etheta)
+             + d2 * ephi.outer_product(ephi))
+        wave_field.M_am[i, j, k] = m
+        wave_field.M_prev_am[i, j, k] = m
+        wave_field.M_new_am[i, j, k] = m
+        wave_field.director_nhat[i, j, k] = rhat
+        wave_field.director_nhat_new[i, j, k] = rhat
+
+

@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a/§5b/§5c: the **M5.6 sandbox_v5 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), and Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a–§5e: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), and the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -209,6 +209,50 @@ route): on the regularized Faber hedgehog (3a), `Γ⃗_i = q0∂_iq⃗ − (∂_
 hydro dictionary (4a), and as Faber's closed non-abelian curvature that is abelian-Coulomb at long
 range with a `r₀`-scale running coupling (4b). Together with the QM/twist KG sector (§5a–5c), the
 eigenvalue map's two main axes (δ=QM twist, 1=EM tilt) are both verified emergent from the matrix field.
+
+### §5e — M5.6.5a production port: biaxial seeder + the `ti.sym_eig` → analytic-eigensolver fix
+
+The sandbox biaxial hedgehog (§5b) is now in the production engine. Two pieces landed, the second a
+latent-bug fix that hardens the whole render+tracker pipeline.
+
+**(1) `seed_biaxial_hedgehog_M`** (`engine1_seeds.py`) — builds, per voxel,
+
+```text
+M(x) = O(x)·D(s(r))·O(x)ᵀ,   O = [r̂ | e_Θ | e_Φ],   D = diag(1, δ, 0)
+s(r) = r/√(r²+r₀²)          (radial eigenvalue melt → isotropic core, the §5c Faber profile)
+e_Φ  *= smoothstep(ρ/ρc)    (clamped: biaxiality melts inside the z-axis disclination ρ<ρc)
+```
+
+Wired into `_launcher.py` as `TOPOLOGY_SEED["MODE"]="biaxial_hedgehog"` (config `xparameters/_biaxial1.py`,
+knobs `R0_FRACTION`, `RHOC_VOXELS`, `BIAXIAL_DELTA`). **No auto-relax** for this mode — the M5.1
+`relax_director_step` rebuilds `M` *uniaxially* from the principal director and would destroy the
+biaxial structure; the biaxial `M` is constructed directly and is its own seed.
+
+Headless verification (`/tmp/m5_6_5a_check.py`, N=47³, δ=0.3): `M` symmetric+finite; far-field
+eigenvalues `(0.995, 0.301, 0.004) ≈ (1, δ, 0)`; principal director `· r̂ = 1.0000`; core melts to
+isotropic (spread 0.598 near core vs 0.991 far); `C_μν=[M_μ,M_ν] ≠ 0` (`Σ‖C‖²>0` ⇒ the §5b mass
+source is present in the production field).
+
+**(2) ⚠️ Critical fix — `ti.sym_eig` is wrong for biaxial `M` on Metal/f32.** The first headless run
+gave director recovery only **0.976**, not 1.0. Diagnosis (`/tmp/symeig_diag.py`): Taichi's `ti.sym_eig`
+is accurate for **uniaxial/degenerate** `M` (`(1,δ,δ)`: err ~6e-8) but **catastrophically wrong for
+biaxial/non-degenerate** `M` (`(3,2,1)`: eigenvalue err ~0.48). This is why the M5.4 feasibility spike
+"passed" — it only tested the degenerate case. `f64` is not an escape: the `f64` `sym_eig` kernel
+SPIRV-fails to compile on Metal.
+
+| | uniaxial `(1,δ,δ)` | biaxial `(1,δ,0)` |
+| --- | --- | --- |
+| `ti.sym_eig` eigenvalue err | ~6e-8 ✅ | ~0.48 ❌ |
+| director recovery | 1.0000 ✅ | 0.976 ❌ |
+| analytic Cardano (the fix) | 1.0000 ✅ | 1.0000 ✅ |
+
+Fix: replaced `principal_director` in `engine2_pde.py` with an **analytic symmetric-3×3 eigensolver**
+(Cardano closed form — trace-shift `q`, deviatoric scale `p`, `φ=⅓·acos(det(B)/2)`, three eigenvalues
+`q+2p·cos(φ + 2πk/3)`; principal eigenvector from the largest cross-product of `(M−λ₁I)` rows).
+Validated against numpy `eigh` over 20 000 random symmetric matrices (f32): max eigenvalue err **6e-6**,
+max director err **2e-7**. No regression — the uniaxial path is still 1.0000; the biaxial path goes
+0.976 → **1.0000**. Since `eigen_decompose` is the lynchpin every render/tracker reads from, this is a
+prerequisite for the M5.6.5b biaxial-ellipsoid glyph and the M5.8 clock (both genuinely biaxial states).
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 

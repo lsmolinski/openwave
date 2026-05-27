@@ -29,8 +29,8 @@ TARGET_VOXELS = 64**3  # ~262k voxels — small for fast smoke-test
 
 # Switch the mode here:
 # TOPOLOGY_MODE = "vacuum"
-# TOPOLOGY_MODE = "hedgehog_1"
-TOPOLOGY_MODE = "hedgehog_2"
+TOPOLOGY_MODE = "hedgehog_1"
+# TOPOLOGY_MODE = "hedgehog_2"
 
 # M5.1 task 6 — auto-relax steps on seed. Relaxation is the numerical
 # ground-state finder for the Frank elastic energy; always run after seeding
@@ -70,7 +70,7 @@ else:
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": f"Topology ({TOPOLOGY_MODE})",
+        "X_NAME": f"Hedgehog-Uniaxial (1)",
         "DESCRIPTION": "Seeded director field — visual verification of seed_vacuum / seed_hedgehog",
     },
     "camera": {

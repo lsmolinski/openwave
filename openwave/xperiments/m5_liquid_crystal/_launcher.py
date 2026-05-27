@@ -640,6 +640,25 @@ def initialize_xperiment(state):
                 f"D/4 = {domain_quarter_voxels:.1f} voxels"
             )
 
+        elif seed_mode == "biaxial_hedgehog":
+            # M5.6.5a: a single BIAXIAL hedgehog M = O·D(s(r))·Oᵀ, D = diag(1, δ, 0)
+            # (frame O=[r̂|e_Θ|e_Φ] + disclination smoothstep + radial eigenvalue melt).
+            wf = state.wave_field
+            center = topo.get("CENTER", [0.5, 0.5, 0.5])
+            cx = int(round(center[0] * (wf.nx - 1)))
+            cy = int(round(center[1] * (wf.ny - 1)))
+            cz = int(round(center[2] * (wf.nz - 1)))
+            r0_vox = float(topo.get("R0_FRACTION", 0.06) * max(wf.nx, wf.ny, wf.nz))
+            rhoc_vox = float(topo.get("RHOC_VOXELS", 3.0))
+            biaxial_delta = float(topo.get("BIAXIAL_DELTA", 0.3))
+            seeds.seed_biaxial_hedgehog_M(wf, cx, cy, cz, r0_vox, rhoc_vox, biaxial_delta)
+            # NO auto-relax: the biaxial M is constructed directly; relax_director_step would
+            # rebuild M uniaxially from the director and destroy the biaxial structure.
+            print(
+                f"[M5.6.5a] seeded biaxial hedgehog D=diag(1,{biaxial_delta},0) at "
+                f"({cx},{cy},{cz}); r0={r0_vox:.1f}, ρc={rhoc_vox:.1f} voxels (no relax)"
+            )
+
         else:
             print(f"[M5.1] WARNING: unknown TOPOLOGY_SEED mode: {seed_mode!r}")
 
@@ -922,7 +941,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topology1"
+    default_xperiment = selected_xperiment_arg or "_topo_biaxial1"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
