@@ -414,6 +414,7 @@ def compute_director_em(
         # curl = (∂_y n_z − ∂_z n_y, ∂_z n_x − ∂_x n_z, ∂_x n_y − ∂_y n_x)
         curl = ti.Vector([d_dy[2] - d_dz[1], d_dz[0] - d_dx[2], d_dx[1] - d_dy[0]])
         observables.director_curl_mag_field[i, j, k] = curl.norm()
+        observables.director_curl_field[i, j, k] = curl     # B-direction vector (for glyphs)
 
 
 @ti.kernel

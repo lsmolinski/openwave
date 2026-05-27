@@ -95,9 +95,8 @@ XPARAMETERS = {
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 2,  # off by default — directors are the primary view in M5.1
         "WARP_MESH": 0,  # no Z-warp — director field has |n|=1 uniformly, warp would be misleading
-        "SHOW_DIRECTORS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
+        "SHOW_GLYPHS": 2,  # M5.1: 0=off, 1=XY, 2=+XZ, 3=all three planes
         "VIZ_STRIDE": 1,  # shared every-Nth-voxel sampling stride for directors AND granules
-        "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
         "PAUSED": True,  # static field, no time evolution in M5.1

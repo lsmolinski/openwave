@@ -36,7 +36,7 @@ to 0 for this mode (the launcher also skips relax for biaxial_hedgehog).
 
 Runs PAUSED — visual correctness gate. The biaxial-ellipsoid glyph
 renderer (M5.6.5b) makes the three distinct eigenvalues visible; until
-then SHOW_DIRECTORS shows the principal (largest-eigenvalue) axis, which
+then SHOW_GLYPHS shows the principal (largest-eigenvalue) axis, which
 the analytic Cardano eigensolver (M5.6.5a fix) now recovers correctly
 on Metal/f32 even for biaxial M (ti.sym_eig was catastrophically wrong
 for the non-degenerate case).
@@ -85,9 +85,8 @@ XPARAMETERS = {
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 2,
         "WARP_MESH": 0,
-        "SHOW_DIRECTORS": 2,  # all three planes — principal axis of the biaxial frame
+        "SHOW_GLYPHS": 2,  # all three planes — principal axis of the biaxial frame
         "VIZ_STRIDE": 1,
-        "PARTICLE_SHELL": False,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
         "PAUSED": True,

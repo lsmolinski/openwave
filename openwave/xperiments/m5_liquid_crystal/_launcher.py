@@ -177,11 +177,15 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.SHOW_DIRECTORS = 0  # M5.1: director-glyph overlay (0=off, 1=XY, 2=+XZ, 3=all)
-        self.VIZ_STRIDE = (
-            4  # M5.1: shared sampling stride for directors AND granules (every Nth voxel)
+        self.GLYPH_VECTOR = 0  # glyph vector source — 0=director (E field lines), 1=∇×n̂ (B field)
+        self.GLYPH_SIZE = (
+            0  # glyph shaft — 0=unit (director), 1=field magnitude (E:|∇·n̂|, B:‖∇×n̂‖)
         )
-        self.PARTICLE_SHELL = False
+        self.GLYPH_COLOR = (
+            1  # glyph color — 0=single (COLOR_MEDIUM, see far field), 1=field gradient
+        )
+        self.SHOW_GLYPHS = 0  # director-glyph planes (0=off, 1=XY, 2=+XZ, 3=all)
+        self.VIZ_STRIDE = 4  # sampling stride for directors AND granules (every Nth voxel)
         self.SHOW_GRANULES = False
         self.SIM_SPEED = 1.0
         self.PAUSED = False
@@ -244,9 +248,8 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
-        self.SHOW_DIRECTORS = ui.get("SHOW_DIRECTORS", 0)
+        self.SHOW_GLYPHS = ui.get("SHOW_GLYPHS", 0)
         self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
-        self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
         self.PAUSED = ui["PAUSED"]
@@ -442,8 +445,22 @@ def display_controls(state):
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
-        state.SHOW_DIRECTORS = sub.slider_int("Directors", state.SHOW_DIRECTORS, 0, 3)
-        state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
+        # glyph shows the director (E-field lines) or ∇×n̂ (B-field direction)
+        if sub.checkbox("EM Field Glyph (off=E/on=B)", state.GLYPH_VECTOR == 1):
+            state.GLYPH_VECTOR = 1
+        else:
+            state.GLYPH_VECTOR = 0
+        # shaft length: unit (director, all glyphs visible) vs field magnitude (E: |∇·n̂| charge
+        # density, B: ‖∇×n̂‖); color: single flat COLOR_MEDIUM (see far field) vs field gradient.
+        if sub.checkbox("Glyph Size (unit/magnitude)", state.GLYPH_SIZE == 1):
+            state.GLYPH_SIZE = 1
+        else:
+            state.GLYPH_SIZE = 0
+        if sub.checkbox("Glyph Color (single/gradient)", state.GLYPH_COLOR == 1):
+            state.GLYPH_COLOR = 1
+        else:
+            state.GLYPH_COLOR = 0
+        state.SHOW_GLYPHS = sub.slider_int("Planes", state.SHOW_GLYPHS, 0, 3)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
@@ -904,58 +921,61 @@ def render_elements(state):
     # M5.1 director-glyph overlay — line segments showing n̂ orientation,
     # signed-component RGB so opposite directions are visually opposite.
     # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
-    if state.SHOW_DIRECTORS > 0:
+    if state.SHOW_GLYPHS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
-        arrow_length = (
-            glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
-        )
-        viz.update_director_glyphs(
-            state.wave_field, glyph_length, arrow_length, state.SHOW_DIRECTORS
-        )
-        render.scene.lines(
-            state.wave_field.director_glyph_vertices,
-            per_vertex_color=state.wave_field.director_glyph_colors,
-            width=2.0,
-        )
-        # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
-        if viz.SHOW_DIRECTOR_ARROWHEAD:
+        if state.GLYPH_VECTOR == 1:  # M5.6.5b: B-field vectors (∇×n̂) — reuse glyph buffers
+            em_scale = max(
+                state.observables.director_div_absmax[None],
+                state.observables.director_curl_max[None],
+            )  # shared distortion scale (matches WAVE_MENU 7)
+            viz.update_em_vector_glyphs(
+                state.wave_field,
+                state.observables,
+                glyph_length,
+                em_scale,
+                state.SHOW_GLYPHS,
+                state.GLYPH_SIZE,
+                state.GLYPH_COLOR,
+            )
+            render.scene.lines(
+                state.wave_field.director_glyph_vertices,
+                per_vertex_color=state.wave_field.director_glyph_colors,
+                width=2.0,
+            )
+            # half-arrow barb pass — B vectors are polar; the tip shows circulation direction
             render.scene.lines(
                 state.wave_field.director_glyph_arrow_vertices,
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
-
-    if state.PARTICLE_SHELL:
-        # Convert wave-centers positions from [ijk] to [screen_normalization]
-        # Use position_float for smooth rendering (position_grid is integer, causes jumpy motion)
-        # Normalize by max_grid_size to respect asymmetric universes (like flux_mesh does)
-        max_dim = float(state.wave_field.max_grid_size)
-        for wc_idx in range(state.wave_center.num_sources):
-            # Skip inactive (annihilated) WCs
-            if state.wave_center.active[wc_idx] == 0:
-                continue
-
-            wc_pos_screen = ti.Vector(
-                [
-                    state.wave_center.position_float[wc_idx][0] / max_dim,
-                    state.wave_center.position_float[wc_idx][1] / max_dim,
-                    state.wave_center.position_float[wc_idx][2] / max_dim,
-                ],
-                dt=ti.f32,
+        else:  # director / E-field lines (the LC field lines)
+            arrow_length = (
+                glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
             )
-            position = np.array(
-                [[wc_pos_screen[0], wc_pos_screen[1], wc_pos_screen[2]]], dtype=np.float32
+            # M5.6.5b: glyphs colored by ∇·n̂ (charge, greenyellow — matches WM6 mesh)
+            div_scale = state.observables.director_div_absmax[None]
+            viz.update_director_glyphs(
+                state.wave_field,
+                state.observables,
+                glyph_length,
+                arrow_length,
+                state.SHOW_GLYPHS,
+                div_scale,
+                state.GLYPH_SIZE,
+                state.GLYPH_COLOR,
             )
-            # Particle shell radius — fixed-fraction-of-universe-edge default.
-            # M5.2 replaces with per-defect-type Compton wavelength sizing.
-            radius = 0.02  # ~2% of normalized universe edge
-            color = (
-                colormap.COLOR_PARTICLE[1]
-                if state.SOURCES_OFFSET_DEG[wc_idx] == 180
-                else colormap.COLOR_ANTI[1]
+            render.scene.lines(
+                state.wave_field.director_glyph_vertices,
+                per_vertex_color=state.wave_field.director_glyph_colors,
+                width=2.0,
             )
-            # Render particle shell at wave-center position
-            render.scene.particles(position, radius, color=color)
+            # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
+            if viz.SHOW_DIRECTOR_ARROWHEAD:
+                render.scene.lines(
+                    state.wave_field.director_glyph_arrow_vertices,
+                    per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                    width=2.0,
+                )
 
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)

@@ -259,6 +259,13 @@ class WaveField:
         self.fm_plane_x_idx = int(flux_mesh_planes[0] * self.nx)  # x index of flux mesh plane
         self.fm_plane_y_idx = int(flux_mesh_planes[1] * self.ny)  # y index of flux mesh plane
         self.fm_plane_z_idx = int(flux_mesh_planes[2] * self.nz)  # z index of flux mesh plane
+        # Continuous normalized plane positions — the SAME formula create_flux_mesh()
+        # uses for the mesh perpendicular coord. Glyphs read these (not idx/max_dim)
+        # so glyph origins sit exactly on the mesh sheet for any grid / plane fraction.
+        _md = float(self.max_grid_size)
+        self.fm_plane_x_pos = flux_mesh_planes[0] * (self.nx / _md)  # x perpendicular, normalized
+        self.fm_plane_y_pos = flux_mesh_planes[1] * (self.ny / _md)  # y perpendicular, normalized
+        self.fm_plane_z_pos = flux_mesh_planes[2] * (self.nz / _md)  # z perpendicular, normalized
 
         self.create_flux_mesh()
 
@@ -698,6 +705,7 @@ class FieldObservables:
         # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered diverging) / 7 (‖∇×n̂‖, ironbow).
         self.director_div_field = ti.field(dtype=ti.f32, shape=grid_size)        # 1/am, signed
         self.director_curl_mag_field = ti.field(dtype=ti.f32, shape=grid_size)   # 1/am, ≥0
+        self.director_curl_field = ti.Vector.field(3, dtype=ti.f32, shape=grid_size)  # ∇×n̂ vector (B dir)
         self.director_div_absmax = ti.field(dtype=ti.f32, shape=())   # max|∇·n̂| for symmetric color scale
         self.director_curl_max = ti.field(dtype=ti.f32, shape=())     # max‖∇×n̂‖ for color scale
 
