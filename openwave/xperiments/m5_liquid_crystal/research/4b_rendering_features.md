@@ -161,23 +161,23 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 
 | Phenomenon | "How do I see it?" | Channel | Observable | Status |
 | --- | --- | --- | --- | --- |
-| **EM — electric / charge** | where is the charge, `∇·E`? | flux_mesh color (signed/diverging palette) | `∇·n̂` (director splay) — diverges at defect cores like Coulomb charge | 🚧 NEW (M5.6.5b) |
-| **EM — magnetic / circulation** | where is `B`, the circulation? | flux_mesh color (magnitude) + **vector_warp** (direction) | `∇×n̂` (twist+bend) — magnitude colors, the curl vector ripples the mesh | 🚧 NEW (M5.6.5b) |
+| **EM — electric / charge** | where is the charge, `∇·E`? | flux_mesh color (signed greenyellow) + E/director glyph | `∇·n̂` (director splay) — diverges at defect cores like Coulomb charge | ✅ DONE (WAVE_MENU 6 + E glyph) |
+| **EM — magnetic / circulation** | where is `B`, the circulation? | flux_mesh color (orange magnitude) + B/curl glyph (half-arrow direction) | `‖∇×n̂‖` (twist+bend) — magnitude colors; the curl-vector glyph shows direction | ✅ DONE (WAVE_MENU 7 + B glyph) |
 | **Thermal energy `A`** | where is the heat *amplitude*? | flux_mesh color (ironbow) | `‖M−D‖_F` EMA = thermal **A** | ✅ wired (WAVE_MENU 2) |
 | **Thermal clock `ω`** | how fast does it tick (heat↔time)? | flux_mesh color (blueprint) | `‖Ṁ‖_F` EMA = clock **ω** | ✅ wired (WAVE_MENU 3) |
-| **Thermal energy (joint)** | the `(A·ω)` heat content in one view | flux_mesh color | `A·ω` product (combine the two trackers) | 🚧 NEW |
+| **Thermal energy (joint)** | the heat *energy* content in one view | flux_mesh color | **`(A·ω)²`** — NOT `A·ω`. For a defect oscillator `E_kin = ½m(Aω)²`, so `A·ω` alone is peak *velocity* (length/time); the energy-dimensional quantity is `(A·ω)²`. Combine the two trackers as a product-of-squares. | 🚧 DEFERRED → 9b |
 | **Field energy** | total Hamiltonian / elastic energy | flux_mesh color + scalar warp | `energyH`, `energyF` | ✅ wired (4/5) |
-| **Modulation response** | apply an EM-wave lever → see the thermal `(A,ω)` shift | time-trace / before-after of A,ω under an EM-wave seed | `Δ(A,ω)` vs an applied tilt-wave | 🚧 FUTURE (dynamic; needs M5.7 + an EM-wave seeder) |
+| **Modulation response** | apply an EM-wave lever → see the thermal energy shift | time-trace / before-after of `(A·ω)²` under an EM-wave seed | `Δ(A·ω)²` vs an applied tilt-wave (the SABER-method "modulation" picture, physics framing only) | 🚧 DEFERRED → 9b/M5.7 (dynamic; needs an EM-wave seeder) |
 
 ### Channel assignments — what each viz primitive is *best* at
 
 | Channel | Best physical use | Current | Target |
 | --- | --- | --- | --- |
-| flux_mesh **color** | any scalar field on the 3 planes | energy H/F + thermal A/ω | + EM `∇·n̂`, `‖∇×n̂‖`, `A·ω` |
+| flux_mesh **color** | any scalar field on the 3 planes | energy H/F + thermal A/ω + EM `∇·n̂` (WM6), `‖∇×n̂‖` (WM7) | + `(A·ω)²` joint-thermal (→ 9b) |
 | flux_mesh **scalar warp** | lift the plane by a scalar (3D relief of a field) | energy/amp | pair with whichever color scalar is active |
-| **vector_warp** | ripple the mesh by a *vector* field — best for showing a field *direction* | director deviation `n̂−ẑ` | the **EM curl vector** `∇×n̂` (see B-field direction) |
-| **director glyphs** | the orientation field itself = the LC "field lines" | principal `n̂` | unchanged — these ARE the EM-analog field lines |
-| **granules** | point cloud at voxels; cheap scalar carrier | `voxel + L·n̂` | color each granule by local thermal `A` (a sparse "heat map") |
+| **vector_warp** | ripple the mesh by a *vector* field — best for showing a field *direction* | director deviation `n̂−ẑ` | superseded for B-direction by the **B/curl glyph** (cleaner than mesh ripple) |
+| **director glyphs** | the orientation field itself = the LC "field lines" | principal `n̂` + E/B glyph toggle (shaft = magnitude, half-arrow = direction, color = field/`COLOR_MEDIUM`) | these ARE the EM-analog field lines |
+| **granules** | point cloud at voxels; cheap scalar carrier | `voxel + L·n̂` | color each granule by local thermal `A` — a sparse "heat map" (→ 9b) |
 
 ### Why `∇·n̂` and `∇×n̂` are the right "see EM" observables
 
@@ -185,9 +185,14 @@ The director `n̂` is the LC analog of the field; its **distortion modes** map o
 
 ### Implementation order (M5.6.5b)
 
-1. **EM div/curl first** (freshest — M5.6.4 just validated the EM sector): `compute_director_em` → `director_div` (scalar), `director_curl` (vector) + `director_curl_mag` (scalar). Wire as new WAVE_MENU color modes + route the curl vector to vector_warp.
-2. **`A·ω` joint-thermal product** — a combined color mode from the two existing trackers.
-3. **Modulation experiment** — deferred (dynamic; pairs with M5.7 + an EM-wave seeder).
+1. ✅ **EM div/curl DONE** (freshest — M5.6.4 just validated the EM sector): `compute_director_em` → `director_div` (scalar), `director_curl` (vector) + `director_curl_mag` (scalar), wired as WAVE_MENU 6/7 + E/B glyphs with size/color toggles. Glyph↔flux-mesh cell-center alignment fixed (see as-built log). **This is the M5.6 PR boundary.**
+
+The rest are **deferred past the M5.6 PR** (Rodrigo 2026-05-27):
+
+1. **gauge-stable charge** — `|∇·n̂|` (unsigned) or topological-winding density, so the charge view doesn't flip sign under Evolve-PDE (kills the apolar-director sign artifact, see caveat below). → lands with **M5.7** (first sustained dynamic runs).
+1. **`(A·ω)²` joint-thermal energy** — product-of-squares color mode from the two existing trackers; `(A·ω)²` (not `A·ω`) is the energy-dimensional quantity. → **9b**.
+1. **granule heat-map** — color each granule by local thermal `A`. → **9b**.
+1. **modulation-response** — apply an EM-wave lever, view `Δ(A·ω)²` (the SABER-method "modulation" picture, physics framing only). → **9b/M5.7** (dynamic; needs an EM-wave seeder).
 
 ### As-built log (update as features land)
 
@@ -225,6 +230,16 @@ Both reuse the one director-glyph buffer (shaft + arrowhead) + 3-plane sampling,
 
 The `unit`+`single` combination is the **far-field inspection** view (uniform, fully-visible field lines everywhere); `magnitude`+`gradient` is the **field-strength** view (where + how strong + which way). The barb scales with the shaft, so it shrinks with the glyph in magnitude mode. Headless-verified across all 4 combinations (finite).
 
+**✅ Glyph ↔ flux-mesh alignment fix (2026-05-27, on-screen confirmed).** Glyph origins didn't sit on the flux-mesh cells: the glyph used the bare voxel node `i/max_dim`, while `create_flux_mesh` (`medium.py`) places every mesh vertex at the **cell center** `(i+0.5)/max_dim`, and the glyph's perpendicular coord used a lossy `int(plane·n)/max_dim` that diverges from the mesh's continuous `plane·n/max_dim` on odd-dimensioned axes (grids are auto-derived from universe-size ÷ target-voxels, so odd counts are common). Fix: glyphs now read the mesh's **own** coordinates — `+0.5` on the two in-plane axes + the new continuous `fm_plane_{x,y,z}_pos` (added to `medium.py`, same formula the mesh uses) for the perpendicular. The field is still *sampled* at the integer voxel; only the render *placement* moved (exactly what the mesh does). Result: glyph tails sit dead-center on each mesh cell and flat in the sheet, for any grid parity / plane fraction. One source of truth for "where voxel `i` is in normalized space."
+
 **Why the B color is *magnitude* (orange), not bluered-N/S — and what we'd lose.** `‖∇×n̂‖` is a magnitude (≥0), so it *cannot* show N/S poles. Red=N/blue=S needs a **signed** scalar — a projection `B·axis` (`B·ẑ` or the dipole axis). That's deferred (not lost): (1) it's axis-relative — only reads as N/S for a dipole-aligned field; (2) **there is no magnetic dipole yet** — the static hedgehog is a pure electric charge (`B=∇×n̂≈0`), so bluered-N/S would color near-zero noise. It becomes the right choice once a configuration produces a real circulating B → see **M5.6.5f (magnetic-dipole viz xperiment)** in `0b_M5_roadmap.md`.
 
-**🚧 Next:** `A·ω` joint-thermal product mode; gauge-stable charge option (`|∇·n̂|` or winding density, per the sign caveat above); granule heat-map color by local thermal `A`.
+**🚧 Deferred past the M5.6 PR (Rodrigo 2026-05-27)** — none blocks the PR; each homed to the phase where it becomes meaningful:
+
+| Feature | What | Home | Why deferred |
+| --- | --- | --- | --- |
+| **gauge-stable charge** | `\|∇·n̂\|` unsigned or topological-winding density, so the charge view doesn't sign-flip under Evolve-PDE (apolar caveat above) | M5.7 | Needs sustained dynamic runs to be worth it |
+| **`(A·ω)²` joint-thermal** | energy-dimensional color mode. `(A·ω)²` not `A·ω` — `E_kin=½m(Aω)²`, so `A·ω` alone is peak *velocity*; the energy quantity is `(A·ω)²` | 9b | Thermal program; the (A,ω) hypothesis test |
+| **granule heat-map** | color each granule by local thermal `A` (sparse heat map) | 9b | Thermal program |
+| **modulation-response** | apply an EM-wave lever → view `Δ(A·ω)²` (SABER-method "modulation", physics framing only) | 9b/M5.7 | Dynamic; needs an EM-wave seeder |
+| **B dipole N/S (bluered)** | signed `B·axis` red=N/blue=S | M5.6.5f@M5.8 | Needs a real circulating B (no dipole yet) |

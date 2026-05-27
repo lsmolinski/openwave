@@ -93,4 +93,16 @@ These 9b sub-stages are deliberately speculative — they assume the joint (A, �
 
 The internal validation can run as soon as M5.7 lands; full lab-relevance results follow Phase 4. Heat-substrate validation (9b.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites — both must reach completion before the combined physics can be predicted reliably.
 
+#### Thermal-viz support — carried over from M5.6.5b (deferred 2026-05-27)
+
+These rendering features were built-but-deferred during M5.6.5b (the EM/thermal/clock viz work, `4b Part 3`) because they only become *meaningful* once the 9b thermal program runs. The amplitude-`A` (`‖M−D‖_F`, WAVE_MENU 2) and clock-`ω` (`‖Ṁ‖_F`, WAVE_MENU 3) trackers are already wired; these three build on them. Pick them up here:
+
+| Viz feature | What it shows | Supports |
+| --- | --- | --- |
+| **Joint-thermal `(A·ω)²`** color mode | the heat *energy* content in one view. Use `(A·ω)²`, **NOT** `A·ω` — for a defect oscillator `E_kin = ½m(Aω)²`, so `A·ω` alone has dimensions of *velocity* (peak speed = amplitude × frequency); the energy-dimensional quantity is the square. Product-of-squares of the two existing trackers. | 9b.0 (temperature observable made visible), 9b.1 |
+| **Granule heat-map** | color each granule (point cloud at voxels) by local thermal `A` — a sparse per-defect "heat map" | 9b.3 (multi-defect amplitude statistics) |
+| **Modulation-response** view | apply an EM-wave lever, render the `Δ(A·ω)²` shift before/after (or as a time-trace) — the SABER-method "modulation" picture made visible (physics framing only; device specifics stay in the private SABER repo per the cardinal rule) | 9b.1 (AM/FM sub-experiments 10.1a–e), 9b.8 (wave back-reaction) |
+
+Dynamic-charge note: the gauge-stable charge view (`|∇·n̂|` / topological winding, so the EM-charge view doesn't sign-flip under dynamics) is the *other* deferred M5.6.5b viz item — it's homed at **M5.7** (first sustained dynamic runs), not here.
+
 Even if the framework needs refinement (first hypotheses rarely survive intact), the *framework for asking the question* — per-defect amplitude as a thermal degree of freedom alongside topology and mass — is what M5+ matter physics enables. **No other framework currently lets us pose the question this way.** That's the deeper value: even partial validation moves thermal physics from "ensemble-only statistical" to "single-defect quantum-mechanical".
