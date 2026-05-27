@@ -91,6 +91,24 @@ The other two (tilt) equations are satisfied identically (`= 0`) → they are th
 sector. **This is the M5.5.1 validation target** (reproduce it from Eq.35) and the **M5.6
 implementation target** (KG emerges from twist, not added by hand).
 
+### 5a. M5.6.1 findings (`sandbox_v5`, 2026-05-27) — the KG mass is GEOMETRIC, not a potential
+
+Anatomy of the §5 operator, verified symbolically (`m5_6_1_kg_operator_check.py`) and
+numerically (`m5_6_1b_twist_evolution.py`):
+
+| Finding | Detail |
+| --- | --- |
+| **Hedgehog connection identities** | `∇·Â = 1/r²` and `‖Â‖² = 1/r²` (sympy). |
+| **Explicit mass term CANCELS** | `(∇−Â)²ψ = ∇²ψ − (∇·Â)ψ − 2Â·∇ψ + ‖Â‖²ψ`; the zeroth-order coeff `−(∇·Â)+‖Â‖² = 0` **exactly**. The full operator reduces to `L = 2∂_rr + (1/r²)Δ_Ω` (checked on `r⁴`, `cos r`, `e^{−r}`). **Bare phase ψ is MASSLESS** (numeric: residual `→0` as dx→0). |
+| **Mass is geometric, lives in `Ψ=e^{iψ}`** | The KG mass is minimal coupling to the connection `Â` (the `k→k−Â` shift), **NOT** an added `V_ψ`. `‖Â‖²=1/r²` survives as a position-dependent mass² only in the dual complex field via `(∇−iÂ)²Ψ`. This is the literal statement of *"KG from twist, not from V"* — and pinpoints the **M5.2 error** (we added mass to a potential; the mass was always in the geometry). |
+| **Regularization GENERATES the finite mass** | With a core-regularized `Â = x/(r²+r_c²)`, the cancellation no longer holds: `−(∇·Â)+‖Â‖² = −3r_c²/(r²+r_c²)²` (numeric matches analytic to 5%). ⇒ emergent **mass²(r) = 3r_c²/(2(r²+r_c²)²)** — scale `~1/r_c²` at the core, `→0` far out. The particle mass is *set by the core regularization* (why Faber/M5.6.3 is load-bearing for lepton masses/M5.9). A uniform ψ then oscillates (bounded, real `+`mass²). |
+| **Natural conserved measure is `1/r²`-weighted** | `L = 2∂_rr + (1/r²)Δ_Ω` is self-adjoint w.r.t. `dμ = d³x/r²`, not flat `d³x`. Numeric: flat-measure energy drifts 190% on a twist packet, the `1/r²`-weighted energy drifts 6%. Carry this measure into the M5.6.2 core treatment. |
+| **Physical field = covariant gradient `(∇ψ−Â)`** | A phase that winds with the connection (`∇ψ ≈ Â`, e.g. `ψ=½ln(r²+r_c²)`) has `‖∇ψ−Â‖/‖∇ψ‖ ≈ 1.5e-3` — the gauge-invariant `(∇ψ−Â)` is the physical observable (the massless vacuum), not bare `∇ψ`. |
+
+**Consequence for M5.6.2/.3:** the core treatment isn't just numerical hygiene — it *creates*
+the mass. M5.6.2 handles the disclination + core on the `1/r²` measure; M5.6.3 (Faber) replaces
+the ad-hoc `r_c` with the physical running-coupling scale that pins the lepton mass.
+
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
 ```text
