@@ -193,8 +193,22 @@ verified spectrally (periodic box) to reproduce Maxwell's structure to machine p
 | Coriolis `−2(v×Ω)` ↔ Lorentz `q(v×B)` | `F∝v×ω`, magnitudes equal — the `v×field` force law (`Ω=ω/2 ⇒ B↔ω`) |
 
 ⇒ the hydro reading of "tilt = flow, vorticity = B" reproduces sourceless Maxwell + the Gauss
-charge + the Lorentz force, all abelian and exact. **M5.6.4b** does the Faber matrix-curvature route
-(`R=Γ×Γ` → abelian `F` at long range; the non-abelian correction = the running-coupling onset).
+charge + the Lorentz force, all abelian and exact.
+
+**M5.6.4b — Faber matrix-curvature route** (`sandbox_v5/m5_6_4b_faber_curvature_em.py`, the primary
+route): on the regularized Faber hedgehog (3a), `Γ⃗_i = q0∂_iq⃗ − (∂_iq0)q⃗ + q⃗×∂_iq⃗` (Eq.6),
+`R⃗_ij = Γ⃗_i×Γ⃗_j` (Eq.5; `*F_μν∝R_μν`, Eq.9):
+
+| Check | Result |
+| --- | --- |
+| Maurer–Cartan / Bianchi | `dΓ_ij = ∂_iΓ_j−∂_jΓ_i = (1.995)·R_ij` (resid 1.1%) — `R` closed (the ≈2 is the su(2) factor) ⇒ `dR=0` ⇒ homogeneous Maxwell holds; the tilt curvature is a genuine field strength |
+| abelian Coulomb far field | `‖R‖ ∝ r^(−1.99)` ⇒ `\|E\|~1/r²` at long range |
+| running-coupling onset | `‖R‖·r²` = `0.45→0.73→0.94→0.99→1.00` (`r=0.5→7`): plateaus (abelian) far, rolls off within `r₀` (regularized non-abelian core) = effective coupling runs at scale `r₀`, matching Faber's `α_sol(d)` (§5c/3a) |
+
+**M5.6.4 conclusion:** the EM/tilt sector reproduces Maxwell by both routes — abelian-exact via the
+hydro dictionary (4a), and as Faber's closed non-abelian curvature that is abelian-Coulomb at long
+range with a `r₀`-scale running coupling (4b). Together with the QM/twist KG sector (§5a–5c), the
+eigenvalue map's two main axes (δ=QM twist, 1=EM tilt) are both verified emergent from the matrix field.
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
