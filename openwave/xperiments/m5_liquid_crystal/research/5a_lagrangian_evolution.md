@@ -109,6 +109,23 @@ numerically (`m5_6_1b_twist_evolution.py`):
 the mass. M5.6.2 handles the disclination + core on the `1/r²` measure; M5.6.3 (Faber) replaces
 the ad-hoc `r_c` with the physical running-coupling scale that pins the lepton mass.
 
+### 5b. M5.6.2a findings (`sandbox_v5/m5_6_2a_biaxial_hedgehog.py`, 2026-05-27) — `C_μν` is the matrix-level mass source
+
+The scalar result (§5a) has a matrix-field counterpart on the **biaxial hedgehog** frame
+`O = [r̂ | e_Θ | e_Φ]`, `D = diag(1, δ, 0)` (eigenvalue-1 axis radial; δ-twist + null axes
+in the tangent plane). Verified numerically:
+
+| Finding | Detail |
+| --- | --- |
+| **Frame structure** | `O` orthonormal in the bulk (`‖O^TO−I‖=4e-13`, det=+1); `M_bg=ODO^T` recovers eigenvalues `(1, δ, 0)`; principal director · r̂ = 1.0000. |
+| **`C_μν = [M_μ^bg, M_ν^bg] ≠ 0`** | the background curvature is **nonzero** — the gauge source of the mass. **Contrast M5.5.2**: the single-generator bump `O=Ry(γ)` has `C_μν ≡ 0` (one generator commutes with its own derivatives) → no mass, which is exactly why M5.5.2 was massless. Biaxiality (multiple generators rotating across space) is what turns the mass on. |
+| **`‖C‖ ∝ r^(−1.96)`** | the matrix curvature scales as **`1/r²`** — the same profile as §5a's scalar geometric mass `‖Â‖²=1/r²`. Two independent routes (scalar twist operator + matrix background curvature) give the same position-dependent mass. `C_μν` IS the matrix-level realization of the geometric KG mass. |
+| **z-axis disclination** | biaxiality forces a hairy-ball line singularity on the z-axis (`e_Φ` winds). Regularized by a clamped smoothstep: the secondary `(δ, 0)` axes are full-length for `ρ ≥ ρ_c` (exact hedgehog) and **melt smoothly to 0 inside `ρ < ρ_c`** (biaxiality melts in the disclination core, like a nematic). Frame stays orthonormal outside the core; `‖∂O‖²` peak is **capped `∝ 1/ρ_c`** (sweep: `24→9.3→4.9` for `ρ_c = 0.4/0.8/1.2`). |
+
+**Hand-off to M5.6.2b:** the dynamical part — evolve a twist on this background (the validated
+M5.5.2 leapfrog, now with `C_μν ≠ 0`), disclination-masked, and show the `C_μν` term produces the
+restoring/mass behavior absent in the massless M5.5.2 bump.
+
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
 ```text
