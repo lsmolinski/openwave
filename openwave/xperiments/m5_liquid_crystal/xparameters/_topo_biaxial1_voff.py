@@ -52,6 +52,9 @@ TOPOLOGY_SEED = {
     "RHOC_VOXELS": 3.0,  # z-axis disclination melt radius, voxels
     "BIAXIAL_DELTA": 0.30,  # middle eigenvalue δ → D = diag(1, 0.30, 0)
     "AUTO_RELAX_STEPS": 0,  # forced 0 — relax would re-uniaxialize M
+    "LDG_STIFFNESS_K": 0.0,  # M5.6.5c V(M) amplitude well, in units of c²/dx⁴; 0 = V off
+    #                          (this xperiment = pure seed smoke test). The V-on confinement
+    #                          demo is _topo_biaxial_v1.py (K=1.0).
 }
 
 

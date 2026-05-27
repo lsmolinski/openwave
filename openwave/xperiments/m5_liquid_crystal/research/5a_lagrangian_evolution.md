@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a–§5e: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), and the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a–§5f: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), and turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -253,6 +253,78 @@ Validated against numpy `eigh` over 20 000 random symmetric matrices (f32): max 
 max director err **2e-7**. No regression — the uniaxial path is still 1.0000; the biaxial path goes
 0.976 → **1.0000**. Since `eigen_decompose` is the lynchpin every render/tracker reads from, this is a
 prerequisite for the M5.6.5b biaxial-ellipsoid glyph and the M5.8 clock (both genuinely biaxial states).
+
+### §5f — M5.6.5c: turning V on — amplitude confinement, and why Eq.13 can't pin biaxiality
+
+Rodrigo's M5.5.4 on-screen observation: with V off, Evolve-PDE makes the hedgehog *slosh*
+and its energy **dilutes over a growing radius** — bounded and energy-conserving, but not
+localized (no restoring force against amplitude spread). M5.6.5c turns the production `V_M`
+(Eq.13 LdG, off by default) on to supply that force.
+
+**The structural finding.** `V(M) = a·Tr(M²) − b·Tr(M³) + c·(Tr(M²))²` is rotation-invariant
+(acts on eigenvalues only, §5/M5.5.3). Its eigenvalue-gradient is
+
+```text
+∂V/∂λ_i = λ_i·(2a − 3b·λ_i + 4c·s₂)  ,  s₂ = Tr(M²) = Σλ²
+```
+
+At a critical point each `λ_i` is either **0** or the single root `λ* = (2a+4c·s₂)/(3b)` —
+one linear equation, shared `s₂` — so *all nonzero eigenvalues equal `λ*`*. The anisotropic
+critical points are therefore **uniaxial** `(λ*,λ*,0)`, `(λ*,0,0)`. **The canonical 3-term
+Eq.13 LdG cannot have a biaxial `(1,δ,0)` minimum** (three distinct eigenvalues). Verified
+numerically for four `(a,b,c)` sets (`m5_6_5c_potential_confinement.py` Stage 1: max
+nonzero-eigenvalue spread at the minimum = 0 over 120 random starts each). Consequence: a
+`b≠0` term confines the amplitude but **pulls δ toward a uniaxial value — eroding the very
+biaxiality** the C_μν mass source needs (§5b).
+
+**The clean confinement (the production choice).** Set `b=0`: `V = a·Tr(M²) + c·(Tr(M²))²`
+depends only on `s₂`, with minimum at `s₂* = −a/(2c)`. Choose `s₂* = Tr(diag(1,δ,0)²) = 1+δ²`.
+This pins the amplitude (confines) and is **exactly flat in the biaxiality direction**
+(`V` constant on the `s₂` sphere → `|V(biaxial) − V(uniaxial)| = 0` at equal `s₂`, Stage 2).
+
+| Metric (full-M leapfrog, biaxial hedgehog) | V OFF | V ON (b=0 well) |
+| --- | --- | --- |
+| amplitude dev `⟨\|Tr(M²)−s₂*\|⟩` start→max→end | 0.025 → **0.158** → 0.158 (wanders 6.4×) | 0.025 → 0.025 → **0.022** (pinned) |
+| energy RMS radius start→end | 3.33 → 3.92 (+18%) | 3.31 → 3.65 (+10%) |
+
+**Production calibration (the units bridge).** The sandbox coefficients are dimensionless;
+production `evolve_M` uses physical `dx_am`, `c_amrs`, and `dt_rs² ≈ 3.34·dx²`. The matrix
+LdG force balances the **F²-curvature** force `c²·div(G) ~ c²·M³/dx⁴` (cubic, 4 gradient
+orders) — NOT a Laplacian — so the coefficient scale is **`c²/dx⁴`**, not the scalar φ⁴'s
+`(c/dx)²`. A sweep with the real kernel (`m5_6_5c_prod_scale.py`) confirms `K ∈ [0.5, 25]·c²/dx⁴`
+all confine ~3.3× vs V-off with no blow-up (dt²-stable). The launcher computes
+
+```text
+ldg_c = K · c_amrs²/dx_am⁴ ,  ldg_a = −2·ldg_c·(1+δ²) ,  ldg_b = 0
+```
+
+from the xparameter `LDG_STIFFNESS_K` (off = 0). Configs: `_topo_biaxial1.py` (K=0, seed
+smoke test) and `_topo_biaxial_v1.py` (K=1, the V-on confinement A/B demo).
+
+**Energy-display fix (vacuum shift).** The b=0 well bottom is **negative**: `V(vacuum) =
+−c·s₂*² ≈ −1.8e-6`. The production curvature density is tiny (`~1e-11` at `dx≈15`), so with
+V on the constant well-bottom **swamps** the Hamiltonian — `compute_energyH_density_M` returns
+a uniform `≈ −1.8e-6` and the flux mesh renders a featureless floor (looked like "energyH = 0"
+on screen). Fix: subtract the vacuum potential `v0 = V_M(D_vacuum)` in the **display only**
+(`compute_energyH_density_M` gained a `v0` arg; the launcher computes it from the vacuum
+eigenvalues). A constant shift does not touch the force `−dV_M`, so dynamics/conservation are
+identical. Shifted, the field is `≥ 0` with structure `[1.6e-11, 1.8e-6]` — vacuum at 0,
+brightest at the core/disclination where M collapses (most deviated from vacuum). This is also
+what makes the **confinement visible**: under Evolve-PDE the V-pinned core energy stays gathered
+(it is the amplitude V pins) while the directors slosh (frame rotation — see below).
+
+**What V does NOT do (the directors still slosh).** V is rotation-invariant (§5/M5.5.3): it
+pins the eigenvalue **amplitude**, not the frame **orientation**. So under Evolve-PDE the
+director glyphs keep sloshing even with V on — that motion is the dynamical twist sector (the
+would-be clock), driven by the F²-curvature force, which V cannot and should not freeze.
+Orientation containment is the job of the **gauge-correct `O(x)∈SO(3)` kinetic (5d)**, not V.
+The disclination line also carries some energy outward regardless of V. So "fully contained"
+is not achievable from V alone — V confines the amplitude component only.
+
+**Q7 flag for Duda.** A fully biaxial-STABLE vacuum needs an *extra invariant* in V (the
+3-term Eq.13 has only uniaxial minima). The `b=0` amplitude well is the interim — it confines
+without uniaxializing, but leaves δ as a flat (un-pinned) direction. The biaxiality-stabilizing
+term is an open question for Duda.
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 

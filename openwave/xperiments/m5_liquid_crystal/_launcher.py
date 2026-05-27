@@ -134,6 +134,7 @@ class SimulationState:
         self.ldg_a = 0.0
         self.ldg_b = 0.0
         self.ldg_c = 0.0
+        self.ldg_v0 = 0.0  # vacuum potential V_M(D), subtracted in the energyH display (M5.6.5c)
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -344,11 +345,34 @@ class SimulationState:
             # 400 steps vs [0.73, 1.21] for free-wave). 0.3·(c/dx)² is the
             # marginal stability ceiling at the production grid.
             self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
+            # M5.6.5c — Eq.13 LdG V(M) coupling for the matrix substrate (evolve_M /
+            # compute_energyH_density_M). The b=0 amplitude well V = a·Tr(M²) + c·(Tr(M²))²
+            # pins Tr(M²)→s₂*=1+δ² — confines the energy seen diluting under Evolve PDE —
+            # while leaving the biaxiality δ EXACTLY flat (the canonical 3-term Eq.13 has NO
+            # biaxial minimum: for any (a,b,c) the nonzero eigenvalues collapse to one λ*;
+            # 5a §5f). Natural cubic-balance unit is c²/dx⁴ (production sweep m5_6_5c_prod_scale:
+            # confines 3.3× across k∈[0.5,25] with no blow-up, dt²-stable). OFF unless the
+            # xperiment sets LDG_STIFFNESS_K > 0. b=0 is the interim — a fully biaxial-STABLE
+            # vacuum needs an extra invariant in V (Q7, flagged to Duda).
+            ldg_k = float(self.TOPOLOGY_SEED.get("LDG_STIFFNESS_K", 0.0))
+            if ldg_k > 0.0:
+                delta = float(self.TOPOLOGY_SEED.get("BIAXIAL_DELTA", 0.3))
+                self.ldg_c = ldg_k * self.c_amrs**2 / self.wave_field.dx_am**4
+                self.ldg_a = -2.0 * self.ldg_c * (1.0 + delta * delta)  # min at s₂*=1+δ²
+                self.ldg_b = 0.0
+                # vacuum potential V_M(D=diag(1,δ,0)) — subtracted in the energyH display so
+                # the negative well bottom doesn't swamp the structure (kernel docstring).
+                tr2_vac = 1.0 + delta * delta
+                tr3_vac = 1.0 + delta * delta * delta
+                self.ldg_v0 = self.ldg_a * tr2_vac - self.ldg_b * tr3_vac + self.ldg_c * tr2_vac**2
+            else:
+                self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         else:
             # Wave-class seed (TEST_SEED plane wave) — disable V(ψ) entirely
             # so evolve_psi runs the free-wave equation `∂²ψ/∂t² = c²·∇²ψ`.
             self.m_freq_kg_rs = 0.0
             self.lambda_phi4 = 0.0
+            self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -359,6 +383,7 @@ class SimulationState:
         self.cfl_factor = 0.0
         self.m_freq_kg_rs = 0.0
         self.lambda_phi4 = 0.0
+        self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
         self.frame = 1
@@ -755,6 +780,7 @@ def compute_field_observables(state):
         state.ldg_a,
         state.ldg_b,
         state.ldg_c,
+        state.ldg_v0,
         1.0,
     )
 
@@ -941,7 +967,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topo_biaxial1"
+    default_xperiment = selected_xperiment_arg or "_topo_biaxial1_von"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
