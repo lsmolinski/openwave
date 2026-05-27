@@ -439,7 +439,7 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
 #     U(M) = 4 Σ_{μ<ν} ‖[M_μ, M_ν]‖²_F  +  V_M(M)          (M_μ = ∂_μ M)
 #     EOM:  ∂²_t M = c²·force_curv − dV_M/dM ,   force_curv = Σ_α ∂_α G_α
 #     G_α = ∂U_curv/∂M_α = 8 Σ_ν [[M_α,M_ν], M_ν]          (symmetric)
-# Validated in sandbox_v4 (m5_5_2/3); see 5a §9. The faithful curvature kinetic
+# Validated in sandbox_v5 (m5_5_2/3); see 5a §9. The faithful curvature kinetic
 # (F_μ0² = 4‖[M_μ,Ṁ]‖², degenerate metric) is the M5.6 refinement.
 #
 # Two-pass per step: compute_curvature_flux (G_α everywhere, 1-cell halo) → evolve_M

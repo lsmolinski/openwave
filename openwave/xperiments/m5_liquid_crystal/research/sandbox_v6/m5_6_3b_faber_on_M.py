@@ -19,7 +19,7 @@ there). Checks:
   3. mass scale: E(r0)·r0 ≈ const ⇒ E ∝ 1/r0 — Faber's E0∝1/r0 reproduced in the M framework.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_3b_faber_on_M
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_3b_faber_on_M
 """
 import numpy as np
 

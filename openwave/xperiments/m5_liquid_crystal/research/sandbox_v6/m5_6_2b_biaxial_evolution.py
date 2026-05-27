@@ -22,10 +22,10 @@ Tests:
   C  restoring/mass: with C the seeded twist oscillates (bounded); the mass scale tracks ‖C‖.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_2b_biaxial_evolution
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2b_biaxial_evolution
 """
 import numpy as np
-from openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_2a_biaxial_hedgehog import (
+from openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2a_biaxial_hedgehog import (
     build_frame, matmul, commf, frob2, RC, RHOC, DELTA, D, L, N,
 )
 

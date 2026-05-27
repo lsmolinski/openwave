@@ -32,7 +32,7 @@ compute_curvature_flux). V-off vs V-on (b=0 well). Metric = energy-weighted RMS 
 R_rms(t): V-off grows (dilution, the user's observation), V-on stays bounded (contained).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_5c_potential_confinement
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_5c_potential_confinement
 """
 import numpy as np
 

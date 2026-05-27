@@ -20,7 +20,7 @@ units/domain-dependent (Duda's NIntegrate normalization), so we report the fit a
 1/d quality, not an exact-constant match.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v3.m5_4_coulomb_page18
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_4_coulomb_page18
 """
 
 import sys

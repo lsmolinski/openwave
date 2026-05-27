@@ -19,7 +19,7 @@ Tests:
       Â (∇ψ ≈ Â) has near-zero covariant gradient — the low-energy (massless) vacuum.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_1b_twist_evolution
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_1b_twist_evolution
 """
 import numpy as np
 

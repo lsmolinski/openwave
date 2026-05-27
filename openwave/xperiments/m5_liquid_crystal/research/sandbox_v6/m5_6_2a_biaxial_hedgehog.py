@@ -18,7 +18,7 @@ This script (structure-first, like M5.6.1a) verifies:
   4. the disclination lives on the z-axis; the ρ_c regularization caps its blow-up.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_2a_biaxial_hedgehog
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2a_biaxial_hedgehog
 """
 import numpy as np
 

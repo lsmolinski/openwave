@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v4`. §5 + §5a–§5f: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), and turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5f: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), and turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -91,7 +91,7 @@ The other two (tilt) equations are satisfied identically (`= 0`) → they are th
 sector. **This is the M5.5.1 validation target** (reproduce it from Eq.35) and the **M5.6
 implementation target** (KG emerges from twist, not added by hand).
 
-### 5a. M5.6.1 findings (`sandbox_v5`, 2026-05-27) — the KG mass is GEOMETRIC, not a potential
+### 5a. M5.6.1 findings (`sandbox_v6`, 2026-05-27) — the KG mass is GEOMETRIC, not a potential
 
 Anatomy of the §5 operator, verified symbolically (`m5_6_1_kg_operator_check.py`) and
 numerically (`m5_6_1b_twist_evolution.py`):
@@ -109,7 +109,7 @@ numerically (`m5_6_1b_twist_evolution.py`):
 the mass. M5.6.2 handles the disclination + core on the `1/r²` measure; M5.6.3 (Faber) replaces
 the ad-hoc `r_c` with the physical running-coupling scale that pins the lepton mass.
 
-### 5b. M5.6.2a findings (`sandbox_v5/m5_6_2a_biaxial_hedgehog.py`, 2026-05-27) — `C_μν` is the matrix-level mass source
+### 5b. M5.6.2a findings (`sandbox_v6/m5_6_2a_biaxial_hedgehog.py`, 2026-05-27) — `C_μν` is the matrix-level mass source
 
 The scalar result (§5a) has a matrix-field counterpart on the **biaxial hedgehog** frame
 `O = [r̂ | e_Θ | e_Φ]`, `D = diag(1, δ, 0)` (eigenvalue-1 axis radial; δ-twist + null axes
@@ -122,7 +122,7 @@ in the tangent plane). Verified numerically:
 | **`‖C‖ ∝ r^(−1.96)`** | the matrix curvature scales as **`1/r²`** — the same profile as §5a's scalar geometric mass `‖Â‖²=1/r²`. Two independent routes (scalar twist operator + matrix background curvature) give the same position-dependent mass. `C_μν` IS the matrix-level realization of the geometric KG mass. |
 | **z-axis disclination** | biaxiality forces a hairy-ball line singularity on the z-axis (`e_Φ` winds). Regularized by a clamped smoothstep: the secondary `(δ, 0)` axes are full-length for `ρ ≥ ρ_c` (exact hedgehog) and **melt smoothly to 0 inside `ρ < ρ_c`** (biaxiality melts in the disclination core, like a nematic). Frame stays orthonormal outside the core; `‖∂O‖²` peak is **capped `∝ 1/ρ_c`** (sweep: `24→9.3→4.9` for `ρ_c = 0.4/0.8/1.2`). |
 
-**M5.6.2b — dynamical confirmation** (`sandbox_v5/m5_6_2b_biaxial_evolution.py`): running the
+**M5.6.2b — dynamical confirmation** (`sandbox_v6/m5_6_2b_biaxial_evolution.py`): running the
 validated M5.5.2 leapfrog (`2K ψ_tt = Σ_μ ∂_μ J_μ`, `J_μ=−32Σ_ν F̃_μν•P_ν`) on the biaxial
 hedgehog, disclination-masked:
 
@@ -137,7 +137,7 @@ intrinsically oscillates. This is the *no-static-soliton / time-periodic* princi
 ([[feedback_no_static_solitons]]) and is the plausible **M5.8 Zitterbewegung-clock seed** — the
 clock *frequency* (`ω=2mc²/ℏ`) is M5.8's measurement, after M5.6.3 (Faber) pins the mass scale.
 
-### 5c. M5.6.3a findings (`sandbox_v5/m5_6_3a_faber_regularization.py`, 2026-05-27) — Faber's regularization pins the mass scale
+### 5c. M5.6.3a findings (`sandbox_v6/m5_6_3a_faber_regularization.py`, 2026-05-27) — Faber's regularization pins the mass scale
 
 Faber's *Model of Topological Fermions* (Faber & Golubich, *Universe* 11/2025/113) gives the
 **physical** regularization that sets the mass scale M5.6.1/.2 left as an ad-hoc `r_c`. Ported
@@ -154,7 +154,7 @@ natively (per [[reference_faber_regularization]], "port don't reinvent"):
 **The deliverable:** the mass scale is no longer an ad-hoc `r_c` — it's `r₀`, fixed by the `Λ=q₀⁶/r₀⁴`
 potential and tied to `α_f` + the mass via `E₀ ∝ 1/r₀`. This is the M5.9 lepton-mass-calibration handle.
 
-**M5.6.3b — Faber's `Λ` mapped onto Duda's M** (`sandbox_v5/m5_6_3b_faber_on_M.py`): the
+**M5.6.3b — Faber's `Λ` mapped onto Duda's M** (`sandbox_v6/m5_6_3b_faber_on_M.py`): the
 amplitude mapping is realized by spatially-melting eigenvalues. With `s(r)=sin α=r/√(r₀²+r²)`,
 `D(s) = D_iso + s·(D_full − D_iso)` (`D_full=diag(1,δ,0)`, `D_iso=(1+δ)/3·I`), `M = O·D(s)·O^T`:
 
@@ -181,7 +181,7 @@ Maxwell is the **long-range abelian limit**; the short-range non-abelian correct
 Faber's **running coupling** (`α_sol(d)`, reproduced in §5c/3a). The soliton is a *dual monopole* —
 the topological winding sources Gauss's law.
 
-**M5.6.4a — hydrodynamics ↔ EM dictionary** (`sandbox_v5/m5_6_4a_hydro_em.py`, the clean abelian
+**M5.6.4a — hydrodynamics ↔ EM dictionary** (`sandbox_v6/m5_6_4a_hydro_em.py`, the clean abelian
 route, `4a §11b.1`): an incompressible tilt-flow `u=∇×A` with `ω=∇×u` (↔`B`), Lamb `l=ω×u` (↔`E`),
 verified spectrally (periodic box) to reproduce Maxwell's structure to machine precision:
 
@@ -195,7 +195,7 @@ verified spectrally (periodic box) to reproduce Maxwell's structure to machine p
 ⇒ the hydro reading of "tilt = flow, vorticity = B" reproduces sourceless Maxwell + the Gauss
 charge + the Lorentz force, all abelian and exact.
 
-**M5.6.4b — Faber matrix-curvature route** (`sandbox_v5/m5_6_4b_faber_curvature_em.py`, the primary
+**M5.6.4b — Faber matrix-curvature route** (`sandbox_v6/m5_6_4b_faber_curvature_em.py`, the primary
 route): on the regularized Faber hedgehog (3a), `Γ⃗_i = q0∂_iq⃗ − (∂_iq0)q⃗ + q⃗×∂_iq⃗` (Eq.6),
 `R⃗_ij = Γ⃗_i×Γ⃗_j` (Eq.5; `*F_μν∝R_μν`, Eq.9):
 
@@ -395,7 +395,7 @@ Adg[f_] := (A + r) . Grad[f, {x,y,z}];
 
 ---
 
-## 8. sandbox_v4 plan (mirror the Mathematica in sympy/numpy, then Taichi)
+## 8. sandbox_v5 plan (mirror the Mathematica in sympy/numpy, then Taichi)
 
 | Sub-step | Deliverable | Validates against |
 | --- | --- | --- |

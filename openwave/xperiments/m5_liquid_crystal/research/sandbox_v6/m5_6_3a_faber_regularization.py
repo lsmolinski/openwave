@@ -21,7 +21,7 @@ Checks:
   3. E0 ∝ 1/r0  (the mass scale is set by r0 — the "pin the mass" deliverable).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_3a_faber_regularization
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_3a_faber_regularization
 """
 import numpy as np
 

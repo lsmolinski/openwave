@@ -20,7 +20,7 @@ dictionary reproduces Maxwell's structure, using SPECTRAL (FFT) derivatives on a
   4. Coriolis ↔ Lorentz — the force on a test velocity is F = v×ω (same v×field form as Lorentz).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_4a_hydro_em
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_4a_hydro_em
 """
 import numpy as np
 

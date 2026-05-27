@@ -738,7 +738,7 @@ def compute_propagation(state):
 
     Evolves the Landau–de Gennes order parameter M under Duda's Eq.18 action
     (simple ½‖Ṁ‖² kinetic + faithful potential, validated symplectic in
-    sandbox_v4/m5_5_4_matrix_evolution_check.py):
+    sandbox_v5/m5_5_4_matrix_evolution_check.py):
 
         ∂²_t M = c²·Σ_α ∂_α G_α − dV_M(M) ,   G_α = 8 Σ_ν [[M_α,M_ν],M_ν]
 

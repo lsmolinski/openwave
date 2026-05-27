@@ -25,7 +25,7 @@ validates the machinery cleanly. The KG MASS GAP needs the biaxial HEDGEHOG (C_�
 from multiple generators) — which carries a z-axis DISCLINATION singularity → M5.6.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_5_2_twist_evolution
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_5_2_twist_evolution
 """
 
 import sys

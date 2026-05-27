@@ -24,7 +24,7 @@ separations / blend / τ) so the numbers are directly comparable to M5.1's R²=0
 PASS: opposite-charge R² > 0.95 AND b < 0 (attractive).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v3.m5_4_coulomb_matrix
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_4_coulomb_matrix
 """
 
 import sys

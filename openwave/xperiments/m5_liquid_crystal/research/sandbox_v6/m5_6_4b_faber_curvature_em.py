@@ -19,7 +19,7 @@ at short range = Faber's running coupling (his α_sol(d), §5c/3a). Checks:
      (regularized non-abelian core) — the effective coupling runs at the scale r0.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_4b_faber_curvature_em
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_4b_faber_curvature_em
 """
 import numpy as np
 

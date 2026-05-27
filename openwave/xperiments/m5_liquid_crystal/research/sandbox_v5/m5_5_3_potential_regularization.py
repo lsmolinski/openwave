@@ -19,7 +19,7 @@ Three stages:
      minimum (core size + mass). F² resists collapse, V resists expansion.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v4.m5_5_3_potential_regularization
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_5_3_potential_regularization
 """
 import sys
 from pathlib import Path

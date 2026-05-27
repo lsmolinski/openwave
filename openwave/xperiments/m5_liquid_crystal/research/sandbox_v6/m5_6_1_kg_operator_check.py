@@ -20,7 +20,7 @@ Checks (all symbolic, sympy):
      (M5.6.2/.3). The clock ω = mc²/ℏ is the Ψ phase rotation.
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_1_kg_operator_check
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_1_kg_operator_check
 """
 import sympy as sp
 

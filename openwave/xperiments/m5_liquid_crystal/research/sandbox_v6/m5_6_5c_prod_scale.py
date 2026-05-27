@@ -8,7 +8,7 @@ b=0 well confines ~3.3× across K∈[0.5,25] with no blow-up (dt²-stable) ⇒ t
 sets ldg_c = K·c²/dx⁴, ldg_a = −2·ldg_c·(1+δ²), default K=1 (xparameter LDG_STIFFNESS_K).
 
 USAGE:
-    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v5.m5_6_5c_prod_scale
+    python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_5c_prod_scale
 """
 import numpy as np, taichi as ti
 ti.init(arch=ti.gpu, default_fp=ti.f32)
