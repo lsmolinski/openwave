@@ -6,11 +6,11 @@ Unblocks once M5.7 (resonance hunt) lands; runs in parallel with M5.8 (Zitterbew
 
 ---
 
-**Hypothesis**: Thermal energy is wave-based rather than kinetic-based at the fundamental level, reframing heat entirely.
+**Hypothesis**: Thermal energy is subatomic-based (thermal energy = particle excess angular momentum) rather than kinetic-based at the fundamental level, reframing heat entirely.
 
 **Background**: Thermodynamics defines heat as molecular vibrations — mechanical movement, a classical phenomenon. OpenWave proposes that heat is a **quantum mechanics property**: a modulation of the fundamental energy wave's A/λ within a particle's surrounding standing wave structure. This is not bulk kinetic motion — it's a wave-state change at the subatomic scale.
 
-**Research goal**: Investigate thermal energy's true nature — kinetic vs wave-based. The hypothesis that heat relates to standing wave dynamics within particle radius is testable in simulation by comparing predictions between the two models. If thermal energy is encoded in standing wave amplitude or frequency modulation rather than particle velocity, the wave-based model should produce different (and potentially more accurate) predictions for phenomena like specific heat, thermal conductivity, and blackbody radiation.
+**Research goal, Quantum Thermodynamics concept**: Investigate thermal energy's true nature — kinetic vs wave-based. The hypothesis that heat relates to standing wave dynamics within particle radius is testable in simulation by comparing predictions between the two models. If thermal energy is encoded in standing wave amplitude or frequency modulation rather than particle velocity, the wave-based model should produce different (and potentially more accurate) predictions for phenomena like specific heat, thermal conductivity, and blackbody radiation.
 
 **Connection to wave resonance**: thermal energy may be **increased wave steepness** (A/λ ratio) beyond the particle's fundamental — storing more energy in standing waves. The particle naturally tends to return to its fundamental steepness, releasing excess as radiation (photons). Thermal equilibrium between two bodies is steepness exchange through resonance. Steepness conservation (A/λ = const) holds for isolated energy redistribution; external energy input (heating) or output (radiation) changes steepness. Photon emission is the resonance-mediated frequency readjustment described by Wolff's coupled-oscillator model. See [Wave Resonance](9c_time_dynamics.md#wave-resonance-as-the-fundamental-energy-exchange-mechanism) for the full analysis.
 
@@ -103,7 +103,41 @@ M5.7.1 (seeded l=1 perturbation) and M5.7.2 (the defect's intrinsic oscillation)
 | **9b's `(A, ω)` excess must be DRIVEN/sustained, not free.** A free defect sheds its excess; a *continuously driven* one (the EM-modulation lever — exactly 9b.1's 10.1a–e) can hold a steady-state `(A, ω)`. **This is the right framing for heat anyway** — thermal energy is *maintained* excess (a bath/drive), not a one-shot free oscillation that radiates away. | A free-dispersal null does not answer the driven-steady-state question; 9b.1 *is* the driven test. |
 | **The intrinsic-clock `ω` (for `T = 0 K` ground-state `ω₀`) comes from M5.8 (4D), not M5.7.** | M5.7 established 3D has no converged free clock frequency (it shifted 0.25→0.10/t with resolution). |
 
-**Direct consequence — the M5.7.3 / "9b.1 preview" (driven-oscillation) experiment is the natural bridge:** apply a continuous EM-wave-like drive to the defect and test whether it sustains a steady-state `(A, ω)` (vs the free-evolution dispersal). If it does, the joint-`(A, ω)`-as-heat hypothesis has its substrate confirmed at the field-theoretic level and 9b.1's full sub-experiments (AM/FM 10.1a–e) follow. Result documented below + in the SABER DHC docs.
+**Direct consequence — the M5.7.3 / "9b.1 preview" (driven-oscillation) experiment is the natural bridge:** apply a continuous EM-wave-like drive to the defect and test whether it sustains a steady-state `(A, ω)` (vs the free-evolution dispersal). If it does, the joint-`(A, ω)`-as-heat hypothesis has its substrate confirmed at the field-theoretic level and 9b.1's full sub-experiments (AM/FM 10.1a–e) follow.
+
+**The M5.7 arc, resolved (2026-05-28) — free disperses, driven sustains:**
+
+| Sub-step | Question | Result |
+| --- | --- | --- |
+| M5.7.1 (seeded, free) | does an injected resonance persist? | **NULL** — disperses |
+| M5.7.2 (intrinsic, free) | does the defect self-sustain a clock? | **NULL** — disperses → the clock is **4D (M5.8)** |
+| M5.7.3 (driven) | can an EM lever hold an excited `(A, ω)`? | **YES** — 3.0×, bounded, frequency-selective |
+
+So the **free** defect can't self-sustain (that's the 4D Zitterbewegung clock's job — M5.8), but a **driven** defect holds a frequency-tunable, bounded `(A, ω)` excess — which is **exactly what thermal energy is in the SABER hypothesis** (a *maintained* excess from a bath / drive) and **what the EM modulation lever does**. 9b.1 has its field-theoretic foundation, with the resonant modulation frequency identified.
+
+#### ✅ M5.7.3 — 9b.1 driven-oscillation PREVIEW: the lever works (2026-05-28)
+
+`sandbox_v7/m5_7_3_driven_oscillation.py`. A continuous EM-wave-like drive — a fixed localized
+director-rotation forcing `F_drive(x,t) = A_drive·sin(2π f_d t)·D̂(x)`, `D̂ = w(x)·[G_y, M_bg]`
+(the so(3) rotation tangent, symmetric+traceless = orientation-sector / V-flat, shell-localized to
+the defect — an incident-EM-tilt-wave proxy, the same channel M5.6.4 maps to Maxwell) — added to the
+Eq.18 acceleration. Metric: `A_core(t) = ⟨‖M − M_bg‖_F⟩` over the defect shell (the excitation
+amplitude), sustained = mean over the last third; plus the core-director FFT response at `f_d`.
+
+**Result — a driven defect sustains a bounded, frequency-selective `(A, ω)` excess (resolution-confirmed):**
+
+| Drive `f_d` | gain vs free, N=32 | gain vs free, N=48 | response @ `f_d` | H-growth | plateau |
+| --- | --- | --- | --- | --- | --- |
+| free (0.0) | 1.0× (A=0.31) | 1.0× (A=0.275) | — | — | — |
+| **0.10 (resonant)** | 2.7× | **3.0× (A=0.82)** | 59% | +1% (bounded) | ✅ rises then flattens 0.78→0.84→0.81 (even ticks down 0.837→0.813 at the end) |
+| 0.20 | 1.6× | 1.5× | 94% | +0% | — |
+
+- **Sustained + resolution-stable** — the gain *grew* 2.7→3.0× from N=32→N=48 (it did NOT wash out, unlike the free M5.7.1/.2 nulls). The lever genuinely holds the defect excited.
+- **Genuine steady-state plateau** — `A_core` at `f_d=0.10` rises then flattens at ~0.82 (drive-in balancing dispersal-out), H-growth +1% ⇒ a *maintained excess*, not a runaway. This is the thermal picture: heat = maintained `(A, ω)` excess from a continuous drive.
+- **Frequency-selective resonance** — 3.0× at `f_d=0.10` vs 1.5× at 0.20, peaking at the defect's **natural mode** (`f≈0.10/t`, exactly the M5.7.2 N=48 intrinsic frequency). The lever couples best on resonance — **this is the modulation frequency a real EM lever should use** (the 9b.1 FM handle).
+- Both `(A, ω)` levers demonstrated: **ω** (the core director responds at the drive frequency — FM) and **A** (3× amplitude gain — AM).
+
+**⇒ 9b's field-theoretic foundation is established:** the substrate supports a driven, frequency-tunable, bounded `(A, ω)` excess — the basis of heat-as-driven-excess and the entry point to the full 9b.1 program (the AM/FM 10.1a–e sub-experiments). **Honest caveats** (this is a *preview*, not 9b.1 proper): sandbox numpy (not production Taichi); the drive is an *idealized localized forcing pattern*, a proxy for a self-consistent incident EM wave (fuller treatment = 9b.1 / Phase 4); `A_core` is a shell-averaged excitation proxy, not yet the full 9b.0 thermodynamic temperature observable; frequency is in sandbox `/t`-units (physical Hz calibration = M5.8/M5.9); the closed Dirichlet box reflects energy, so the steady-state is a drive-vs-internal-dispersal balance (the right qualitative picture, but a true radiation sink is a refinement). Engineering-relevant framing (the lever + its resonant frequency) → SABER DHC docs, per the cardinal rule.
 
 #### Thermal-viz support — carried over from M5.6.5b (deferred 2026-05-27)
 

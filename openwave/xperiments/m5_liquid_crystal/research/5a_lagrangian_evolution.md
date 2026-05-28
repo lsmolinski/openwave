@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5i: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; confirmed null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the metastable particle/clock is 4D, not 3D; motivates M5.8).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -447,6 +447,21 @@ oscillation (continuous EM forcing, the 9b.1 lever) is a *separate* question thi
 does not answer — that is the M5.7.3 / 9b.1-preview next step. Caveat on scope: these nulls are for
 **Duda's Eq.18** matrix dynamics; **Close's Eq.23** (spin-density, `∇·s=0`) is a different equation
 we have not run — an optional cross-check (the 4D explanation already covers our results).
+
+### §5j — M5.7.3: the driven defect (the other half — a bounded `(A, ω)` excess; full detail in `9b`)
+
+The §5h/§5i nulls are for a *free* defect. M5.7.3 adds a **continuous EM-wave-like drive** to the same
+Eq.18 leapfrog — a fixed localized director-rotation forcing `F_drive = A_drive·sin(2π f_d t)·w(x)·[G_y,M_bg]`
+(the so(3) rotation tangent about ŷ — **symmetric + traceless**, so it keeps `M` symmetric and acts in the
+orientation/EM sector that V leaves flat, shell-localized to the defect; an incident-EM-tilt-wave proxy, the
+same channel §5d maps to Maxwell), added to the acceleration `M̈ = c²·div(G) − dV_M + F_drive`. **Result:
+a driven defect SUSTAINS a bounded, frequency-selective `(A, ω)` excess** — at the resonant `f_d≈0.10/t`
+(the §5i intrinsic mode) it holds the shell excitation at ~3× the free baseline in a steady-state plateau
+(H-growth +1%, bounded), resolution-confirmed N=32→N=48 (the gain *grew* 2.7→3.0×, unlike the free nulls
+that washed out). ⇒ the free particle/clock is 4D (M5.8) but the **driven-thermal** state is a real 3D lever
+response — the field-theoretic basis for heat-as-driven-excess. **Full result, table, and caveats:
+[`9b_thermal_energy.md § M5.7.3`](9b_thermal_energy.md)** (this is primarily a thermal/9b result; recorded
+here only as the Eq.18-evolution capstone of the M5.7 arc — §5h seeded null, §5i intrinsic null, §5j driven sustains).
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
