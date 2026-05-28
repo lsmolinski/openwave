@@ -93,6 +93,18 @@ These 9b sub-stages are deliberately speculative — they assume the joint (A, �
 
 The internal validation can run as soon as M5.7 lands; full lab-relevance results follow Phase 4. Heat-substrate validation (9b.x) and lever-class validation (Phase 4 / Phase 5) are independent prerequisites — both must reach completion before the combined physics can be predicted reliably.
 
+#### ⚠️ M5.7 finding (2026-05-28) — what it means for the 9b `(A, ω)` source
+
+M5.7.1 (seeded l=1 perturbation) and M5.7.2 (the defect's intrinsic oscillation) both showed that **a *freely-evolving* 3D defect DISPERSES its excess orientation energy** — it does not self-sustain a localized coherent oscillation. Root cause: the `V(M)` amplitude well confines `Tr(M²)` but is rotation-invariant, so it does NOT confine the director *orientation* (M5.6.5c); orientation/twist energy radiates away. The stable *intrinsic* clock requires the **4D** Lorentz mechanism (M5.8), not 3D dynamics. This sharpens — does **not** invalidate — the 9b thermal program, on two counts:
+
+| Implication for 9b | Why |
+| --- | --- |
+| **The topological defect itself is permanent.** Winding is conserved — what disperses is the *excess* `(A, ω)` oscillation energy, not the particle. So there is always a defect to carry a thermal state. | Topology (Q1/Q3) — the defect cannot unwind. |
+| **9b's `(A, ω)` excess must be DRIVEN/sustained, not free.** A free defect sheds its excess; a *continuously driven* one (the EM-modulation lever — exactly 9b.1's 10.1a–e) can hold a steady-state `(A, ω)`. **This is the right framing for heat anyway** — thermal energy is *maintained* excess (a bath/drive), not a one-shot free oscillation that radiates away. | A free-dispersal null does not answer the driven-steady-state question; 9b.1 *is* the driven test. |
+| **The intrinsic-clock `ω` (for `T = 0 K` ground-state `ω₀`) comes from M5.8 (4D), not M5.7.** | M5.7 established 3D has no converged free clock frequency (it shifted 0.25→0.10/t with resolution). |
+
+**Direct consequence — the M5.7.3 / "9b.1 preview" (driven-oscillation) experiment is the natural bridge:** apply a continuous EM-wave-like drive to the defect and test whether it sustains a steady-state `(A, ω)` (vs the free-evolution dispersal). If it does, the joint-`(A, ω)`-as-heat hypothesis has its substrate confirmed at the field-theoretic level and 9b.1's full sub-experiments (AM/FM 10.1a–e) follow. Result documented below + in the SABER DHC docs.
+
 #### Thermal-viz support — carried over from M5.6.5b (deferred 2026-05-27)
 
 These rendering features were built-but-deferred during M5.6.5b (the EM/thermal/clock viz work, `4b Part 3`) because they only become *meaningful* once the 9b thermal program runs. The amplitude-`A` (`‖M−D‖_F`, WAVE_MENU 2) and clock-`ω` (`‖Ṁ‖_F`, WAVE_MENU 3) trackers are already wired; these three build on them. Pick them up here:

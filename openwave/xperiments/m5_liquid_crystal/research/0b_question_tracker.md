@@ -18,11 +18,13 @@
 ## Active count
 
 ```text
-0 IMMEDIATE   M5.7.1 DONE (2026-05-28) — seeded l=1 resonance = NULL
-              (coarse-grid artifact, washed out at N=48; confirms Close's
-              "mostly dispersion"). Energy-conservation bankable (N=48
-              H-drift 0.01%). M5.6 PR'd. Active = M5.7.2 (widen hunt /
-              measure the defect's intrinsic oscillation).
+0 IMMEDIATE   M5.7.1 + M5.7.2 DONE (2026-05-28) — BOTH NULL: seeded l=1
+              AND the defect's intrinsic oscillation disperse in 3D (root
+              cause: V confines amplitude not orientation, M5.6.5c). ⇒ the
+              stable particle/clock is 4D (M5.8), as Duda's framework
+              predicts. Energy-conservation bankable (N=48 H-drift 0.01%).
+              Next = 9b.1 driven-oscillation preview (M5.7.3), then wrap
+              M5.7 + carry-overs → M5.8.
 
 1 SELF-       Q11 Close's Eq.23 exact form — NO LONGER a hard gate (PLAN B
 DETERMINE         = self-determination, likely Plan A): Eq.23 is in his
@@ -107,7 +109,7 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Composites (nuclei, atoms, hopfions) | Multi-defect / knot configurations | DEFERRED → 9d |
 | Zitterbewegung clock `ω = 2mc²/ℏ` | Biaxial hedgehog dynamically sources its own twist (M5.6.2b: `ψ = 0` is NOT static = the clock seed); 4D Lorentz negative-energy from `0`-eigenvalue propels it | 🚧 M5.8 (GROUP HEADLINE; faithful kinetic per M5.6.5d) |
 | Spin (real, transportable, conserved) | Director orientation = topological invariant; preserved by dynamics | ✅ inherent; empirical anchor: graphene spin-transport |
-| First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate, A/λ ∈ {0.5, 1, 2}; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | 🚧 M5.7 (UNBLOCKS 9b). **M5.7.1 (2026-05-28): seeded l=1 single-shell resonance = confirmed NULL** — apparent N=32 localization peak at δθ≈π was a coarse-grid artifact (washed out at N=48); all amplitudes disperse comparably (confirms Close's "mostly dispersion"). Reframe: the metastable particle may be the defect's *intrinsic* clock (M5.6.2b sourcing → M5.8), not a seeded resonance. Pipeline + energy-conservation (N=48 H-drift 0.01%) bankable. Hunt widens in M5.7.2. (`5a §5h`) |
+| First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | 🚧 M5.7 → **the particle is 4D (M5.8), not 3D.** **M5.7.1 (seeded l=1) + M5.7.2 (intrinsic oscillation) = TWO confirmed NULLS** (2026-05-28): both seeded and intrinsic 3D orientation energy disperse (apparent N=32 localization washed out at N=48 in both; intrinsic osc frequency 0.25→0.10/t = resolution-dependent, not a converged clock). **Root cause: V confines amplitude but NOT orientation** (M5.6.5c, rotation-invariant). Consistent with Derrick + Duda's framework: the stable particle is the **4D Zitterbewegung clock** (Fig.10), so 3D dispersing is *expected* — M5.7 empirically motivates M5.8 (4D) as necessary. Nuance: topological defect itself permanent (winding conserved); *driven* oscillation (9b.1 EM lever) is a separate question → M5.7.3 preview. Energy-conservation bankable (N=48 H-drift 0.01%). (`5a §5h/§5i`) |
 | Lorentz contraction / relativistic kinematics | Wave-equation relativistic invariance of the matrix dynamics | ✅ structural; quantitative test = M5.8 |
 | Annihilation (Q=+1 + Q=−1 → vacuum + photons) | Topology cancellation event releases stored field energy as outgoing EM waves | ✅ substrate; quantify in 9a |
 
@@ -179,7 +181,7 @@ Shared infrastructure: `(A, ω)` trackers + outgoing-wave measurement + EM viz (
 
 | Limitation | Phase that addresses it |
 | --- | --- |
-| No metastable resonance found yet — M5.7.1 seeded l=1 single-shell = confirmed null (disperses; `5a §5h`) | M5.7.2 (widen seed geometry / metric; or reframe to the defect's intrinsic clock, M5.8) |
+| No FREE metastable resonance in 3D — M5.7.1 (seeded) + M5.7.2 (intrinsic) both disperse; the stable particle/clock is 4D (`5a §5h/§5i`) | M5.8 (4D Zitterbewegung clock — the actual stable particle). Driven oscillation (9b.1 lever) is the separate near-term test (M5.7.3 preview). |
 | No Zitterbewegung frequency measurement | M5.8 (faithful kinetic on `O(x) ∈ SO(3)`, per M5.6.5d) |
 | Lepton mass ratios not calibrated to PDG | M5.9 |
 | Gravity emergence not run (still 3D) | M5.8 (4D + SO(1,3) Lorentz) |
@@ -205,7 +207,7 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 | Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 ✅ | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
 | **V(M) potential form** (Duda's #1 limitation, Q7) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Eq.13 LdG implemented + V-on confinement live (`LDG_STIFFNESS_K`). Key finding: 3-term form has **no biaxial minimum** → M5.6.5c uses a `b=0` amplitude well (confines `Tr(M²)`, leaves δ flat). Exact biaxial-stable `Λ=(1,δ,0)` form = Q7, Duda-open → M5.9. | ✅ strong (see below) |
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Faber MTF ported: `E₀=α_f ℏc·π/(4r₀)` reproduced, `Λ=q₀⁶/r₀⁴` mapped onto M, **mass pinned `E∝1/r₀`**, `R=Γ×Γ`→Maxwell + running-coupling onset at `r₀`. Mass knob is now physical `r₀`. Exact `arctan`-profile re-derivation → M5.9. | 🔶 partial |
-| First metastable resonance (no static soliton) | M5.7 | ▶ **ACTIVE — M5.7.1 ran (2026-05-28): seeded l=1 single-shell resonance = NULL** (apparent N=32 peak at δθ≈π was a coarse-grid artifact, washed out at N=48; all amplitudes disperse — confirms Close's "mostly dispersion"). Pipeline + energy-conservation validated (N=48 H-drift 0.01%). **Reframe**: metastable particle may be the defect's *intrinsic* clock (M5.6.2b sourcing → M5.8), not a seeded resonance. M5.7.2 widens the net. Gated by Q11 (Close Eq.23 form). `5a §5h`. | ✅ strong |
+| First metastable resonance (no static soliton) | M5.7 → M5.8 | ▶ **M5.7.1 + M5.7.2 both NULL (2026-05-28): no FREE metastable particle in 3D.** Seeded l=1 (5h) AND intrinsic oscillation (5i) both disperse — root cause V confines amplitude not orientation (M5.6.5c). **Consistent with Duda's framework: the stable particle is the 4D Zitterbewegung clock (M5.8)** — 3D dispersing is expected (Derrick), so M5.7 empirically motivates the 4D extension. Energy-conservation bankable (N=48 H-drift 0.01%). Next: 9b.1 driven-oscillation preview (M5.7.3); then wrap M5.7, carry-overs → M5.8. `5a §5h/§5i`. | ✅ strong (→ M5.8) |
 | KG-from-twist emergence | M5.6 ✅ | ✅ **DONE (2026-05-27).** KG mass is **GEOMETRIC** — minimal coupling to the hedgehog connection `Â`, the explicit mass term cancels, core regularization generates `mass²(r)=3r_c²/(2 reg²)` (Fig.9 reproduced, `5a §5a-c`). Biaxial hedgehog port + z-axis disclination handling done; defect dynamically sources its own twist (M5.8 clock seed). | — |
 | Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. See [9c § clock propulsion](9c_time_dynamics.md#the-de-broglie-clock-is-intrinsic--group-consensus-on-clock-propulsion-2026-05). | 🔶 partial |
 | Biaxial eigenvalue hierarchy → lepton masses (Duda #3/#9/#10) | M5.9 | Calibration parameters; post-SABER-trigger. | — |
