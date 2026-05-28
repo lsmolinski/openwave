@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -352,6 +352,116 @@ metric makes a full-M leapfrog implicit (per-voxel project onto `range(G)` + inv
 that would not alter the qualitative GUI behaviour. Keep `½‖Ṁ‖²` for qualitative production runs;
 measure the M5.8 clock frequency with the faithful **ψ-evolution** (`m5_6_2b` path). This closes
 M5.6.5d as a *diagnosis* and routes the faithful kinetic to where it is actually needed (M5.8).
+
+### §5h — M5.7.1: the l=1 resonance-hunt seed (a confirmed null + an energy validation)
+
+Close's protocol (2026-04): seed an `l=1` harmonic on the matrix-field defect, sweep amplitude,
+look for a regime where energy stays localized longer than it disperses — "an unstable particle or
+resonance." `m5_7_1_l1_resonance_seed.py` (`sandbox_v7`) builds the pipeline on the V-on biaxial
+hedgehog (the numpy mirror of production `evolve_M`) and measures it.
+
+**Seed** (SABER-grounded design). `M_pert = R_y(α)·M_bg·R_y(α)ᵀ`, `α = δθ_peak·g`, `g = f(r)·(z/r)`
+(`Y_10` dipole × a shell localized to the active textured region `r∈[2r₀,3r₀]`, since the
+regularized core `r<2r₀` is frozen). A **similarity transform preserves `Tr(M²)`** ⇒ V is exactly
+flat to the seed ⇒ the perturbation lives purely in the kinetic + curvature (twist) sector — the
+δ/QM channel. **Rotating the director IS what an EM-wave lever does (M5.6.4)**, so this seed = the
+9b.1 modulation lever, one code path. Calibration `δθ_peak = π·(A/λ)` (A/λ=1 ⇒ π antipodal =
+max director displacement; the earlier `2π` wraps the director back to itself at the peak, making
+the seed pattern a hollow ring and the amplitudes non-comparable).
+
+**Metric** — control-subtracted intensity localization (sign-safe, apples-to-apples). Evolve the
+unperturbed biaxial (control) alongside; `δM = M_seed − M_ctrl`, `I = ‖δM‖²` (the matrix `|ψ|²`),
+`L(t) = I_local(r<3r₀)/I_total`. A fully-dispersed seed → the uniform floor `L_floor = (core
+voxels)/(active voxels)`, so the **localization excess** `Lnorm = (L−L_floor)/(L₀−L_floor)` (starts
+at 1, → 0 on full dispersion) is comparable across amplitudes despite the nonlinear seed differing.
+
+**Key structural finding (informs the baseline).** The Eq.18 curvature force `G_α = 8Σ[[M_α,M_ν],M_ν]`
+is **cubic in `∂M`**. Around constant vacuum (`∂D=0`) every term has ≥3 factors of `∂M` ⇒ it vanishes
+to all linear orders: **there is NO linear wave propagation in vacuum** (only the local `V_M` mass
+term). The Skyrme kinetic activates only where the background already has gradient — the hedgehog
+texture, `C_μν≠0` (M5.6.2). So a "Gaussian in vacuum" is not a free disperser here; the correct
+dispersion reference is the **linear-amplitude limit** of the same seed on the same background
+(Close's amplitude knob, A/λ=0.05).
+
+**Results** (`δ=0.3`, `c=0.3`, V-on `b=0` well, dt=0.004; sweep A/λ ∈ {0.05, 0.5, 1, 2} = δθ_peak
+{0.16, π/2, π, 2π}):
+
+| Resolution | linear (0.05) final Lnorm | π-seed (A/λ=1) final Lnorm | separation | verdict |
+| --- | --- | --- | --- | --- |
+| **N=32** (under-resolved, ~2.8 vox/core) | 0.30 | **0.73** | 0.43 | apparent peak at δθ≈π |
+| **N=48** (~4.3 vox/core) | 0.45 | 0.50 | **0.05** | peak **washed out** |
+
+The N=32 localization peak was a **coarse-grid artifact** (under-resolved nonlinear gradients get
+numerically pinned); it relaxed once the grid resolved them. At N=48 all four amplitudes disperse
+comparably (final Lnorm 0.37–0.50). The `τ` (Lnorm↓50%) metric shows a spread (π-seed τ/τ_lin=3.1)
+but it is **confounded** — the linear seed starts more peaked (L₀=0.48 vs 0.38) and is non-monotonic
+(disperses then partially re-localizes), so its Lnorm crosses 50% early; by *raw* final L the linear
+seed (0.32) ends MORE localized than the π-seed (0.26). **No robust self-trapping** — which confirms
+Close's own prediction ("I'd expect dispersion in most cases").
+
+**Energy conservation (bankable).** At N=48 the control total-H drift is **0.01%** over 2000 steps,
+and the seed-excess ΔH drift ≤8% — so the production Eq.18 leapfrog (the M5.6 machinery) is solid +
+CFL-stable at the finer grid, and the localization is genuine field dynamics, not numerical pumping.
+(The +30–38% intensity drift seen at N=32 was itself a coarse-grid artifact — gone at N=48.)
+
+**Where M5.7 goes next.** The single-shell l=1 displacement dispersed; widen the net (M5.7.2):
+harden the metric (rank by final-Lnorm/AUC, not τ), try alternative seed geometries (standing-wave/
+breather eigenmode, velocity-kick), and weigh the **reframe** — M5.6.2b already showed the biaxial
+hedgehog *sources its own twist* (the defect intrinsically oscillates), so the metastable "particle"
+may be the defect's **own intrinsic clock** (M5.8), not a *seeded* resonance. The sharpened question
+goes to Close (Q11): seeded standing wave vs intrinsic oscillation.
+
+### §5i — M5.7.2: the defect's intrinsic oscillation (a second null → the particle is 4D)
+
+The M5.7.1 seeded perturbation dispersed; M5.6.2b showed the biaxial hedgehog **sources its own
+twist** (`C_μν≠0` drives a ψ-independent force — released from rest, the defect oscillates by itself).
+So the reframe (Rodrigo 2026-05-28): drop external seeding and ask whether the defect's **own**
+oscillation is the long-lived particle. `m5_7_2_intrinsic_oscillation.py` (`sandbox_v7`) evolves the
+V-on biaxial hedgehog from rest and measures two things: (1) **localization** — does the *dynamical*
+energy `H_dyn = ½‖Ṁ‖² + c²·curv` (the motion, V-well excluded) stay gathered at the core, vs the
+uniform floor `E_floor = (core voxels)/(active voxels)`? (2) **coherence** — Hann-windowed FFT of a
+near-core director probe `n̂(t)`: a sharp dominant frequency = a clock, broadband = incoherent.
+
+**Result — the intrinsic 3D oscillation ALSO delocalizes (a second null):**
+
+| Metric | N=32 | N=48 | Reading |
+| --- | --- | --- | --- |
+| localization-excess `(E_end−floor)/(E₀−floor)` | 49% (plateau ~0.25) | **17%** (0.43→0.13, still declining) | the N=32 plateau was a **coarse-grid artifact**; at resolution the energy disperses toward the floor (0.069) — same washout as M5.7.1 |
+| dominant osc frequency | 0.25/t | **0.10/t** | **shifted 2.5× with resolution ⇒ not a converged physical clock** (the spectrum *is* concentrated — band±2 89%, peak-bin 57% — but it's a *dispersing* ringing, not a stable oscillator) |
+| V-on total-H drift | 0.02% | **0.01%** | leapfrog rock-solid ⇒ the dispersal is real physics, not numerics |
+
+(The repaired coherence metric matters: the first pass reported a "prominence" of `8.6e13×` — a broken
+`peak/median` where the median is ~0 float-noise. Replaced by band-power-fraction + `peak/mean`.)
+
+**Combined M5.7.1 + M5.7.2 conclusion.** Both **seeded** and **intrinsic** orientation energy disperse
+in pure 3D. Root cause is clean and already on record: **`V` confines the amplitude `Tr(M²)` but is
+rotation-invariant, so it does NOT confine the director orientation** (M5.6.5c / §5f). The defect's
+energy lives in orientation/twist dynamics → it radiates freely. **⇒ the metastable coherent
+particle/clock is NOT a 3D phenomenon.** This is exactly what the framework predicts: Derrick forbids
+3D static/oscillatory localization, and the escape is **time-periodicity, which needs the time
+dimension** — Duda's stable particle IS the 4D Zitterbewegung clock auto-propelled by the Lorentz
+negative-energy structure (Fig.10, §… / M5.8). M5.7 has thus **empirically established that 3D alone
+disperses → M5.8 (4D) is necessary, not optional.** Two nuances: (a) the **topological defect itself
+is permanent** (winding conserved — only the *excess oscillation energy* disperses); (b) a **driven**
+oscillation (continuous EM forcing, the 9b.1 lever) is a *separate* question this free-dispersal null
+does not answer — that is the M5.7.3 / 9b.1-preview next step. Caveat on scope: these nulls are for
+**Duda's Eq.18** matrix dynamics; **Close's Eq.23** (spin-density, `∇·s=0`) is a different equation
+we have not run — an optional cross-check (the 4D explanation already covers our results).
+
+### §5j — M5.7.3: the driven defect (the other half — a bounded `(A, ω)` excess; full detail in `9b`)
+
+The §5h/§5i nulls are for a *free* defect. M5.7.3 adds a **continuous EM-wave-like drive** to the same
+Eq.18 leapfrog — a fixed localized director-rotation forcing `F_drive = A_drive·sin(2π f_d t)·w(x)·[G_y,M_bg]`
+(the so(3) rotation tangent about ŷ — **symmetric + traceless**, so it keeps `M` symmetric and acts in the
+orientation/EM sector that V leaves flat, shell-localized to the defect; an incident-EM-tilt-wave proxy, the
+same channel §5d maps to Maxwell), added to the acceleration `M̈ = c²·div(G) − dV_M + F_drive`. **Result:
+a driven defect SUSTAINS a bounded, frequency-selective `(A, ω)` excess** — at the resonant `f_d≈0.10/t`
+(the §5i intrinsic mode) it holds the shell excitation at ~3× the free baseline in a steady-state plateau
+(H-growth +1%, bounded), resolution-confirmed N=32→N=48 (the gain *grew* 2.7→3.0×, unlike the free nulls
+that washed out). ⇒ the free particle/clock is 4D (M5.8) but the **driven-thermal** state is a real 3D lever
+response — the field-theoretic basis for heat-as-driven-excess. **Full result, table, and caveats:
+[`9b_thermal_energy.md § M5.7.3`](9b_thermal_energy.md)** (this is primarily a thermal/9b result; recorded
+here only as the Eq.18-evolution capstone of the M5.7 arc — §5h seeded null, §5i intrinsic null, §5j driven sustains).
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
