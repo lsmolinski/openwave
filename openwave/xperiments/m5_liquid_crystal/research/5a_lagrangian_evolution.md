@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h: the **M5.7.1 resonance-hunt** findings (the seeded l=1 resonance dispersed — a confirmed null + an energy-conservation validation at N=48).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -352,6 +352,64 @@ metric makes a full-M leapfrog implicit (per-voxel project onto `range(G)` + inv
 that would not alter the qualitative GUI behaviour. Keep `½‖Ṁ‖²` for qualitative production runs;
 measure the M5.8 clock frequency with the faithful **ψ-evolution** (`m5_6_2b` path). This closes
 M5.6.5d as a *diagnosis* and routes the faithful kinetic to where it is actually needed (M5.8).
+
+### §5h — M5.7.1: the l=1 resonance-hunt seed (a confirmed null + an energy validation)
+
+Close's protocol (2026-04): seed an `l=1` harmonic on the matrix-field defect, sweep amplitude,
+look for a regime where energy stays localized longer than it disperses — "an unstable particle or
+resonance." `m5_7_1_l1_resonance_seed.py` (`sandbox_v7`) builds the pipeline on the V-on biaxial
+hedgehog (the numpy mirror of production `evolve_M`) and measures it.
+
+**Seed** (SABER-grounded design). `M_pert = R_y(α)·M_bg·R_y(α)ᵀ`, `α = δθ_peak·g`, `g = f(r)·(z/r)`
+(`Y_10` dipole × a shell localized to the active textured region `r∈[2r₀,3r₀]`, since the
+regularized core `r<2r₀` is frozen). A **similarity transform preserves `Tr(M²)`** ⇒ V is exactly
+flat to the seed ⇒ the perturbation lives purely in the kinetic + curvature (twist) sector — the
+δ/QM channel. **Rotating the director IS what an EM-wave lever does (M5.6.4)**, so this seed = the
+9b.1 modulation lever, one code path. Calibration `δθ_peak = π·(A/λ)` (A/λ=1 ⇒ π antipodal =
+max director displacement; the earlier `2π` wraps the director back to itself at the peak, making
+the seed pattern a hollow ring and the amplitudes non-comparable).
+
+**Metric** — control-subtracted intensity localization (sign-safe, apples-to-apples). Evolve the
+unperturbed biaxial (control) alongside; `δM = M_seed − M_ctrl`, `I = ‖δM‖²` (the matrix `|ψ|²`),
+`L(t) = I_local(r<3r₀)/I_total`. A fully-dispersed seed → the uniform floor `L_floor = (core
+voxels)/(active voxels)`, so the **localization excess** `Lnorm = (L−L_floor)/(L₀−L_floor)` (starts
+at 1, → 0 on full dispersion) is comparable across amplitudes despite the nonlinear seed differing.
+
+**Key structural finding (informs the baseline).** The Eq.18 curvature force `G_α = 8Σ[[M_α,M_ν],M_ν]`
+is **cubic in `∂M`**. Around constant vacuum (`∂D=0`) every term has ≥3 factors of `∂M` ⇒ it vanishes
+to all linear orders: **there is NO linear wave propagation in vacuum** (only the local `V_M` mass
+term). The Skyrme kinetic activates only where the background already has gradient — the hedgehog
+texture, `C_μν≠0` (M5.6.2). So a "Gaussian in vacuum" is not a free disperser here; the correct
+dispersion reference is the **linear-amplitude limit** of the same seed on the same background
+(Close's amplitude knob, A/λ=0.05).
+
+**Results** (`δ=0.3`, `c=0.3`, V-on `b=0` well, dt=0.004; sweep A/λ ∈ {0.05, 0.5, 1, 2} = δθ_peak
+{0.16, π/2, π, 2π}):
+
+| Resolution | linear (0.05) final Lnorm | π-seed (A/λ=1) final Lnorm | separation | verdict |
+| --- | --- | --- | --- | --- |
+| **N=32** (under-resolved, ~2.8 vox/core) | 0.30 | **0.73** | 0.43 | apparent peak at δθ≈π |
+| **N=48** (~4.3 vox/core) | 0.45 | 0.50 | **0.05** | peak **washed out** |
+
+The N=32 localization peak was a **coarse-grid artifact** (under-resolved nonlinear gradients get
+numerically pinned); it relaxed once the grid resolved them. At N=48 all four amplitudes disperse
+comparably (final Lnorm 0.37–0.50). The `τ` (Lnorm↓50%) metric shows a spread (π-seed τ/τ_lin=3.1)
+but it is **confounded** — the linear seed starts more peaked (L₀=0.48 vs 0.38) and is non-monotonic
+(disperses then partially re-localizes), so its Lnorm crosses 50% early; by *raw* final L the linear
+seed (0.32) ends MORE localized than the π-seed (0.26). **No robust self-trapping** — which confirms
+Close's own prediction ("I'd expect dispersion in most cases").
+
+**Energy conservation (bankable).** At N=48 the control total-H drift is **0.01%** over 2000 steps,
+and the seed-excess ΔH drift ≤8% — so the production Eq.18 leapfrog (the M5.6 machinery) is solid +
+CFL-stable at the finer grid, and the localization is genuine field dynamics, not numerical pumping.
+(The +30–38% intensity drift seen at N=32 was itself a coarse-grid artifact — gone at N=48.)
+
+**Where M5.7 goes next.** The single-shell l=1 displacement dispersed; widen the net (M5.7.2):
+harden the metric (rank by final-Lnorm/AUC, not τ), try alternative seed geometries (standing-wave/
+breather eigenmode, velocity-kick), and weigh the **reframe** — M5.6.2b already showed the biaxial
+hedgehog *sources its own twist* (the defect intrinsically oscillates), so the metastable "particle"
+may be the defect's **own intrinsic clock** (M5.8), not a *seeded* resonance. The sharpened question
+goes to Close (Q11): seeded standing wave vs intrinsic oscillation.
 
 ## 6. Matrix Hamiltonian (Eq.23) — the M5.4-carry-over `compute_energyH_density`
 
