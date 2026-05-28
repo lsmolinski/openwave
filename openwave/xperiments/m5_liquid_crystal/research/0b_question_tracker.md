@@ -18,15 +18,17 @@
 ## Active count
 
 ```text
-0 IMMEDIATE   M5.6 COMPLETE (2026-05-27, PR) — KG mass geometric (Fig.9),
-              Maxwell both routes, Faber mass pinned E∝1/r₀, biaxial
-              production port + V-on + EM/thermal/clock viz. M5.5 Eq.18
-              action live + energy-conserving. M5.4 substrate + Coulomb
-              merged. Next phase = M5.7 (first metastable resonance).
+0 IMMEDIATE   M5.7.1 DONE (2026-05-28) — seeded l=1 resonance = NULL
+              (coarse-grid artifact, washed out at N=48; confirms Close's
+              "mostly dispersion"). Energy-conservation bankable (N=48
+              H-drift 0.01%). M5.6 PR'd. Active = M5.7.2 (widen hunt /
+              measure the defect's intrinsic oscillation).
 
-1 NEAR-TERM   Q11 Close's Eq.23 exact implementation form — gates M5.7
-(gate M5.7)       (the resonance hunt repoints the dormant vector operators
-                  onto the M-derived spin-density field)
+1 SELF-       Q11 Close's Eq.23 exact form — NO LONGER a hard gate (PLAN B
+DETERMINE         = self-determination, likely Plan A): Eq.23 is in his
+(was gate)        published paper (read + test all 3 forms ourselves, the
+                  physical one preserves ∇·s=0); seeded-vs-intrinsic is
+                  empirical (the sim answers it). Don't bottleneck on email.
 
 6 BACKGROUND  Q4  Liu et al. lab anchor — does it change sim priority?
 (long-tail)   Q7  exact V(M) coeffs — NO LONGER gates (M5.6 shipped Eq.13
@@ -58,7 +60,7 @@ Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.6 complete; M5.7 next.
 | --- | --- | --- | --- | --- |
 | Q7 | Exact V(M) form — Duda's Eq.13 Landau-de Gennes `V_LG = a Tr(M²) − b Tr(M³) + c (Tr(M²))²`, or "slightly different"? Duda calls this "the most difficult" part and an open research question. | Duda 2026-05-15 (`4a §12`) | ~~M5.6~~ → M5.9 | OPEN — **no longer gating**. M5.6 (✅) shipped the working interim: the 3-term Eq.13 form has **no biaxial minimum** (`∂V/∂λ` collapses nonzero eigenvalues to one root), so a `b≠0` term erodes δ → uniaxial; M5.6.5c uses a **`b=0` amplitude well** `V=a·Tr(M²)+c·(Tr(M²))²` (min at `Tr(M²)=1+δ²`) that confines amplitude while leaving δ exactly flat (live in production, `LDG_STIFFNESS_K`). A fully biaxial-STABLE vacuum needs an extra invariant — that exact `Λ=(1,δ,0)` form is the Duda-open piece, feeds M5.9 lepton calibration. |
 | Q8 | Faber regularization — exact form to "activate" V(M) and produce the running-coupling effect. Duda points to Faber's two papers as the starting scheme. | Duda 2026-04-19 / 05-15 | ~~M5.6~~ → M5.9 | OPEN — **no longer gating**. M5.6 (✅) **ported Faber's MTF** (`Universe` 11/2025/113): reproduced `E₀=α_f ℏc·π/(4r₀)`, mapped `Λ=q₀⁶/r₀⁴` onto `M=ODO^T` via spatially-melting eigenvalues, **mass pinned `E∝1/r₀`** (`r₀=2.2132 fm → 0.511 MeV`), and confirmed Faber `R=Γ×Γ` → homogeneous Maxwell + running-coupling onset at `r₀` (M5.6.4). The mass knob is now the physical `r₀` tied to `α_f`. The exact `arctan` profile re-derivation (vs imposed) is the remaining Duda-open piece → M5.9 BVP. |
-| Q11 | Close's Eq.23 exact implementation form — direct form vs vector-potential `s = ∇×A` vs divergence-cleaning projection; and should the resonance amplitude sweep span the full `m ∈ {−1, 0, +1}` dipole family? | Rodrigo → Close 2026-04-19 (`1a`) | M5.7 | OPEN, pending Close. Resonance-hunt protocol can proceed on best-current reading (`l=1`, `A/λ ∈ {0.5, 1, 2}`). |
+| Q11 | Close's Eq.23 exact implementation form — direct form vs vector-potential `s = ∇×A` vs divergence-cleaning projection; and should the resonance amplitude sweep span the full `m ∈ {−1, 0, +1}` dipole family? | Rodrigo → Close 2026-04-19 (`1a`) | M5.7 | OPEN, pending Close. **PLAN B = self-determination (and likely Plan A — see below).** M5.7.1 already proceeded on best-current reading. We do NOT need to wait on Close: (1) Eq.23 is in his **published** paper (`research/theory/Equation-of-Everything.pdf`) — we can read it directly and **empirically test all three candidate forms ourselves** (the physical one preserves `∇·s = 0` + gives bounded, energy-conserving dynamics — a numerical discriminator, not an opinion); (2) the deeper "seeded resonance vs the defect's intrinsic oscillation" question is **empirical** — the simulation answers it (M5.7.1: seeded l=1 disperses; M5.7.2: does the intrinsic oscillation cohere?), Close's view is confirmation not gate. Close's framework is cited (published); the answers are ours to derive. M5 must not bottleneck on advisor email latency. |
 | Q4 | Liu et al. *Nature Physics* 2026 (first direct laser creation of isolated hopfions + skyrmions) — does the lab confirmation change what the framework should simulate first (hedgehog before hopfion? simpler stabilizer before LdG?)? | `3b` (2026-05-12) | — | OPEN. Lab-existence anchor for topology-as-particles. Current plan keeps hedgehog-first; hopfion is post-M5.8 frontier (`project_particle_defect_correspondence`). |
 | Q10 | Weak force — is there a clean matrix mechanism (SU(2) chiral) the way EM/gravity/strong have one? | `4a §7` | — | OPEN GAP. Partial answer in slides: beta decay appears as a topology-reconnection event (defect-class transition), not a force in the EM/gravity sense. No clean SU(2) mechanism yet. |
 | Q9 | Is there a deeper substrate beneath the matrix field M (an "anisotropic fluid")? Duda hints the matrix may be effective, with something deeper below. | Duda 2026-05-15 (`4a §1, §12`) | — | OPEN / PARKED. Matches OpenWave's existing granule-level picture (matrix effective, granules deeper). Not actionable now. |
