@@ -1,6 +1,6 @@
 # M5 / Liquid-Crystal — Question Tracker + Hardest Pieces
 
-**Purpose:** single source of truth for open research questions on M5, the resolution chronology, and the long-running **hardest-pieces** status board. Mirrors the M6 tracker pattern. Update this doc when a question opens, gets sent to the group (Duda / Close / Yee), gets answered, or gets demoted. Source material: [`3b_lagrangian_roadblocks.md`](3b_lagrangian_roadblocks.md) (the group-questions Q1–Q4), [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) (Duda's 2026-05-14/15 substrate + eigenvalue replies + his own open items), and `NEPTUNYA/SABER/1_model_selection.md` (Duda's stated limitations of his own LdGS model — physics content reproduced here; the SABER engineering-timeline analysis stays private per the cardinal rule).
+**Purpose:** single source of truth for **(a) what physical reality the M5 substrate reproduces and how (MODEL EMERGENCE)**, (b) open research questions on M5, (c) resolution chronology, and (d) the long-running **hardest-pieces** status board. Mirrors the M6 tracker pattern. Update this doc when a question opens, gets sent to the group (Duda / Close / Yee), gets answered, demoted, or when new emergent physics is verified. Source material consolidated here from [`1b_topological_defect.md`](1b_topological_defect.md) § STRATEGIC MAPPING + § OUTGOING-WAVE L+T + § Empirical validation, and [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) § 7 Force unification + § 8 Eigenvalue mapping — so this tracker reads stand-alone. The deeper *explanations* (what is a defect, what is a twist, derivation walk-throughs) stay in 1b / 4a / 5a; this doc carries only the emergent-reality catalog + numerical mechanism + status.
 
 **Sister docs:**
 
@@ -78,13 +78,129 @@ Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.6 complete; M5.7 next.
 
 ---
 
+## MODEL EMERGENCE — observed reality from the matrix field `M = ODO^T`
+
+What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 action, with the numerical mechanism + status + what's pending. **No model comparisons** (those live in the private `1_model_selection.md`). **No conceptual explanations** of substrate / defect / twist / eigenvalues — those stay in `1b` / `4a` / `5a`. Just emergence + status.
+
+**Substrate (recap, see Q6 RESOLVED).** Symmetric 3×3 `M(x) = O(x)·D·O^T(x)` on a 3D lattice; 5 DoF/voxel. Preferred shape `D = diag(g, 1, δ, 0)`. Eigenvalue → physics map (M5.6.4-verified):
+
+| Eigenvalue | Physical mechanism | Phase |
+| --- | --- | --- |
+| `g ≫ 1` | gravity (boost; hedgehog ↔ black hole) | M5.8 (4D) |
+| `1` | EM (tilts → Maxwell) | ✅ M5.6 |
+| `δ ~ ℏ` | QM (twist → Klein-Gordon, mass is GEOMETRIC — Fig.9) | ✅ M5.6 |
+| `0` (4D only) | time signature → Zitterbewegung clock propulsion (Fig.10) | M5.8 |
+
+### PARTICLES (full spectrum)
+
+| Phenomenon | M5 numerical mechanism | Status |
+| --- | --- | --- |
+| Quantized electric charge | Brouwer winding (S² → S² topology) on M's principal director; integer, conserved by topology | ✅ M5.1 (`compute_winding_number`) |
+| Electron rest mass | Faber regularization `E₀ = α_f · ℏc · π / (4 r₀)`; physical knob `r₀ = 2.2132 fm → 0.511 MeV` | ✅ M5.6.3 (mass pinned `E ∝ 1/r₀`) |
+| Lepton families `e / μ / τ` | 3 axis-choices of biaxial `Λ = (g, 1, δ)`; same Q, different masses | 🚧 M5.9 calibration |
+| Neutrino | Closed vortex loop (distinct topology class from hedgehog) | 🚧 M5.9 / sub-eV |
+| Quarks (u, d, s, …) | String endpoint — 1D topological vortex (not 0D hedgehog); Cornell `V(r) = −α/r + σ·r`, `σ ≈ 1 GeV/fm` | 🚧 M5.9 |
+| Nucleons (p, n) | 3-string Y-configuration of quark endpoints | DEFERRED → 9d |
+| Atomic orbital binding | EM Coulomb + de Broglie standing-wave quantization (NOT a separate force) | → 9d (cross-mass-class) |
+| Composites (nuclei, atoms, hopfions) | Multi-defect / knot configurations | DEFERRED → 9d |
+| Zitterbewegung clock `ω = 2mc²/ℏ` | Biaxial hedgehog dynamically sources its own twist (M5.6.2b: `ψ = 0` is NOT static = the clock seed); 4D Lorentz negative-energy from `0`-eigenvalue propels it | 🚧 M5.8 (GROUP HEADLINE; faithful kinetic per M5.6.5d) |
+| Spin (real, transportable, conserved) | Director orientation = topological invariant; preserved by dynamics | ✅ inherent; empirical anchor: graphene spin-transport |
+| First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate, A/λ ∈ {0.5, 1, 2}; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | 🚧 M5.7 (UNBLOCKS 9b) |
+| Lorentz contraction / relativistic kinematics | Wave-equation relativistic invariance of the matrix dynamics | ✅ structural; quantitative test = M5.8 |
+| Annihilation (Q=+1 + Q=−1 → vacuum + photons) | Topology cancellation event releases stored field energy as outgoing EM waves | ✅ substrate; quantify in 9a |
+
+**Mass → Zitterbewegung target table (M5.8 validation):**
+
+| Particle | Target `ω = 2mc²/ℏ` | Notes |
+| --- | --- | --- |
+| Electron | 1.55 × 10²¹ rad/s | M5.8 exit gate (within 10%) |
+| Muon | 3.21 × 10²³ rad/s | cross-particle test |
+| Tau | 5.39 × 10²⁴ rad/s | cross-particle test |
+| Neutrino | ~10¹⁵ rad/s | sub-eV (closed vortex loop) |
+| Up quark | ~7 × 10²¹ rad/s | string endpoint |
+| Down quark | ~1.4 × 10²² rad/s | string endpoint |
+| Proton | 2.85 × 10²⁴ rad/s | 3-string Y-config (9d) |
+
+### FORCES
+
+| Phenomenon | M5 numerical mechanism | Status |
+| --- | --- | --- |
+| Coulomb `1/r` (electrostatic) | Director splay around hedgehog defect; `∇·n̂ ≈ 2/r` far field — **pure topology, no waves needed** | ✅ M5.1 R²=0.978 (1/d relaxation), M5.4 R²=0.9959 (analytical page-18 cross-val), both attractive |
+| Maxwell (full EM) | 1-axis tilts of `M`; two independent routes verified — (a) hydro↔EM dictionary `∇×u ↔ B`, `ω×u ↔ E`; (b) Faber `R = Γ × Γ` closed field strength (Maurer–Cartan ⇒ `dR=0` ⇒ homogeneous Maxwell) | ✅ M5.6.4 both routes |
+| Strong — confinement (linear) | 1D vortex string, Cornell `V = −α/r + σ·r` (Coulomb + linear); `σ ≈ 1 GeV/fm` per unit length | 🚧 M5.9 (string tension) |
+| Strong — short-range (running coupling) | Faber `α_sol(d)`: `R` is non-abelian; Maxwell is long-range abelian limit; short-range = running coupling onset at `r₀` | ✅ M5.6.4 (mechanism); 🚧 M5.9 (calibration) |
+| Gravity (linear, GEM) | g-axis boosts on 4D-extended `M`; gravito-EM has same form as Maxwell with `Γ⁰` as boost component | 🚧 M5.8 (4D + SO(1,3) Lorentz) |
+| Weak force | PARTIAL — beta decay as topology-reconnection event (defect-class transition: neutron → split → proton + electron + neutrino). No clean SU(2) chiral mechanism yet. | gap → Q10 |
+| Magnetism (intrinsic per-defect) | S¹-loop topology (vs S² for electric charge — different topology, same SO(3) parent); the T-component of the defect's outgoing wave (the L+T decomposition) | ✅ mechanism; ⌛ inertial-observability via frequency-downshift = Phase 4 falsifiable target |
+| Magnetism (coherent macroscopic) | Coherent T-component summing across aligned defects (permanent magnets) or coherent motion (electromagnets) — reproduces both standard regimes by construction | ✅ structural |
+| Atomic orbital "force" | NOT fundamental — EM Coulomb + de Broglie standing-wave quantization | → 9d |
+
+### EM WAVES (9a — photon emergence)
+
+| Phenomenon | M5 numerical mechanism | Status |
+| --- | --- | --- |
+| Maxwell wave-packet propagation | Tilt modes of `M` propagate at `c` (abelian linear limit of Faber `R`) | ✅ M5.6.4 |
+| Outgoing-wave L + T decomposition | Each defect emits L (electric, longitudinal — density gradient) + T (magnetic, transverse — vorticity); shared single `ω = 2mc²/ℏ` Zitterbewegung clock at defect core | ✅ structural; per-defect quantification = 9b.7 |
+| Running coupling vs distance | Faber `α_sol(d)`: `‖R‖ ~ 1/r²` far field; `‖R‖·r²` rolls off within `r₀` = onset of non-abelian short-range | ✅ M5.6.4 |
+| Photon (quantized EM excitation) | Tilt-mode standing waves on the matrix substrate; quantization mechanism = the 9a research program | 🚧 9a |
+| Annihilation → photon emission | Q=+1 + Q=−1 topological cancellation dumps stored field energy into outgoing EM waves | ✅ structural; quantify in 9a |
+| Static field vs radiation distinction | Static EM = static topology (Frank elastic, no waves); radiation = dynamic tilt-mode propagation. Different mechanisms in the same field | ✅ structural |
+
+### THERMAL (9b — heat / SABER counterpart)
+
+> **Falsifiable hypothesis:** heat is the joint `(A, ω)` excess of subatomic defect oscillation above its ground state `(A₀, ω₀)`. The energy-dimensional quantity is `(A·ω)²` — `E_kin = ½m(Aω)²`; the bare `A·ω` has units of *velocity* (peak speed) not energy. Falsifiability test = 9b.1.
+
+| Phenomenon | M5 numerical mechanism | Status |
+| --- | --- | --- |
+| Temperature observable | Joint `(A, ω)` excess; `A = ‖M − D‖_F` amplitude tracker (WAVE_MENU 2), `ω = ‖Ṁ‖_F` clock-rate tracker (WAVE_MENU 3) — already wired in production | 🚧 9b.0 (def + absolute-zero check) |
+| Heat = per-defect kinetic energy | `E_kin = ½m(Aω)²` — single-particle quantum-mechanical degree of freedom, NOT ensemble-only statistical | hypothesis → 9b.1 falsifies/validates |
+| Modulation lever (engineering trigger) | EM-wave tilt-wave seed drives `(A, ω)` state; measure `Δ(A·ω)²` via AM/FM (5 sub-experiments 10.1a–e) | 🚧 9b.1 (SABER engineering payoff) |
+| Soliton-breather correspondence | Compare 9b.1 amplitude oscillations to known Sine-Gordon / φ⁴ breather modes | 🚧 9b.2 |
+| Multi-defect amplitude statistics | Seed N ∈ {10², 10³, 10⁴} defects, run to equilibrium → Boltzmann or Bose-Einstein distribution | 🚧 9b.3 |
+| Specific heat `C_V(T)` | Derived from 9b.3 statistics; reproduce Dulong-Petit (high T) + Einstein-Debye (low T) + electronic scaling | 🚧 9b.4 (stiff prediction — wrong scaling = hypothesis falsified) |
+| Blackbody spectrum | Thermalized-ensemble emission; Wien displacement law + Stefan-Boltzmann scaling | 🚧 9b.5 |
+| Phase-coherence transition at low T | Defect-ensemble transition to coherent ground state (superconducting / BEC analog); reproduce critical temperatures for known materials | 🚧 9b.6 |
+| Outgoing-wave thermal content | Thermal excess expressed in outgoing wave's amplitude/frequency/polarization at engineering distance from defect core — the addressable channel for indirect modulation | 🚧 9b.7-.8 |
+| Heat ↔ magnetism wave-level coupling | Thermal excess scales the T-component of the outgoing wave — explains Curie temperature, magnetocaloric, pyromagnetic from one substrate | 🚧 9b.9 |
+
+### What 9a / 9b / 9c share — same dynamics, three readings
+
+| Reading | What it measures | Role of `ω` |
+| --- | --- | --- |
+| 9a (EM waves) | Outgoing wave at frequency ω = photon | ω = wave frequency |
+| 9b (Thermal) | `(A, ω)` excess of defect oscillation | ω = thermal frequency |
+| 9c (Time / clock) | Zitterbewegung `ω = 2mc²/ℏ` | ω = intrinsic local clock |
+
+Shared infrastructure: `(A, ω)` trackers + outgoing-wave measurement + EM viz (`∇·n̂` / `‖∇×n̂‖` meshes + E/B glyphs). Build once, each stage reads a projection. See `0b_M5_roadmap.md § Parallel research stages` for the full link.
+
+### CURRENT LIMITATIONS — what M5 does NOT yet do
+
+| Limitation | Phase that addresses it |
+| --- | --- |
+| No first metastable resonance yet (M5.7 not run) | M5.7 (next foreground) |
+| No Zitterbewegung frequency measurement | M5.8 (faithful kinetic on `O(x) ∈ SO(3)`, per M5.6.5d) |
+| Lepton mass ratios not calibrated to PDG | M5.9 |
+| Gravity emergence not run (still 3D) | M5.8 (4D + SO(1,3) Lorentz) |
+| Quark string + Cornell `σ ≈ 1 GeV/fm` not validated | M5.9 |
+| Photon quantization mechanism not formalized | 9a |
+| Thermal hypothesis not falsified/validated | 9b.1 (SABER engineering trigger) |
+| Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
+| Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target |
+| Heat ↔ magnetism wave-level cross-validation | 9b.9 |
+| Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
+| Composites (nuclei, atoms, hopfions) deferred | 9d (post-9b) |
+| Exact biaxial-stable `V(M)` coeffs `Λ = (1, δ, 0)` | Q7 → M5.9 (M5.6 ships b=0 confinement interim) |
+| Exact Faber running-coupling profile (vs imposed `arctan`) | Q8 → M5.9 (M5.6 ports the validated mechanism) |
+
+---
+
 ## HARDEST PIECES — status board
 
 The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the load-bearing unknowns the framework must resolve, distinct from the discrete Q-numbered questions above — a piece can persist across many phases.
 
 | Hardest piece | Gates | Status (2026-05-27) | M6 lend? |
 | --- | --- | --- | --- |
-| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
+| Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 ✅ | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
 | **V(M) potential form** (Duda's #1 limitation, Q7) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Eq.13 LdG implemented + V-on confinement live (`LDG_STIFFNESS_K`). Key finding: 3-term form has **no biaxial minimum** → M5.6.5c uses a `b=0` amplitude well (confines `Tr(M²)`, leaves δ flat). Exact biaxial-stable `Λ=(1,δ,0)` form = Q7, Duda-open → M5.9. | ✅ strong (see below) |
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Faber MTF ported: `E₀=α_f ℏc·π/(4r₀)` reproduced, `Λ=q₀⁶/r₀⁴` mapped onto M, **mass pinned `E∝1/r₀`**, `R=Γ×Γ`→Maxwell + running-coupling onset at `r₀`. Mass knob is now physical `r₀`. Exact `arctan`-profile re-derivation → M5.9. | 🔶 partial |
 | First metastable resonance (no static soliton) | M5.7 | ▶ **NOW ACTIVE — M5.6 complete (2026-05-27).** Design locked (time-periodic per Close); biaxial substrate + V-on + live energy-conserving Eq.18 evolution (M5.5.4) all in place. Gated by Q11 (Close Eq.23 exact form). 5e two-defect demo carried in here. | ✅ strong |
