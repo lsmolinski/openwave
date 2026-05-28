@@ -43,6 +43,13 @@ Forward-looking research programs in their own files — run alongside / after t
 - **[9c — Time Dynamics](9c_time_dynamics.md)** — local time engineering, variable λ, time-dilation, gravity / propulsion implications. Future extension beyond M5.
 - **[9d — Composite Particles](9d_composite_particles.md)** — hopfions, knots → nuclei, atomic orbitals. Test program 9d.1 → 9d.5 (Liu et al. 2026 lab anchor). Pursued post-9b validation if foundations succeed and resources permit.
 
+> **9a + 9b + 9c are closely related — three readings of the SAME defect dynamics** (Rodrigo, 2026-05-27). They are not independent programs; they share one substrate, one set of observables, and should be built together rather than in isolation:
+>
+> - **Shared variable `ω`** — the defect's frequency is simultaneously the **EM-wave frequency** (9a, photon emergence), the **thermal frequency** (9b, the `ω` half of the joint `(A, ω)` heat excess), and the **Zitterbewegung clock rate** (9c, `ω = 2mc²/ℏ`, the intrinsic local clock). One quantity, three physical readings. (Already noted in `9b_thermal_energy.md`: "the Zitterbewegung frequency `ω` IS the defect's intrinsic local clock.")
+> - **Shared carrier — the outgoing wave** — 9a *is* the outgoing wave (quantized = photon); 9b.7–9b.9 establish that thermal excess is **expressed in that same outgoing wave** and couples to the magnetic (T-component) sector; so 9b's heat rides on 9a's wave, and reading one constrains the other.
+> - **Shared eigenvalue-map axes** (M5.6.4) — `1`-axis tilts → **Maxwell/EM** (9a), `δ`-axis twist → **KG/QM clock** (9b's oscillation + 9c's time). The M5.6 EM-from-tilts + KG-from-twist results are the common root all three branch from.
+> - **Practical consequence** — the `(A, ω)` trackers + outgoing-wave measurement + EM `∇·n̂`/`‖∇×n̂‖` viz (built in M5.6.5b) are **shared infrastructure** for all three. Build the measurement once; 9a/9b/9c each read a different projection of it.
+
 ---
 
 ## DETAILED
