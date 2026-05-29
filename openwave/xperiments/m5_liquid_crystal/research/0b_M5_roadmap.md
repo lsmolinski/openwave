@@ -339,13 +339,31 @@ The paper/slides reading task produces this assignment table — confirmation th
 >
 > ⚠️ **Kinetic prerequisite (from M5.6.5d, `5a §5g`):** the frequency measurement MUST use the **faithful** Eq.18 kinetic `T = 4Σ‖[M_μ,Ṁ]‖²` (the `O(x)∈SO(3)` metric validated on the ψ DoF in `sandbox_v6/m5_6_2b`), **NOT** the simple `½‖Ṁ‖²` shipped in production `evolve_M`. The two agree qualitatively (same physical modes — `½‖Ṁ‖²` is well-behaved, not gauge-sloshing) but the simple kinetic mis-sets the physical-mode inertia ⇒ the clock **frequency** is off by **×[0.6, 3.0]**. Since the M5.8 exit criterion is `ω` to within 10%, the clock-frequency run uses the `m5_6_2b` faithful ψ-evolution; production `evolve_M` (`½‖Ṁ‖²`) stays the qualitative visualizer.
 
-- [ ] **Infrastructure pre-check (1D)** — before the full 4D run, reproduce Duda's clock toy-model numerics (`4a §11`, slide p.33; arxiv:2501.04036 kink+clock): `φ = tanh(0.6326x + 0.0198x³ + 0.0203x⁵)`, energy `E ≈ 2.0252`, frequency `ω ≈ 1.2898`. Cheap validation that our integrator reproduces clock propulsion before scaling to 4D LdGS
-- [ ] Promote the 3D matrix substrate from M5.4-M5.7 to 4D — add 0th time axis, SO(1,3) Lorentz group
-- [ ] Apply 4D Skyrme-like 4th-order kinetic (paper Eq. 42): `L = −Σ F_μναβ F^μναβ − V(M)` with `F_μναβ = [∂_μ M, ∂_ν M]_αβ`
-- [ ] Verify negative-energy contributions emerge from spacetime signature (Fig. 10)
-- [ ] Seed a single biaxial hedgehog on the electron axis (δ)
-- [ ] Measure intrinsic oscillation frequency at the defect core (FFT of director rotation)
-- [ ] **Target**: `ω = 2 m_e c² / ℏ ≈ 1.55 × 10²¹ rad/s` (electron Zitterbewegung)
+**Detailed build plan (2026-05-29; math foundation + verified anchors in [`5a §10`](5a_lagrangian_evolution.md)).** Four sub-steps `M5.8.0 → M5.8.3` are the spine (1D pre-check → 4D promotion → 4D kinetic → electron clock); `M5.8.4–M5.8.6` + the carry-overs are breadth/viz that do NOT gate the headline. Sandbox-first throughout (numpy mirror of production, N=32 smoke → N=48 resolution-confirm), per the M5.7 discipline. The toy-model anchor was previously mis-cited as "4a §11 / slide p.33" — corrected: it is Duda arXiv:2501.04036 (`theory/time_crystal.pdf`, 3pp), whose Hamiltonian is `ℋ=φ₀²+φ₁²+(1−φ²)²−αR²+βR⁴` (the earlier `φ²+ψ²` transcription was garbled; full math in `5a §10a`).
+
+**M5.8.0 — 1D toy-model integrator pre-check (`sandbox_v8`)** — validate the integrator reproduces clock propulsion in Duda's clean 1+1D time-crystal before any 4D work. Math + both anchors: [`5a §10a`](5a_lagrangian_evolution.md).
+
+- ✅ **M5.8.0a — variational confirmation (DONE 2026-05-29, quadrature).** With `α=β=1`: the optimized profile `φ=tanh(0.6326x+0.0198x³+0.0203x⁵)` reproduces `ω*=1.2897` / `E*=2.0252` (paper 1.2898 / 2.0252) to 4–5 digits; the analytic standard-tanh anchor (Eq.5: `ω=√(70/61)=1.0712`, `E=2.1257`) is the closed-form cross-check. Static `ω=0` costs `E=2.8673 > 2.0252` ⇒ the oscillating state IS the energy minimum (the time crystal — "oscillation propelled by mass"). [→ formalize the quadrature into `sandbox_v8`; math already in `5a §10a`]
+- [ ] **M5.8.0b — dynamical 1+1D leapfrog.** Derive the coupled `(φ,ψ)` Euler–Lagrange EOM from `ℒ` Eq.1 (paper leaves them in Mathematica Fig.3 — derive + confirm BEFORE coding the kernel); ⚠️ the `−αR²+βR⁴` coupling makes the momenta **non-canonical** (`R` mixes `φ₀,ψ₀`) ⇒ the stepper needs the Legendre-inverted acceleration, not a vanilla wave leapfrog (`5a §10a` caveat). Seed kink + `ψ=ωt`; confirm (i) energy conserved, (ii) clock holds at `ω≈1.2898`, (iii) `ω=0` is higher-energy. The genuine "integrator reproduces clock propulsion" test + a leapfrog dry-run before the 4×4 promotion.
+- [ ] **M5.8.0c (OPTIONAL stretch) — spontaneous propulsion.** From a static kink (`ψ=const`) + tiny seed, evolve and watch `ω` grow to `≈1.2898` (the kink propels its own clock from rest). Beyond the paper (it uses the `ψ=ωt` ansatz); strongest "propelled by mass" demo.
+
+**M5.8.1 — Promote the matrix substrate 3×3 → 4×4** (production engine; index-generic operators make this a type change per the M5.4 design — `5a §10b`).
+
+- [ ] Add the 0th time axis: `D = diag(g, 1, δ, 0)`, `O ∈ SO(1,3)` (3 rotations + 3 boosts), Minkowski metric `η=diag(+,−,−,−)`. The **grid stays 3D** — time is internal to the algebra (the 0-eigenvalue), NOT a 4th grid axis (`4a §6`).
+- [ ] Storage: 4×4 symmetric → 10 independent components/voxel (was 6).
+- [ ] **⤺ Fold in the M5.4 ψ-engine cleanup here** — delete the dormant vector engine + buffers + `instrumentation.py` ψ reads while the engine is open for the promotion (see carry-overs block).
+
+**M5.8.2 — 4D Skyrme kinetic + the negative-energy mechanism** (Fig.2 / Eq.42 — `5a §10b`).
+
+- [ ] `ℒ = −Σ F_μναβ F^μναβ − V(M)`, 4-index curvature `F_μναβ = [∂_μM, ∂_νM]_αβ`.
+- [ ] Use the **faithful** kinetic (the `O(x)∈SO(1,3)` metric — 4D extension of `m5_6_2b`'s `K=4Σ‖[M_μ,M_ψ]‖²`, `2Kψ_tt=Σ∂_μJ_μ`), NOT production `½‖Ṁ‖²` (off ×[0.6,3.0]; prerequisite blockquote + `5a §5g/§9`). Two constraints from §9: `K` is degenerate (evolve the `O` rotation/boost DoF, not M's comps); the clock is dynamical only on the **hedgehog** (non-uniform background, `C_μν≠0`).
+- [ ] Verify the negative squared-curvature `Γ₀` terms emerge from the Minkowski signature (the 1+1D `−αR²` analog that M5.8.0 validates) — auto-propulsion, no engineered V(ψ).
+
+**M5.8.3 — Electron clock: seed + measure ω** (the GROUP-HEADLINE result).
+
+- [ ] Seed a single biaxial hedgehog on the electron axis (δ) — extend the M5.6.5a production seeder to 4D.
+- [ ] Measure the intrinsic oscillation frequency at the core (FFT of director rotation / twist `ψ`), under the faithful kinetic.
+- [ ] **Target / calibration** (`5a §10b`): target is *physical* — `ω = 2 m_e c² / ℏ ≈ 1.55 × 10²¹ rad/s` (electron Zitterbewegung) — but the sim runs in natural units. Test the dimensionless self-consistency ratio `ω·ℏ/(2 H_rest) → 1` (`ℏ↔δ`), with absolute Hz set by the Faber `r₀` scale-fix (M5.6.3, `r₀=2.2132 fm→0.511 MeV`). Overlaps the M5.9 mass-calibration handle.
 
 **Mass → frequency table** (validation targets across particle species):
 
@@ -364,9 +382,9 @@ The paper/slides reading task produces this assignment table — confirmation th
 | 2008 | Catillon, Cue, et al. (electron channeling) | 81 MeV electrons (relativistic) | Direct electron-clock measurement, with kinematic mass correction |
 | **2026** | **Positronium de Broglie clock, Nature Comm.** | **3 keV (nonrelativistic e⁺e⁻ bound state)** | **Highest-priority anchor**: kinetic energy ≪ rest-mass → measurement is essentially `ω = 2mc²/ℏ`. Cleanest validation target. *Flagged by Duda 2026-05* |
 
-- [ ] **Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Each ticks at its own mass-derived `ω`, independently
-- [ ] **Negative-Hamiltonian propulsion test**: toggle the `−b·Tr(M³)` cubic term on/off. With it ON, single-defect dynamics should self-sustain for ≥100·T_Z runs; with it OFF (b=0), oscillation should damp. Identifies which term in V(M) is the propulsion mechanism
-- [ ] **⤺ M5.6.5f CARRY-OVER — magnetic-dipole viz (surfaces the bluered N/S B coloring).** The EM-viz `B = ∇×n̂` glyph/mesh currently uses *magnitude* color (orange) because the static hedgehog is a **pure electric charge** (`B≈0`, no poles). The intended **bluered red=N / blue=S dipole coloring** needs (a) a SIGNED axial projection `B·ẑ` (or `B·dipole-axis`) and (b) a configuration that actually produces a **circulating B** — a magnetic dipole. The Zitterbewegung clock's spinning/twisting defect is exactly that configuration (its magnetic moment), so the dipole structure appears naturally here: switch the B glyph/mesh color to the signed `B·axis` on bluered, then red=N/blue=S reads correctly. Moved here from M5.6 (Rodrigo 2026-05-27); co-implementation partner of the **M5.6.5e two-defect demo** (now also M5.8, below — a twisting/interacting defect generates the circulation). Until this lands, the orange-magnitude B view is the honest one. Physics link: validates the "magnetism = T-component of the defect's outgoing wave" picture (Phase-4 EM-lever leg).
+- [ ] **M5.8.4 — Cross-particle test**: seed defects of different masses (electron + muon, or electron + tau) at far separation. Each ticks at its own mass-derived `ω`, independently
+- [ ] **M5.8.5 — Negative-Hamiltonian propulsion test**: toggle the `−b·Tr(M³)` cubic term on/off. With it ON, single-defect dynamics should self-sustain for ≥100·T_Z runs; with it OFF (b=0), oscillation should damp. Identifies which term in V(M) is the propulsion mechanism
+- [ ] **M5.8.6 — ⤺ M5.6.5f CARRY-OVER — magnetic-dipole viz (surfaces the bluered N/S B coloring).** The EM-viz `B = ∇×n̂` glyph/mesh currently uses *magnitude* color (orange) because the static hedgehog is a **pure electric charge** (`B≈0`, no poles). The intended **bluered red=N / blue=S dipole coloring** needs (a) a SIGNED axial projection `B·ẑ` (or `B·dipole-axis`) and (b) a configuration that actually produces a **circulating B** — a magnetic dipole. The Zitterbewegung clock's spinning/twisting defect is exactly that configuration (its magnetic moment), so the dipole structure appears naturally here: switch the B glyph/mesh color to the signed `B·axis` on bluered, then red=N/blue=S reads correctly. Moved here from M5.6 (Rodrigo 2026-05-27); co-implementation partner of the **M5.6.5e two-defect demo** (now also M5.8, below — a twisting/interacting defect generates the circulation). Until this lands, the orange-magnitude B view is the honest one. Physics link: validates the "magnetism = T-component of the defect's outgoing wave" picture (Phase-4 EM-lever leg).
 
 **⤺ Carried over from M5.7 (migrated 2026-05-28 when M5.7 wrapped — none gate the clock; pick up as the 4D substrate + dynamic runs make them relevant):**
 
@@ -375,7 +393,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 - [ ] **⤺ M5.4 CLEANUP — retire the dormant ψ engine.** M5.4 kept the vector operators (`curl`/`curl_curl`/`divergence`/`compute_laplacian`), `evolve_psi`, `V_psi`, the ψ seeders, the ψ tracker, and the `psi_am`/`psi_prev_am`/`psi_new_am` buffers as **dormant legacy** (NOT deleted). When touching the engine for the 4D promotion, **physically delete** the now-unused ψ wave engine + buffers + `instrumentation.py`'s `psi_am` reads — completing the vector→matrix cleanup. (Historical M5.0–M5.3 research scripts in sandbox_v2/v3 stay as archival records of the retired Vector(3) substrate.)
 - [ ] **⤺ Literature anchor — BEC vortex kinetics.** Skim the long-lived-oscillation-mode literature, esp. Duda's 2026-05-13 cite: PRA "*Index theorem and vortex kinetics in Bose-Einstein condensates on a Haldane sphere with a magnetic monopole*" (`10.1103/2msv-lk1m`). The experimental analog of a metastable-defect clock; compact-manifold geometry is a third Derrick escape (could inform a domain-shape choice). See [`1b § Alternative stabilization — compact manifold`](1b_topological_defect.md).
 - [ ] **⤺ OPTIONAL cross-check — Close's Eq.23 (Plan B residual).** Our M5.7 nulls are for **Duda's Eq.18**; **Close's Eq.23** (spin-density wave, `∇·s=0`) is a different equation. Read it from his published paper (`research/theory/Equation-of-Everything.pdf`), implement + test the 3 candidate forms (the physical one preserves `∇·s=0` + bounded energy). *Nice-to-have* — Duda's 4D-clock explanation already covers the M5.7 results, so this is not a blocker.
-- [ ] **Exit criterion**: electron Zitterbewegung frequency reproduced within 10% of `1.55 × 10²¹ rad/s`. **GROUP-HEADLINE SEND** to Models-of-Particles thread.
+- [ ] **Exit criterion**: electron Zitterbewegung frequency reproduced within 10% — operationally the dimensionless self-consistency ratio `ω·ℏ/(2 H_rest) → 1` (M5.8.3), which fixes the absolute `1.55 × 10²¹ rad/s` once the Faber `r₀` mass scale is set (M5.6.3 / M5.9). **GROUP-HEADLINE SEND** to Models-of-Particles thread.
 
 ---
 

@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`). §10: the **M5.8 foundation** — Duda's 1+1D time-crystal toy model (arXiv:2501.04036, the integrator-validation anchor verified by quadrature 2026-05-29) + the 3+1D promotion math (4-index curvature `F_μναβ`, the Minkowski-signature negative-energy mechanism, the faithful-kinetic prerequisite, the `ω=2mc²/ℏ` calibration).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -584,3 +584,108 @@ hedgehog as the background + a small twist-phase perturbation; the field-depende
 metric `T = 4Σ‖[M_μ,Ṁ]‖²` is non-degenerate on the rotation DoF. Validate Eq.23 energy
 conservation + KG dispersion `ω(k)` of the twist. (Static Coulomb already validated via the
 M5.4 page-18 energy = `¼Σ‖F_μν‖²`.) This is a substantial numerical build — the M5.5↔M5.6 core.
+
+---
+
+## 10. M5.8 foundation — the 1+1D time-crystal toy model + the 4D promotion
+
+**Source:** Duda, *Time crystal φ⁴ kinks by curvature coupling as toy model for mechanism of
+oscillations propelled by mass, like observed for electron and neutrinos* (arXiv:2501.04036 v2,
+24 Jul 2025; local PDF `theory/time_crystal.pdf`, 3pp). Math **read + verified by quadrature
+2026-05-29** (the variational anchors below reproduce to 4–5 digits). This is the mathematical
+foundation for the M5.8 build plan in [`0b_M5_roadmap.md § Phase M5.8`](0b_M5_roadmap.md).
+
+### 10a. The 1+1D toy model — the integrator-validation anchor (M5.8.0)
+
+A clean 1+1D scalar realization of "why a resting particle oscillates at `ω = 2mc²/ℏ`" (the de
+Broglie clock / Zitterbewegung). Two real fields: `φ` (the φ⁴ kink, topological) and `ψ` (the
+quantum-phase *clock*, `exp(i2πψ)` winded mod 1), coupled **only** through a Lorentz-invariant
+curvature `R`. Signature `η = diag(1, −1)`.
+
+```text
+ℒ = ∂_μφ ∂^μφ − (1−φ²)² − α R² + (β/3) R⁴                         (Eq.1)
+R = ∂₀φ ∂₁ψ − ∂₁φ ∂₀ψ          (= φ₀ψ₁ − φ₁ψ₀ ;  φ₀≡∂_tφ, φ₁≡∂_xφ)
+
+Legendre → Hamiltonian (the βR⁴/3 → βR⁴, since R is degree-1 in velocities):
+ℋ = φ₀² + φ₁² + (1−φ²)² − α R² + β R⁴                             (Eq.2)
+```
+
+`R` is Lorentz-invariant (it is the 2-form `dφ ∧ dψ` in the `(t,x)` plane — a pseudoscalar; the
+paper verifies invariance under a boost `γ`). Note `ψ` carries **no potential and no bare kinetic
+term** — it enters the dynamics *exclusively* through `R`.
+
+**Ansatz** (the static-kink clock). `φ ≡ φ(x)` a static kink `−1 → +1` (so `φ₀ = 0`), and
+`ψ = ω t` a linear phase (so `ψ₁ = 0`, `ψ₀ = ω`). Then `R = −ω φ_x`, and the energy density
+collapses to one line:
+
+```text
+ℋ = φ_x² (1 − α ω²) + (1 − φ²)² + β ω⁴ φ_x⁴                       (Eq.3)
+```
+
+**The mechanism (why it is a time crystal).** The `−α ω² φ_x²` term is **negative** — turning the
+clock on (`ω ≠ 0`) *lowers* the gradient energy. This is the counterintuitive "negative energy
+contribution of a time derivative" that *propels* the oscillation; the positive `β ω⁴ φ_x⁴` term
+caps it. So the energy-minimizing state has `ω ≠ 0` — a static kink (`ω = 0`) is **not** the
+ground state. Minimizing `E = ∫ℋ dx` over `ω`:
+
+```text
+ω = √[ α ∫φ_x² dx / (2β ∫φ_x⁴ dx) ]                               (Eq.4)
+```
+
+**Two validation anchors** (both at `α = β = 1`):
+
+| Anchor | Profile | ω | E | Notes |
+| --- | --- | --- | --- | --- |
+| **Analytic** (Eq.5, standard tanh) | `φ = tanh(x/w)`, `w = √(96/61)` | `√(70/61) = 1.0712` | `2.1257` | closed-form via `∫sech⁴ = 4w/3`, `∫sech⁸ = 32w/35`; no fitting |
+| **Optimized** (Fig.1, polynomial arg) | `φ = tanh(0.6326x + 0.0198x³ + 0.0203x⁵)` | `1.2898` | `2.0252` | numerically energy-minimized deformation; lower E |
+
+**Our quadrature confirmation (2026-05-29).** With the optimized profile and `α=β=1`: integrals
+`∫φ_x² = 1.0126`, `∫φ_x⁴ = 0.3044`, `∫(1−φ²)² = 1.8547` ⇒ `ω* = 1.2897` (paper 1.2898), `E* =
+2.0252` (paper 2.0252). The **static** kink (`ω=0`) costs `E = 2.8673` — so the oscillating state
+wins by `ΔE = 0.84` ⇒ the time crystal is confirmed: the energy minimum is `ω ≈ 1.29`, not `0`.
+This verifies our understanding of the energy functional before any 4D build.
+
+> ⚠️ **Integrator caveat for the dynamical pre-check (M5.8.0b).** The `−αR² + βR⁴` curvature
+> coupling makes the conjugate momenta **non-canonical** — `R` mixes `φ₀` and `ψ₀`, so
+> `∂ℒ/∂φ₀` depends on `ψ`-gradients and vice versa. A vanilla wave-equation leapfrog does not
+> apply; the time-stepper needs the Legendre-inverted acceleration (solve the coupled momentum
+> system each step) or a constrained scheme. The Euler–Lagrange equations are left in Mathematica
+> in the paper (Fig.3, not transcribed) — derive + confirm them before coding the kernel.
+
+### 10b. The 3+1D promotion — what M5.8 actually builds (Fig.2 / paper [1] Eq.42)
+
+The toy model's `−αR²` is the 1+1D stand-in for the genuine mechanism: in the full 3+1D
+Skyrme + Landau–de Gennes action on the matrix field `M = O D O^T`, the **Minkowski signature**
+flips the sign of the time-axis squared-curvature, producing the negative `Γ₀` terms that
+auto-propel the clock with no engineered propulsion (paper Fig.2; the same Fig.10 mechanism in
+2108.07896).
+
+```text
+ℒ = −Σ_{αβμν} F_μναβ F^μναβ − V(M)        (4-index curvature, Eq.42 in arXiv:2108.07896)
+F_μναβ = [∂_μ M, ∂_ν M]_αβ
+D = diag(g, 1, δ, 0) ,  O ∈ SO(1,3)        (was diag(1,δ,0), O∈SO(3) in 3D M5.4–M5.7)
+```
+
+| Item | 3D (M5.4–M5.7) | 4D (M5.8) |
+| --- | --- | --- |
+| Field algebra | `M = O D O^T`, `D=diag(1,δ,0)`, `O∈SO(3)` | `D=diag(g,1,δ,0)`, `O∈SO(1,3)` (3 rotations + 3 boosts) |
+| Metric | Euclidean `+++` (ℋ manifestly ≥0 ⇒ Derrick collapse) | Minkowski `−+++` (indefinite ⇒ negative `Γ₀` curvature terms) |
+| Time | external leapfrog parameter | the **0-eigenvalue**, *inside* the algebra — the grid **stays 3D**; time is not a 4th grid axis (4a §6) |
+| Storage | 6 independent symmetric comps/voxel | 10 independent symmetric comps/voxel; operators already index-generic (M5.4 design) |
+
+**Faithful-kinetic prerequisite (the load-bearing constraint; §5g + §9).** Measure the clock
+frequency with the **faithful** kinetic `T = 4Σ_μ‖[M_μ, Ṁ]‖²` (the `O(x)∈SO(1,3)` metric, the 4D
+extension of the validated `m5_6_2b` ψ-evolution `2K ψ_tt = Σ_μ ∂_μ J_μ`), **not** production's
+`½‖Ṁ‖²` — the simple kinetic mis-sets physical-mode inertia by `×[0.6, 3.0]`, and the M5.8 exit
+is `ω` within 10%. Two facts from §9 shape the build: (1) the metric `K` is **degenerate** (the
+trace is its null mode), so evolve the rotation/boost DoF `O`, not M's components; (2) the twist
+is dynamical **only on a non-uniform background** (`[M_x, Ṁ] = 0` for a uniform-axis twist) — so
+the clock lives on the **hedgehog**, exactly the `m5_6_2b` configuration where `C_μν ≠ 0` already
+sources the twist (the defect *cannot* sit at `ψ=0` — the clock seed).
+
+**The `ω = 2mc²/ℏ` calibration sub-question.** The target `ω ≈ 1.55×10²¹ rad/s` is *physical*;
+the sim runs in natural units. The clean test is the dimensionless self-consistency ratio
+`ω · ℏ / (2 H_rest) → 1` (with `ℏ ↔ δ`, the QM eigenvalue; `H_rest` the measured rest-energy
+Hamiltonian), with the absolute Hz set by the Faber `r₀` scale-fix from M5.6.3
+(`r₀ = 2.2132 fm → 0.511 MeV`). So M5.8's frequency check overlaps the M5.9 mass-calibration
+handle: measure the ratio, let the absolute scale follow `r₀`.
