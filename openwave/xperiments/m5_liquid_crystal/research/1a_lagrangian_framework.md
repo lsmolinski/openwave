@@ -431,7 +431,7 @@ Instead of a scalar displacement ψ(r,t), the fundamental object is a **unit vec
 
 More generally, Duda uses a **symmetric matrix field** `M(x) = O·D·O^T` where O is orthogonal (rotation) and `D = diag(λ₁, λ₂, λ₃)` encodes the ellipsoid shape — directly analogous to our 6-phasor ellipse model in M4.
 
-### The Lagrangian (LdGS model)
+### The Lagrangian (LdG model)
 
 ```text
 L = -Σ F_μν_αβ · F^μν_αβ  -  V(M)
