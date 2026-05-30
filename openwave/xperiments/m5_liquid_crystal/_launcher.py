@@ -177,7 +177,7 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.GLYPH_VECTOR = 0  # glyph vector source — 0=director (E field lines), 1=∇×n̂ (B field)
+        self.GLYPH_VECTOR = 0  # glyph state — 0=director only, 1=director+delta, 2=E field, 3=B field (∇×n̂)
         self.GLYPH_SIZE = (
             0  # glyph shaft — 0=unit (director), 1=field magnitude (E:|∇·n̂|, B:‖∇×n̂‖)
         )
@@ -449,11 +449,19 @@ def display_controls(state):
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
-        # glyph shows the director (E-field lines) or ∇×n̂ (B-field direction)
-        if sub.checkbox("EM Field Glyph (off=E/on=B)", state.GLYPH_VECTOR == 1):
-            state.GLYPH_VECTOR = 1
-        else:
+        # VIZ.3 — 4-state glyph select (mutually exclusive checkboxes):
+        #   0=Director Vector (principal axis n̂ only),
+        #   1=Director + Delta Vectors (n̂ + delta cross-bar = biaxial ellipsoid frame),
+        #   2=Electric Field (+→− barb, charge-colored), 3=Magnetic Field (∇×n̂).
+        # Greek δ is spelled "Delta" — GGUI cannot render Greek glyphs.
+        if sub.checkbox("Director Vector", state.GLYPH_VECTOR == 0):
             state.GLYPH_VECTOR = 0
+        if sub.checkbox("Director + Delta Vectors", state.GLYPH_VECTOR == 1):
+            state.GLYPH_VECTOR = 1
+        if sub.checkbox("Electric Field", state.GLYPH_VECTOR == 2):
+            state.GLYPH_VECTOR = 2
+        if sub.checkbox("Magnetic Field", state.GLYPH_VECTOR == 3):
+            state.GLYPH_VECTOR = 3
         # shaft length: unit (director, all glyphs visible) vs field magnitude (E: |∇·n̂| charge
         # density, B: ‖∇×n̂‖); color: single flat COLOR_MEDIUM (see far field) vs field gradient.
         if sub.checkbox("Glyph Size (unit/magnitude)", state.GLYPH_SIZE == 1):
@@ -748,6 +756,11 @@ def initialize_xperiment(state):
             relax_field(state, state.AUTO_RELAX_STEPS)
             print("[M5.1] auto-relax complete")
 
+        # VIZ.3: populate the derived eigenframe (director_nhat + director_mid +
+        # eigenvalues) from the seeded M so a PAUSED boot renders the δ-clock-hand
+        # glyph correctly before the first Evolve-PDE step. Cheap, runs once.
+        pde.eigen_decompose(state.wave_field)
+
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
         print("INSTRUMENTATION ENABLED")
@@ -945,7 +958,12 @@ def render_elements(state):
     # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
     if state.SHOW_GLYPHS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
-        if state.GLYPH_VECTOR == 1:  # M5.6.5b: B-field vectors (∇×n̂) — reuse glyph buffers
+        # VIZ.3 — 4-state glyph select (GLYPH_VECTOR):
+        #   0 = Director n̂ only (principal axis; apolar, agnostic to size/color)
+        #   1 = Director + Delta (n̂ + CYAN delta cross-bar = ellipsoid frame; apolar)
+        #   2 = E-field (n̂ + +→− barb, charge-colored; honors size/color)   ← polar
+        #   3 = B-field (∇×n̂, em-vector kernel)                             ← polar
+        if state.GLYPH_VECTOR == 3:  # B-field vectors (∇×n̂) — em-vector kernel
             em_scale = max(
                 state.observables.director_div_absmax[None],
                 state.observables.director_curl_max[None],
@@ -970,10 +988,10 @@ def render_elements(state):
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
-        else:  # director / E-field lines (the LC field lines)
-            # VIZ.1: the director glyph is centered + apolar (no barb) — drawn by the
-            # kernel; colored by ∇·n̂ charge (greenyellow, matches WM6) when GLYPH_COLOR=1.
+        else:  # Director-only (0) / Director+Delta (1) / E-field (2) — centered glyph kernel
             div_scale = state.observables.director_div_absmax[None]
+            glyph_mode = 1 if state.GLYPH_VECTOR == 2 else 0  # 0=Director, 1=E-field
+            show_delta = 1 if state.GLYPH_VECTOR == 1 else 0  # delta cross-bar only in state 1
             viz.update_director_glyphs(
                 state.wave_field,
                 state.observables,
@@ -982,10 +1000,19 @@ def render_elements(state):
                 div_scale,
                 state.GLYPH_SIZE,
                 state.GLYPH_COLOR,
+                glyph_mode,
+                show_delta,
             )
             render.scene.lines(
                 state.wave_field.director_glyph_vertices,
                 per_vertex_color=state.wave_field.director_glyph_colors,
+                width=2.0,
+            )
+            # Second-segment pass: delta cross-bar (state 1) OR E +→− barb (mode 1).
+            # The arrow buffer is always written (blanked in director-only state 0).
+            render.scene.lines(
+                state.wave_field.director_glyph_arrow_vertices,
+                per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
 

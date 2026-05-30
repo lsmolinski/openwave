@@ -177,6 +177,10 @@ class WaveField:
         # ‖M−D‖_F amplitude tracker and the biaxial-ellipsoid render option.
         # These are stateless caches: recomputed every frame, valid even when paused.
         self.director_nhat = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # eigvec
+        # VIZ.3: MIDDLE (δ) eigenvector — the "clock-hand" axis that sweeps around the
+        # principal director under the Zitterbewegung twist (the δ-clock-hand glyph).
+        # Derived per-frame in eigen_decompose alongside director_nhat; apolar (n̂≡−n̂).
+        self.director_mid = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # mid eigvec
         self.eigenvalues = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # λ₁≥λ₂≥λ₃/voxel
         # Working buffer for the director-equivalent Coulomb relaxation (M5.4 gate):
         # relax_director_step writes the next director here, then M is rebuilt from it.

@@ -307,7 +307,7 @@ Ways to watch the clock, corrected:
 
 | Want to see | Channel | What you watch | Status |
 | --- | --- | --- | --- |
-| **the spin** (the twist about `a`) | **secondary-axis glyph** — a 2nd glyph for the **middle (δ) eigenvector** | the `b`/δ axis literally *sweeps around* the director `a` at ω — **this is the visible clock-hand**. Non-degenerate only on the biaxial `diag(1,δ,0)` (uniaxial `b`/`c` are arbitrary). | 🚧 **needs building** (fold into VIZ.3) |
+| **the spin** (the twist about `a`) | **the δ cross-bar in the "Director + Delta" glyph** — the **middle (δ) eigenvector** (`director_mid`), shown as the shorter CYAN arm of the ellipsoid-wireframe "+" | the `b`/δ axis *sweeps around* the director `a` — would be the visible clock-hand if coherent. **In free 3D it tilts/disperses (M5.7.2), not coherently spins** — coherent spin needs M5.8/9b. Non-degenerate only on biaxial `diag(1,δ,0)`. | ✅ **DONE (VIZ.3, glyph state 1 "Director + Delta")** |
 | spin (alt, cheap) | **perpendicular tick** on the director glyph | add one short barb *perpendicular* to the shaft, oriented by the δ-axis — a mark whose angle tracks the roll. Cheapest "see the roll" hack. | 🚧 needs building |
 | **the rate `ω`** (how fast it ticks) | flux_mesh **WM3 "Thermal Clock"** (blueprint) | color = `‖Ṁ‖_F` EMA = angular speed; brighter = faster. *Measures* the rate (doesn't show rotation). | ✅ live (WM3) |
 | **the radius `A`** (rotational amplitude) | flux_mesh **WM2 "Thermal Amp"** (ironbow) | color = `‖M−D‖_F` EMA = how far the frame swings from vacuum = the `≈δ/2` radius; grows with heat. | ✅ live (WM2) |
@@ -318,8 +318,8 @@ Ways to watch the clock, corrected:
 (the clock-hand sweeping around the director-axle); the director glyph shows tilt, not twist. Under
 **Evolve PDE**, WM2 (radius) and WM3 (rate) are the AM and FM channels — together they *are* the
 joint `(A, ω)` thermal state (heating pumps WM2/AM and/or shifts WM3/FM; M5.7.3 saw both respond).
-WM2/WM3 already exist; the secondary-axis glyph that actually *shows* the rotation is the new build
-(VIZ.3 below).
+WM2/WM3 already exist; the δ cross-bar in the Director glyph (VIZ.3 ✅, the shorter CYAN arm of the
+ellipsoid "+") is the geometric channel that shows the δ-axis rotation directly.
 
 > ⚠️ **3D caveat (`0c §L7`):** the *free* clock disperses in 3D (M5.7.2) — what you see spinning
 > then radiating away is the free mode losing coherence. The self-sustaining clock is the **4D**
@@ -333,34 +333,31 @@ checkboxes (Part 3 as-built). **Target:** make the vector fields independently s
 answer different questions and a researcher wants to compare them. The **δ-clock-hand** is the new
 4th channel (the only glyph that shows the spin — `§4.1.1` correction).
 
-**Size + Color stay two-option toggles** (the existing `Glyph Size (unit/magnitude)` +
-`Glyph Color (single/gradient)` decoupling checkboxes — Part 3 as-built — apply per glyph):
+**4-state select (as-built VIZ.3, refined 2026-05-30): 4 mutually-exclusive checkboxes —
+`0 = Director Vector`, `1 = Director + Delta Vectors`, `2 = Electric Field`, `3 = Magnetic Field`.**
+A slider (`0=n+d 1=E 2=B`) was the first cut; switched to checkboxes because the labels read
+clearer than slider positions, and to add a **Director-only** state so the δ bar never shows alone
+(when the frame gets cluttered, drop to `n̂` axis only). The `Glyph Size`/`Glyph Color` toggles apply
+**only to the field states (E/B)** — the Director states are *orientation, not a field*, so they
+ignore them (always unit + fixed colors). UI spells "delta" — GGUI cannot render the Greek `δ`.
 
-| Glyph | Direction (barb) | Size (shaft): unit \| magnitude | Color: single \| gradient | Convention note |
-| --- | --- | --- | --- | --- |
-| **Director `n̂`** (axis `a`) | none (apolar — no barb) | unit always (`n̂` is a unit field; "magnitude" = 1) | single `COLOR_MEDIUM` | the bare grain (axle); shows **tilt**, NOT the spin |
-| **Electric field lines** | `+ → −` (toward negative charge) | **unit** (every line visible) \| **magnitude** `∝ \|∇·n̂\|` (charge density — the current behavior) | single `COLOR_MEDIUM` \| green↔yellow charge gradient | E-line convention points into − charge ✓ (Rodrigo) |
-| **Magnetic field lines** | `N → S` (along `∇×n̂`) | **unit** (every line visible) \| **magnitude** `∝ ‖∇×n̂‖` (field strength — current behavior) | single `COLOR_MEDIUM` \| blue↔red strength gradient | B-line handedness N→S ✓ |
-| **δ clock-hand** (axis `b`) | none (apolar) | unit | single `COLOR_MEDIUM` (or color by phase angle) | the **middle (δ) eigenvector** — sweeps around `a` at ω = **the visible Zitterbewegung spin** (`§4.1.1`); meaningful only on biaxial |
+| Glyph state | Direction (barb) | Size / Color | What it is |
+| --- | --- | --- | --- |
+| **0 Director Vector** | none (apolar axis) | **fixed** (ignores size/color) — `n̂` unit + COLOR_MEDIUM | principal axis `a`=`director_nhat` only — the clean orientation arrow (arrow buffer blanked) |
+| **1 Director + Delta** | none (both axes apolar) | **fixed** (ignores size/color) — `n̂` unit + COLOR_MEDIUM; δ bar shorter (∝ λ₂/λ₁) + CYAN/COLOR_FIELD | the biaxial-frame **ellipsoid-wireframe "+"**: `a`=`director_nhat` + middle axis `b`=`director_mid`. Shows orientation (tilt); the δ bar is the would-be clock-hand (free 3D = tilts/disperses, M5.7.2 — coherent spin needs M5.8/9b) |
+| **2 Electric Field** | `+ → −` half-barb (gauge-arbitrary sign until M5.8) | **honors** size (`∝\|∇·n̂\|` charge) + color (greenyellow charge) | `director_nhat` as a polar field line (E ∝ `n̂`) |
+| **3 Magnetic Field** | `N → S` (along `∇×n̂`) | honors size (`∝‖∇×n̂‖`) + color | `director_curl_field`, via `update_em_vector_glyphs` |
 
-So **size has exactly two choices per glyph** — `unit` (= 1, every glyph the same length, the
-field-line-structure-everywhere view) or `magnitude` (shaft `∝` the field value: charge density
-`\|∇·n̂\|` for E, field strength `‖∇×n̂‖` for B — *this is what we have now*). Same two-way split for
-color (single flat `COLOR_MEDIUM` vs the value gradient).
+**Why the Director states ignore size/color (Rodrigo 2026-05-30):** they represent the *ellipsoid
+orientation*, not an E/B field — there is no charge/strength to encode, so magnitude-scaling and
+charge-coloring are meaningless. State 0 is the bare director axis; state 1 adds the δ cross-bar to
+make the biaxial frame legible as a wireframe "+". (Both share `mode=0` in `_write_glyph`; a
+`show_delta` flag toggles the δ arm — blanked in state 0, drawn in state 1.)
 
-Notes / decisions to settle when we implement:
-
-- **Director vs E-field:** the director *is* the E-field-line direction (E ∝ `n̂`), so "Director"
-  and "Electric field lines" are the *same vector* shown two ways — Director = bare (single color,
-  no barb), Electric = +→− oriented + charge-colored. Cheap: both read `director_nhat`.
-- **Size = unit or magnitude (two options).** `unit` shows every field line at the same
-  length (the structure-everywhere / far-field view); `magnitude` makes the shaft `∝` the field value
-  (charge density for E, field strength for B) — *this is the current behavior*. These are exactly
-  the two states of the existing `Glyph Size (unit/magnitude)` toggle; just expose it per glyph.
-- **The current single `off=E/on=B` toggle becomes a 4-state select** (Director / E / B /
-  δ-clock-hand), keeping the Size + Color decoupling toggles that already exist. The **δ-clock-hand**
-  (middle eigenvector) is the only one that shows the Zitterbewegung *spin* (`§4.1.1`); the Director
-  shows tilt, not twist.
+The **Size/Color toggles** (`Glyph Size unit/magnitude`, `Glyph Color single/gradient`) act only on
+the **E/B field states**: `unit` = every line same length (structure-everywhere view) vs `magnitude`
+= shaft `∝` the field value (charge density `\|∇·n̂\|` for E, strength `‖∇×n̂‖` for B); `single`
+COLOR_MEDIUM vs the value gradient. The Director state is fixed (orientation, not a field).
 
 **Centering convention (decided 2026-05-30) — ALL glyphs centered on the voxel; the barb is the
 only polar/apolar distinction.** A glyph is a short *tangent-segment of the field line through the
@@ -475,9 +472,11 @@ So **two render targets, one apolar root**: (a) charge field → `|∇·n̂|` un
 gauge-fix / winding); (b) director glyph → **centered render**. A single deeper fix — spatially
 gauge-fixing `n̂` (`n̂·r̂_defect > 0`) *before* both the `∇·` and the glyph read it — would stabilize
 both at once but needs the defect center; the centered-glyph + `|∇·n̂|` pair is the cheaper
-independent route. **And note (from `§4.1.1`):** the director glyph showing only tilt (never the
-clock spin) is *why* the **δ-clock-hand glyph (VIZ.3)** is needed to see the rotation — centering
-the director glyph cleans up *its* view but does not add the spin; that's a separate channel.
+independent route. **And note (from `§4.1.1`):** the director's principal axis shows only tilt
+(never the clock spin) — the **δ cross-bar** (the middle-eigenvector arm of the VIZ.3 ellipsoid-cross,
+Director glyph state 0) is what shows the δ-axis rotation; centering the director cleans up its view
+but the spin lives on the δ arm (and in free 3D that arm tilts/disperses rather than coherently spins
+— M5.7.2; coherent spin = M5.8/9b).
 
 ### 4.5 Magnetic moment + the dipole N/S coloring (M5.6.5f) — sample-first
 
@@ -548,7 +547,7 @@ deviation scalars every frame.
 | 1 | **VIZ.1 — centered + barbless director glyph** (§4.4) — apolar-correct convention; kills the 180° slosh | ✅ yes | **low** | **✅ DONE + TESTED (2026-05-30)** |
 | 1b | **Gauge-stable SIGNED charge** (§4.4) — winding-density (Brouwer) so WM6's ± can't flip | ⏳ **M5.8** | medium | deferred — see "When we address it" below; WM6 stays honest-but-flipping until then |
 | 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | **✅ DONE (2026-05-30)** |
-| 3 | **VIZ.3 — glyph select: Director / E / B / δ-clock-hand** (§4.2) — *E/B centered + barbed (polar); director centered + barbless (apolar)* | ✅ yes | **low–med** | pending |
+| 3 | **VIZ.3 — 4-state glyph select: Director / Director+Delta / E / B** (§4.2) — *Director states = ellipsoid orientation (agnostic to size/color); E/B polar + barbed; 4 mutually-exclusive checkboxes, "delta" spelled out for GGUI* | ✅ yes | **low–med** | **✅ DONE (2026-05-30)** — `director_mid` + `eigvec_for`; `_write_glyph` ti.func w/ `mode` + `show_delta`; refined per Rodrigo (added bare Director-only state so δ never shows alone; slider → 4 checkboxes) |
 | 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | pending |
 | 5 | **Joint `(A·ω)²` thermal** (Part 3) — product-of-squares color mode | ⏸ 9b | low | pending |
 | 6 | **Granule thermal heat-map** (§4.6) | ⏸ 9b | low | pending |
@@ -598,7 +597,8 @@ This mirrors how `_topo_*` xparameters already isolate seed configs for visual g
 Build the **pre-M5.8 batch (#1–#4)** in that order — each is small, independent, and improves the
 EM/thermal "seeing" that the 9b research will lean on. **#1 (centered + barbless director glyph) is
 ✅ done + tested (2026-05-30); **#2 (curl-vector warp + bluered N/S toggle) ✅ done + tested
-(2026-05-30)**. Next: **#3 (glyph select Director/E/B/δ-clock-hand — E/B centered+barbed, director
-centered+barbless)**, then **#4 (dipole sample)** with the §5.3 placeholder. Defer #5–#9 per the
+(2026-05-30)**; **#3 (4-state glyph select: Director / Director+Delta / E / B — E/B centered+barbed,
+director states centered+barbless) ✅ done + tested (2026-05-30)**. Next: **#4 (dipole sample)** with
+the §5.3 placeholder. Defer #5–#9 per the
 table (the signed-charge gauge, item 1b, lands at M5.8 via winding density). Update Part 3's
 deferred-table homes as each lands.
