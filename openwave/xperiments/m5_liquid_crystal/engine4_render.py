@@ -96,6 +96,41 @@ def sample_position_to_render(
 # projection to be rendered.
 
 
+@ti.func
+def _curl_signed_proj(
+    curl_vec: ti.types.vector(3, ti.f32),  # type: ignore
+    vi: ti.i32,  # type: ignore
+    vj: ti.i32,  # type: ignore
+    vk: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
+):
+    """Signed scalar for the bluered N/S coloring of ∇×n̂ (B). Two projections:
+
+      - **radial** (`curl_radial=1`): `(∇×n̂)·r̂` with `r̂` from `curl_center` (voxel
+        coords) → the TRUE magnetic N/S poles — red where B flows OUT (N hemisphere,
+        cosθ>0), blue where it flows IN (S hemisphere) → `∝ cosθ`, matching a bar
+        magnet (Duda's N-red-top / S-blue-bottom). Needs a defined center.
+      - **axial** (`curl_radial=0`): `(∇×n̂)·curl_axis` against a FIXED axis → the
+        field's axial COMPONENT. For an ideal dipole this is red at BOTH poles
+        (B ∥ m̂ along the whole axis) + blue at the equator — physically real, but
+        reads as two red lobes, not a bar magnet. The default for general WM7 runs
+        where no single center exists (M5.8 wires radial to the real defect center)."""
+    proj = curl_vec.dot(curl_axis)
+    if curl_radial == 1:
+        r = ti.Vector(
+            [
+                ti.cast(vi, ti.f32) - curl_center[0],
+                ti.cast(vj, ti.f32) - curl_center[1],
+                ti.cast(vk, ti.f32) - curl_center[2],
+            ]
+        )
+        rhat = r / (r.norm() + 1e-12)
+        proj = curl_vec.dot(rhat)
+    return proj
+
+
 @ti.kernel
 def update_flux_mesh_values(
     wave_field: ti.template(),  # type: ignore
@@ -105,6 +140,8 @@ def update_flux_mesh_values(
     warp_mesh: ti.i32,  # type: ignore
     curl_color: ti.i32,  # type: ignore
     curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
 ):
     """
     Update flux mesh colors and vertices by sampling wave properties from voxel grid.
@@ -202,11 +239,16 @@ def update_flux_mesh_values(
             )
             curl_v = observables.director_curl_mag_field[i, j, wave_field.fm_plane_z_idx]
             curl_vec = observables.director_curl_field[i, j, wave_field.fm_plane_z_idx]
-            # VIZ.2 color toggle: 0=orange magnitude (honest static default),
-            # 1=bluered signed (∇×n̂)·axis → N=red(+axis)/S=blue(−axis) poles.
+            # VIZ.2/VIZ.4 color toggle: 0=orange magnitude (honest static default),
+            # 1=bluered signed — radial (∇×n̂)·r̂ = true N/S poles when curl_radial,
+            # else axial (∇×n̂)·curl_axis. See _curl_signed_proj.
             if curl_color == 1:
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
-                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                    _curl_signed_proj(
+                        curl_vec, i, j, wave_field.fm_plane_z_idx,
+                        curl_axis, curl_radial, curl_center,
+                    ),
+                    -curl_s, curl_s,
                 )
             else:
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
@@ -303,9 +345,13 @@ def update_flux_mesh_values(
             )
             curl_v = observables.director_curl_mag_field[i, wave_field.fm_plane_y_idx, k]
             curl_vec = observables.director_curl_field[i, wave_field.fm_plane_y_idx, k]
-            if curl_color == 1:  # bluered signed (∇×n̂)·axis → N/S poles
+            if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
-                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                    _curl_signed_proj(
+                        curl_vec, i, wave_field.fm_plane_y_idx, k,
+                        curl_axis, curl_radial, curl_center,
+                    ),
+                    -curl_s, curl_s,
                 )
             else:
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
@@ -400,9 +446,13 @@ def update_flux_mesh_values(
             )
             curl_v = observables.director_curl_mag_field[wave_field.fm_plane_x_idx, j, k]
             curl_vec = observables.director_curl_field[wave_field.fm_plane_x_idx, j, k]
-            if curl_color == 1:  # bluered signed (∇×n̂)·axis → N/S poles
+            if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
-                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                    _curl_signed_proj(
+                        curl_vec, wave_field.fm_plane_x_idx, j, k,
+                        curl_axis, curl_radial, curl_center,
+                    ),
+                    -curl_s, curl_s,
                 )
             else:
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
@@ -819,3 +869,41 @@ def update_em_vector_glyphs(
                 wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
                 wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
                 wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+
+
+@ti.kernel
+def update_moment_glyph(
+    wave_field: ti.template(),  # type: ignore
+    m_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    cx: ti.f32,  # type: ignore
+    cy: ti.f32,  # type: ignore
+    cz: ti.f32,  # type: ignore
+    length: ti.f32,  # type: ignore
+    color: ti.types.vector(3, ti.f32),  # type: ignore
+):
+    """VIZ.4 — a single magnetic-MOMENT vector glyph `μ` at the defect center,
+    pointing along m̂ (POLAR → centered shaft + a half-barb at the +m̂ tip).
+
+    A static marker for the dipole-sample placeholder: it labels the moment axis
+    the bluered N/S field is organized around. Writes 4 vertices into
+    moment_glyph_{vertices,colors} (shaft base→tip, barb tip→back); the launcher
+    renders them with scene.lines when DIPOLE_SAMPLE is active. Center (cx,cy,cz)
+    in voxel coords; `length` in normalized [0,1] (larger than voxel glyphs so it
+    reads as the principal axis)."""
+    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
+    mhat = m_axis.normalized()
+    center = (ti.Vector([cx, cy, cz]) + 0.5) / max_dim
+    base = center - 0.5 * length * mhat
+    tip = center + 0.5 * length * mhat
+    wave_field.moment_glyph_vertices[0] = base
+    wave_field.moment_glyph_vertices[1] = tip
+    # half-barb at the +m̂ tip (stable perpendicular reference)
+    ref = ti.Vector([0.0, 0.0, 1.0])
+    if ti.abs(mhat[2]) > 0.9:
+        ref = ti.Vector([1.0, 0.0, 0.0])
+    perp = mhat.cross(ref).normalized()
+    barb_dir = ARROWHEAD_BACK_COMP * mhat + ARROWHEAD_PERP_COMP * perp
+    wave_field.moment_glyph_vertices[2] = tip
+    wave_field.moment_glyph_vertices[3] = tip + (ARROWHEAD_LENGTH_FRAC * length) * barb_dir
+    for n in range(4):
+        wave_field.moment_glyph_colors[n] = color

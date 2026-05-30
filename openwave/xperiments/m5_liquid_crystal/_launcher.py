@@ -177,7 +177,9 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.GLYPH_VECTOR = 0  # glyph state — 0=director only, 1=director+delta, 2=E field, 3=B field (∇×n̂)
+        self.GLYPH_VECTOR = (
+            0  # glyph state — 0=director only, 1=director+delta, 2=E field, 3=B field (∇×n̂)
+        )
         self.GLYPH_SIZE = (
             0  # glyph shaft — 0=unit (director), 1=field magnitude (E:|∇·n̂|, B:‖∇×n̂‖)
         )
@@ -197,6 +199,15 @@ class SimulationState:
         # 1=bluered signed (∇×n̂)·axis → N=red/S=blue poles. Axis default ẑ (auto-axis = M5.8).
         self.CURL_COLOR = 0
         self.CURL_AXIS = ti.Vector([0.0, 0.0, 1.0], dt=ti.f32)
+        # VIZ.4 — magnetic-dipole placeholder sample (M5.6.5f stage 1). When True,
+        # the curl observables are overwritten each frame with an analytic dipole B
+        # about DIPOLE_AXIS at DIPOLE_CENTER so the N/S coloring + B glyphs + moment
+        # glyph can be validated before the real circulating B exists (M5.8). Set by
+        # the _viz_sample_dipole xparameter; off for all physics runs.
+        self.DIPOLE_SAMPLE = False
+        self.DIPOLE_AXIS = ti.Vector([0.0, 0.0, 1.0], dt=ti.f32)
+        self.DIPOLE_CENTER = [0.5, 0.5, 0.5]  # fractional grid coords
+        self.DIPOLE_R0_VOX = 3.0  # core regularization radius (voxels)
 
         # Data Analytics & video export toggles
         self.INSTRUMENTATION = False
@@ -253,6 +264,9 @@ class SimulationState:
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
         self.SHOW_GLYPHS = ui.get("SHOW_GLYPHS", 0)
+        self.GLYPH_VECTOR = ui.get("GLYPH_VECTOR", 0)  # 0=director 1=+delta 2=E 3=B
+        self.GLYPH_SIZE = ui.get("GLYPH_SIZE", 0)  # 0=unit, 1=field magnitude
+        self.GLYPH_COLOR = ui.get("GLYPH_COLOR", 1)  # 0=single, 1=field gradient
         self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
@@ -262,6 +276,7 @@ class SimulationState:
         color = params["color_defaults"]
         self.COLOR_THEME = color["COLOR_THEME"]
         self.WAVE_MENU = color["WAVE_MENU"]
+        self.CURL_COLOR = color.get("CURL_COLOR", 0)  # VIZ.2 WM7: 0=orange mag, 1=bluered N/S
 
         # Data Analytics & video export toggles
         diag = params["analytics"]
@@ -276,6 +291,17 @@ class SimulationState:
         # M5.1 task 6 — auto-relaxation (optional; 0 = manual via RELAX button only)
         topo_seed = params.get("topology_seed") or {}
         self.AUTO_RELAX_STEPS = topo_seed.get("AUTO_RELAX_STEPS", 0)
+
+        # VIZ.4 — magnetic-dipole placeholder sample (optional; off unless the
+        # _viz_sample_dipole xparameter sets it). DIPOLE_AXIS doubles as CURL_AXIS
+        # so the bluered N/S projection is taken along the moment direction.
+        self.DIPOLE_SAMPLE = bool(topo_seed.get("DIPOLE_SAMPLE", False))
+        if self.DIPOLE_SAMPLE:
+            ax = topo_seed.get("DIPOLE_AXIS", [0.0, 0.0, 1.0])
+            self.DIPOLE_AXIS = ti.Vector([float(ax[0]), float(ax[1]), float(ax[2])], dt=ti.f32)
+            self.CURL_AXIS = ti.Vector([float(ax[0]), float(ax[1]), float(ax[2])], dt=ti.f32)
+            self.DIPOLE_CENTER = topo_seed.get("CENTER", [0.5, 0.5, 0.5])
+            self.DIPOLE_R0_VOX = float(topo_seed.get("DIPOLE_R0_VOX", 3.0))
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -458,9 +484,9 @@ def display_controls(state):
             state.GLYPH_VECTOR = 0
         if sub.checkbox("Director + Delta Vectors", state.GLYPH_VECTOR == 1):
             state.GLYPH_VECTOR = 1
-        if sub.checkbox("Electric Field", state.GLYPH_VECTOR == 2):
+        if sub.checkbox("Electric Field (divergence)", state.GLYPH_VECTOR == 2):
             state.GLYPH_VECTOR = 2
-        if sub.checkbox("Magnetic Field", state.GLYPH_VECTOR == 3):
+        if sub.checkbox("Magnetic Field (curl)", state.GLYPH_VECTOR == 3):
             state.GLYPH_VECTOR = 3
         # shaft length: unit (director, all glyphs visible) vs field magnitude (E: |∇·n̂| charge
         # density, B: ‖∇×n̂‖); color: single flat COLOR_MEDIUM (see far field) vs field gradient.
@@ -862,6 +888,18 @@ def compute_field_observables(state):
     # ∇·n̂ (splay = Coulomb-charge-like) + ‖∇×n̂‖ (twist+bend = B-like circulation).
     # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered) / 7 (‖∇×n̂‖, ironbow).
     observables.compute_director_em(state.wave_field, state.observables)
+    # VIZ.4: overwrite the curl (B) field with an analytic dipole placeholder so the
+    # N/S coloring + B glyphs render correctly before the real circulating B exists
+    # (M5.8). div (charge) is left as the real seeded splay for context. Same center-
+    # voxel convention as the biaxial_hedgehog seed so the dipole sits on the defect.
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        cx = state.DIPOLE_CENTER[0] * (wf.nx - 1)
+        cy = state.DIPOLE_CENTER[1] * (wf.ny - 1)
+        cz = state.DIPOLE_CENTER[2] * (wf.nz - 1)
+        observables.fill_dipole_sample_B(
+            wf, state.observables, state.DIPOLE_AXIS, cx, cy, cz, state.DIPOLE_R0_VOX, 1.0
+        )
     observables.compute_director_em_scale(state.wave_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
@@ -942,6 +980,22 @@ def render_elements(state):
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
+        # VIZ.4: for the dipole sample, color the bluered B by the RADIAL projection
+        # (∇×n̂)·r̂ about the defect center → true N/S poles (red N above / blue S below,
+        # matching a bar magnet). General runs use the fixed-axis projection (radial=0).
+        wf = state.wave_field
+        curl_radial = 1 if state.DIPOLE_SAMPLE else 0
+        if state.DIPOLE_SAMPLE:
+            curl_center = ti.Vector(
+                [
+                    state.DIPOLE_CENTER[0] * (wf.nx - 1),
+                    state.DIPOLE_CENTER[1] * (wf.ny - 1),
+                    state.DIPOLE_CENTER[2] * (wf.nz - 1),
+                ],
+                dt=ti.f32,
+            )
+        else:
+            curl_center = ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
         viz.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
@@ -949,7 +1003,9 @@ def render_elements(state):
             state.WAVE_MENU,
             state.WARP_MESH,
             state.CURL_COLOR,
-            state.CURL_AXIS,  # VIZ.2: B·axis projection axis for bluered N/S coloring (default ẑ)
+            state.CURL_AXIS,  # VIZ.2: fixed-axis projection for bluered N/S (default ẑ)
+            curl_radial,  # VIZ.4: 1 = radial (∇×n̂)·r̂ → true N/S poles (dipole sample)
+            curl_center,  # defect center in voxel coords (radial mode only)
         )
         flux_mesh.render_flux_mesh(render.scene, state.wave_field, state.SHOW_FLUX_MESH)
 
@@ -1015,6 +1071,28 @@ def render_elements(state):
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
+
+    # VIZ.4 — magnetic-moment vector glyph (the placeholder dipole's axis marker).
+    # Rendered independently of SHOW_GLYPHS so the moment is always visible alongside
+    # the N/S-colored field. YELLOW + thick so it reads as the principal axis.
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        viz.update_moment_glyph(
+            wf,
+            state.DIPOLE_AXIS,
+            state.DIPOLE_CENTER[0] * (wf.nx - 1),
+            state.DIPOLE_CENTER[1] * (wf.ny - 1),
+            state.DIPOLE_CENTER[2] * (wf.nz - 1),
+            0.18,  # normalized length — larger than voxel glyphs (~0.02)
+            ti.Vector(
+                [colormap.YELLOW[1][0], colormap.YELLOW[1][1], colormap.YELLOW[1][2]], dt=ti.f32
+            ),
+        )
+        render.scene.lines(
+            wf.moment_glyph_vertices,
+            per_vertex_color=wf.moment_glyph_colors,
+            width=4.0,
+        )
 
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)

@@ -318,6 +318,12 @@ class WaveField:
         self.director_glyph_arrow_vertices = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
         self.director_glyph_arrow_colors = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
 
+        # VIZ.4 — single magnetic-MOMENT vector glyph at the defect center (the
+        # placeholder dipole sample). 4 vertices: shaft (base→tip) + barb (tip→back).
+        # Static (set once by engine4_render.update_moment_glyph when DIPOLE_SAMPLE).
+        self.moment_glyph_vertices = ti.Vector.field(3, ti.f32, 4)
+        self.moment_glyph_colors = ti.Vector.field(3, ti.f32, 4)
+
     def swap_buffers(self):
         """
         Cyclic shift of the triple-buffer leapfrog state.

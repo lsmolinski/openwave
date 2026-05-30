@@ -489,12 +489,26 @@ twisting/spinning defect — i.e. the Zitterbewegung clock (M5.8) or a seeded cu
 
 | Stage | What | When |
 | --- | --- | --- |
-| **Sample (test the render)** | seed a **hard-coded analytic dipole B** (`B(x)` = ideal dipole field about a chosen axis) into `director_curl_field`, wire the signed `B·axis` bluered N/S coloring + the moment vector glyph, and **verify the rendering looks right** — N=red/S=blue, field lines closing pole-to-pole | **pre-M5.8** (§5 placeholder strategy) |
-| **Real** | point the same render at the *actual* circulating B from a twisting biaxial defect under Evolve-PDE | **M5.8** (the clock generates the real moment) |
+| **Sample (test the render)** ✅ **DONE (VIZ.4, 2026-05-30)** | `_viz_sample_dipole` xparameter writes a hard-coded analytic dipole `B(r)=amp·[3(m̂·r̂)r̂−m̂]/max(r,r0)³` about `DIPOLE_AXIS` (=`ẑ`) into `director_curl_field` each frame (`fill_dipole_sample_B`, gated on `DIPOLE_SAMPLE`); wires the **radial** bluered N/S coloring (WM7 + `CURL_COLOR=1`) + B glyphs (state 3) + a **YELLOW moment vector glyph** (`update_moment_glyph` → `moment_glyph_*` buffers). | **pre-M5.8** (§5 placeholder strategy) |
+| **Real** | point the same render at the *actual* circulating B from a twisting biaxial defect under Evolve-PDE (+ auto-axis from the net circulation); **delete ALL the placeholder scaffolding** incl the YELLOW hard-coded moment (roadmap 5f stage-2) | **M5.8** (the clock generates the real moment) |
 
-This is the M5.6.5f carry-over: **the render path is buildable + testable now** with a placeholder;
-the *physics source* waits for M5.8. The sample lets Rodrigo see/approve the dipole viz before the
-real field exists.
+This is the M5.6.5f carry-over: **the render path is built + smoke-tested** (Sample ✅); the *physics
+source* swaps in at M5.8 with no render change.
+
+**Axial vs radial — which scalar gives N/S poles (Rodrigo 2026-05-30):** the bluered color projects
+`∇×n̂` (=B) onto a chosen direction. The choice matters:
+
+| Projection | Formula | Dipole pattern | Bar-magnet N/S? |
+| --- | --- | --- | --- |
+| **Axial** (VIZ.2 original) | `B·ẑ` (fixed axis) | `B∥m̂` along the *whole* axis ⇒ RED at **both** ±ẑ ends + BLUE equatorial belt; axial:equatorial = 2:1 | ❌ reads as "2 red lobes" |
+| **Radial** (VIZ.4, dipole) | `B·r̂` from center, `∝ cosθ` | RED N-hemisphere (B flows OUT), BLUE S-hemisphere (B flows IN), white equator | ✅ N-red above / S-blue below (Duda's slide) |
+
+The dipole sample uses the **radial** projection (`_curl_signed_proj` + `curl_radial`/`curl_center`)
+so it matches the bar magnet. General WM7 runs keep the axial projection (no defined center yet —
+M5.8 wires radial to the real defect center). Both are real physics; radial is the one that shows
+*poles*. Math confirmed (numpy + headless): radial top `+0.0093` RED/N, bottom `−0.0093` BLUE/S,
+equator `0`. The biaxial hedgehog is still seeded underneath, so the `∇·n̂` charge (WM6 / E glyphs)
+shows real structure for context — only the curl/B channel is the placeholder.
 
 ### 4.6 Granule positions — open question, candidate uses
 
@@ -548,7 +562,7 @@ deviation scalars every frame.
 | 1b | **Gauge-stable SIGNED charge** (§4.4) — winding-density (Brouwer) so WM6's ± can't flip | ⏳ **M5.8** | medium | deferred — see "When we address it" below; WM6 stays honest-but-flipping until then |
 | 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | **✅ DONE (2026-05-30)** |
 | 3 | **VIZ.3 — 4-state glyph select: Director / Director+Delta / E / B** (§4.2) — *Director states = ellipsoid orientation (agnostic to size/color); E/B polar + barbed; 4 mutually-exclusive checkboxes, "delta" spelled out for GGUI* | ✅ yes | **low–med** | **✅ DONE (2026-05-30)** — `director_mid` + `eigvec_for`; `_write_glyph` ti.func w/ `mode` + `show_delta`; refined per Rodrigo (added bare Director-only state so δ never shows alone; slider → 4 checkboxes) |
-| 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | pending |
+| 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | **✅ DONE (2026-05-30)** — `_viz_sample_dipole` xparam + `fill_dipole_sample_B` + `update_moment_glyph` + `moment_glyph_*` buffers; loader reads `GLYPH_VECTOR`/`SIZE`/`COLOR`/`CURL_COLOR`+dipole keys. Math + headless verified; **on-screen confirmed** — radial `B·r̂` gives N-red-above / S-blue-below + YELLOW moment glyph (the original axial projection's "2 red lobes" was fixed via `_curl_signed_proj`/`curl_radial`) |
 | 5 | **Joint `(A·ω)²` thermal** (Part 3) — product-of-squares color mode | ⏸ 9b | low | pending |
 | 6 | **Granule thermal heat-map** (§4.6) | ⏸ 9b | low | pending |
 | 7 | **Magnetic-dipole viz REAL** (§4.5 stage 2) — point at the clock's actual circulating B + auto-axis | ⏳ M5.8 | low (render exists from #4) | pending |
@@ -594,11 +608,11 @@ This mirrors how `_topo_*` xparameters already isolate seed configs for visual g
 
 ### 5.4 Recommended next action
 
-Build the **pre-M5.8 batch (#1–#4)** in that order — each is small, independent, and improves the
-EM/thermal "seeing" that the 9b research will lean on. **#1 (centered + barbless director glyph) is
-✅ done + tested (2026-05-30); **#2 (curl-vector warp + bluered N/S toggle) ✅ done + tested
-(2026-05-30)**; **#3 (4-state glyph select: Director / Director+Delta / E / B — E/B centered+barbed,
-director states centered+barbless) ✅ done + tested (2026-05-30)**. Next: **#4 (dipole sample)** with
-the §5.3 placeholder. Defer #5–#9 per the
-table (the signed-charge gauge, item 1b, lands at M5.8 via winding density). Update Part 3's
-deferred-table homes as each lands.
+The **pre-M5.8 batch (#1–#4) is COMPLETE** (2026-05-30) — each small, independent, improving the
+EM/thermal "seeing" the 9b research will lean on. **#1 (centered + barbless director glyph) ✅ done +
+tested; #2 (curl-vector warp + bluered N/S toggle) ✅ done + tested; #3 (4-state glyph select:
+Director / Director+Delta / E / B — E/B centered+barbed, director states centered+barbless) ✅ done +
+tested; #4 (magnetic-dipole sample — analytic B + N/S + moment glyph) ✅ done + on-screen confirmed
+(radial `B·r̂` → N-red-above / S-blue-below + YELLOW moment glyph).** Sprint fully closed. Defer #5–#9 per the table (the signed-charge gauge, item 1b, lands at M5.8 via winding density). Update
+Part 3's deferred-table homes as each lands. **Next:** resume the curriculum (Lesson 2) with the viz
+wired, then the M5.8 4D build.
