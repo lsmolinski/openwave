@@ -17,8 +17,8 @@
 | flux_mesh | `update_flux_mesh_values`, `render_flux_mesh`, `fluxmesh_*_vertices/colors` | 3 plane meshes (XY/XZ/YZ); each voxel → 1 scalar → color + perpendicular warp |
 | scalar warp_mesh | WAVE_MENU 2–5 | raises mesh perpendicular coord by a scalar (amp/freq/energy) |
 | vector_warp | WAVE_MENU 1 | deforms vertex in all 3 axes by the ψ components (mesh ripples by the vector field) |
-| granule render | `sample_position_to_render`, `position_render` | granule sphere sits at voxel + `amp_boost · ψ` (`amp_boost = WARP_MESH`) |
 | vector glyphs | `update_director_glyphs`, `director_glyph_*` | line voxel → voxel + L·n̂, colored by `(1 − n̂_z)`, optional half-arrowhead |
+| granule render | `sample_position_to_render`, `position_render` | granule sphere sits at voxel + `amp_boost · ψ` (`amp_boost = WARP_MESH`) |
 
 ### Color-coding modes (WAVE_MENU)
 
@@ -204,8 +204,8 @@ The rest are **deferred past the M5.6 PR** (Rodrigo 2026-05-27):
 | --- | --- |
 | Observable | `compute_director_em` (`engine3_observables.py`): `∇·n̂` → `director_div_field` (signed), `‖∇×n̂‖` → `director_curl_mag_field`. Central-diff stencil, 1-cell halo. |
 | Color scale | `compute_director_em_scale`: single-plane `atomic_max` over the 3 render planes → `director_div_absmax`, `director_curl_max` (no full-grid reduction, per `feedback_taichi_metal_atomics`). |
-| WAVE_MENU 6 | **EM div (charge/E)** — `∇·n̂` on greenyellow diverging, symmetric scale `[−div_absmax, +div_absmax]` (signed: ± charge). |
-| WAVE_MENU 7 | **EM curl (circ/B)** — `‖∇×n̂‖` on orange, scaled against the **shared** distortion magnitude `max(div_absmax, curl_max)` — NOT its own max. |
+| WAVE_MENU_6 | **EM div (charge/E)** — `∇·n̂` on greenyellow diverging, symmetric scale `[−div_absmax, +div_absmax]` (signed: ± charge). |
+| WAVE_MENU_7 | **EM curl (circ/B)** — `‖∇×n̂‖` on orange, scaled against the **shared** distortion magnitude `max(div_absmax, curl_max)` — NOT its own max. |
 | Validation | hedgehog `n̂=r̂`: `∇·n̂ = 2/r` (charge), matched to 0.02%; `‖∇×n̂‖ ≈ 0` (radial is curl-free). Headless: render branches compile, finite. |
 
 **The shared-scale design (why curl isn't self-normalized).** A static hedgehog is a *pure charge* — its director is curl-free, so `‖∇×n̂‖` is zero up to ~5e-4 grid-discretization noise. If curl is colored against *its own* max, that noise stretches to full brightness → spurious "rings" around the core (the near-degenerate eigenvector zone amplifies it). Scaling curl against `max(div, curl)` instead makes the B view **honest**: for a static charge `curl/div ≈ 1.6%` → near-black (correctly "no B"); real circulation (a twisting director under Evolve-PDE, or a moving/biaxial-dynamic charge) grows curl to ~div and lights it up. This is the right physics reading — **a static charge has E but no B; B appears with motion/twist**.
@@ -286,38 +286,81 @@ EM observables (`∇·n̂`, `∇×n̂`) — Rodrigo's read is correct.
 > director (constant at ground state, `≈δ/2`), `ω` its rate — the two are the AM/FM channels. WM2 +
 > WM3 already show them; the joint `(A·ω)²` view is the single-scalar heat-energy display (→ 9b).
 
-### 4.2 Glyph (vector-field) displays — split the one EM toggle into three
+#### 4.1.1 How to *see* the Zitterbewegung clock — the spinning director, its ω, its radius
+
+This is the central thermal observable (and the M5.8 headline), so it gets an explicit
+"how-do-I-see-it" recipe. The clock = the director frame **twisting about the director axis `a`**
+(the twist generator `Gx` rotates the `b`–`c` plane, `0c §L7` + `5a §7a`); its `ω` is the spin
+rate, its **radius** is the rotational amplitude `≈δ/2` (the thermal `A`).
+
+> ⚠️ **Correction (Rodrigo 2026-05-30) — the director glyph does NOT show the clock spin.** Two
+> independent reasons: **(1)** the clock twists the secondary axes *around* `a`, so the director
+> `a` itself **stays put** (it's the axle, not the clock-hand — invariant under the twist).
+> **(2)** Even if it rolled about its own axis, a single line segment looks *identical at every
+> roll angle* — a line has no feature to track roll, and the **barb shows head-vs-tail (direction
+> along the shaft), never roll-about-the-shaft**. So removing/keeping the arrowhead is irrelevant
+> to the spin. What you see sloshing on the director glyph under Evolve-PDE is the director
+> **tilting** (`a` changing *direction* — the EM/tilt sector), **not** the clock-twist. To *see*
+> the spin you must render the **secondary (δ) axis** sweeping around `a`.
+
+Ways to watch the clock, corrected:
+
+| Want to see | Channel | What you watch | Status |
+| --- | --- | --- | --- |
+| **the spin** (the twist about `a`) | **secondary-axis glyph** — a 2nd glyph for the **middle (δ) eigenvector** | the `b`/δ axis literally *sweeps around* the director `a` at ω — **this is the visible clock-hand**. Non-degenerate only on the biaxial `diag(1,δ,0)` (uniaxial `b`/`c` are arbitrary). | 🚧 **needs building** (fold into VIZ.3) |
+| spin (alt, cheap) | **perpendicular tick** on the director glyph | add one short barb *perpendicular* to the shaft, oriented by the δ-axis — a mark whose angle tracks the roll. Cheapest "see the roll" hack. | 🚧 needs building |
+| **the rate `ω`** (how fast it ticks) | flux_mesh **WM3 "Thermal Clock"** (blueprint) | color = `‖Ṁ‖_F` EMA = angular speed; brighter = faster. *Measures* the rate (doesn't show rotation). | ✅ live (WM3) |
+| **the radius `A`** (rotational amplitude) | flux_mesh **WM2 "Thermal Amp"** (ironbow) | color = `‖M−D‖_F` EMA = how far the frame swings from vacuum = the `≈δ/2` radius; grows with heat. | ✅ live (WM2) |
+| **the joint energy** `(A·ω)²` | flux_mesh color (new mode) | single scalar = heat-energy content (`E_kin=½m(Aω)²`) | 🚧 9b |
+| **the orbit traced** (optional) | granule **Zitterbewegung tracer** (§4.6) | a granule traces the **δ-axis tip's** orbit around `a` over time — makes the spin *visible as a path* | 🚧 9b candidate |
+
+**Key reading:** the **secondary-δ-axis glyph** is the only channel that *visually shows the spin*
+(the clock-hand sweeping around the director-axle); the director glyph shows tilt, not twist. Under
+**Evolve PDE**, WM2 (radius) and WM3 (rate) are the AM and FM channels — together they *are* the
+joint `(A, ω)` thermal state (heating pumps WM2/AM and/or shifts WM3/FM; M5.7.3 saw both respond).
+WM2/WM3 already exist; the secondary-axis glyph that actually *shows* the rotation is the new build
+(VIZ.3 below).
+
+> ⚠️ **3D caveat (`0c §L7`):** the *free* clock disperses in 3D (M5.7.2) — what you see spinning
+> then radiating away is the free mode losing coherence. The self-sustaining clock is the **4D**
+> Zitterbewegung (M5.8); a **driven** one (9b) holds a steady `(A, ω)`. So pre-M5.8 these channels
+> show the *transient* spin + dispersal, which is itself the informative picture.
+
+### 4.2 Glyph (vector-field) displays — split the one EM toggle into four
 
 Today: one `GLYPH_VECTOR` toggle (off=E/director, on=B/curl) + Glyph-Size + Glyph-Color decoupling
-checkboxes (Part 3 as-built). **Target:** make the three vector fields independently selectable —
-they answer different questions and a researcher wants to compare them.
+checkboxes (Part 3 as-built). **Target:** make the vector fields independently selectable — they
+answer different questions and a researcher wants to compare them. The **δ-clock-hand** is the new
+4th channel (the only glyph that shows the spin — `§4.1.1` correction).
 
 **Size + Color stay two-option toggles** (the existing `Glyph Size (unit/magnitude)` +
 `Glyph Color (single/gradient)` decoupling checkboxes — Part 3 as-built — apply per glyph):
 
 | Glyph | Direction (barb) | Size (shaft): unit \| magnitude | Color: single \| gradient | Convention note |
 | --- | --- | --- | --- | --- |
-| **Director `n̂`** | none (apolar — no barb) | unit always (`n̂` is a unit field; "magnitude" = 1) | single `COLOR_MEDIUM` | the bare grain; no head/tail |
+| **Director `n̂`** (axis `a`) | none (apolar — no barb) | unit always (`n̂` is a unit field; "magnitude" = 1) | single `COLOR_MEDIUM` | the bare grain (axle); shows **tilt**, NOT the spin |
 | **Electric field lines** | `+ → −` (toward negative charge) | **unit** (every line visible) \| **magnitude** `∝ \|∇·n̂\|` (charge density — the current behavior) | single `COLOR_MEDIUM` \| green↔yellow charge gradient | E-line convention points into − charge ✓ (Rodrigo) |
 | **Magnetic field lines** | `N → S` (along `∇×n̂`) | **unit** (every line visible) \| **magnitude** `∝ ‖∇×n̂‖` (field strength — current behavior) | single `COLOR_MEDIUM` \| blue↔red strength gradient | B-line handedness N→S ✓ |
+| **δ clock-hand** (axis `b`) | none (apolar) | unit | single `COLOR_MEDIUM` (or color by phase angle) | the **middle (δ) eigenvector** — sweeps around `a` at ω = **the visible Zitterbewegung spin** (`§4.1.1`); meaningful only on biaxial |
 
 So **size has exactly two choices per glyph** — `unit` (= 1, every glyph the same length, the
 field-line-structure-everywhere view) or `magnitude` (shaft `∝` the field value: charge density
 `\|∇·n̂\|` for E, field strength `‖∇×n̂‖` for B — *this is what we have now*). Same two-way split for
-color (single flat `COLOR_MEDIUM` vs the value gradient). No inverse/`1/density` mode — that was a
-mis-transcription; the two endpoints are unit and magnitude.
+color (single flat `COLOR_MEDIUM` vs the value gradient).
 
 Notes / decisions to settle when we implement:
 
 - **Director vs E-field:** the director *is* the E-field-line direction (E ∝ `n̂`), so "Director"
   and "Electric field lines" are the *same vector* shown two ways — Director = bare (single color,
   no barb), Electric = +→− oriented + charge-colored. Cheap: both read `director_nhat`.
-- **Size = unit or magnitude (two options, no inverse).** `unit` shows every field line at the same
+- **Size = unit or magnitude (two options).** `unit` shows every field line at the same
   length (the structure-everywhere / far-field view); `magnitude` makes the shaft `∝` the field value
   (charge density for E, field strength for B) — *this is the current behavior*. These are exactly
   the two states of the existing `Glyph Size (unit/magnitude)` toggle; just expose it per glyph.
-- **The current single `off=E/on=B` toggle becomes a 3-state select** (Director / E / B), keeping
-  the Size + Color decoupling toggles that already exist.
+- **The current single `off=E/on=B` toggle becomes a 4-state select** (Director / E / B /
+  δ-clock-hand), keeping the Size + Color decoupling toggles that already exist. The **δ-clock-hand**
+  (middle eigenvector) is the only one that shows the Zitterbewegung *spin* (`§4.1.1`); the Director
+  shows tilt, not twist.
 
 ### 4.3 flux_mesh (scalar/warp) displays — keep, with one upgrade
 
@@ -326,14 +369,30 @@ The WAVE_MENU flux-meshes are good as-is. One change Rodrigo flagged:
 | WAVE_MENU | Keep / change | Detail |
 | --- | --- | --- |
 | 6 **EM div** (`∇·n̂`) | **keep** | signed charge scalar on greenyellow diverging — correct as a scalar field |
-| 7 **EM curl** | **upgrade** | currently warps the mesh vertex by `‖∇×n̂‖` (a *scalar* → perpendicular-only lift). **Change:** warp the vertex by the **raw `∇×n̂` vector** (`director_curl_field`, already stored) → the mesh deforms as a *twist in fabric*, showing the B-field rotation + handedness, not just its magnitude. Keep the orange/strength color coding. This is the "vector_warp" idea from Part 2, now sourced from the curl vector. |
-| 2/3 **Thermal A/ω** | keep | the wired thermal channels |
+| 7 **EM curl** | **upgrade (warp + color toggle)** | currently warps the mesh vertex by `‖∇×n̂‖` (a *scalar* → perpendicular-only lift) on orange. **Change (warp):** warp the vertex by the **raw `∇×n̂` vector** (`director_curl_field`, already stored) → the mesh deforms as a *twist in fabric*, showing the B-field rotation + handedness, not just its magnitude (the "vector_warp" idea from Part 2, now sourced from the curl vector). **Change (color, optional):** add a color toggle — `orange ‖∇×n̂‖` (magnitude, default/honest) **or** `bluered (∇×n̂)·axis` (**signed** axial projection = N/S poles, §4.5). |
+| 2/3 **Thermal A/ω** | keep | the wired thermal channels (the Zitterbewegung clock — §4.1.1) |
 | 4/5 **Energy H/F** | keep | |
 
 > **Why the curl-vector warp is cheap:** `director_curl_field` (the raw `∇×n̂` vector) is *already
 > computed and stored* (`engine3_observables.py:417`) — WM7 just throws away the direction and uses
 > `.norm()`. The upgrade is a new render branch that displaces the vertex by all 3 curl components
 > (like WAVE_MENU 1's old vector_warp did for ψ), no new physics kernel.
+
+**Blue-red signed-color — warp and color are separable** (Rodrigo 2026-05-30):
+
+> The *warp*
+> (twist-in-fabric) shows B rotation/handedness from the **vector** `∇×n̂` and works regardless of
+> magnitude. The *color* is an independent scalar channel: the current `‖∇×n̂‖` is a **magnitude
+> (≥0) → cannot show N/S poles**; to color by pole you need a **signed** scalar — the axial
+> projection `B·axis = (∇×n̂)·axis` (red = +axis/N, blue = −axis/S), where `|value|` is the field
+> strength *along that axis* and the sign is the pole. **This signed-bluered color is exactly the
+> §4.5 magnetic-dipole coloring (the 5f carry-over)** — same field, same requirements: (1) a chosen
+> projection axis (the dipole/spin axis), (2) a *real circulating B* to be non-trivial. For a static
+> hedgehog `∇×n̂≈0`, so bluered colors near-zero noise — which is why orange-magnitude is the
+> *default*. **Plan:** ship VIZ.2's vector-warp with **both** color options as a toggle (orange
+> magnitude = honest static default; bluered signed `B·axis` = the dipole N/S view, lights up with a
+> real/placeholder circulating B, axis-selectable). This folds the §4.5 N/S coloring into the WM7
+> upgrade — one mesh, two color modes, validated together against the §5.3 placeholder dipole.
 
 ### 4.4 The gauge-stable charge fix (M5.6.5b carry-over) — the sign that won't flip
 
@@ -346,7 +405,13 @@ director's sign (`n̂≡−n̂`) drifts between neighbouring voxels during the s
 1. `|∇·n̂|` unsigned — trivial (abs + non-diverging colormap); loses ± distinction (fine for a
    single defect).
 1. defect-relative sign-fix — gauge-fix `n̂` to point outward from the defect center
-   (`n̂·r̂_defect > 0`) before taking `∇·`; preserves ± for known defect positions.
+   (`n̂·r̂_defect > 0`) before taking `∇·`; preserves ± for known defect positions. **The pin
+   machinery already exists** — `relax_director_step` (`engine2_pde.py:748`) takes `pin_centers` +
+   `pin_signs` and enforces a defect-relative director sign, but it's wired as a *seeding/relaxation*
+   step (the M5.1 Frank-energy descent), NOT run per-step under Evolve-PDE. So option 2 reuses that
+   logic: a lightweight per-step (or every-N-step) spatial re-pin of `director_nhat` sign by
+   `n̂·r̂_defect`. Caveat: needs the live defect center(s) (fine for a seeded single/known defect;
+   harder once defects move).
 1. **topological winding density** (Brouwer degree) — the gauge-invariant, conserved charge that
    *never* flips. Most robust, most work: only the CPU total-`Q` sphere diagnostic
    (`compute_winding_number`) exists today; a per-voxel winding-density field would be new.
@@ -354,6 +419,32 @@ director's sign (`n̂≡−n̂`) drifts between neighbouring voxels during the s
 **Plan:** ship option 1 now (one-line, immediate relief), keep the signed view available, and note
 option 3 as the eventual gauge-invariant answer. This is the M5.6.5b carry-over — **implementable
 pre-M5.8** (pure observable work on the existing single defect).
+
+**⚠️ Scope expansion (Rodrigo 2026-05-30) — the same apolar gauge ALSO corrupts the director
+GLYPH, not just the charge field.** Observation: under Evolve-PDE the director glyphs *slosh
+direction* (sudden 180° flips), which had been read as motion but is the **same `n̂≡−n̂` sign-flip
+artifact** as the charge view. Root cause in the render: the director glyph is drawn **asymmetric**
+— `pos → pos + L·n̂` (`engine4_render.py` ~`:632`) — so `n̂→−n̂` flips the segment to point the
+opposite way (a visible 180° slosh). **Cheap complete fix: render the director glyph CENTERED**
+(`pos − L/2·n̂ → pos + L/2·n̂`); then `n̂→−n̂` merely swaps the two endpoints → the segment is
+**visually identical** → the apolar flip is invisible. The director has no barb (apolar), so a
+centered director glyph is *exactly* gauge-invariant. After centering, the only motion left on the
+director glyph is the **real** tilt (EM dynamics) + the free-defect orientation **dispersal**
+(M5.7.2) — both genuine physics that a gauge-fix does *not* (and should not) remove.
+
+| What you see on the director glyph | What it is | Removed by centering? |
+| --- | --- | --- |
+| sudden **180° flips** | apolar sign artifact (gauge) | ✅ yes |
+| smooth **direction drift** | real **tilt** (EM/`a`-axis motion) | no — genuine |
+| gradual **scrambling** over many steps | free-defect orientation **dispersal** (M5.7.2) | no — genuine |
+
+So **two render targets, one apolar root**: (a) charge field → `|∇·n̂|` unsigned (or defect-relative
+gauge-fix / winding); (b) director glyph → **centered render**. A single deeper fix — spatially
+gauge-fixing `n̂` (`n̂·r̂_defect > 0`) *before* both the `∇·` and the glyph read it — would stabilize
+both at once but needs the defect center; the centered-glyph + `|∇·n̂|` pair is the cheaper
+independent route. **And note (from `§4.1.1`):** the director glyph showing only tilt (never the
+clock spin) is *why* the **δ-clock-hand glyph (VIZ.3)** is needed to see the rotation — centering
+the director glyph cleans up *its* view but does not add the spin; that's a separate channel.
 
 ### 4.5 Magnetic moment + the dipole N/S coloring (M5.6.5f) — sample-first
 
