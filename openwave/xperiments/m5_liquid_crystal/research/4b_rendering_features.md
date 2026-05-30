@@ -191,7 +191,7 @@ The director `n̂` is the LC analog of the field; its **distortion modes** map o
 
 The rest are **deferred past the M5.6 PR** (Rodrigo 2026-05-27):
 
-1. **gauge-stable charge** — `|∇·n̂|` (unsigned) or topological-winding density, so the charge view doesn't flip sign under Evolve-PDE (kills the apolar-director sign artifact, see caveat below). → lands with **M5.7** (first sustained dynamic runs).
+1. **gauge-stable charge** — UPDATE 2026-05-30 (VIZ.1): the **director-glyph** half is ✅ DONE (centered + barbless = gauge-stable). The **signed-charge WM6** half is **left honest-but-flipping** and deferred to **M5.8** via topological-winding density (`|∇·n̂|`-unsigned was tried + dropped as redundant). The charge-region *expansion* is real free-defect dispersal, not the artifact. See §4.4 + §5.2 #1b.
 1. **`(A·ω)²` joint-thermal energy** — product-of-squares color mode from the two existing trackers; `(A·ω)²` (not `A·ω`) is the energy-dimensional quantity. → **9b**.
 1. **granule heat-map** — color each granule by local thermal `A`. → **9b**.
 1. **modulation-response** — apply an EM-wave lever, view `Δ(A·ω)²` (the SABER-method "modulation" picture, physics framing only). → **9b/M5.7** (dynamic; needs an EM-wave seeder).
@@ -240,7 +240,7 @@ The `unit`+`single` combination is the **far-field inspection** view (uniform, f
 
 | Feature | What | Home | Why deferred |
 | --- | --- | --- | --- |
-| **gauge-stable charge** | `\|∇·n̂\|` unsigned or topological-winding density, so the charge view doesn't sign-flip under Evolve-PDE (apolar caveat above) | **pre-M5.8 (Part 5 #1)** | re-planned 2026-05-30: `\|∇·n̂\|` is a one-line fix, no need to wait — see §4.4 |
+| **gauge-stable charge** | director glyph (centered+barbless) ✅ DONE (VIZ.1); signed-charge WM6 deferred to M5.8 via winding-density | **glyph: ✅ done; signed charge: M5.8** | re-planned 2026-05-30: glyph centering shipped; WM6 left honest-but-flipping (expansion is real physics) — see §4.4 + §5.2 #1b |
 | **`(A·ω)²` joint-thermal** | energy-dimensional color mode. `(A·ω)²` not `A·ω` — `E_kin=½m(Aω)²`, so `A·ω` alone is peak *velocity*; the energy quantity is `(A·ω)²` | 9b | Thermal program; the (A,ω) hypothesis test |
 | **granule heat-map** | color each granule by local thermal `A` (sparse heat map) | 9b | Thermal program |
 | **modulation-response** | apply an EM-wave lever → view `Δ(A·ω)²` (SABER-method "modulation", physics framing only) | 9b/M5.7 | Dynamic; needs an EM-wave seeder |
@@ -362,6 +362,20 @@ Notes / decisions to settle when we implement:
   (middle eigenvector) is the only one that shows the Zitterbewegung *spin* (`§4.1.1`); the Director
   shows tilt, not twist.
 
+**Centering convention (decided 2026-05-30) — ALL glyphs centered on the voxel; the barb is the
+only polar/apolar distinction.** A glyph is a short *tangent-segment of the field line through the
+voxel*, so centered (`base = pos − ½·shaft·v̂ → tip = pos + ½·shaft·v̂`) is the faithful
+"field-line" representation for *all* of them. The barb is what differs:
+
+| Glyph | Centered? | Barb? | Why |
+| --- | --- | --- | --- |
+| **Director `n̂`**, **δ-clock-hand** | ✅ yes | ❌ no | apolar axes (`v̂ ≡ −v̂`) — pass *through* the point, no head/tail (centering is also a free gauge-fix, VIZ.1) |
+| **E** (`+→−`), **B** (`N→S`) | ✅ yes | ✅ yes | polar field lines — pass *through* the voxel (so centered), but have a real direction (so barbed) |
+
+Director centering is already **shipped** (VIZ.1); **E/B centering lands in VIZ.3** when their
+glyphs are rebuilt (the current shipped B-glyph is base-at-voxel — switch to centered for field-line
+faithfulness + visual consistency).
+
 ### 4.3 flux_mesh (scalar/warp) displays — keep, with one upgrade
 
 The WAVE_MENU flux-meshes are good as-is. One change Rodrigo flagged:
@@ -416,21 +430,40 @@ director's sign (`n̂≡−n̂`) drifts between neighbouring voxels during the s
    *never* flips. Most robust, most work: only the CPU total-`Q` sphere diagnostic
    (`compute_winding_number`) exists today; a per-voxel winding-density field would be new.
 
-**Plan:** ship option 1 now (one-line, immediate relief), keep the signed view available, and note
-option 3 as the eventual gauge-invariant answer. This is the M5.6.5b carry-over — **implementable
-pre-M5.8** (pure observable work on the existing single defect).
+**✅ As-built decision (VIZ.1, 2026-05-30) — what we actually shipped + why:**
 
-**⚠️ Scope expansion (Rodrigo 2026-05-30) — the same apolar gauge ALSO corrupts the director
-GLYPH, not just the charge field.** Observation: under Evolve-PDE the director glyphs *slosh
-direction* (sudden 180° flips), which had been read as motion but is the **same `n̂≡−n̂` sign-flip
-artifact** as the charge view. Root cause in the render: the director glyph is drawn **asymmetric**
-— `pos → pos + L·n̂` (`engine4_render.py` ~`:632`) — so `n̂→−n̂` flips the segment to point the
-opposite way (a visible 180° slosh). **Cheap complete fix: render the director glyph CENTERED**
-(`pos − L/2·n̂ → pos + L/2·n̂`); then `n̂→−n̂` merely swaps the two endpoints → the segment is
-**visually identical** → the apolar flip is invisible. The director has no barb (apolar), so a
-centered director glyph is *exactly* gauge-invariant. After centering, the only motion left on the
-director glyph is the **real** tilt (EM dynamics) + the free-defect orientation **dispersal**
-(M5.7.2) — both genuine physics that a gauge-fix does *not* (and should not) remove.
+- **Director glyph → CENTERED + BARBLESS, unconditionally** (not a toggle). A director is an
+  *apolar nematic axis* (`n̂≡−n̂`, no head/tail) — an axis *through* a point, not an arrow *from* it
+  — so the **physically-correct convention** is a segment centered on the voxel with no barb. The
+  old base-at-voxel + barb was a Vector(3)-`ψ` displacement holdover. Centering is a free
+  gauge-fix as a bonus (`n̂→−n̂` swaps endpoints = identical). Removed the `GLYPH_CENTERED` toggle,
+  the `arrow_length`/`centered` params, and the barb math. Barbs are kept only for the **polar**
+  E/B field-line glyphs (VIZ.3), which genuinely have a direction.
+- **`|∇·n̂|` unsigned charge mode → NOT shipped (dropped the planned WM8).** Redundant with the
+  signed WM6 (same field, just sign-stripped) → UI clutter (Rodrigo). Option 1 above is therefore
+  *available in principle* but deliberately not exposed.
+- **Signed charge WM6 → left honest-but-flipping (option b).** The cosmetic local sign-flip stays;
+  the gauge-invariant fix (option 3, **topological winding density** — the conserved charge that
+  *cannot* flip) is **deferred to M5.8** (sustained dynamic runs, where reliable ± charge between
+  defects becomes load-bearing). Per-frame re-pin (option 2) is the cheaper interim if ever needed
+  before then, but band-aiding the eigenvector sign is not the real answer — winding density is.
+
+**Crucial distinction (confirmed on-screen by the H-contained / F-expanding GIFs, 2026-05-30):** the
+charge-region **expansion** + director **tilt** seen under Evolve-PDE is **real physics, NOT a bug**
+— it is the free-defect orientation **dispersal** (M5.7.2 / M5.6.5c: `V` confines amplitude
+`Tr(M²)` so the Hamiltonian H stays gathered, but `V` is rotation-invariant so it does *not* confine
+director orientation → the Frank elastic F spreads). Only the **local sign-flip** is a gauge
+artifact. A gauge-fix should remove the flip and leave the expansion — the expansion is the result.
+
+**⚠️ Scope expansion → ✅ FIXED (Rodrigo 2026-05-30) — the same apolar gauge also corrupted the
+director GLYPH.** Under Evolve-PDE the director glyphs *sloshed direction* (sudden 180° flips), the
+**same `n̂≡−n̂` sign-flip artifact** as the charge view. Root cause: the glyph was drawn
+**asymmetric** (`pos → pos + L·n̂`), so `n̂→−n̂` flipped the segment 180°. **Fixed by rendering the
+director glyph CENTERED** (`pos − ½·shaft·n̂ → pos + ½·shaft·n̂`): `n̂→−n̂` now merely swaps the two
+endpoints → the segment is **visually identical** → the flip is invisible. Centered + barbless is
+the correct apolar convention (above), so this is unconditional, not a toggle. After centering, the
+only motion left on the director glyph is the **real** tilt (EM) + free-defect orientation
+**dispersal** (M5.7.2) — both genuine physics a gauge-fix must NOT remove.
 
 | What you see on the director glyph | What it is | Removed by centering? |
 | --- | --- | --- |
@@ -510,22 +543,32 @@ deviation scalars every frame.
 
 ### 5.2 Implementation timeline — order by complexity, gated on M5.8 or not
 
-| # | Feature | Pre-M5.8? | Complexity | Depends on |
+| # | Feature | Pre-M5.8? | Complexity | Status |
 | --- | --- | --- | --- | --- |
-| 1 | **Gauge-stable charge** (§4.4) — `\|∇·n̂\|` unsigned now; winding-density later | ✅ yes | **low** | nothing (single defect, existing field) |
-| 2 | **Curl-vector mesh-warp** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | `director_curl_field` (already stored) |
-| 3 | **3-way glyph select** (§4.2) — Director / E / B as independent vector displays | ✅ yes | **low–med** | existing glyph kernels + toggles |
-| 4 | **Magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | §5.3 placeholder seeder |
-| 5 | **Joint `(A·ω)²` thermal** (Part 3) — product-of-squares color mode | ⏸ 9b | low | both trackers (exist) |
-| 6 | **Granule thermal heat-map** (§4.6) | ⏸ 9b | low | `amp_local_emarms_am` |
-| 7 | **Magnetic-dipole viz REAL** (§4.5 stage 2) — point at the clock's actual circulating B | ⏳ M5.8 | low (render exists from #4) | M5.8 twisting defect |
-| 8 | **Two-defect interaction** (M5.6.5e) | ⏳ M5.8 | high | multi-center biaxial seeder + `Q₈` charge decision |
-| 9 | **Biaxial-ellipsoid granule** (Part 2 opt c) | ⏳ M5.6+ | medium | GGUI ellipsoid mesh |
+| 1 | **VIZ.1 — centered + barbless director glyph** (§4.4) — apolar-correct convention; kills the 180° slosh | ✅ yes | **low** | **✅ DONE + TESTED (2026-05-30)** |
+| 1b | **Gauge-stable SIGNED charge** (§4.4) — winding-density (Brouwer) so WM6's ± can't flip | ⏳ **M5.8** | medium | deferred — see "When we address it" below; WM6 stays honest-but-flipping until then |
+| 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | 🚧 next |
+| 3 | **VIZ.3 — glyph select: Director / E / B / δ-clock-hand** (§4.2) — *E/B centered + barbed (polar); director centered + barbless (apolar)* | ✅ yes | **low–med** | pending |
+| 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | pending |
+| 5 | **Joint `(A·ω)²` thermal** (Part 3) — product-of-squares color mode | ⏸ 9b | low | pending |
+| 6 | **Granule thermal heat-map** (§4.6) | ⏸ 9b | low | pending |
+| 7 | **Magnetic-dipole viz REAL** (§4.5 stage 2) — point at the clock's actual circulating B + auto-axis | ⏳ M5.8 | low (render exists from #4) | pending |
+| 8 | **Two-defect interaction** (M5.6.5e) | ⏳ M5.8 | high | pending |
+| 9 | **Biaxial-ellipsoid granule** (Part 2 opt c) | ⏳ M5.6+ | medium | pending |
 
-**The pre-M5.8 batch = #1–#4** (all low/medium, all independent of the 4D promotion). #4 ships as a
-placeholder sample so the dipole rendering is *seen and approved* before M5.8 produces the real B.
-Then #7 re-points #4's finished render at the live field — near-zero extra work. Items #5–#6 are
-9b, and #8–#9 wait by nature.
+**The pre-M5.8 batch = #1–#4.** **#1 is done + tested.** #4 ships as a placeholder sample so the
+dipole rendering is *seen and approved* before M5.8 produces the real B; then #7 re-points #4's
+finished render at the live field — near-zero extra work. Items #5–#6 are 9b, and #1b/#7–#9 wait by
+nature.
+
+**When we address the signed-charge gauge (#1b):** per the plan, **only when sustained dynamic
+charge-sign tracking actually matters** — that's **M5.8** (long dynamic runs) or the **two-defect /
+9b** work where reliable ± charge *between* defects is load-bearing. The honest answer is **option 3,
+topological winding density** (Brouwer degree, the conserved charge that physically cannot flip), and
+it lands there. Until then: **(b)** — WM6 stays *honest-but-flipping*, and the charge-region
+**expansion (not the flip) is the real physics story** (free-defect orientation dispersal, M5.7.2 /
+M5.6.5c). Cheaper interim if ever needed before M5.8: a per-step defect-relative re-pin
+(`n̂·r̂_defect > 0`, the `relax_director_step` `pin_signs` logic, currently seed-only).
 
 ### 5.3 Placeholder-sample strategy — validate rendering before the physics produces it
 
@@ -553,7 +596,8 @@ This mirrors how `_topo_*` xparameters already isolate seed configs for visual g
 ### 5.4 Recommended next action
 
 Build the **pre-M5.8 batch (#1–#4)** in that order — each is small, independent, and improves the
-EM/thermal "seeing" that the 9b research will lean on. Start with **#1 (gauge-stable charge)** and
-**#2 (curl-vector warp)** as the two one-session low-complexity wins, then **#3 (3-way glyph)**, then
-**#4 (dipole sample)** with the §5.3 placeholder. Defer #5–#9 per the table. Update Part 3's
-deferred-table homes as each lands.
+EM/thermal "seeing" that the 9b research will lean on. **#1 (centered + barbless director glyph) is
+✅ done + tested (2026-05-30).** Next: **#2 (curl-vector warp + bluered N/S toggle)**, then **#3
+(glyph select Director/E/B/δ-clock-hand — E/B centered+barbed, director centered+barbless)**, then
+**#4 (dipole sample)** with the §5.3 placeholder. Defer #5–#9 per the table (the signed-charge gauge,
+item 1b, lands at M5.8 via winding density). Update Part 3's deferred-table homes as each lands.

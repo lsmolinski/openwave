@@ -949,16 +949,13 @@ def render_elements(state):
                 width=2.0,
             )
         else:  # director / E-field lines (the LC field lines)
-            arrow_length = (
-                glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
-            )
-            # M5.6.5b: glyphs colored by ∇·n̂ (charge, greenyellow — matches WM6 mesh)
+            # VIZ.1: the director glyph is centered + apolar (no barb) — drawn by the
+            # kernel; colored by ∇·n̂ charge (greenyellow, matches WM6) when GLYPH_COLOR=1.
             div_scale = state.observables.director_div_absmax[None]
             viz.update_director_glyphs(
                 state.wave_field,
                 state.observables,
                 glyph_length,
-                arrow_length,
                 state.SHOW_GLYPHS,
                 div_scale,
                 state.GLYPH_SIZE,
@@ -969,13 +966,6 @@ def render_elements(state):
                 per_vertex_color=state.wave_field.director_glyph_colors,
                 width=2.0,
             )
-            # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
-            if viz.SHOW_DIRECTOR_ARROWHEAD:
-                render.scene.lines(
-                    state.wave_field.director_glyph_arrow_vertices,
-                    per_vertex_color=state.wave_field.director_glyph_arrow_colors,
-                    width=2.0,
-                )
 
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)

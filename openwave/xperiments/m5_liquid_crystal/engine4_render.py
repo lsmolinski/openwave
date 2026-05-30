@@ -420,7 +420,6 @@ def update_director_glyphs(
     wave_field: ti.template(),  # type: ignore
     observables: ti.template(),  # type: ignore
     length: ti.f32,  # type: ignore
-    arrow_length: ti.f32,  # type: ignore
     show_level: ti.i32,  # type: ignore
     div_scale: ti.f32,  # type: ignore
     size_mode: ti.i32,  # type: ignore
@@ -430,24 +429,16 @@ def update_director_glyphs(
     Update the director-glyph line-segment field by sampling ψ on the
     three flux-mesh planes (XY, XZ, YZ) at GLYPH_STRIDE.
 
-    Per glyph, writes:
-      - vertices[2k+0] = voxel position (normalized [0,1] camera space)
-      - vertices[2k+1] = voxel position + length · n̂
-      - colors[2k+0]   = colors[2k+1] = colormap palette of (1 − n̂[2]) ∈ [0, 2]
-        scalar represents "twist away from vacuum": 0 at n=ẑ (vacuum), 1 at
-        equatorial directors, 2 at the −ẑ pole. With dark-to-bright palettes
-        (blueprint default; ironbow alt) the vacuum BLENDS into the black GUI
-        background — only the defect-twisted region stands out visually.
-
-    Half-arrowhead barb (when arrow_length > 0):
-      - arrow_vertices[2k+0] = tip = pos + length · n̂
-      - arrow_vertices[2k+1] = tip + arrow_length · barb_dir
-      - barb_dir = ARROWHEAD_BACK_COMP · n̂ + ARROWHEAD_PERP_COMP · perp,
-        where perp is a stable perpendicular to n̂ (cross with ẑ, falling
-        back to x̂ when n̂ is nearly parallel to ẑ) and the back/perp
-        components encode ARROWHEAD_ANGLE_DEG (54° default → swept-back
-        arrowhead, ≈36° between barb and shaft). Same color as the shaft.
-        The launcher decides whether to render this buffer.
+    Per glyph, writes a CENTERED segment (VIZ.1) — the director is an apolar
+    nematic axis (n̂ ≡ −n̂, arbitrary eigenvector sign, no head/tail), so it is
+    drawn centered on the voxel and carries NO arrowhead barb:
+      - vertices[2k+0] = base = voxel − ½·shaft·n̂
+      - vertices[2k+1] = tip  = voxel + ½·shaft·n̂
+      - colors[2k+0]   = colors[2k+1] = single COLOR_MEDIUM, or (color_mode=1)
+        the ∇·n̂ charge gradient (greenyellow, matches WM6 mesh).
+      - arrow buffers are zeroed (no barb — apolar). Centering also makes the
+        glyph gauge-stable: n̂→−n̂ only swaps the endpoints, so the apolar
+        sign-flip is invisible (kills the 180° "slosh" artifact).
 
     `show_level` mirrors SHOW_FLUX_MESH semantics for progressive plane reveal:
         0 → all planes off (degenerate glyphs; nothing renders)
@@ -466,9 +457,10 @@ def update_director_glyphs(
             director_glyph_arrow_colors)
         length: glyph shaft length in normalized camera coords (e.g. 0.02 for
             ~2% of the universe edge)
-        arrow_length: barb length in the same normalized coords. Pass 0.0 to
-            skip computing the barb (writes zero-length lines instead).
         show_level: 0..3, parallel to SHOW_FLUX_MESH (0 off, 1 XY, 2 +XZ, 3 all)
+        div_scale: |∇·n̂| normalization for size_mode/color_mode
+        size_mode: 0=unit shaft, 1=shaft ∝ |∇·n̂| charge density
+        color_mode: 0=single COLOR_MEDIUM, 1=∇·n̂ greenyellow gradient
     """
     nx = wave_field.nx
     ny = wave_field.ny
@@ -513,7 +505,15 @@ def update_director_glyphs(
             shaft = length
             if size_mode == 1:  # magnitude = |∇·n̂| charge density
                 shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
+            # VIZ.1 (M5.6.5b): the director glyph is ALWAYS centered on the voxel
+            # (base = pos − ½·shaft·n̂). The director is an apolar nematic axis
+            # (n̂ ≡ −n̂, the eigenvector sign is arbitrary), so it has no head/tail
+            # and its rendered center belongs at the voxel it samples. Centering also
+            # makes it gauge-stable: n̂→−n̂ just swaps the two endpoints → the segment
+            # is visually identical → no 180° "slosh" from the apolar sign-flip. Any
+            # remaining motion is real (tilt + free-defect orientation dispersal).
+            base = pos - 0.5 * shaft * n_hat
+            tip = base + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -525,24 +525,17 @@ def update_director_glyphs(
             color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
             if color_mode == 1:
                 color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 0] = base
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
 
-            # Half-arrowhead: barb perpendicular to n̂ at the tip end.
-            # Stable perp = n̂ × ref where ref flips to x̂ when n̂ ≈ ẑ
-            # to avoid the degenerate cross product at vacuum directors.
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            # No barb: the director is apolar (n̂ ≡ −n̂, no head/tail). Zero the
+            # arrow buffers so the shared arrow-render pass draws nothing for it.
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
@@ -573,7 +566,15 @@ def update_director_glyphs(
             shaft = length
             if size_mode == 1:  # magnitude = |∇·n̂| charge density
                 shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
+            # VIZ.1 (M5.6.5b): the director glyph is ALWAYS centered on the voxel
+            # (base = pos − ½·shaft·n̂). The director is an apolar nematic axis
+            # (n̂ ≡ −n̂, the eigenvector sign is arbitrary), so it has no head/tail
+            # and its rendered center belongs at the voxel it samples. Centering also
+            # makes it gauge-stable: n̂→−n̂ just swaps the two endpoints → the segment
+            # is visually identical → no 180° "slosh" from the apolar sign-flip. Any
+            # remaining motion is real (tilt + free-defect orientation dispersal).
+            base = pos - 0.5 * shaft * n_hat
+            tip = base + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -584,21 +585,17 @@ def update_director_glyphs(
             color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
             if color_mode == 1:
                 color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 0] = base
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
 
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            # No barb: the director is apolar (n̂ ≡ −n̂, no head/tail). Zero the
+            # arrow buffers so the shared arrow-render pass draws nothing for it.
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
@@ -629,7 +626,15 @@ def update_director_glyphs(
             shaft = length
             if size_mode == 1:  # magnitude = |∇·n̂| charge density
                 shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
+            # VIZ.1 (M5.6.5b): the director glyph is ALWAYS centered on the voxel
+            # (base = pos − ½·shaft·n̂). The director is an apolar nematic axis
+            # (n̂ ≡ −n̂, the eigenvector sign is arbitrary), so it has no head/tail
+            # and its rendered center belongs at the voxel it samples. Centering also
+            # makes it gauge-stable: n̂→−n̂ just swaps the two endpoints → the segment
+            # is visually identical → no 180° "slosh" from the apolar sign-flip. Any
+            # remaining motion is real (tilt + free-defect orientation dispersal).
+            base = pos - 0.5 * shaft * n_hat
+            tip = base + shaft * n_hat
             # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
             # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
             # is what stands out); equator (n in xy-plane) → 1 (mid); inward
@@ -640,21 +645,17 @@ def update_director_glyphs(
             color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
             if color_mode == 1:
                 color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
+            wave_field.director_glyph_vertices[idx + 0] = base
             wave_field.director_glyph_vertices[idx + 1] = tip
             wave_field.director_glyph_colors[idx + 0] = color
             wave_field.director_glyph_colors[idx + 1] = color
 
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            # No barb: the director is apolar (n̂ ≡ −n̂, no head/tail). Zero the
+            # arrow buffers so the shared arrow-render pass draws nothing for it.
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
         else:
             wave_field.director_glyph_vertices[idx + 0] = zero_v
             wave_field.director_glyph_vertices[idx + 1] = zero_v
