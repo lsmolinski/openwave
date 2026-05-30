@@ -218,6 +218,16 @@ clock.
 > **Anchors:** `engine1_seeds.py` (`seed_biaxial_hedgehog_M`), `5a §5b/§5e`, `1b`.
 >
 > Building a particle: the biaxial hedgehog. How O(x)=[r | e_0 | e_$] (the three vectors) is laid out in space, the eigenvalue melt + disclination, and why winding = quantized charge
+>
+> **★ Cover when we teach L4 (Rodrigo flagged 2026-05-30): "where is the charge sign?"** The
+> *uniaxial* seed defines charge per-defect via `DEFECTS:[{"SIGN": ±1}]` → kernel `n̂ = SIGN·r̂`
+> (outward `+1` / inward `−1`; `_topo_uniaxial2.py`, `engine1_seeds.py:439`). The *biaxial* seed
+> (`_topo_biaxial1_v{on,off}.py`) has **NO sign knob** — `seed_biaxial_hedgehog_M` is single-center
+> and hard-builds the radial frame `O=[r̂|e_Θ|e_Φ]` (one fixed winding). **Why:** a biaxial defect's
+> charge is **not** a single `±1` — its order-parameter space is `SO(3)/D₂`, whose `π₁` is the
+> **non-abelian quaternion group `Q₈`**, a richer classification than one sign bit. So "the charge
+> sign" of a biaxial defect is a *quaternion-class label*, not a `±`. This is the discovery hook of
+> the deferred two-defect demo (M5.6.5e → M5.8). Teach: uniaxial `±` winding → biaxial `Q₈` classes.
 
 (to be filled during the session)
 

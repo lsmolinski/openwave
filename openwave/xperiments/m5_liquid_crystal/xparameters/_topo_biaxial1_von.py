@@ -1,8 +1,8 @@
 """
 XPERIMENT PARAMETERS — Biaxial Hedgehog + V(M) confinement (M5.6.5c)
 
-Same biaxial hedgehog seed as _topo_biaxial1.py, but with the Eq.13 LdG potential
-V(M) turned ON via LDG_STIFFNESS_K. This is the A/B partner to _topo_biaxial1 (V off):
+Same biaxial hedgehog seed as _topo_biaxial1_voff.py, but with the Eq.13 LdG potential
+V(M) turned ON via LDG_STIFFNESS_K. This is the A/B partner to _topo_biaxial1_voff.py (V off):
 press Evolve PDE on both and compare how the energy behaves.
 
 WHAT V DOES HERE (M5.6.5c finding).  With V off, Evolve PDE makes the field slosh and
