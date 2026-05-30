@@ -135,8 +135,8 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.PARTICLE_SHELL = False
         self.SHOW_GRANULES = False
+        self.PARTICLE_SHELL = False
         self.TIMESTEP = 0.0
         self.PAUSED = False
 
@@ -179,8 +179,8 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
-        self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
+        self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.TIMESTEP = ui["TIMESTEP"]
         self.PAUSED = ui["PAUSED"]
 
@@ -264,10 +264,10 @@ def display_controls(state):
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
-        state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
-        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
+        state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
+        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
         if state.PAUSED:
             if sub.button(">> PROPAGATE EWAVE >>"):
                 state.PAUSED = False

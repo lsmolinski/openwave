@@ -226,8 +226,8 @@ XPARAMETERS = {
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 1,
         "WARP_MESH": 150,
-        "PARTICLE_SHELL": True,
         "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
+        "PARTICLE_SHELL": True,
         "TIMESTEP": 5.0,
         "PAUSED": False,
     },
