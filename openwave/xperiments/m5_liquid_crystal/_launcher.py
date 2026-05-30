@@ -193,6 +193,10 @@ class SimulationState:
         # Color control variables
         self.COLOR_THEME = "OCEAN"
         self.WAVE_MENU = 1
+        # VIZ.2 — WM7 EM-curl color: 0=orange ‖∇×n̂‖ magnitude (honest static default),
+        # 1=bluered signed (∇×n̂)·axis → N=red/S=blue poles. Axis default ẑ (auto-axis = M5.8).
+        self.CURL_COLOR = 0
+        self.CURL_AXIS = ti.Vector([0.0, 0.0, 1.0], dt=ti.f32)
 
         # Data Analytics & video export toggles
         self.INSTRUMENTATION = False
@@ -498,6 +502,13 @@ def display_wave_menu(state):
         if sub.checkbox("EM curl (rotation/B)", state.WAVE_MENU == 7):
             state.WAVE_MENU = 7
             state.wave_field.create_flux_mesh()
+        # VIZ.2: WM7 color toggle — orange ‖∇×n̂‖ magnitude (off) vs bluered signed (∇×n̂)·ẑ
+        # → N=red/S=blue poles (on). The vector-warp (fabric-twist) is always on for WM7.
+        if state.WAVE_MENU == 7:
+            if sub.checkbox("  > B color N/S (bluered)", state.CURL_COLOR == 1):
+                state.CURL_COLOR = 1
+            else:
+                state.CURL_COLOR = 0
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
@@ -530,10 +541,15 @@ def display_wave_menu(state):
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("div (charge/E)", 0.00, 0.73, 0.08, 0.06) as sub:
                 sub.text(" -           +")
-        if state.WAVE_MENU == 7:  # EM curl ‖∇×n̂‖ on orange gradient
-            render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
-            with render.gui.sub_window("curl (rot/B)", 0.00, 0.73, 0.08, 0.06) as sub:
-                sub.text("0          max")
+        if state.WAVE_MENU == 7:  # EM curl: orange magnitude OR bluered signed (∇×n̂)·ẑ N/S
+            if state.CURL_COLOR == 1:
+                render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
+                with render.gui.sub_window("B (S/N)", 0.00, 0.73, 0.08, 0.06) as sub:
+                    sub.text(" S           N")
+            else:
+                render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
+                with render.gui.sub_window("curl (rot/B)", 0.00, 0.73, 0.08, 0.06) as sub:
+                    sub.text("0           max")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -622,6 +638,7 @@ def initialize_xperiment(state):
     global ib_palette_vertices, ib_palette_colors
     global bp_palette_vertices, bp_palette_colors
     global gy_palette_vertices, gy_palette_colors
+    global br_palette_vertices, br_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
@@ -636,6 +653,9 @@ def initialize_xperiment(state):
     )
     gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
         colormap.greenyellow, 0.00, 0.72, 0.079, 0.01
+    )
+    br_palette_vertices, br_palette_colors = colormap.get_palette_scale(
+        colormap.bluered, 0.00, 0.72, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -915,6 +935,8 @@ def render_elements(state):
             state.observables,
             state.WAVE_MENU,
             state.WARP_MESH,
+            state.CURL_COLOR,
+            state.CURL_AXIS,  # VIZ.2: B·axis projection axis for bluered N/S coloring (default ẑ)
         )
         flux_mesh.render_flux_mesh(render.scene, state.wave_field, state.SHOW_FLUX_MESH)
 

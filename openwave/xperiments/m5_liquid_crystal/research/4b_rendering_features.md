@@ -547,7 +547,7 @@ deviation scalars every frame.
 | --- | --- | --- | --- | --- |
 | 1 | **VIZ.1 — centered + barbless director glyph** (§4.4) — apolar-correct convention; kills the 180° slosh | ✅ yes | **low** | **✅ DONE + TESTED (2026-05-30)** |
 | 1b | **Gauge-stable SIGNED charge** (§4.4) — winding-density (Brouwer) so WM6's ± can't flip | ⏳ **M5.8** | medium | deferred — see "When we address it" below; WM6 stays honest-but-flipping until then |
-| 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | 🚧 next |
+| 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | **✅ DONE (2026-05-30)** |
 | 3 | **VIZ.3 — glyph select: Director / E / B / δ-clock-hand** (§4.2) — *E/B centered + barbed (polar); director centered + barbless (apolar)* | ✅ yes | **low–med** | pending |
 | 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | pending |
 | 5 | **Joint `(A·ω)²` thermal** (Part 3) — product-of-squares color mode | ⏸ 9b | low | pending |
@@ -597,7 +597,8 @@ This mirrors how `_topo_*` xparameters already isolate seed configs for visual g
 
 Build the **pre-M5.8 batch (#1–#4)** in that order — each is small, independent, and improves the
 EM/thermal "seeing" that the 9b research will lean on. **#1 (centered + barbless director glyph) is
-✅ done + tested (2026-05-30).** Next: **#2 (curl-vector warp + bluered N/S toggle)**, then **#3
-(glyph select Director/E/B/δ-clock-hand — E/B centered+barbed, director centered+barbless)**, then
-**#4 (dipole sample)** with the §5.3 placeholder. Defer #5–#9 per the table (the signed-charge gauge,
-item 1b, lands at M5.8 via winding density). Update Part 3's deferred-table homes as each lands.
+✅ done + tested (2026-05-30); **#2 (curl-vector warp + bluered N/S toggle) ✅ done + tested
+(2026-05-30)**. Next: **#3 (glyph select Director/E/B/δ-clock-hand — E/B centered+barbed, director
+centered+barbless)**, then **#4 (dipole sample)** with the §5.3 placeholder. Defer #5–#9 per the
+table (the signed-charge gauge, item 1b, lands at M5.8 via winding density). Update Part 3's
+deferred-table homes as each lands.

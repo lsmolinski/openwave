@@ -103,6 +103,8 @@ def update_flux_mesh_values(
     observables: ti.template(),  # type: ignore
     wave_menu: ti.i32,  # type: ignore
     warp_mesh: ti.i32,  # type: ignore
+    curl_color: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
 ):
     """
     Update flux mesh colors and vertices by sampling wave properties from voxel grid.
@@ -199,10 +201,26 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[i, j, wave_field.fm_plane_z_idx]
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[i, j, wave_field.fm_plane_z_idx]
+            # VIZ.2 color toggle: 0=orange magnitude (honest static default),
+            # 1=bluered signed (∇×n̂)·axis → N=red(+axis)/S=blue(−axis) poles.
+            if curl_color == 1:
+                wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
+                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                )
+            else:
+                wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(curl_v, 0.0, curl_s)
+            # VIZ.2 vector-warp: displace the vertex by the RAW ∇×n̂ vector (all 3
+            # components, scaled), so the mesh deforms as a *twist in fabric* showing
+            # the B-field rotation + handedness — not just a perpendicular magnitude lift.
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_xy_vertices[i, j] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[0] * warp_amt,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[1] * warp_amt,
+                    wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+                    + curl_vec[2] * warp_amt,
+                ]
             )
 
     # ================================================================
@@ -282,10 +300,22 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[i, wave_field.fm_plane_y_idx, k]
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[i, wave_field.fm_plane_y_idx, k]
+            if curl_color == 1:  # bluered signed (∇×n̂)·axis → N/S poles
+                wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
+                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                )
+            else:
+                wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
+            # VIZ.2 vector-warp by raw ∇×n̂ (fabric-twist)
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_xz_vertices[i, k] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[0] * warp_amt,
+                    wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+                    + curl_vec[1] * warp_amt,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[2] * warp_amt,
+                ]
             )
 
     # ================================================================
@@ -365,10 +395,22 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[wave_field.fm_plane_x_idx, j, k]
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[wave_field.fm_plane_x_idx, j, k]
+            if curl_color == 1:  # bluered signed (∇×n̂)·axis → N/S poles
+                wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
+                    curl_vec.dot(curl_axis), -curl_s, curl_s
+                )
+            else:
+                wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
+            # VIZ.2 vector-warp by raw ∇×n̂ (fabric-twist)
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_yz_vertices[j, k] = ti.Vector(
+                [
+                    wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+                    + curl_vec[0] * warp_amt,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[1] * warp_amt,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[2] * warp_amt,
+                ]
             )
 
 
