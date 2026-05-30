@@ -295,6 +295,57 @@ clock.
 > steady spin is the *ideal/target* — in 3D the free defect disperses (M5.7.2), so confirming it at
 > `ω=2mc²/ℏ` needs 4D (M5.8). `spin-½` = a 2π rotation does NOT restore the state (need 4π — the
 > SO(3) double-cover) — developed below.
+>
+> *Refinement — "spin" does NOT mean "no amplitude" (2026-05-30):* a spin is **constant-amplitude**,
+> not amplitude-free — like a point on a wheel, `(R·cos ωt, R·sin ωt)` has both a radius `R` and a
+> rate `ω`. The clock's amplitude (radius/modulus, set by the rest mass) is *fixed* at the ground
+> state, not absent; what makes it a spin vs a pendulum is the absence of a restoring force, not the
+> absence of `A`. So the joint **`(A, ω)`** picture holds: `ω` = the rate (launcher WM3 "Thermal
+> Clock"), `A` = the rotational radius/excitation amplitude (WM2 "Thermal Amp"). Ground state: both
+> fixed. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate shifts (FM) — exactly
+> the dual channels M5.7.3 saw respond to driving (`A_core`→3×, director at `f_d`). (The
+> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the private repo per the cardinal
+> rule; here it's just the substrate clock's two observables.)
+>
+> *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `a`,
+> the `b`–`c` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal
+> `(δ/2)sin(2ωt)`. So the **radius = the eigenvalue gap `(λ_b−λ_c)/2 = δ/2`** (the QM-`δ` axis sets
+> its size), and the observable cycles at **`2ω`** — the apolar `n̂⊗n̂` doubling (a 180° turn looks
+> identical), the likely origin of `ω_Zitt = 2mc²/ℏ` (confirm in M5.8). And *what* spins is the
+> **orientation field as one collective phase-locked mode** localized on the defect (the director
+> `a` = the fixed axle, the secondary `b` = the clock-hand; all hands synchronized) — **not** the
+> defect-as-a-point and **not** independent voxels.
+>
+> **★ "Collective mode" — flagged 2026-05-30 to unpack when we teach L7 (Rodrigo: idea not yet
+> fully internalized).**
+>
+> *The mental image to hold:* a 3D field of **compass needles all precessing in lock-step**. Each
+> needle (ellipsoid) turns, but the meaningful object is the **collective phase**. The director `a`
+> at each point is the fixed **axle**; the secondary axis `b` is the **clock-hand** sweeping around
+> it — and all the clock-hands across the defect's neighborhood are **synchronized**.
+>
+> *Why it matters:* the **defect** is the stable topological knot that *hosts* the clock; the
+> **clock** is the collective twist mode the knot carries. So "the particle" = defect (topology,
+> permanent) **+** its intrinsic clock (the collective oscillation). And thermal `(A, ω)` is a
+> **per-defect collective property**, not an individual-voxel one. *(3D caveat: the free collective
+> mode disperses — M5.7.2 — so it needs 4D to self-sustain, M5.8, or a drive, 9b.)*
+>
+> *Questions to answer in L7 so this clicks (tomorrow's agenda):*
+>
+> 1. **What makes the needles lock-step?** — the elastic (Frank) coupling between neighbours + the
+>    hedgehog's own `C_μν` source: the lowest-energy way to carry a twist is *coherently*, so one
+>    collective phase `ψ(t)` wins over each voxel doing its own thing.
+> 2. **How can a single `ψ(t)` describe a whole 3D region?** — it's a **collective coordinate /
+>    normal mode**: like a drumhead's fundamental mode, *one* amplitude sets the whole membrane's
+>    shape. `ψ` is that one number for the defect's twist mode.
+> 3. **Why a "mode" and not a rigid point-spin?** — it has **spatial extent + a profile** (peaked at
+>    the core, fading out, weighted by the texture) — a standing-wave/breather-like object, not a
+>    structureless spinning dot.
+> 4. **Precise vs idealized:** "lock-step" is the *coherent ideal*; really `ψ = ψ(x, t)` is a field
+>    with a spatial profile. *How coherent/localized it stays* is exactly the M5.7.2 dispersal
+>    result (free 3D radiates it away) → M5.8 (4D stabilizes) / 9b (drive sustains).
+> 5. **Engine tie-in:** this is the `O(x) ∈ SO(3)` rotation DoF from `5a §9` / `m5_6_2b` — the
+>    collective twist is a coherent excitation of that rotation field, not of `M`'s raw components.
 
 (to be filled during the session)
 
