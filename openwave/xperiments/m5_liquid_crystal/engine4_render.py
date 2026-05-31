@@ -126,6 +126,29 @@ def _curl_signed_proj(
     return proj
 
 
+# Bluered signed-color magnitude compression (γ < 1). The B-field (∇×n̂) of a dipole falls
+# off as 1/r³ — ~9× steeper than the E charge's 1/r — so a LINEAR map dumps everything beyond
+# the core into black (only a thin shell of glyphs/mesh near the poles stays visible). γ<1
+# stretches small/mid magnitudes toward the palette extremes so a wide area reads in visible
+# color; the peak still clips to the extreme, 0 stays black-center. 1.0 = linear (original).
+# 0.4 spreads the dipole from the core out to ~r=24 voxels (probe 2026-05-31). Tune freely.
+_BLUERED_GAMMA = 0.4
+
+
+@ti.func
+def _gamma_signed(value: ti.f32, scale: ti.f32) -> ti.f32:  # type: ignore
+    """SIGNED, γ-compressed, normalized magnitude ∈ [−1, 1] for bluered N/S coloring.
+
+    sign → red(+) / blue(−); `|value/scale|^γ` lifts mid/far values toward ±1 (the palette
+    extremes) while the peak clips to ±1 and 0 stays 0 (black-center). `scale` should be the
+    field's OWN max (e.g. `director_curl_max` for B), NOT a shared max — otherwise the peak
+    never reaches the extreme. Returns a SCALAR (feed it to `get_bluered_color(_, -1, 1)`),
+    shared by the B glyph and the WM7 mesh so their N/S coloring matches."""
+    t = ti.math.clamp(value / (scale + 1e-12), -1.0, 1.0)
+    sgn = 1.0 - 2.0 * ti.cast(t < 0.0, ti.f32)  # branchless sign: +1 if t≥0 else −1
+    return sgn * ti.pow(ti.abs(t), _BLUERED_GAMMA)
+
+
 @ti.kernel
 def update_flux_mesh_values(
     wave_field: ti.template(),  # type: ignore
@@ -238,18 +261,24 @@ def update_flux_mesh_values(
             # 1=bluered signed — radial (∇×n̂)·r̂ = true N/S poles when curl_radial,
             # else axial (∇×n̂)·curl_axis. See _curl_signed_proj.
             if curl_color == 1:
+                # bluered N/S: γ-compressed against B's OWN max (director_curl_max), so the
+                # steep 1/r³ dipole stays visible far from the core (not curl_s, which is the
+                # shared E-inclusive max used for the warp/size declutter below).
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
-                    _curl_signed_proj(
-                        curl_vec,
-                        i,
-                        j,
-                        wave_field.fm_plane_z_idx,
-                        curl_axis,
-                        curl_radial,
-                        curl_center,
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            i,
+                            j,
+                            wave_field.fm_plane_z_idx,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
                     ),
-                    -curl_s,
-                    curl_s,
+                    -1.0,
+                    1.0,
                 )
             else:
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
@@ -347,18 +376,22 @@ def update_flux_mesh_values(
             curl_v = observables.director_curl_mag_field[i, wave_field.fm_plane_y_idx, k]
             curl_vec = observables.director_curl_field[i, wave_field.fm_plane_y_idx, k]
             if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
+                # γ-compressed against B's own max (see XY plane note)
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
-                    _curl_signed_proj(
-                        curl_vec,
-                        i,
-                        wave_field.fm_plane_y_idx,
-                        k,
-                        curl_axis,
-                        curl_radial,
-                        curl_center,
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            i,
+                            wave_field.fm_plane_y_idx,
+                            k,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
                     ),
-                    -curl_s,
-                    curl_s,
+                    -1.0,
+                    1.0,
                 )
             else:
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
@@ -454,18 +487,22 @@ def update_flux_mesh_values(
             curl_v = observables.director_curl_mag_field[wave_field.fm_plane_x_idx, j, k]
             curl_vec = observables.director_curl_field[wave_field.fm_plane_x_idx, j, k]
             if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
+                # γ-compressed against B's own max (see XY plane note)
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
-                    _curl_signed_proj(
-                        curl_vec,
-                        wave_field.fm_plane_x_idx,
-                        j,
-                        k,
-                        curl_axis,
-                        curl_radial,
-                        curl_center,
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            wave_field.fm_plane_x_idx,
+                            j,
+                            k,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
                     ),
-                    -curl_s,
-                    curl_s,
+                    -1.0,
+                    1.0,
                 )
             else:
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
@@ -881,16 +918,23 @@ def update_em_vector_glyphs(
                 shaft = length
                 if size_mode == 1:
                     shaft = length * ti.min(mag * inv_s, 1.0)
-                tip = pos + shaft * dirv
+                # CENTERED on the voxel (base = pos − ½·shaft·dirv → tip = pos + ½·shaft·dirv),
+                # the same field-line-through-the-point convention as the director + E glyphs
+                # (VIZ.1, 4b §4.2). The +→ barb at the tip still marks the circulation direction.
+                half_seg = 0.5 * shaft * dirv
+                tip = pos + half_seg
                 color = ti.Vector(
                     [_GLYPH_B_COLOR[0], _GLYPH_B_COLOR[1], _GLYPH_B_COLOR[2]]
                 )  # single = flat _GLYPH_B_COLOR (orange), keeps far-field glyphs visible
                 if color_mode == 1:
-                    # gradient = SIGNED bluered N/S — same radial/axial projection as the WM7
-                    # mesh (red=N/blue=S), so the glyph shows its pole, not just magnitude
+                    # gradient = SIGNED bluered N/S — same radial/axial projection AND the same
+                    # γ-compression-against-own-max as the WM7 mesh, so glyph and mesh match
+                    # (red=N/blue=S, visible far from the core). `scale` (shared) drives the SIZE
+                    # declutter above; the COLOR uses B's own director_curl_max.
                     proj = _curl_signed_proj(curl, i, j, k, curl_axis, curl_radial, curl_center)
-                    color = colormap.get_bluered_color(proj, -(scale + 1e-12), scale + 1e-12)
-                wave_field.director_glyph_vertices[idx + 0] = pos
+                    gsig = _gamma_signed(proj, observables.director_curl_max[None])
+                    color = colormap.get_bluered_color(gsig, -1.0, 1.0)
+                wave_field.director_glyph_vertices[idx + 0] = pos - half_seg
                 wave_field.director_glyph_vertices[idx + 1] = tip
                 wave_field.director_glyph_colors[idx + 0] = color
                 wave_field.director_glyph_colors[idx + 1] = color

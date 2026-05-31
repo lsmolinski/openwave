@@ -75,13 +75,13 @@ XPARAMETERS = {
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
-        "SHOW_FLUX_MESH": 3,  # all 3 planes — see the full dipole pattern
+        "SHOW_FLUX_MESH": 2,  # all 3 planes — see the full dipole pattern
         "WARP_MESH": 0,  # no vector-warp (raw 1/r³ field warps wildly near core); color-only
-        "SHOW_GLYPHS": 3,  # all 3 planes
+        "SHOW_GLYPHS": 2,  # all 3 planes
         "GLYPH_VECTOR": 3,  # Magnetic Field (∇×n̂) glyphs — trace the dipole field lines
-        "GLYPH_SIZE": 1,  # magnitude-scaled → declutters the far field where B→0
+        "GLYPH_SIZE": 0,  # magnitude-scaled → declutters the far field where B→0
         "GLYPH_COLOR": 1,  # gradient color
-        "VIZ_STRIDE": 2,
+        "VIZ_STRIDE": 1,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
         "PAUSED": True,
