@@ -971,6 +971,27 @@ def compute_force_motion(state):
     force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
+def _curl_projection(state):
+    """`(curl_radial, curl_center)` for the bluered N/S projection of ∇×n̂ (B).
+
+    Shared by the WM7 flux mesh AND the B-field glyphs so their N/S coloring is
+    identical. For the dipole sample → radial `(∇×n̂)·r̂` about the defect center
+    (true N=red/S=blue poles, matching a bar magnet); general runs → fixed-axis
+    projection (radial=0, center unused). center is in voxel coords.
+    """
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        return 1, ti.Vector(
+            [
+                state.DIPOLE_CENTER[0] * (wf.nx - 1),
+                state.DIPOLE_CENTER[1] * (wf.ny - 1),
+                state.DIPOLE_CENTER[2] * (wf.nz - 1),
+            ],
+            dt=ti.f32,
+        )
+    return 0, ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
+
+
 def render_elements(state):
     """Render grid, edges, flux mesh and test particles."""
     if state.SHOW_GRID:
@@ -983,19 +1004,7 @@ def render_elements(state):
         # VIZ.4: for the dipole sample, color the bluered B by the RADIAL projection
         # (∇×n̂)·r̂ about the defect center → true N/S poles (red N above / blue S below,
         # matching a bar magnet). General runs use the fixed-axis projection (radial=0).
-        wf = state.wave_field
-        curl_radial = 1 if state.DIPOLE_SAMPLE else 0
-        if state.DIPOLE_SAMPLE:
-            curl_center = ti.Vector(
-                [
-                    state.DIPOLE_CENTER[0] * (wf.nx - 1),
-                    state.DIPOLE_CENTER[1] * (wf.ny - 1),
-                    state.DIPOLE_CENTER[2] * (wf.nz - 1),
-                ],
-                dt=ti.f32,
-            )
-        else:
-            curl_center = ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
+        curl_radial, curl_center = _curl_projection(state)
         viz.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
@@ -1024,6 +1033,8 @@ def render_elements(state):
                 state.observables.director_div_absmax[None],
                 state.observables.director_curl_max[None],
             )  # shared distortion scale (matches WAVE_MENU 7)
+            # gradient color uses the SAME signed N/S projection as the WM7 mesh
+            curl_radial, curl_center = _curl_projection(state)
             viz.update_em_vector_glyphs(
                 state.wave_field,
                 state.observables,
@@ -1032,6 +1043,9 @@ def render_elements(state):
                 state.SHOW_GLYPHS,
                 state.GLYPH_SIZE,
                 state.GLYPH_COLOR,
+                state.CURL_AXIS,
+                curl_radial,
+                curl_center,
             )
             render.scene.lines(
                 state.wave_field.director_glyph_vertices,

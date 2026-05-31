@@ -16,11 +16,6 @@ import taichi as ti
 
 from openwave.common import colormap
 
-# Single-color glyph mode (M5.6.5b "Glyph Color = single"): a flat color so weak/far-field
-# glyphs stay visible (the gradient palettes fade them toward black). Sourced from the
-# colormap module (COLOR_MEDIUM = light blue) — single source of truth, no hardcoded RGB.
-_GLYPH_SINGLE_COLOR = colormap.COLOR_MEDIUM[1]  # (r, g, b) tuple, resolved at kernel compile time
-
 # ================================================================
 # POSITION RENDER
 # ================================================================
@@ -512,6 +507,27 @@ def update_flux_mesh_values(
 #
 # Design doc: research/2b_director_glyph_rendering.md.
 
+# ----------------------------------------------------------------
+# GLYPH PARAMETERS — colors + geometry (single place; tweak freely)
+# ----------------------------------------------------------------
+# Per-glyph-TYPE colors. Each of the four glyph kinds gets its OWN color so they
+# never read as the same thing on screen. To re-theme, swap the colormap.* source
+# (or drop in a raw (r,g,b) tuple). Resolved to tuples at kernel-compile time.
+#
+#   - DIRECTOR / DELTA are ORIENTATION glyphs → ALWAYS use their color (they ignore
+#     the Glyph-Color toggle; size/color carry no field meaning for an axis).
+#   - E / B are FIELD glyphs with two color modes: "single" = the flat color below
+#     (keeps weak/far-field glyphs visible — gradient palettes fade to black), and
+#     "gradient" = a value-mapped palette (greenyellow for E charge, orange for B
+#     magnitude) handled inline in the kernels and NOT governed by these constants.
+#     The single-mode colors are kept in the SAME family as each field's gradient
+#     (E green↔greenyellow, B orange↔orange) so toggling modes stays coherent, and
+#     distinct from the director's light-blue so "single" no longer collides with it.
+_GLYPH_DIRECTOR_COLOR = colormap.COLOR_MEDIUM[1]  # light blue — n̂ principal axis (orientation)
+_GLYPH_DELTA_COLOR = colormap.COLOR_FIELD[1]  # cyan — δ cross-bar (ellipsoid minor axis)
+_GLYPH_E_COLOR = colormap.GREEN[1]  # green — E-field single-color
+_GLYPH_B_COLOR = colormap.ORANGE[1]  # orange — B-field single-color
+
 # Half-arrowhead toggle (hardcoded for testing — flip to False to compare):
 # When True, each glyph gets ONE extra barb at the tip end so head vs tail is
 # unambiguous without arrowhead V-shapes. Cost: doubles the line count rendered
@@ -529,9 +545,6 @@ ARROWHEAD_ANGLE_DEG = 36.0
 _arrow_rad = math.radians(ARROWHEAD_ANGLE_DEG)
 ARROWHEAD_BACK_COMP = -math.cos(_arrow_rad)  # component along n̂ (negative = backward)
 ARROWHEAD_PERP_COMP = math.sin(_arrow_rad)  # component along perpendicular axis
-
-
-_GLYPH_DELTA_COLOR = colormap.COLOR_FIELD[1]  # CYAN — the δ cross-bar (ellipsoid minor axis)
 
 
 @ti.func
@@ -558,30 +571,33 @@ def _write_glyph(
     n_hat = wave_field.director_nhat[i, j, k]
 
     if mode == 0:
-        # ---- Director: ORIENTATION, agnostic to size/color (always unit + COLOR_MEDIUM).
-        # The main segment is the principal axis n̂. The arrow buffer carries the
-        # delta (middle-eigenvector) cross-bar WHEN show_delta=1 → an ellipsoid-
-        # wireframe "+" showing the biaxial frame; show_delta=0 → director axis only
-        # (arrow buffer blanked). Delta bar is SHORTER (∝ λ₂/λ₁, minor:major ratio)
-        # and COLOR_FIELD to distinguish it from the n̂ axis.
-        med = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])
+        # ---- Director: ORIENTATION, agnostic to size/color (always unit length +
+        # the fixed _GLYPH_DIRECTOR_COLOR). The main segment is the principal axis n̂.
+        # The arrow buffer carries the delta (middle-eigenvector) cross-bar WHEN
+        # show_delta=1 → an ellipsoid-wireframe "+" showing the biaxial frame;
+        # show_delta=0 → director axis only (arrow buffer blanked). Delta bar is
+        # SHORTER (∝ λ₂/λ₁, minor:major ratio) and _GLYPH_DELTA_COLOR to set it apart
+        # from the n̂ axis. (Both colors are configurable in the GLYPH PARAMETERS block.)
+        dcol = ti.Vector(
+            [_GLYPH_DIRECTOR_COLOR[0], _GLYPH_DIRECTOR_COLOR[1], _GLYPH_DIRECTOR_COLOR[2]]
+        )
         base = pos - 0.5 * length * n_hat
         tip = pos + 0.5 * length * n_hat
         wave_field.director_glyph_vertices[idx + 0] = base
         wave_field.director_glyph_vertices[idx + 1] = tip
-        wave_field.director_glyph_colors[idx + 0] = med
-        wave_field.director_glyph_colors[idx + 1] = med
+        wave_field.director_glyph_colors[idx + 0] = dcol
+        wave_field.director_glyph_colors[idx + 1] = dcol
         if show_delta == 1:
             # delta cross-bar: middle eigenvector, length scaled by the eigenvalue ratio
             n_mid = wave_field.director_mid[i, j, k]
             evals = wave_field.eigenvalues[i, j, k]  # (λ₁≥λ₂≥λ₃)
             ratio = evals[1] / (ti.abs(evals[0]) + 1e-12)  # λ₂/λ₁ ∈ (0,1] → shorter bar
             dlen = length * ti.max(ti.min(ratio, 1.0), 0.12)  # clamp so it stays visible
-            cyan = ti.Vector([_GLYPH_DELTA_COLOR[0], _GLYPH_DELTA_COLOR[1], _GLYPH_DELTA_COLOR[2]])
+            dlt = ti.Vector([_GLYPH_DELTA_COLOR[0], _GLYPH_DELTA_COLOR[1], _GLYPH_DELTA_COLOR[2]])
             wave_field.director_glyph_arrow_vertices[idx + 0] = pos - 0.5 * dlen * n_mid
             wave_field.director_glyph_arrow_vertices[idx + 1] = pos + 0.5 * dlen * n_mid
-            wave_field.director_glyph_arrow_colors[idx + 0] = cyan
-            wave_field.director_glyph_arrow_colors[idx + 1] = cyan
+            wave_field.director_glyph_arrow_colors[idx + 0] = dlt
+            wave_field.director_glyph_arrow_colors[idx + 1] = dlt
         else:
             wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
             wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
@@ -594,7 +610,8 @@ def _write_glyph(
         shaft = length
         if size_mode == 1:
             shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-        color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])
+        # single = flat _GLYPH_E_COLOR (green); gradient = greenyellow charge palette
+        color = ti.Vector([_GLYPH_E_COLOR[0], _GLYPH_E_COLOR[1], _GLYPH_E_COLOR[2]])
         if color_mode == 1:
             color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
         base = pos - 0.5 * shaft * n_hat
@@ -648,18 +665,20 @@ def update_director_glyphs(
     Two of the glyph-select states (the B-curl state lives in
     `update_em_vector_glyphs`):
       - **mode=0 Director** — the principal axis `director_nhat` (main segment, full
-        `length`, COLOR_MEDIUM). When `show_delta=1` the middle (delta) eigenvector
-        `director_mid` is added as a SHORTER cross-bar (∝ λ₂/λ₁, COLOR_FIELD) in the
-        arrow buffer → the biaxial-frame "ellipsoid wireframe cross"; when
-        `show_delta=0` only the n̂ axis is drawn (arrow buffer blanked). **Agnostic to
-        size_mode/color_mode** — it is orientation, not a field, so it is always
-        unit-length + fixed colors. Both axes apolar (centered, no head/tail) ⇒
-        gauge-stable. The delta bar is the clock-hand axis (the would-be Zitterbewegung
-        spin; in free 3D it only tilts/disperses — coherent spin needs M5.8/9b).
+        `length`, `_GLYPH_DIRECTOR_COLOR`). When `show_delta=1` the middle (delta)
+        eigenvector `director_mid` is added as a SHORTER cross-bar (∝ λ₂/λ₁,
+        `_GLYPH_DELTA_COLOR`) in the arrow buffer → the biaxial-frame "ellipsoid
+        wireframe cross"; when `show_delta=0` only the n̂ axis is drawn (arrow buffer
+        blanked). **Agnostic to size_mode/color_mode** — it is orientation, not a
+        field, so it is always unit-length + its fixed colors. Both axes apolar
+        (centered, no head/tail) ⇒ gauge-stable. The delta bar is the clock-hand axis
+        (the would-be Zitterbewegung spin; in free 3D it only tilts/disperses —
+        coherent spin needs M5.8/9b).
       - **mode=1 E-field** — `director_nhat` as a POLAR field line: honors size
-        (shaft ∝ |∇·n̂| charge density) + color (greenyellow charge), with a +→−
-        half-barb. The +→− *orientation* is gauge-arbitrary until the M5.8
-        winding-density fix (consistent with WM6 honest-but-flipping).
+        (shaft ∝ |∇·n̂| charge density) + color (single = `_GLYPH_E_COLOR`, gradient =
+        greenyellow charge), with a +→− half-barb. The +→− *orientation* is
+        gauge-arbitrary until the M5.8 winding-density fix (consistent with WM6
+        honest-but-flipping).
 
     `show_level` mirrors SHOW_FLUX_MESH: 0 off, 1 XY, 2 +XZ, 3 all. Off-plane glyphs
     are zeroed (invisible 0-length segments).
@@ -777,17 +796,25 @@ def update_em_vector_glyphs(
     show_level: ti.i32,  # type: ignore
     size_mode: ti.i32,  # type: ignore
     color_mode: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
 ):
     """M5.6.5b — B-direction glyphs: half-arrow segments along ∇×n̂ (the curl/circulation vector).
 
-    Reuses the director-glyph BUFFERS (shaft + arrowhead) + 3-plane sampling, but the segment
-    points along the curl vector observables.director_curl_field, colored by ‖∇×n̂‖ on the
-    BLUERED gradient. Shaft length ∝ min(‖curl‖/scale, 1) so the view declutters where there is
-    no circulation (static charge ⇒ ~zero-length, invisible; real twist ⇒ visible arrows with a
-    half-barb tip showing the B direction). The barb scales with the shaft (also vanishes at
-    curl≈0). `scale` = the shared distortion magnitude max(|∇·n̂|, ‖∇×n̂‖) (matches WAVE_MENU 7).
-    show_level mirrors SHOW_DIRECTORS (0 off, 1 XY, 2 +XZ, 3 all). Writes director_glyph_vertices/
-    colors + director_glyph_arrow_vertices/colors; the launcher renders both via scene.lines.
+    Reuses the director-glyph BUFFERS (shaft + arrowhead) + 3-plane sampling; the segment points
+    along the curl vector observables.director_curl_field. Color modes (color_mode):
+      - **single (0)** — flat `_GLYPH_B_COLOR` (orange), keeps weak/far-field glyphs visible.
+      - **gradient (1)** — the SIGNED BLUERED N/S projection (`_curl_signed_proj` → `get_bluered`),
+        the SAME radial/axial scalar the WM7 flux-mesh N/S coloring uses (radial `(∇×n̂)·r̂` about
+        `curl_center` when `curl_radial=1` → red=N/blue=S poles; axial `(∇×n̂)·curl_axis` otherwise).
+        So a gradient-colored B glyph reads its *pole* (sign), not just magnitude — matching the
+        mesh under it (cf. the E glyph's greenyellow ±charge gradient).
+    Shaft length ∝ min(‖curl‖/scale, 1) so the view declutters where there is no circulation
+    (static charge ⇒ ~zero-length, invisible; real twist ⇒ visible arrows with a half-barb tip
+    showing the B direction). The barb scales with the shaft. `scale` = the shared distortion
+    magnitude max(|∇·n̂|, ‖∇×n̂‖) (matches WAVE_MENU 7). show_level mirrors SHOW_DIRECTORS
+    (0 off, 1 XY, 2 +XZ, 3 all). Writes director_glyph_vertices/colors + the arrow buffers.
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     stride = wave_field.GLYPH_STRIDE
@@ -856,12 +883,13 @@ def update_em_vector_glyphs(
                     shaft = length * ti.min(mag * inv_s, 1.0)
                 tip = pos + shaft * dirv
                 color = ti.Vector(
-                    [_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]]
-                )  # COLOR_MEDIUM single (see far field)
+                    [_GLYPH_B_COLOR[0], _GLYPH_B_COLOR[1], _GLYPH_B_COLOR[2]]
+                )  # single = flat _GLYPH_B_COLOR (orange), keeps far-field glyphs visible
                 if color_mode == 1:
-                    color = colormap.get_orange_color(
-                        mag, 0.0, scale + 1e-12
-                    )  # magnitude, matches WM7
+                    # gradient = SIGNED bluered N/S — same radial/axial projection as the WM7
+                    # mesh (red=N/blue=S), so the glyph shows its pole, not just magnitude
+                    proj = _curl_signed_proj(curl, i, j, k, curl_axis, curl_radial, curl_center)
+                    color = colormap.get_bluered_color(proj, -(scale + 1e-12), scale + 1e-12)
                 wave_field.director_glyph_vertices[idx + 0] = pos
                 wave_field.director_glyph_vertices[idx + 1] = tip
                 wave_field.director_glyph_colors[idx + 0] = color
