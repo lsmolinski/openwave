@@ -108,15 +108,15 @@ def _curl_signed_proj(
 ):
     """Signed scalar for the bluered N/S coloring of ∇×n̂ (B). Two projections:
 
-      - **radial** (`curl_radial=1`): `(∇×n̂)·r̂` with `r̂` from `curl_center` (voxel
-        coords) → the TRUE magnetic N/S poles — red where B flows OUT (N hemisphere,
-        cosθ>0), blue where it flows IN (S hemisphere) → `∝ cosθ`, matching a bar
-        magnet (Duda's N-red-top / S-blue-bottom). Needs a defined center.
-      - **axial** (`curl_radial=0`): `(∇×n̂)·curl_axis` against a FIXED axis → the
-        field's axial COMPONENT. For an ideal dipole this is red at BOTH poles
-        (B ∥ m̂ along the whole axis) + blue at the equator — physically real, but
-        reads as two red lobes, not a bar magnet. The default for general WM7 runs
-        where no single center exists (M5.8 wires radial to the real defect center)."""
+    - **radial** (`curl_radial=1`): `(∇×n̂)·r̂` with `r̂` from `curl_center` (voxel
+      coords) → the TRUE magnetic N/S poles — red where B flows OUT (N hemisphere,
+      cosθ>0), blue where it flows IN (S hemisphere) → `∝ cosθ`, matching a bar
+      magnet (Duda's N-red-top / S-blue-bottom). Needs a defined center.
+    - **axial** (`curl_radial=0`): `(∇×n̂)·curl_axis` against a FIXED axis → the
+      field's axial COMPONENT. For an ideal dipole this is red at BOTH poles
+      (B ∥ m̂ along the whole axis) + blue at the equator — physically real, but
+      reads as two red lobes, not a bar magnet. The default for general WM7 runs
+      where no single center exists (M5.8 wires radial to the real defect center)."""
     proj = curl_vec.dot(curl_axis)
     if curl_radial == 1:
         r = ti.Vector(
@@ -245,10 +245,16 @@ def update_flux_mesh_values(
             if curl_color == 1:
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
                     _curl_signed_proj(
-                        curl_vec, i, j, wave_field.fm_plane_z_idx,
-                        curl_axis, curl_radial, curl_center,
+                        curl_vec,
+                        i,
+                        j,
+                        wave_field.fm_plane_z_idx,
+                        curl_axis,
+                        curl_radial,
+                        curl_center,
                     ),
-                    -curl_s, curl_s,
+                    -curl_s,
+                    curl_s,
                 )
             else:
                 wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
@@ -348,10 +354,16 @@ def update_flux_mesh_values(
             if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
                     _curl_signed_proj(
-                        curl_vec, i, wave_field.fm_plane_y_idx, k,
-                        curl_axis, curl_radial, curl_center,
+                        curl_vec,
+                        i,
+                        wave_field.fm_plane_y_idx,
+                        k,
+                        curl_axis,
+                        curl_radial,
+                        curl_center,
                     ),
-                    -curl_s, curl_s,
+                    -curl_s,
+                    curl_s,
                 )
             else:
                 wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
@@ -449,10 +461,16 @@ def update_flux_mesh_values(
             if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
                     _curl_signed_proj(
-                        curl_vec, wave_field.fm_plane_x_idx, j, k,
-                        curl_axis, curl_radial, curl_center,
+                        curl_vec,
+                        wave_field.fm_plane_x_idx,
+                        j,
+                        k,
+                        curl_axis,
+                        curl_radial,
+                        curl_center,
                     ),
-                    -curl_s, curl_s,
+                    -curl_s,
+                    curl_s,
                 )
             else:
                 wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
@@ -471,7 +489,7 @@ def update_flux_mesh_values(
 
 
 # ================================================================
-# DIRECTOR-GLYPH RENDERING
+# GLYPH RENDERING
 # ================================================================
 # The flux mesh maps every voxel to ONE scalar (color + Z-warp). For a
 # director field where |ψ|=1 by construction, scalar magnitude is uninformative
