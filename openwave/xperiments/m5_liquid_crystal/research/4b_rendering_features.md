@@ -341,7 +341,7 @@ This is the central thermal observable (and the M5.8 headline), so it gets an ex
 > **null axis** (eigenvalue `0`). These are the formal/code names. The L1 *figure* labels the same
 > three as the ellipsoid semi-axes `a` (longest) > `b` (middle) > `c` (flat) — so `a`↔`n̂`/`1`,
 > `b`↔δ-axis, `c`↔null. `a/b/c` are geometry; `g,1,δ,0` are the eigenvalue lengths. (`0c §L1`.)
-
+>
 > ⚠️ **Correction (Rodrigo 2026-05-30) — the director glyph does NOT show the clock spin.** Two
 > independent reasons: **(1)** the clock twists the secondary axes *around* `n̂`, so the director
 > `n̂` itself **stays put** (it's the axle, not the clock-hand — invariant under the twist).
