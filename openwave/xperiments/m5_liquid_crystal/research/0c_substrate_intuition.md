@@ -29,7 +29,9 @@ them.
 | [7](#lesson-7--the-de-broglie-clock-why-the-particle-oscillates-zitterbewegung) | [The de Broglie clock: why the particle oscillates (Zitterbewegung)](#lesson-7--the-de-broglie-clock-why-the-particle-oscillates-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual (rotational, not translational); spinning vs oscillating; ω=2mc²/ℏ; spin & spin-½; de Broglie λ; time-crystal; → teleparallelism/4D* | `5a §10`, `theory/time_crystal.pdf`, `1b`, `4a §6` | |
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge | `engine3_observables.py`, `5a §5d`, `3a` | |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* | `engine4_render.py`, `4b Part 3`, `_launcher.py` | |
-| [10](#lesson-10--bridge-what-the-44-adds-preview) | [Bridge: what the 4×4 adds (preview)](#lesson-10--bridge-what-the-44-adds-preview) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*, the Minkowski negative-energy clock | `5a §10b`, `4a §6` | |
+| [10](#lesson-10--bridge-what-the-44-adds-preview) | [Bridge: what the 4×4 adds (preview)](#lesson-10--bridge-what-the-44-adds-preview) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*, the Minkowski negative-energy clock; *gravity = time-axis scale `g`; clock = rotation-into-time (engine); the two "times" (`dt` vs the matrix time index)* | `5a §10b`, `4a §6` | |
+| [11](#lesson-11--spin-½-deep-dive-future) | [Spin-½ deep-dive](#lesson-11--spin-½-deep-dive-future) | **where spin-½ comes in**: the SO(3) double-cover (2π ≠ identity, need 4π); the `2ω` apolar `n̂⊗n̂` doubling → `ω=2mc²/ℏ`; spin as the clock's angular momentum `L=ℏ/2`. *Seeds in L7 (spin & spin-½)*; full treatment needs the 4D clock (M5.8). | `5a §10`, `theory/time_crystal.pdf`, L7 | 🚧 **future deep-dive** |
+| [12](#lesson-12--handedness--chirality-deep-dive-future) | [Handedness / chirality deep-dive](#lesson-12--handedness--chirality-deep-dive-future) | **where handedness comes in**: the orbit/twist traversal sign (CW vs CCW) = a ± = chirality; matter/antimatter + neutrino helicity candidates; biaxial `π₁=Q₈` quaternion classes (not simple ±). *Seeds in L2 (M4-ellipse handedness) + L4 (topology charge sign)*; full treatment is M5.8/M5.9-era. | `4a §5`, L2/L4, `1b` | 🚧 **future deep-dive** |
 
 ---
 
@@ -92,16 +94,33 @@ below.) The figure above is drawn axis-aligned (`O = identity`):
 
 > 🔭 **What the 4th dimension adds to this 3×3 medium (preview → L10).** Everything in this lesson —
 > the biaxial frame, the EM/tilt axis, the QM/twist axis, charge, the null axis — already lives in
-> the **3×3 (spatial)** matrix. The M5.8 promotion to **4×4** doesn't replace any of it; it adds a
-> **time axis** on top, and that buys exactly two new things:
+> the **3×3 (spatial)** matrix. The M5.8 promotion to **4×4** doesn't replace any of it; it adds **one
+> thing — a time axis to the order parameter** — and because *both* gravity and the clock are
+> time-sector phenomena, both fall out of that single addition:
 >
-> | What 4D adds | Mechanism | Why it matters |
+> | What 4D adds (one thing: the time axis) | Mechanism | Why it matters |
 > | --- | --- | --- |
-> | **Gravity** — the `g` (boost) eigenvalue | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`: a 4th independent shape axis | gravity becomes a field we can carry + render (mass monopole, `1/r²` — L8, `4b §4.7`). `g` is *absent* in the live 3D run. |
-> | **A self-sustaining clock** — the time axis + Minkowski signature | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the defect's oscillation energetically favorable (Duda's negative-energy mechanism, Fig 10) | the Zitterbewegung clock **propels itself and stays coherent**. In free 3D the clock can't survive — it disperses/radiates away (M5.7.2); **4D is what makes the particle a stable time-crystal** (`5a §10b`, L7/L10). |
+> | **Gravity** = the time axis's **scale** `g` | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`; `g` scales the *time* axis, and `∇g` (how it varies in space) = the gravitational field | mirrors GR (`Φ` lives in the time-time metric `g₀₀`; gravity = time-rate varying in space). `g` is **absent in the live 3D run** — no time slot → no gravity. (Render spec: L8 / `4b §4.7`.) ⚠️ framework's least-developed sector — design expectation, not yet verified. |
+> | **The clock / engine** = a **rotation into** the time axis | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the oscillating state **lower-energy than static** (M5.8.0a: `E(ω=0)=2.87 > E*=2.02`) → spinning is the ground state | the Zitterbewegung clock **propels itself** — fuel = the rest mass (`ℏω = mc²`). In free 3D (all-`+`) spinning only *costs* energy → it disperses (M5.7.2); **4D = the stable time-crystal** (`5a §10b`, L7/L10). |
 >
-> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds
-> gravity (`g`) and the working clock (time + the Minkowski sign that auto-propels Zitterbewegung).**
+> **Three clarifications (Rodrigo's Qs 2026-05-31):**
+>
+> 1. **Two "times," same symbol.** `dt` (what `evolvePDE` steps) = time as the **evolution parameter**
+>    — exists in 3D and 4D alike (the movie's frame-rate). The **matrix time axis** = time as a
+>    **structural index** of the field (its rows/cols go x,y,z → t,x,y,z). Same coordinate time, two
+>    roles: the projector *running* the film vs a direction you can *face inside* each frame. The 3D
+>    sim already steps `dt`, but its field has no time-slot to rotate into — which is why the clock
+>    can't be a real de Broglie phase rotation until 4×4.
+> 2. **Why both come together.** Gravity = the time axis's *scale* (`g`); the clock = a *rotation
+>    into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither sooner.
+> 3. **Clock vs engine — it's both.** "Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`,
+>    the de Broglie clock Catillon measured). "Engine" = the *mechanism* (a self-propelled rotation;
+>    Duda's "oscillation propelled by mass"). A **self-propelling clock** whose output is a precise
+>    frequency = the particle's mass. Not perpetual motion — the spin *is* the rest energy.
+>
+> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds the
+> time axis — and from it, gravity (`g` = time-scale) and the self-propelling clock-engine (a
+> rotation into time the Minkowski sign keeps running).**
 
 ### What the medium *represents* — the order-parameter / coarse-graining reading
 
@@ -461,6 +480,46 @@ clock.
 > **Anchors:** `5a §10b`, `4a §6`.
 
 (to be filled during the session)
+
+---
+
+## Lesson 11 — Spin-½ deep-dive (FUTURE)
+
+> 🚧 **Future deep-dive (added 2026-05-31, Rodrigo: "where does spin-½ come in?").** Not taught yet
+> — slotted so it isn't lost. **Seeds already exist in L7** (spin & spin-½, the `2ω` doubling); this
+> lesson collects them into a focused treatment once the 4D clock (M5.8) makes spin concrete.
+>
+> **Where spin-½ comes in (the three threads to develop):**
+>
+> | Thread | One-line | Anchor |
+> | --- | --- | --- |
+> | **The `2ω` apolar doubling** | the clock's observable cycles at `2ω` because the order parameter is apolar (`n̂⊗n̂`, a 180° turn looks identical) → the origin of `ω_Zitt = 2mc²/ℏ` | L7 (radius/what-spins) |
+> | **The SO(3) double-cover** | a 2π rotation does **not** restore the state (you need 4π) — the topological signature of spin-½; `O∈SO(3)` lifts to `SU(2)` | L7, `5a §10` |
+> | **Spin = the clock's angular momentum** | `L = ℏ/2` is the conserved angular momentum of the self-propelled rotation (the engine's "flywheel") | L7, M5.8 |
+>
+> Prereqs: L7 (the clock) + L10/M5.8 (the 4D rotation that makes spin a genuine spacetime angular
+> momentum). Tie-in: Duda's slide gyroscope/`L=ℏ/2` inset (the L8 magnetic-moment figure).
+
+---
+
+## Lesson 12 — Handedness / chirality deep-dive (FUTURE)
+
+> 🚧 **Future deep-dive (added 2026-05-31, Rodrigo: "where/when does handedness come in?").** Not
+> taught yet — slotted so it isn't lost. **Seeds already exist in L2** (the M4-ellipse → ellipsoid
+> bridge: traversal sign = chirality) **and L4** (topological charge sign). This lesson collects them
+> once multi-defect / antimatter work (M5.8/M5.9) makes handedness load-bearing.
+>
+> **Where handedness comes in (the threads to develop):**
+>
+> | Thread | One-line | Anchor |
+> | --- | --- | --- |
+> | **Orbit traversal sign** | the ellipse/ellipsoid is traversed CW or CCW — a ± that one symmetric matrix carries "for free" alongside direction + shape = **chirality** | L2 seed |
+> | **Matter ↔ antimatter** | the charge-sign / winding-sign flip (the `±` hedgehog) — candidate for the matter/antimatter distinction | L4 (winding), §4.4 |
+> | **Neutrino helicity** | left/right-handed states; closed-vortex-loop candidates carry an intrinsic handedness | `1b`, M5.9 frontier |
+> | **Biaxial subtlety** | a biaxial defect's "sign" is **not** a simple `±` — it's a quaternion class (`π₁(SO(3)/D₂)=Q₈`); handedness there is richer | `0c §L4`, roadmap 5e |
+>
+> Prereqs: L2 (the ellipsoid encodes chirality) + L4 (topology/winding sign). Tie-in: the M5.6.5e
+> two-defect demo (what "opposite handedness/charge" even means for a biaxial defect).
 
 ---
 
