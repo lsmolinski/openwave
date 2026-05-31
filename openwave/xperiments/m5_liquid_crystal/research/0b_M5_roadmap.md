@@ -380,7 +380,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 - [ ] Seed a single biaxial hedgehog on the electron axis (δ) — extend the M5.6.5a production seeder to 4D.
 - [ ] Measure the intrinsic oscillation frequency at the core (FFT of director rotation / twist `ψ`), under the faithful kinetic.
 - [ ] **Target / calibration** (`5a §10b`): target is *physical* — `ω = 2 m_e c² / ℏ ≈ 1.55 × 10²¹ rad/s` (electron Zitterbewegung) — but the sim runs in natural units. Test the dimensionless self-consistency ratio `ω·ℏ/(2 H_rest) → 1` (`ℏ↔δ`), with absolute Hz set by the Faber `r₀` scale-fix (M5.6.3, `r₀=2.2132 fm→0.511 MeV`). Overlaps the M5.9 mass-calibration handle.
-- [ ] **Spin-½ emerges here** — the 4D clock makes spin a genuine spacetime angular momentum (`L=ℏ/2`, the SO(3) double-cover, the `2ω` apolar doubling → `ω=2mc²/ℏ`). Teaching deep-dive deferred to **`0c` Lesson 11** (seeds in L7); not a gate, a concept to collect once the clock is concrete.
+- [ ] **Spin-½ emerges here** — the 4D clock makes spin a genuine spacetime angular momentum (`L=ℏ/2`, the SO(3) double-cover, the `2ω` apolar doubling → `ω=2mc²/ℏ`). Teaching deep-dive folded into **`0c` Lesson 7** (the clock-engine + spin-½, post-2026-05-31 refactor); not a gate, a concept to collect once the clock is concrete.
 
 **Mass → frequency table** (validation targets across particle species):
 
@@ -418,7 +418,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 
 > Standard Model correspondence. The biaxial Λ = (g, 1, δ, 0) gives 3 axis-choices → 3 lepton families with the same Q but different masses (e/μ/τ). Cornell potential for quark strings via topological vortex.
 >
-> **Handedness / chirality** (matter↔antimatter charge-sign, neutrino helicity, the biaxial `π₁=Q₈` quaternion classes — not a simple `±`) becomes load-bearing here and at composites (9d) / the two-defect demo (5e). Teaching deep-dive deferred to **`0c` Lesson 12** (seeds in L2 ellipse-handedness + L4 winding-sign).
+> **Handedness / chirality** (matter↔antimatter charge-sign, neutrino helicity, the biaxial `π₁=Q₈` quaternion classes — not a simple `±`) becomes load-bearing here and at composites (9d) / the two-defect demo (5e). Teaching deep-dive deferred to **`0c` Lesson 10** (the handedness/chirality + composites finale, post-2026-05-31 refactor; seeds in L2 ellipse-handedness + L4 winding-sign).
 
 - [ ] Seed hedgehogs along the 3 different axes of the biaxial M field
 - [ ] **Calibrate `(g, δ) numerically** against observed lepton-mass ratios: μ/e ≈ 207, τ/e ≈ 3477`. Per Duda 2026-04-19 guidance, these are calibration parameters, not ab-initio derivations
