@@ -440,6 +440,55 @@ def compute_director_em_scale(
 
 
 # ================================================================
+# VIZ.4 — MAGNETIC-DIPOLE PLACEHOLDER SAMPLE (M5.6.5f stage 1)
+# ================================================================
+# A *static* hedgehog is a pure ELECTRIC charge (∇×n̂ ≈ 0) — no circulating B,
+# no poles — so the bluered N/S coloring (VIZ.2 WM7) and the B glyphs (VIZ.3
+# state 3) have nothing to show until a twisting/spinning defect generates a
+# real circulating B (the Zitterbewegung clock, M5.8). To validate the RENDER
+# path now, this kernel overwrites the curl observables with an ideal analytic
+# dipole field. It is a render unit-test source, NOT physics (4b §4.5 / §5.3) —
+# the production source swaps in at M5.8 with no render change. Delete or keep
+# behind the DIPOLE_SAMPLE flag once the real B exists.
+
+
+@ti.kernel
+def fill_dipole_sample_B(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+    m_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    cx: ti.f32,  # type: ignore
+    cy: ti.f32,  # type: ignore
+    cz: ti.f32,  # type: ignore
+    r0_vox: ti.f32,  # type: ignore
+    amp: ti.f32,  # type: ignore
+):
+    """Write the ideal magnetic-dipole field B(r) = amp·[3(m̂·r̂)r̂ − m̂]/max(r,r0)³
+    (center cx,cy,cz in voxel coords, moment direction m_axis) into the curl
+    observables, OVERWRITING compute_director_em's curl output.
+
+    Reads:  nothing (analytic).
+    Writes: observables.director_curl_field (B vector, for glyphs + mesh-warp),
+            observables.director_curl_mag_field (‖B‖, for orange-magnitude + scale).
+    `r0_vox` regularizes the 1/r³ core singularity (B saturates inside r0). `amp`
+    folds μ₀/4π·|m| — irrelevant to the self-normalizing color/size scales, kept
+    for numerical range. The signed (∇×n̂)·axis coloring (CURL_AXIS = m_axis) then
+    shows the dipole signature: RED axial lobes (both poles) + BLUE equatorial band."""
+    mhat = m_axis.normalized()
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        r = ti.Vector(
+            [ti.cast(i, ti.f32) - cx, ti.cast(j, ti.f32) - cy, ti.cast(k, ti.f32) - cz]
+        )
+        dist = r.norm()
+        rhat = r / (dist + 1e-12)
+        reff = ti.max(dist, r0_vox)
+        b = amp * (3.0 * mhat.dot(rhat) * rhat - mhat) / (reff * reff * reff)
+        observables.director_curl_field[i, j, k] = b
+        observables.director_curl_mag_field[i, j, k] = b.norm()
+
+
+# ================================================================
 # WINDING-NUMBER DIAGNOSTIC (M5.1 task 8)
 # ================================================================
 # Compute the topological charge Q of a director field on a sphere around

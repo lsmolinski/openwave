@@ -177,7 +177,9 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.GLYPH_VECTOR = 0  # glyph vector source — 0=director (E field lines), 1=∇×n̂ (B field)
+        self.GLYPH_VECTOR = (
+            0  # glyph state — 0=director only, 1=director+delta, 2=E field, 3=B field (∇×n̂)
+        )
         self.GLYPH_SIZE = (
             0  # glyph shaft — 0=unit (director), 1=field magnitude (E:|∇·n̂|, B:‖∇×n̂‖)
         )
@@ -193,6 +195,19 @@ class SimulationState:
         # Color control variables
         self.COLOR_THEME = "OCEAN"
         self.WAVE_MENU = 1
+        # VIZ.2 — WM7 EM-curl color: 0=orange ‖∇×n̂‖ magnitude (honest static default),
+        # 1=bluered signed (∇×n̂)·axis → N=red/S=blue poles. Axis default ẑ (auto-axis = M5.8).
+        self.CURL_COLOR = 0
+        self.CURL_AXIS = ti.Vector([0.0, 0.0, 1.0], dt=ti.f32)
+        # VIZ.4 — magnetic-dipole placeholder sample (M5.6.5f stage 1). When True,
+        # the curl observables are overwritten each frame with an analytic dipole B
+        # about DIPOLE_AXIS at DIPOLE_CENTER so the N/S coloring + B glyphs + moment
+        # glyph can be validated before the real circulating B exists (M5.8). Set by
+        # the _viz_sample_dipole xparameter; off for all physics runs.
+        self.DIPOLE_SAMPLE = False
+        self.DIPOLE_AXIS = ti.Vector([0.0, 0.0, 1.0], dt=ti.f32)
+        self.DIPOLE_CENTER = [0.5, 0.5, 0.5]  # fractional grid coords
+        self.DIPOLE_R0_VOX = 3.0  # core regularization radius (voxels)
 
         # Data Analytics & video export toggles
         self.INSTRUMENTATION = False
@@ -249,6 +264,9 @@ class SimulationState:
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
         self.SHOW_GLYPHS = ui.get("SHOW_GLYPHS", 0)
+        self.GLYPH_VECTOR = ui.get("GLYPH_VECTOR", 0)  # 0=director 1=+delta 2=E 3=B
+        self.GLYPH_SIZE = ui.get("GLYPH_SIZE", 0)  # 0=unit, 1=field magnitude
+        self.GLYPH_COLOR = ui.get("GLYPH_COLOR", 1)  # 0=single, 1=field gradient
         self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
@@ -258,6 +276,7 @@ class SimulationState:
         color = params["color_defaults"]
         self.COLOR_THEME = color["COLOR_THEME"]
         self.WAVE_MENU = color["WAVE_MENU"]
+        self.CURL_COLOR = color.get("CURL_COLOR", 0)  # VIZ.2 WM7: 0=orange mag, 1=bluered N/S
 
         # Data Analytics & video export toggles
         diag = params["analytics"]
@@ -272,6 +291,17 @@ class SimulationState:
         # M5.1 task 6 — auto-relaxation (optional; 0 = manual via RELAX button only)
         topo_seed = params.get("topology_seed") or {}
         self.AUTO_RELAX_STEPS = topo_seed.get("AUTO_RELAX_STEPS", 0)
+
+        # VIZ.4 — magnetic-dipole placeholder sample (optional; off unless the
+        # _viz_sample_dipole xparameter sets it). DIPOLE_AXIS doubles as CURL_AXIS
+        # so the bluered N/S projection is taken along the moment direction.
+        self.DIPOLE_SAMPLE = bool(topo_seed.get("DIPOLE_SAMPLE", False))
+        if self.DIPOLE_SAMPLE:
+            ax = topo_seed.get("DIPOLE_AXIS", [0.0, 0.0, 1.0])
+            self.DIPOLE_AXIS = ti.Vector([float(ax[0]), float(ax[1]), float(ax[2])], dt=ti.f32)
+            self.CURL_AXIS = ti.Vector([float(ax[0]), float(ax[1]), float(ax[2])], dt=ti.f32)
+            self.DIPOLE_CENTER = topo_seed.get("CENTER", [0.5, 0.5, 0.5])
+            self.DIPOLE_R0_VOX = float(topo_seed.get("DIPOLE_R0_VOX", 3.0))
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -419,7 +449,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
     """
     selected_xperiment = None
 
-    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.36) as sub:
+    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.33) as sub:
         sub.text("(needs window reload)", color=colormap.LIGHT_BLUE[1])
         for xp_name in xperiment_mgr.available_xperiments:
             display_name = xperiment_mgr.get_xperiment_display_name(xp_name)
@@ -440,16 +470,24 @@ def display_xperiment_launcher(xperiment_mgr, state):
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.36, 0.16, 0.36) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.39) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
         state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
-        # glyph shows the director (E-field lines) or ∇×n̂ (B-field direction)
-        if sub.checkbox("EM Field Glyph (off=E/on=B)", state.GLYPH_VECTOR == 1):
-            state.GLYPH_VECTOR = 1
-        else:
+        # VIZ.3 — 4-state glyph select (mutually exclusive checkboxes):
+        #   0=Director Vector (principal axis n̂ only),
+        #   1=Director + Delta Vectors (n̂ + delta cross-bar = biaxial ellipsoid frame),
+        #   2=Electric Field (+→− barb, charge-colored), 3=Magnetic Field (∇×n̂).
+        # Greek δ is spelled "Delta" — GGUI cannot render Greek glyphs.
+        if sub.checkbox("Director Vector", state.GLYPH_VECTOR == 0):
             state.GLYPH_VECTOR = 0
+        if sub.checkbox("Director + Delta Vectors", state.GLYPH_VECTOR == 1):
+            state.GLYPH_VECTOR = 1
+        if sub.checkbox("Electric Field (divergence)", state.GLYPH_VECTOR == 2):
+            state.GLYPH_VECTOR = 2
+        if sub.checkbox("Magnetic Field (curl)", state.GLYPH_VECTOR == 3):
+            state.GLYPH_VECTOR = 3
         # shaft length: unit (director, all glyphs visible) vs field magnitude (E: |∇·n̂| charge
         # density, B: ‖∇×n̂‖); color: single flat COLOR_MEDIUM (see far field) vs field gradient.
         if sub.checkbox("Glyph Size (unit/magnitude)", state.GLYPH_SIZE == 1):
@@ -498,6 +536,13 @@ def display_wave_menu(state):
         if sub.checkbox("EM curl (rotation/B)", state.WAVE_MENU == 7):
             state.WAVE_MENU = 7
             state.wave_field.create_flux_mesh()
+        # VIZ.2: WM7 color toggle — orange ‖∇×n̂‖ magnitude (off) vs bluered signed (∇×n̂)·ẑ
+        # → N=red/S=blue poles (on). The vector-warp (fabric-twist) is always on for WM7.
+        if state.WAVE_MENU == 7:
+            if sub.checkbox("  > B color N/S (bluered)", state.CURL_COLOR == 1):
+                state.CURL_COLOR = 1
+            else:
+                state.CURL_COLOR = 0
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
@@ -530,10 +575,15 @@ def display_wave_menu(state):
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("div (charge/E)", 0.00, 0.73, 0.08, 0.06) as sub:
                 sub.text(" -           +")
-        if state.WAVE_MENU == 7:  # EM curl ‖∇×n̂‖ on orange gradient
-            render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
-            with render.gui.sub_window("curl (rot/B)", 0.00, 0.73, 0.08, 0.06) as sub:
-                sub.text("0          max")
+        if state.WAVE_MENU == 7:  # EM curl: orange magnitude OR bluered signed (∇×n̂)·ẑ N/S
+            if state.CURL_COLOR == 1:
+                render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
+                with render.gui.sub_window("B (S/N)", 0.00, 0.73, 0.08, 0.06) as sub:
+                    sub.text(" S           N")
+            else:
+                render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
+                with render.gui.sub_window("curl (rot/B)", 0.00, 0.73, 0.08, 0.06) as sub:
+                    sub.text("0           max")
 
 
 def display_level_specs(state, level_bar_vertices):
@@ -622,6 +672,7 @@ def initialize_xperiment(state):
     global ib_palette_vertices, ib_palette_colors
     global bp_palette_vertices, bp_palette_colors
     global gy_palette_vertices, gy_palette_colors
+    global br_palette_vertices, br_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
@@ -636,6 +687,9 @@ def initialize_xperiment(state):
     )
     gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
         colormap.greenyellow, 0.00, 0.72, 0.079, 0.01
+    )
+    br_palette_vertices, br_palette_colors = colormap.get_palette_scale(
+        colormap.bluered, 0.00, 0.72, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -727,6 +781,11 @@ def initialize_xperiment(state):
             print(f"[M5.1] auto-relaxing for {state.AUTO_RELAX_STEPS} gradient-descent steps...")
             relax_field(state, state.AUTO_RELAX_STEPS)
             print("[M5.1] auto-relax complete")
+
+        # VIZ.3: populate the derived eigenframe (director_nhat + director_mid +
+        # eigenvalues) from the seeded M so a PAUSED boot renders the δ-clock-hand
+        # glyph correctly before the first Evolve-PDE step. Cheap, runs once.
+        pde.eigen_decompose(state.wave_field)
 
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
@@ -829,6 +888,18 @@ def compute_field_observables(state):
     # ∇·n̂ (splay = Coulomb-charge-like) + ‖∇×n̂‖ (twist+bend = B-like circulation).
     # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered) / 7 (‖∇×n̂‖, ironbow).
     observables.compute_director_em(state.wave_field, state.observables)
+    # VIZ.4: overwrite the curl (B) field with an analytic dipole placeholder so the
+    # N/S coloring + B glyphs render correctly before the real circulating B exists
+    # (M5.8). div (charge) is left as the real seeded splay for context. Same center-
+    # voxel convention as the biaxial_hedgehog seed so the dipole sits on the defect.
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        cx = state.DIPOLE_CENTER[0] * (wf.nx - 1)
+        cy = state.DIPOLE_CENTER[1] * (wf.ny - 1)
+        cz = state.DIPOLE_CENTER[2] * (wf.nz - 1)
+        observables.fill_dipole_sample_B(
+            wf, state.observables, state.DIPOLE_AXIS, cx, cy, cz, state.DIPOLE_R0_VOX, 1.0
+        )
     observables.compute_director_em_scale(state.wave_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
@@ -900,6 +971,27 @@ def compute_force_motion(state):
     force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
 
+def _curl_projection(state):
+    """`(curl_radial, curl_center)` for the bluered N/S projection of ∇×n̂ (B).
+
+    Shared by the WM7 flux mesh AND the B-field glyphs so their N/S coloring is
+    identical. For the dipole sample → radial `(∇×n̂)·r̂` about the defect center
+    (true N=red/S=blue poles, matching a bar magnet); general runs → fixed-axis
+    projection (radial=0, center unused). center is in voxel coords.
+    """
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        return 1, ti.Vector(
+            [
+                state.DIPOLE_CENTER[0] * (wf.nx - 1),
+                state.DIPOLE_CENTER[1] * (wf.ny - 1),
+                state.DIPOLE_CENTER[2] * (wf.nz - 1),
+            ],
+            dt=ti.f32,
+        )
+    return 0, ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
+
+
 def render_elements(state):
     """Render grid, edges, flux mesh and test particles."""
     if state.SHOW_GRID:
@@ -909,12 +1001,20 @@ def render_elements(state):
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
+        # VIZ.4: for the dipole sample, color the bluered B by the RADIAL projection
+        # (∇×n̂)·r̂ about the defect center → true N/S poles (red N above / blue S below,
+        # matching a bar magnet). General runs use the fixed-axis projection (radial=0).
+        curl_radial, curl_center = _curl_projection(state)
         viz.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
             state.observables,
             state.WAVE_MENU,
             state.WARP_MESH,
+            state.CURL_COLOR,
+            state.CURL_AXIS,  # VIZ.2: fixed-axis projection for bluered N/S (default ẑ)
+            curl_radial,  # VIZ.4: 1 = radial (∇×n̂)·r̂ → true N/S poles (dipole sample)
+            curl_center,  # defect center in voxel coords (radial mode only)
         )
         flux_mesh.render_flux_mesh(render.scene, state.wave_field, state.SHOW_FLUX_MESH)
 
@@ -923,11 +1023,18 @@ def render_elements(state):
     # Renders on top of (or instead of) the flux mesh; fast (~768 segments).
     if state.SHOW_GLYPHS > 0:
         glyph_length = 0.02  # ~2% of universe edge in normalized [0,1] coords
-        if state.GLYPH_VECTOR == 1:  # M5.6.5b: B-field vectors (∇×n̂) — reuse glyph buffers
+        # VIZ.3 — 4-state glyph select (GLYPH_VECTOR):
+        #   0 = Director n̂ only (principal axis; apolar, agnostic to size/color)
+        #   1 = Director + Delta (n̂ + CYAN delta cross-bar = ellipsoid frame; apolar)
+        #   2 = E-field (n̂ + +→− barb, charge-colored; honors size/color)   ← polar
+        #   3 = B-field (∇×n̂, em-vector kernel)                             ← polar
+        if state.GLYPH_VECTOR == 3:  # B-field vectors (∇×n̂) — em-vector kernel
             em_scale = max(
                 state.observables.director_div_absmax[None],
                 state.observables.director_curl_max[None],
             )  # shared distortion scale (matches WAVE_MENU 7)
+            # gradient color uses the SAME signed N/S projection as the WM7 mesh
+            curl_radial, curl_center = _curl_projection(state)
             viz.update_em_vector_glyphs(
                 state.wave_field,
                 state.observables,
@@ -936,6 +1043,9 @@ def render_elements(state):
                 state.SHOW_GLYPHS,
                 state.GLYPH_SIZE,
                 state.GLYPH_COLOR,
+                state.CURL_AXIS,
+                curl_radial,
+                curl_center,
             )
             render.scene.lines(
                 state.wave_field.director_glyph_vertices,
@@ -948,34 +1058,55 @@ def render_elements(state):
                 per_vertex_color=state.wave_field.director_glyph_arrow_colors,
                 width=2.0,
             )
-        else:  # director / E-field lines (the LC field lines)
-            arrow_length = (
-                glyph_length * viz.ARROWHEAD_LENGTH_FRAC if viz.SHOW_DIRECTOR_ARROWHEAD else 0.0
-            )
-            # M5.6.5b: glyphs colored by ∇·n̂ (charge, greenyellow — matches WM6 mesh)
+        else:  # Director-only (0) / Director+Delta (1) / E-field (2) — centered glyph kernel
             div_scale = state.observables.director_div_absmax[None]
+            glyph_mode = 1 if state.GLYPH_VECTOR == 2 else 0  # 0=Director, 1=E-field
+            show_delta = 1 if state.GLYPH_VECTOR == 1 else 0  # delta cross-bar only in state 1
             viz.update_director_glyphs(
                 state.wave_field,
                 state.observables,
                 glyph_length,
-                arrow_length,
                 state.SHOW_GLYPHS,
                 div_scale,
                 state.GLYPH_SIZE,
                 state.GLYPH_COLOR,
+                glyph_mode,
+                show_delta,
             )
             render.scene.lines(
                 state.wave_field.director_glyph_vertices,
                 per_vertex_color=state.wave_field.director_glyph_colors,
                 width=2.0,
             )
-            # Half-arrowhead barb pass — toggled by engine4_render.SHOW_DIRECTOR_ARROWHEAD.
-            if viz.SHOW_DIRECTOR_ARROWHEAD:
-                render.scene.lines(
-                    state.wave_field.director_glyph_arrow_vertices,
-                    per_vertex_color=state.wave_field.director_glyph_arrow_colors,
-                    width=2.0,
-                )
+            # Second-segment pass: delta cross-bar (state 1) OR E +→− barb (mode 1).
+            # The arrow buffer is always written (blanked in director-only state 0).
+            render.scene.lines(
+                state.wave_field.director_glyph_arrow_vertices,
+                per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                width=2.0,
+            )
+
+    # VIZ.4 — magnetic-moment vector glyph (the placeholder dipole's axis marker).
+    # Rendered independently of SHOW_GLYPHS so the moment is always visible alongside
+    # the N/S-colored field. YELLOW + thick so it reads as the principal axis.
+    if state.DIPOLE_SAMPLE:
+        wf = state.wave_field
+        viz.update_moment_glyph(
+            wf,
+            state.DIPOLE_AXIS,
+            state.DIPOLE_CENTER[0] * (wf.nx - 1),
+            state.DIPOLE_CENTER[1] * (wf.ny - 1),
+            state.DIPOLE_CENTER[2] * (wf.nz - 1),
+            0.18,  # normalized length — larger than voxel glyphs (~0.02)
+            ti.Vector(
+                [colormap.YELLOW[1][0], colormap.YELLOW[1][1], colormap.YELLOW[1][2]], dt=ti.f32
+            ),
+        )
+        render.scene.lines(
+            wf.moment_glyph_vertices,
+            per_vertex_color=wf.moment_glyph_colors,
+            width=2.0,
+        )
 
     # Render granule positional displacement (only when flux mesh is active, since position
     # is sampled from full-grid displacement data)
@@ -1011,7 +1142,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topo_biaxial1_von"
+    default_xperiment = selected_xperiment_arg or "_viz_sample_dipole"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

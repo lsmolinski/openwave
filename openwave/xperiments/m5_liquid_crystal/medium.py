@@ -177,6 +177,10 @@ class WaveField:
         # ‖M−D‖_F amplitude tracker and the biaxial-ellipsoid render option.
         # These are stateless caches: recomputed every frame, valid even when paused.
         self.director_nhat = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # eigvec
+        # VIZ.3: MIDDLE (δ) eigenvector — the "clock-hand" axis that sweeps around the
+        # principal director under the Zitterbewegung twist (the δ-clock-hand glyph).
+        # Derived per-frame in eigen_decompose alongside director_nhat; apolar (n̂≡−n̂).
+        self.director_mid = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # mid eigvec
         self.eigenvalues = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # λ₁≥λ₂≥λ₃/voxel
         # Working buffer for the director-equivalent Coulomb relaxation (M5.4 gate):
         # relax_director_step writes the next director here, then M is rebuilt from it.
@@ -313,6 +317,12 @@ class WaveField:
         # without re-running the kernel.
         self.director_glyph_arrow_vertices = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
         self.director_glyph_arrow_colors = ti.Vector.field(3, ti.f32, (2 * self.n_glyphs))
+
+        # VIZ.4 — single magnetic-MOMENT vector glyph at the defect center (the
+        # placeholder dipole sample). 4 vertices: shaft (base→tip) + barb (tip→back).
+        # Static (set once by engine4_render.update_moment_glyph when DIPOLE_SAMPLE).
+        self.moment_glyph_vertices = ti.Vector.field(3, ti.f32, 4)
+        self.moment_glyph_colors = ti.Vector.field(3, ti.f32, 4)
 
     def swap_buffers(self):
         """

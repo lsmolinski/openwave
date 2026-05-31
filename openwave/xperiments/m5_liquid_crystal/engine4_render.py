@@ -16,11 +16,6 @@ import taichi as ti
 
 from openwave.common import colormap
 
-# Single-color glyph mode (M5.6.5b "Glyph Color = single"): a flat color so weak/far-field
-# glyphs stay visible (the gradient palettes fade them toward black). Sourced from the
-# colormap module (COLOR_MEDIUM = light blue) — single source of truth, no hardcoded RGB.
-_GLYPH_SINGLE_COLOR = colormap.COLOR_MEDIUM[1]  # (r, g, b) tuple, resolved at kernel compile time
-
 # ================================================================
 # POSITION RENDER
 # ================================================================
@@ -96,6 +91,64 @@ def sample_position_to_render(
 # projection to be rendered.
 
 
+@ti.func
+def _curl_signed_proj(
+    curl_vec: ti.types.vector(3, ti.f32),  # type: ignore
+    vi: ti.i32,  # type: ignore
+    vj: ti.i32,  # type: ignore
+    vk: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
+):
+    """Signed scalar for the bluered N/S coloring of ∇×n̂ (B). Two projections:
+
+    - **radial** (`curl_radial=1`): `(∇×n̂)·r̂` with `r̂` from `curl_center` (voxel
+      coords) → the TRUE magnetic N/S poles — red where B flows OUT (N hemisphere,
+      cosθ>0), blue where it flows IN (S hemisphere) → `∝ cosθ`, matching a bar
+      magnet (Duda's N-red-top / S-blue-bottom). Needs a defined center.
+    - **axial** (`curl_radial=0`): `(∇×n̂)·curl_axis` against a FIXED axis → the
+      field's axial COMPONENT. For an ideal dipole this is red at BOTH poles
+      (B ∥ m̂ along the whole axis) + blue at the equator — physically real, but
+      reads as two red lobes, not a bar magnet. The default for general WM7 runs
+      where no single center exists (M5.8 wires radial to the real defect center)."""
+    proj = curl_vec.dot(curl_axis)
+    if curl_radial == 1:
+        r = ti.Vector(
+            [
+                ti.cast(vi, ti.f32) - curl_center[0],
+                ti.cast(vj, ti.f32) - curl_center[1],
+                ti.cast(vk, ti.f32) - curl_center[2],
+            ]
+        )
+        rhat = r / (r.norm() + 1e-12)
+        proj = curl_vec.dot(rhat)
+    return proj
+
+
+# Bluered signed-color magnitude compression (γ < 1). The B-field (∇×n̂) of a dipole falls
+# off as 1/r³ — ~9× steeper than the E charge's 1/r — so a LINEAR map dumps everything beyond
+# the core into black (only a thin shell of glyphs/mesh near the poles stays visible). γ<1
+# stretches small/mid magnitudes toward the palette extremes so a wide area reads in visible
+# color; the peak still clips to the extreme, 0 stays black-center. 1.0 = linear (original).
+# 0.4 spreads the dipole from the core out to ~r=24 voxels (probe 2026-05-31). Tune freely.
+_BLUERED_GAMMA = 0.4
+
+
+@ti.func
+def _gamma_signed(value: ti.f32, scale: ti.f32) -> ti.f32:  # type: ignore
+    """SIGNED, γ-compressed, normalized magnitude ∈ [−1, 1] for bluered N/S coloring.
+
+    sign → red(+) / blue(−); `|value/scale|^γ` lifts mid/far values toward ±1 (the palette
+    extremes) while the peak clips to ±1 and 0 stays 0 (black-center). `scale` should be the
+    field's OWN max (e.g. `director_curl_max` for B), NOT a shared max — otherwise the peak
+    never reaches the extreme. Returns a SCALAR (feed it to `get_bluered_color(_, -1, 1)`),
+    shared by the B glyph and the WM7 mesh so their N/S coloring matches."""
+    t = ti.math.clamp(value / (scale + 1e-12), -1.0, 1.0)
+    sgn = 1.0 - 2.0 * ti.cast(t < 0.0, ti.f32)  # branchless sign: +1 if t≥0 else −1
+    return sgn * ti.pow(ti.abs(t), _BLUERED_GAMMA)
+
+
 @ti.kernel
 def update_flux_mesh_values(
     wave_field: ti.template(),  # type: ignore
@@ -103,6 +156,10 @@ def update_flux_mesh_values(
     observables: ti.template(),  # type: ignore
     wave_menu: ti.i32,  # type: ignore
     warp_mesh: ti.i32,  # type: ignore
+    curl_color: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
 ):
     """
     Update flux mesh colors and vertices by sampling wave properties from voxel grid.
@@ -199,10 +256,45 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[i, j, wave_field.fm_plane_z_idx]
-            wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[i, j, wave_field.fm_plane_z_idx]
+            # VIZ.2/VIZ.4 color toggle: 0=orange magnitude (honest static default),
+            # 1=bluered signed — radial (∇×n̂)·r̂ = true N/S poles when curl_radial,
+            # else axial (∇×n̂)·curl_axis. See _curl_signed_proj.
+            if curl_color == 1:
+                # bluered N/S: γ-compressed against B's OWN max (director_curl_max), so the
+                # steep 1/r³ dipole stays visible far from the core (not curl_s, which is the
+                # shared E-inclusive max used for the warp/size declutter below).
+                wave_field.fluxmesh_xy_colors[i, j] = colormap.get_bluered_color(
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            i,
+                            j,
+                            wave_field.fm_plane_z_idx,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
+                    ),
+                    -1.0,
+                    1.0,
+                )
+            else:
+                wave_field.fluxmesh_xy_colors[i, j] = colormap.get_orange_color(
+                    curl_v, 0.0, curl_s
+                )
+            # VIZ.2 vector-warp: displace the vertex by the RAW ∇×n̂ vector (all 3
+            # components, scaled), so the mesh deforms as a *twist in fabric* showing
+            # the B-field rotation + handedness — not just a perpendicular magnitude lift.
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_xy_vertices[i, j] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[0] * warp_amt,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[1] * warp_amt,
+                    wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
+                    + curl_vec[2] * warp_amt,
+                ]
             )
 
     # ================================================================
@@ -282,10 +374,38 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[i, wave_field.fm_plane_y_idx, k]
-            wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[i, wave_field.fm_plane_y_idx, k]
+            if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
+                # γ-compressed against B's own max (see XY plane note)
+                wave_field.fluxmesh_xz_colors[i, k] = colormap.get_bluered_color(
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            i,
+                            wave_field.fm_plane_y_idx,
+                            k,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
+                    ),
+                    -1.0,
+                    1.0,
+                )
+            else:
+                wave_field.fluxmesh_xz_colors[i, k] = colormap.get_orange_color(
+                    curl_v, 0.0, curl_s
+                )
+            # VIZ.2 vector-warp by raw ∇×n̂ (fabric-twist)
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_xz_vertices[i, k] = ti.Vector(
+                [
+                    (ti.cast(i, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[0] * warp_amt,
+                    wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
+                    + curl_vec[1] * warp_amt,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[2] * warp_amt,
+                ]
             )
 
     # ================================================================
@@ -365,15 +485,43 @@ def update_flux_mesh_values(
                 + 1e-12
             )
             curl_v = observables.director_curl_mag_field[wave_field.fm_plane_x_idx, j, k]
-            wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(curl_v, 0.0, curl_s)
-            wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                curl_v / curl_s * 0.3 * warp_mesh / 300.0
-                + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+            curl_vec = observables.director_curl_field[wave_field.fm_plane_x_idx, j, k]
+            if curl_color == 1:  # bluered signed — radial r̂ (N/S poles) or axial
+                # γ-compressed against B's own max (see XY plane note)
+                wave_field.fluxmesh_yz_colors[j, k] = colormap.get_bluered_color(
+                    _gamma_signed(
+                        _curl_signed_proj(
+                            curl_vec,
+                            wave_field.fm_plane_x_idx,
+                            j,
+                            k,
+                            curl_axis,
+                            curl_radial,
+                            curl_center,
+                        ),
+                        observables.director_curl_max[None],
+                    ),
+                    -1.0,
+                    1.0,
+                )
+            else:
+                wave_field.fluxmesh_yz_colors[j, k] = colormap.get_orange_color(
+                    curl_v, 0.0, curl_s
+                )
+            # VIZ.2 vector-warp by raw ∇×n̂ (fabric-twist)
+            warp_amt = 0.3 * warp_mesh / 300.0 / curl_s
+            wave_field.fluxmesh_yz_vertices[j, k] = ti.Vector(
+                [
+                    wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
+                    + curl_vec[0] * warp_amt,
+                    (ti.cast(j, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[1] * warp_amt,
+                    (ti.cast(k, ti.f32) + 0.5) / wave_field.max_grid_size + curl_vec[2] * warp_amt,
+                ]
             )
 
 
 # ================================================================
-# DIRECTOR-GLYPH RENDERING
+# GLYPH RENDERING
 # ================================================================
 # The flux mesh maps every voxel to ONE scalar (color + Z-warp). For a
 # director field where |ψ|=1 by construction, scalar magnitude is uninformative
@@ -396,6 +544,27 @@ def update_flux_mesh_values(
 #
 # Design doc: research/2b_director_glyph_rendering.md.
 
+# ----------------------------------------------------------------
+# GLYPH PARAMETERS — colors + geometry (single place; tweak freely)
+# ----------------------------------------------------------------
+# Per-glyph-TYPE colors. Each of the four glyph kinds gets its OWN color so they
+# never read as the same thing on screen. To re-theme, swap the colormap.* source
+# (or drop in a raw (r,g,b) tuple). Resolved to tuples at kernel-compile time.
+#
+#   - DIRECTOR / DELTA are ORIENTATION glyphs → ALWAYS use their color (they ignore
+#     the Glyph-Color toggle; size/color carry no field meaning for an axis).
+#   - E / B are FIELD glyphs with two color modes: "single" = the flat color below
+#     (keeps weak/far-field glyphs visible — gradient palettes fade to black), and
+#     "gradient" = a value-mapped palette (greenyellow for E charge, orange for B
+#     magnitude) handled inline in the kernels and NOT governed by these constants.
+#     The single-mode colors are kept in the SAME family as each field's gradient
+#     (E green↔greenyellow, B orange↔orange) so toggling modes stays coherent, and
+#     distinct from the director's light-blue so "single" no longer collides with it.
+_GLYPH_DIRECTOR_COLOR = colormap.COLOR_MEDIUM[1]  # light blue — n̂ principal axis (orientation)
+_GLYPH_DELTA_COLOR = colormap.COLOR_FIELD[1]  # cyan — δ cross-bar (ellipsoid minor axis)
+_GLYPH_E_COLOR = colormap.GREEN[1]  # green — E-field single-color
+_GLYPH_B_COLOR = colormap.ORANGE[1]  # orange — B-field single-color
+
 # Half-arrowhead toggle (hardcoded for testing — flip to False to compare):
 # When True, each glyph gets ONE extra barb at the tip end so head vs tail is
 # unambiguous without arrowhead V-shapes. Cost: doubles the line count rendered
@@ -415,94 +584,158 @@ ARROWHEAD_BACK_COMP = -math.cos(_arrow_rad)  # component along n̂ (negative = b
 ARROWHEAD_PERP_COMP = math.sin(_arrow_rad)  # component along perpendicular axis
 
 
+@ti.func
+def _write_glyph(
+    wave_field: ti.template(),  # type: ignore
+    observables: ti.template(),  # type: ignore
+    idx: ti.i32,  # type: ignore
+    i: ti.i32,  # type: ignore
+    j: ti.i32,  # type: ignore
+    k: ti.i32,  # type: ignore
+    pos: ti.types.vector(3, ti.f32),  # type: ignore
+    length: ti.f32,  # type: ignore
+    div_scale: ti.f32,  # type: ignore
+    mode: ti.i32,  # type: ignore
+    show_delta: ti.i32,  # type: ignore
+    size_mode: ti.i32,  # type: ignore
+    color_mode: ti.i32,  # type: ignore
+):
+    """Write ONE centered glyph (main segment in director_glyph_*; the second
+    segment — E barb OR delta cross-bar — in director_glyph_arrow_*).
+    mode: 0=Director (principal axis n̂; arrow buffer = delta cross-bar if show_delta
+    else blank), 1=E-field (n̂ + +→− barb). See update_director_glyphs."""
+    zero_v = ti.Vector([0.0, 0.0, 0.0])
+    n_hat = wave_field.director_nhat[i, j, k]
+
+    if mode == 0:
+        # ---- Director: ORIENTATION, agnostic to size/color (always unit length +
+        # the fixed _GLYPH_DIRECTOR_COLOR). The main segment is the principal axis n̂.
+        # The arrow buffer carries the delta (middle-eigenvector) cross-bar WHEN
+        # show_delta=1 → an ellipsoid-wireframe "+" showing the biaxial frame;
+        # show_delta=0 → director axis only (arrow buffer blanked). Delta bar is
+        # SHORTER (∝ λ₂/λ₁, minor:major ratio) and _GLYPH_DELTA_COLOR to set it apart
+        # from the n̂ axis. (Both colors are configurable in the GLYPH PARAMETERS block.)
+        dcol = ti.Vector(
+            [_GLYPH_DIRECTOR_COLOR[0], _GLYPH_DIRECTOR_COLOR[1], _GLYPH_DIRECTOR_COLOR[2]]
+        )
+        base = pos - 0.5 * length * n_hat
+        tip = pos + 0.5 * length * n_hat
+        wave_field.director_glyph_vertices[idx + 0] = base
+        wave_field.director_glyph_vertices[idx + 1] = tip
+        wave_field.director_glyph_colors[idx + 0] = dcol
+        wave_field.director_glyph_colors[idx + 1] = dcol
+        if show_delta == 1:
+            # delta cross-bar: middle eigenvector, length scaled by the eigenvalue ratio
+            n_mid = wave_field.director_mid[i, j, k]
+            evals = wave_field.eigenvalues[i, j, k]  # (λ₁≥λ₂≥λ₃)
+            ratio = evals[1] / (ti.abs(evals[0]) + 1e-12)  # λ₂/λ₁ ∈ (0,1] → shorter bar
+            dlen = length * ti.max(ti.min(ratio, 1.0), 0.12)  # clamp so it stays visible
+            dlt = ti.Vector([_GLYPH_DELTA_COLOR[0], _GLYPH_DELTA_COLOR[1], _GLYPH_DELTA_COLOR[2]])
+            wave_field.director_glyph_arrow_vertices[idx + 0] = pos - 0.5 * dlen * n_mid
+            wave_field.director_glyph_arrow_vertices[idx + 1] = pos + 0.5 * dlen * n_mid
+            wave_field.director_glyph_arrow_colors[idx + 0] = dlt
+            wave_field.director_glyph_arrow_colors[idx + 1] = dlt
+        else:
+            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+    else:
+        # ---- E-field: POLAR vector (E ∝ n̂). Honors size (|∇·n̂| charge density) +
+        # color (greenyellow charge gradient); centered shaft + a +→− half-barb.
+        div_v = observables.director_div_field[i, j, k]
+        shaft = length
+        if size_mode == 1:
+            shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
+        # single = flat _GLYPH_E_COLOR (green); gradient = greenyellow charge palette
+        color = ti.Vector([_GLYPH_E_COLOR[0], _GLYPH_E_COLOR[1], _GLYPH_E_COLOR[2]])
+        if color_mode == 1:
+            color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
+        base = pos - 0.5 * shaft * n_hat
+        tip = pos + 0.5 * shaft * n_hat
+        wave_field.director_glyph_vertices[idx + 0] = base
+        wave_field.director_glyph_vertices[idx + 1] = tip
+        wave_field.director_glyph_colors[idx + 0] = color
+        wave_field.director_glyph_colors[idx + 1] = color
+        # +→− half-barb at the +n̂ tip (local sign gauge-arbitrary; M5.8 fixes orientation)
+        ref_e = ti.Vector([0.0, 0.0, 1.0])
+        if ti.abs(n_hat[2]) > 0.9:
+            ref_e = ti.Vector([1.0, 0.0, 0.0])
+        perp_e = n_hat.cross(ref_e).normalized()
+        barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp_e
+        wave_field.director_glyph_arrow_vertices[idx + 0] = tip
+        wave_field.director_glyph_arrow_vertices[idx + 1] = (
+            tip + (ARROWHEAD_LENGTH_FRAC * shaft) * barb_dir
+        )
+        wave_field.director_glyph_arrow_colors[idx + 0] = color
+        wave_field.director_glyph_arrow_colors[idx + 1] = color
+
+
+@ti.func
+def _blank_glyph(wave_field: ti.template(), idx: ti.i32):  # type: ignore
+    """Zero both segments of glyph `idx` (off-plane → invisible)."""
+    zero_v = ti.Vector([0.0, 0.0, 0.0])
+    wave_field.director_glyph_vertices[idx + 0] = zero_v
+    wave_field.director_glyph_vertices[idx + 1] = zero_v
+    wave_field.director_glyph_colors[idx + 0] = zero_v
+    wave_field.director_glyph_colors[idx + 1] = zero_v
+    wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
+    wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
+    wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
+    wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+
+
 @ti.kernel
 def update_director_glyphs(
     wave_field: ti.template(),  # type: ignore
     observables: ti.template(),  # type: ignore
     length: ti.f32,  # type: ignore
-    arrow_length: ti.f32,  # type: ignore
     show_level: ti.i32,  # type: ignore
     div_scale: ti.f32,  # type: ignore
     size_mode: ti.i32,  # type: ignore
     color_mode: ti.i32,  # type: ignore
+    mode: ti.i32,  # type: ignore
+    show_delta: ti.i32,  # type: ignore
 ):
+    """Centered director / E-field glyphs on the 3 flux-mesh planes (XY/XZ/YZ).
+
+    Two of the glyph-select states (the B-curl state lives in
+    `update_em_vector_glyphs`):
+      - **mode=0 Director** — the principal axis `director_nhat` (main segment, full
+        `length`, `_GLYPH_DIRECTOR_COLOR`). When `show_delta=1` the middle (delta)
+        eigenvector `director_mid` is added as a SHORTER cross-bar (∝ λ₂/λ₁,
+        `_GLYPH_DELTA_COLOR`) in the arrow buffer → the biaxial-frame "ellipsoid
+        wireframe cross"; when `show_delta=0` only the n̂ axis is drawn (arrow buffer
+        blanked). **Agnostic to size_mode/color_mode** — it is orientation, not a
+        field, so it is always unit-length + its fixed colors. Both axes apolar
+        (centered, no head/tail) ⇒ gauge-stable. The delta bar is the clock-hand axis
+        (the would-be Zitterbewegung spin; in free 3D it only tilts/disperses —
+        coherent spin needs M5.8/9b).
+      - **mode=1 E-field** — `director_nhat` as a POLAR field line: honors size
+        (shaft ∝ |∇·n̂| charge density) + color (single = `_GLYPH_E_COLOR`, gradient =
+        greenyellow charge), with a +→− half-barb. The +→− *orientation* is
+        gauge-arbitrary until the M5.8 winding-density fix (consistent with WM6
+        honest-but-flipping).
+
+    `show_level` mirrors SHOW_FLUX_MESH: 0 off, 1 XY, 2 +XZ, 3 all. Off-plane glyphs
+    are zeroed (invisible 0-length segments).
     """
-    Update the director-glyph line-segment field by sampling ψ on the
-    three flux-mesh planes (XY, XZ, YZ) at GLYPH_STRIDE.
-
-    Per glyph, writes:
-      - vertices[2k+0] = voxel position (normalized [0,1] camera space)
-      - vertices[2k+1] = voxel position + length · n̂
-      - colors[2k+0]   = colors[2k+1] = colormap palette of (1 − n̂[2]) ∈ [0, 2]
-        scalar represents "twist away from vacuum": 0 at n=ẑ (vacuum), 1 at
-        equatorial directors, 2 at the −ẑ pole. With dark-to-bright palettes
-        (blueprint default; ironbow alt) the vacuum BLENDS into the black GUI
-        background — only the defect-twisted region stands out visually.
-
-    Half-arrowhead barb (when arrow_length > 0):
-      - arrow_vertices[2k+0] = tip = pos + length · n̂
-      - arrow_vertices[2k+1] = tip + arrow_length · barb_dir
-      - barb_dir = ARROWHEAD_BACK_COMP · n̂ + ARROWHEAD_PERP_COMP · perp,
-        where perp is a stable perpendicular to n̂ (cross with ẑ, falling
-        back to x̂ when n̂ is nearly parallel to ẑ) and the back/perp
-        components encode ARROWHEAD_ANGLE_DEG (54° default → swept-back
-        arrowhead, ≈36° between barb and shaft). Same color as the shaft.
-        The launcher decides whether to render this buffer.
-
-    `show_level` mirrors SHOW_FLUX_MESH semantics for progressive plane reveal:
-        0 → all planes off (degenerate glyphs; nothing renders)
-        1 → XY plane only
-        2 → XY + XZ planes
-        3 → XY + XZ + YZ planes (all)
-    Off-planes get degenerate glyphs (start == end, color = 0) which GGUI
-    renders as invisible 0-length line segments.
-
-    Boundary handling: 1e-12 epsilon in n̂ denominator avoids /0 at vacuum
-    voxels where ψ ≈ 0 (none in M5.1's seeded fields, but guarding anyway).
-
-    Args:
-        wave_field: WaveField (reads psi_am; writes director_glyph_vertices /
-            director_glyph_colors / director_glyph_arrow_vertices /
-            director_glyph_arrow_colors)
-        length: glyph shaft length in normalized camera coords (e.g. 0.02 for
-            ~2% of the universe edge)
-        arrow_length: barb length in the same normalized coords. Pass 0.0 to
-            skip computing the barb (writes zero-length lines instead).
-        show_level: 0..3, parallel to SHOW_FLUX_MESH (0 off, 1 XY, 2 +XZ, 3 all)
-    """
-    nx = wave_field.nx
-    ny = wave_field.ny
-    nz = wave_field.nz
+    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     stride = wave_field.GLYPH_STRIDE
     max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
-
-    # Use the pre-computed round-up sampled counts (matches granule sampling
-    # pattern in _launcher.py — last partial row is included).
-    nx_s = wave_field.glyph_nx_s
-    ny_s = wave_field.glyph_ny_s
-    nz_s = wave_field.glyph_nz_s
-
-    z_plane_idx = wave_field.fm_plane_z_idx
-    y_plane_idx = wave_field.fm_plane_y_idx
-    x_plane_idx = wave_field.fm_plane_x_idx
-
-    zero_v = ti.Vector([0.0, 0.0, 0.0])
+    nx_s, ny_s, nz_s = wave_field.glyph_nx_s, wave_field.glyph_ny_s, wave_field.glyph_nz_s
+    z_idx, y_idx, x_idx = (
+        wave_field.fm_plane_z_idx,
+        wave_field.fm_plane_y_idx,
+        wave_field.fm_plane_x_idx,
+    )
 
     # ----- XY plane at z = fm_plane_z_idx -----
     for si, sj in ti.ndrange(nx_s, ny_s):
         idx = (wave_field.glyph_offset_xy + si * ny_s + sj) * 2
         if show_level >= 1:
-            # Clamp to grid extent — round-up sampling can give
-            # (nx_s − 1) * stride > nx − 1 for some grid/stride combos.
             i = ti.min(si * stride, nx - 1)
             j = ti.min(sj * stride, ny - 1)
-            n_hat = wave_field.director_nhat[i, j, z_plane_idx]  # M5.4: principal eigenvector of M
-            div_v = observables.director_div_field[i, j, z_plane_idx]
-
-            # +0.5 on the two in-plane axes aligns the glyph origin with the
-            # flux-mesh cell center (create_flux_mesh: verts at (idx+0.5)/max_dim).
-            # Perpendicular uses the mesh's own continuous plane coord (fm_plane_z_pos),
-            # not z_plane_idx/max_dim — keeps the glyph welded to the sheet on any grid.
             pos = ti.Vector(
                 [
                     (ti.cast(i, ti.f32) + 0.5) / max_dim,
@@ -510,48 +743,23 @@ def update_director_glyphs(
                     wave_field.fm_plane_z_pos,
                 ]
             )
-            shaft = length
-            if size_mode == 1:  # magnitude = |∇·n̂| charge density
-                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
-            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
-            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
-            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
-            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
-            # CHANGE THIS LINE to test palettes (both start dark, end bright):
-            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
-            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            # M5.6.5b: color by ∇·n̂ (charge), greenyellow signed — matches WM6 mesh
-            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
-            if color_mode == 1:
-                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = tip
-            wave_field.director_glyph_colors[idx + 0] = color
-            wave_field.director_glyph_colors[idx + 1] = color
-
-            # Half-arrowhead: barb perpendicular to n̂ at the tip end.
-            # Stable perp = n̂ × ref where ref flips to x̂ when n̂ ≈ ẑ
-            # to avoid the degenerate cross product at vacuum directors.
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            _write_glyph(
+                wave_field,
+                observables,
+                idx,
+                i,
+                j,
+                z_idx,
+                pos,
+                length,
+                div_scale,
+                mode,
+                show_delta,
+                size_mode,
+                color_mode,
+            )
         else:
-            wave_field.director_glyph_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_colors[idx + 0] = zero_v
-            wave_field.director_glyph_colors[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+            _blank_glyph(wave_field, idx)
 
     # ----- XZ plane at y = fm_plane_y_idx -----
     for si, sk in ti.ndrange(nx_s, nz_s):
@@ -559,10 +767,6 @@ def update_director_glyphs(
         if show_level >= 2:
             i = ti.min(si * stride, nx - 1)
             k = ti.min(sk * stride, nz - 1)
-            n_hat = wave_field.director_nhat[i, y_plane_idx, k]  # M5.4: principal eigenvector of M
-            div_v = observables.director_div_field[i, y_plane_idx, k]
-
-            # +0.5 in-plane (i, k); perpendicular = mesh's continuous fm_plane_y_pos.
             pos = ti.Vector(
                 [
                     (ti.cast(i, ti.f32) + 0.5) / max_dim,
@@ -570,44 +774,23 @@ def update_director_glyphs(
                     (ti.cast(k, ti.f32) + 0.5) / max_dim,
                 ]
             )
-            shaft = length
-            if size_mode == 1:  # magnitude = |∇·n̂| charge density
-                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
-            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
-            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
-            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
-            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
-            # CHANGE THIS LINE to test palettes (both start dark, end bright):
-            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
-            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
-            if color_mode == 1:
-                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = tip
-            wave_field.director_glyph_colors[idx + 0] = color
-            wave_field.director_glyph_colors[idx + 1] = color
-
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            _write_glyph(
+                wave_field,
+                observables,
+                idx,
+                i,
+                y_idx,
+                k,
+                pos,
+                length,
+                div_scale,
+                mode,
+                show_delta,
+                size_mode,
+                color_mode,
+            )
         else:
-            wave_field.director_glyph_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_colors[idx + 0] = zero_v
-            wave_field.director_glyph_colors[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+            _blank_glyph(wave_field, idx)
 
     # ----- YZ plane at x = fm_plane_x_idx -----
     for sj, sk in ti.ndrange(ny_s, nz_s):
@@ -615,10 +798,6 @@ def update_director_glyphs(
         if show_level >= 3:
             j = ti.min(sj * stride, ny - 1)
             k = ti.min(sk * stride, nz - 1)
-            n_hat = wave_field.director_nhat[x_plane_idx, j, k]  # M5.4: principal eigenvector of M
-            div_v = observables.director_div_field[x_plane_idx, j, k]
-
-            # +0.5 in-plane (j, k); perpendicular = mesh's continuous fm_plane_x_pos.
             pos = ti.Vector(
                 [
                     wave_field.fm_plane_x_pos,
@@ -626,44 +805,24 @@ def update_director_glyphs(
                     (ti.cast(k, ti.f32) + 0.5) / max_dim,
                 ]
             )
-            shaft = length
-            if size_mode == 1:  # magnitude = |∇·n̂| charge density
-                shaft = length * ti.min(ti.abs(div_v) / (div_scale + 1e-12), 1.0)
-            tip = pos + shaft * n_hat
-            # Color = palette mapping of (1 − n_hat[2]) ∈ [0, 2]:
-            # vacuum (n=ẑ) → 0 (DARK, blends into black GUI background, defect
-            # is what stands out); equator (n in xy-plane) → 1 (mid); inward
-            # south-pole (n=-ẑ) → 2 (BRIGHT, peak twist away from vacuum).
-            # CHANGE THIS LINE to test palettes (both start dark, end bright):
-            #   colormap.get_ironbow_color(...)    black → magenta → red → yellow-white
-            #   colormap.get_blueprint_color(...)  dark blue → light blue (current)
-            color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
-            if color_mode == 1:
-                color = colormap.get_greenyellow_color(div_v, -div_scale, div_scale)
-            wave_field.director_glyph_vertices[idx + 0] = pos
-            wave_field.director_glyph_vertices[idx + 1] = tip
-            wave_field.director_glyph_colors[idx + 0] = color
-            wave_field.director_glyph_colors[idx + 1] = color
-
-            ref = ti.Vector([0.0, 0.0, 1.0])
-            if ti.abs(n_hat[2]) > 0.9:
-                ref = ti.Vector([1.0, 0.0, 0.0])
-            perp = n_hat.cross(ref).normalized()
-            barb_dir = ARROWHEAD_BACK_COMP * n_hat + ARROWHEAD_PERP_COMP * perp
-            barb_end = tip + arrow_length * (shaft / (length + 1e-12)) * barb_dir
-            wave_field.director_glyph_arrow_vertices[idx + 0] = tip
-            wave_field.director_glyph_arrow_vertices[idx + 1] = barb_end
-            wave_field.director_glyph_arrow_colors[idx + 0] = color
-            wave_field.director_glyph_arrow_colors[idx + 1] = color
+            _write_glyph(
+                wave_field,
+                observables,
+                idx,
+                x_idx,
+                j,
+                k,
+                pos,
+                length,
+                div_scale,
+                mode,
+                show_delta,
+                size_mode,
+                color_mode,
+            )
         else:
-            wave_field.director_glyph_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_colors[idx + 0] = zero_v
-            wave_field.director_glyph_colors[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
-            wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+            _blank_glyph(wave_field, idx)
+
 
 @ti.kernel
 def update_em_vector_glyphs(
@@ -674,28 +833,40 @@ def update_em_vector_glyphs(
     show_level: ti.i32,  # type: ignore
     size_mode: ti.i32,  # type: ignore
     color_mode: ti.i32,  # type: ignore
+    curl_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    curl_radial: ti.i32,  # type: ignore
+    curl_center: ti.types.vector(3, ti.f32),  # type: ignore
 ):
     """M5.6.5b — B-direction glyphs: half-arrow segments along ∇×n̂ (the curl/circulation vector).
 
-    Reuses the director-glyph BUFFERS (shaft + arrowhead) + 3-plane sampling, but the segment
-    points along the curl vector observables.director_curl_field, colored by ‖∇×n̂‖ on the
-    BLUERED gradient. Shaft length ∝ min(‖curl‖/scale, 1) so the view declutters where there is
-    no circulation (static charge ⇒ ~zero-length, invisible; real twist ⇒ visible arrows with a
-    half-barb tip showing the B direction). The barb scales with the shaft (also vanishes at
-    curl≈0). `scale` = the shared distortion magnitude max(|∇·n̂|, ‖∇×n̂‖) (matches WAVE_MENU 7).
-    show_level mirrors SHOW_DIRECTORS (0 off, 1 XY, 2 +XZ, 3 all). Writes director_glyph_vertices/
-    colors + director_glyph_arrow_vertices/colors; the launcher renders both via scene.lines.
+    Reuses the director-glyph BUFFERS (shaft + arrowhead) + 3-plane sampling; the segment points
+    along the curl vector observables.director_curl_field. Color modes (color_mode):
+      - **single (0)** — flat `_GLYPH_B_COLOR` (orange), keeps weak/far-field glyphs visible.
+      - **gradient (1)** — the SIGNED BLUERED N/S projection (`_curl_signed_proj` → `get_bluered`),
+        the SAME radial/axial scalar the WM7 flux-mesh N/S coloring uses (radial `(∇×n̂)·r̂` about
+        `curl_center` when `curl_radial=1` → red=N/blue=S poles; axial `(∇×n̂)·curl_axis` otherwise).
+        So a gradient-colored B glyph reads its *pole* (sign), not just magnitude — matching the
+        mesh under it (cf. the E glyph's greenyellow ±charge gradient).
+    Shaft length ∝ min(‖curl‖/scale, 1) so the view declutters where there is no circulation
+    (static charge ⇒ ~zero-length, invisible; real twist ⇒ visible arrows with a half-barb tip
+    showing the B direction). The barb scales with the shaft. `scale` = the shared distortion
+    magnitude max(|∇·n̂|, ‖∇×n̂‖) (matches WAVE_MENU 7). show_level mirrors SHOW_DIRECTORS
+    (0 off, 1 XY, 2 +XZ, 3 all). Writes director_glyph_vertices/colors + the arrow buffers.
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     stride = wave_field.GLYPH_STRIDE
     max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
     nx_s, ny_s, nz_s = wave_field.glyph_nx_s, wave_field.glyph_ny_s, wave_field.glyph_nz_s
-    z_idx, y_idx, x_idx = wave_field.fm_plane_z_idx, wave_field.fm_plane_y_idx, wave_field.fm_plane_x_idx
+    z_idx, y_idx, x_idx = (
+        wave_field.fm_plane_z_idx,
+        wave_field.fm_plane_y_idx,
+        wave_field.fm_plane_x_idx,
+    )
     inv_s = 1.0 / (scale + 1e-12)
     zero_v = ti.Vector([0.0, 0.0, 0.0])
 
     for plane in range(3):
-        n_si = nx_s if plane < 2 else ny_s          # plane 0=XY, 1=XZ, 2=YZ
+        n_si = nx_s if plane < 2 else ny_s  # plane 0=XY, 1=XZ, 2=YZ
         n_sj = ny_s if plane == 0 else nz_s
         base = wave_field.glyph_offset_xy
         if plane == 1:
@@ -704,8 +875,11 @@ def update_em_vector_glyphs(
             base = wave_field.glyph_offset_yz
         for sa, sb in ti.ndrange(n_si, n_sj):
             idx = (base + sa * n_sj + sb) * 2
-            on = (plane == 0 and show_level >= 1) or (plane == 1 and show_level >= 2) \
+            on = (
+                (plane == 0 and show_level >= 1)
+                or (plane == 1 and show_level >= 2)
                 or (plane == 2 and show_level >= 3)
+            )
             if on:
                 # map (sa, sb) → voxel (i, j, k) on the active plane
                 i = ti.min(sa * stride, nx - 1) if plane < 2 else x_idx
@@ -725,14 +899,15 @@ def update_em_vector_glyphs(
                 # perpendicular axis is then snapped to the mesh's continuous plane
                 # coord (fm_plane_*_pos) so glyphs sit exactly on the sheet.
                 half = ti.Vector([0.5, 0.5, 0.5])
-                if plane == 0:      # XY slice → k is perpendicular
+                if plane == 0:  # XY slice → k is perpendicular
                     half[2] = 0.0
-                elif plane == 1:    # XZ slice → j is perpendicular
+                elif plane == 1:  # XZ slice → j is perpendicular
                     half[1] = 0.0
-                else:               # YZ slice → i is perpendicular
+                else:  # YZ slice → i is perpendicular
                     half[0] = 0.0
-                pos = (ti.Vector([ti.cast(i, ti.f32), ti.cast(j, ti.f32),
-                                  ti.cast(k, ti.f32)]) + half) / max_dim
+                pos = (
+                    ti.Vector([ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]) + half
+                ) / max_dim
                 if plane == 0:
                     pos[2] = wave_field.fm_plane_z_pos
                 elif plane == 1:
@@ -743,11 +918,23 @@ def update_em_vector_glyphs(
                 shaft = length
                 if size_mode == 1:
                     shaft = length * ti.min(mag * inv_s, 1.0)
-                tip = pos + shaft * dirv
-                color = ti.Vector([_GLYPH_SINGLE_COLOR[0], _GLYPH_SINGLE_COLOR[1], _GLYPH_SINGLE_COLOR[2]])  # COLOR_MEDIUM single (see far field)
+                # CENTERED on the voxel (base = pos − ½·shaft·dirv → tip = pos + ½·shaft·dirv),
+                # the same field-line-through-the-point convention as the director + E glyphs
+                # (VIZ.1, 4b §4.2). The +→ barb at the tip still marks the circulation direction.
+                half_seg = 0.5 * shaft * dirv
+                tip = pos + half_seg
+                color = ti.Vector(
+                    [_GLYPH_B_COLOR[0], _GLYPH_B_COLOR[1], _GLYPH_B_COLOR[2]]
+                )  # single = flat _GLYPH_B_COLOR (orange), keeps far-field glyphs visible
                 if color_mode == 1:
-                    color = colormap.get_orange_color(mag, 0.0, scale + 1e-12)  # magnitude, matches WM7
-                wave_field.director_glyph_vertices[idx + 0] = pos
+                    # gradient = SIGNED bluered N/S — same radial/axial projection AND the same
+                    # γ-compression-against-own-max as the WM7 mesh, so glyph and mesh match
+                    # (red=N/blue=S, visible far from the core). `scale` (shared) drives the SIZE
+                    # declutter above; the COLOR uses B's own director_curl_max.
+                    proj = _curl_signed_proj(curl, i, j, k, curl_axis, curl_radial, curl_center)
+                    gsig = _gamma_signed(proj, observables.director_curl_max[None])
+                    color = colormap.get_bluered_color(gsig, -1.0, 1.0)
+                wave_field.director_glyph_vertices[idx + 0] = pos - half_seg
                 wave_field.director_glyph_vertices[idx + 1] = tip
                 wave_field.director_glyph_colors[idx + 0] = color
                 wave_field.director_glyph_colors[idx + 1] = color
@@ -772,3 +959,41 @@ def update_em_vector_glyphs(
                 wave_field.director_glyph_arrow_vertices[idx + 1] = zero_v
                 wave_field.director_glyph_arrow_colors[idx + 0] = zero_v
                 wave_field.director_glyph_arrow_colors[idx + 1] = zero_v
+
+
+@ti.kernel
+def update_moment_glyph(
+    wave_field: ti.template(),  # type: ignore
+    m_axis: ti.types.vector(3, ti.f32),  # type: ignore
+    cx: ti.f32,  # type: ignore
+    cy: ti.f32,  # type: ignore
+    cz: ti.f32,  # type: ignore
+    length: ti.f32,  # type: ignore
+    color: ti.types.vector(3, ti.f32),  # type: ignore
+):
+    """VIZ.4 — a single magnetic-MOMENT vector glyph `μ` at the defect center,
+    pointing along m̂ (POLAR → centered shaft + a half-barb at the +m̂ tip).
+
+    A static marker for the dipole-sample placeholder: it labels the moment axis
+    the bluered N/S field is organized around. Writes 4 vertices into
+    moment_glyph_{vertices,colors} (shaft base→tip, barb tip→back); the launcher
+    renders them with scene.lines when DIPOLE_SAMPLE is active. Center (cx,cy,cz)
+    in voxel coords; `length` in normalized [0,1] (larger than voxel glyphs so it
+    reads as the principal axis)."""
+    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
+    mhat = m_axis.normalized()
+    center = (ti.Vector([cx, cy, cz]) + 0.5) / max_dim
+    base = center - 0.5 * length * mhat
+    tip = center + 0.5 * length * mhat
+    wave_field.moment_glyph_vertices[0] = base
+    wave_field.moment_glyph_vertices[1] = tip
+    # half-barb at the +m̂ tip (stable perpendicular reference)
+    ref = ti.Vector([0.0, 0.0, 1.0])
+    if ti.abs(mhat[2]) > 0.9:
+        ref = ti.Vector([1.0, 0.0, 0.0])
+    perp = mhat.cross(ref).normalized()
+    barb_dir = ARROWHEAD_BACK_COMP * mhat + ARROWHEAD_PERP_COMP * perp
+    wave_field.moment_glyph_vertices[2] = tip
+    wave_field.moment_glyph_vertices[3] = tip + (ARROWHEAD_LENGTH_FRAC * length) * barb_dir
+    for n in range(4):
+        wave_field.moment_glyph_colors[n] = color

@@ -90,6 +90,19 @@ below.) The figure above is drawn axis-aligned (`O = identity`):
   axis, enough for Coulomb) → biaxial M5.6 `diag(1, δ, 0)` → full 4D `diag(g, 1, δ, 0)` adds `g` =
   gravity/boost (L10). Hierarchy `g ≫ 1 ≫ δ ~ ℏ > 0`.
 
+> 🔭 **What the 4th dimension adds to this 3×3 medium (preview → L10).** Everything in this lesson —
+> the biaxial frame, the EM/tilt axis, the QM/twist axis, charge, the null axis — already lives in
+> the **3×3 (spatial)** matrix. The M5.8 promotion to **4×4** doesn't replace any of it; it adds a
+> **time axis** on top, and that buys exactly two new things:
+>
+> | What 4D adds | Mechanism | Why it matters |
+> | --- | --- | --- |
+> | **Gravity** — the `g` (boost) eigenvalue | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`: a 4th independent shape axis | gravity becomes a field we can carry + render (mass monopole, `1/r²` — L8, `4b §4.7`). `g` is *absent* in the live 3D run. |
+> | **A self-sustaining clock** — the time axis + Minkowski signature | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the defect's oscillation energetically favorable (Duda's negative-energy mechanism, Fig 10) | the Zitterbewegung clock **propels itself and stays coherent**. In free 3D the clock can't survive — it disperses/radiates away (M5.7.2); **4D is what makes the particle a stable time-crystal** (`5a §10b`, L7/L10). |
+>
+> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds
+> gravity (`g`) and the working clock (time + the Minkowski sign that auto-propels Zitterbewegung).**
+
 ### What the medium *represents* — the order-parameter / coarse-graining reading
 
 ![A granule tracing a fast elliptical orbit; time-averaged, its position-cloud covariance is the ellipsoid M — the M4 6-phasor ellipse to M5 ellipsoid bridge](images/granule_ellipse_small.gif)
@@ -200,11 +213,12 @@ clock.
 > The eigenvalue→physics map. Each axis = a kind of local orientation change: tilt→EM, twist→QM(ℏ), boost→gravity, null→clock. The key idea: a force field is a curvature (gradient) of the frame, not the frame itself
 >
 > **Seed (from L1 Q&A — twist vs tilt on the director):** the generators act on the *same* director
-> axis (`a` = eigenvalue `1`) in orthogonal ways → different physics. **Twist** = rotate `b,c`
-> *about* `a` (`a` stays put; generator `Gx`) → **QM / the clock** (L7). **Tilt** = rotate `a`
-> *itself* toward another axis (its direction changes; generators `Gy,Gz`) → **EM**, whose *field* is
-> the spatial gradient of those tilts (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity; the
-> **null** (0) axis → the clock direction. Mnemonic: *twist about it = QM, tilt of it = EM.*
+> `n̂` (the principal axis, eigenvalue `1`) in orthogonal ways → different physics. **Twist** = rotate
+> the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) *about* `n̂` (`n̂` stays put; generator
+> `Gx`) → **QM / the clock** (L7). **Tilt** = rotate `n̂` *itself* toward another axis (its direction
+> changes; generators `Gy,Gz`) → **EM**, whose *field* is the spatial gradient of those tilts
+> (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity; the **null** (`0`) axis → the clock
+> direction. Mnemonic: *twist about it = QM, tilt of it = EM.*
 
 (to be filled during the session)
 
@@ -298,10 +312,11 @@ clock.
 > phase has **no preferred angle** (every phase has identical energy — the unconfined orientation
 > direction, the same fact as "V confines amplitude not orientation", L6), so it rotates freely
 > rather than being pulled back to a center. The rate isn't free, though — the time-crystal `−αω²`
-> term energetically *selects* `ω = 2mc²/ℏ`. **Axis:** the **twist about the director axis**
-> (`a` = eigenvalue `1` = EM axis; generator `Gx`, a rotation in the `b`–`c` plane, `5a §7a`) — `n̂`
-> stays put while the `δ` (`b`) and null (`c`) axes sweep *around* it (the "spinning arrow", and the
-> leftover DoF from L1 Q8). Contrast with **EM = tilting `a` itself** (L1 Q2 / L8). Caveat: the clean
+> term energetically *selects* `ω = 2mc²/ℏ`. **Axis:** the **twist about the director `n̂`**
+> (the principal axis, eigenvalue `1` = EM axis; generator `Gx`, a rotation in the `δ`–`0` plane,
+> `5a §7a`) — `n̂` stays put while the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) sweep
+> *around* it (the "spinning arrow", and the leftover DoF from L1 Q8). Contrast with **EM = tilting
+> `n̂` itself** (L1 Q2 / L8). Caveat: the clean
 > steady spin is the *ideal/target* — in 3D the free defect disperses (M5.7.2), so confirming it at
 > `ω=2mc²/ℏ` needs 4D (M5.8). `spin-½` = a 2π rotation does NOT restore the state (need 4π — the
 > SO(3) double-cover) — developed below.
@@ -317,22 +332,22 @@ clock.
 > heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the private repo per the cardinal
 > rule; here it's just the substrate clock's two observables.)
 >
-> *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `a`,
-> the `b`–`c` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal
-> `(δ/2)sin(2ωt)`. So the **radius = the eigenvalue gap `(λ_b−λ_c)/2 = δ/2`** (the QM-`δ` axis sets
+> *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `n̂`,
+> the δ–`0` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal
+> `(δ/2)sin(2ωt)`. So the **radius = the eigenvalue gap `(δ − 0)/2 = δ/2`** (the QM-`δ` axis sets
 > its size), and the observable cycles at **`2ω`** — the apolar `n̂⊗n̂` doubling (a 180° turn looks
 > identical), the likely origin of `ω_Zitt = 2mc²/ℏ` (confirm in M5.8). And *what* spins is the
 > **orientation field as one collective phase-locked mode** localized on the defect (the director
-> `a` = the fixed axle, the secondary `b` = the clock-hand; all hands synchronized) — **not** the
-> defect-as-a-point and **not** independent voxels.
+> `n̂` = the fixed axle, the δ-axis `director_mid` = the clock-hand; all hands synchronized) — **not**
+> the defect-as-a-point and **not** independent voxels.
 >
 > **★ "Collective mode" — flagged 2026-05-30 to unpack when we teach L7 (Rodrigo: idea not yet
 > fully internalized).**
 >
 > *The mental image to hold:* a 3D field of **compass needles all precessing in lock-step**. Each
-> needle (ellipsoid) turns, but the meaningful object is the **collective phase**. The director `a`
-> at each point is the fixed **axle**; the secondary axis `b` is the **clock-hand** sweeping around
-> it — and all the clock-hands across the defect's neighborhood are **synchronized**.
+> needle (ellipsoid) turns, but the meaningful object is the **collective phase**. The director `n̂`
+> at each point is the fixed **axle**; the δ-axis (`director_mid`) is the **clock-hand** sweeping
+> around it — and all the clock-hands across the defect's neighborhood are **synchronized**.
 >
 > *Why it matters:* the **defect** is the stable topological knot that *hosts* the clock; the
 > **clock** is the collective twist mode the knot carries. So "the particle" = defect (topology,
@@ -372,6 +387,57 @@ clock.
 > **Anchors:** `engine3_observables.py` (`compute_director_em`), `5a §5d`, `3a`.
 
 (to be filled during the session)
+
+> **★ MAGNETIC MOMENT — dedicated unpack (Rodrigo flagged 2026-05-30: "I still don't fully grasp
+> it").** Teach this against **Duda's electron slide** (`Screenshot 2026-05-28 at 3.15.48 PM` — the
+> one with the bar magnet `m`, the `B` field lines, the spin axis + `ω` Larmor inset). That slide is
+> literally the L8 target picture: **electric charge** `E ∝ 1/r²` (left), **magnetic dipole** `B ∝
+> 1/r³` (center bar magnet), and the **gyroscope / spin** `L = ℏ/2` ticking at the Zitterbewegung
+> `ω ≈ 2mc²/ℏ` (right). All three are *the same defect* seen through three observables.
+>
+> *Questions to answer in L8 so the moment clicks (relate each to what we built in the VIZ.4 session
+> 2026-05-30):*
+>
+> | Question | Tie to what we built / where it lives |
+> | --- | --- |
+> | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the δ-twist rotation axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
+> | **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
+> | **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
+> | **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 thermal A/ω (the spin rate, L7). |
+> | **Why does B fall off so much faster than E?** (see the falloff headsup below — careful: field ≠ force ≠ our observable) | The `1/r³` (B) vs `1/r` (our `∇·n̂` E observable) gap is exactly why the B viz needed a different colormap calibration (γ-spread). |
+> | **Permanent magnet (Q8) — static B, no moving charge?** Aligned spin-topology: many defects with their moments `m̂` locked parallel ⇒ macroscopic static `B`. No *translating* charge needed — the "current" is the frozen collective spin (the L7 collective mode). | Forward link to the L7 collective mode + the M5.8 multi-defect work (5e). |
+>
+> **★ FALLOFF HEADSUP (Rodrigo 2026-05-31) — don't conflate field / force / our observable.** The
+> question "B ∝ 1/r³ vs E ∝ 1/r?" mixes three different things. Keep them separate:
+>
+> | | Electric | Magnetic | Gravitational |
+> | --- | --- | --- | --- |
+> | **What we RENDER** (glyph/mesh observable) | `∇·n̂` splay — hedgehog `n̂=r̂` ⇒ `2/r` → **1/r** | placeholder dipole `B` → **1/r³** | *not yet* — the boost-`g` field, M5.8 4D (`4b §4.7`) |
+> | **Real FIELD of a point source** | charge (monopole): `E ∝ 1/r²` | dipole (no monopole): `B ∝ 1/r³` | mass (monopole): `g ∝ 1/r²` |
+> | **Real FORCE law** | Coulomb: `F ∝ 1/r²` | dipole–dipole: `F ∝ 1/r⁴` | Newton: `F ∝ 1/r²` |
+>
+> So: ✅ our **B observable** is `1/r³` and our **E observable** is `1/r` (this IS why the B viz
+> collapsed to black under a linear map — 9× steeper). ❌ but the real **electric field/force is
+> `1/r²`** (Coulomb), NOT `1/r`; the `1/r` is specifically our `∇·n̂` *splay* observable, which
+> tracks the Coulomb **potential** (∝1/r), not the field. In M5 the actual Coulomb behavior showed
+> up as the **interaction energy** `E(d) ∝ 1/d` between two defects (M5.1/M5.4), so the force
+> `−dE/dr ∝ 1/r²`. **Why magnetic *starts* steeper:** nature has electric monopoles (charges) →
+> the E series starts at `1/r²`; it has **no magnetic monopole** → the B series starts one multipole
+> higher, at the **dipole** = `1/r³`. Compare like-for-like and the asymmetry vanishes: an electric
+> *dipole* field also falls as `1/r³`. (Quadrupole `1/r⁴`, etc.)
+>
+> **Gravity is the third case — and it's a monopole, like electricity.** Mass is a gravitational
+> "charge" with only ONE sign (always positive ⇒ always attractive), so the gravitational field is a
+> **monopole**: `g ∝ 1/r²`, force `F ∝ 1/r²` — the SAME falloff as the electric charge. So the family
+> is: **monopole fields (electric charge, mass) → `1/r²`; dipole field (magnetism, no monopole) →
+> `1/r³`.** When OpenWave renders gravity (M5.8 4D, the boost-`g` axis; viz spec in `4b §4.7`), expect
+> it to spread on screen like E (gentle `1/r²`), not like the steep `1/r³` B that needed γ-compression
+> — and use a single-sign sequential palette (no ± / bluered), since there's no "negative mass".
+>
+> Optional hands-on when teaching: launch **`_viz_sample_dipole`**, toggle WM7 bluered (radial N/S),
+> flip to the Magnetic-Field glyphs (state 3, field lines), and watch the YELLOW `m̂` — then state
+> plainly that this is a *placeholder shape*; the real moment is *generated by* the clock's spin at
+> M5.8. The point of the session was to make the *picture* legible before the physics produces it.
 
 ---
 

@@ -303,6 +303,33 @@ def principal_director(m):  # type: ignore
 
 
 @ti.func
+def eigvec_for(m, lam):  # type: ignore
+    """Unit eigenvector of symmetric 3×3 `m` for a KNOWN eigenvalue `lam`.
+
+    Null space of (m − lam·I), taken as the largest of the 3 row cross-products
+    (same construction as the principal eigenvector in `principal_director`, but
+    for an arbitrary supplied eigenvalue — used for the MIDDLE eigenvector, the
+    δ "clock-hand" axis, VIZ.3). Robust when `lam` is well-separated; degenerate
+    (repeated-eigenvalue) cases give an arbitrary-but-unit vector in the
+    eigenspace, which is the correct apolar behaviour for a uniaxial M.
+    """
+    a00, a11, a22 = m[0, 0], m[1, 1], m[2, 2]
+    a01, a02, a12 = m[0, 1], m[0, 2], m[1, 2]
+    row0 = ti.Vector([a00 - lam, a01, a02])
+    row1 = ti.Vector([a01, a11 - lam, a12])
+    row2 = ti.Vector([a02, a12, a22 - lam])
+    c01, c02, c12 = row0.cross(row1), row0.cross(row2), row1.cross(row2)
+    n01, n02, n12 = c01.norm_sqr(), c02.norm_sqr(), c12.norm_sqr()
+    vec = c01
+    best = n01
+    if n02 > best:
+        vec, best = c02, n02
+    if n12 > best:
+        vec, best = c12, n12
+    return vec / (ti.sqrt(best) + 1e-20)
+
+
+@ti.func
 def matrix_laplacian(
     wave_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
@@ -418,7 +445,8 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
     and no flip occurs.
     """
     for i, j, k in wave_field.M_am:
-        n, evals = principal_director(wave_field.M_am[i, j, k])
+        m = wave_field.M_am[i, j, k]
+        n, evals = principal_director(m)
         # sort eigenvalues descending λ₁≥λ₂≥λ₃ (3-element selection sort)
         e0, e1, e2 = evals[0], evals[1], evals[2]
         lo = ti.min(e0, ti.min(e1, e2))
@@ -429,6 +457,12 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
         if n.dot(wave_field.director_nhat[i, j, k]) < 0.0:
             n = -n
         wave_field.director_nhat[i, j, k] = n
+        # VIZ.3: middle (δ) eigenvector = the "clock-hand" axis that sweeps around
+        # the director under the Zitterbewegung twist. Same apolar sign-continuity.
+        nm = eigvec_for(m, mid)
+        if nm.dot(wave_field.director_mid[i, j, k]) < 0.0:
+            nm = -nm
+        wave_field.director_mid[i, j, k] = nm
 
 
 # ================================================================
