@@ -374,10 +374,35 @@ above is drawn axis-aligned (`O = identity`):
 > time-dynamics / gravity lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient
 > `ω` even varies across *space* = the `∇g` story, L8). ⚠️ **Per-DEFECT, not per-voxel:** the L7
 > collective mode locks all of one defect's voxels into a *single* phase `ψ(t)` at one `ω` (compass
-> needles in lock-step); different *defects* (different masses) tick at different `ω`. ⚠️ The coherent
+> needles in lock-step); different *defects* (different masses) tick at different `ω`. **No hard
+> radius** for the sync region — the mode has a *spatial profile* (peaked at the core, fading
+> outward), not a sphere with a sharp edge. ⚠️ The coherent
 > clock is **M5.8 (not built yet)** — 1D toy validated (M5.8.0a), 3D→4D production clock is next; in
 > free 3D today it disperses (M5.7.2). Proper-vs-coordinate time is standard relativity; the mapping
 > to OpenWave's `ω`/`g` is design expectation, not yet a verified sim result.
+>
+> **Going deeper — `dt` is not fundamental, it EMERGES (the relational-time thesis, Rodrigo
+> 2026-06-01).** Push the question one level down and `dt` itself stops being primitive:
+>
+> - **`dt` is postulated in the sim (a fixed step), but physically it is an *average-out* shared-clock** — the
+>   coordinate time we humans perceive is the **statistical mean rate** of myriad particle-clocks.
+>   The shared clock isn't fundamental; it's the ensemble average of the proper-time clocks. (OpenWave's
+>   relational-time thesis: `time = c/λ` — `c` fixed, `λ` local; shorter `λ` → faster local change.)
+> - **Time is not a thing — it's *movement* (rate of change of state).** There's no "time" substance;
+>   there is only `M` changing, and "time" is the *rate* of that change. Strip the changes and time has
+>   no meaning. Time **emerges from movement**, and the movement is **propelled by mass** (mass = the
+>   defect's stored field energy; the clock-engine, L7).
+> - **Two levels of "the change" (the per-voxel vs per-defect nuance again):** the raw *change* is
+>   per-**voxel** (every `M` evolving); the *rate we call the clock* `ω` is the per-**defect**
+>   synchronized collective mode. Both true — different levels. "Movement of a voxel ellipsoid" is the
+>   microscopic change; "the particle's clock" is the coherent per-defect rate built from it.
+>
+> So the hierarchy is: **mass → propels movement → movement's rate IS proper time (per-defect `ω` particle-clock) →
+> the ensemble average of all proper-times is the coordinate time `dt` we perceive, the shared-clock.** Time bottoms out
+> in mass-propelled movement, not in a clock. ⚠️ All of this is the *relational-time hypothesis* (our
+> roots + Duda's framing), not a proven M5 result — and the thermal/energy *consequences* of "the
+> floor is lossless / perpetual" belong in the private SABER repo (`3_HYPOTHESIS.md §7.1`), per the
+> cardinal rule; here it's just the substrate's time-emergence picture.
 >
 > **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
 > *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
