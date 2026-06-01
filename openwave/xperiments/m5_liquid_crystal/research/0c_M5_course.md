@@ -178,8 +178,8 @@ above is drawn axis-aligned (`O = identity`):
 
 | Eigenvalue | Size | Semi-axis in the figure | Physics label (the "why" → below) |
 | --- | --- | --- | --- |
-| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt |
-| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / twist |
+| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt (splay, bend, frank_twist) |
+| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / clock_twist |
 | `0` | smallest (null) | `c` (short / flat axis, z) | the null/time axis → the 4D clock |
 
 - **Where is `director_nhat`?** It's the **principal eigenvector** — the eigenvector of the
