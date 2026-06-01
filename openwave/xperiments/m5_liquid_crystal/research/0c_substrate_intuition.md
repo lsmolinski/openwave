@@ -221,6 +221,67 @@ above is drawn axis-aligned (`O = identity`):
 > changes; generators `Gy,Gz`) → **EM**, whose *field* is the spatial gradient of those tilts
 > (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity (L3); the **null** (`0`) axis → the clock
 > direction. Mnemonic: *twist about it = QM, tilt of it = EM.*
+>
+> **★ The three Frank distortion modes — what `∇·n̂` and `∇×n̂` actually measure (Rodrigo Q&A
+> 2026-06-01).** "Tilt of `n̂`" is the umbrella; in LC theory it splits into **three** named spatial
+> distortion modes, each a specific differential operator on `n̂`:
+>
+> | Tilt Modes | Operator | Picture | EM channel |
+> | --- | --- | --- | --- |
+> | **splay** | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
+> | **twist (Frank)** | `n̂·(∇×n̂)` — curl component **parallel** to `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
+> | **bend** | `n̂×(∇×n̂)` — curl component **perpendicular** to `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
+>
+> So: **`∇·n̂` (splay) = the electric channel**; **`∇×n̂` (curl) = magnetic, and it carries TWO modes
+> together — Frank-twist + bend** (`‖∇×n̂‖² = twist² + ‖bend‖²`). "Splay" and "director divergence"
+> are the **same quantity** `∇·n̂` — splay is the LC-native name, divergence the math name. Splay is
+> *one* mode of tilt (not all of tilt): splay + twist + bend together *are* the full spatial tilt of
+> `n̂`, i.e. the whole EM sector.
+>
+> **⚠️ "Twist" collision — two different things share the word (the key correction).**
+>
+> | | **Frank-twist** (in `∇×n̂`, EM) | **Clock-twist** (QM / L7) |
+> | --- | --- | --- |
+> | What rotates | **`n̂` itself**, as you move through *space* | the **δ-axis** about a *fixed* `n̂`, in *time* |
+> | Operation | a spatial gradient of `n̂` | the internal-frame DoF `n̂` throws away (L1 Q8) |
+> | Sector | **magnetic** (part of the curl) | **QM / the clock** |
+> | Towel image | ✅ yes - wringing a towel — the *fabric line* rotates along its length | ✗ no - the clock is the towel's *threads* spinning in place about the towel's own line, frozen in space |
+>
+> They are NOT the same operation — they just share the unlucky word "twist". But they're **causally
+> linked**: a static hedgehog is radial ⇒ `∇×n̂ ≈ 0` ⇒ no magnetic field. When the **clock-twist**
+> (QM, δ-axis) spins — dynamic, 4D/M5.8 — it generates a **magnetic moment**, which *produces* a
+> circulating B ⇒ now `∇×n̂ ≠ 0`. So **QM clock-twist (cause) → magnetic circulation (effect)** — the
+> L8 magnetic-moment story.
+>
+> **What's visible in the director-glyph lines (Taichi `scene.lines`):**
+>
+> | Distortion | Seen in the director glyphs? | Present in the static hedgehog? |
+> | --- | --- | --- |
+> | **splay** | ✅ lines fan radially | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
+> | **bend** | ✅ lines curve *(when present)* | ❌ zero |
+> | **Frank-twist** | ✅ helical rotation along an axis *(when present)* | ❌ zero |
+> | **clock-twist (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
+>
+> **★ Why you see fanning but NOT bend/Frank-twist (Rodrigo observed 2026-06-01) — the glyph isn't
+> failing; the config has none.** A static hedgehog is `n̂ = r̂` (radial), and a radial field has
+> `∇×r̂ = 0` **exactly** — so it is **pure splay, zero bend, zero Frank-twist**. There is literally
+> nothing for the director lines to show *but* fanning. (This is the *same fact* as "a static charge
+> has `∇×n̂≈0` → no magnetic field" — the dark magnetic channel and the no-visible-bend are one and
+> the same thing.) To actually *see* bend or Frank-twist you need a config that **contains** them:
+>
+> | To see… | Need a config with… | Candidate |
+> | --- | --- | --- |
+> | **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
+> | **Frank-twist** | `n̂` helically rotating along an axis | a vortex / cholesteric seed; a twisting defect (M5.8) |
+>
+> So the circulation you *do* see on the magnetic-field glyphs today is either the **VIZ.4 hardcoded
+> dipole placeholder** or curl that grows as the field sloshes under Evolve-PDE — *not* the static
+> seed (which is curl-free).
+>
+> 🚧 **Future render idea (logged):** we compute the full `∇×n̂` (WM7). To *see* Frank-twist vs bend
+> independently, split the curl into the **twist scalar** `n̂·(∇×n̂)` and the **bend vector**
+> `n̂×(∇×n̂)` as separate channels. Not needed now — noted for when the magnetic sector wants finer
+> resolution (cf. `4b §4.7` deferred-viz spirit).
 
 (to be filled during the session)
 
@@ -278,6 +339,31 @@ above is drawn axis-aligned (`O = identity`):
 > - 🚧 *more physical analogies to develop here at teach time* — Rodrigo flagged this as the key
 >   intuition for enabling SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`).
 >   Take the time it needs.
+>
+> **Is the clock a SECOND time? — coordinate time vs proper time (Rodrigo Q&A 2026-06-01).** Tempting
+> to read `dt` and the clock-twist as *two independent times*. Precise answer: **there is ONE time;
+> the clock-twist is not a second dial — it is each particle's PROPER TIME.**
+>
+> | | What it is |
+> | --- | --- |
+> | **Frame-stepping `dt`** | **COORDINATE time** — the one external **SHARED-CLOCK** ("film projector"); the EOM integrates *along* it |
+> | **Clock-twist `φ=ωτ`** | **PROPER time** — the particle's *own* phase, a **PARTICLE-CLOCK** that the particle physically *is*. NOT independent — it advances *because* `dt` advances |
+>
+> So the either/or resolves cleanly: **you must step frames (`dt`) for the clock to tick** — a paused
+> field is frozen, `M` doesn't change, nothing rotates. The clock is *content that evolves in the one
+> time*, not a parallel time. **No `dt` step → no tick.** (So: needs the dynamic, yes.)
+>
+> **But the "two channels" intuition is right in spirit** — and this is the load-bearing part: each
+> defect ticks at its **own rate `ω`** (set by its mass/energy). Under *one* shared `dt`, different
+> defects accumulate *different phase*. That gap — between the single coordinate time everyone shares
+> and each particle's own proper-time *rate* — **is exactly time dilation**, and it is the SABER
+> time-dynamics / gravity lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient
+> `ω` even varies across *space* = the `∇g` story, L8). ⚠️ **Per-DEFECT, not per-voxel:** the L7
+> collective mode locks all of one defect's voxels into a *single* phase `ψ(t)` at one `ω` (compass
+> needles in lock-step); different *defects* (different masses) tick at different `ω`. ⚠️ The coherent
+> clock is **M5.8 (not built yet)** — 1D toy validated (M5.8.0a), 3D→4D production clock is next; in
+> free 3D today it disperses (M5.7.2). Proper-vs-coordinate time is standard relativity; the mapping
+> to OpenWave's `ω`/`g` is design expectation, not yet a verified sim result.
 >
 > **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
 > *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
@@ -499,6 +585,11 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
+> **Prerequisite from L2:** the **three Frank distortion modes** (splay `∇·n̂` = electric; Frank-twist + bend `∇×n̂` = magnetic) and the **two-meanings-of-"twist"** correction (Frank-twist of `n̂` in
+> space vs the QM clock-twist of the δ-axis in time) are unpacked in `0c §L2` ("The three Frank
+> distortion modes"). The causal link — *clock-twist spins → magnetic moment → circulating B → `∇×n̂`
+> lights up* — is the spine of the magnetic-moment story below.
+>
 > **★ MAGNETIC MOMENT — dedicated unpack (Rodrigo flagged 2026-05-30: "I still don't fully grasp
 > it").** Teach this against **Duda's electron slide** (`Screenshot 2026-05-28 at 3.15.48 PM` — the
 > one with the bar magnet `m`, the `B` field lines, the spin axis + `ω` Larmor inset). That slide is
