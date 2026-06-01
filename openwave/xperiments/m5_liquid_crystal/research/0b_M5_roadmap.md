@@ -35,6 +35,20 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 - 🔶 **M5.8 — 4D extension + Zitterbewegung clock** (GROUP HEADLINE — for Duda et al.). Add 0th time axis: `D = diag(g, 1, δ, 0)`, SO(1,3) Lorentz. Negative-energy contributions from spacetime signature auto-propel the clock (Fig. 10 mechanism). Measure de Broglie clock frequency `ω = 2mc²/ℏ` for electron — empirical answer to Duda's standing clock-propulsion question.
 - 🚧 **M5.9 — 3 lepton families + Cornell quarks**. 3 axis-choices of biaxial hedgehog → same Q, different mass; tune `Λ` to match `μ/e ≈ 207`, `τ/e ≈ 3477`. Cornell potential for quark strings via topological vortex (`V(r) = −α/r + σ·r`). Standard Model correspondence section of paper confirmed.
 
+#### 🚧 Validation Logic — engine correctness vs model correctness (Jeff Yee, 2026-06-01)
+
+A candidate model failing to reach particle stability does *not* imply the simulator physics is wrong — it could be the model; not every proposed model is the correct model of the universe. Engine-correctness and model-correctness are **distinct questions**, and they resolve asymmetrically:
+
+| Result | What it tells us |
+| --- | --- |
+| **Null** (e.g. M5.7 free-defect dispersal) | Ambiguous — wrong-model and wrong-engine are indistinguishable from a negative alone. Does NOT certify or condemn the engine. |
+| **Positive** (any framework achieves particle stability) | Certifies the engine physics works. Only a positive anchor breaks the ambiguity. |
+
+Implications:
+
+- 🚧 Until *one* model lands a stable particle, the platform itself is unconfirmed — the core argument for OpenWave's multi-model hedge (M3/EWT + M5/Duda + M6/Werbos), since we don't know in advance which framework supplies the anchor.
+- 🚧 Worth noting M6 (Werbos chaoiton) is currently our closest thing to that anchor — it's produced bound/ground states where M5 free-defects disperse.
+
 ### Parallel research stages
 
 Forward-looking research programs in their own files — run alongside / after the linear M5.x phases. Each carries its own scientific test program:

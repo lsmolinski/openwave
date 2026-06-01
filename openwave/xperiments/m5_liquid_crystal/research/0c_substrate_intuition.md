@@ -3,8 +3,8 @@
 **Purpose:** build working intuition for OpenWave's M5 Liquid-Crystal substrate — what the
 matrix field *is*, what its parts mean physically, how a particle (defect) is built from it, how
 the field evolves, where its energy/mass live, why it oscillates (the clock), how forces emerge,
-and how we visualize all of it — so the M5.8 promotion to 4×4 (`5a §10b`) lands with minimal
-knowledge gaps.
+where the *waves* live now that topology owns the matter sector (L11), and how we visualize all of
+it — so the M5.8 promotion to 4×4 (`5a §10b`) lands with minimal knowledge gaps.
 
 **Format:** built
 step-by-step during a teaching session. Each lesson distills an intuition-first Q&A (math second,
@@ -20,6 +20,10 @@ them.
 > bridge moved up to **L3** (right after the content lesson, since it's an eigenvalue-spectrum
 > extension); spin-½ folded into the clock at **L7**; handedness + composites is the finale at
 > **L10**. Old numbering: L1→split L1/L2, L2+L3→L2, L10→L3, L4–L9 unchanged, L7+L11→L7, L12→L10.
+>
+> **L11 appended (2026-06-01).** A capstone — **"where the waves live"** — documented from a
+> voice-note discussion (not a taught Q&A). It resolves the wave-first-inception vs topology-first-
+> reality tension and sits after the L10 finale as a reflective bookend.
 
 ---
 
@@ -37,6 +41,7 @@ them.
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
+| [11](#lesson-11--where-the-waves-live-m5m6-only) | [Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) ✅ | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the 3-layer answer (static substrate / topological matter / radiated+relational wave) + a **Forces** column (force emerges from topology, *not* fundamental waves); the two jobs of the wave (radiated EM/gravity + pilot/de-Broglie lock-in); *what radiates from the clock? — accelerating-charge / blackbody-IR / excess-oscillation-leak (open)*; M3/EWT reframed as mis-scoped not wrong; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -740,6 +745,99 @@ above is drawn axis-aligned (`O = identity`):
 
 ---
 
+## Lesson 11 — Where the waves live (M5/M6 only)
+
+> **Covers / added 2026-06-01 (the "wave existential crisis" voice-note).** OpenWave was born
+> wave-first — the name, M2 (free wave), M3 (Wolff-LaFreniere / EWT) all treat the standing wave as
+> *the* ontology. In M5/M6, **topology quietly took over the matter sector** (particle = defect, not
+> wave-packet), so the honest question is: where does "wave" live now? This capstone resolves it —
+> waves dropped from *substrate* to *emergent*, splitting into a **radiated** job and a **relational
+> (pilot)** job — and shows that **forces emerge from topology, not from a fundamental wave**.
+
+### Scope — this question only exists in M5/M6
+
+| Model | Ontology | Wave's status |
+| --- | --- | --- |
+| M1 granule · M2 free-wave · M3 EWT · M4 vector-wave | wave-native | the wave **is** the ontology — no crisis, "wave all the way down" |
+| **M5 (Duda LC) · M6 (Werbos chaoiton)** | **topology-first** | the wave is *demoted* — this lesson is the only place it needs re-locating |
+
+So the "where do waves live" tension is **unique to the topological models**. M1–M4 never ask it.
+
+### The tension — wave-first inception vs topology-first reality
+
+| Inception ontology (EWT / M2–M3) | Where M5/M6 actually landed |
+| --- | --- |
+| Waves are the *fundamental substance*; particle = standing-wave knot; force = wave interference | Topology is fundamental for matter; particle = topological **defect**; vacuum is **static**, not an oscillating medium |
+
+The question isn't "are waves still here" — it's **which layer** they live on now that they're no
+longer the substrate.
+
+### The three-layer answer (+ where forces and waves each emerge)
+
+The reconciliation: the M5 universe stacks three layers. Force and wave each **emerge** at a
+specific layer — neither is fundamental, and *neither comes from a base wave*.
+
+| Layer | Ontology | Where **force** emerges | Where the **wave** lives | Anchor |
+| --- | --- | --- | --- | --- |
+| **Substrate** | static matrix `M`, vacuum `diag(1, δ, 0)` | none — force is *deviation from* this ground, not a property of it | **none** — no base wave (EWT's oscillating aether is dropped here) | L1, M5.4 |
+| **Matter** | topological defect (hedgehog); charge/spin = invariants | **static topology sources it**: splay `∇·n̂` = electric/charge → Coulomb (1/d); g-axis gradient → gravity (1/r²) | the defect's *internal* `clock_twist` oscillation — a localized clock, mass-propelled | L4, L7, M5.8 |
+| **Emergent Radiation + relation** | disturbances the clock emits + how defects couple | **dynamics of the frame**: magnetic (`frank_twist`+bend `∇×n̂`) = the velocity/acceleration correction to Coulomb (Feynman); radiation reaction | **here** — radiated waves + the pilot/relational wave | L8, 9a, M5.8.6 |
+
+**Emergent Forces:** force is topological (static charge/gravity at the matter layer) and dynamical
+(magnetism/radiation at the relation layer) — **never** a fundamental-wave-interference effect. This
+is exactly why M3/EWT's wave-summation force-origin hit the **sinc sign-flip**: it tried to source
+force from the wrong layer.
+
+### The two jobs of the wave
+
+Your voice-note candidates ("only EM?", "orbital lock-in?", "ellipsoid oscillation?", "what do the
+oscillations generate?") all collapse into two emergent jobs at the top layer:
+
+| Wave job | What it is | Examples / mechanism |
+| --- | --- | --- |
+| **Radiated** | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, 9a/photons), gravitational waves (g-gradient ripples) |
+| **Relational (pilot)** | the near-field standing wave the defect *generates and re-couples to* — guides its own motion, quantizes orbits, binds composites | de Broglie–Bohm pilot wave / wave-structure-of-matter / Couder walking-droplet analogy (the 2+1D rung, M5.8.6) |
+
+**One-line synthesis:** *the vacuum doesn't wave; defects do — and the waves they emit (radiated)
+and re-absorb (pilot) are what "wave" means in M5/M6.* Topology owns the particle; waves own the
+radiation and the binding.
+
+### What kind of wave radiates from the clock? (open question, 2026-06-01)
+
+The instinct in the voice-note is right and worth chasing. Classical EM radiates only from
+**accelerating** charge (Larmor) — a static charge has a static Coulomb field and radiates nothing.
+Map that onto a defect:
+
+| Source state | Radiates? | Why |
+| --- | --- | --- |
+| Defect at rest, ground-state clock | **No** | static director field → static E/B; the bare `clock_twist` is a *stationary* internal phase (like a quantum stationary state with no oscillating dipole) — this is *why* a ground-state particle / orbiting electron doesn't spiral in |
+| Defect accelerating / transitioning / carrying **excess** `(A, ω)` above ground | **Yes** | the excess sheds as radiation when the defect de-excites/decoheres — your "excess intrinsic oscillation leaking out as EM" |
+
+So **blackbody / thermal-IR radiation** is a natural candidate for the *radiated* job: the EM thrown
+off by thermally-excited defect clocks shedding their `(A, ω)` excess (the **9b** "heat = `(A, ω)`
+excess" program is the scientific home for this).
+
+> ⚠️ **Carrier vs envelope caveat (don't conflate scales).** The bare Zitterbewegung clock is
+> `ω = 2mc²/ℏ` — for an electron ≈ `2.5×10²⁰ Hz` (gamma-ray range), **not** IR. Thermal IR sits near
+> `~10¹³ Hz` (300 K Wien peak ≈ 10 µm) — about **7 orders below** the carrier. So blackbody/IR is
+> **not** the raw clock frequency; it's the low-frequency **envelope / modulation / collective
+> de-excitation** riding on the carrier. Treat the clock as the carrier and the thermal spectrum as
+> the sideband — keep these separate or the picture is wrong by `10⁷`. (This is the falsifiable seam
+> for 9b; the *engineering* lever built on it lives in the SABER docs.)
+
+### Identity note — is "OpenWave" still apt?
+
+Yes. The wave remains the **observable, radiative, binding** phenomenon, and the README's
+de Broglie–Bohm / wave-structure-of-matter lineage is exactly the pilot-wave job above. What changed
+between inception and M5/M6 is the wave's **ontological primacy** (substrate → emergent), not its
+relevance. The name still points at the right physics — it just sits one layer up.
+
+**Anchors:** `9a` (radiated EM packets), `9b` (heat as `(A, ω)` excess — the radiated-thermal seam),
+`5a §10` + L7 (the clock), `M5.8.6` (2+1D pilot-wave rung), `README` (de Broglie–Bohm / WSM
+lineage), M2/M3 (the wave-native models this lesson contrasts against).
+
+---
+
 ## Appendix A — source questions (2026-05-29, voice-note batch 1)
 
 The original questions this curriculum organizes:
@@ -775,3 +873,4 @@ The original questions this curriculum organizes:
 | The 4th dimension: gravity (`g`) + the time axis; the two "times" | L3 |
 | 4D & teleparallelism | L3 |
 | Handedness / chirality; matter-antimatter; composite particles | L10 |
+| Where the waves live (radiated vs pilot); forces from topology not waves; what radiates from the clock (2026-06-01) | L11 |
