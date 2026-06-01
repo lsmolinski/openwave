@@ -193,7 +193,7 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 
 **Premise (Rodrigo, 2026-05-27).** Through M5.5 the viz channels were mostly placeholders — only the energy flux-meshes (`WAVE_MENU` 4/5) carried real signal. The channels are general-purpose *displays*; the value comes from **wiring each to the observable that builds physical intuition** for the phenomena OpenWave investigates (matter / forces / EM / heat). This part is the observable→channel map: pick a physics question, pick the channel + observable that answers it visually.
 
-> **Repo-discipline note** (per `feedback_repo_discipline`, cardinal rule): this doc frames the wiring by **physics intuition** only. The thermal observables are the `(A, ω)` excess of `project_thermal_amplitude_hypothesis` (hypothesis *name* used as a physics cross-ref, OK in OpenWave). SABER Direct-Heat-Conversion device specs / engineering targets / product framing — the *applied motivation* — stay in the **private SABER repo**, never here.
+> **Repo-discipline note** (per `feedback_repo_discipline`): this doc frames the wiring by **physics intuition** only. The thermal observables are the `(A, ω)` excess of `project_thermal_amplitude_hypothesis` (hypothesis *name* used as a physics cross-ref, OK in OpenWave). SABER Direct-Heat-Conversion device specs / engineering targets / product framing — the *applied motivation* — stay in the **SABER repo**, not here.
 
 ### The map — physics question → channel + observable
 
@@ -297,8 +297,7 @@ This part organizes the full observable wishlist for the EM + thermal research i
 catalog: **the physical quantities to display, what each *is* in the substrate, and the render
 channel that conveys it.** It is the ground-work for the SABER/thermal experiments (9b) — the
 channels are how we will *read* thermal reality and *watch* modulation methods work in the
-simulator. Physics-framing only here (cardinal rule); device/engineering motivation stays in the
-private SABER repo.
+simulator. Physics-framing only here; device/engineering motivation stays in the SABER repo.
 
 ### 4.1 The observable catalog — what each quantity IS
 

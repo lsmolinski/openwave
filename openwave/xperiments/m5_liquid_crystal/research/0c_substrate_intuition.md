@@ -411,8 +411,8 @@ above is drawn axis-aligned (`O = identity`):
 > the ensemble average of all proper-times is the coordinate time `dt` we perceive, the shared-clock.** Time bottoms out
 > in mass-propelled movement, not in a clock. ⚠️ All of this is the *relational-time hypothesis* (our
 > roots + Duda's framing), not a proven M5 result — and the thermal/energy *consequences* of "the
-> floor is lossless / perpetual" belong in the private SABER repo (`3_HYPOTHESIS.md §7.1`), per the
-> cardinal rule; here it's just the substrate's time-emergence picture.
+> floor is lossless / perpetual" belong in the SABER repo (`3_HYPOTHESIS.md §7.1`) the
+> here it's just the substrate's time-emergence picture.
 >
 > **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
 > *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
@@ -543,8 +543,8 @@ above is drawn axis-aligned (`O = identity`):
 > Clock"), `A` = the rotational radius/excitation amplitude (WM2 "Thermal Amp"). Ground state: both
 > fixed. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate shifts (FM) — exactly
 > the dual channels M5.7.3 saw respond to driving (`A_core`→3×, director at `f_d`). (The
-> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the private repo per the cardinal
-> rule; here it's just the substrate clock's two observables.)
+> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the SABER repo
+> here it's just the substrate clock's two observables.)
 >
 > *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `n̂`,
 > the δ–`0` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal

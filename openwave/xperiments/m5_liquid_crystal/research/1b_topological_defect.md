@@ -90,7 +90,7 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 | Photon emission | Waves | Energy release from topology event |
 | Thermal excess (per-defect) | Waves | Per-defect oscillation above ground state |
 
-**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its 9b.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` 9b.1](../../m3_wolff_lafreniere/research/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in private engineering work outside the OpenWave repo.
+**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its 9b.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` 9b.1](../../m3_wolff_lafreniere/research/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in engineering work outside the OpenWave scope.
 
 ### Strategic implication — where to look when
 
@@ -892,7 +892,7 @@ In mainstream physics these are separate empirical phenomena requiring separate 
 
 ### Note on engineering operationalization
 
-Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** per the cardinal cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [2a_path_to_m5.md](2a_path_to_m5.md) cover only the physics side.
+Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [2a_path_to_m5.md](2a_path_to_m5.md) cover only the physics side.
 
 ---
 

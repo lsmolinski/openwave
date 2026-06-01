@@ -86,7 +86,7 @@ Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.7 complete; M5.8 (4D c
 
 ## MODEL EMERGENCE — observed reality from the matrix field `M = ODO^T`
 
-What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 action, with the numerical mechanism + status + what's pending. **No model comparisons** (those live in the private `1_model_selection.md`). **No conceptual explanations** of substrate / defect / twist / eigenvalues — those stay in `1b` / `4a` / `5a`. Just emergence + status.
+What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 action, with the numerical mechanism + status + what's pending. **No model comparisons** (those live in the `1_model_selection.md`). **No conceptual explanations** of substrate / defect / twist / eigenvalues — those stay in `1b` / `4a` / `5a`. Just emergence + status.
 
 **Substrate (recap, see Q6 RESOLVED).** Symmetric 3×3 `M(x) = O(x)·D·O^T(x)` on a 3D lattice; 5 DoF/voxel. Preferred shape `D = diag(g, 1, δ, 0)`. Eigenvalue → physics map (M5.6.4-verified):
 
@@ -218,7 +218,7 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 
 ### Duda's stated limitations of his own LdGS / M5 model
 
-Physics limitations Duda (or his papers, as quoted in our notes) flags about his own framework. Sourced from the M5 research docs; reproduced from `NEPTUNYA/SABER/1_model_selection.md` (physics content — the SABER engineering-timeline analysis stays in that private doc).
+Physics limitations Duda (or his papers, as quoted in our notes) flags about his own framework. Sourced from the M5 research docs; reproduced from `NEPTUNYA/SABER/1_model_selection.md` (physics content — the SABER engineering-timeline analysis stays in that doc).
 
 | # | Limitation | Source |
 | --- | --- | --- |
@@ -235,7 +235,7 @@ Physics limitations Duda (or his papers, as quoted in our notes) flags about his
 
 ### Which M5 phase each limitation gates (physics roadmap)
 
-SABER engineering-timeline impact is analyzed in the private `1_model_selection.md` (§ "How the limitations affect SABER timeline"); here we keep only the OpenWave-physics phase-gating. The chain `M5.5 → M5.6 → M5.7 → 9b` is the documented bridge to the SABER thermal counterpart (see [`9b_thermal_energy.md`](9b_thermal_energy.md)).
+SABER engineering-timeline impact is analyzed in the `1_model_selection.md` (§ "How the limitations affect SABER timeline"); here we keep only the OpenWave-physics phase-gating. The chain `M5.5 → M5.6 → M5.7 → 9b` is the documented bridge to the SABER thermal counterpart (see [`9b_thermal_energy.md`](9b_thermal_energy.md)).
 
 | Limitation | Gates | Reading |
 | --- | --- | --- |

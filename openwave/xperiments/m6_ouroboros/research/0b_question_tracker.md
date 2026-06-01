@@ -113,8 +113,7 @@ refine geometry correction formula; PLUS Acks-update wording for
 both DM paper AND future LoE revisions). DM paper inputs ALREADY
 DELIVERED via sandbox_v10 (m_χ = 0.4599 MeV, m_J = 0.6184 MeV,
 C = 770 MeV·fm); Q47 reply just confirms the canonical-match framing.
-M6 work functionally complete on numerical side; M5 foreground per
-cardinal rule. M6 data drop is at github.com/openwave-labs/openwave
+M6 work functionally complete on numerical side; M5 foreground. M6 data drop is at github.com/openwave-labs/openwave
 (Reference [17] in 9c paper).
 ```
 
@@ -369,7 +368,7 @@ Active count entering Paul's email v10 reply (post-9b review):
              (analytical: √λ × ℏc/R_phys); C = 6.7×10⁻⁴ MeV·fm
              (source-monopole + spherical 3D convention).
   NEW:       Q41 — writing role question. Declined full role per
-             cardinal-rule scope.
+             scope.
   NEW:       Q42 — β profile non-localization in IVP. Forward
              solve_ivp doesn't enforce β(∞)=0; β has internal sign
              changes + growing oscillating tail. 9c-cited m_χ is
@@ -442,10 +441,10 @@ Completed via sandbox v8 (in 9c):
 M6 production decision (Taichi):
   - Sonnet's canonical script: reference ODE for charged sector
   - neutral_bvp_solver_mJ_free.py: reference ODE for neutral sector
-  - Decision deferred per cardinal rule (M5 first)
+  - Decision deferred (M5 first)
   - Full canonical specification in 0d_canonical.md
 
-M5 returns as foreground engineering track per cardinal rule:
+M5 returns as foreground engineering track:
   M5 is SABER's primary substrate. M6 functionally complete on the
   numerical side (numbers delivered); awaiting Q47 interpretation +
   Acks-update for the final paper-side framing.

@@ -35,12 +35,13 @@ METRICS.
 
 BRIDGE TO SABER.  A sustained, frequency-selective driven (A, ω) is the field-theoretic basis of
 "heat = maintained (A, ω) excess" + identifies the modulation frequency the EM lever should use.
-(Physics framing only here; device/engineering specifics → private SABER docs per the cardinal rule.)
+(Physics framing only here; device/engineering specifics → SABER docs.)
 
 USAGE:
     python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v7.m5_7_3_driven_oscillation
     M57_N=32 M57_STEPS=4000 M57_ADRIVE=0.02 python -m ...m5_7_3_driven_oscillation   # fast smoke
 """
+
 import os
 
 import numpy as np
@@ -60,9 +61,9 @@ DT = float(os.environ.get("M57_DT", 0.004))
 N_STEPS = int(os.environ.get("M57_STEPS", 5000))
 SAMPLE_EVERY = 5
 R_CORE = 3.0 * RC
-SHELL_PEAK = 2.5 * RC                    # drive + measurement shell (active textured region)
+SHELL_PEAK = 2.5 * RC  # drive + measurement shell (active textured region)
 SHELL_W = 0.7
-A_DRIVE = float(os.environ.get("M57_ADRIVE", 0.02))   # peak drive acceleration (env-tunable)
+A_DRIVE = float(os.environ.get("M57_ADRIVE", 0.02))  # peak drive acceleration (env-tunable)
 
 G_Y = np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [-1.0, 0.0, 0.0]], DTYPE)  # so(3) gen about ŷ
 
@@ -140,26 +141,35 @@ def build_biaxial_M():
     d1 = diso + srad[..., 0, 0] * (DELTA - diso)
     d2 = diso + srad[..., 0, 0] * (0.0 - diso)
     oprod = lambda v: v[..., :, None] * v[..., None, :]
-    M = (d0[..., None, None] * oprod(rhat) + d1[..., None, None] * oprod(etheta)
-         + d2[..., None, None] * oprod(ephi))
+    M = (
+        d0[..., None, None] * oprod(rhat)
+        + d1[..., None, None] * oprod(etheta)
+        + d2[..., None, None] * oprod(ephi)
+    )
     interior = np.zeros(r.shape, bool)
     interior[2:-2, 2:-2, 2:-2] = True
     active = (r > 2 * RC) & (rho > RHOC) & interior
-    shell = active & (np.abs(r - SHELL_PEAK) < 2 * SHELL_W)    # core-shell for A_core + drive
+    shell = active & (np.abs(r - SHELL_PEAK) < 2 * SHELL_W)  # core-shell for A_core + drive
     ix = int(round((SHELL_PEAK + L) / (2 * L) * (N - 1)))
     ic = (N - 1) // 2
-    return dict(M=M.astype(DTYPE), h=DTYPE(h), r=r.astype(DTYPE),
-                active=active, shell=shell, probe=(ix, ic, ic))
+    return dict(
+        M=M.astype(DTYPE),
+        h=DTYPE(h),
+        r=r.astype(DTYPE),
+        active=active,
+        shell=shell,
+        probe=(ix, ic, ic),
+    )
 
 
 def build_drive_pattern(bg):
     """D̂(x) = w(x)·[G_y, M_bg], symmetric+traceless, Gaussian-shell localized, peak-normalized."""
     M, r, active = bg["M"], bg["r"], bg["active"]
-    Dh = commf(np.broadcast_to(G_Y, M.shape), M)               # [G_y, M_bg] (symmetric, traceless)
+    Dh = commf(np.broadcast_to(G_Y, M.shape), M)  # [G_y, M_bg] (symmetric, traceless)
     w = np.exp(-((r - SHELL_PEAK) ** 2) / (2 * SHELL_W**2))[..., None, None]
     Dh = (Dh * w) * active[..., None, None]
     peak = np.sqrt(frob2(Dh)).max() + 1e-30
-    return (Dh / peak).astype(DTYPE)                            # peak ‖D̂‖_F = 1 over the shell
+    return (Dh / peak).astype(DTYPE)  # peak ‖D̂‖_F = 1 over the shell
 
 
 def principal_director(m3):
@@ -182,7 +192,7 @@ def run_lockstep(bg, freqs, n_steps):
 
     def sample():
         for fi in range(len(freqs)):
-            dM = (cur[fi] - Mbg)
+            dM = cur[fi] - Mbg
             series[fi]["A"].append(float(np.sqrt(frob2(dM))[shell].mean()))
             series[fi]["H"].append(float((energy_total(cur[fi], prev[fi], h) * active).sum()))
             series[fi]["ndir"].append(principal_director(cur[fi][probe]))
@@ -194,7 +204,7 @@ def run_lockstep(bg, freqs, n_steps):
         for fi, fd in enumerate(freqs):
             f = C_WAVE**2 * curvature_force(cur[fi], h) - dV_M(cur[fi], A_COEF, 0.0, C_COEF)
             if fd > 0.0:
-                f = f + (A_DRIVE * np.sin(2 * np.pi * fd * t)) * Dh    # the EM-like lever
+                f = f + (A_DRIVE * np.sin(2 * np.pi * fd * t)) * Dh  # the EM-like lever
             new = np.where(mask, 2 * cur[fi] - prev[fi] + DT**2 * f, Mbg)
             prev[fi], cur[fi] = cur[fi], new
         if step % SAMPLE_EVERY == 0:
@@ -205,11 +215,19 @@ def run_lockstep(bg, freqs, n_steps):
     finite = all(np.isfinite(c).all() for c in cur)
     out = []
     for fi, fd in enumerate(freqs):
-        A = np.array(series[fi]["A"]); H = np.array(series[fi]["H"])
+        A = np.array(series[fi]["A"])
+        H = np.array(series[fi]["H"])
         ndir = np.array(series[fi]["ndir"])
-        tail = slice(2 * len(A) // 3, None)                    # sustained = mean over last third
-        out.append(dict(fd=fd, A=A, A_sustained=float(A[tail].mean()),
-                        H_growth=float((H[-1] - H[0]) / (abs(H[0]) + 1e-30)), ndir=ndir))
+        tail = slice(2 * len(A) // 3, None)  # sustained = mean over last third
+        out.append(
+            dict(
+                fd=fd,
+                A=A,
+                A_sustained=float(A[tail].mean()),
+                H_growth=float((H[-1] - H[0]) / (abs(H[0]) + 1e-30)),
+                ndir=ndir,
+            )
+        )
     return out, finite
 
 
@@ -230,35 +248,46 @@ def response_at(ndir, f_d):
         if spec.sum() < 1e-30:
             continue
         lo, hi = max(0, k_d - 2), min(len(spec), k_d + 3)
-        best = max(best, spec[lo:hi].sum() / spec.sum())       # AC power near the drive freq
+        best = max(best, spec[lo:hi].sum() / spec.sum())  # AC power near the drive freq
     return best
 
 
 # ====================================================================================
 def main():
     print("=" * 82)
-    print("M5.7.3 — 9b.1 driven-oscillation preview: can an EM-like lever sustain the defect (A,ω)?")
-    print(f"  grid {N}³  L={L}  c={C_WAVE}  dt={DT}  steps={N_STEPS}  δ={DELTA}  A_drive={A_DRIVE}  f32")
+    print(
+        "M5.7.3 — 9b.1 driven-oscillation preview: can an EM-like lever sustain the defect (A,ω)?"
+    )
+    print(
+        f"  grid {N}³  L={L}  c={C_WAVE}  dt={DT}  steps={N_STEPS}  δ={DELTA}  A_drive={A_DRIVE}  f32"
+    )
     print("=" * 82)
     bg = build_biaxial_M()
     # 0.0 = free baseline; sweep around the M5.7.2 natural ~0.1–0.25/t. Env-overridable: M57_FREQS="0.0,0.1,0.2"
     freqs = [float(x) for x in os.environ.get("M57_FREQS", "0.0,0.10,0.20,0.40").split(",")]
-    print(f"  active {100*bg['active'].mean():.0f}%  shell voxels {bg['shell'].sum()}  "
-          f"probe {bg['probe']}  drive freqs {freqs[1:]}/t", flush=True)
+    print(
+        f"  active {100*bg['active'].mean():.0f}%  shell voxels {bg['shell'].sum()}  "
+        f"probe {bg['probe']}  drive freqs {freqs[1:]}/t",
+        flush=True,
+    )
 
     res, finite = run_lockstep(bg, freqs, N_STEPS)
     free = res[0]
     driven = res[1:]
 
     print(f"\n  RESULTS  (A_core = ⟨‖M−M_bg‖⟩ over the shell; sustained = mean over last third):")
-    print(f"    [FREE   f_d=0.0 ]  A_sustained={free['A_sustained']:.4f}   "
-          f"A: {free['A'][0]:.3f}→max {free['A'].max():.3f}→end {free['A'][-1]:.3f}")
+    print(
+        f"    [FREE   f_d=0.0 ]  A_sustained={free['A_sustained']:.4f}   "
+        f"A: {free['A'][0]:.3f}→max {free['A'].max():.3f}→end {free['A'][-1]:.3f}"
+    )
     for rr in driven:
         resp = response_at(rr["ndir"], rr["fd"])
         rr["resp"] = resp
         gain = rr["A_sustained"] / (free["A_sustained"] + 1e-30)
-        print(f"    [DRIVEN f_d={rr['fd']:.2f}]  A_sustained={rr['A_sustained']:.4f}  "
-              f"({gain:.1f}× free)  response@f_d={100*resp:.0f}%  H-growth {100*rr['H_growth']:+.0f}%")
+        print(
+            f"    [DRIVEN f_d={rr['fd']:.2f}]  A_sustained={rr['A_sustained']:.4f}  "
+            f"({gain:.1f}× free)  response@f_d={100*resp:.0f}%  H-growth {100*rr['H_growth']:+.0f}%"
+        )
 
     best = max(driven, key=lambda d: d["A_sustained"])
     best_gain = best["A_sustained"] / (free["A_sustained"] + 1e-30)
@@ -268,17 +297,29 @@ def main():
     sustained = best_gain >= 1.5 and finite
     # RESONANT: the best frequency is frequency-selective (responds at its f_d, beats neighbors)
     resonant = best.get("resp", 0) >= 0.3
-    print(f"  SUSTAINED by the lever? {'YES' if sustained else 'NO'} — best f_d={best['fd']:.2f} holds "
-          f"A_core {best_gain:.1f}× the free baseline")
-    print(f"  FREQUENCY-SELECTIVE? {'YES' if resonant else 'WEAK'} — best f_d responds "
-          f"{100*best.get('resp',0):.0f}% at its drive frequency (the lever's coupling band)")
+    print(
+        f"  SUSTAINED by the lever? {'YES' if sustained else 'NO'} — best f_d={best['fd']:.2f} holds "
+        f"A_core {best_gain:.1f}× the free baseline"
+    )
+    print(
+        f"  FREQUENCY-SELECTIVE? {'YES' if resonant else 'WEAK'} — best f_d responds "
+        f"{100*best.get('resp',0):.0f}% at its drive frequency (the lever's coupling band)"
+    )
     if sustained and resonant:
-        print(f"  → THE EM LEVER WORKS: a continuous drive at f_d≈{best['fd']:.2f}/t holds the defect in a")
-        print("    maintained (A,ω) excess — the field-theoretic basis of heat-as-driven-excess (9b.1).")
+        print(
+            f"  → THE EM LEVER WORKS: a continuous drive at f_d≈{best['fd']:.2f}/t holds the defect in a"
+        )
+        print(
+            "    maintained (A,ω) excess — the field-theoretic basis of heat-as-driven-excess (9b.1)."
+        )
     elif sustained:
-        print("  → The lever sustains the excitation but the resonance is broad — map the band in 9b.1.")
+        print(
+            "  → The lever sustains the excitation but the resonance is broad — map the band in 9b.1."
+        )
     else:
-        print("  → The lever does not clearly sustain the excitation at this A_drive — tune amplitude /")
+        print(
+            "  → The lever does not clearly sustain the excitation at this A_drive — tune amplitude /"
+        )
         print("    frequency, or the sustained-thermal-state needs the 4D clock substrate (M5.8).")
     print("PASS" if finite else "FAIL — blow-up (reduce A_drive or dt)")
     print("=" * 82)
