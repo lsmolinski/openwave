@@ -14,32 +14,39 @@ them.
 
 **Status legend:** ✅ done · 🔶 in progress · 🚧 next · *(blank = pending)*.
 
+> **Curriculum refactor (2026-05-31).** Restructured 12 → 10 lessons, sprouted *by* learning the
+> curriculum. The old L1–L2–L3 arch is re-split into **L1 (the grid/medium/vacuum)** + **L2 (each
+> voxel's "personality" — the matrix, eigenvalues & the physics map, merging old L2+L3)**; the 4×4
+> bridge moved up to **L3** (right after the content lesson, since it's an eigenvalue-spectrum
+> extension); spin-½ folded into the clock at **L7**; handedness + composites is the finale at
+> **L10**. Old numbering: L1→split L1/L2, L2+L3→L2, L10→L3, L4–L9 unchanged, L7+L11→L7, L12→L10.
+
 ---
 
 ## Curriculum
 
-| # | Lesson | Covers (questions + *added topics*) | Live-code anchor | Status |
-| --- | --- | --- | --- | --- |
-| [1](#lesson-1--the-medium--the-vacuum) | [The medium & the vacuum](#lesson-1--the-medium--the-vacuum) | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the vacuum/ground state*; the Vector(3)→matrix story; "biaxial top at each voxel" | `4a §3/§5`, `medium.py`; M5.4 history | ✅ done |
-| [2](#lesson-2--the-field-object-m--odoᵀ-decoded) | [The field object: `M = O·D·Oᵀ` decoded](#lesson-2--the-field-object-m--odoᵀ-decoded) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; *+ the M4 6-phasor-ellipse → M5 ellipsoid bridge (major axis / orbital normal / handedness=chirality); natural units & δ↔ℏ scale* | `medium.py`, `engine2_pde.py`, `4a §5`, M4 | 🚧 next |
-| [3](#lesson-3--what-the-axes-mean-the-eigenvaluephysics-map--operators) | [What the axes mean: eigenvalue→physics map + operators](#lesson-3--what-the-axes-mean-the-eigenvaluephysics-map--operators) | tilt→EM, twist→QM(ℏ), boost→gravity, null→clock; *+ yaw/pitch/roll framing of the rotations; the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame, Eq.19-20); the vector operators grad/div/curl/laplacian and their physical meaning* | `4a §6/§8`, `5a §1-2`, `engine2_pde.py`, `1b` | |
-| [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* | `engine1_seeds.py`, `5a §5b/§5e`, `1b` | |
-| [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* | `5a §1/§6`, `1b`, `5a §5c`, `3a` | |
-| [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* | `engine2_pde.py`, `5a §5f/§5g/§9` | |
-| [7](#lesson-7--the-de-broglie-clock-why-the-particle-oscillates-zitterbewegung) | [The de Broglie clock: why the particle oscillates (Zitterbewegung)](#lesson-7--the-de-broglie-clock-why-the-particle-oscillates-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual (rotational, not translational); spinning vs oscillating; ω=2mc²/ℏ; spin & spin-½; de Broglie λ; time-crystal; → teleparallelism/4D* | `5a §10`, `theory/time_crystal.pdf`, `1b`, `4a §6` | |
-| [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge | `engine3_observables.py`, `5a §5d`, `3a` | |
-| [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* | `engine4_render.py`, `4b Part 3`, `_launcher.py` | |
-| [10](#lesson-10--bridge-what-the-44-adds-preview) | [Bridge: what the 4×4 adds (preview)](#lesson-10--bridge-what-the-44-adds-preview) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*, the Minkowski negative-energy clock | `5a §10b`, `4a §6` | |
+| # | Lesson | Covers (questions + *added topics*) |
+| --- | --- | --- |
+| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The medium, the grid & the vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
+| [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
+| [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
+| [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
+| [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
+| [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
+| [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
+| [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
+| [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
 
 ---
 
-## Lesson 1 — The medium & the vacuum
+## Lesson 1 — The medium, the grid & the vacuum
 
 > **Covers:** what the *medium* actually is — an LdG (Landau–de Gennes) symmetric-tensor field
-> `M(x)` living on a 3D space grid and evolved in time; the **vacuum / ground state** (uniform
-> `M=D`, no defect); why M5 evolved from a Vector(3) `ψ` field to a matrix `M` (M5.2 failed →
-> M5.4 fixed); the "biaxial top at each voxel" picture.
-> **Anchors:** `4a §3/§5`, `medium.py`, M5.4 migration history.
+> `M(x)` living on a 3D space grid and evolved in time; what it *represents* (order parameter /
+> coarse-grained granule orbit); why M5 evolved from a Vector(3) `ψ` field to a matrix `M` (M5.2
+> failed → M5.4 fixed); the **vacuum / ground state** (uniform `M=D`, no defect); the "biaxial top
+> at each voxel" picture. *(The full decode of `M` — eigenvalue shape, the physics map — is L2.)*
 
 ### The one-sentence version
 
@@ -60,48 +67,8 @@ Most simulators put a scalar (number) or a 3-vector (arrow) at each cell. M5 put
 
 Combined into one symmetric matrix: **`M = O·D·Oᵀ`**. The physics name is the **Landau–de Gennes
 (LdG) order parameter** — the standard description of a liquid crystal. Duda's framework: *the
-vacuum is a liquid-crystal-like medium; particles are defects in its alignment.*
-
-### The ellipsoid axes — how the eigenvalues set the shape
-
-![Triaxial biaxial top: semi-axes a (longest, x) > b (medium, y) > c (shortest/flat, z); the director n-hat lies along the longest axis a](images/ellipsoid.png)
-
-In the live **3D** substrate the biaxial vacuum spectrum is **`D = diag(1, δ, 0)`** (the M5.6
-seeder, `engine1_seeds.py:477`) — three distinct axis-lengths. (`medium.py:19`'s header writes the
-general `diag(g,1,δ)`; the gravity eigenvalue `g` is the **4D** addition — see the spectra note
-below.) The figure above is drawn axis-aligned (`O = identity`):
-
-| Eigenvalue | Size | Semi-axis in the figure | Physics label (the "why" → L3) |
-| --- | --- | --- | --- |
-| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt |
-| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / twist |
-| `0` | smallest (null) | `c` (short / flat axis, z) | the null/time axis → the 4D clock |
-
-- **Where is `director_nhat`?** It's the **principal eigenvector** — the eigenvector of the
-  *largest* eigenvalue (`1`, the EM axis) — so on the figure it runs **along the longest axis `a`**.
-  For a hedgehog that's the radial direction (`n̂ = r̂`, the classic charge texture). The director
-  captures only this *one* axis; the orientation of `b`/`c` *around* `a` is the leftover twist DoF
-  from Q8. (Your flattening `c → 0` literally visualizes the **null** axis.)
-- Bigger eigenvalue → longer axis (convention: `M` on the unit sphere ⇒ semi-axis = eigenvalue; the
-  `√λ` convention keeps the same ordering). `D` is the *vacuum* shape (V(M)'s minimum); near a
-  defect core it **melts** toward isotropic `(1+δ)/3`, and only `O(x)` (the orientation) varies
-  freely per voxel.
-- **Spectra by phase:** uniaxial M5.4 placeholder `diag(1, δ, δ)` (`δ=LC_DELTA=0.5` — one director
-  axis, enough for Coulomb) → biaxial M5.6 `diag(1, δ, 0)` → full 4D `diag(g, 1, δ, 0)` adds `g` =
-  gravity/boost (L10). Hierarchy `g ≫ 1 ≫ δ ~ ℏ > 0`.
-
-> 🔭 **What the 4th dimension adds to this 3×3 medium (preview → L10).** Everything in this lesson —
-> the biaxial frame, the EM/tilt axis, the QM/twist axis, charge, the null axis — already lives in
-> the **3×3 (spatial)** matrix. The M5.8 promotion to **4×4** doesn't replace any of it; it adds a
-> **time axis** on top, and that buys exactly two new things:
->
-> | What 4D adds | Mechanism | Why it matters |
-> | --- | --- | --- |
-> | **Gravity** — the `g` (boost) eigenvalue | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`: a 4th independent shape axis | gravity becomes a field we can carry + render (mass monopole, `1/r²` — L8, `4b §4.7`). `g` is *absent* in the live 3D run. |
-> | **A self-sustaining clock** — the time axis + Minkowski signature | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the defect's oscillation energetically favorable (Duda's negative-energy mechanism, Fig 10) | the Zitterbewegung clock **propels itself and stays coherent**. In free 3D the clock can't survive — it disperses/radiates away (M5.7.2); **4D is what makes the particle a stable time-crystal** (`5a §10b`, L7/L10). |
->
-> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds
-> gravity (`g`) and the working clock (time + the Minkowski sign that auto-propels Zitterbewegung).**
+vacuum is a liquid-crystal-like medium; particles are defects in its alignment.* (How the
+eigenvalues set the exact shape, and what each axis *means* physically, is the content of L2.)
 
 ### What the medium *represents* — the order-parameter / coarse-graining reading
 
@@ -153,16 +120,16 @@ grain; a particle = a permanent swirl the elasticity can't smooth out.*
 | # | Question | Answer (short) | Full in |
 | --- | --- | --- | --- |
 | 1 | why is a symmetric matrix an ellipsoid? | spectral theorem: `M=O·D·Oᵀ` = rotate → stretch by `D` → rotate back; applied to a unit sphere it gives an ellipsoid with **perpendicular** axes (symmetry ⟺ real eigenvalues + orthogonal axes). A non-symmetric matrix shears it into an axis-less blob. | L2 |
-| 2 | `(g,1,δ)` biaxial vs `(1,δ,δ)` uniaxial? | the 3 entries are the axis-lengths: `g`≫1 (gravity/boost), `1` (EM/tilt, reference), `δ`~ℏ (QM/twist). **Biaxial** = all 3 distinct (triaxial, like a brick — 3 distinguishable axes). **Uniaxial** = 2 equal → degenerate spheroid (rugby ball — one special axis). M5.4 used uniaxial `(1,δ,δ)` because Coulomb only needs one axis; biaxial is needed for the twist/clock. | L3 (labels), L4 |
+| 2 | `(g,1,δ)` biaxial vs `(1,δ,δ)` uniaxial? | the 3 entries are the axis-lengths: `g`≫1 (gravity/boost), `1` (EM/tilt, reference), `δ`~ℏ (QM/twist). **Biaxial** = all 3 distinct (triaxial, like a brick — 3 distinguishable axes). **Uniaxial** = 2 equal → degenerate spheroid (rugby ball — one special axis). M5.4 used uniaxial `(1,δ,δ)` because Coulomb only needs one axis; biaxial is needed for the twist/clock. | L2 (labels), L4 |
 | 3 | where are `director_nhat` / `eigenvalues`? | stored at `medium.py:179-180`; **computed each frame** from `M_am` by the Cardano `eigen_decompose` in `engine2_pde.py`. Derived caches — `M` is the truth, these are read back out. | L2 |
 | 4 | does the medium have an elastic force toward a ground state? | yes — orientation gradients cost energy (**Frank elastic**), giving a restoring force `F=−∇E` that relaxes toward the uniform vacuum. The drama: topology can forbid full relaxation → it oscillates. | L5 (energy), L7 (clock) |
 | 5 | what is a "biaxial top"? | a rigid body by its 3 principal axes: spherical (3 equal), uniaxial/symmetric (2 equal — pencil/football), **biaxial** (all 3 different — book/phone, a full 3-axis orientation). | L1 |
 | 6 | eigenvalues = shape, eigenvectors = orientation? how many? | yes: **3 eigenvalues** = shape (`D`), **3 perpendicular eigenvectors** = orientation (the columns of `O`). 6 independent numbers = **3 shape + 3 rotation angles**. | L2 |
 | 7 | apolar director, but we draw a half-arrow? | the half-arrow is a **rendering aid, not physics** — the field is apolar (`n̂≡−n̂`, eigensolver sign arbitrary). The barb helps the eye follow orientation but lets neighbors disagree on sign → the gauge sign-flip artifact. | L9 |
-| 8 | `director_nhat` is only the major axis — there's a 3rd orientation DoF? | **exactly.** `O∈SO(3)` has 3 rotational DoF; a unit vector `n̂` has 2 — the **missing 1 is rotation about `n̂` = the twist**. Meaningless for uniaxial (degenerate), **physical for biaxial** — and that twist DoF is where the QM phase / KG mass / the clock live. The director throws away exactly the DoF that becomes the de Broglie clock. | L3 (twist), L7 (clock) |
+| 8 | `director_nhat` is only the major axis — there's a 3rd orientation DoF? | **exactly.** `O∈SO(3)` has 3 rotational DoF; a unit vector `n̂` has 2 — the **missing 1 is rotation about `n̂` = the twist**. Meaningless for uniaxial (degenerate), **physical for biaxial** — and that twist DoF is where the QM phase / KG mass / the clock live. The director throws away exactly the DoF that becomes the de Broglie clock. | L2 (twist), L7 (clock) |
 | 9 | what reality do the ellipsoids represent — granules at Planck scale? | `M` is an **order parameter** = coarse-grained average. A granule's high-frequency **orbit** has covariance `⟨(x−x̄)(x−x̄)ᵀ⟩ = O·D·Oᵀ` (orbit variances → eigenvalues = shape; orbit orientation → eigenvectors), so sub-voxel motion presents as a static ellipsoid. A finer granule/Planck substrate is *aligned with* OpenWave's roots but an **open hypothesis** — M5 evolves `M` directly. Tractability: voxel `~10⁻¹⁸ m` vs Planck `~1.6×10⁻³⁵ m` (`~10⁵¹` sub-cells to resolve). | L1 above, L2 (M4 ellipse), L7 |
-| 10 | how do the eigenvalues map to the ellipsoid axes? | eigenvalue = axis length. Live 3D biaxial `diag(1, δ, 0)`: `1`→longest `a` (**`director n̂`**, EM axis), `δ`→middle `b` (QM, `~ℏ`), `0`→flat `c` (null → 4D clock). `O(x)` rotates the whole ellipsoid per voxel. (`medium.py:19` writes the general `diag(g,1,δ)`; `g`=gravity is the 4D addition.) See the figure above. | L3 (physics labels) |
-| 11 | if `D` is frozen/global, why store + recompute `WaveField.eigenvalues` each frame? why `g,1,δ` not `a,b,c`? | the global `D` is the *ideal vacuum* spectrum (a constant — **not** stored per voxel). `WaveField.eigenvalues` stores the **local** eigenvalues of the actual `M(x,t)`, which **deviate** from `D`: (a) cores **melt** to isotropic `(1+δ)/3` (Faber regularization, `engine1_seeds.py:500`), (b) dynamics breathe the amplitude `Tr(M²)`. Recomputed every frame because the **director** (eigenvectors, via `O(x)`) changes every step — `eigen_decompose` returns eigenvectors *and* eigenvalues together. Symbols `g/1/δ/0` encode physics (gravity / EM-unity / QM`~ℏ` / null), not generic geometry — `a/b/c` would lose the hierarchy `g≫1≫δ~ℏ>0`. | L3 (map), L5 (V min) |
+| 10 | how do the eigenvalues map to the ellipsoid axes? | eigenvalue = axis length. Live 3D biaxial `diag(1, δ, 0)`: `1`→longest `a` (**`director n̂`**, EM axis), `δ`→middle `b` (QM, `~ℏ`), `0`→flat `c` (null → 4D clock). `O(x)` rotates the whole ellipsoid per voxel. (`medium.py:19` writes the general `diag(g,1,δ)`; `g`=gravity is the 4D addition.) See the figure in L2. | L2 (physics labels) |
+| 11 | if `D` is frozen/global, why store + recompute `WaveField.eigenvalues` each frame? why `g,1,δ` not `a,b,c`? | the global `D` is the *ideal vacuum* spectrum (a constant — **not** stored per voxel). `WaveField.eigenvalues` stores the **local** eigenvalues of the actual `M(x,t)`, which **deviate** from `D`: (a) cores **melt** to isotropic `(1+δ)/3` (Faber regularization, `engine1_seeds.py:500`), (b) dynamics breathe the amplitude `Tr(M²)`. Recomputed every frame because the **director** (eigenvectors, via `O(x)`) changes every step — `eigen_decompose` returns eigenvectors *and* eigenvalues together. Symbols `g/1/δ/0` encode physics (gravity / EM-unity / QM`~ℏ` / null), not generic geometry — `a/b/c` would lose the hierarchy `g≫1≫δ~ℏ>0`. | L2 (map), L5 (V min) |
 | 12 | does `δ ~ ℏ` corroborate the Planck-granule orbit hypothesis? | **intriguing rhyme, not corroboration.** Solid part: `δ` is the twist eigenvalue carrying the QM phase `exp(iEt/ℏ)` → KG mass (M5.6, verified). Speculative part: reading eigenvalues as orbit-variances (Q9) puts `ℏ` in the smallest orbital extent — but `ℏ` is an *action* and `δ` a *dimensionless ratio* (a role-identification in natural units), and the granule/Planck layer is itself unproven. Hold as a research thread, not evidence. | L7 (clock), L1/Q9 (granule) |
 
 ### Anchor in the live engine
@@ -178,49 +145,158 @@ grain; a particle = a permanent swirl the elasticity can't smooth out.*
 **Takeaway:** the medium is a 3D grid of oriented ellipsoids (`M`); the vacuum is all of them
 aligned; we use a matrix instead of an arrow because the physics needs shape + a twistable frame +
 apolarity, which an arrow can't carry. The leftover "twist about `n̂`" DoF (Q8) is the seed of the
-clock.
+clock. *(Next, L2: decode `M` fully — what the eigenvalues are, and what moving each axis means.)*
+
+**Anchors:** `4a §3/§5`, `medium.py`, M5.4 migration history.
 
 ---
 
-## Lesson 2 — The field object: `M = O·D·Oᵀ` decoded
+## Lesson 2 — Each voxel's personality: `M = O·D·Oᵀ`, eigenvalues & the physics map
 
-> **Covers:** Q1 (the numbers), Q2 (physical meaning), Q3 (eigenvalues ↔ matrix numbers ↔
-> director vector `n̂`); *+ the M4-ellipse → M5-ellipsoid bridge; natural units & δ↔ℏ scale*.
-> **Anchors:** `medium.py` (M storage, 6 components/voxel), `engine2_pde.py` (Cardano eigensolver),
-> `4a §5`, M4 6-phasor model.
->
-> **Seed intuition (to develop): the M4 ellipse → M5 ellipsoid bridge.** `M = O·D·Oᵀ` is literally
-> an *ellipsoid at each voxel* — `D = diag(λ₁,λ₂,λ₃)` are the semi-axis lengths (the **shape**),
-> `O` is orthogonal (the **orientation/rotation**). This is the 3D matrix generalization of M4's
-> **6-phasor ellipse** (`R, Φ` per axis). An ellipse/ellipsoid carries orientation *for free*: the
-> **major axis** = one direction in space, the **normal to the orbital plane** = another, and the
-> **handedness** (CW vs CCW traversal) = a ± sign = **chirality**. So one symmetric matrix encodes
-> direction + shape + chirality together.
+> **Covers:** the full decode of one voxel's matrix. Q1 (the 9 numbers, 6 independent), Q2/Q6
+> (eigenvalues = shape `D`, eigenvectors = orientation `O`, the director `n̂`), Q3 (eigenvalues ↔
+> matrix numbers ↔ `n̂`); the **ellipsoid axes** (how `1/δ/0` set the shape); the **eigenvalue→physics
+> map** (tilt→EM, twist→QM(ℏ), null→clock); the **curvature operators** `A_μ=[M,∂_μM]`,
+> `F_μν=[M_μ,M_ν]` — *a force field is a curvature (gradient) of the frame, not the frame itself* —
+> plus grad/div/curl/laplacian (div=splay/charge, curl=circulation/B, laplacian=diffusion/wave);
+> *the M4 6-phasor-ellipse → ellipsoid bridge (major axis / orbital normal / handedness=chirality);
+> natural units & δ↔ℏ*. *(Merges old L2 + L3: the object and what its parts mean are one arc.)*
 
-(to be filled during the session)
+### The ellipsoid axes — how the eigenvalues set the shape
 
----
+![Triaxial biaxial top: semi-axes a (longest, x) > b (medium, y) > c (shortest/flat, z); the director n-hat lies along the longest axis a](images/ellipsoid.png)
 
-## Lesson 3 — What the axes mean: the eigenvalue→physics map + operators
+In the live **3D** substrate the biaxial vacuum spectrum is **`D = diag(1, δ, 0)`** (the M5.6
+seeder, `engine1_seeds.py:477`) — three distinct axis-lengths. (`medium.py:19`'s header writes the
+general `diag(g,1,δ)`; the gravity eigenvalue `g` is the **4D** addition — see L3.) The figure
+above is drawn axis-aligned (`O = identity`):
 
-> **Covers:** Q4 (how force fields are encoded) — tilt→EM, twist→QM(ℏ), boost→gravity, null→clock;
-> *+ the yaw/pitch/roll framing of the three rotation generators; the curvature operators
+| Eigenvalue | Size | Semi-axis in the figure | Physics label (the "why" → below) |
+| --- | --- | --- | --- |
+| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt |
+| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / twist |
+| `0` | smallest (null) | `c` (short / flat axis, z) | the null/time axis → the 4D clock |
+
+- **Where is `director_nhat`?** It's the **principal eigenvector** — the eigenvector of the
+  *largest* eigenvalue (`1`, the EM axis) — so on the figure it runs **along the longest axis `a`**.
+  For a hedgehog that's the radial direction (`n̂ = r̂`, the classic charge texture). The director
+  captures only this *one* axis; the orientation of `b`/`c` *around* `a` is the leftover twist DoF
+  from L1 Q8. (Flattening `c → 0` literally visualizes the **null** axis.)
+- Bigger eigenvalue → longer axis (convention: `M` on the unit sphere ⇒ semi-axis = eigenvalue; the
+  `√λ` convention keeps the same ordering). `D` is the *vacuum* shape (V(M)'s minimum); near a
+  defect core it **melts** toward isotropic `(1+δ)/3`, and only `O(x)` (the orientation) varies
+  freely per voxel.
+- **Spectra by phase:** uniaxial M5.4 placeholder `diag(1, δ, δ)` (`δ=LC_DELTA=0.5` — one director
+  axis, enough for Coulomb) → biaxial M5.6 `diag(1, δ, 0)` → full 4D `diag(g, 1, δ, 0)` adds `g` =
+  gravity/boost (L3). Hierarchy `g ≫ 1 ≫ δ ~ ℏ > 0`.
+
+### The M4 ellipse → M5 ellipsoid bridge (+ chirality, δ↔ℏ)
+
+> **Seed intuition (to develop).** `M = O·D·Oᵀ` is literally an *ellipsoid at each voxel* — `D =
+> diag(λ₁,λ₂,λ₃)` are the semi-axis lengths (the **shape**), `O` is orthogonal (the
+> **orientation/rotation**). This is the 3D matrix generalization of M4's **6-phasor ellipse** (`R,
+> Φ` per axis). An ellipse/ellipsoid carries orientation *for free*: the **major axis** = one
+> direction in space, the **normal to the orbital plane** = another, and the **handedness** (CW vs
+> CCW traversal) = a ± sign = **chirality** (the seed for L10). So one symmetric matrix encodes
+> direction + shape + chirality together. *Natural units:* `δ ↔ ℏ` is a role-identification (the
+> QM/twist eigenvalue plays the action quantum in the dimensionless scaling), not a dimensional
+> equality — see L1 Q12.
+
+### The eigenvalue→physics map + the curvature operators
+
+> **Covers (from the merged old L3):** Q4 (how force fields are encoded) — the eigenvalue→physics
+> map + *the yaw/pitch/roll framing of the three rotation generators; the curvature operators
 > `A_μ=[M,∂_μM]`, `F_μν=[M_μ,M_ν]` — a force field is a **curvature** (gradient) of the frame, not
 > the frame itself; the vector operators (grad / divergence / curl / laplacian) and what each means
 > physically (div = splay/charge, curl = circulation/B, laplacian = diffusion/wave)*.
-> **Anchors:** `4a §6/§8`, `5a §1-2` (Eq.18-20), `engine2_pde.py` (operators), `1b` strategic map.
 >
-> The eigenvalue→physics map. Each axis = a kind of local orientation change: tilt→EM, twist→QM(ℏ), boost→gravity, null→clock. The key idea: a force field is a curvature (gradient) of the frame, not the frame itself
+> The eigenvalue→physics map. Each axis = a kind of local orientation change: tilt→EM, twist→QM(ℏ),
+> boost→gravity (L3, 4D), null→clock. The key idea: a force field is a curvature (gradient) of the
+> frame, not the frame itself.
 >
 > **Seed (from L1 Q&A — twist vs tilt on the director):** the generators act on the *same* director
 > `n̂` (the principal axis, eigenvalue `1`) in orthogonal ways → different physics. **Twist** = rotate
 > the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) *about* `n̂` (`n̂` stays put; generator
 > `Gx`) → **QM / the clock** (L7). **Tilt** = rotate `n̂` *itself* toward another axis (its direction
 > changes; generators `Gy,Gz`) → **EM**, whose *field* is the spatial gradient of those tilts
-> (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity; the **null** (`0`) axis → the clock
+> (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity (L3); the **null** (`0`) axis → the clock
 > direction. Mnemonic: *twist about it = QM, tilt of it = EM.*
 
 (to be filled during the session)
+
+**Anchors:** `medium.py` (M storage), `engine2_pde.py` (Cardano eigensolver + operators), `4a §5/§6/§8`, `5a §1-2` (Eq.18-20), M4 6-phasor model, `1b`.
+
+---
+
+## Lesson 3 — The 4th dimension: gravity (`g`) + the time axis
+
+> **Covers:** what the M5.8 promotion to 4×4 adds — the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`,
+> `O∈SO(1,3)`, *teleparallelism* (the 4D liquid-crystal extension); **gravity = the time-axis scale
+> `g`**; **the clock = a rotation into the time axis**; **the two "times"** (`dt` vs the matrix time
+> index) + the physical analogies. Placed right after the content lesson because it's an
+> eigenvalue-spectrum + frame-group extension of L2. The *engine why* (why the clock self-sustains —
+> the Minkowski negative-energy mechanism) is developed at **L7**; here we set up the structure.
+>
+> 🔭 **What the 4th dimension adds to the 3×3 medium.** Everything in L1–L2 — the biaxial frame, the
+> EM/tilt axis, the QM/twist axis, charge, the null axis — already lives in the **3×3 (spatial)**
+> matrix. The 4×4 promotion doesn't replace any of it; it adds **one thing — a time axis to the
+> order parameter** — and because *both* gravity and the clock are time-sector phenomena, both fall
+> out of that single addition:
+>
+> | What 4D adds (one thing: the time axis) | Mechanism | Why it matters |
+> | --- | --- | --- |
+> | **Gravity** = the time axis's **scale** `g` | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`; `g` scales the *time* axis, and `∇g` (how it varies in space) = the gravitational field | mirrors GR (`Φ` lives in the time-time metric `g₀₀`; gravity = time-rate varying in space). `g` is **absent in the live 3D run** — no time slot → no gravity. (Render spec: L8 / `4b §4.7`.) ⚠️ framework's least-developed sector — design expectation, not yet verified. |
+> | **The clock / engine** = a **rotation into** the time axis | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the oscillating state **lower-energy than static** (M5.8.0a: `E(ω=0)=2.87 > E*=2.02`) → spinning is the ground state | the Zitterbewegung clock **propels itself** — fuel = the rest mass (`ℏω = mc²`). In free 3D (all-`+`) spinning only *costs* energy → it disperses (M5.7.2); **4D = the stable time-crystal** (`5a §10b`, L7). The *why* (negative-energy mechanism) → L7. |
+>
+> **The two "times" — `dt` vs the matrix time axis (Rodrigo's Q, 2026-05-31; the conceptual key).**
+> There is **one** physical time playing **two roles**, and the 3×3 sim uses only one:
+>
+> | Role | Name | What it is | In 3×3? |
+> | --- | --- | --- | --- |
+> | **The projector** | `dt` | the parameter you *advance* to get the next frame (`M(t+dt)=M(t)+…`) — how any movie is computed | ✅ always |
+> | **A direction to lean into** | the matrix's 4th slot | a spacetime *direction* the field's orientation `O` can point along — like x/y/z, but time | ❌ only at 4×4 |
+>
+> *Physical analogies (keep building these — this is the unlock for SABER engineering on the clock):*
+>
+> - **Clock-hand analogy (ties to L7's own language).** In L7 the δ-axis is the "clock-hand"
+>   sweeping around the director `n̂`. The question is *what plane does the hand sweep in?* In **3×3**
+>   the hand can only sweep a **spatial** plane (δ–0) — `dt` advances but the hand has no *time*
+>   direction to wind into, so it's a spatial proxy that **disperses** (M5.7.2). In **4×4** the hand
+>   sweeps a plane that **includes the time axis** — a space-time rotation — and *that* winding is
+>   the genuine de Broglie phase `e^{-iEt/ℏ}`.
+> - **Wristwatch-per-voxel (Rodrigo's image — correct):** each voxel carries its own clock phase,
+>   and the phase *differing voxel-to-voxel* is literally what **momentum / de Broglie wavelength**
+>   is. ✅ keeper. **Caveat (correct the "time-only" reading):** the clock is **not** a purely-time
+>   rotation and **not** purely-spatial — it's a rotation in a plane that **mixes** a space axis with
+>   the time axis. `n̂` stays the fixed axle; what winds is the frame in the δ-axis↔time-axis plane.
+> - **The precise version:** a phase `e^{-iEt/ℏ}` needs *two* things — a `t` that **advances** (that's
+>   `dt`) **and** a time direction to **wind into** (that's the 4th matrix axis). The 3×3 sim has the
+>   first but not the second. So: **`dt` = time *passing*; the matrix time-axis = the particle
+>   *having a hand that points into time*, so it can keep its own clock.** The clock is the hand
+>   winding, not the passing. A 3×3 particle just sits while `dt` passes; a 4×4 particle carries a
+>   hand that winds into time → the real clock.
+> - 🚧 *more physical analogies to develop here at teach time* — Rodrigo flagged this as the key
+>   intuition for enabling SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`).
+>   Take the time it needs.
+>
+> **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
+> *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
+> sooner. That single structural addition is why the SABER unification (thermal/time/gravity as one
+> lever) is even conceivable — `SABER 0_OVERVIEW §4`.
+>
+> **Clock vs engine — it's both.** "Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`, the
+> de Broglie clock Catillon measured). "Engine" = the *mechanism* (a self-propelled rotation; Duda's
+> "oscillation propelled by mass"). A **self-propelling clock** whose output is a precise frequency =
+> the particle's mass. Not perpetual motion — the spin *is* the rest energy. (The energetic *why* is
+> L7.)
+>
+> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds the
+> time axis — and from it, gravity (`g` = time-scale) and the self-propelling clock-engine (a
+> rotation into time the Minkowski sign keeps running).**
+
+(to be filled during the session)
+
+**Anchors:** `5a §10b`, `4a §6`, `theory/time_crystal.pdf`.
 
 ---
 
@@ -229,7 +305,6 @@ clock.
 > **Covers:** Q6 (the three vectors) — how `O(x)=[r̂ | e_Θ | e_Φ]` is laid out in space, the
 > radial eigenvalue melt, the disclination line; *+ topological winding number = quantized charge,
 > Derrick's theorem → why no stable static soliton exists (sets up the clock)*.
-> **Anchors:** `engine1_seeds.py` (`seed_biaxial_hedgehog_M`), `5a §5b/§5e`, `1b`.
 >
 > Building a particle: the biaxial hedgehog. How O(x)=[r | e_0 | e_$] (the three vectors) is laid out in space, the eigenvalue melt + disclination, and why winding = quantized charge
 >
@@ -241,9 +316,12 @@ clock.
 > charge is **not** a single `±1` — its order-parameter space is `SO(3)/D₂`, whose `π₁` is the
 > **non-abelian quaternion group `Q₈`**, a richer classification than one sign bit. So "the charge
 > sign" of a biaxial defect is a *quaternion-class label*, not a `±`. This is the discovery hook of
-> the deferred two-defect demo (M5.6.5e → M5.8). Teach: uniaxial `±` winding → biaxial `Q₈` classes.
+> the deferred two-defect demo (M5.6.5e → M5.8), and the seed for L10 (handedness). Teach: uniaxial
+> `±` winding → biaxial `Q₈` classes.
 
 (to be filled during the session)
+
+**Anchors:** `engine1_seeds.py` (`seed_biaxial_hedgehog_M`), `5a §5b/§5e`, `1b`.
 
 ---
 
@@ -254,10 +332,10 @@ clock.
 > energy** (the director-distortion piece, the classic LC energy); **mass = stored field energy
 > above the vacuum** (`E = mc²`, the M5 `E ∝ K` lepton-mass result); **F = −∇E** (force is the
 > gradient of energy); the ground state and why a defect is pinned above it*.
-> **Anchors:** `5a §1` (action) / `§6` (Hamiltonian), `1b` (E∝K mass), `5a §5c` (Faber mass scale),
-> `3a` (F from E).
 
 (to be filled during the session)
+
+**Anchors:** `5a §1` (action) / `§6` (Hamiltonian), `1b` (E∝K mass), `5a §5c` (Faber mass scale), `3a` (F from E).
 
 ---
 
@@ -267,19 +345,21 @@ clock.
 > `4Σ‖[M_μ,Ṁ]‖²` vs the shipped simple `½‖Ṁ‖²`, the degeneracy, why the twist is dynamical only
 > on a non-uniform (hedgehog) background; `V(M)` — confines amplitude `Tr(M²)` but NOT orientation
 > (the root cause of the M5.7 free-dispersal nulls); energy conservation as the correctness test*.
-> **Anchors:** `engine2_pde.py`, `5a §5f/§5g/§9`.
 
 (to be filled during the session)
 
+**Anchors:** `engine2_pde.py`, `5a §5f/§5g/§9`.
+
 ---
 
-## Lesson 7 — The de Broglie clock: why the particle oscillates (Zitterbewegung)
+## Lesson 7 — The de Broglie clock-engine & spin-½ (Zitterbewegung)
 
 > **Covers:** *where the time-crystal / Zitterbewegung enters; how oscillation can be "propelled by
 > mass"; whether the clock is a **spin** (ω only) or an **oscillation** (A & ω); the rotational
-> axis (yaw/pitch/roll); `ω = 2mc²/ℏ`; spin & spin-½; the de Broglie wavelength λ; the bridge to
-> 4D / teleparallelism*.
-> **Anchors:** `5a §10` (toy model), `theory/time_crystal.pdf`, `1b` (Derrick/time-crystal), `4a §6`.
+> axis (yaw/pitch/roll); `ω = 2mc²/ℏ`; **the engine — the Minkowski negative-energy self-propulsion
+> mechanism (depth here)**; **spin-½** (SO(3) double-cover, the `2ω` doubling, `L=ℏ/2`); the de
+> Broglie wavelength λ; the bridge to 4D / teleparallelism (structure set up in L3)*.
+> *(Merges old L7 + the old spin-½ deep-dive: spin-½ is a property of this clock.)*
 >
 > **Seed intuition (to develop).**
 >
@@ -318,8 +398,7 @@ clock.
 > *around* it (the "spinning arrow", and the leftover DoF from L1 Q8). Contrast with **EM = tilting
 > `n̂` itself** (L1 Q2 / L8). Caveat: the clean
 > steady spin is the *ideal/target* — in 3D the free defect disperses (M5.7.2), so confirming it at
-> `ω=2mc²/ℏ` needs 4D (M5.8). `spin-½` = a 2π rotation does NOT restore the state (need 4π — the
-> SO(3) double-cover) — developed below.
+> `ω=2mc²/ℏ` needs 4D (M5.8, structure in L3).
 >
 > *Refinement — "spin" does NOT mean "no amplitude" (2026-05-30):* a spin is **constant-amplitude**,
 > not amplitude-free — like a point on a wheel, `(R·cos ωt, R·sin ωt)` has both a radius `R` and a
@@ -355,7 +434,7 @@ clock.
 > **per-defect collective property**, not an individual-voxel one. *(3D caveat: the free collective
 > mode disperses — M5.7.2 — so it needs 4D to self-sustain, M5.8, or a drive, 9b.)*
 >
-> *Questions to answer in L7 so this clicks (tomorrow's agenda):*
+> *Questions to answer in L7 so this clicks:*
 >
 > 1. **What makes the needles lock-step?** — the elastic (Frank) coupling between neighbours + the
 >    hedgehog's own `C_μν` source: the lowest-energy way to carry a twist is *coherently*, so one
@@ -371,8 +450,41 @@ clock.
 >    result (free 3D radiates it away) → M5.8 (4D stabilizes) / 9b (drive sustains).
 > 5. **Engine tie-in:** this is the `O(x) ∈ SO(3)` rotation DoF from `5a §9` / `m5_6_2b` — the
 >    collective twist is a coherent excitation of that rotation field, not of `M`'s raw components.
+>
+> ---
+>
+> **★ THE ENGINE — depth (Rodrigo 2026-05-31): why the clock self-sustains.** The clock is not just
+> a measurement — it is an **engine** that propels its own rotation. Develop here:
+>
+> - **The negative-energy mechanism (the fuel).** In 4D the kinetic term picks up the Minkowski
+>   `(−+++)` sign: a rotation that leans into the time axis contributes *negatively* to the energy.
+>   So the oscillating state is **lower-energy than the static one** — verified in the 1+1D toy model
+>   (M5.8.0a: `E(ω=0)=2.87 > E*=2.02 = E(ω*=1.29)`). Spinning is the ground state; it costs nothing
+>   to keep running because stopping would cost *more*. Fuel = the rest mass itself (`ℏω = mc²`).
+> - **Why 3D can't (the contrast).** In the space-only 3×3 (all-`+` signature) a rotation only *adds*
+>   energy → the free defect sheds it and disperses (M5.7.2). The engine needs the time axis's
+>   negative-signature term, i.e. 4D (L3 sets up the structure). A *driven* 3D defect (9b) borrows
+>   the energy externally — a motor with a power cord, not yet a self-contained engine.
+> - **Not perpetual motion.** The spin *is* the rest energy; you can't extract it without destroying
+>   the particle. What CAN be modulated is the *excess* above ground state (`(A,ω)` — the thermal
+>   channel) and, speculatively, the rate/scale (time/gravity) — the SABER unification thesis
+>   (`SABER 0_OVERVIEW §4`), an engineering bet on this mechanism, not a claim it's free energy.
+>
+> **★ SPIN-½ — folded in here (was the old L11 deep-dive).** Spin-½ is a property *of this clock*, so
+> it lives in this lesson. Three threads:
+>
+> | Thread | One-line | Anchor |
+> | --- | --- | --- |
+> | **The `2ω` apolar doubling** | the clock's observable cycles at `2ω` because the order parameter is apolar (`n̂⊗n̂`, a 180° turn looks identical) → the origin of `ω_Zitt = 2mc²/ℏ` | the "radius/what-spins" note above |
+> | **The SO(3) double-cover** | a 2π rotation does **not** restore the state (you need 4π) — the topological signature of spin-½; `O∈SO(3)` lifts to `SU(2)` | `5a §10` |
+> | **Spin = the clock's angular momentum** | `L = ℏ/2` is the conserved angular momentum of the self-propelled rotation (the engine's "flywheel") | M5.8 |
+>
+> Full concreteness needs the 4D clock (M5.8, structure in L3). Tie-in: Duda's slide gyroscope/`L=ℏ/2`
+> inset (the L8 magnetic-moment figure).
 
 (to be filled during the session)
+
+**Anchors:** `5a §10` (toy model), `theory/time_crystal.pdf`, `1b` (Derrick/time-crystal), `4a §6`.
 
 ---
 
@@ -384,7 +496,6 @@ clock.
 > magnetic=`∇×n̂` curl, gravitational=boosts; *EM orthogonality E⊥B in the tensor field*;
 > *magnetism as a dynamical (relativistic) correction to Coulomb between moving charges (Feynman
 > framing) vs the permanent magnet's static B from aligned spin-topology (no moving charge needed)*.
-> **Anchors:** `engine3_observables.py` (`compute_director_em`), `5a §5d`, `3a`.
 
 (to be filled during the session)
 
@@ -439,6 +550,8 @@ clock.
 > plainly that this is a *placeholder shape*; the real moment is *generated by* the clock's spin at
 > M5.8. The point of the session was to make the *picture* legible before the physics produces it.
 
+**Anchors:** `engine3_observables.py` (`compute_director_em`), `5a §5d`, `3a`.
+
 ---
 
 ## Lesson 9 — Seeing it: the visualization map
@@ -447,20 +560,43 @@ clock.
 > coloring, `warp_mesh` (scalar vs vector), and granule positions each render a piece of the
 > physics; what every WAVE_MENU channel shows; *+ the apolar director `n̂≡−n̂` gauge sign-flip
 > caveat*.
-> **Anchors:** `engine4_render.py`, `4b Part 3`, `_launcher.py`.
 
 (to be filled during the session)
+
+**Anchors:** `engine4_render.py`, `4b Part 3`, `_launcher.py`.
 
 ---
 
-## Lesson 10 — Bridge: what the 4×4 adds (preview)
+## Lesson 10 — Handedness, chirality & composite particles
 
-> **Covers:** the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism* (the
-> 4D liquid-crystal extension), the Minkowski negative-energy clock — just enough to make the M5.8
-> promotion land.
-> **Anchors:** `5a §10b`, `4a §6`.
+> **The finale (M5.8 / M5.9-era).** Two intertwined threads: **handedness/chirality** (the ± that
+> distinguishes matter from antimatter, and helicity for neutrinos) and **composite particles** (9d —
+> how confirmed single defects combine). Both become load-bearing only once the clock (L7), the 4D
+> structure (L3), and the lepton families (M5.9) are in place — hence last.
+>
+> 🚧 **Future finale (added 2026-05-31 from the old L12; not taught yet — slotted so it isn't
+> lost).** **Seeds already exist in L2** (the M4-ellipse → ellipsoid bridge: traversal sign =
+> chirality) **and L4** (topological charge sign / the biaxial `Q₈` classes).
+>
+> **Where handedness comes in (the threads to develop):**
+>
+> | Thread | One-line | Anchor |
+> | --- | --- | --- |
+> | **Orbit traversal sign** | the ellipse/ellipsoid is traversed CW or CCW — a ± that one symmetric matrix carries "for free" alongside direction + shape = **chirality** | L2 seed |
+> | **Matter ↔ antimatter** | the charge-sign / winding-sign flip (the `±` hedgehog) — candidate for the matter/antimatter distinction | L4 (winding), `4b §4.4` |
+> | **Neutrino helicity** | left/right-handed states; closed-vortex-loop candidates carry an intrinsic handedness | `1b`, M5.9 frontier |
+> | **Biaxial subtlety** | a biaxial defect's "sign" is **not** a simple `±` — it's a quaternion class (`π₁(SO(3)/D₂)=Q₈`); handedness there is richer | L4, roadmap 5e |
+>
+> **Composite particles (9d).** Once single defects (leptons M5.9, quark-vortices) are confirmed,
+> how they bind into composites (baryons, mesons) — the Cornell-potential quark string (M5.9) is the
+> first composite hook. Deferred program: roadmap **9d**. Chirality is load-bearing here (a proton's
+> quark content has definite handedness).
+>
+> Prereqs: L2 (the ellipsoid encodes chirality) + L4 (topology/winding sign) + L7 (clock) + M5.9
+> (lepton families). Tie-in: the M5.6.5e two-defect demo (what "opposite handedness/charge" even
+> means for a biaxial defect).
 
-(to be filled during the session)
+**Anchors:** `4a §5` (ellipse handedness), L2/L4 seeds, `1b`, 9d (composites).
 
 ---
 
@@ -479,19 +615,23 @@ The original questions this curriculum organizes:
 
 ## Appendix B — added concepts (2026-05-29, batch 2) → lesson map
 
+> Lesson numbers updated for the 2026-05-31 refactor (12 → 10 lessons).
+
 | Added concept | Lands in |
 | --- | --- |
 | The medium (LdG tensor-field on a 3D grid, time-evolved); the vacuum state | L1 |
 | The action principle | L5 |
 | Particle mass / stored energy / ground state; Hamiltonian vs Frank elastic; F=−∇E | L5 |
 | Time-crystal & Zitterbewegung; how oscillation is propelled by mass | L7 |
-| Oscillation axes — yaw / pitch / roll | L3 (axes) + L7 (which axis is the clock) |
+| Oscillation axes — yaw / pitch / roll | L2 (axes) + L7 (which axis is the clock) |
 | charge/winding, spin, magnetic moment, de Broglie clock | L4 (winding) + L7 (spin, clock) + L8 (moment) |
-| Vector operators: gradient, divergence, curl, laplacian | L3 |
+| Vector operators: gradient, divergence, curl, laplacian | L2 |
 | EM orthogonality (E⊥B) in the tensor field | L8 |
 | Magnetism as dynamical correction to Coulomb (Feynman) vs static permanent magnets | L8 |
 | Elliptical motion / 6-phasor ellipse → `M=O·D·Oᵀ` ellipsoid bridge | L2 |
 | "Knotted rubber band" analogy (topology + energy → oscillation) | L7 (seed) |
 | "Spinning arrow through a point" visual (rotational, not translational) | L7 (seed) |
 | Spinning (ω) vs oscillating (A & ω); spin-½; de Broglie λ | L7 |
-| 4D & teleparallelism | L10 |
+| The 4th dimension: gravity (`g`) + the time axis; the two "times" | L3 |
+| 4D & teleparallelism | L3 |
+| Handedness / chirality; matter-antimatter; composite particles | L10 |
