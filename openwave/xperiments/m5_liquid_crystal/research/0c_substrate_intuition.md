@@ -255,12 +255,26 @@ above is drawn axis-aligned (`O = identity`):
 >
 > **What's visible in the director-glyph lines (Taichi `scene.lines`):**
 >
-> | Distortion | Seen in the director glyphs? | Present in the static hedgehog? |
+> ⚠️ **A single glyph is a STRAIGHT tangent segment — it never curves (Rodrigo Q 2026-06-01).** Each
+> line shows `n̂` at *one* voxel. Bend/twist is a property of the field *across neighbours*: you read
+> it as the **pattern** of many straight glyphs whose directions progressively rotate — like iron
+> filings around a magnet (each filing straight, the *arrangement* curves). The "curve" is the
+> imaginary **field line** threading through all the glyph directions; each glyph is a straight
+> tangent to it. So below, "lines fan / sweep / rotate" = the *pattern*, never an individual line
+> bending.
+>
+> | Distortion | Seen in the director-glyph *pattern*? | Present in the static hedgehog? |
 > | --- | --- | --- |
-> | **splay** | ✅ lines fan radially | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
-> | **bend** | ✅ lines curve *(when present)* | ❌ zero |
-> | **Frank-twist** | ✅ helical rotation along an axis *(when present)* | ❌ zero |
+> | **splay** | ✅ lines point radially (starburst) | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
+> | **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
+> | **Frank-twist** | ✅ line directions rotate along an axis (helical/barber-pole) *(when present)* | ❌ zero |
 > | **clock-twist (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
+>
+> The **most direct** read of bend+twist is the **magnetic-field glyph (state 3)**: it draws `∇×n̂`
+> as its own arrow, so circulation appearing *there* is the direct signal that bend+twist developed —
+> spotting it in the director-line *pattern* is the emergent-by-eye version of the same fact.
+> *(Caveat: under Evolve-PDE some director-glyph motion is the **apolar gauge sign-flip** — 180°
+> flips, an artifact, not real bend; `4b §4.4`. Real reorientation + gauge-flip are mixed in the view.)*
 >
 > **★ Why you see fanning but NOT bend/Frank-twist (Rodrigo observed 2026-06-01) — the glyph isn't
 > failing; the config has none.** A static hedgehog is `n̂ = r̂` (radial), and a radial field has
