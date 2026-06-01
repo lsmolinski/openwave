@@ -41,7 +41,7 @@ them.
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
-| [11](#lesson-11--where-the-waves-live-m5m6-only) | [Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) ✅ | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the 3-layer answer (static substrate / topological matter / radiated+relational wave) + a **Forces** column (force emerges from topology, *not* fundamental waves); the two jobs of the wave (radiated EM/gravity + pilot/de-Broglie lock-in); *what radiates from the clock? — accelerating-charge / blackbody-IR / excess-oscillation-leak (open)*; M3/EWT reframed as mis-scoped not wrong; scope = M5/M6 only (M1–M4 are wave-native) |
+| [11](#lesson-11--where-the-waves-live-m5m6-only) | [Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) ✅ | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -751,8 +751,10 @@ above is drawn axis-aligned (`O = identity`):
 > wave-first — the name, M2 (free wave), M3 (Wolff-LaFreniere / EWT) all treat the standing wave as
 > *the* ontology. In M5/M6, **topology quietly took over the matter sector** (particle = defect, not
 > wave-packet), so the honest question is: where does "wave" live now? This capstone resolves it —
-> waves dropped from *substrate* to *emergent*, splitting into a **radiated** job and a **relational
-> (pilot)** job — and shows that **forces emerge from topology, not from a fundamental wave**.
+> waves dropped from *substrate* to *emergent*, and the **emergence ledger** below locates matter,
+> **force, EM waves, heat, and time** as strata, **none of them sourced by a base wave**. The wave's
+> own two jobs split: the **radiated** job is settled (it *is* the EM-waves stratum, through which
+> heat is shed); the **relational (pilot)** job is left as an open question.
 
 ### Scope — this question only exists in M5/M6
 
@@ -772,31 +774,36 @@ So the "where do waves live" tension is **unique to the topological models**. M1
 The question isn't "are waves still here" — it's **which layer** they live on now that they're no
 longer the substrate.
 
-### The three-layer answer (+ where forces and waves each emerge)
+### THE EMERGENCE LEDGER — what comes from where (none of it a base wave)
 
-The reconciliation: the M5 universe stacks three layers. Force and wave each **emerge** at a
-specific layer — neither is fundamental, and *neither comes from a base wave*.
+The reconciliation: the M5 universe is an **emergence ledger**. A static substrate is *given*;
+matter, force, EM waves, heat, and time each appear as *patterns* on it. Read the right-hand column
+top to bottom and it says the same thing six times — **topology and defect-oscillation generate
+everything; the wave is downstream, never the source.**
 
-| Layer | Ontology | Where **force** emerges | Where the **wave** lives | Anchor |
-| --- | --- | --- | --- | --- |
-| **Substrate** | static matrix `M`, vacuum `diag(1, δ, 0)` | none — force is *deviation from* this ground, not a property of it | **none** — no base wave (EWT's oscillating aether is dropped here) | L1, M5.4 |
-| **Matter** | topological defect (hedgehog); charge/spin = invariants | **static topology sources it**: splay `∇·n̂` = electric/charge → Coulomb (1/d); g-axis gradient → gravity (1/r²) | the defect's *internal* `clock_twist` oscillation — a localized clock, mass-propelled | L4, L7, M5.8 |
-| **Emergent Radiation + relation** | disturbances the clock emits + how defects couple | **dynamics of the frame**: magnetic (`frank_twist`+bend `∇×n̂`) = the velocity/acceleration correction to Coulomb (Feynman); radiation reaction | **here** — radiated waves + the pilot/relational wave | L8, 9a, M5.8.6 |
+| Layer | What it is | How it emerges — *not* from a base wave | Anchor |
+| --- | --- | --- | --- |
+| **SUBSTRATE** | static matrix `M`, vacuum `diag(1, δ, 0)` | given — the static ground; everything else is a *deviation from* it. It does **not** wave (EWT's oscillating aether is dropped here). | L1, M5.4 |
+| **MATTER** (the particle) | topological **defect** (hedgehog); charge/spin = topological invariants | from **topology** — winding number = quantized charge; Derrick forbids a static lump → it must be a 4D **clock** | L4, L7, M5.8 |
+| **TIME** (emergent) | **proper/particle-time** + **shared-time** (`dt`) | **proper-time** = the defect's own `clock_twist` rotation (the matrix time-index — structural, per-defect, mass-propelled); **shared-time** = the grid's evolution parameter `dt` that everything steps by and **humans perceive**. Both emerge from **oscillation / evolution**, not from a wave. | L3, L7 |
+| **FORCES** (emergent) | electric, magnetic, gravity | **static topology**: splay `∇·n̂` = charge → Coulomb (1/d), g-axis gradient → gravity (1/r²); **frame dynamics**: magnetic `frank_twist`+bend `∇×n̂` = the Feynman velocity correction. *Never* wave-interference — that wrong-layer attempt is exactly the M3/EWT **sinc-flip**. | L8, 3a |
+| **EM WAVES** (emergent) | radiated EM disturbances — the far-field a defect throws off | a defect radiates only when **accelerating / excited** (Larmor); the ground-state clock does **not** radiate. Propagating `∇×n̂`/`∇·n̂` disturbances = photons. | 9a |
+| **HEAT** *(THE hypothesis, emergent)* | the thermal `(A, ω)` excess of the defect's oscillation above ground | **Heat = `(A, ω)` excess above the ground-state floor** — the SABER/9b core hypothesis; sheds *through* the EM-waves channel on de-excitation, where blackbody/IR is the low-frequency **envelope** (not the carrier — caveat below). | 9b |
 
-**Emergent Forces:** force is topological (static charge/gravity at the matter layer) and dynamical
-(magnetism/radiation at the relation layer) — **never** a fundamental-wave-interference effect. This
-is exactly why M3/EWT's wave-summation force-origin hit the **sinc sign-flip**: it tried to source
-force from the wrong layer.
+### The two jobs of the wave (one settled, one open)
 
-### The two jobs of the wave
+Zooming into the wave itself: your voice-note candidates ("only EM?", "orbital lock-in?", "ellipsoid
+oscillation?", "what do the oscillations generate?") collapse into **two jobs** — one settled (it's
+the EM-waves stratum above, with heat shed through it), one still open:
 
-Your voice-note candidates ("only EM?", "orbital lock-in?", "ellipsoid oscillation?", "what do the
-oscillations generate?") all collapse into two emergent jobs at the top layer:
+| Wave job | Status | What it is | Examples / mechanism |
+| --- | --- | --- | --- |
+| **Radiated** | settled (= the EM-waves stratum; heat's shed channel) | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, 9a/photons), gravitational waves (g-gradient ripples) |
+| **Relational (pilot)** | **open question** | the near-field standing wave the defect *generates and re-couples to* — guides its own motion, quantizes orbits, binds composites | de Broglie–Bohm pilot wave / WSM / Couder walking-droplet analogy (the 2+1D rung, M5.8.6) |
 
-| Wave job | What it is | Examples / mechanism |
-| --- | --- | --- |
-| **Radiated** | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, 9a/photons), gravitational waves (g-gradient ripples) |
-| **Relational (pilot)** | the near-field standing wave the defect *generates and re-couples to* — guides its own motion, quantizes orbits, binds composites | de Broglie–Bohm pilot wave / wave-structure-of-matter / Couder walking-droplet analogy (the 2+1D rung, M5.8.6) |
+> 🚧 **Open question (flagged, not resolved — 2026-06-01).** Is the pilot wave a *separate* wave, or
+> just the **near-field** of the same `∇×n̂`/`∇·n̂` disturbance whose far-field is the radiated EM?
+> Left open deliberately.
 
 **One-line synthesis:** *the vacuum doesn't wave; defects do — and the waves they emit (radiated)
 and re-absorb (pilot) are what "wave" means in M5/M6.* Topology owns the particle; waves own the
@@ -833,8 +840,9 @@ between inception and M5/M6 is the wave's **ontological primacy** (substrate →
 relevance. The name still points at the right physics — it just sits one layer up.
 
 **Anchors:** `9a` (radiated EM packets), `9b` (heat as `(A, ω)` excess — the radiated-thermal seam),
-`5a §10` + L7 (the clock), `M5.8.6` (2+1D pilot-wave rung), `README` (de Broglie–Bohm / WSM
-lineage), M2/M3 (the wave-native models this lesson contrasts against).
+`5a §10` + L7 (the clock), `L3` (the two times — proper vs shared), `L8`/`3a` (force emergence),
+`M5.8.6` (2+1D pilot-wave rung), `README` (de Broglie–Bohm / WSM lineage), M2/M3 (the wave-native
+models this lesson contrasts against).
 
 ---
 
