@@ -33,7 +33,7 @@ them.
 | --- | --- | --- |
 | [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The Medium, The Grid & The Vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
 | [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) ✅ | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
-| [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
+| [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) ✅ | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
 | [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
 | [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
 | [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
@@ -425,149 +425,170 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 > index) + the physical analogies. Placed right after the content lesson because it's an
 > eigenvalue-spectrum + frame-group extension of L2. The *engine why* (why the clock self-sustains —
 > the Minkowski negative-energy mechanism) is developed at **L7**; here we set up the structure.
->
-> 🔭 **What the 4th dimension adds to the 3×3 medium.** Everything in L1–L2 — the biaxial frame, the
-> EM/tilt axis, the QM/twist axis, charge, the null axis — already lives in the **3×3 (spatial)**
-> matrix. The 4×4 promotion doesn't replace any of it; it adds **one thing — a time axis to the
-> order parameter** — and because *both* gravity and the clock are time-sector phenomena, both fall
-> out of that single addition:
->
-> | What 4D adds (one thing: the time axis) | Mechanism | Why it matters |
-> | --- | --- | --- |
-> | **Gravity** = the time axis's **scale** `g` | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`; `g` scales the *time* axis, and `∇g` (how it varies in space) = the gravitational field | mirrors GR (`Φ` lives in the time-time metric `g₀₀`; gravity = time-rate varying in space). `g` is **absent in the live 3D run** — no time slot → no gravity. (Render spec: L8 / `4b §4.7`.) ⚠️ framework's least-developed sector — design expectation, not yet verified. |
-> | **The clock / engine** = a **rotation into** the time axis | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the oscillating state **lower-energy than static** (M5.8.0a: `E(ω=0)=2.87 > E*=2.02`) → spinning is the ground state | the Zitterbewegung clock **propels itself** — fuel = the rest mass (`ℏω = mc²`). In free 3D (all-`+`) spinning only *costs* energy → it disperses (M5.7.2); **4D = the stable time-crystal** (`5a §10b`, L7). The *why* (negative-energy mechanism) → L7. |
->
-> **The two "times" — `dt` vs the matrix time axis (Rodrigo's Q, 2026-05-31; the conceptual key).**
-> There is **one** physical time playing **two roles**, and the 3×3 sim uses only one:
->
-> | Role | Name | What it is | In 3×3? |
-> | --- | --- | --- | --- |
-> | **The projector** | `dt` | the parameter you *advance* to get the next frame (`M(t+dt)=M(t)+…`) — how any movie is computed | ✅ always |
-> | **A direction to lean into** | the matrix's 4th slot | a spacetime *direction* the field's orientation `O` can point along — like x/y/z, but time | ❌ only at 4×4 |
->
-> *Physical analogies (keep building these — this is the unlock for SABER engineering on the clock):*
->
-> - **Clock-hand analogy (ties to L7's own language).** In L7 the δ-axis is the "clock-hand"
->   sweeping around the director `n̂`. The question is *what plane does the hand sweep in?* In **3×3**
->   the hand can only sweep a **spatial** plane (δ–0) — `dt` advances but the hand has no *time*
->   direction to wind into, so it's a spatial proxy that **disperses** (M5.7.2). In **4×4** the hand
->   sweeps a plane that **includes the time axis** — a space-time rotation — and *that* winding is
->   the genuine de Broglie phase `e^{-iEt/ℏ}`.
-> - **Wristwatch-per-voxel (Rodrigo's image — correct):** each voxel carries its own clock phase,
->   and the phase *differing voxel-to-voxel* is literally what **momentum / de Broglie wavelength**
->   is. ✅ keeper. **Caveat (correct the "time-only" reading):** the clock is **not** a purely-time
->   rotation and **not** purely-spatial — it's a rotation in a plane that **mixes** a space axis with
->   the time axis. `n̂` stays the fixed axle; what winds is the frame in the δ-axis↔time-axis plane.
-> - **The precise version:** a phase `e^{-iEt/ℏ}` needs *two* things — a `t` that **advances** (that's
->   `dt`) **and** a time direction to **wind into** (that's the 4th matrix axis). The 3×3 sim has the
->   first but not the second. So: **`dt` = time *passing*; the matrix time-axis = the particle
->   *having a hand that points into time*, so it can keep its own clock.** The clock is the hand
->   winding, not the passing. A 3×3 particle just sits while `dt` passes; a 4×4 particle carries a
->   hand that winds into time → the real clock.
-> - 🚧 *more physical analogies to develop here at teach time* — Rodrigo flagged this as the key
->   intuition for enabling SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`).
->   Take the time it needs.
->
-> **Is the clock a SECOND time? — coordinate time vs proper time (Rodrigo Q&A 2026-06-01).** Tempting
-> to read `dt` and the `clock_twist` as *two independent times*. Precise answer: **there is ONE time;
-> the `clock_twist` is not a second dial — it is each particle's PROPER TIME.**
->
-> | | What it is |
-> | --- | --- |
-> | **Frame-stepping `dt`** | **COORDINATE time** — the one external **SHARED-CLOCK** ("film projector"); the EOM integrates *along* it |
-> | **`clock_twist` `φ=ωτ`** | **PROPER time** — the particle's *own* phase, a **PARTICLE-CLOCK** that the particle physically *is*. NOT independent — it advances *because* `dt` advances |
->
-> So the either/or resolves cleanly: **you must step frames (`dt`) for the clock to tick** — a paused
-> field is frozen, `M` doesn't change, nothing rotates. The clock is *content that evolves in the one
-> time*, not a parallel time. **No `dt` step → no tick.** (So: needs the dynamic, yes.)
->
-> **But the "two channels" intuition is right in spirit** — and this is the load-bearing part: each
-> defect ticks at its **own rate `ω`** (set by its mass/energy). Under *one* shared `dt`, different
-> defects accumulate *different phase*. That gap — between the single coordinate time everyone shares
-> and each particle's own proper-time *rate* — **is exactly time dilation**, and it is the SABER
-> time-dynamics / gravity lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient
-> `ω` even varies across *space* = the `∇g` story, L8). ⚠️ **Per-DEFECT, not per-voxel:** the L7
-> collective mode locks all of one defect's voxels into a *single* phase `ψ(t)` at one `ω` (compass
-> needles in lock-step); different *defects* (different masses) tick at different `ω`. **No hard
-> radius** for the sync region — the mode has a *spatial profile* (peaked at the core, fading
-> outward), not a sphere with a sharp edge. ⚠️ The coherent
-> clock is **M5.8 (not built yet)** — 1D toy validated (M5.8.0a), 3D→4D production clock is next; in
-> free 3D today it disperses (M5.7.2). Proper-vs-coordinate time is standard relativity; the mapping
-> to OpenWave's `ω`/`g` is design expectation, not yet a verified sim result.
->
-> **Going deeper — `dt` is not fundamental, it EMERGES (the relational-time thesis, Rodrigo
-> 2026-06-01).** Push the question one level down and `dt` itself stops being primitive:
->
-> - **`dt` is postulated in the sim (a fixed step), but physically it is an *average-out* shared-clock** — the
->   coordinate time we humans perceive is the **statistical mean rate** of myriad particle-clocks.
->   The shared clock isn't fundamental; it's the ensemble average of the proper-time clocks. (OpenWave's
->   relational-time thesis: `time = c/λ` — `c` fixed, `λ` local; shorter `λ` → faster local change.)
-> - **Time is not a thing — it's *movement* (rate of change of state).** There's no "time" substance;
->   there is only `M` changing, and "time" is the *rate* of that change. Strip the changes and time has
->   no meaning. Time **emerges from movement**, and the movement is **propelled by mass** (mass = the
->   defect's stored field energy; the clock-engine, L7).
-> - **Two levels of "the change" (the per-voxel vs per-defect nuance again):** the raw *change* is
->   per-**voxel** (every `M` evolving); the *rate we call the clock* `ω` is the per-**defect**
->   synchronized collective mode. Both true — different levels. "Movement of a voxel ellipsoid" is the
->   microscopic change; "the particle's clock" is the coherent per-defect rate built from it.
->
-> So the hierarchy is: **mass → propels movement → movement's rate IS proper time (per-defect `ω` particle-clock) →
-> the ensemble average of all proper-times is the coordinate time `dt` we perceive, the shared-clock.** Time bottoms out
-> in mass-propelled movement, not in a clock. ⚠️ All of this is the *relational-time hypothesis* (our
-> roots + Duda's framing), not a proven M5 result — and the thermal/energy *consequences* of "the
-> floor is lossless / perpetual" belong in the SABER repo (`3_HYPOTHESIS.md §7.1`) the
-> here it's just the substrate's time-emergence picture.
->
-> **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
-> *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
-> sooner. That single structural addition is why the SABER unification (thermal/time/gravity as one
-> lever) is even conceivable — `SABER 0_OVERVIEW §4`.
->
-> **★ Gravity = a "bend" in time (Rodrigo's intuition, 2026-06-01) — and Wheeler agrees.** Map it
-> onto L2's Frank modes: a single **boost** is the *tilt* of `n̂` into the time axis; **gravity is
-> when that tilt *varies across space*** — the gradient `∇g` — i.e. the **bend-analog** (a Frank-style
-> distortion, but the curving is into *time*, not a spatial axis):
->
-> | Sector | local move | the field you feel (its gradient) |
-> | --- | --- | --- |
-> | **EM** | tilt of `n̂` toward a **spatial** axis | `∇·n̂` = charge, `∇×n̂` = B |
-> | **Gravity** | **boost** of `n̂` toward the **time** axis (`g`) | `∇g` — the time-dilation gradient (the pull, 1/r²) |
->
-> **Wheeler's "curved time" (real GR, not just our model).** For *slow* matter, gravity is almost
-> entirely the curvature of the **time** direction, not space — the spatial-metric terms only matter
-> near `c` (e.g. light-bending). The apple falls because its worldline bends toward where **clocks run
-> slower** (`Φ` lives in the time-time metric `g₀₀`). So "gravity is a bend in time" is a genuinely
-> correct slogan; here that bend is the `g`-eigenvalue varying across space. *(Caveat: the gravity
-> sector is the framework's least-developed — M5.8/M5.9 design expectation, not a verified sim result.)*
->
-> **★ Clock-rate render plan (logged for M5.8 / `4b §4.7`).** We can't draw the *time axis* as a
-> spatial arrow (it isn't a spatial direction — no 4th spatial dimension to point a glyph into). But —
-> same trick as "we render `∇·n̂`, never 'charge' directly" — we render gravity's **observable
-> shadows**:
->
-> | Observable | Render as | Reads as |
-> | --- | --- | --- |
-> | `g(x)` (time-scale per voxel) | scalar heatmap / WAVE_MENU channel | the **gravity well** (deep = clock slow) |
-> | `∇g` (its gradient) | vector glyphs (like the E/B arrows) | the **gravitational pull** |
-> | per-voxel **clock rate** (`ω`, proper-time tick) | colour / animation speed | **time dilation** — the wristwatch-per-voxel |
->
-> The "bend in time" becomes visible the same way bend does in the director glyphs — **not in one
-> glyph but in the *pattern***: clocks ticking progressively slower toward a mass *is* the
-> gradient-of-time made visible (read the arrangement, not the single arrow). These emergence
-> channels — **EM / gravity / time-rate / heat** — are exactly the levers the SABER unification
-> builds on (`SABER 0_OVERVIEW §4`); this lesson is where the *physics* intuition for them lives.
->
-> **Clock vs engine — it's both.** "Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`, the
-> de Broglie clock Catillon measured). "Engine" = the *mechanism* (a self-propelled rotation; Duda's
-> "oscillation propelled by mass"). A **self-propelling clock** whose output is a precise frequency =
-> the particle's mass. Not perpetual motion — the spin *is* the rest energy. (The energetic *why* is
-> L7.)
->
-> One-liner: **3×3 = the spatial particle (shape, EM, QM-twist, charge); the 4th dimension adds the
-> time axis — and from it, gravity (`g` = time-scale) and the self-propelling clock-engine (a
-> rotation into time the Minkowski sign keeps running).**
 
-(to be filled during the session)
+### The one-sentence version
+
+**3×3 is the spatial particle** (shape, EM, QM-`clock_twist`, charge — all of L1–L2). **The 4th
+dimension adds one thing — a time axis to the order parameter** — and because *both* gravity and the
+clock are time-sector phenomena, **both fall out of that single addition**: gravity (`g` = the
+time-axis scale) and the self-propelling clock-engine (a rotation *into* time the Minkowski sign keeps
+running). The *engine why* (negative-energy self-propulsion) is L7; here we set up the structure.
+
+### What the 4th dimension adds — one thing, two phenomena
+
+Everything in L1–L2 — the biaxial frame, the EM/tilt axis, the QM/`clock_twist` axis, charge, the
+null axis — already lives in the **3×3 (spatial)** matrix. The 4×4 promotion doesn't replace any of
+it; it adds **one thing — a time axis** — and both time-sector phenomena fall out:
+
+| What 4D adds (one thing: the time axis) | Mechanism | Why it matters |
+| --- | --- | --- |
+| **Gravity** = the time axis's **scale** `g` | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`; `g` scales the *time* axis, and `∇g` (how it varies in space) = the gravitational field | mirrors GR (`Φ` lives in the time-time metric `g₀₀`; gravity = time-rate varying in space). `g` is **absent in the live 3D run** — no time slot → no gravity. (Render spec: L8 / `4b §4.7`.) ⚠️ framework's least-developed sector — design expectation, not yet verified. |
+| **The clock / engine** = a **rotation into** the time axis | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the oscillating state **lower-energy than static** (M5.8.0a: `E(ω=0)=2.87 > E*=2.02`) → spinning is the ground state | the Zitterbewegung clock **propels itself** — fuel = the rest mass (`ℏω = mc²`). In free 3D (all-`+`) spinning only *costs* energy → it disperses (M5.7.2); **4D = the stable time-crystal** (`5a §10b`, L7). The *why* (negative-energy mechanism) → L7. |
+
+### The two "times" — `dt` vs the matrix time axis
+
+The conceptual key (Rodrigo's Q, 2026-05-31): there is **one** physical time playing **two roles**,
+and the 3×3 sim uses only one:
+
+| Role | Name | What it is | In 3×3? |
+| --- | --- | --- | --- |
+| **The projector** | `dt` | the parameter you *advance* to get the next frame (`M(t+dt)=M(t)+…`) — how any movie is computed | ✅ always |
+| **A direction to lean into** | the matrix's 4th slot | a spacetime *direction* the field's orientation `O` can point along — like x/y/z, but time | ❌ only at 4×4 |
+
+**Physical analogies** (the unlock for SABER engineering on the clock):
+
+- **Clock-hand.** In L7 the δ-axis is the "clock-hand" sweeping around the director `n̂`. *What plane
+  does the hand sweep in?* In **3×3** it can only sweep a **spatial** plane (δ–0) — `dt` advances but
+  the hand has no *time* direction to wind into, so it's a spatial proxy that **disperses** (M5.7.2).
+  In **4×4** the hand sweeps a plane that **includes the time axis** — a space-time rotation — and
+  *that* winding is the genuine de Broglie phase `e^{-iEt/ℏ}`.
+- **Wristwatch-per-voxel** (Rodrigo's image — correct): each voxel carries its own clock phase, and
+  the phase *differing voxel-to-voxel* is literally what **momentum / de Broglie wavelength** is.
+  *Caveat:* the clock is **not** purely-time and **not** purely-spatial — it's a rotation in a plane
+  that **mixes** a space axis with the time axis. `n̂` stays the fixed axle; what winds is the frame in
+  the δ-axis↔time-axis plane.
+- **The precise version:** a phase `e^{-iEt/ℏ}` needs *two* things — a `t` that **advances** (`dt`)
+  **and** a time direction to **wind into** (the 4th matrix axis). The 3×3 sim has the first, not the
+  second. So **`dt` = time *passing*; the matrix time-axis = the particle *having a hand that points
+  into time*** so it can keep its own clock. A 3×3 particle just sits while `dt` passes; a 4×4 particle
+  carries a hand that winds into time → the real clock.
+
+> 🚧 More physical analogies to develop here at teach time — Rodrigo flagged this as the key intuition
+> for SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`). Take the time it needs.
+
+### Is the clock a second time? — coordinate vs proper time
+
+Tempting to read `dt` and the `clock_twist` as *two independent times* (Rodrigo Q&A 2026-06-01).
+Precise answer: **there is ONE time; the `clock_twist` is not a second dial — it is each particle's
+PROPER TIME.**
+
+| | What it is |
+| --- | --- |
+| **Frame-stepping `dt`** | **COORDINATE time** — the one external **SHARED-CLOCK** ("film projector"); the EOM integrates *along* it |
+| **`clock_twist` `φ=ωτ`** | **PROPER time** — the particle's *own* phase, a **PARTICLE-CLOCK** that the particle physically *is*. NOT independent — it advances *because* `dt` advances |
+
+So the either/or resolves: **you must step frames (`dt`) for the clock to tick** — a paused field is
+frozen, `M` doesn't change, nothing rotates. The clock is *content that evolves in the one time*, not
+a parallel time. **No `dt` step → no tick.**
+
+**But the "two channels" intuition is right in spirit** — the load-bearing part: each defect ticks at
+its **own rate `ω`** (set by its mass/energy). Under *one* shared `dt`, different defects accumulate
+*different phase*. That gap — between the single coordinate time everyone shares and each particle's
+own proper-time *rate* — **is exactly time dilation**, and it is the SABER time-dynamics / gravity
+lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient `ω` even varies across
+*space* = the `∇g` story, L8).
+
+> ⚠️ **Per-DEFECT, not per-voxel.** The L7 collective mode locks all of one defect's voxels into a
+> *single* phase `ψ(t)` at one `ω` (compass needles in lock-step); different *defects* (different
+> masses) tick at different `ω`. **No hard radius** for the sync region — the mode has a *spatial
+> profile* (peaked at the core, fading outward), not a sphere with a sharp edge. The coherent clock is
+> **M5.8 (not built yet)** — 1D toy validated (M5.8.0a), 3D→4D production clock is next; in free 3D
+> today it disperses (M5.7.2). Proper-vs-coordinate time is standard relativity; the mapping to
+> OpenWave's `ω`/`g` is design expectation, not yet a verified sim result.
+
+### `dt` is not fundamental — it emerges (the relational-time thesis)
+
+Push the question one level down (Rodrigo 2026-06-01) and `dt` itself stops being primitive:
+
+- **`dt` is postulated in the sim (a fixed step), but physically it's an *average-out* shared-clock** —
+  the coordinate time we humans perceive is the **statistical mean rate** of myriad particle-clocks.
+  The shared clock isn't fundamental; it's the ensemble average of the proper-time clocks. (OpenWave's
+  relational-time thesis: `time = c/λ` — `c` fixed, `λ` local; shorter `λ` → faster local change.)
+- **Time is not a thing — it's *movement*** (rate of change of state). There's no "time" substance;
+  there is only `M` changing, and "time" is the *rate* of that change. Strip the changes and time has
+  no meaning. Time **emerges from movement**, and the movement is **propelled by mass** (mass = the
+  defect's stored field energy; the clock-engine, L7).
+- **Two levels of "the change":** the raw *change* is per-**voxel** (every `M` evolving); the *rate we
+  call the clock* `ω` is the per-**defect** synchronized collective mode. Both true, different levels.
+
+So the hierarchy is **mass → propels movement → movement's rate IS proper time (per-defect `ω`
+particle-clock) → the ensemble average of all proper-times is the coordinate time `dt` we perceive.**
+Time bottoms out in mass-propelled movement, not in a clock.
+
+> ⚠️ All of this is the *relational-time hypothesis* (our roots + Duda's framing), not a proven M5
+> result — and the thermal/energy *consequences* of "the floor is lossless / perpetual" belong in the
+> SABER repo (`3_HYPOTHESIS.md §7.1`); here it's just the substrate's time-emergence picture.
+
+### Why gravity + clock arrive together
+
+Gravity = the time axis's *scale* (`g`); the clock = a *rotation into* the time axis. Both need the
+time axis to exist → both arrive at 4×4, neither sooner. That single structural addition is why the
+SABER unification (thermal/time/gravity as one lever) is even conceivable — `SABER 0_OVERVIEW §4`.
+
+### Gravity = a "bend" in time (+ Wheeler + the render plan)
+
+Map it onto L2's Frank modes (Rodrigo's intuition, 2026-06-01 — and Wheeler agrees): a single
+**boost** is the *tilt* of `n̂` into the time axis; **gravity is when that tilt *varies across
+space*** — the gradient `∇g` — i.e. the **bend-analog** (a Frank-style distortion, but curving into
+*time*, not a spatial axis):
+
+| Sector | local move | the field you feel (its gradient) |
+| --- | --- | --- |
+| **EM** | tilt of `n̂` toward a **spatial** axis | `∇·n̂` = charge, `∇×n̂` = B |
+| **Gravity** | **boost** of `n̂` toward the **time** axis (`g`) | `∇g` — the time-dilation gradient (the pull, 1/r²) |
+
+**Wheeler's "curved time" (real GR, not just our model).** For *slow* matter, gravity is almost
+entirely the curvature of the **time** direction, not space — the spatial-metric terms only matter
+near `c` (e.g. light-bending). The apple falls because its worldline bends toward where **clocks run
+slower** (`Φ` lives in the time-time metric `g₀₀`). So "gravity is a bend in time" is a genuinely
+correct slogan; here that bend is the `g`-eigenvalue varying across space. *(Caveat: the gravity
+sector is the framework's least-developed — M5.8/M5.9 design expectation, not a verified sim result.)*
+
+**Clock-rate render plan** (logged for M5.8 / `4b §4.7`). We can't draw the *time axis* as a spatial
+arrow (no 4th spatial dimension to point a glyph into). But — same trick as "we render `∇·n̂`, never
+'charge' directly" — we render gravity's **observable shadows**:
+
+| Observable | Render as | Reads as |
+| --- | --- | --- |
+| `g(x)` (time-scale per voxel) | scalar heatmap / WAVE_MENU channel | the **gravity well** (deep = clock slow) |
+| `∇g` (its gradient) | vector glyphs (like the E/B arrows) | the **gravitational pull** |
+| per-voxel **clock rate** (`ω`, proper-time tick) | colour / animation speed | **time dilation** — the wristwatch-per-voxel |
+
+The "bend in time" becomes visible the same way bend does in the director glyphs — **not in one glyph
+but in the *pattern***: clocks ticking progressively slower toward a mass *is* the gradient-of-time
+made visible (read the arrangement, not the single arrow). These emergence channels — **EM / gravity /
+time-rate / heat** — are exactly the levers the SABER unification builds on (`SABER 0_OVERVIEW §4`);
+this lesson is where the *physics* intuition for them lives.
+
+### Clock vs engine — it's both
+
+"Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`, the de Broglie clock Catillon measured).
+"Engine" = the *mechanism* (a self-propelled rotation; Duda's "oscillation propelled by mass"). A
+**self-propelling clock** whose output is a precise frequency = the particle's mass. Not perpetual
+motion — the spin *is* the rest energy. (The energetic *why* is L7.)
+
+### L3 Q&A / clarifications (2026-06-01)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | are `dt` and the `clock_twist` two separate times? | no — **one** time, two roles. `dt` = coordinate / shared-clock (the projector); `clock_twist` = the particle's **proper time** (its own phase). The clock advances *because* `dt` advances — no `dt` step, no tick. | above |
+| 2 | so the clock is just `dt`? | no — `dt` is time *passing*; the clock is the particle's **hand winding into the time axis**. A 3×3 particle has `dt` but no time-axis to wind into, so it can't keep a real clock (it disperses). | above |
+| 3 | is the clock per-voxel or per-particle? | **per-defect.** The L7 collective mode locks one defect's voxels into a single phase `ψ(t)` at one `ω`; *different defects* (masses) tick at different `ω`. The raw change is per-voxel; the *clock* is the per-defect rate. | above, L7 |
+| 4 | where does time dilation come from? | the **gap** between the one shared `dt` and each particle's own proper-time *rate* `ω`. Modulate `ω` ⇒ engineer rate-of-time; in a gravity gradient `ω` varies across space (`∇g`). | above, L8 |
+| 5 | is `dt` fundamental? | no — it **emerges** as the ensemble average of myriad particle-clocks. Time isn't a substance; it's *movement* (rate of change of `M`), propelled by mass. ⚠️ relational-time hypothesis, not a proven result. | above |
+| 6 | how is gravity related to EM? | both are **curvature of the frame** — EM = curving toward a *spatial* axis, gravity = curving (boost) toward the *time* axis. "Gravity is a bend in time" (Wheeler's curved-time). | above, L8 |
+| 7 | can we render gravity / the time axis? | not the time axis itself (not a spatial direction), but its **shadows**: `g(x)` gravity-well heatmap, `∇g` pull glyphs, per-voxel clock-rate (time dilation). Needs the 4D `g`-axis (M5.8). | above, `4b §4.7` |
+| 8 | is the self-propelling clock perpetual motion? | no — the spin **is** the rest energy (`ℏω=mc²`); the Minkowski `(−+++)` sign makes spinning the ground state, not a free lunch. The energetic *why* is L7. | L7 |
 
 ### L3 Anchors
 
@@ -996,14 +1017,41 @@ Two refinements keep the slogans exact:
   the geometry moves, and that movement is propelled by mass = stored geometric energy. The chain
   bottoms out in geometry, not in a clock or a "time stuff."
 
-The chain — one knob, read three ways:
+**One more split — static vs the time-axis fields (Rodrigo, 2026-06-01).** **Electric** is the lone
+field that is *purely spatial and static* — present at rest, from the static topology alone.
+**Magnetic, gravity, and thermal all switch on only with the 4th (time / clock) axis** (M5.8): a
+static defect is radial, so `∇×n̂ ≈ 0` — **no real magnetic field until the clock spins** (the spinning
+moment *generates* the circulation). Magnetic is the clock's *spatial* signature (motion); gravity its
+*temporal* signature (mass-energy curving time); thermal its *excess*.
 
-> **Geometry → Mass** (its stored energy) **→ Movement** (the clock-engine) **→ Time** (the rate of that movement).
->
-> **Force is the curvature of that same geometry** — *spatial* curvature = EM,
-> *temporal* curvature = gravity.
->
-> No separate "force" or "time" ingredients — everything is `M` and its gradients / rates.
+| Field / form | Sourced by | Needs the clock / time axis? | Live in OpenWave |
+| --- | --- | --- | --- |
+| **Electric** | static topology — splay `∇·n̂` (charge) | **no** — purely spatial, present at rest | ✅ M5.4 / M5.6 (Coulomb) |
+| **Magnetic** | the spinning clock's circulation `∇×n̂`, **× spatial geometry** | **yes** — needs MOTION (the moment); a static defect has `∇×n̂ ≈ 0` | 🔶 Maxwell machinery M5.6; real B @ M5.8 |
+| **Gravity** | mass-energy curving the time axis (`∇g`) | **yes** — needs the `g`-axis | 🚧 M5.8 / M5.9 |
+| **Thermal** | **excess** `(A, ω)` clock oscillation | **yes** — needs the clock | 🔶 driven preview M5.7.3; 9b |
+
+The chain is therefore **not linear — it forks and merges** (your instinct, 2026-06-01):
+
+```text
+defect-field geometry  (topological frame M)
+│
+├─ static, spatial-only ──→ ELECTRIC   (charge = splay ∇·n̂; present at rest, 3D)
+│
+└─ MASS (stored field energy)
+      └─ MOTION (clock-engine, propelled by mass)
+            └─ PROPER TIME  (the clock = the rate of that motion)
+                  ├──→ GRAVITY   (∇g = curvature of the time axis)
+                  ├──→ THERMAL   (excess (A,ω) clock oscillation)
+                  └─ × geometry ──→ MAGNETIC   (circulation ∇×n̂; MERGE = motion × space)
+```
+
+The **merge point is magnetic**: it needs *both* the spatial geometry (`∇×n̂` is a spatial operator)
+*and* the clock's motion (a static defect has no circulation) — exactly the fork-and-merge you saw.
+**Electric** is the only field that needs the geometry *alone*. Throughout, **a force / field is the
+curvature of that same geometry** — *spatial* curvature = electric, *spatial × motion* = magnetic,
+*temporal* curvature = gravity. No separate "force" or "time" ingredients — everything is `M` and its
+gradients / rates.
 
 This extends the emergence-ledger thesis ("the wave is downstream; the substrate is geometry") to
 *why* the SABER control channels — thermal `(A, ω)`, time `ω`, gravity `g`/`∇g` — are **one knob**:
