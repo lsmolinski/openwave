@@ -974,7 +974,7 @@ everything; the wave is downstream, never the source.**
 | **EM WAVES** (emergent) | radiated EM disturbances — the far-field a defect throws off | a defect radiates only when **accelerating / excited** (Larmor); the ground-state clock does **not** radiate. Propagating `∇×n̂`/`∇·n̂` disturbances = photons. | 9a |
 | **HEAT** *(THE hypothesis, emergent)* | the thermal `(A, ω)` excess of the defect's oscillation above ground | **Heat = `(A, ω)` excess above the ground-state floor** — the SABER/9b core hypothesis; sheds *through* the EM-waves channel on de-excitation, where blackbody/IR is the low-frequency **envelope** (not the carrier — caveat below). | 9b |
 
-### Geometry all the way down — EM, gravity, time as one substrate
+### GEOMETRY all the way down — EM, Gravity, Time as one substrate
 
 The ledger's deeper reading: not just "the wave is downstream," but **everything in it is *geometry*
 of the frame `M`** — and the three SABER channels (EM, gravity, time) are one substrate seen three
@@ -982,26 +982,28 @@ ways. Three claims say it:
 
 | Claim | Precise form | Which geometry | Status |
 | --- | --- | --- | --- |
-| **EM from elastic loads** | EM = the Frank elastic distortion of the director (splay / `frank_twist` / bend) — a *spatial* curvature of the frame | **spatial** geometry | ✅ solid (M5.6 Maxwell + Coulomb verified) |
-| **Gravity from time** | gravity = the `g`-axis time-tilt gradient `∇g` (clocks running at different rates across space) — a *temporal* curvature | **temporal** geometry | ⚠️ design expectation (M5.8/9, not yet verified) |
-| **Time from mass** | (proper) time = the *rate* of the mass-propelled clock; mass = stored field energy of the defect | geometric **energy** of the frame | ⚠️ relational-time hypothesis (our roots + Duda) |
+| **EM from Elastic Load** | EM = the Frank elastic distortion of the director (splay / `frank_twist` / bend) — a *spatial* curvature of the frame | **spatial** geometry | ✅ solid (M5.6 Maxwell + Coulomb verified) |
+| **Gravity from Time** | gravity = the `g`-axis time-tilt gradient `∇g` (clocks running at different rates across space) — a *temporal* curvature | **temporal** geometry | ⚠️ design expectation (M5.8/9, not yet verified) |
+| **Time from Mass** | (proper) time = the *rate* of the mass-propelled clock; mass = stored field energy of the defect | geometric **energy** of the frame | ⚠️ relational-time hypothesis (our roots + Duda) |
 
 Two refinements keep the slogans exact:
 
-- **"Gravity from time"** → more precisely, gravity is the *gradient of the time-rate*. So it's still
+- **"Gravity from Time"** → more precisely, gravity is the *gradient of the time-rate*. So it's still
   geometry — just geometry of the **time** axis instead of the spatial axes. EM and gravity are the
   *same kind of thing* (curvature of the frame); they differ only in **which axis curves**: spatial →
   EM, temporal → gravity.
-- **"Time from mass, mass is geometry"** → exactly. Time isn't a substance; it's the *rate* at which
+- **"Time from Mass, Mass is Geometry"** → exactly. Time isn't a substance; it's the *rate* at which
   the geometry moves, and that movement is propelled by mass = stored geometric energy. The chain
   bottoms out in geometry, not in a clock or a "time stuff."
 
 The chain — one knob, read three ways:
 
-> **geometry → mass** (its stored energy) **→ movement** (the clock-engine) **→ time** (the rate of
-> that movement); and a **force is the curvature of that same geometry** — *spatial* curvature = EM,
-> *temporal* curvature = gravity. No separate "force" or "time" ingredients — everything is `M` and
-> its gradients / rates.
+> **Geometry → Mass** (its stored energy) **→ Movement** (the clock-engine) **→ Time** (the rate of that movement).
+>
+> **Force is the curvature of that same geometry** — *spatial* curvature = EM,
+> *temporal* curvature = gravity.
+>
+> No separate "force" or "time" ingredients — everything is `M` and its gradients / rates.
 
 This extends the emergence-ledger thesis ("the wave is downstream; the substrate is geometry") to
 *why* the SABER control channels — thermal `(A, ω)`, time `ω`, gravity `g`/`∇g` — are **one knob**:
