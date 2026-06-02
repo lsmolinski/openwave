@@ -445,7 +445,7 @@ Replace the current generic Acknowledgments language with:
 | --- | --- |
 | "OpenWave Labs (Griesi, with Anthropic Claude Code on Opus 4.7 as AI agent contributor)" | Three-tier: org + human + AI agent. AI is a **contributor/partner**, not the platform's identity. |
 | "for diagnosing and correcting" | Describes what we did concretely; no "first" claim. |
-| "an open-source BVP demonstration" (NOT "the first") | Honesty — we don't know what's been done in private; drop "first" entirely. |
+| "an open-source BVP demonstration" (NOT "the first") | Honesty — we don't know what's been done; drop "first" entirely. |
 | "Griesi leads OpenWave platform engineering and direction" | Lead-engineer role explicit. NOT "orchestrator" (too vague), NOT "verifier" (overclaim). |
 | "Claude Code performed the numerical analysis" | AI did the math; explicit and accurate; positioned as a contributor not as the platform itself. |
 | "for community verification" | Math is reproducibility-checkable, not credential-validated. |
@@ -489,8 +489,8 @@ critique.
 | Anti-pattern | Why it fails |
 | --- | --- |
 | Claiming Griesi "verified" the physics | False; Claude Code did the math, Griesi can't independently check it |
-| Claiming "first" anything | We don't know what's been done in private; drop "first" entirely |
-| Asking for co-authorship or higher-tier byline | Compromises cross-validation independence; cardinal rule violated |
+| Claiming "first" anything | We don't know what's been done; drop "first" entirely |
+| Asking for co-authorship or higher-tier byline | Compromises cross-validation independence |
 | Calling Griesi "orchestrator" or "project manager" | Too vague; "lead engineer + project director" is more accurate |
 | Calling OpenWave "AI-native" or "AI-driven" | Misframes identity as primarily AI. Reality: multi-contributor (human founder + physics advisors + AI agents + future devs); AI is a contributor, not the platform's identity. |
 | Painting Griesi as "lone founder" | False; physics advisors (Yee, Duda, Close, Werbos) and AI agents are real contributors |
@@ -553,8 +553,8 @@ normalization across geometries).
 | Gate G2 (neutral m_χ ground state) | ⚠️ **PARTIAL via v8 step 5.** 448 solutions found across (g, λ, B0). Lightest at λ=1.0 is 0.998 MeV; provenance of "0.508 MeV" claim in v9 §9.1 needs resolution via Q37. |
 | Gate G3 (discrete ω selection) | ✅ **EMPIRICALLY VALIDATED via v8 step 4 lepton scan** — three lowest stable Q=1 modes match electron / muon / tau within target gaps. Analytic proof deferred per Werbos's own admission. |
 | v9 LoE paper publication | ✅ Paul published with our reproduction cited. 9a revision possible after Q36/Q37 input. No deposit needed from our side. |
-| M6 production in Taichi | 🚧 Path now clearer — Sonnet's canonical script gives reference ODE structure for Taichi port. Decision still deferred per cardinal rule (M5 first). |
-| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. M5 path remains foreground per cardinal rule. M6 v8 work complete; primary focus returns to M5 once email v10 sent. |
+| M6 production in Taichi | 🚧 Path now clearer — Sonnet's canonical script gives reference ODE structure for Taichi port. Decision still deferred (M5 first). |
+| M5 / Liquid Crystal | 🔶 M5.4 substrate migration queued. M5 path remains foreground. M6 v8 work complete; primary focus returns to M5 once email v10 sent. |
 
 ---
 
@@ -570,7 +570,7 @@ sandbox_v10, plus Q47 NEW (m_J_corrected = m_J/η is empirically family-
 invariant at 1.21 across both B0 and g — Pohozaev-type virial identity,
 not a tunable parameter; DeepSeek's "1.0 target" doesn't land) +
 Acknowledgments-update ask reinforced for BOTH DM paper AND future LoE
-revisions.** M5 path proceeds in foreground per cardinal rule while we
+revisions.** M5 path proceeds in foreground while we
 wait on Q47 interpretation + Acks-update confirmation.
 
 ### Branches after Paul's reply on Q47 + Acks-update
@@ -601,9 +601,9 @@ wait on Q47 interpretation + Acks-update confirmation.
 | 6 | BVP variant for clean neutral ground state (per Q42 path) | G2 | ✅ DONE via v9 phase 2 — `neutral_bvp_solver_mJ_free.py` (3D spherical l=1 p-wave, B0 fixed + m_J free eigenvalue): true nonlinear soliton, sign-changes=0, tail/peak=10⁻⁵, clean K_1 decay. 1-parameter family in B0 ∈ [0.4, 0.6]. |
 | 7 | Definite (m_χ, m_J, C) extraction under canonical point | — | ✅ DONE via sandbox_v10 — at canonical (g=1.0, B0=0.5): **m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251**. Email v15 sent. Pending Q47 (virial-identity interpretation) for canonical-match confirmation; numbers stand under either reading. |
 
-### M5 return — already foreground per cardinal rule
+### M5 return — already foreground
 
-Cardinal rule: SABER is the primary engineering goal, M5 is its substrate.
+SABER is the primary engineering goal, M5 is its substrate.
 **M6 sandbox is functionally complete** (G1 + G3 empirically PASSED; G2
 DM PAPER INPUTS DELIVERED via sandbox_v10). M6 stays **sandbox-only**
 per the Stage 2 PRODUCTION NO-GO decision (`0b_model_gates.md`). M6 work

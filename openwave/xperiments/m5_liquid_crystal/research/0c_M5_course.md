@@ -1,10 +1,10 @@
-# M5 Substrate Intuition — the 3×3 matrix infrastructure (prep for 4×4)
+# M5 Course - Develop Intuition on M5 Substrate, Matter and Emergent Layers
 
 **Purpose:** build working intuition for OpenWave's M5 Liquid-Crystal substrate — what the
 matrix field *is*, what its parts mean physically, how a particle (defect) is built from it, how
 the field evolves, where its energy/mass live, why it oscillates (the clock), how forces emerge,
-and how we visualize all of it — so the M5.8 promotion to 4×4 (`5a §10b`) lands with minimal
-knowledge gaps.
+where the *waves* live now that topology owns the matter sector (L11), and how we visualize all of
+it — so the M5.8 promotion to 4×4 (`5a §10b`) lands with minimal knowledge gaps.
 
 **Format:** built
 step-by-step during a teaching session. Each lesson distills an intuition-first Q&A (math second,
@@ -20,6 +20,10 @@ them.
 > bridge moved up to **L3** (right after the content lesson, since it's an eigenvalue-spectrum
 > extension); spin-½ folded into the clock at **L7**; handedness + composites is the finale at
 > **L10**. Old numbering: L1→split L1/L2, L2+L3→L2, L10→L3, L4–L9 unchanged, L7+L11→L7, L12→L10.
+>
+> **L11 appended (2026-06-01).** A capstone — **"where the waves live"** — documented from a
+> voice-note discussion (not a taught Q&A). It resolves the wave-first-inception vs topology-first-
+> reality tension and sits after the L10 finale as a reflective bookend.
 
 ---
 
@@ -27,8 +31,8 @@ them.
 
 | # | Lesson | Covers (questions + *added topics*) |
 | --- | --- | --- |
-| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The medium, the grid & the vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
-| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
+| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The medium, The Grid & The Vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
 | [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
 | [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
 | [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
@@ -37,6 +41,7 @@ them.
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
+| [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) ✅ | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -144,7 +149,7 @@ grain; a particle = a permanent swirl the elasticity can't smooth out.*
 
 **Takeaway:** the medium is a 3D grid of oriented ellipsoids (`M`); the vacuum is all of them
 aligned; we use a matrix instead of an arrow because the physics needs shape + a twistable frame +
-apolarity, which an arrow can't carry. The leftover "twist about `n̂`" DoF (Q8) is the seed of the
+apolarity, which an arrow can't carry. The leftover "`clock_twist` about `n̂`" DoF (Q8) is the seed of the
 clock. *(Next, L2: decode `M` fully — what the eigenvalues are, and what moving each axis means.)*
 
 **Anchors:** `4a §3/§5`, `medium.py`, M5.4 migration history.
@@ -173,14 +178,14 @@ above is drawn axis-aligned (`O = identity`):
 
 | Eigenvalue | Size | Semi-axis in the figure | Physics label (the "why" → below) |
 | --- | --- | --- | --- |
-| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt |
-| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / twist |
+| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt (splay, bend, frank_twist) |
+| `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / clock_twist |
 | `0` | smallest (null) | `c` (short / flat axis, z) | the null/time axis → the 4D clock |
 
 - **Where is `director_nhat`?** It's the **principal eigenvector** — the eigenvector of the
   *largest* eigenvalue (`1`, the EM axis) — so on the figure it runs **along the longest axis `a`**.
   For a hedgehog that's the radial direction (`n̂ = r̂`, the classic charge texture). The director
-  captures only this *one* axis; the orientation of `b`/`c` *around* `a` is the leftover twist DoF
+  captures only this *one* axis; the orientation of `b`/`c` *around* `a` is the leftover `clock_twist` DoF
   from L1 Q8. (Flattening `c → 0` literally visualizes the **null** axis.)
 - Bigger eigenvalue → longer axis (convention: `M` on the unit sphere ⇒ semi-axis = eigenvalue; the
   `√λ` convention keeps the same ordering). `D` is the *vacuum* shape (V(M)'s minimum); near a
@@ -214,13 +219,98 @@ above is drawn axis-aligned (`O = identity`):
 > boost→gravity (L3, 4D), null→clock. The key idea: a force field is a curvature (gradient) of the
 > frame, not the frame itself.
 >
-> **Seed (from L1 Q&A — twist vs tilt on the director):** the generators act on the *same* director
-> `n̂` (the principal axis, eigenvalue `1`) in orthogonal ways → different physics. **Twist** = rotate
+> **Seed (from L1 Q&A — `clock_twist` vs tilt on the director):** the generators act on the *same* director
+> `n̂` (the principal axis, eigenvalue `1`) in orthogonal ways → different physics. **`clock_twist`** = rotate
 > the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) *about* `n̂` (`n̂` stays put; generator
 > `Gx`) → **QM / the clock** (L7). **Tilt** = rotate `n̂` *itself* toward another axis (its direction
 > changes; generators `Gy,Gz`) → **EM**, whose *field* is the spatial gradient of those tilts
 > (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity (L3); the **null** (`0`) axis → the clock
-> direction. Mnemonic: *twist about it = QM, tilt of it = EM.*
+> direction. Mnemonic: *`clock_twist` about it = QM, tilt of it = EM.*
+>
+> **★ The three Frank distortion modes — what `∇·n̂` and `∇×n̂` actually measure (Rodrigo Q&A
+> 2026-06-01).** "Tilt of `n̂`" is the umbrella; in LC theory it splits into **three** named spatial
+> distortion modes, each a specific differential operator on `n̂`:
+>
+> 📛 **NAMING CONVENTION (repo-wide, to kill the word collision).** The word "twist" means two
+> different things in this model, so we **always** use the disambiguated atomic tokens — never bare
+> "twist" — across all docs:
+>
+> - **`frank_twist`** — the Frank elastic *spatial* distortion mode `n̂·(∇×n̂)` (part of `∇×n̂`, magnetic).
+> - **`clock_twist`** — the QM/Zitterbewegung rotation of the δ-axis about a fixed `n̂` *in time* (L7).
+>
+> ("Frank" stays capitalized in generic phrases — "Frank elastic energy", "the three Frank modes" —
+> after Frank, the LC theorist; the *mode token* is `frank_twist`.)
+>
+> | Tilt Modes | Operator | Picture | EM channel |
+> | --- | --- | --- | --- |
+> | **splay** | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
+> | **`frank_twist`** | `n̂·(∇×n̂)` — curl component **parallel** to `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
+> | **bend** | `n̂×(∇×n̂)` — curl component **perpendicular** to `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
+>
+> So: **`∇·n̂` (splay) = the electric channel**; **`∇×n̂` (curl) = magnetic, and it carries TWO modes
+> together — `frank_twist` + bend** (`‖∇×n̂‖² = frank_twist² + ‖bend‖²`). "Splay" and "director
+> divergence" are the **same quantity** `∇·n̂` — splay is the LC-native name, divergence the math name.
+> Splay is *one* mode of tilt (not all of tilt): splay + `frank_twist` + bend together *are* the full
+> spatial tilt of `n̂`, i.e. the whole EM sector.
+>
+> **⚠️ The collision the convention fixes — `frank_twist` vs `clock_twist` are different physics.**
+>
+> | | **`frank_twist`** (in `∇×n̂`, EM) | **`clock_twist`** (QM / L7) |
+> | --- | --- | --- |
+> | What rotates | **`n̂` itself**, as you move through *space* | the **δ-axis** about a *fixed* `n̂`, in *time* |
+> | Operation | a spatial gradient of `n̂` | the internal-frame DoF `n̂` throws away (L1 Q8) |
+> | Sector | **magnetic** (part of the curl) | **QM / the clock** |
+> | Towel image | ✅ yes - wringing a towel — the *fabric line* rotates along its length | ✗ no - the clock is the towel's *threads* spinning in place about the towel's own line, frozen in space |
+>
+> They are NOT the same operation — they just shared the unlucky word "twist" (hence the convention
+> above). But they're **causally linked**: a static hedgehog is radial ⇒ `∇×n̂ ≈ 0` ⇒ no magnetic
+> field. When the **`clock_twist`** (QM, δ-axis) spins — dynamic, 4D/M5.8 — it generates a **magnetic
+> moment**, which *produces* a circulating B ⇒ now `∇×n̂ ≠ 0`. So **`clock_twist` (cause) → magnetic
+> circulation (effect)** — the L8 magnetic-moment story.
+>
+> **What's visible in the director-glyph lines (Taichi `scene.lines`):**
+>
+> ⚠️ **A single glyph is a STRAIGHT tangent segment — it never curves (Rodrigo Q 2026-06-01).** Each
+> line shows `n̂` at *one* voxel. Bend / `frank_twist` is a property of the field *across neighbours*: you read
+> it as the **pattern** of many straight glyphs whose directions progressively rotate — like iron
+> filings around a magnet (each filing straight, the *arrangement* curves). The "curve" is the
+> imaginary **field line** threading through all the glyph directions; each glyph is a straight
+> tangent to it. So below, "lines fan / sweep / rotate" = the *pattern*, never an individual line
+> bending.
+>
+> | Distortion | Seen in the director-glyph *pattern*? | Present in the static hedgehog? |
+> | --- | --- | --- |
+> | **splay** | ✅ lines point radially (starburst) | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
+> | **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
+> | **`frank_twist`** | ✅ line directions rotate along an axis (helical/barber-pole) *(when present)* | ❌ zero |
+> | **`clock_twist` (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
+>
+> The **most direct** read of bend + `frank_twist` is the **magnetic-field glyph (state 3)**: it draws `∇×n̂`
+> as its own arrow, so circulation appearing *there* is the direct signal that bend + `frank_twist` developed —
+> spotting it in the director-line *pattern* is the emergent-by-eye version of the same fact.
+> *(Caveat: under Evolve-PDE some director-glyph motion is the **apolar gauge sign-flip** — 180°
+> flips, an artifact, not real bend; `4b §4.4`. Real reorientation + gauge-flip are mixed in the view.)*
+>
+> **★ Why you see fanning but NOT bend/`frank_twist` (Rodrigo observed 2026-06-01) — the glyph isn't
+> failing; the config has none.** A static hedgehog is `n̂ = r̂` (radial), and a radial field has
+> `∇×r̂ = 0` **exactly** — so it is **pure splay, zero bend, zero `frank_twist`**. There is literally
+> nothing for the director lines to show *but* fanning. (This is the *same fact* as "a static charge
+> has `∇×n̂≈0` → no magnetic field" — the dark magnetic channel and the no-visible-bend are one and
+> the same thing.) To actually *see* bend or `frank_twist` you need a config that **contains** them:
+>
+> | To see… | Need a config with… | Candidate |
+> | --- | --- | --- |
+> | **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
+> | **`frank_twist`** | `n̂` helically rotating along an axis | a vortex / cholesteric seed; a twisting defect (M5.8) |
+>
+> So the circulation you *do* see on the magnetic-field glyphs today is either the **VIZ.4 hardcoded
+> dipole placeholder** or curl that grows as the field sloshes under Evolve-PDE — *not* the static
+> seed (which is curl-free).
+>
+> 🚧 **Future render idea (logged):** we compute the full `∇×n̂` (WM7). To *see* `frank_twist` vs bend
+> independently, split the curl into the **`frank_twist` scalar** `n̂·(∇×n̂)` and the **bend vector**
+> `n̂×(∇×n̂)` as separate channels. Not needed now — noted for when the magnetic sector wants finer
+> resolution (cf. `4b §4.7` deferred-viz spirit).
 
 (to be filled during the session)
 
@@ -278,6 +368,56 @@ above is drawn axis-aligned (`O = identity`):
 > - 🚧 *more physical analogies to develop here at teach time* — Rodrigo flagged this as the key
 >   intuition for enabling SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`).
 >   Take the time it needs.
+>
+> **Is the clock a SECOND time? — coordinate time vs proper time (Rodrigo Q&A 2026-06-01).** Tempting
+> to read `dt` and the `clock_twist` as *two independent times*. Precise answer: **there is ONE time;
+> the `clock_twist` is not a second dial — it is each particle's PROPER TIME.**
+>
+> | | What it is |
+> | --- | --- |
+> | **Frame-stepping `dt`** | **COORDINATE time** — the one external **SHARED-CLOCK** ("film projector"); the EOM integrates *along* it |
+> | **`clock_twist` `φ=ωτ`** | **PROPER time** — the particle's *own* phase, a **PARTICLE-CLOCK** that the particle physically *is*. NOT independent — it advances *because* `dt` advances |
+>
+> So the either/or resolves cleanly: **you must step frames (`dt`) for the clock to tick** — a paused
+> field is frozen, `M` doesn't change, nothing rotates. The clock is *content that evolves in the one
+> time*, not a parallel time. **No `dt` step → no tick.** (So: needs the dynamic, yes.)
+>
+> **But the "two channels" intuition is right in spirit** — and this is the load-bearing part: each
+> defect ticks at its **own rate `ω`** (set by its mass/energy). Under *one* shared `dt`, different
+> defects accumulate *different phase*. That gap — between the single coordinate time everyone shares
+> and each particle's own proper-time *rate* — **is exactly time dilation**, and it is the SABER
+> time-dynamics / gravity lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient
+> `ω` even varies across *space* = the `∇g` story, L8). ⚠️ **Per-DEFECT, not per-voxel:** the L7
+> collective mode locks all of one defect's voxels into a *single* phase `ψ(t)` at one `ω` (compass
+> needles in lock-step); different *defects* (different masses) tick at different `ω`. **No hard
+> radius** for the sync region — the mode has a *spatial profile* (peaked at the core, fading
+> outward), not a sphere with a sharp edge. ⚠️ The coherent
+> clock is **M5.8 (not built yet)** — 1D toy validated (M5.8.0a), 3D→4D production clock is next; in
+> free 3D today it disperses (M5.7.2). Proper-vs-coordinate time is standard relativity; the mapping
+> to OpenWave's `ω`/`g` is design expectation, not yet a verified sim result.
+>
+> **Going deeper — `dt` is not fundamental, it EMERGES (the relational-time thesis, Rodrigo
+> 2026-06-01).** Push the question one level down and `dt` itself stops being primitive:
+>
+> - **`dt` is postulated in the sim (a fixed step), but physically it is an *average-out* shared-clock** — the
+>   coordinate time we humans perceive is the **statistical mean rate** of myriad particle-clocks.
+>   The shared clock isn't fundamental; it's the ensemble average of the proper-time clocks. (OpenWave's
+>   relational-time thesis: `time = c/λ` — `c` fixed, `λ` local; shorter `λ` → faster local change.)
+> - **Time is not a thing — it's *movement* (rate of change of state).** There's no "time" substance;
+>   there is only `M` changing, and "time" is the *rate* of that change. Strip the changes and time has
+>   no meaning. Time **emerges from movement**, and the movement is **propelled by mass** (mass = the
+>   defect's stored field energy; the clock-engine, L7).
+> - **Two levels of "the change" (the per-voxel vs per-defect nuance again):** the raw *change* is
+>   per-**voxel** (every `M` evolving); the *rate we call the clock* `ω` is the per-**defect**
+>   synchronized collective mode. Both true — different levels. "Movement of a voxel ellipsoid" is the
+>   microscopic change; "the particle's clock" is the coherent per-defect rate built from it.
+>
+> So the hierarchy is: **mass → propels movement → movement's rate IS proper time (per-defect `ω` particle-clock) →
+> the ensemble average of all proper-times is the coordinate time `dt` we perceive, the shared-clock.** Time bottoms out
+> in mass-propelled movement, not in a clock. ⚠️ All of this is the *relational-time hypothesis* (our
+> roots + Duda's framing), not a proven M5 result — and the thermal/energy *consequences* of "the
+> floor is lossless / perpetual" belong in the SABER repo (`3_HYPOTHESIS.md §7.1`) the
+> here it's just the substrate's time-emergence picture.
 >
 > **Why gravity + clock arrive together.** Gravity = the time axis's *scale* (`g`); the clock = a
 > *rotation into* the time axis. Both need the time axis to exist → both arrive at 4×4, neither
@@ -342,7 +482,7 @@ above is drawn axis-aligned (`O = identity`):
 ## Lesson 6 — Dynamics: how the field actually moves
 
 > **Covers:** *the leapfrog time-stepper (`evolve_M`); the kinetic metric — faithful
-> `4Σ‖[M_μ,Ṁ]‖²` vs the shipped simple `½‖Ṁ‖²`, the degeneracy, why the twist is dynamical only
+> `4Σ‖[M_μ,Ṁ]‖²` vs the shipped simple `½‖Ṁ‖²`, the degeneracy, why the `clock_twist` is dynamical only
 > on a non-uniform (hedgehog) background; `V(M)` — confines amplitude `Tr(M²)` but NOT orientation
 > (the root cause of the M5.7 free-dispersal nulls); energy conservation as the correctness test*.
 
@@ -392,7 +532,7 @@ above is drawn axis-aligned (`O = identity`):
 > phase has **no preferred angle** (every phase has identical energy — the unconfined orientation
 > direction, the same fact as "V confines amplitude not orientation", L6), so it rotates freely
 > rather than being pulled back to a center. The rate isn't free, though — the time-crystal `−αω²`
-> term energetically *selects* `ω = 2mc²/ℏ`. **Axis:** the **twist about the director `n̂`**
+> term energetically *selects* `ω = 2mc²/ℏ`. **Axis:** the **`clock_twist` about the director `n̂`**
 > (the principal axis, eigenvalue `1` = EM axis; generator `Gx`, a rotation in the `δ`–`0` plane,
 > `5a §7a`) — `n̂` stays put while the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) sweep
 > *around* it (the "spinning arrow", and the leftover DoF from L1 Q8). Contrast with **EM = tilting
@@ -408,8 +548,8 @@ above is drawn axis-aligned (`O = identity`):
 > Clock"), `A` = the rotational radius/excitation amplitude (WM2 "Thermal Amp"). Ground state: both
 > fixed. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate shifts (FM) — exactly
 > the dual channels M5.7.3 saw respond to driving (`A_core`→3×, director at `f_d`). (The
-> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the private repo per the cardinal
-> rule; here it's just the substrate clock's two observables.)
+> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the SABER repo
+> here it's just the substrate clock's two observables.)
 >
 > *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `n̂`,
 > the δ–`0` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal
@@ -429,7 +569,7 @@ above is drawn axis-aligned (`O = identity`):
 > around it — and all the clock-hands across the defect's neighborhood are **synchronized**.
 >
 > *Why it matters:* the **defect** is the stable topological knot that *hosts* the clock; the
-> **clock** is the collective twist mode the knot carries. So "the particle" = defect (topology,
+> **clock** is the collective `clock_twist` mode the knot carries. So "the particle" = defect (topology,
 > permanent) **+** its intrinsic clock (the collective oscillation). And thermal `(A, ω)` is a
 > **per-defect collective property**, not an individual-voxel one. *(3D caveat: the free collective
 > mode disperses — M5.7.2 — so it needs 4D to self-sustain, M5.8, or a drive, 9b.)*
@@ -437,11 +577,11 @@ above is drawn axis-aligned (`O = identity`):
 > *Questions to answer in L7 so this clicks:*
 >
 > 1. **What makes the needles lock-step?** — the elastic (Frank) coupling between neighbours + the
->    hedgehog's own `C_μν` source: the lowest-energy way to carry a twist is *coherently*, so one
+>    hedgehog's own `C_μν` source: the lowest-energy way to carry a `clock_twist` is *coherently*, so one
 >    collective phase `ψ(t)` wins over each voxel doing its own thing.
 > 2. **How can a single `ψ(t)` describe a whole 3D region?** — it's a **collective coordinate /
 >    normal mode**: like a drumhead's fundamental mode, *one* amplitude sets the whole membrane's
->    shape. `ψ` is that one number for the defect's twist mode.
+>    shape. `ψ` is that one number for the defect's `clock_twist` mode.
 > 3. **Why a "mode" and not a rigid point-spin?** — it has **spatial extent + a profile** (peaked at
 >    the core, fading out, weighted by the texture) — a standing-wave/breather-like object, not a
 >    structureless spinning dot.
@@ -449,7 +589,7 @@ above is drawn axis-aligned (`O = identity`):
 >    with a spatial profile. *How coherent/localized it stays* is exactly the M5.7.2 dispersal
 >    result (free 3D radiates it away) → M5.8 (4D stabilizes) / 9b (drive sustains).
 > 5. **Engine tie-in:** this is the `O(x) ∈ SO(3)` rotation DoF from `5a §9` / `m5_6_2b` — the
->    collective twist is a coherent excitation of that rotation field, not of `M`'s raw components.
+>    collective `clock_twist` is a coherent excitation of that rotation field, not of `M`'s raw components.
 >
 > ---
 >
@@ -499,6 +639,11 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
+> **Prerequisite from L2:** the **three Frank distortion modes** (splay `∇·n̂` = electric; `frank_twist` + bend `∇×n̂` = magnetic) and the **two-meanings-of-"twist"** correction (`frank_twist` of `n̂` in
+> space vs the QM `clock_twist` of the δ-axis in time) are unpacked in `0c §L2` ("The three Frank
+> distortion modes"). The causal link — *`clock_twist` spins → magnetic moment → circulating B → `∇×n̂`
+> lights up* — is the spine of the magnetic-moment story below.
+>
 > **★ MAGNETIC MOMENT — dedicated unpack (Rodrigo flagged 2026-05-30: "I still don't fully grasp
 > it").** Teach this against **Duda's electron slide** (`Screenshot 2026-05-28 at 3.15.48 PM` — the
 > one with the bar magnet `m`, the `B` field lines, the spin axis + `ω` Larmor inset). That slide is
@@ -511,7 +656,7 @@ above is drawn axis-aligned (`O = identity`):
 >
 > | Question | Tie to what we built / where it lives |
 > | --- | --- |
-> | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the δ-twist rotation axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
+> | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the `clock_twist` δ-axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
 > | **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
 > | **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
 > | **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 thermal A/ω (the spin rate, L7). |
@@ -600,6 +745,107 @@ above is drawn axis-aligned (`O = identity`):
 
 ---
 
+## Lesson 11 — Where the waves live (M5/M6 only)
+
+> **Covers / added 2026-06-01 (the "wave existential crisis" voice-note).** OpenWave was born
+> wave-first — the name, M2 (free wave), M3 (Wolff-LaFreniere / EWT) all treat the standing wave as
+> *the* ontology. In M5/M6, **topology quietly took over the matter sector** (particle = defect, not
+> wave-packet), so the honest question is: where does "wave" live now? This capstone resolves it —
+> waves dropped from *substrate* to *emergent*, and the **emergence ledger** below locates matter,
+> **force, EM waves, heat, and time** as strata, **none of them sourced by a base wave**. The wave's
+> own two jobs split: the **radiated** job is settled (it *is* the EM-waves stratum, through which
+> heat is shed); the **relational (pilot)** job is left as an open question.
+
+### Scope — this question only exists in M5/M6
+
+| Model | Ontology | Wave's status |
+| --- | --- | --- |
+| M1 granule · M2 free-wave · M3 EWT · M4 vector-wave | wave-native | the wave **is** the ontology — no crisis, "wave all the way down" |
+| **M5 (Duda LC) · M6 (Werbos chaoiton)** | **topology-first** | the wave is *demoted* — this lesson is the only place it needs re-locating |
+
+So the "where do waves live" tension is **unique to the topological models**. M1–M4 never ask it.
+
+### The tension — wave-first inception vs topology-first reality
+
+| Inception ontology (EWT / M2–M3) | Where M5/M6 actually landed |
+| --- | --- |
+| Waves are the *fundamental substance*; particle = standing-wave knot; force = wave interference | Topology is fundamental for matter; particle = topological **defect**; vacuum is **static**, not an oscillating medium |
+
+The question isn't "are waves still here" — it's **which layer** they live on now that they're no
+longer the substrate.
+
+### THE EMERGENCE LEDGER — what comes from where (none of it a base wave)
+
+The reconciliation: the M5 universe is an **emergence ledger**. A static substrate is *given*;
+matter, force, EM waves, heat, and time each appear as *patterns* on it. Read the right-hand column
+top to bottom and it says the same thing six times — **topology and defect-oscillation generate
+everything; the wave is downstream, never the source.**
+
+| Layer | What it is | How it emerges — *not* from a base wave | Anchor |
+| --- | --- | --- | --- |
+| **SUBSTRATE** | static matrix `M`, vacuum `diag(1, δ, 0)` | given — the static ground; everything else is a *deviation from* it. It does **not** wave (EWT's oscillating aether is dropped here). | L1, M5.4 |
+| **MATTER** (the particle) | topological **defect** (hedgehog); charge/spin = topological invariants | from **topology** — winding number = quantized charge; Derrick forbids a static lump → it must be a 4D **clock** | L4, L7, M5.8 |
+| **TIME** (emergent) | **proper/particle-time** + **shared-time** (`dt`) | **proper-time** = the defect's own `clock_twist` rotation (the matrix time-index — structural, per-defect, mass-propelled); **shared-time** = the grid's evolution parameter `dt` that everything steps by and **humans perceive**. Both emerge from **oscillation / evolution**, not from a wave. | L3, L7 |
+| **FORCES** (emergent) | electric, magnetic, gravity | **static topology**: splay `∇·n̂` = charge → Coulomb (1/d), g-axis gradient → gravity (1/r²); **frame dynamics**: magnetic `frank_twist`+bend `∇×n̂` = the Feynman velocity correction. *Never* wave-interference — that wrong-layer attempt is exactly the M3/EWT **sinc-flip**. | L8, 3a |
+| **EM WAVES** (emergent) | radiated EM disturbances — the far-field a defect throws off | a defect radiates only when **accelerating / excited** (Larmor); the ground-state clock does **not** radiate. Propagating `∇×n̂`/`∇·n̂` disturbances = photons. | 9a |
+| **HEAT** *(THE hypothesis, emergent)* | the thermal `(A, ω)` excess of the defect's oscillation above ground | **Heat = `(A, ω)` excess above the ground-state floor** — the SABER/9b core hypothesis; sheds *through* the EM-waves channel on de-excitation, where blackbody/IR is the low-frequency **envelope** (not the carrier — caveat below). | 9b |
+
+### The two jobs of the wave (one settled, one open)
+
+Zooming into the wave itself: your voice-note candidates ("only EM?", "orbital lock-in?", "ellipsoid
+oscillation?", "what do the oscillations generate?") collapse into **two jobs** — one settled (it's
+the EM-waves stratum above, with heat shed through it), one still open:
+
+| Wave job | Status | What it is | Examples / mechanism |
+| --- | --- | --- | --- |
+| **Radiated** | settled (= the EM-waves stratum; heat's shed channel) | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, 9a/photons), gravitational waves (g-gradient ripples) |
+| **Relational (pilot)** | **open question** | the near-field standing wave the defect *generates and re-couples to* — guides its own motion, quantizes orbits, binds composites | de Broglie–Bohm pilot wave / WSM / Couder walking-droplet analogy (the 2+1D rung, M5.8.6) |
+
+> 🚧 **Open question (flagged, not resolved — 2026-06-01).** Is the pilot wave a *separate* wave, or
+> just the **near-field** of the same `∇×n̂`/`∇·n̂` disturbance whose far-field is the radiated EM?
+> Left open deliberately.
+
+**One-line synthesis:** *the vacuum doesn't wave; defects do — and the waves they emit (radiated)
+and re-absorb (pilot) are what "wave" means in M5/M6.* Topology owns the particle; waves own the
+radiation and the binding.
+
+### What kind of wave radiates from the clock? (open question, 2026-06-01)
+
+The instinct in the voice-note is right and worth chasing. Classical EM radiates only from
+**accelerating** charge (Larmor) — a static charge has a static Coulomb field and radiates nothing.
+Map that onto a defect:
+
+| Source state | Radiates? | Why |
+| --- | --- | --- |
+| Defect at rest, ground-state clock | **No** | static director field → static E/B; the bare `clock_twist` is a *stationary* internal phase (like a quantum stationary state with no oscillating dipole) — this is *why* a ground-state particle / orbiting electron doesn't spiral in |
+| Defect accelerating / transitioning / carrying **excess** `(A, ω)` above ground | **Yes** | the excess sheds as radiation when the defect de-excites/decoheres — your "excess intrinsic oscillation leaking out as EM" |
+
+So **blackbody / thermal-IR radiation** is a natural candidate for the *radiated* job: the EM thrown
+off by thermally-excited defect clocks shedding their `(A, ω)` excess (the **9b** "heat = `(A, ω)`
+excess" program is the scientific home for this).
+
+> ⚠️ **Carrier vs envelope caveat (don't conflate scales).** The bare Zitterbewegung clock is
+> `ω = 2mc²/ℏ` — for an electron ≈ `2.5×10²⁰ Hz` (gamma-ray range), **not** IR. Thermal IR sits near
+> `~10¹³ Hz` (300 K Wien peak ≈ 10 µm) — about **7 orders below** the carrier. So blackbody/IR is
+> **not** the raw clock frequency; it's the low-frequency **envelope / modulation / collective
+> de-excitation** riding on the carrier. Treat the clock as the carrier and the thermal spectrum as
+> the sideband — keep these separate or the picture is wrong by `10⁷`. (This is the falsifiable seam
+> for 9b; the *engineering* lever built on it lives in the SABER docs.)
+
+### Identity note — is "OpenWave" still apt?
+
+Yes. The wave remains the **observable, radiative, binding** phenomenon, and the README's
+de Broglie–Bohm / wave-structure-of-matter lineage is exactly the pilot-wave job above. What changed
+between inception and M5/M6 is the wave's **ontological primacy** (substrate → emergent), not its
+relevance. The name still points at the right physics — it just sits one layer up.
+
+**Anchors:** `9a` (radiated EM packets), `9b` (heat as `(A, ω)` excess — the radiated-thermal seam),
+`5a §10` + L7 (the clock), `L3` (the two times — proper vs shared), `L8`/`3a` (force emergence),
+`M5.8.6` (2+1D pilot-wave rung), `README` (de Broglie–Bohm / WSM lineage), M2/M3 (the wave-native
+models this lesson contrasts against).
+
+---
+
 ## Appendix A — source questions (2026-05-29, voice-note batch 1)
 
 The original questions this curriculum organizes:
@@ -635,3 +881,4 @@ The original questions this curriculum organizes:
 | The 4th dimension: gravity (`g`) + the time axis; the two "times" | L3 |
 | 4D & teleparallelism | L3 |
 | Handedness / chirality; matter-antimatter; composite particles | L10 |
+| Where the waves live (radiated vs pilot); forces from topology not waves; what radiates from the clock (2026-06-01) | L11 |

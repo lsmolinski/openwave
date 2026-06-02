@@ -193,14 +193,14 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 
 **Premise (Rodrigo, 2026-05-27).** Through M5.5 the viz channels were mostly placeholders — only the energy flux-meshes (`WAVE_MENU` 4/5) carried real signal. The channels are general-purpose *displays*; the value comes from **wiring each to the observable that builds physical intuition** for the phenomena OpenWave investigates (matter / forces / EM / heat). This part is the observable→channel map: pick a physics question, pick the channel + observable that answers it visually.
 
-> **Repo-discipline note** (per `feedback_repo_discipline`, cardinal rule): this doc frames the wiring by **physics intuition** only. The thermal observables are the `(A, ω)` excess of `project_thermal_amplitude_hypothesis` (hypothesis *name* used as a physics cross-ref, OK in OpenWave). SABER Direct-Heat-Conversion device specs / engineering targets / product framing — the *applied motivation* — stay in the **private SABER repo**, never here.
+> **Repo-discipline note** (per `feedback_repo_discipline`): this doc frames the wiring by **physics intuition** only. The thermal observables are the `(A, ω)` excess of `project_thermal_amplitude_hypothesis` (hypothesis *name* used as a physics cross-ref, OK in OpenWave). SABER Direct-Heat-Conversion device specs / engineering targets / product framing — the *applied motivation* — stay in the **SABER repo**, not here.
 
 ### The map — physics question → channel + observable
 
 | Phenomenon | "How do I see it?" | Channel | Observable | Status |
 | --- | --- | --- | --- | --- |
 | **EM — electric / charge** | where is the charge, `∇·E`? | flux_mesh color (signed greenyellow) + E/director glyph | `∇·n̂` (director splay) — diverges at defect cores like Coulomb charge | ✅ DONE (WAVE_MENU 6 + E glyph) |
-| **EM — magnetic / rotation** | where is `B`, the rotational? | flux_mesh color (orange magnitude) + B/curl glyph (half-arrow direction) | `‖∇×n̂‖` (twist+bend) — magnitude colors; the curl-vector glyph shows direction | ✅ DONE (WAVE_MENU 7 + B glyph) |
+| **EM — magnetic / rotation** | where is `B`, the rotational? | flux_mesh color (orange magnitude) + B/curl glyph (half-arrow direction) | `‖∇×n̂‖` (`frank_twist`+bend) — magnitude colors; the curl-vector glyph shows direction | ✅ DONE (WAVE_MENU 7 + B glyph) |
 | **Thermal energy `A`** | where is the heat *amplitude*? | flux_mesh color (ironbow) | `‖M−D‖_F` EMA = thermal **A** | ✅ wired (WAVE_MENU 2) |
 | **Thermal clock `ω`** | how fast does it tick (heat↔time)? | flux_mesh color (blueprint) | `‖Ṁ‖_F` EMA = clock **ω** | ✅ wired (WAVE_MENU 3) |
 | **Thermal energy (joint)** | the heat *energy* content in one view | flux_mesh color | **`(A·ω)²`** — NOT `A·ω`. For a defect oscillator `E_kin = ½m(Aω)²`, so `A·ω` alone is peak *velocity* (length/time); the energy-dimensional quantity is `(A·ω)²`. Combine the two trackers as a product-of-squares. | 🚧 DEFERRED → 9b |
@@ -219,7 +219,7 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 
 ### Why `∇·n̂` and `∇×n̂` are the right "see EM" observables
 
-The director `n̂` is the LC analog of the field; its **distortion modes** map onto the EM sector verified in M5.6.4 (`5a §5d`): **splay** `∇·n̂` localizes at defect cores exactly like Coulomb charge density (M5.1 already showed the splay/dumbbell geometry around `±` defects, `3a_coulomb_visual_geometry.md`), and **twist+bend** `∇×n̂` is the circulation/`B`-like mode. Computing `∇·n̂` (signed scalar) and `∇×n̂` (vector + magnitude) as production observables turns the abstract "EM emerges from tilts" result into something you can *look at* on the flux mesh. Cheap: the `∇·`/`∇×` kernels already exist (`divergence`/`curl` on the dormant ψ); they re-point onto `director_nhat`.
+The director `n̂` is the LC analog of the field; its **distortion modes** map onto the EM sector verified in M5.6.4 (`5a §5d`): **splay** `∇·n̂` localizes at defect cores exactly like Coulomb charge density (M5.1 already showed the splay/dumbbell geometry around `±` defects, `3a_coulomb_visual_geometry.md`), and **`frank_twist`+bend** `∇×n̂` is the circulation/`B`-like mode. Computing `∇·n̂` (signed scalar) and `∇×n̂` (vector + magnitude) as production observables turns the abstract "EM emerges from tilts" result into something you can *look at* on the flux mesh. Cheap: the `∇·`/`∇×` kernels already exist (`divergence`/`curl` on the dormant ψ); they re-point onto `director_nhat`.
 
 ### Implementation order (M5.6.5b)
 
@@ -244,9 +244,9 @@ The rest are **deferred past the M5.6 PR** (Rodrigo 2026-05-27):
 | WAVE_MENU_7 | **EM curl (circ/B)** — `‖∇×n̂‖` on orange, scaled against the **shared** distortion magnitude `max(div_absmax, curl_max)` — NOT its own max. |
 | Validation | hedgehog `n̂=r̂`: `∇·n̂ = 2/r` (charge), matched to 0.02%; `‖∇×n̂‖ ≈ 0` (radial is curl-free). Headless: render branches compile, finite. |
 
-**The shared-scale design (why curl isn't self-normalized).** A static hedgehog is a *pure charge* — its director is curl-free, so `‖∇×n̂‖` is zero up to ~5e-4 grid-discretization noise. If curl is colored against *its own* max, that noise stretches to full brightness → spurious "rings" around the core (the near-degenerate eigenvector zone amplifies it). Scaling curl against `max(div, curl)` instead makes the B view **honest**: for a static charge `curl/div ≈ 1.6%` → near-black (correctly "no B"); real circulation (a twisting director under Evolve-PDE, or a moving/biaxial-dynamic charge) grows curl to ~div and lights it up. This is the right physics reading — **a static charge has E but no B; B appears with motion/twist**.
+**The shared-scale design (why curl isn't self-normalized).** A static hedgehog is a *pure charge* — its director is curl-free, so `‖∇×n̂‖` is zero up to ~5e-4 grid-discretization noise. If curl is colored against *its own* max, that noise stretches to full brightness → spurious "rings" around the core (the near-degenerate eigenvector zone amplifies it). Scaling curl against `max(div, curl)` instead makes the B view **honest**: for a static charge `curl/div ≈ 1.6%` → near-black (correctly "no B"); real circulation (a twisting director under Evolve-PDE, or a moving/biaxial-dynamic charge) grows curl to ~div and lights it up. This is the right physics reading — **a static charge has E but no B; B appears with motion/`clock_twist`**.
 
-**Reading the views.** WAVE_MENU 6 = where the charge is (greenyellow diverging ± at defect cores, neutral bulk). WAVE_MENU 7 = where circulation is (dark for a static defect; lights up where the director twists). Under **Evolve PDE** both evolve in real time — that is *not* a glitch, it is the dynamical field: the charge redistributes and the curl/B grows as the director twists (the circulation generated by the moving/oscillating defect). Pausing freezes them. **This holds with V on too:** `∇·n̂` and `∇×n̂` are *orientation* observables, and V (rotation-invariant, M5.6.5d) pins only the *amplitude* `Tr(M²)`, not the director orientation — so the charge/B views show the freely-evolving twist (the QM/clock sector) regardless of V. To *see* V's confinement on screen, use the amplitude-based views (ENERGY Hamiltonian / Thermal Amp), which stay localized with V on while the orientation views (charge/B/glyphs) still spread.
+**Reading the views.** WAVE_MENU 6 = where the charge is (greenyellow diverging ± at defect cores, neutral bulk). WAVE_MENU 7 = where circulation is (dark for a static defect; lights up where the director twists). Under **Evolve PDE** both evolve in real time — that is *not* a glitch, it is the dynamical field: the charge redistributes and the curl/B grows as the director twists (the circulation generated by the moving/oscillating defect). Pausing freezes them. **This holds with V on too:** `∇·n̂` and `∇×n̂` are *orientation* observables, and V (rotation-invariant, M5.6.5d) pins only the *amplitude* `Tr(M²)`, not the director orientation — so the charge/B views show the freely-evolving `clock_twist` (the QM/clock sector) regardless of V. To *see* V's confinement on screen, use the amplitude-based views (ENERGY Hamiltonian / Thermal Amp), which stay localized with V on while the orientation views (charge/B/glyphs) still spread.
 
 **⚠️ Sign caveat — `∇·n̂` is gauge-dependent for the apolar director.** The director is nematic (`n̂ ≡ −n̂`, an eigenvector has no head/tail), and `n̂ → −n̂` flips `∇·n̂ → −∇·n̂`. `eigen_decompose` tracks the eigenvector sign **temporally per voxel** (flip if `n̂·n̂_prev < 0`) from the seeded outward `r̂`, so a *static* defect shows a consistent, meaningful ± charge. But under Evolve-PDE the sign continuity is **not enforced spatially** — as neighbouring voxels rotate differently during the slosh, their sign conventions drift apart and `∇·n̂` picks up the mismatch as **spurious local +/− flips** (observed: a clean `+` hedgehog develops green/negative patches after ~35 s of evolution). So: the charge **magnitude / where splay concentrates** is meaningful under dynamics; the **local sign is not a robust observable**. The gauge-invariant, conserved charge is the **topological winding** (Brouwer degree, M5.1 `compute_winding_number`), which never flips. Options if a gauge-stable dynamic charge view is wanted: (a) show `|∇·n̂|` unsigned (loses ± distinction, fine for a single defect); (b) gauge-fix the sign by a defect-relative orientation (`n̂·r̂_defect > 0`); (c) point the "charge" view at the topological winding density. Interim: the signed view stays (best for static intuition), with this caveat.
 
@@ -297,15 +297,14 @@ This part organizes the full observable wishlist for the EM + thermal research i
 catalog: **the physical quantities to display, what each *is* in the substrate, and the render
 channel that conveys it.** It is the ground-work for the SABER/thermal experiments (9b) — the
 channels are how we will *read* thermal reality and *watch* modulation methods work in the
-simulator. Physics-framing only here (cardinal rule); device/engineering motivation stays in the
-private SABER repo.
+simulator. Physics-framing only here; device/engineering motivation stays in the SABER repo.
 
 ### 4.1 The observable catalog — what each quantity IS
 
 Everything visible derives from `M`'s **eigenframe** — the director `n̂` (principal eigenvector) +
 the δ-axis (middle eigenvector) + the deviation `M−D`. Two source families: **EM = orientation
 distortion of `n̂`** (tilts/gradients), **thermal = the clock's rotational state** (`(A, ω)` of the
-δ-twist). The director is the origin of both EM observables (`∇·n̂`, `∇×n̂`). **Status reflects the
+`clock_twist`). The director is the origin of both EM observables (`∇·n̂`, `∇×n̂`). **Status reflects the
 as-built stack through VIZ.4 (2026-05-31).** The 4 glyph states (UI checkboxes, §4.2): `0` Director,
 `1` Director + Delta, `2` Electric Field, `3` Magnetic Field; all glyphs **centered** on the voxel.
 
@@ -317,7 +316,7 @@ as-built stack through VIZ.4 (2026-05-31).** The 4 glyph states (UI checkboxes, 
 | **Charge density** | `∇·n̂` (director splay) — diverges at defect cores like Coulomb charge | signed scalar | `director_div_field` | ✅ live (WM6, greenyellow diverging) |
 | **Charge sign** | sign of `∇·n̂` (+ outward / − inward hedgehog) | sign | `director_div_field` sign | ⚠️ flips under Evolve-PDE → §4.4 fix (M5.8 winding density) |
 | **Magnetic field lines** | the curl vector `∇×n̂` — direction = circulation; handedness N→S | vector | `director_curl_field` (raw vector stored) | ✅ live — glyph state 3, centered+barbed; single **ORANGE** / gradient **bluered N/S** (radial `B·r̂` + γ-spread, §4.3) |
-| **Magnetic field strength** | `‖∇×n̂‖` (twist+bend circulation magnitude) — ≈0 for a static charge | scalar ≥0 | `director_curl_mag_field` | ✅ live (WM7) |
+| **Magnetic field strength** | `‖∇×n̂‖` (`frank_twist`+bend circulation magnitude) — ≈0 for a static charge | scalar ≥0 | `director_curl_mag_field` | ✅ live (WM7) |
 | **Magnetic moment μ** | net `∮ B` of the defect / its dipole axis — a single vector per defect | vector (per defect) | future: ∫ `director_curl_field`; **now: HARDCODED `DIPOLE_AXIS`** | 🔶 **HARDCODED placeholder** — VIZ.4 draws a YELLOW moment glyph but `m̂ = DIPOLE_AXIS = +ẑ` is a constant in `_viz_sample_dipole` (`update_moment_glyph`), **NOT computed from the field**. Real μ = compute from the actual circulating B (`m̂ ∝ ∫∇×n̂`) + auto-axis + **remove the hardcoded one** @ M5.8 (§4.5, roadmap 5f stage-2) |
 | **Thermal amplitude `A`** | `‖M−D‖_F` EMA = the clock's rotational **radius** (`≈δ/2`), grows with heat | scalar | `amp_local_emarms_am` | ✅ live (WM2, ironbow) |
 | **Thermal clock `ω`** | `‖Ṁ‖_F` EMA = the Zitterbewegung rate (director angular speed) | scalar | `freq_local_cross_rHz` | ✅ live (WM3, blueprint) |
@@ -332,7 +331,7 @@ as-built stack through VIZ.4 (2026-05-31).** The 4 glyph states (UI checkboxes, 
 
 This is the central thermal observable (and the M5.8 headline), so it gets an explicit
 "how-do-I-see-it" recipe. The clock = the director frame **twisting about the director `n̂`**
-(the principal/EM axis, eigenvalue `1`) — the twist generator `Gx` rotates the **`δ`–`0` plane**
+(the principal/EM axis, eigenvalue `1`) — the `clock_twist` generator `Gx` rotates the **`δ`–`0` plane**
 (the middle `director_mid` + null eigen-axes; `0c §L7` + `5a §7a`); its `ω` is the spin rate, its
 **radius** is the rotational amplitude `≈δ/2` (the thermal `A`).
 
@@ -344,19 +343,19 @@ This is the central thermal observable (and the M5.8 headline), so it gets an ex
 >
 > ⚠️ **Correction (Rodrigo 2026-05-30) — the director glyph does NOT show the clock spin.** Two
 > independent reasons: **(1)** the clock twists the secondary axes *around* `n̂`, so the director
-> `n̂` itself **stays put** (it's the axle, not the clock-hand — invariant under the twist).
+> `n̂` itself **stays put** (it's the axle, not the clock-hand — invariant under the `clock_twist`).
 > **(2)** Even if it rolled about its own axis, a single line segment looks *identical at every
 > roll angle* — a line has no feature to track roll, and the **barb shows head-vs-tail (direction
 > along the shaft), never roll-about-the-shaft**. So removing/keeping the arrowhead is irrelevant
 > to the spin. What you see sloshing on the director glyph under Evolve-PDE is the director
-> **tilting** (`n̂` changing *direction* — the EM/tilt sector), **not** the clock-twist. To *see*
+> **tilting** (`n̂` changing *direction* — the EM/tilt sector), **not** the `clock_twist`. To *see*
 > the spin you must render the **δ-axis** (`director_mid`) sweeping around `n̂`.
 
 Ways to watch the clock, corrected:
 
 | Want to see | Channel | What you watch | Status |
 | --- | --- | --- | --- |
-| **the spin** (the twist about `n̂`) | **the δ cross-bar in the "Director + Delta" glyph** — the **middle (δ) eigenvector** (`director_mid`), shown as the shorter CYAN arm of the ellipsoid-wireframe "+" | the δ-axis (`director_mid`) *sweeps around* the director `n̂` — would be the visible clock-hand if coherent. **In free 3D it tilts/disperses (M5.7.2), not coherently spins** — coherent spin needs M5.8/9b. Non-degenerate only on biaxial `diag(1,δ,0)`. | ✅ **DONE (VIZ.3, glyph state 1 "Director + Delta")** |
+| **the spin** (the `clock_twist` about `n̂`) | **the δ cross-bar in the "Director + Delta" glyph** — the **middle (δ) eigenvector** (`director_mid`), shown as the shorter CYAN arm of the ellipsoid-wireframe "+" | the δ-axis (`director_mid`) *sweeps around* the director `n̂` — would be the visible clock-hand if coherent. **In free 3D it tilts/disperses (M5.7.2), not coherently spins** — coherent spin needs M5.8/9b. Non-degenerate only on biaxial `diag(1,δ,0)`. | ✅ **DONE (VIZ.3, glyph state 1 "Director + Delta")** |
 | spin (alt, cheap) | **perpendicular tick** on the director glyph | add one short barb *perpendicular* to the shaft, oriented by the δ-axis — a mark whose angle tracks the roll. Cheapest "see the roll" hack. | 🚧 needs building |
 | **the rate `ω`** (how fast it ticks) | flux_mesh **WM3 "Thermal Clock"** (blueprint) | color = `‖Ṁ‖_F` EMA = angular speed; brighter = faster. *Measures* the rate (doesn't show rotation). | ✅ live (WM3) |
 | **the radius `A`** (rotational amplitude) | flux_mesh **WM2 "Thermal Amp"** (ironbow) | color = `‖M−D‖_F` EMA = how far the frame swings from vacuum = the `≈δ/2` radius; grows with heat. | ✅ live (WM2) |
@@ -364,7 +363,7 @@ Ways to watch the clock, corrected:
 | **the orbit traced** (optional) | granule **Zitterbewegung tracer** (§4.6) | a granule traces the **δ-axis tip's** orbit around `n̂` over time — makes the spin *visible as a path* | 🚧 9b candidate |
 
 **Key reading:** the **secondary-δ-axis glyph** is the only channel that *visually shows the spin*
-(the clock-hand sweeping around the director-axle); the director glyph shows tilt, not twist. Under
+(the clock-hand sweeping around the director-axle); the director glyph shows tilt, not `clock_twist`. Under
 **Evolve PDE**, WM2 (radius) and WM3 (rate) are the AM and FM channels — together they *are* the
 joint `(A, ω)` thermal state (heating pumps WM2/AM and/or shifts WM3/FM; M5.7.3 saw both respond).
 WM2/WM3 already exist; the δ cross-bar in the Director glyph (VIZ.3 ✅, the shorter CYAN arm of the

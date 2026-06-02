@@ -436,7 +436,7 @@ the 4-function form we've been solving.
 
 ### Parallel — SABER path stays unblocked
 
-Per cardinal rule: M5 is SABER's primary engineering substrate. With v7
+M5 is SABER's primary engineering substrate. With v7
 blocked on the ansatz question, M5 work proceeds in foreground. M5.4
 substrate migration is queued and not affected by M6 v7's status. The v6.6
 H_electron/Q = 1.7112 (0.84% off) result is already sufficient as the "M6

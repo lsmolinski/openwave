@@ -689,3 +689,46 @@ the sim runs in natural units. The clean test is the dimensionless self-consiste
 Hamiltonian), with the absolute Hz set by the Faber `r₀` scale-fix from M5.6.3
 (`r₀ = 2.2132 fm → 0.511 MeV`). So M5.8's frequency check overlaps the M5.9 mass-calibration
 handle: measure the ratio, let the absolute scale follow `r₀`.
+
+### 10c. Paper re-audit + Duda's list updates (2026-06-01)
+
+Re-read of the toy-model paper (arXiv:2501.04036) against the M5.8 plan, cross-checked with Duda's
+2026-06-01 models-of-particles posts. The plan covers the paper's spine faithfully (1+1D Eq.1–5 ✅
+M5.8.0; 4-index `F_μναβ` + Minkowski-`Γ₀` ✅ M5.8.2; electron hedgehog+twist+moment ✅ L4/L7/L8;
+`ω=2mc²/ℏ` ✅ M5.8.3). One **notable gap** + minor refinements + two list-update clarifications:
+
+- **🔶 GAP — the 2+1D pilot-wave intermediate (paper §III "further work").** The paper lays an
+  explicit dimensional ladder **1+1D → 2+1D → 3+1D**; our plan jumps 1D→3D, skipping 2+1D. In 2+1D
+  the intrinsic clock oscillation sources **coupled "pilot" waves**, which the paper proposes to use
+  to recreate the **hydrodynamic Casimir effect** + **walking-droplet** quantum analogs (interference,
+  tunneling, orbit quantization — Couder/Bush) with the external shaker *replaced by the defect's own
+  de Broglie clock*. **Reinforced directly by Duda 2026-06-01 email #1** (pilot waves, Casimir,
+  hydrodynamic analogs, "replace external shaker with electron de Broglie clock"). Value: a cheaper
+  2D stepping stone that would yield a spectacular validation — quantum phenomena emerging from
+  classical pilot waves. **Added as roadmap M5.8.6 (breadth/optional, not headline-gating).**
+- **Minor refinements (paper §III):** (a) the `ϕ_t ≠ 0` small-perturbation case (we use the static
+  `ϕ_t=0`, `ψ=ωt` ansatz) — a M5.8.0 robustness add-on; (b) **neutrino flavor oscillation as 3-mass
+  clock-*beating*** (`|ν_j(t)⟩ = e^{−iE_j t/ℏ}|ν_j(0)⟩` — the title's other half) as an explicit
+  M5.8.4/M5.9 demo, not just an entry in the mass→ω table; (c) the paper allows **sine-Gordon** `V`
+  as an alternative to `(1−φ²)²` — already what 9b.1 uses, so a free cross-link.
+- **Duda email #1 — `E(ω)` clarifications (the same double-well plot we verified in M5.8.0a):**
+  - **Bounded negative energy — mass cannot go below zero.** The negative-`αR²` dip that propels the
+    clock is bounded: `E*` stays **positive**. If it went negative there would be *catastrophic
+    particle creation* (vacuum runaway). This is an independent physics guardrail on the
+    negative-energy mechanism — and it is the physics reason behind the SABER no-free-energy guard
+    (`SABER 3_HYPOTHESIS §7.1`): the floor is lossless but **strictly positive**, never extractable to zero.
+  - **Stabilization (topological) vs frequency-selection (maybe additional).** Duda: the *particle
+    stability* is topological (Gauss law counts winding); the *clock-frequency selection* might be a
+    **separate, additional** mechanism — he floats **stochastic resonance** (noise + a nonlinear well
+    → a preferred resonant frequency). New candidate mechanism for *why* the `E(ω)` minimum locks at
+    the de Broglie `ω`; worth probing at M5.8.3 (does the measured `ω` need noise to lock, or does the
+    well alone select it?). Matches our split: topology = stability (L4), clock_twist = frequency (L7).
+  - **Continuous, not bistable.** Local fields perturb the `E(ω)` minimum **slightly and
+    continuously** — *not* into "an electron with 2 discrete mass states." Confirms our single-
+    continuously-perturbed-clock framing (we never posited a discrete two-mass electron).
+- **Duda email #3 — external convergence (Sabine / quadratic gravity).** Mainstream work that adding
+  **`R²` (squared-curvature) terms** to the gravitational Lagrangian smooths Big-Bang singularities
+  arrives at the *same mathematical structure* our action is built on (Skyrme `F²`, Faber `Λ`, the
+  toy-model `−αR²+βR⁴`). Encouraging convergence: gravity theory reaches curvature-squared from the
+  *gravity* side; we have it from the *particle/LdG* side (the 4D `g`-axis, `4b §4.7`). Not an action
+  item — a confidence signal that squared-curvature Lagrangians are a serious, fertile structure.
