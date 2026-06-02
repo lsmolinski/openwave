@@ -53,11 +53,13 @@ them.
 > failed → M5.4 fixed); the **vacuum / ground state** (uniform `M=D`, no defect); the "biaxial top
 > at each voxel" picture. *(The full decode of `M` — eigenvalue shape, the physics map — is L2.)*
 
-### The one-sentence version
+### L1 The one-sentence version
 
 The M5 universe is **one field**: at every voxel of a 3D grid sits a little **oriented shape**
 (a symmetric 3×3 matrix `M`), and the simulation is just those shapes pushing on their neighbors
-and changing over time. Particles, charge, forces, the clock are *patterns* in this field — not
+and changing over time.
+
+> Particles, charge, forces, the clock are *PATTERNS* in this field — not
 separate ingredients.
 
 ### What lives at each voxel — a "biaxial top"
@@ -93,7 +95,9 @@ granule/Planck substrate is *aligned with* OpenWave's wave-structure-of-matter r
 model, Yee/M3) but is an **open ontological hypothesis**, not something M5 asserts — M5 evolves `M`
 as its fundamental *dynamical* field (no sub-voxel granule sim). Tractability forces this level:
 voxel `~10⁻¹⁸ m` vs Planck `~1.6×10⁻³⁵ m` → resolving Planck *inside* a voxel needs `~10⁵¹`
-sub-cells, impossible. The order parameter is the coarsest description that still carries the
+sub-cells, impossible.
+
+> The order parameter is the coarsest description that still carries the
 topology / charge / clock physics.
 
 ### Why a matrix and not an arrow (the M5.2 → M5.4 story)
@@ -106,11 +110,16 @@ negative, `medium.py:16`). An arrow can't carry:
 | --- | --- | --- |
 | marks only **one** axis | three lepton families = hedgehogs of **three distinguishable axes** | `M` has 3 eigen-axes with distinct eigenvalues |
 | is **polar** (head ≠ tail) | a nematic director is **apolar**: `n̂ ≡ −n̂` | `M = n̂⊗n̂` is blind to the sign of `n̂` |
-| can't carry an internal **twist** | the QM clock + KG mass come from a *twist of the frame* | `O` is a full frame → it can twist |
+| can't carry an internal **twist** | the QM clock + KG mass come from a `clock_twist` of the frame (rotation about `n̂`, in time) | `O` is a full frame → it can carry that DoF |
 
 So in M5.4 the substrate became the matrix `M` — a real `ti.Matrix.field(3,3)` triple buffer
 `M_prev_am, M_am, M_new_am` (`medium.py:169-171`). Stored as the full 9 numbers, but only **6 are
 independent** (`M` is symmetric, `Mᵀ=M`).
+
+> **One word, two jobs (named in L2).** "Twist" collides, so the repo splits it into atomic tokens:
+> `frank_twist` = how the director twists *in space* (`n̂·(∇×n̂)` → magnetism, L8) vs `clock_twist` =
+> the frame's rotation *about* `n̂` *in time* (the QM phase / KG mass / the de Broglie clock, L7). The
+> DoF L1 keeps pointing at — the one the director throws away (Q8) — is the **`clock_twist`** seed.
 
 ### The vacuum — the boring ground state
 
@@ -125,34 +134,34 @@ grain; a particle = a permanent swirl the elasticity can't smooth out.*
 | # | Question | Answer (short) | Full in |
 | --- | --- | --- | --- |
 | 1 | why is a symmetric matrix an ellipsoid? | spectral theorem: `M=O·D·Oᵀ` = rotate → stretch by `D` → rotate back; applied to a unit sphere it gives an ellipsoid with **perpendicular** axes (symmetry ⟺ real eigenvalues + orthogonal axes). A non-symmetric matrix shears it into an axis-less blob. | L2 |
-| 2 | `(g,1,δ)` biaxial vs `(1,δ,δ)` uniaxial? | the 3 entries are the axis-lengths: `g`≫1 (gravity/boost), `1` (EM/tilt, reference), `δ`~ℏ (QM/twist). **Biaxial** = all 3 distinct (triaxial, like a brick — 3 distinguishable axes). **Uniaxial** = 2 equal → degenerate spheroid (rugby ball — one special axis). M5.4 used uniaxial `(1,δ,δ)` because Coulomb only needs one axis; biaxial is needed for the twist/clock. | L2 (labels), L4 |
+| 2 | `(g,1,δ)` biaxial vs `(1,δ,δ)` uniaxial? | the 3 entries are the axis-lengths: `g`≫1 (gravity/boost), `1` (EM/tilt, reference), `δ`~ℏ (QM/twist). **Biaxial** = all 3 distinct (triaxial, like a brick — 3 distinguishable axes). **Uniaxial** = 2 equal → degenerate spheroid (rugby ball — one special axis). M5.4 used uniaxial `(1,δ,δ)` because Coulomb only needs one axis; biaxial is needed for the `clock_twist`. | L2 (labels), L4 |
 | 3 | where are `director_nhat` / `eigenvalues`? | stored at `medium.py:179-180`; **computed each frame** from `M_am` by the Cardano `eigen_decompose` in `engine2_pde.py`. Derived caches — `M` is the truth, these are read back out. | L2 |
 | 4 | does the medium have an elastic force toward a ground state? | yes — orientation gradients cost energy (**Frank elastic**), giving a restoring force `F=−∇E` that relaxes toward the uniform vacuum. The drama: topology can forbid full relaxation → it oscillates. | L5 (energy), L7 (clock) |
 | 5 | what is a "biaxial top"? | a rigid body by its 3 principal axes: spherical (3 equal), uniaxial/symmetric (2 equal — pencil/football), **biaxial** (all 3 different — book/phone, a full 3-axis orientation). | L1 |
 | 6 | eigenvalues = shape, eigenvectors = orientation? how many? | yes: **3 eigenvalues** = shape (`D`), **3 perpendicular eigenvectors** = orientation (the columns of `O`). 6 independent numbers = **3 shape + 3 rotation angles**. | L2 |
 | 7 | apolar director, but we draw a half-arrow? | the half-arrow is a **rendering aid, not physics** — the field is apolar (`n̂≡−n̂`, eigensolver sign arbitrary). The barb helps the eye follow orientation but lets neighbors disagree on sign → the gauge sign-flip artifact. | L9 |
-| 8 | `director_nhat` is only the major axis — there's a 3rd orientation DoF? | **exactly.** `O∈SO(3)` has 3 rotational DoF; a unit vector `n̂` has 2 — the **missing 1 is rotation about `n̂` = the twist**. Meaningless for uniaxial (degenerate), **physical for biaxial** — and that twist DoF is where the QM phase / KG mass / the clock live. The director throws away exactly the DoF that becomes the de Broglie clock. | L2 (twist), L7 (clock) |
+| 8 | `director_nhat` is only the major axis — there's a 3rd orientation DoF? | **exactly.** `O∈SO(3)` has 3 rotational DoF; a unit vector `n̂` has 2 — the **missing 1 is rotation about `n̂` = the `clock_twist` DoF**. Meaningless for uniaxial (degenerate), **physical for biaxial** — and that `clock_twist` DoF is where the QM phase / KG mass / the clock live. The director throws away exactly the DoF that becomes the de Broglie clock. | L2 (the DoF), L7 (clock) |
 | 9 | what reality do the ellipsoids represent — granules at Planck scale? | `M` is an **order parameter** = coarse-grained average. A granule's high-frequency **orbit** has covariance `⟨(x−x̄)(x−x̄)ᵀ⟩ = O·D·Oᵀ` (orbit variances → eigenvalues = shape; orbit orientation → eigenvectors), so sub-voxel motion presents as a static ellipsoid. A finer granule/Planck substrate is *aligned with* OpenWave's roots but an **open hypothesis** — M5 evolves `M` directly. Tractability: voxel `~10⁻¹⁸ m` vs Planck `~1.6×10⁻³⁵ m` (`~10⁵¹` sub-cells to resolve). | L1 above, L2 (M4 ellipse), L7 |
 | 10 | how do the eigenvalues map to the ellipsoid axes? | eigenvalue = axis length. Live 3D biaxial `diag(1, δ, 0)`: `1`→longest `a` (**`director n̂`**, EM axis), `δ`→middle `b` (QM, `~ℏ`), `0`→flat `c` (null → 4D clock). `O(x)` rotates the whole ellipsoid per voxel. (`medium.py:19` writes the general `diag(g,1,δ)`; `g`=gravity is the 4D addition.) See the figure in L2. | L2 (physics labels) |
 | 11 | if `D` is frozen/global, why store + recompute `WaveField.eigenvalues` each frame? why `g,1,δ` not `a,b,c`? | the global `D` is the *ideal vacuum* spectrum (a constant — **not** stored per voxel). `WaveField.eigenvalues` stores the **local** eigenvalues of the actual `M(x,t)`, which **deviate** from `D`: (a) cores **melt** to isotropic `(1+δ)/3` (Faber regularization, `engine1_seeds.py:500`), (b) dynamics breathe the amplitude `Tr(M²)`. Recomputed every frame because the **director** (eigenvectors, via `O(x)`) changes every step — `eigen_decompose` returns eigenvectors *and* eigenvalues together. Symbols `g/1/δ/0` encode physics (gravity / EM-unity / QM`~ℏ` / null), not generic geometry — `a/b/c` would lose the hierarchy `g≫1≫δ~ℏ>0`. | L2 (map), L5 (V min) |
-| 12 | does `δ ~ ℏ` corroborate the Planck-granule orbit hypothesis? | **intriguing rhyme, not corroboration.** Solid part: `δ` is the twist eigenvalue carrying the QM phase `exp(iEt/ℏ)` → KG mass (M5.6, verified). Speculative part: reading eigenvalues as orbit-variances (Q9) puts `ℏ` in the smallest orbital extent — but `ℏ` is an *action* and `δ` a *dimensionless ratio* (a role-identification in natural units), and the granule/Planck layer is itself unproven. Hold as a research thread, not evidence. | L7 (clock), L1/Q9 (granule) |
+| 12 | does `δ ~ ℏ` corroborate the Planck-granule orbit hypothesis? | **intriguing rhyme, not corroboration.** Solid part: `δ` is the `clock_twist` eigenvalue carrying the QM phase `exp(iEt/ℏ)` → KG mass (M5.6, verified). Speculative part: reading eigenvalues as orbit-variances (Q9) puts `ℏ` in the smallest orbital extent — but `ℏ` is an *action* and `δ` a *dimensionless ratio* (a role-identification in natural units), and the granule/Planck layer is itself unproven. Hold as a research thread, not evidence. | L7 (clock), L1/Q9 (granule) |
 
-### Anchor in the live engine
+### L1 Anchors
 
-| In `medium.py` | What it is |
+| Anchor | What it is |
 | --- | --- |
-| `M_am`, `M_prev_am`, `M_new_am` (`:169-171`) | the matrix field `M` at t, t−dt, t+dt — the substrate |
+| `M_am`, `M_prev_am`, `M_new_am` (`medium.py:169-171`) | the matrix field `M` at t, t−dt, t+dt — the substrate |
 | `ti.Matrix.field(3,3,...)` shape `grid_size` | one 3×3 matrix per voxel on the cell-centered cubic grid |
-| `D = diag(g,1,δ,0)`, `LC_DELTA=0.5` (`:19,:41`) | frozen eigenvalue spectrum; M5.4 uses uniaxial placeholder `(1,δ,δ)` |
-| `director_nhat`, `eigenvalues` (`:179-180`) | *derived* each frame from `M` via `eigen_decompose` (Lesson 2) |
-| `psi_am` (`:153`) | the **old** Vector(3) arrow — legacy, being retired |
+| `D = diag(g,1,δ,0)`, `LC_DELTA=0.5` (`medium.py:19,:41`) | frozen eigenvalue spectrum; M5.4 uses uniaxial placeholder `(1,δ,δ)` |
+| `director_nhat`, `eigenvalues` (`medium.py:179-180`) | *derived* each frame from `M` via `eigen_decompose` (Lesson 2) |
+| `psi_am` (`medium.py:153`) | the **old** Vector(3) arrow — legacy, being retired |
+| `4a §3/§5` | rendering + substrate background notes |
+| M5.4 migration history | the Vector(3) → matrix migration record |
 
 **Takeaway:** the medium is a 3D grid of oriented ellipsoids (`M`); the vacuum is all of them
 aligned; we use a matrix instead of an arrow because the physics needs shape + a twistable frame +
 apolarity, which an arrow can't carry. The leftover "`clock_twist` about `n̂`" DoF (Q8) is the seed of the
 clock. *(Next, L2: decode `M` fully — what the eigenvalues are, and what moving each axis means.)*
-
-**Anchors:** `4a §3/§5`, `medium.py`, M5.4 migration history.
 
 ---
 
@@ -166,6 +175,15 @@ clock. *(Next, L2: decode `M` fully — what the eigenvalues are, and what movin
 > plus grad/div/curl/laplacian (div=splay/charge, curl=circulation/B, laplacian=diffusion/wave);
 > *the M4 6-phasor-ellipse → ellipsoid bridge (major axis / orbital normal / handedness=chirality);
 > natural units & δ↔ℏ*. *(Merges old L2 + L3: the object and what its parts mean are one arc.)*
+
+### L2 The one-sentence version
+
+L1 said *what* sits at each voxel (a biaxial ellipsoid `M`); L2 reads its **personality**. The
+matrix decodes into **shape** (`D`, the eigenvalues), **orientation** (`O`, the eigenvectors → the
+director `n̂`), and one **hidden** degree of freedom (the `clock_twist` about `n̂`). The payoff: the
+three axes are *not* interchangeable — **each eigenvalue is a different piece of physics** (`1`→EM,
+`δ`→QM, `0`→clock), and a **force** is read off not from the frame itself but from how the frame
+*curves* across neighbours.
 
 ### The ellipsoid axes — how the eigenvalues set the shape
 
@@ -197,124 +215,187 @@ above is drawn axis-aligned (`O = identity`):
 
 ### The M4 ellipse → M5 ellipsoid bridge (+ chirality, δ↔ℏ)
 
-> **Seed intuition (to develop).** `M = O·D·Oᵀ` is literally an *ellipsoid at each voxel* — `D =
-> diag(λ₁,λ₂,λ₃)` are the semi-axis lengths (the **shape**), `O` is orthogonal (the
-> **orientation/rotation**). This is the 3D matrix generalization of M4's **6-phasor ellipse** (`R,
-> Φ` per axis). An ellipse/ellipsoid carries orientation *for free*: the **major axis** = one
-> direction in space, the **normal to the orbital plane** = another, and the **handedness** (CW vs
-> CCW traversal) = a ± sign = **chirality** (the seed for L10). So one symmetric matrix encodes
-> direction + shape + chirality together. *Natural units:* `δ ↔ ℏ` is a role-identification (the
-> QM/twist eigenvalue plays the action quantum in the dimensionless scaling), not a dimensional
-> equality — see L1 Q12.
+`M = O·D·Oᵀ` is literally an **ellipsoid at each voxel**: `D = diag(λ₁,λ₂,λ₃)` are the semi-axis
+lengths (the **shape**) and `O` is the orthogonal rotation (the **orientation**). This is the 3D
+matrix generalization of M4's **6-phasor ellipse** (an `(R, Φ)` pair per axis) — and the bridge is
+the *second moment*: a granule tracing an elliptical orbit has a covariance matrix that **is**
+`O·D·Oᵀ` (L1 Q9). M4's orbiting ellipse becomes M5's ellipsoid.
 
-### The eigenvalue→physics map + the curvature operators
+One symmetric matrix carries **three things at once, for free**:
 
-> **Covers (from the merged old L3):** Q4 (how force fields are encoded) — the eigenvalue→physics
-> map + *the yaw/pitch/roll framing of the three rotation generators; the curvature operators
-> `A_μ=[M,∂_μM]`, `F_μν=[M_μ,M_ν]` — a force field is a **curvature** (gradient) of the frame, not
-> the frame itself; the vector operators (grad / divergence / curl / laplacian) and what each means
-> physically (div = splay/charge, curl = circulation/B, laplacian = diffusion/wave)*.
->
-> The eigenvalue→physics map. Each axis = a kind of local orientation change: tilt→EM, twist→QM(ℏ),
-> boost→gravity (L3, 4D), null→clock. The key idea: a force field is a curvature (gradient) of the
-> frame, not the frame itself.
->
-> **Seed (from L1 Q&A — `clock_twist` vs tilt on the director):** the generators act on the *same* director
-> `n̂` (the principal axis, eigenvalue `1`) in orthogonal ways → different physics. **`clock_twist`** = rotate
-> the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) *about* `n̂` (`n̂` stays put; generator
-> `Gx`) → **QM / the clock** (L7). **Tilt** = rotate `n̂` *itself* toward another axis (its direction
-> changes; generators `Gy,Gz`) → **EM**, whose *field* is the spatial gradient of those tilts
-> (`∇·n̂`=charge, `∇×n̂`=B — L8). **Boost** (4D) → gravity (L3); the **null** (`0`) axis → the clock
-> direction. Mnemonic: *`clock_twist` about it = QM, tilt of it = EM.*
->
-> **★ The three Frank distortion modes — what `∇·n̂` and `∇×n̂` actually measure (Rodrigo Q&A
-> 2026-06-01).** "Tilt of `n̂`" is the umbrella; in LC theory it splits into **three** named spatial
-> distortion modes, each a specific differential operator on `n̂`:
->
-> 📛 **NAMING CONVENTION (repo-wide, to kill the word collision).** The word "twist" means two
-> different things in this model, so we **always** use the disambiguated atomic tokens — never bare
-> "twist" — across all docs:
+| Carried for free | Geometric reading | Lands in |
+| --- | --- | --- |
+| **direction** | the major axis (`n̂`, the principal eigenvector) | the EM axis (below) |
+| **shape** | the three semi-axis lengths (`D`) | the eigenvalue→physics map |
+| **chirality** | the handedness of traversal (CW vs CCW = a ± sign) | L10 (matter/antimatter, neutrino helicity) |
+
+*Natural units:* `δ ↔ ℏ` is a **role-identification**, not a dimensional equality — the QM/twist
+eigenvalue *plays the part of* the action quantum in the dimensionless scaling (L1 Q12). Hold it as a
+rhyme, not a measurement.
+
+### The eigenvalue→physics map
+
+Here is the heart of L2: each ellipsoid axis hosts a **different kind of local orientation change**,
+and each kind is a **different piece of physics**.
+
+| Axis (eigenvalue) | Orientation change it hosts | Physics |
+| --- | --- | --- |
+| `g` (4D) | **boost** — rotation into the time axis | **gravity** (L3) |
+| `1` (long, `n̂`) | **tilt** — `n̂` swings toward another axis | **EM** (its spatial gradient = the E/B field) |
+| `δ` (~ℏ) | **`clock_twist`** — the δ-axis spins about a fixed `n̂` | **QM / the clock** (L7) |
+| `0` (null) | — | the **null → clock direction** (L7) |
+
+The key idea, which the rest of the lesson unpacks: **a force field is a curvature (gradient) of the
+frame, not the frame itself.**
+
+#### `clock_twist` vs tilt — same director, orthogonal operations
+
+The three rotation generators of the frame `O` (the `so(3)` generators — roughly **yaw / pitch /
+roll**) all act on the *same* principal director `n̂`, but in orthogonal ways → different physics:
+
+| Operation | Generator | What moves | Physics |
+| --- | --- | --- | --- |
+| **boost** | (4D generator) | rotation of `n̂` into the time axis | **gravity** (L3) |
+| **tilt** | `Gy, Gz` (pitch / yaw) | `n̂` *itself* swings toward another axis | **EM** — the *field* is `∇` of the tilts (`∇·n̂`=charge, `∇×n̂`=B, L8) |
+| **`clock_twist`** | `Gx` (roll, about `n̂`) | the δ-axis (`director_mid`, λ=`δ`) and null axis spin *about* `n̂`; `n̂` itself stays put | **QM / the clock** (L7) |
+
+Roll is exactly the DoF the director throws away (L1 Q8) → it becomes the clock. Pitch/yaw move the
+director visibly → their spatial gradient is the EM field. **Mnemonic: `clock_twist` *about* `n̂` =
+QM; *tilt of* `n̂` = EM.**
+
+### Force is a curvature of the frame — the operators
+
+The single most important move in L2: **a force is not the frame — it's the *curvature* of the
+frame**, i.e. how the orientation `O(x)` changes from voxel to voxel. Two operator layers make this
+precise (Duda Eq.18-20, `5a §1-2`; implemented in `engine2_pde.py`):
+
+| Operator | Name | Reads as |
+| --- | --- | --- |
+| `A_μ = [M, ∂_μ M]` | the **connection** — how the frame is "carried" one step along direction `μ` | the gauge potential, like `A` in EM |
+| `F_μν = [M_μ, M_ν]` | the **curvature** — the connection's failure to commute across two directions | the **field strength**, like `F = dA` — the actual force |
+
+The picture: `A_μ` says *how the ellipsoid is rotated relative to its neighbour* as you step along
+`μ`; `F_μν` measures whether going `μ`-then-`ν` differs from `ν`-then-`μ`, and **that mismatch is the
+force**. Flat frame (vacuum) → `F = 0` → no force; a defect bends the frame → `F ≠ 0` → a force field
+emerges.
+
+> *Force is geometry's curvature, not geometry itself.*
+
+On the director `n̂` specifically, the everyday vector operators name the pieces:
+
+| Operator on `n̂` | LC name | Physics |
+| --- | --- | --- |
+| `∇·n̂` | **splay** (divergence) | **electric charge** |
+| `∇×n̂` | **curl** (= `frank_twist` + bend) | **magnetic** |
+| `∇²n̂` | **laplacian** | diffusion / the wave operator in the EOM (L6) |
+
+The full gradient `∇n̂` (the tilt tensor) splits into the named modes — next.
+
+### The three Frank distortion modes — what `∇·n̂` and `∇×n̂` measure
+
+"Tilt of `n̂`" is an umbrella; LC theory splits it into **three named spatial distortion modes**,
+each a specific differential operator on `n̂`.
+
+> 📛 **NAMING CONVENTION (repo-wide).** The word "twist" means two different things, so we **always**
+> use the disambiguated atomic tokens — never bare "twist":
 >
 > - **`frank_twist`** — the Frank elastic *spatial* distortion mode `n̂·(∇×n̂)` (part of `∇×n̂`, magnetic).
 > - **`clock_twist`** — the QM/Zitterbewegung rotation of the δ-axis about a fixed `n̂` *in time* (L7).
 >
 > ("Frank" stays capitalized in generic phrases — "Frank elastic energy", "the three Frank modes" —
 > after Frank, the LC theorist; the *mode token* is `frank_twist`.)
->
-> | Tilt Modes | Operator | Picture | EM channel |
-> | --- | --- | --- | --- |
-> | **splay** | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
-> | **`frank_twist`** | `n̂·(∇×n̂)` — curl component **parallel** to `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
-> | **bend** | `n̂×(∇×n̂)` — curl component **perpendicular** to `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
->
-> So: **`∇·n̂` (splay) = the electric channel**; **`∇×n̂` (curl) = magnetic, and it carries TWO modes
-> together — `frank_twist` + bend** (`‖∇×n̂‖² = frank_twist² + ‖bend‖²`). "Splay" and "director
-> divergence" are the **same quantity** `∇·n̂` — splay is the LC-native name, divergence the math name.
-> Splay is *one* mode of tilt (not all of tilt): splay + `frank_twist` + bend together *are* the full
-> spatial tilt of `n̂`, i.e. the whole EM sector.
->
-> **⚠️ The collision the convention fixes — `frank_twist` vs `clock_twist` are different physics.**
->
-> | | **`frank_twist`** (in `∇×n̂`, EM) | **`clock_twist`** (QM / L7) |
-> | --- | --- | --- |
-> | What rotates | **`n̂` itself**, as you move through *space* | the **δ-axis** about a *fixed* `n̂`, in *time* |
-> | Operation | a spatial gradient of `n̂` | the internal-frame DoF `n̂` throws away (L1 Q8) |
-> | Sector | **magnetic** (part of the curl) | **QM / the clock** |
-> | Towel image | ✅ yes - wringing a towel — the *fabric line* rotates along its length | ✗ no - the clock is the towel's *threads* spinning in place about the towel's own line, frozen in space |
->
-> They are NOT the same operation — they just shared the unlucky word "twist" (hence the convention
-> above). But they're **causally linked**: a static hedgehog is radial ⇒ `∇×n̂ ≈ 0` ⇒ no magnetic
-> field. When the **`clock_twist`** (QM, δ-axis) spins — dynamic, 4D/M5.8 — it generates a **magnetic
-> moment**, which *produces* a circulating B ⇒ now `∇×n̂ ≠ 0`. So **`clock_twist` (cause) → magnetic
-> circulation (effect)** — the L8 magnetic-moment story.
->
-> **What's visible in the director-glyph lines (Taichi `scene.lines`):**
->
-> ⚠️ **A single glyph is a STRAIGHT tangent segment — it never curves (Rodrigo Q 2026-06-01).** Each
-> line shows `n̂` at *one* voxel. Bend / `frank_twist` is a property of the field *across neighbours*: you read
-> it as the **pattern** of many straight glyphs whose directions progressively rotate — like iron
-> filings around a magnet (each filing straight, the *arrangement* curves). The "curve" is the
-> imaginary **field line** threading through all the glyph directions; each glyph is a straight
-> tangent to it. So below, "lines fan / sweep / rotate" = the *pattern*, never an individual line
-> bending.
->
-> | Distortion | Seen in the director-glyph *pattern*? | Present in the static hedgehog? |
-> | --- | --- | --- |
-> | **splay** | ✅ lines point radially (starburst) | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
-> | **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
-> | **`frank_twist`** | ✅ line directions rotate along an axis (helical/barber-pole) *(when present)* | ❌ zero |
-> | **`clock_twist` (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
->
-> The **most direct** read of bend + `frank_twist` is the **magnetic-field glyph (state 3)**: it draws `∇×n̂`
-> as its own arrow, so circulation appearing *there* is the direct signal that bend + `frank_twist` developed —
-> spotting it in the director-line *pattern* is the emergent-by-eye version of the same fact.
-> *(Caveat: under Evolve-PDE some director-glyph motion is the **apolar gauge sign-flip** — 180°
-> flips, an artifact, not real bend; `4b §4.4`. Real reorientation + gauge-flip are mixed in the view.)*
->
-> **★ Why you see fanning but NOT bend/`frank_twist` (Rodrigo observed 2026-06-01) — the glyph isn't
-> failing; the config has none.** A static hedgehog is `n̂ = r̂` (radial), and a radial field has
-> `∇×r̂ = 0` **exactly** — so it is **pure splay, zero bend, zero `frank_twist`**. There is literally
-> nothing for the director lines to show *but* fanning. (This is the *same fact* as "a static charge
-> has `∇×n̂≈0` → no magnetic field" — the dark magnetic channel and the no-visible-bend are one and
-> the same thing.) To actually *see* bend or `frank_twist` you need a config that **contains** them:
->
-> | To see… | Need a config with… | Candidate |
-> | --- | --- | --- |
-> | **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
-> | **`frank_twist`** | `n̂` helically rotating along an axis | a vortex / cholesteric seed; a twisting defect (M5.8) |
->
-> So the circulation you *do* see on the magnetic-field glyphs today is either the **VIZ.4 hardcoded
-> dipole placeholder** or curl that grows as the field sloshes under Evolve-PDE — *not* the static
-> seed (which is curl-free).
->
-> 🚧 **Future render idea (logged):** we compute the full `∇×n̂` (WM7). To *see* `frank_twist` vs bend
+
+| Frank mode | Operator | Picture | EM channel |
+| --- | --- | --- | --- |
+| **splay** | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
+| **`frank_twist`** | `n̂·(∇×n̂)` — curl component **∥** `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
+| **bend** | `n̂×(∇×n̂)` — curl component **⊥** `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
+
+So **`∇·n̂` (splay) = the electric channel**, and **`∇×n̂` (curl) = magnetic, carrying two modes at
+once — `frank_twist` + bend** (`‖∇×n̂‖² = frank_twist² + ‖bend‖²`). "Splay" and "director divergence"
+are the **same quantity** `∇·n̂` (splay = LC name, divergence = math name). Splay + `frank_twist` +
+bend together *are* the full spatial tilt of `n̂` — the whole EM sector.
+
+#### `frank_twist` vs `clock_twist` — the collision the convention fixes
+
+These are **different physics** that happen to share the unlucky word "twist":
+
+| | **`frank_twist`** (in `∇×n̂`, EM) | **`clock_twist`** (QM / L7) |
+| --- | --- | --- |
+| What rotates | **`n̂` itself**, as you move through *space* | the **δ-axis** about a *fixed* `n̂`, in *time* |
+| Operation | a spatial gradient of `n̂` | the internal-frame DoF `n̂` throws away (L1 Q8) |
+| Sector | **magnetic** (part of the curl) | **QM / the clock** |
+| Towel image | ✅ wringing a towel — the *fabric line* rotates along its length | ✗ the towel's *threads* spinning in place about its own line, frozen in space |
+
+They are NOT the same operation — but they are **causally linked**: a static hedgehog is radial ⇒
+`∇×n̂ ≈ 0` ⇒ no magnetic field. When the `clock_twist` (QM, δ-axis) spins — dynamic, 4D/M5.8 — it
+generates a **magnetic moment**, which *produces* a circulating B ⇒ now `∇×n̂ ≠ 0`. So **`clock_twist`
+(cause) → magnetic circulation (effect)** — the L8 magnetic-moment story.
+
+#### Seeing it in the director glyphs
+
+> ⚠️ **A single glyph is a STRAIGHT tangent — it never curves.** Each line shows `n̂` at *one* voxel.
+> Bend / `frank_twist` is a property of the field *across neighbours*: you read it as the **pattern**
+> of many straight glyphs whose directions progressively rotate — iron filings around a magnet (each
+> filing straight, the *arrangement* curves). "Lines fan / sweep / rotate" always means the *pattern*,
+> never one line bending.
+
+| Distortion | Seen in the director-glyph *pattern*? | In the static hedgehog? |
+| --- | --- | --- |
+| **splay** | ✅ lines point radially (starburst) | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
+| **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
+| **`frank_twist`** | ✅ line directions rotate along an axis (helical / barber-pole) *(when present)* | ❌ zero |
+| **`clock_twist` (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
+
+The **most direct** read of bend + `frank_twist` is the **magnetic-field glyph (state 3)**: it draws
+`∇×n̂` as its own arrow, so circulation appearing *there* is the direct signal those modes developed —
+spotting it in the director-line *pattern* is the emergent-by-eye version of the same fact. *(Caveat:
+under Evolve-PDE some director-glyph motion is the **apolar gauge sign-flip** — a 180° artifact, not
+real bend; `4b §4.4`. Real reorientation and gauge-flip are mixed in the view.)*
+
+**Why you see fanning but not bend/`frank_twist`** — the glyph isn't failing; the config has none. A
+static hedgehog is `n̂ = r̂` (radial), and a radial field has `∇×r̂ = 0` **exactly** → **pure splay,
+zero bend, zero `frank_twist`**. There is nothing for the director lines to show *but* fanning. (Same
+fact as "a static charge has `∇×n̂ ≈ 0` → no magnetic field" — the dark magnetic channel and the
+no-visible-bend are one and the same.) To actually *see* the other modes you need a config that
+**contains** them:
+
+| To see… | Need a config with… | Candidate |
+| --- | --- | --- |
+| **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
+| **`frank_twist`** | `n̂` helically rotating along an axis | a vortex / cholesteric seed; a twisting defect (M5.8) |
+
+So the circulation you *do* see on the magnetic glyphs today is either the **VIZ.4 hardcoded dipole
+placeholder** or curl that grows as the field sloshes — *not* the static seed (which is curl-free).
+
+> 🚧 **Future render idea (logged).** We compute the full `∇×n̂` (WM7). To *see* `frank_twist` vs bend
 > independently, split the curl into the **`frank_twist` scalar** `n̂·(∇×n̂)` and the **bend vector**
 > `n̂×(∇×n̂)` as separate channels. Not needed now — noted for when the magnetic sector wants finer
-> resolution (cf. `4b §4.7` deferred-viz spirit).
+> resolution (`4b §4.7` deferred-viz spirit).
 
-(to be filled during the session)
+### Q&A / clarifications (2026-06-01)
 
-**Anchors:** `medium.py` (M storage), `engine2_pde.py` (Cardano eigensolver + operators), `4a §5/§6/§8`, `5a §1-2` (Eq.18-20), M4 6-phasor model, `1b`.
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | is "director splay `∇·n̂`" the same as director divergence? | **yes — same quantity.** "Splay" is the LC-native name, "divergence" the math name. It's the electric / charge channel. | above |
+| 2 | does `∇×n̂` measure the director "bending"? | partly — `∇×n̂` (curl) carries **two** modes: `frank_twist` (`n̂·(∇×n̂)`, ∥) + **bend** (`n̂×(∇×n̂)`, ⊥). Both are the magnetic channel; bend is the curving, `frank_twist` the helical rotation. | above |
+| 3 | so the magnetic field has two components — bend + `frank_twist`? | yes: `‖∇×n̂‖² = frank_twist² + ‖bend‖²`. Both feed the magnetic sector. | above, L8 |
+| 4 | is splay the same as director "tilt"? | splay is *one mode* of tilt, not all of it. Full tilt of `n̂` = splay + `frank_twist` + bend (the whole EM sector). | above |
+| 5 | when I Evolve-PDE, should I *see* the director lines bend? | only if the config contains bend. A static hedgehog is pure splay (`∇×r̂=0`) → you see fanning, not bend. And a single glyph is always a straight tangent — bend lives in the *pattern*. | above |
+| 6 | where's the `clock_twist` in the glyphs? | the director is **blind** to it (thrown-away DoF) — that's why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1). | above |
+| 7 | why is a force a "curvature" and not the frame itself? | the frame `O(x)` is just orientation; the **force** is `F_μν=[M_μ,M_ν]`, the *mismatch* when you transport the frame around a loop. Flat frame → no force; bent frame → force. | above, L8 |
+| 8 | `δ ↔ ℏ` — is that a real equality? | no — a **role-identification** in natural units (the twist eigenvalue plays the action quantum), not a dimensional equality. A rhyme held as a research thread. | L1 Q12, L7 |
+
+### Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `medium.py` | `M` storage |
+| `engine2_pde.py` | Cardano eigensolver + matrix operators |
+| `4a §5/§6/§8` | design-convo notes — director / operators |
+| `5a §1-2` | Eq.18-20 (action + curvature operators) |
+| M4 6-phasor model | the ellipse → ellipsoid lineage |
+| `1b` | topological-defect physics notes |
 
 ---
 
@@ -436,7 +517,13 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `5a §10b`, `4a §6`, `theory/time_crystal.pdf`.
+### L3 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `5a §10b` | the 4×4 promotion math |
+| `4a §6` | design-convo notes — the 4th axis |
+| `theory/time_crystal.pdf` | Duda's toy-model paper |
 
 ---
 
@@ -461,7 +548,13 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `engine1_seeds.py` (`seed_biaxial_hedgehog_M`), `5a §5b/§5e`, `1b`.
+### L4 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `engine1_seeds.py` (`seed_biaxial_hedgehog_M`) | the hedgehog seeder |
+| `5a §5b/§5e` | hedgehog construction + topology |
+| `1b` | topological-defect physics notes |
 
 ---
 
@@ -475,7 +568,15 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `5a §1` (action) / `§6` (Hamiltonian), `1b` (E∝K mass), `5a §5c` (Faber mass scale), `3a` (F from E).
+### L5 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `5a §1` | the action principle |
+| `5a §6` | the energy Hamiltonian |
+| `5a §5c` | Faber mass scale |
+| `1b` | E∝K mass (topological-defect notes) |
+| `3a` | F = −∇E (Coulomb visual geometry) |
 
 ---
 
@@ -488,7 +589,12 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `engine2_pde.py`, `5a §5f/§5g/§9`.
+### L6 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `engine2_pde.py` | the leapfrog `evolve_M` |
+| `5a §5f/§5g/§9` | kinetic terms + energy conservation |
 
 ---
 
@@ -560,8 +666,7 @@ above is drawn axis-aligned (`O = identity`):
 > `n̂` = the fixed axle, the δ-axis `director_mid` = the clock-hand; all hands synchronized) — **not**
 > the defect-as-a-point and **not** independent voxels.
 >
-> **★ "Collective mode" — flagged 2026-05-30 to unpack when we teach L7 (Rodrigo: idea not yet
-> fully internalized).**
+> **★ "Collective mode" — flagged 2026-05-30 to unpack when we teach L7.**
 >
 > *The mental image to hold:* a 3D field of **compass needles all precessing in lock-step**. Each
 > needle (ellipsoid) turns, but the meaningful object is the **collective phase**. The director `n̂`
@@ -624,7 +729,14 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `5a §10` (toy model), `theory/time_crystal.pdf`, `1b` (Derrick/time-crystal), `4a §6`.
+### L7 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `5a §10` | the toy model (clock math) |
+| `theory/time_crystal.pdf` | Duda's toy-model paper |
+| `1b` | Derrick / time-crystal (topological-defect notes) |
+| `4a §6` | design-convo notes — the clock |
 
 ---
 
@@ -695,7 +807,13 @@ above is drawn axis-aligned (`O = identity`):
 > plainly that this is a *placeholder shape*; the real moment is *generated by* the clock's spin at
 > M5.8. The point of the session was to make the *picture* legible before the physics produces it.
 
-**Anchors:** `engine3_observables.py` (`compute_director_em`), `5a §5d`, `3a`.
+### L8 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `engine3_observables.py` (`compute_director_em`) | the E/B observable |
+| `5a §5d` | EM-from-tilts math |
+| `3a` | Coulomb visual geometry |
 
 ---
 
@@ -708,7 +826,13 @@ above is drawn axis-aligned (`O = identity`):
 
 (to be filled during the session)
 
-**Anchors:** `engine4_render.py`, `4b Part 3`, `_launcher.py`.
+### L9 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `engine4_render.py` | the render kernels (glyphs / meshes) |
+| `4b Part 3` | the rendering-features map |
+| `_launcher.py` | UI wiring (glyph / WAVE_MENU toggles) |
 
 ---
 
@@ -741,7 +865,14 @@ above is drawn axis-aligned (`O = identity`):
 > (lepton families). Tie-in: the M5.6.5e two-defect demo (what "opposite handedness/charge" even
 > means for a biaxial defect).
 
-**Anchors:** `4a §5` (ellipse handedness), L2/L4 seeds, `1b`, 9d (composites).
+### L10 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `4a §5` | ellipse handedness |
+| L2 / L4 seeds | chirality (L2) + winding sign (L4) |
+| `1b` | topological-defect physics notes |
+| `9d` | composite-particles research |
 
 ---
 
@@ -839,10 +970,18 @@ de Broglie–Bohm / wave-structure-of-matter lineage is exactly the pilot-wave j
 between inception and M5/M6 is the wave's **ontological primacy** (substrate → emergent), not its
 relevance. The name still points at the right physics — it just sits one layer up.
 
-**Anchors:** `9a` (radiated EM packets), `9b` (heat as `(A, ω)` excess — the radiated-thermal seam),
-`5a §10` + L7 (the clock), `L3` (the two times — proper vs shared), `L8`/`3a` (force emergence),
-`M5.8.6` (2+1D pilot-wave rung), `README` (de Broglie–Bohm / WSM lineage), M2/M3 (the wave-native
-models this lesson contrasts against).
+### L11 Anchors
+
+| Anchor | What it is |
+| --- | --- |
+| `9a` | radiated EM packets |
+| `9b` | heat as `(A, ω)` excess — the radiated-thermal seam |
+| `5a §10` + L7 | the clock |
+| `L3` | the two times — proper vs shared |
+| `L8` / `3a` | force emergence |
+| `M5.8.6` | 2+1D pilot-wave rung |
+| `README` | de Broglie–Bohm / WSM lineage |
+| M2 / M3 | the wave-native models this lesson contrasts against |
 
 ---
 
