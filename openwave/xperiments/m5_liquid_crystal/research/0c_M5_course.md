@@ -29,10 +29,10 @@ them.
 
 ## Curriculum
 
-| # | Lesson | Covers (questions + *added topics*) |
+| # | LESSON | Covers (questions + *added topics*) |
 | --- | --- | --- |
-| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The medium, The Grid & The Vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
-| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
+| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The Medium, The Grid & The Vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) ✅ | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
 | [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
 | [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
 | [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
@@ -45,7 +45,7 @@ them.
 
 ---
 
-## Lesson 1 — The medium, the grid & the vacuum
+## LESSON 1 — The Medium, The Grid & The Vacuum
 
 > **Covers:** what the *medium* actually is — an LdG (Landau–de Gennes) symmetric-tensor field
 > `M(x)` living on a 3D space grid and evolved in time; what it *represents* (order parameter /
@@ -165,7 +165,7 @@ clock. *(Next, L2: decode `M` fully — what the eigenvalues are, and what movin
 
 ---
 
-## Lesson 2 — Each voxel's personality: `M = O·D·Oᵀ`, eigenvalues & the physics map
+## LESSON 2 — Each voxel's personality: `M = O·D·Oᵀ`, eigenvalues & the physics map
 
 > **Covers:** the full decode of one voxel's matrix. Q1 (the 9 numbers, 6 independent), Q2/Q6
 > (eigenvalues = shape `D`, eigenvectors = orientation `O`, the director `n̂`), Q3 (eigenvalues ↔
@@ -417,7 +417,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 3 — The 4th dimension: gravity (`g`) + the time axis
+## LESSON 3 — The 4th dimension: gravity (`g`) + the time axis
 
 > **Covers:** what the M5.8 promotion to 4×4 adds — the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`,
 > `O∈SO(1,3)`, *teleparallelism* (the 4D liquid-crystal extension); **gravity = the time-axis scale
@@ -580,7 +580,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 4 — Building a particle: the biaxial hedgehog & topology
+## LESSON 4 — Building a particle: the biaxial hedgehog & topology
 
 > **Covers:** Q6 (the three vectors) — how `O(x)=[r̂ | e_Θ | e_Φ]` is laid out in space, the
 > radial eigenvalue melt, the disclination line; *+ topological winding number = quantized charge,
@@ -611,7 +611,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 5 — Energy, mass & the ground state
+## LESSON 5 — Energy, mass & the ground state
 
 > **Covers:** *the action principle (`ℒ = T − U`, least action → the Euler–Lagrange EOM); the
 > energy **Hamiltonian** (the full conserved energy `Σ‖F_μν‖² + V`) vs the **Frank elastic
@@ -633,7 +633,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 6 — Dynamics: how the field actually moves
+## LESSON 6 — Dynamics: how the field actually moves
 
 > **Covers:** *the leapfrog time-stepper (`evolve_M`); the kinetic metric — faithful
 > `4Σ‖[M_μ,Ṁ]‖²` vs the shipped simple `½‖Ṁ‖²`, the degeneracy, why the `clock_twist` is dynamical only
@@ -651,7 +651,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 7 — The de Broglie clock-engine & spin-½ (Zitterbewegung)
+## LESSON 7 — The de Broglie clock-engine & spin-½ (Zitterbewegung)
 
 > **Covers:** *where the time-crystal / Zitterbewegung enters; how oscillation can be "propelled by
 > mass"; whether the clock is a **spin** (ω only) or an **oscillation** (A & ω); the rotational
@@ -793,7 +793,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 8 — Force emergence: Coulomb, Maxwell, magnetism, gravity
+## LESSON 8 — Force emergence: Coulomb, Maxwell, magnetism, gravity
 
 > **Covers:** Q5 (Coulomb↔Maxwell, electric/magnetic/gravitational emergence), Q7 (magnetic
 > moment — where/how to view), Q8 (permanent magnet static field with no moving charge) — static
@@ -870,7 +870,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 9 — Seeing it: the visualization map
+## LESSON 9 — Seeing it: the visualization map
 
 > **Covers:** Q9 — how glyphs (direction=`n̂`, size=magnitude, color=observable), `flux_mesh`
 > coloring, `warp_mesh` (scalar vs vector), and granule positions each render a piece of the
@@ -889,7 +889,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 10 — Handedness, chirality & composite particles
+## LESSON 10 — Handedness, chirality & composite particles
 
 > **The finale (M5.8 / M5.9-era).** Two intertwined threads: **handedness/chirality** (the ± that
 > distinguishes matter from antimatter, and helicity for neutrinos) and **composite particles** (9d —
@@ -929,7 +929,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 
 ---
 
-## Lesson 11 — Where the waves live (M5/M6 only)
+## LESSON 11 — Where the waves live (M5/M6 only)
 
 > **Covers / added 2026-06-01 (the "wave existential crisis" voice-note).** OpenWave was born
 > wave-first — the name, M2 (free wave), M3 (Wolff-LaFreniere / EWT) all treat the standing wave as
