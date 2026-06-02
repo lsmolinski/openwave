@@ -196,7 +196,7 @@ above is drawn axis-aligned (`O = identity`):
 
 | Eigenvalue | Size | Semi-axis in the figure | Physics label (the "why" → below) |
 | --- | --- | --- | --- |
-| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt (splay, bend, frank_twist) |
+| `1` | largest (unity) | **`a`** (long axis, x) — **`director n̂` points here** | EM / tilt (splay, frank_twist, bend) |
 | `δ` | middle (`~ℏ`) | `b` (medium axis, y) | QM / clock_twist |
 | `0` | smallest (null) | `c` (short / flat axis, z) | the null/time axis → the 4D clock |
 
@@ -263,10 +263,18 @@ Roll is exactly the DoF the director throws away (L1 Q8) → it becomes the cloc
 director visibly → their spatial gradient is the EM field. **Mnemonic: `clock_twist` *about* `n̂` =
 QM; *tilt of* `n̂` = EM.**
 
-### Force is a curvature of the frame — the operators
+> **Why boost ≠ tilt (they look identical — both "rotate `n̂` toward an axis").** A **tilt** rotates
+> `n̂` toward another *spatial* axis: a compact, *trigonometric* (`cos/sin`) Euclidean rotation that
+> costs positive elastic energy → **EM**. A **boost** rotates `n̂` into the *time* axis: a
+> non-compact, *hyperbolic* (`cosh/sinh`) Minkowski `(−+++)` rotation whose kinetic-term sign
+> **flips** (the negative-energy clock-engine, M5.8) → **gravity**. Same verb, different geometry —
+> Euclidean tilt vs Lorentzian boost. And the time axis is the 4th eigenvalue `g`, so a boost simply
+> does not exist in the live 3D substrate — hence L3 / 4D.
 
-The single most important move in L2: **a force is not the frame — it's the *curvature* of the
-frame**, i.e. how the orientation `O(x)` changes from voxel to voxel. Two operator layers make this
+### Force fields are the curvature of the frame — the operators
+
+The single most important move in L2: **a force *field* is not the frame — it's the *curvature* of
+the frame**, i.e. how the orientation `O(x)` changes from voxel to voxel. Two operator layers make this
 precise (Duda Eq.18-20, `5a §1-2`; implemented in `engine2_pde.py`):
 
 | Operator | Name | Reads as |
@@ -279,7 +287,13 @@ The picture: `A_μ` says *how the ellipsoid is rotated relative to its neighbour
 force**. Flat frame (vacuum) → `F = 0` → no force; a defect bends the frame → `F ≠ 0` → a force field
 emerges.
 
-> *Force is geometry's curvature, not geometry itself.*
+> *A force **field** is geometry's curvature, not geometry itself.*
+
+**Two different "forces" — don't conflate them.** This section is about the **field** (E, B, the
+field-strength `F_μν`) — *that* is the curvature of the frame. The **mechanical force on a defect**
+(what pulls two defects together) is the separate **`F = −∇E`**: minus the gradient of the stored
+*energy* with respect to the defect's *position* (L5, `3a`). They're linked — the field is the
+curvature; the energy stored in that field, differentiated by position, gives the pull.
 
 On the director `n̂` specifically, the everyday vector operators name the pieces:
 
@@ -307,14 +321,16 @@ each a specific differential operator on `n̂`.
 
 | Frank mode | Operator | Picture | EM channel |
 | --- | --- | --- | --- |
-| **splay** | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
-| **`frank_twist`** | `n̂·(∇×n̂)` — curl component **∥** `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
-| **bend** | `n̂×(∇×n̂)` — curl component **⊥** `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
+| **splay** (K₁) | `∇·n̂` (divergence) | directors fan out / in — hedgehog, fountain | **electric** (charge) |
+| **`frank_twist`** (K₂) | `n̂·(∇×n̂)` — curl component **∥** `n̂` | `n̂` rotates as you move *along* an axis — helical / cholesteric (a **towel being wrung**: the fabric rotates along its length) | **magnetic** |
+| **bend** (K₃) | `n̂×(∇×n̂)` — curl component **⊥** `n̂` | `n̂` curves like field lines through a bend | **magnetic** |
 
 So **`∇·n̂` (splay) = the electric channel**, and **`∇×n̂` (curl) = magnetic, carrying two modes at
 once — `frank_twist` + bend** (`‖∇×n̂‖² = frank_twist² + ‖bend‖²`). "Splay" and "director divergence"
 are the **same quantity** `∇·n̂` (splay = LC name, divergence = math name). Splay + `frank_twist` +
-bend together *are* the full spatial tilt of `n̂` — the whole EM sector.
+bend together *are* the full spatial tilt of `n̂` — the whole EM sector. *(Order convention: we always
+write **splay → `frank_twist` → bend** — the Frank–Oseen elastic constants **K₁/K₂/K₃** — so
+`frank_twist` precedes bend throughout the doc.)*
 
 #### `frank_twist` vs `clock_twist` — the collision the convention fixes
 
@@ -343,27 +359,27 @@ generates a **magnetic moment**, which *produces* a circulating B ⇒ now `∇×
 | Distortion | Seen in the director-glyph *pattern*? | In the static hedgehog? |
 | --- | --- | --- |
 | **splay** | ✅ lines point radially (starburst) | ✅ **yes — it's ALL splay** (`n̂=r̂`) |
-| **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
 | **`frank_twist`** | ✅ line directions rotate along an axis (helical / barber-pole) *(when present)* | ❌ zero |
+| **bend** | ✅ line *directions* sweep around (filings-round-a-magnet) *(when present)* | ❌ zero |
 | **`clock_twist` (δ)** | ❌ director is *blind* to it (thrown-away DoF) — why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1, `4b §4.2`) | (separate sector — QM, not spatial) |
 
-The **most direct** read of bend + `frank_twist` is the **magnetic-field glyph (state 3)**: it draws
+The **most direct** read of `frank_twist` + bend is the **magnetic-field glyph (state 3)**: it draws
 `∇×n̂` as its own arrow, so circulation appearing *there* is the direct signal those modes developed —
 spotting it in the director-line *pattern* is the emergent-by-eye version of the same fact. *(Caveat:
 under Evolve-PDE some director-glyph motion is the **apolar gauge sign-flip** — a 180° artifact, not
 real bend; `4b §4.4`. Real reorientation and gauge-flip are mixed in the view.)*
 
-**Why you see fanning but not bend/`frank_twist`** — the glyph isn't failing; the config has none. A
+**Why you see fanning but not `frank_twist`/bend** — the glyph isn't failing; the config has none. A
 static hedgehog is `n̂ = r̂` (radial), and a radial field has `∇×r̂ = 0` **exactly** → **pure splay,
-zero bend, zero `frank_twist`**. There is nothing for the director lines to show *but* fanning. (Same
+zero `frank_twist`, zero bend**. There is nothing for the director lines to show *but* fanning. (Same
 fact as "a static charge has `∇×n̂ ≈ 0` → no magnetic field" — the dark magnetic channel and the
 no-visible-bend are one and the same.) To actually *see* the other modes you need a config that
 **contains** them:
 
 | To see… | Need a config with… | Candidate |
 | --- | --- | --- |
-| **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
 | **`frank_twist`** | `n̂` helically rotating along an axis | a vortex / cholesteric seed; a twisting defect (M5.8) |
+| **bend** | director lines that curve | the field *between two defects*; a defect sloshing under Evolve-PDE |
 
 So the circulation you *do* see on the magnetic glyphs today is either the **VIZ.4 hardcoded dipole
 placeholder** or curl that grows as the field sloshes — *not* the static seed (which is curl-free).
@@ -378,13 +394,15 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 | # | Question | Answer (short) | Full in |
 | --- | --- | --- | --- |
 | 1 | is "director splay `∇·n̂`" the same as director divergence? | **yes — same quantity.** "Splay" is the LC-native name, "divergence" the math name. It's the electric / charge channel. | above |
-| 2 | does `∇×n̂` measure the director "bending"? | partly — `∇×n̂` (curl) carries **two** modes: `frank_twist` (`n̂·(∇×n̂)`, ∥) + **bend** (`n̂×(∇×n̂)`, ⊥). Both are the magnetic channel; bend is the curving, `frank_twist` the helical rotation. | above |
-| 3 | so the magnetic field has two components — bend + `frank_twist`? | yes: `‖∇×n̂‖² = frank_twist² + ‖bend‖²`. Both feed the magnetic sector. | above, L8 |
+| 2 | does `∇×n̂` measure the director "bending"? | partly — `∇×n̂` (curl) carries **two** modes: `frank_twist` (`n̂·(∇×n̂)`, ∥) + **bend** (`n̂×(∇×n̂)`, ⊥). Both are the magnetic channel; `frank_twist` is the helical rotation, bend the curving. | above |
+| 3 | so the magnetic field has two components — `frank_twist` + bend? | yes: `‖∇×n̂‖² = frank_twist² + ‖bend‖²`. Both feed the magnetic sector. | above, L8 |
 | 4 | is splay the same as director "tilt"? | splay is *one mode* of tilt, not all of it. Full tilt of `n̂` = splay + `frank_twist` + bend (the whole EM sector). | above |
 | 5 | when I Evolve-PDE, should I *see* the director lines bend? | only if the config contains bend. A static hedgehog is pure splay (`∇×r̂=0`) → you see fanning, not bend. And a single glyph is always a straight tangent — bend lives in the *pattern*. | above |
 | 6 | where's the `clock_twist` in the glyphs? | the director is **blind** to it (thrown-away DoF) — that's why VIZ.3 added the **CYAN δ cross-bar** (glyph state 1). | above |
-| 7 | why is a force a "curvature" and not the frame itself? | the frame `O(x)` is just orientation; the **force** is `F_μν=[M_μ,M_ν]`, the *mismatch* when you transport the frame around a loop. Flat frame → no force; bent frame → force. | above, L8 |
+| 7 | why is a force a "curvature" and not the frame itself? | the frame `O(x)` is just orientation; the **field** is `F_μν=[M_μ,M_ν]`, the *mismatch* when you transport the frame around a loop. Flat frame → no field; bent frame → a field. (The *mechanical* force on a defect is the separate `F=−∇E` — Q10.) | above, L8 |
 | 8 | `δ ↔ ℏ` — is that a real equality? | no — a **role-identification** in natural units (the twist eigenvalue plays the action quantum), not a dimensional equality. A rhyme held as a research thread. | L1 Q12, L7 |
+| 9 | isn't **boost** (→gravity) the same as **tilt** (→EM) — both "rotate `n̂` toward an axis"? | no — a **tilt** rotates `n̂` toward a *spatial* axis (compact, `cos/sin`, +energy → EM); a **boost** rotates it into the *time* axis (hyperbolic `cosh/sinh` under `(−+++)`, sign-flipped → gravity). Same verb, different geometry; boost exists only in 4D. | above, L3 |
+| 10 | is the force the curvature of the frame, or `F=−∇E`? | **both — different things.** The **field** (E/B/`F_μν`) = curvature of the frame. The **mechanical force on a defect** = `F=−∇E` (gradient of stored *energy* vs position). Linked: the field is the curvature; energy in it, differentiated by position, gives the pull. | above, L5 / `3a` |
 
 ### Anchors
 
@@ -505,6 +523,40 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 > sooner. That single structural addition is why the SABER unification (thermal/time/gravity as one
 > lever) is even conceivable — `SABER 0_OVERVIEW §4`.
 >
+> **★ Gravity = a "bend" in time (Rodrigo's intuition, 2026-06-01) — and Wheeler agrees.** Map it
+> onto L2's Frank modes: a single **boost** is the *tilt* of `n̂` into the time axis; **gravity is
+> when that tilt *varies across space*** — the gradient `∇g` — i.e. the **bend-analog** (a Frank-style
+> distortion, but the curving is into *time*, not a spatial axis):
+>
+> | Sector | local move | the field you feel (its gradient) |
+> | --- | --- | --- |
+> | **EM** | tilt of `n̂` toward a **spatial** axis | `∇·n̂` = charge, `∇×n̂` = B |
+> | **Gravity** | **boost** of `n̂` toward the **time** axis (`g`) | `∇g` — the time-dilation gradient (the pull, 1/r²) |
+>
+> **Wheeler's "curved time" (real GR, not just our model).** For *slow* matter, gravity is almost
+> entirely the curvature of the **time** direction, not space — the spatial-metric terms only matter
+> near `c` (e.g. light-bending). The apple falls because its worldline bends toward where **clocks run
+> slower** (`Φ` lives in the time-time metric `g₀₀`). So "gravity is a bend in time" is a genuinely
+> correct slogan; here that bend is the `g`-eigenvalue varying across space. *(Caveat: the gravity
+> sector is the framework's least-developed — M5.8/M5.9 design expectation, not a verified sim result.)*
+>
+> **★ Clock-rate render plan (logged for M5.8 / `4b §4.7`).** We can't draw the *time axis* as a
+> spatial arrow (it isn't a spatial direction — no 4th spatial dimension to point a glyph into). But —
+> same trick as "we render `∇·n̂`, never 'charge' directly" — we render gravity's **observable
+> shadows**:
+>
+> | Observable | Render as | Reads as |
+> | --- | --- | --- |
+> | `g(x)` (time-scale per voxel) | scalar heatmap / WAVE_MENU channel | the **gravity well** (deep = clock slow) |
+> | `∇g` (its gradient) | vector glyphs (like the E/B arrows) | the **gravitational pull** |
+> | per-voxel **clock rate** (`ω`, proper-time tick) | colour / animation speed | **time dilation** — the wristwatch-per-voxel |
+>
+> The "bend in time" becomes visible the same way bend does in the director glyphs — **not in one
+> glyph but in the *pattern***: clocks ticking progressively slower toward a mass *is* the
+> gradient-of-time made visible (read the arrangement, not the single arrow). These emergence
+> channels — **EM / gravity / time-rate / heat** — are exactly the levers the SABER unification
+> builds on (`SABER 0_OVERVIEW §4`); this lesson is where the *physics* intuition for them lives.
+>
 > **Clock vs engine — it's both.** "Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`, the
 > de Broglie clock Catillon measured). "Engine" = the *mechanism* (a self-propelled rotation; Duda's
 > "oscillation propelled by mass"). A **self-propelling clock** whose output is a precise frequency =
@@ -524,6 +576,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 | `5a §10b` | the 4×4 promotion math |
 | `4a §6` | design-convo notes — the 4th axis |
 | `theory/time_crystal.pdf` | Duda's toy-model paper |
+| `4b §4.7` | gravitational-field FUTURE viz — the clock-rate render plan |
 
 ---
 
