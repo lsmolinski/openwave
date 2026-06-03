@@ -31,7 +31,7 @@ them.
 
 | # | LESSON | Covers (questions + *added topics*) |
 | --- | --- | --- |
-| [1](#lesson-1--the-medium-the-grid--the-vacuum) | [The Medium, The Grid & The Vacuum](#lesson-1--the-medium-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [1](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | [The Medium, The Field, The Grid & The Vacuum](#lesson-1--the-medium-the-field-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
 | [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) ✅ | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
 | [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) ✅ | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
 | [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
@@ -45,7 +45,7 @@ them.
 
 ---
 
-## LESSON 1 — The Medium, The Grid & The Vacuum
+## LESSON 1 — The Medium, The Field, The Grid & The Vacuum
 
 > **Covers:** what the *medium* actually is — an LdG (Landau–de Gennes) symmetric-tensor field
 > `M(x)` living on a 3D space grid and evolved in time; what it *represents* (order parameter /
@@ -426,7 +426,7 @@ placeholder** or curl that grows as the field sloshes — *not* the static seed 
 > eigenvalue-spectrum + frame-group extension of L2. The *engine why* (why the clock self-sustains —
 > the Minkowski negative-energy mechanism) is developed at **L7**; here we set up the structure.
 
-### The one-sentence version
+### L3 The one-sentence version
 
 **3×3 is the spatial particle** (shape, EM, QM-`clock_twist`, charge — all of L1–L2). **The 4th
 dimension adds one thing — a time axis to the order parameter** — and because *both* gravity and the
@@ -589,6 +589,7 @@ motion — the spin *is* the rest energy. (The energetic *why* is L7.)
 | 6 | how is gravity related to EM? | both are **curvature of the frame** — EM = curving toward a *spatial* axis, gravity = curving (boost) toward the *time* axis. "Gravity is a bend in time" (Wheeler's curved-time). | above, L8 |
 | 7 | can we render gravity / the time axis? | not the time axis itself (not a spatial direction), but its **shadows**: `g(x)` gravity-well heatmap, `∇g` pull glyphs, per-voxel clock-rate (time dilation). Needs the 4D `g`-axis (M5.8). | above, `4b §4.7` |
 | 8 | is the self-propelling clock perpetual motion? | no — the spin **is** the rest energy (`ℏω=mc²`); the Minkowski `(−+++)` sign makes spinning the ground state, not a free lunch. The energetic *why* is L7. | L7 |
+| 9 | are `clock_twist`, the clock-engine, and the de Broglie clock the same thing? | **same phenomenon, three aspects — hand / motor / dial.** `clock_twist` = the *motion* (the δ-axis winding about `n̂`, the DoF); **clock-engine** = the *mechanism* that keeps it turning for free (Minkowski negative-energy, M5.8); **de Broglie clock** = the *observable* tick at `ω=2mc²/ℏ` = the mass (Catillon). So a running clock-engine *is* a de Broglie clock; the `clock_twist` is what it winds. (3×3 has the hand but it disperses; the real motor is 4D. Don't confuse with `frank_twist` — spatial/magnetic.) | L7 |
 
 ### L3 Anchors
 
@@ -800,6 +801,55 @@ motion — the spin *is* the rest energy. (The energetic *why* is L7.)
 >
 > Full concreteness needs the 4D clock (M5.8, structure in L3). Tie-in: Duda's slide gyroscope/`L=ℏ/2`
 > inset (the L8 magnetic-moment figure).
+>
+> ---
+>
+> **★ Seeing the clock — the spatial "shadow" (Rodrigo 2026-06-01).** What you *render* is not the
+> clock itself but its **3D shadow**. The real 4D clock winds in a plane that **mixes a space axis
+> with the time axis** (L3); you can't draw "into time" (no 4th spatial direction to point a glyph
+> into). But its **3D projection** is exactly the **δ-axis direction changing** — so the **CYAN δ
+> cross-bar sweeping around `n̂`** (VIZ.3 glyph state 1) is the *visible shadow* of the space-time
+> rotation. Same "render the shadow, not the thing" trick as gravity (we draw `g(x)`/`∇g`, never
+> "time" — L3). So: a coherent cyan sweep = the clock ticking; today it's an **incoherent wobble**
+> (the free defect disperses, M5.7.2) — the clean coherent tick needs **M5.8** (or a drive, 9b).
+>
+> **★ What a "time-crystal" actually IS (Rodrigo 2026-06-01).** The term (Frank Wilczek, 2012) is by
+> analogy to an ordinary crystal:
+>
+> | | breaks which symmetry | its stable state is… |
+> | --- | --- | --- |
+> | **ordinary crystal** | *spatial* translation | periodic in **space** (atoms in a repeating lattice — the lowest-energy state isn't uniform) |
+> | **time-crystal** | *time* translation | periodic in **time** — it **ticks forever in its ground state**, with no energy input |
+>
+> So a time-crystal is matter whose *rest* configuration is **perpetually moving in a fixed cycle** —
+> not driven, not winding down. **The particle is exactly this:** the de Broglie clock spins at
+> `ω=2mc²/ℏ` *at rest*, forever, because **spinning is the ground state** (the Minkowski `(−+++)`
+> sign — the engine above). That's why it's "not perpetual motion" — the tick **is** the rest energy,
+> not free energy from nothing.
+>
+> *History / honesty:* Wilczek's original *equilibrium* time-crystal was shown impossible by no-go
+> theorems (Bruno 2013; Watanabe–Oshikawa 2015) for ordinary positive-energy Hamiltonians; what's
+> been built in the lab are **driven "discrete time-crystals"** (trapped ions 2017; Google Sycamore
+> 2021) — period-doubling subharmonic responses, *not* ground-state ticks. **Duda's claim is
+> stronger:** the Minkowski negative-energy term changes the energy landscape so a *genuine*
+> ground-state time-crystal becomes allowed — *sidestepping* the no-go theorems via the relativistic
+> signature. ⚠️ That's the hypothesis M5.8 is built to test, not established physics.
+>
+> **★ Validation prize — 1D done, 3D is the frontier (Rodrigo Q 2026-06-01).** The toy-model **paper**
+> (Duda, arXiv:2501.04036) works the mechanism explicitly in **1+1D**; we reproduced that (M5.8.0a).
+> The paper itself lays the ladder **1+1D → 2+1D → 3+1D** as the open goal. A full **3D**
+> self-sustaining time-crystal clock in OpenWave would be a genuine result — *potentially* a first —
+> **but we cannot claim "first":** Duda runs his own 3D LC simulator (posts output screenshots), so
+> he may be ahead or in parallel, and this is M5's **least-certain, hardest** sector (free 3D defects
+> *disperse*, M5.7). Frame it as **the prize / the concrete deliverable to Duda et al.**, not a
+> guaranteed primacy. (It would also be exactly the *positive anchor* Jeff Yee flagged as the only
+> thing that certifies the engine — `0b §Validation logic`.)
+>
+> **Lesson map (so the clock threads don't blur):** **L3** sets up the *structure* (the 4th axis
+> exists; the clock = a rotation into time; the hand = the δ-axis). **L7 (here)** is the *mechanism*
+> (the negative-energy engine, spin-½, `ω=2mc²/ℏ`). Mental model: **see the hand** (δ cross-bar,
+> today) **→ the motor** (4D Minkowski sign, M5.8) **→ the full why** (this lesson). Term glossary
+> (hand/motor/dial = `clock_twist` / clock-engine / de Broglie clock) is in `L3 Q&A` #9.
 
 (to be filled during the session)
 
