@@ -607,21 +607,112 @@ motion — the spin *is* the rest energy. (The energetic *why* is L7.)
 > **Covers:** Q6 (the three vectors) — how `O(x)=[r̂ | e_Θ | e_Φ]` is laid out in space, the
 > radial eigenvalue melt, the disclination line; *+ topological winding number = quantized charge,
 > Derrick's theorem → why no stable static soliton exists (sets up the clock)*.
->
-> Building a particle: the biaxial hedgehog. How O(x)=[r | e_0 | e_$] (the three vectors) is laid out in space, the eigenvalue melt + disclination, and why winding = quantized charge
->
-> **★ Cover when we teach L4 (Rodrigo flagged 2026-05-30): "where is the charge sign?"** The
-> *uniaxial* seed defines charge per-defect via `DEFECTS:[{"SIGN": ±1}]` → kernel `n̂ = SIGN·r̂`
-> (outward `+1` / inward `−1`; `_topo_uniaxial2.py`, `engine1_seeds.py:439`). The *biaxial* seed
-> (`_topo_biaxial1_v{on,off}.py`) has **NO sign knob** — `seed_biaxial_hedgehog_M` is single-center
-> and hard-builds the radial frame `O=[r̂|e_Θ|e_Φ]` (one fixed winding). **Why:** a biaxial defect's
-> charge is **not** a single `±1` — its order-parameter space is `SO(3)/D₂`, whose `π₁` is the
-> **non-abelian quaternion group `Q₈`**, a richer classification than one sign bit. So "the charge
-> sign" of a biaxial defect is a *quaternion-class label*, not a `±`. This is the discovery hook of
-> the deferred two-defect demo (M5.6.5e → M5.8), and the seed for L10 (handedness). Teach: uniaxial
-> `±` winding → biaxial `Q₈` classes.
 
-(to be filled during the session)
+### L4 The one-sentence version
+
+A **particle is a knot in the director field** that the medium can't comb flat — a **topological
+defect**. The simplest is the **hedgehog**: the director points radially outward from a center
+(`n̂ = r̂`), like a hedgehog's spines. Topology makes its **charge a quantized integer** you can't
+smooth away; **Derrick's theorem** then says it *can't sit still* — which is exactly why it must
+become a **clock** (L7).
+
+### The hedgehog — the three vectors
+
+The biaxial hedgehog is built from the spherical-coordinate frame at every point: `O(x) = [r̂ | e_Θ |
+e_Φ]` — the three columns are the three eigenvector axes of `M`.
+
+| Column of `O` | Direction | Role |
+| --- | --- | --- |
+| **`r̂`** (radial) | points **outward** from the center | the **director `n̂`** (major axis, λ=`1`) — the hedgehog "spines" |
+| **`e_Θ`** (polar) | along the lines of latitude | a minor axis (the `δ`-axis region) |
+| **`e_Φ`** (azimuthal) | around the axis | the other minor axis |
+
+So the director field is `n̂(x) = r̂` — every director points straight away from the core. That's the
+whole particle: a point surrounded by directors fanning out radially (pure **splay**, L2 — which is
+why a static hedgehog reads as **charge** but has **no magnetic field**, `∇×r̂ = 0`).
+
+### Why it's a *defect* — you can't comb it flat
+
+The vacuum wants every director aligned the same way (L1). The hedgehog **can't be smoothly deformed
+to uniform**: follow the directors inward and they'd have to point *every* direction at once at the
+center — so `n̂` is **undefined at `r = 0`** (a singular point). This is the **hairy-ball theorem** in
+action: you can't comb a sphere of arrows flat without a cowlick. The cowlick *is* the particle.
+
+> ⚠️ **Biaxial subtlety — a line, not just a point.** A *uniaxial* hedgehog has a point singularity.
+> A *biaxial* one also carries a **disclination line** (e.g. the z-axis): the azimuthal vector `e_Φ`
+> winds like `~1/ρ` and can't be combed along a whole axis (`δ ≠ 0` makes the two minor axes
+> distinguishable, so they can't smoothly close). M5.6 locates + regularizes this line.
+
+### The core — eigenvalue "melt" (regularization)
+
+A bare singularity has infinite energy. The fix: at the core the eigenvalues **melt toward isotropic**
+— the spectrum `diag(1, δ, 0)` smoothly relaxes to a sphere `≈ ((1+δ)/3)·I` as `r → 0`, so the
+orientation simply *stops mattering* where it would otherwise be undefined. This is the **Faber
+regularization** (M5.6.3). Crucially, **that melt is not just bookkeeping — it's what creates the
+KG mass**: the core profile sets `mass²(r)` (M5.6.1) and the defect energy scales as `E ∝ 1/r₀`. So
+the particle's mass lives in *how its core is regularized*.
+
+### Topological charge — winding = a quantized integer
+
+Why is charge **quantized** (always an integer multiple, never 1.37 electrons)? Topology. The
+hedgehog is a **map** from the sphere *around* the defect (in space) to the sphere of *director
+orientations*. That map has a **winding number** (degree) — how many times the directors wrap the
+orientation sphere as you circle the defect:
+
+| Director map | Winding (degree) | Reading |
+| --- | --- | --- |
+| `n̂ = r̂` (outward) | **+1** | one unit of charge |
+| `n̂ = −r̂` (inward) | **−1** | one unit of anti-charge |
+| uniform (vacuum) | **0** | no charge |
+
+The winding is an **integer you cannot change by any smooth deformation** — to alter it you'd have to
+*tear* the field. *That* is why charge is quantized and conserved: it's a topological invariant, not a
+tunable parameter (`compute_winding_number` = the Brouwer degree, M5.1). Charge isn't *put into* the
+particle — it **is the shape of the knot**.
+
+### Charge sign — uniaxial `±` vs biaxial `Q₈`
+
+"Where is the charge sign?" (Rodrigo, 2026-05-30) — it depends on the seed:
+
+| Seed | Charge knob | What "sign" means |
+| --- | --- | --- |
+| **uniaxial** (`_topo_uniaxial2.py`) | `DEFECTS:[{"SIGN": ±1}]` → `n̂ = SIGN·r̂` (`engine1_seeds.py:439`) | a clean **`±1`**: outward `+1` / inward `−1` (the matter / antimatter analog) |
+| **biaxial** (`seed_biaxial_hedgehog_M`) | **no sign knob** — single-center, hard-builds `O=[r̂\|e_Θ\|e_Φ]` (one fixed winding) | **not** a `±` bit — the order-parameter space is `SO(3)/D₂`, whose `π₁` is the **non-abelian quaternion group `Q₈`** — a *quaternion-class label*, richer than one sign |
+
+So a biaxial defect's "charge" is a **`Q₈` class**, not a `±`. This is the **discovery hook** of the
+deferred two-defect demo (M5.6.5e → M5.8) — *"what does opposite charge even mean for a biaxial
+defect?"* is a result to find, not a parameter to set — and the **seed for L10** (handedness /
+chirality / matter–antimatter).
+
+### Derrick's theorem — why no static soliton (→ the clock)
+
+The punchline that hands off to L7. **Derrick's theorem**: in 3D, a static localized defect has **no
+stable size** — you can always lower its energy by rescaling it (for a plain field it just collapses
+toward a point; there's no resting size). **So a particle cannot be a static lump.** (We confirmed
+this empirically — M5.2 closed-negative, and M5.7's free defects *disperse*.)
+
+How nature escapes Derrick:
+
+| Escape | Mechanism | Used by |
+| --- | --- | --- |
+| **Time-dependence** | the defect *oscillates* — a **time-crystal** (the de Broglie clock) | **M5's main route** (L7, M5.8) |
+| **Higher-derivative term** | a **Skyrme** term adds a length scale that fixes the static size | M5 (partial — the `F²` kinetic) |
+| **Compact manifold / gauge fields** | curvature of the order-parameter space (BEC vortex, Haldane sphere) | research thread |
+
+So the topological knot gives the particle its **charge and spin** (static structure), but it **can't
+be static** — it *must* become the oscillating clock-engine of **L7**. Topology builds the body; the
+clock makes it move.
+
+### L4 Q&A / clarifications (2026-06-01)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what *is* the particle, concretely? | a **topological defect** — a knot in the director field (`n̂=r̂` hedgehog) the medium can't comb flat. Not a wave-packet, not a static lump. | above |
+| 2 | why is charge an exact integer? | it's the **winding number** (Brouwer degree) of the director map — a topological invariant you can't change without tearing the field. | above |
+| 3 | where's the charge *sign*? | uniaxial: `SIGN=±1` (outward/inward). biaxial: **no `±`** — a `Q₈` quaternion class (richer). | above |
+| 4 | what's the disclination line? | a biaxial defect's *line* singularity (`e_Φ ~ 1/ρ`) on top of the point core — biaxial frames can't be combed along an axis. Regularized in M5.6. | above |
+| 5 | why can't the particle sit still? | **Derrick's theorem** — a static 3D defect has no stable size (it collapses). The escape is time-dependence → the clock (L7/M5.8). | above, L7 |
+| 6 | is the inward hedgehog the antiparticle? | in the uniaxial picture, yes — `n̂=−r̂` is winding `−1` (anti-charge). For biaxial it's a `Q₈`-class question (L10). | above, L10 |
 
 ### L4 Anchors
 
