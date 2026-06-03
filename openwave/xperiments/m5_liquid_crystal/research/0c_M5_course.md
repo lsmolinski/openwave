@@ -31,17 +31,17 @@ them.
 
 | # | LESSON | Covers (questions + *added topics*) |
 | --- | --- | --- |
-| [1](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | [The Medium, The Field, The Grid & The Vacuum](#lesson-1--the-medium-the-field-the-grid--the-vacuum) ✅ | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
-| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) ✅ | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
-| [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) ✅ | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
-| [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
-| [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
+| [1 ✅](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | [The Medium, The Field, The Grid & The Vacuum](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [2 ✅](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
+| [3 ✅](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
+| [4 ✅](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
+| [5 ✅](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
 | [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
 | [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
-| [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) ✅ | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
+| [11✅](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -642,6 +642,18 @@ action: you can't comb a sphere of arrows flat without a cowlick. The cowlick *i
 > A *biaxial* one also carries a **disclination line** (e.g. the z-axis): the azimuthal vector `e_Φ`
 > winds like `~1/ρ` and can't be combed along a whole axis (`δ ≠ 0` makes the two minor axes
 > distinguishable, so they can't smoothly close). M5.6 locates + regularizes this line.
+>
+> **The line *is* the charge — and is it real?** For a biaxial medium the order-parameter space is
+> `SO(3)/D₂` with `π₂ = 0` (**no** stable *point* charge) but `π₁ = Q₈` (**line** defects) — so the
+> biaxial defect's charge lives in this **disclination line**, not a point. (That's *why* the charge
+> is a `Q₈` class, not a `±`, below.) In the sim you *see* it: `WAVE_MENU 4` (Hamiltonian energy)
+> shows a bright vertical **rod** up/down the z-axis. **Real or artifact? Both, separated:** the line's
+> *existence* is topologically forced (**real**); its *straight z-axis shape/location* is a **seed /
+> gauge choice** — a freely-relaxed defect could carry it as a ring or curved line in any orientation,
+> and a real electron (spherically symmetric, point-like in the Standard Model) would **not** show a
+> lab-fixed energy rod. So read the rod as *"the biaxial defect has a disclination,"* **not** *"the
+> electron has an energy axis."* (And M5 hasn't produced the stable particle yet — the real one is the
+> 4D clock, L7 — so its actual energy shape isn't computed.) Energy-view detail → L5.
 
 ### The core — eigenvalue "melt" (regularization)
 
@@ -732,7 +744,105 @@ clock makes it move.
 > above the vacuum** (`E = mc²`, the M5 `E ∝ K` lepton-mass result); **F = −∇E** (force is the
 > gradient of energy); the ground state and why a defect is pinned above it*.
 
-(to be filled during the session)
+### L5 The one-sentence version
+
+A particle's **mass is just the field energy stored in its knot, above the empty vacuum** — `E = mc²`,
+read literally. The medium has a lowest-energy resting state (the **ground state** = the vacuum); a
+defect is **forced to sit above it** (topology won't let it unwind, L4), and that **trapped excess
+energy *is* the mass**. Energy also drives forces: **`F = −∇E`** — things move toward lower energy.
+
+### The action principle — where the equations come from
+
+Every motion in M5 comes from one rule: **least action**. Build the **Lagrangian** `ℒ = T − U`
+(kinetic minus potential); nature follows the history that **extremizes the action** `S = ∫ℒ dt`. The
+machinery that turns that into an equation of motion is the **Euler–Lagrange** equation — and for M5
+it produces exactly the `evolve_M` leapfrog (Duda Eq.18, `5a §1`).
+
+| Piece | In M5 (Eq.18) | Reads as |
+| --- | --- | --- |
+| **`T`** (kinetic) | the *time*-curvature `Σ‖F_μ0‖²` (`≈ ½‖Ṁ‖²`) | how fast the frame is changing |
+| **`U`** (potential) | the *spatial* curvature `Σ‖F_μν‖²` + `V(M)` | how bent / how far from the vacuum shape |
+
+You don't tune forces by hand — you write *one* energy and the EOM falls out. (This is why "force =
+curvature of the frame", L2: the EL equation of a curvature Lagrangian *is* the force law.)
+
+### Two energies — the Hamiltonian vs the Frank elastic
+
+M5 tracks two energy numbers; keep them straight:
+
+| Energy | What it is | Use |
+| --- | --- | --- |
+| **Hamiltonian `H`** (WAVE_MENU 4) | the **full conserved energy** — kinetic + spatial curvature + `V(M)` (`½‖Ṁ‖² + c²·4Σ‖[M_μ,M_ν]‖² + V_M`) | the **validation** — `H` must stay constant under Evolve PDE (it does, ~0.03% at small `dt`; symplectic) |
+| **Frank elastic** (WAVE_MENU 5) | just the **director-distortion** piece — splay²/`frank_twist`²/bend² (the classic LC energy, L2's K₁/K₂/K₃) | the **intuitive** "how bent is the field here" — where the structure costs energy |
+
+The Frank elastic is *part of* `H` (the gradient piece). `H` is what's **conserved**; Frank is what's
+**readable** — it lights up exactly where the director is distorted (the defect core).
+
+> **What you see live (biaxial-hedgehog xparameter — `WM4` vs `WM5`).** `WAVE_MENU 4` (`H`) shows a
+> **central core + a vertical "rod"** along z; `WAVE_MENU 5` (Frank) shows only a **central spherical
+> blob — no rod**. Why: the rod is the biaxial **disclination line** (L4) — a *minor-axis / full-frame*
+> feature that only `H` sees. The director `n̂ = r̂` is spherically symmetric and smooth along z, so the
+> director-only Frank energy misses it. Now press Evolve PDE and the headline split appears: **`H`
+> stays contained** (conserved + `V` pins the *amplitude*) while **Frank *dissipates*** (the
+> *orientation* disperses — `V` confines amplitude **not** orientation, M5.6.5c / M5.7.2). That leak
+> of the orientation energy *is* the M5.7 free-defect dispersal — the reason a stable 3D particle needs
+> the 4D clock (L7).
+
+### Mass = stored field energy above the vacuum (`E = mc²`)
+
+The payoff. A defect's **energy above the vacuum floor** *is* its rest energy, and `E = mc²` makes
+that a **mass**:
+
+- **`mass = (field energy of the knot) / c²`** — not a hand-tuned parameter; the *geometry of the
+  knot* (gradients + core) carries energy, and that energy is the mass.
+- **The M5 scaling:** mass `∝ K` (elastic stiffness), and via the Faber core `E ∝ 1/r₀` (tighter core
+  = more stored energy = heavier). The core size `r₀` is the physical mass knob (`5a §5c`; `r₀ ≈ 2.21
+  fm` ↦ the `0.511 MeV` electron).
+- **The lepton families (M5.9):** three *axis-choices* of the biaxial hedgehog → **same charge `Q`,
+  different stored energy → different mass** (targets `μ/e ≈ 207`, `τ/e ≈ 3477`). ⚠️ design target,
+  not yet calibrated.
+
+So mass and charge come from *different* features of the same knot: **charge = topology** (the winding,
+L4), **mass = energy** (the gradients + core, here).
+
+### `F = −∇E` — force is the gradient of energy
+
+Why do two defects attract? Because moving them **changes the stored field energy**, and a force
+always points **downhill in energy**: `F = −∇E`. The Coulomb attraction (M5.1/M5.4, L8) is exactly
+this — the field energy as a function of defect separation has a slope, and `−∇E` is the pull.
+
+> **Two gradients — don't confuse them (cf. L2 Q10).** `F = −∇E` is the gradient of *energy vs
+> position* (the mechanical force on a body). The "field = curvature of the frame" (L2) is the
+> gradient of *orientation vs space*. Linked but distinct: energy-gradient = the pull; frame-curvature
+> = the field that stores the energy.
+
+The **ground state** is where `∇E = 0` everywhere — no slope, no force. That's the vacuum.
+
+### The ground state — and why a defect is pinned above it
+
+The **ground state** is the lowest-energy configuration of the whole field: the **uniform vacuum** (L1
+— every director aligned, zero gradients, zero energy). A defect would *love* to relax down to it — but
+**topology won't let it** (you can't unwind the knot without tearing the field, L4). So the defect is
+**pinned at an energy above the floor**, with nowhere lower to go. That trapped energy is the mass.
+
+And the punchline that hands to L6/L7: the defect can't even **sit still** at that energy (Derrick, L4)
+— so it does the next-best thing and **oscillates** around its pinned configuration. Stored energy that
+can't relax and can't rest → **motion** → the clock (L7).
+
+> **The chain so far:** topology pins the defect *above* the vacuum (it has energy = **mass**, L5) →
+> but Derrick forbids it sitting static → it **oscillates** (L6) → the self-sustaining **clock** (L7).
+
+### L5 Q&A / clarifications (2026-06-01)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what *is* mass, concretely? | the **field energy stored in the defect's knot**, above the vacuum, divided by `c²`. Geometry → energy → mass. Not a hand-tuned parameter. | above |
+| 2 | why `E = mc²` here? | the defect's rest energy *is* its stored field energy; `E=mc²` identifies that energy as a mass (and `= ℏω`, the clock — L7). | above, L7 |
+| 3 | Hamiltonian vs Frank elastic? | `H` (WM4) = the **full conserved** energy (kinetic + curvature + `V`); Frank (WM5) = just the **director-distortion** piece (a part of `H`, the intuitive "how bent" view). | above |
+| 4 | what sets the mass value? | the stiffness `K` and the **core size `r₀`** (`E ∝ 1/r₀`, Faber); different *axis-choices* → the lepton families (M5.9, ⚠️ target). | above |
+| 5 | why does `F = −∇E` give attraction? | force points **downhill in energy**; if moving two defects together *lowers* the stored field energy, the slope pulls them in (Coulomb, L8). | above, L8 |
+| 6 | does the vacuum have energy? | no — the uniform vacuum is the **zero** (energy is vacuum-shifted). A defect's energy is measured *above* it. | above, L1 |
+| 7 | charge and mass — same source? | **no** — charge = **topology** (winding, L4); mass = **energy** (gradients + core, here). Same knot, two different features. | L4, above |
 
 ### L5 Anchors
 
@@ -941,6 +1051,26 @@ clock makes it move.
 > (the negative-energy engine, spin-½, `ω=2mc²/ℏ`). Mental model: **see the hand** (δ cross-bar,
 > today) **→ the motor** (4D Minkowski sign, M5.8) **→ the full why** (this lesson). Term glossary
 > (hand/motor/dial = `clock_twist` / clock-engine / de Broglie clock) is in `L3 Q&A` #9.
+>
+> **★ Energy distribution after the 4D clock — does the "rod" localize? (forward observable, Rodrigo
+> 2026-06-01).** Today the static biaxial seed shows a box-spanning **z-axis energy "rod"** in
+> `energyH` (WAVE_MENU 4) — the disclination line (L4 / L5). **After M5.8 we'd expect a *different,
+> stable* distribution**, and recomputing `energyH` around the candidate lepton is a clean
+> **acceptance check** (logged as roadmap **M5.8.8**):
+>
+> | What M5.8 changes | Why |
+> | --- | --- |
+> | energy **stops dispersing** | the 4D clock stabilizes orientation → the M5.7.2 Frank-leak stops; stable, not diluting |
+> | field **relaxes off the gauge-fixed seed** | the straight-z rod is the *seed's* construction, not dynamical — the true configuration reshapes it |
+> | the clock **time-averages** the structure | a winding frame precesses / smears a static feature (a spinning-top's axially-symmetric blur) |
+>
+> **What can't vanish:** the disclination *topology* is forced (`π₁ = Q₈`, the biaxial charge lives in
+> a line/loop — L4) → it **transforms, not disappears**. **Physical hint:** a box-spanning line has
+> energy `∝ length` (extensive) — *not* how a **localized** particle looks; a localized defect should
+> **close into a finite ring/loop** (hopfion-adjacent) and/or a **clock-smeared shell** — compact,
+> closer to spherically symmetric (electron-like). **Honest status:** ✅ expect a different/stable,
+> *localized* distribution; ⚠️ but **UNCOMPUTED** — don't claim "M5.8 gives a clean spherical
+> electron"; it's a hoped outcome + a falsifiable **test**, in M5's least-developed sector.
 
 (to be filled during the session)
 
