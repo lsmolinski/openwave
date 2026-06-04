@@ -372,38 +372,6 @@ def propagate_wave_full(
 
 
 # ================================================================
-# POSITION RENDER
-# ================================================================
-
-
-@ti.kernel
-def sample_position_to_render(
-    wave_field: ti.template(),  # type: ignore
-    amp_boost: ti.f32,  # type: ignore
-    stride: ti.i32,  # type: ignore
-    num_render: ti.i32,  # type: ignore
-):
-    """Sample granule positions from z flux_mesh plane with stride, writing to 1D position_render.
-
-    Samples every `stride`-th voxel from the XY plane at the z flux mesh index,
-    capping output at `num_render` particles for performance.
-    """
-    k = int(wave_field.flux_mesh_planes[2] * wave_field.grid_size[2])
-    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
-    sampled_ny = (wave_field.ny + stride - 1) // stride  # cols per sampled row
-
-    for render_idx in range(num_render):
-        si = render_idx // sampled_ny  # sampled row index
-        sj = render_idx % sampled_ny  # sampled col index
-        i = si * stride
-        j = sj * stride
-        displaced = amp_boost * wave_field.displacement_am[i, j, k] / wave_field.dx_am + ti.Vector(
-            [ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]
-        )
-        wave_field.position_render[render_idx] = displaced / max_dim
-
-
-# ================================================================
 # 3-PLANE SAMPLING FOR AVERAGE TRACKERS
 # ================================================================
 # PERFORMANCE NOTE: Full GPU reduction (atomic_add over all voxels) causes
@@ -701,3 +669,35 @@ def update_flux_mesh_values(
                 energy_value / univ_edge_x * warp_mesh
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
+
+
+# ================================================================
+# POSITION RENDER
+# ================================================================
+
+
+@ti.kernel
+def sample_position_to_render(
+    wave_field: ti.template(),  # type: ignore
+    amp_boost: ti.f32,  # type: ignore
+    stride: ti.i32,  # type: ignore
+    num_render: ti.i32,  # type: ignore
+):
+    """Sample granule positions from z flux_mesh plane with stride, writing to 1D position_render.
+
+    Samples every `stride`-th voxel from the XY plane at the z flux mesh index,
+    capping output at `num_render` particles for performance.
+    """
+    k = int(wave_field.flux_mesh_planes[2] * wave_field.grid_size[2])
+    max_dim = ti.cast(wave_field.max_grid_size, ti.f32)
+    sampled_ny = (wave_field.ny + stride - 1) // stride  # cols per sampled row
+
+    for render_idx in range(num_render):
+        si = render_idx // sampled_ny  # sampled row index
+        sj = render_idx % sampled_ny  # sampled col index
+        i = si * stride
+        j = sj * stride
+        displaced = amp_boost * wave_field.displacement_am[i, j, k] / wave_field.dx_am + ti.Vector(
+            [ti.cast(i, ti.f32), ti.cast(j, ti.f32), ti.cast(k, ti.f32)]
+        )
+        wave_field.position_render[render_idx] = displaced / max_dim

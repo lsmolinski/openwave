@@ -46,14 +46,14 @@
 
 ## Part 1 — Current feature inventory (M5.1, Vector(3) ψ)
 
-### The rendering features
+### THE RENDERING FEATURES
 
 | Feature | Code | Behavior |
 | --- | --- | --- |
+| vector glyphs | `update_director_glyphs`, `director_glyph_*` | line voxel → voxel + L·n̂, colored by `(1 − n̂_z)`, optional half-arrowhead |
 | flux_mesh | `update_flux_mesh_values`, `render_flux_mesh`, `fluxmesh_*_vertices/colors` | 3 plane meshes (XY/XZ/YZ); each voxel → 1 scalar → color + perpendicular warp |
 | scalar warp_mesh | WAVE_MENU 2–5 | raises mesh perpendicular coord by a scalar (amp/freq/energy) |
 | vector_warp | WAVE_MENU 1 | deforms vertex in all 3 axes by the ψ components (mesh ripples by the vector field) |
-| vector glyphs | `update_director_glyphs`, `director_glyph_*` | line voxel → voxel + L·n̂, colored by `(1 − n̂_z)`, optional half-arrowhead |
 | granule render | `sample_position_to_render`, `position_render` | granule sphere sits at voxel + `amp_boost · ψ` (`amp_boost = WARP_MESH`) |
 
 ### Color-coding modes (WAVE_MENU)
