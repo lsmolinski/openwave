@@ -773,6 +773,11 @@ M5.8.0; 4-index `F_μναβ` + Minkowski-`Γ₀` ✅ M5.8.2; electron hedgehog+t
     → a preferred resonant frequency). New candidate mechanism for *why* the `E(ω)` minimum locks at
     the de Broglie `ω`; worth probing at M5.8.3 (does the measured `ω` need noise to lock, or does the
     well alone select it?). Matches our split: topology = stability (L4), clock_twist = frequency (L7).
+    **(1D answer — M5.8.0d-b, 2026-06-04, `m5_8_0c0d_propulsion_robustness.py`: in the reduced
+    collective-coordinate model the well selects `ω*` *deterministically* — five `ω` seeds all relax to
+    `ω*=1.0712` with NO noise. So noise is *not* required for frequency-selection in 1D; the full-field
+    mode-selection version of the SR question stays open for M5.8.3. Bounded negative energy also
+    confirmed: `E>0` everywhere, `E_min=E*=2.1257>0`.)**
   - **Continuous, not bistable.** Local fields perturb the `E(ω)` minimum **slightly and
     continuously** — *not* into "an electron with 2 discrete mass states." Confirms our single-
     continuously-perturbed-clock framing (we never posited a discrete two-mass electron).
