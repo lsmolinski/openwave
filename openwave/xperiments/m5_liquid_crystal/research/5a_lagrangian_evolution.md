@@ -652,6 +652,56 @@ This verifies our understanding of the energy functional before any 4D build.
 > system each step) or a constrained scheme. The Euler–Lagrange equations are left in Mathematica
 > in the paper (Fig.3, not transcribed) — derive + confirm them before coding the kernel.
 
+**M5.8.0b-1/0b-2 — the EOM derived + verified (2026-06-04, `sandbox_v8/m5_8_0b_eom_derivation.py`).**
+The coupled Euler–Lagrange equations + the Legendre inversion confirm all three checks: the
+Hamiltonian reduces to the 0a energy under the static-kink+`ψ=ωt` ansatz ✓, the `ψ`-EL is a pure
+conservation law (`∂ℒ/∂ψ=0`, a Noether current) ✓, and `dE/dω=0` recovers `ω*²=αI₂/(2βI₄)` (Eq.4) ✓.
+The kernel update is `H·[φ_tt, ψ_tt]ᵀ = b` with the **non-canonical mass matrix** (leading order in the
+`−αR²` mechanism):
+
+```text
+H ≈ |  2 − 2α ψ_x²     2α φ_x ψ_x |        b = −(spatial + V′ + mixed φ_tx, ψ_tx terms)
+    |  2α φ_x ψ_x      −2α φ_x²    |        det H = −4α φ_x²
+```
+
+Two structural facts shape the stepper:
+
+- **Off-diagonal `2α φ_x ψ_x ≠ 0`** couples `φ_tt` and `ψ_tt` ⇒ the leapfrog must **invert `H` each
+  step** (no vanilla wave update). It is `∝ ψ_x`, so the static-kink+`ψ=ωt` ansatz (`ψ_x=0`)
+  **decouples** — why 0a's reduction was clean; the dynamical run is where it bites.
+- **`det H ∝ φ_x²`** ⇒ (a) **`ψ` is inertia-less in the vacuum** — it has independent dynamics only
+  where `φ_x≠0` (off the core `H` is singular, `ψ` slaved). This is the **1D shadow of "the clock lives
+  on the hedgehog where `C_μν≠0`"** (§10b / M5.6.2b) — the kernel masks/regularizes `ψ` off the core.
+  (b) **`H[1,1] = −2α φ_x² < 0`** — `ψ`'s inertia is *negative* (the `−αR²` indefinite signature): the
+  negative-energy mechanism is right there in the mass matrix (turning the clock on *lowers* energy).
+  Well-posed where `det H ≠ 0`.
+
+**M5.8.0b-3/0b-4 — the field leapfrog + the *ghost* finding (2026-06-04, `sandbox_v8/m5_8_0b_toy_leapfrog.py`).**
+Building the field stepper from the `H`/`b` above and running it confirmed both structural facts
+*numerically* — and surfaced the central one:
+
+- **Energy gate ✓ (the time crystal, dynamically).** With `ε=0` (the pure toy, which auto-localizes the
+  `ψ`-energy since `R=0` in the vacuum ⇒ `ℋ_vac=0`), the seeded static-kink+`ψ=ωt` ansatz gives
+  `E(ω*)=2.25 < E(0)=2.73` — the oscillating state is the minimum. *(2.25 vs the analytic 2.03 is the
+  standard-tanh shape vs the optimized profile, not an error.)* **A regularizing `ε(ψ_t²−ψ_x²)` is the
+  WRONG fix** — `ψ=ωt` winds over the whole box, so `ε` adds a spurious box-extensive `ε·ω²·L_box` (we
+  saw `E` jump to 14.2). The pure toy localizes `ψ`-energy for free; `ε`-reg breaks it.
+- **The `ψ`-sector is a GHOST ⇒ free evolution is ill-posed.** `H = diag(+2, −2αφ_x²)` is **indefinite**
+  (one positive, one negative eigenvalue): `ψ` is a **negative-kinetic (ghost) mode** — that *is* the
+  negative-energy propulsion made explicit. A naive **explicit** stepper of a ghost is unstable; the
+  field leapfrog blows up at `t≈1.2`, exactly where the indefinite-`H` structure predicts. So the
+  physical dynamics are **constrained** — they live on the bounded-energy manifold (the `ψ=ωt` ansatz
+  the variational 0a uses), not free ghost evolution. This is precisely Duda's "**bounded negative
+  energy — mass can't go below zero**" guard (§10c): topology bounds `E` below, so the real motion stays
+  on the constraint surface. **Consequence for M5.8.2:** the 4D Minkowski kernel has the *same*
+  indefinite `(−,+,+,+)` `Γ₀` signature ⇒ it needs a **constrained / projected** integrator, NOT a
+  vanilla explicit leapfrog. Gate (ii) "the clock holds dynamically" is therefore demonstrated with a
+  **collective-coordinate** reduction (rigorous, robust), not free field evolution — **done**
+  (`m5_8_0b_collective_clock.py`): reducing to `(w,Θ)` makes the ghost `Θ` cyclic ⇒ `p_Θ`
+  Noether-conserved ⇒ stable. It reproduces the analytic Eq.5 anchor *exactly* (`ω*=1.0712=√(70/61)`,
+  `E*=2.1257`, `E*<E(0)=2.74`); the clock holds at `ω*` with machine-precision energy conservation
+  (drift `~10⁻¹⁵`) over `t=60`, robust under a +5% width perturbation.
+
 ### 10b. The 3+1D promotion — what M5.8 actually builds (Fig.2 / paper [1] Eq.42)
 
 The toy model's `−αR²` is the 1+1D stand-in for the genuine mechanism: in the full 3+1D
@@ -723,6 +773,11 @@ M5.8.0; 4-index `F_μναβ` + Minkowski-`Γ₀` ✅ M5.8.2; electron hedgehog+t
     → a preferred resonant frequency). New candidate mechanism for *why* the `E(ω)` minimum locks at
     the de Broglie `ω`; worth probing at M5.8.3 (does the measured `ω` need noise to lock, or does the
     well alone select it?). Matches our split: topology = stability (L4), clock_twist = frequency (L7).
+    **(1D answer — M5.8.0d-b, 2026-06-04, `m5_8_0c0d_propulsion_robustness.py`: in the reduced
+    collective-coordinate model the well selects `ω*` *deterministically* — five `ω` seeds all relax to
+    `ω*=1.0712` with NO noise. So noise is *not* required for frequency-selection in 1D; the full-field
+    mode-selection version of the SR question stays open for M5.8.3. Bounded negative energy also
+    confirmed: `E>0` everywhere, `E_min=E*=2.1257>0`.)**
   - **Continuous, not bistable.** Local fields perturb the `E(ω)` minimum **slightly and
     continuously** — *not* into "an electron with 2 discrete mass states." Confirms our single-
     continuously-perturbed-clock framing (we never posited a discrete two-mass electron).
@@ -732,3 +787,70 @@ M5.8.0; 4-index `F_μναβ` + Minkowski-`Γ₀` ✅ M5.8.2; electron hedgehog+t
   toy-model `−αR²+βR⁴`). Encouraging convergence: gravity theory reaches curvature-squared from the
   *gravity* side; we have it from the *particle/LdG* side (the 4D `g`-axis, `4b §4.7`). Not an action
   item — a confidence signal that squared-curvature Lagrangians are a serious, fertile structure.
+
+### 10d. Complete-model 4D Hamiltonian — explicit form (Wolfram-article full text, 2026-06-04)
+
+The local PDF (`theory/Time crystal ϕ⁴ kink…Wolfram Community.pdf`, 14pp — the Wolfram-Community
+writeup of arXiv:2501.04036, §"Complete model candidate") spells out the **explicit** 4D Hamiltonian
+that §10b states as Eq.42. It is the load-bearing M5.8 build target, transcribed here so the
+implementation is self-contained (the roadmap M5.8 phase keeps only a summary + a pointer to this).
+
+**The Hamiltonian split (the `(−,+,+,+)` signature does the work).** From `𝓛 = −Σ_{αβμν} F_μναβ F^μναβ
+− V(M)`, `F_μναβ = [∂_μ M, ∂_ν M]_αβ` (both `μν` and `αβ` run `0–3`, time included — the `αβ` are the
+matrix indices the M5.5 `F_μν=[M_μ,M_ν]` left implicit), the Legendre transform gives:
+
+```text
+ℋ = 2 Σ_{0≤μ<ν≤3} [ Σ_{1≤α<β≤3} (F_μναβ)²  −  Σ_{α=1}^{3} (F_μνα0)² ]  +  V(M)
+      └──────── positive: spatial–spatial ────┘  └─ negative: temporal (α,0) ─┘
+```
+
+- the **positive** spatial–spatial block = the separate EM / QM / GEM curvature energies;
+- the **negative** temporal `(α,0)` block (the time-axis components, sign-flipped by the Minkowski
+  metric) = the **clock-propulsion fuel** — the genuine 3D/4D analog of the toy model's `−αR²` (§10a).
+
+**Drop `βR⁴` in 3D/4D (confirmed by the article).** The toy added `+βR⁴` *only* to stop infinite `ω`
+in 1+1D; the article states that in 3D this is "prevented by the remaining positive squared-curvature
+contributions." → **M5.8 must NOT port `βR⁴`** — the 3D spatial curvature regularizes `ω` on its own.
+
+**Generator → force map.** With `D = diag(g, 1, δ, 0)`, `g ≫ 1 ≫ δ_{~ℏ} > 0`, and the `SO(1,3)`
+connection `Γ_μ = Oᵀ∂_μO`:
+
+| Generator | Is | Gives |
+| --- | --- | --- |
+| `Γ¹` (boost into the `g` time axis) | local **boost** | gravitational mass + **GEM** (`gΓ¹Γ²`, `gΓ¹Γ³`) |
+| `Γ²`, `Γ³` (tilt of `n̂`) | EM high-energy curvature | **electromagnetism** (`Γ²Γ³`) |
+| `Γ¹`-twist (the `δ` low-energy twist) | QM phase, `U(1)→SO(3)` | **QM / clock** (`δΓ¹Γ²`, `δΓ¹Γ³`) |
+
+**Gravity = gravitoelectromagnetism (GEM).** Boost dynamics on the `g`-axis give a *second set of
+Maxwell equations* — confirmed by **Gravity Probe B** (frame-dragging):
+
+```text
+∇·E_g = −4πG ρ_g
+∇·B_g = 0
+∇×E_g = −∂_t B_g
+∇×B_g = −(4πG/c²) J_g + (1/c²) ∂_t E_g
+```
+
+This is the math behind the `4b §4.7` gravity-viz spec and `0c` L3's "gravity = a bend in time." The
+clock and gravity **co-arise from one term**: `−(δΓ¹₀ Γ̄¹_μ − δΓ¹_μ Γ̄¹₀)²` energetically prefers BOTH
+twist evolution `Γ¹₀` (the clock) AND gravitational mass `Γ̄¹` (the boost).
+
+**Reference electron-field generator (cross-check for `seed_hedgehog` + `clock_twist`).** The article's
+Mathematica builds the spinning-hedgehog `M(x)` from the standard `SO(3)` generators `Gx, Gy, Gz`:
+
+```text
+Q  = exp(φ·Gz) · exp(θ·Gy) · exp(ψ·Gx)        hedgehog: φ = atan2(y, x), θ = −atan2(√(x²+y²), z)
+M  = Q · diag(0.1, 0.01, 0.001) · Qᵀ           ψ = the CLOCK phase, swept 0 → 5π/6 (the animation)
+```
+
+Our 4D seeder should reproduce this `M(x)`; the `ψ`-sweep is the clock (the `0c` L7 / `clock.gif`
+collective mode). `D = diag(0.1, 0.01, 0.001)` is the article's `(1, δ, 0)`-style hierarchy in demo units.
+
+**Anchors.** (a) the `(E, ω)` ladder `{2.12568, 1.07123}` / `{2.03638, 1.24938}` / `{2.02515, 1.28975}`
+(polynomial degree 1/3/5) **confirms §10a / M5.8.0a verbatim**; (b) the de Broglie clock is
+**experimentally observed** — Catillon, Cue, Gaillard, Genre, Gouanère, Kirsch, Poizat, Remillieux,
+Roussel, Spighel, *"A Search for the de Broglie Particle Internal Clock by Means of Electron
+Channeling"*, **Found. Phys. 38 (2008) 659–664** (81 MeV e⁻, ⟨110⟩-Si resonance) — the empirical
+target the M5.8 `ω = 2mc²/ℏ` claim points at; (c) **neutrino = a short closed loop** (Abrikosov-vortex-
+like) of ellipsoids, excited by `π` (lepton) vs `π/3` (quark `e/3`); muon↔tau (axes 2↔3 along the loop)
+is lowest-energy → the dominant oscillation (matches the data) → M5.9.
