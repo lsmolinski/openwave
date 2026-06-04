@@ -174,9 +174,8 @@ class SimulationState:
         self.TICK_SPACING = 0.25
         self.SHOW_GRID = False
         self.SHOW_EDGES = False
-        self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
-        self.SHOW_FLUX_MESH = 0
-        self.WARP_MESH = 300
+        self.VIZ_STRIDE = 4  # sampling stride for directors AND granules (every Nth voxel)
+        self.SHOW_GLYPHS = 0  # director-glyph planes (0=off, 1=XY, 2=+XZ, 3=all)
         self.GLYPH_VECTOR = (
             0  # glyph state — 0=director only, 1=director+delta, 2=E field, 3=B field (∇×n̂)
         )
@@ -186,8 +185,9 @@ class SimulationState:
         self.GLYPH_COLOR = (
             1  # glyph color — 0=single (COLOR_MEDIUM, see far field), 1=field gradient
         )
-        self.SHOW_GLYPHS = 0  # director-glyph planes (0=off, 1=XY, 2=+XZ, 3=all)
-        self.VIZ_STRIDE = 4  # sampling stride for directors AND granules (every Nth voxel)
+        self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
+        self.SHOW_FLUX_MESH = 0
+        self.WARP_MESH = 300
         self.SHOW_GRANULES = False
         self.SIM_SPEED = 1.0
         self.PAUSED = False
@@ -260,14 +260,14 @@ class SimulationState:
         self.TICK_SPACING = ui["TICK_SPACING"]
         self.SHOW_GRID = ui["SHOW_GRID"]
         self.SHOW_EDGES = ui["SHOW_EDGES"]
-        self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
-        self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
-        self.WARP_MESH = ui["WARP_MESH"]
+        self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
         self.SHOW_GLYPHS = ui.get("SHOW_GLYPHS", 0)
         self.GLYPH_VECTOR = ui.get("GLYPH_VECTOR", 0)  # 0=director 1=+delta 2=E 3=B
         self.GLYPH_SIZE = ui.get("GLYPH_SIZE", 0)  # 0=unit, 1=field magnitude
         self.GLYPH_COLOR = ui.get("GLYPH_COLOR", 1)  # 0=single, 1=field gradient
-        self.VIZ_STRIDE = ui.get("VIZ_STRIDE", 4)
+        self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
+        self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
+        self.WARP_MESH = ui["WARP_MESH"]
         self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)
         self.PAUSED = ui["PAUSED"]
@@ -473,13 +473,7 @@ def display_controls(state):
     with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.39) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
-        state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
-        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
-        # VIZ.3 — 4-state glyph select (mutually exclusive checkboxes):
-        #   0=Director Vector (principal axis n̂ only),
-        #   1=Director + Delta Vectors (n̂ + delta cross-bar = biaxial ellipsoid frame),
-        #   2=Electric Field (+→− barb, charge-colored), 3=Magnetic Field (∇×n̂).
-        # Greek δ is spelled "Delta" — GGUI cannot render Greek glyphs.
+        state.SHOW_GLYPHS = sub.slider_int("Glyphs", state.SHOW_GLYPHS, 0, 3)
         if sub.checkbox("Director Vector", state.GLYPH_VECTOR == 0):
             state.GLYPH_VECTOR = 0
         if sub.checkbox("Director + Delta Vectors", state.GLYPH_VECTOR == 1):
@@ -498,7 +492,13 @@ def display_controls(state):
             state.GLYPH_COLOR = 1
         else:
             state.GLYPH_COLOR = 0
-        state.SHOW_GLYPHS = sub.slider_int("Planes", state.SHOW_GLYPHS, 0, 3)
+        state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
+        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 50)
+        # VIZ.3 — 4-state glyph select (mutually exclusive checkboxes):
+        #   0=Director Vector (principal axis n̂ only),
+        #   1=Director + Delta Vectors (n̂ + delta cross-bar = biaxial ellipsoid frame),
+        #   2=Electric Field (+→− barb, charge-colored), 3=Magnetic Field (∇×n̂).
+        # Greek δ is spelled "Delta" — GGUI cannot render Greek glyphs.
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)

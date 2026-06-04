@@ -66,11 +66,11 @@ XPARAMETERS = {
         "TICK_SPACING": 0.25,
         "SHOW_GRID": False,
         "SHOW_EDGES": False,
+        "VIZ_STRIDE": 2,
+        "SHOW_GLYPHS": 3,  # see the uniform director field — all glyphs parallel ẑ
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 2,
         "WARP_MESH": 0,
-        "SHOW_GLYPHS": 3,  # see the uniform director field — all glyphs parallel ẑ
-        "VIZ_STRIDE": 2,
         "SHOW_GRANULES": False,
         "SIM_SPEED": 1.0,
         "PAUSED": True,

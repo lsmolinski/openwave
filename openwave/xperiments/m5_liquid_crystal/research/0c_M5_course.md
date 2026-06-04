@@ -38,8 +38,8 @@ them.
 | [5 ✅](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
 | [6 ✅](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
 | [7 ✅](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
-| [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
-| [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
+| [8 ✅](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
+| [9 ✅](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
 | [11✅](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
@@ -1573,7 +1573,98 @@ defect sits in the energy landscape the others shape, and rolls downhill.
 > physics; what every WAVE_MENU channel shows; *+ the apolar director `n̂≡−n̂` gauge sign-flip
 > caveat*.
 
-(to be filled during the session)
+### L9 The one-sentence version
+
+Every render channel shows **one piece of `M`**: **director glyphs** = the frame's orientation (`n̂` +
+the `δ` clock-hand); the **flux-mesh color** = a scalar *observable* on three cut-planes (energy /
+charge / clock); **warp** = that scalar's height; **granules** = the director cloud. Pick the channel
+that matches the lesson — nothing here is new physics, it's the *same `M`* read out different ways.
+
+### The four render channels — what each one shows
+
+| Channel | Toggle | Renders | Best for |
+| --- | --- | --- | --- |
+| **director glyphs** | `SHOW_GLYPHS` (planes 0–3) + glyph-state 0–3 | the **frame** `O`: `n̂` arrows, the `δ` cross-bar, or E/B vectors | orientation, the clock, EM direction (L1, L2, L7, L8) |
+| **flux-mesh** | `SHOW_FLUX_MESH` + `WAVE_MENU` | a **scalar observable** colored on 3 orthogonal cut-planes | energy / charge / clock-rate (L5–L8) |
+| **warp-mesh** | `WARP_MESH` | the **height** of that scalar (z-displacement) | making a flux-mesh field's *shape* pop |
+| **granules** | `SHOW_GRANULES` | a **point-cloud** sampling the director field | the WSM/granule intuition (L1) — the "grains" of the medium |
+
+### Director glyphs — the frame itself (4 states)
+
+The glyph **direction is `n̂`** (the long axis, EM/L2); its decorations switch with the glyph-state
+(`GLYPH_VECTOR`), and `SHOW_GLYPHS` chooses how many cut-planes (0 = off, 1 = XY, 2 = +XZ, 3 = all
+three):
+
+| State | Shows | Lesson |
+| --- | --- | --- |
+| **0 — Director** | just `n̂` (the frame's long axis) | L1 / L2 — orientation, the hedgehog |
+| **1 — Director + Delta** | `n̂` **+** the cyan `δ` **cross-bar** = the `clock_twist` hand | **L7** — the clock's *spatial shadow* (a coherent sweep = ticking) |
+| **2 — Electric Field** | `+→−` barb, charge-colored | **L8** — the splay direction (`∇·n̂`) |
+| **3 — Magnetic Field (curl)** | `∇×n̂` field lines | **L8** — circulation / `B` |
+
+Plus the **YELLOW moment glyph** `m̂` (L8) — a hard-coded `+ẑ` placeholder until M5.8 sets it from the
+real circulation. *(Don't over-read the placeholder shape; the real moment is generated by the clock's
+spin.)*
+
+### The flux-mesh + `WAVE_MENU` — coloring an observable
+
+`WAVE_MENU` picks **which scalar** colors the cut-planes. The seven channels, each tied to a lesson:
+
+| WM | Label | Observable | Palette | Lesson |
+| --- | --- | --- | --- | --- |
+| **1** | Deviation (Magnitude) | how far `M` is from the vacuum shape | orange | L1 — vacuum = flat (zero everywhere) |
+| **2** | Thermal Amp (EMA RMS) | the oscillation **amplitude `A`** | ironbow | L7 — the clock's radius (the `(A,ω)` pair) |
+| **3** | Thermal Clock (ω) | the **clock rate `ω`** | blueprint | L7 — the de Broglie tick (`ω=2mc²/ℏ`) |
+| **4** | ENERGY (Hamiltonian) | `energyH` — the **full** Hamiltonian density | ironbow | L5 / L6 — mass = stored energy (the "rod") |
+| **5** | ENERGY (Frank Elastic) | `energyF` — the **director-only** elastic density | ironbow | L5 / L6 — the part that *dissipates* (M5.7.2) |
+| **6** | EM div (charge / E) | `∇·n̂` **splay** (signed) | greenyellow diverging | L8 — electric charge |
+| **7** | EM curl (rotation / B) | `‖∇×n̂‖` magnitude **or** `(∇×n̂)·ẑ` N/S | orange / bluered | L8 — magnetic field, poles |
+
+*(Relative-units caveat: WM4/WM5 read in `rel.` units, not aJ — the physical `e_scale` is pinned later,
+at M5.9 lepton calibration. WM7's radial-vs-axial projection is the L8 N/S-poles fix.)*
+
+### `warp_mesh` & granules — height and the director cloud
+
+- **`warp_mesh`** lifts the flux-mesh into the third dimension: the scalar's value becomes a
+  **z-displacement** (a height-field), so a gentle `1/r` charge cloud or an energy peak reads as
+  *terrain*. Scalar warp (height) is the default; a vector warp displaces along a field direction.
+- **granules** scatter points through the volume **sampling the director field** — the literal
+  "grains" of the medium (L1's WSM/granule reading). They make the *texture* of a defect visible where
+  glyphs would be too sparse.
+
+### The apolar gauge caveat — `n̂ ≡ −n̂`
+
+The director is **headless**: `n̂` and `−n̂` are the *same* physical state (L2). So a glyph's arrowhead
+carries **no meaning**, and the rendered sign of `n̂` can **flip** between neighbouring voxels or frames
+as a pure **gauge** artifact — *not* physics. Two rules follow:
+
+- **Read observables, not the arrow's head.** Anything physical (charge, energy, `‖∇×n̂‖`) must be
+  **gauge-stable** — built so the `n̂→−n̂` flip cancels (VIZ.1's gauge-stable charge). If a quantity
+  flips sign when `n̂` does, it's a bug, not a feature.
+- **Don't chase a sudden director sign-flip** across the screen — it's the apolarity showing, the same
+  reason the order parameter is the *matrix* `n̂⊗n̂` (which is flip-invariant), not the vector `n̂`.
+
+### Which channel for which lesson — the cheat-sheet
+
+| To see… | Use |
+| --- | --- |
+| the **vacuum** is flat | glyphs state 0 (all parallel) + any WM (blank) — the `_vacuum` xparameter |
+| a **hedgehog / charge** | WM6 (`∇·n̂`) + E-field glyphs (state 2) |
+| **mass / energy** (the rod) | WM4 (`energyH`); compare WM5 (`energyF`) to watch the dispersal |
+| the **clock** | glyph state 1 (the `δ` cross-bar) + WM3 (ω) / WM2 (A) |
+| **EM fields** | WM6 (E) & WM7 (B) + glyph states 2 & 3 |
+| **gravity** | *not yet* — the boost-`g` field + clock-rate map land at **M5.8.7** (`4b §4.7`) |
+
+### L9 Q&A / clarifications (2026-06-04)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what does each channel render? | glyphs = the frame `O`; flux-mesh = a scalar observable (`WAVE_MENU`); warp = its height; granules = the director cloud. | above |
+| 2 | what's the cyan `δ` cross-bar? | the `clock_twist` hand — glyph state 1 — the clock's *spatial shadow* (L7). | above |
+| 3 | why does the director keep flipping sign? | apolarity `n̂≡−n̂` — a pure **gauge** flip, not physics; read gauge-stable observables instead. | above |
+| 4 | charge vs B — which WAVE_MENU? | WM6 = `∇·n̂` (charge/E); WM7 = `‖∇×n̂‖` (rotation/B). | above, L8 |
+| 5 | what can't I render yet? | **gravity** (boost-`g`, M5.8.7), the **real `B`** (placeholder until M5.8), and the **coherent 4D clock** (incoherent wobble today). | above, L7/L8 |
+| 6 | why are WM4/WM5 in "rel." units? | the physical energy scale (`e_scale`) is pinned at M5.9 lepton calibration; today they're qualitative. | above |
 
 ### L9 Anchors
 
