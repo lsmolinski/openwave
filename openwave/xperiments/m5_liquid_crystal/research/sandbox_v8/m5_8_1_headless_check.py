@@ -30,7 +30,7 @@ print(f"MDIM={medium.MDIM}  LC_DELTA={medium.LC_DELTA}  LC_G={medium.LC_G}")
 
 # --- build a small field -----------------------------------------------------
 EDGE = 1e-15
-wf = medium.WaveField([EDGE, EDGE, EDGE], 24**3, [0.5, 0.5, 0.5], viz_stride=2)
+wf = medium.TensorField([EDGE, EDGE, EDGE], 24**3, [0.5, 0.5, 0.5], viz_stride=2)
 N = wf.nx
 c = N // 2
 print(f"grid {wf.nx}x{wf.ny}x{wf.nz}")
@@ -125,5 +125,27 @@ report("no NaN/inf after 30 V-on steps", np.all(np.isfinite(Mv)))
 report(f"spatial block BOUNDED (max|M_sp|={amax:.2f}, not exploding)", np.isfinite(amax) and amax < 10.0)
 report(f"g still constant (drift {np.abs(Mv[...,3,3]-g0).max():.1e})", np.abs(Mv[..., 3, 3] - g0).max() < 1e-3)
 
+# --- (5) observables path: the M-substrate kernels the GUI compute_field_observables
+#         calls (update_trackers_M + compute_energyH_density_M). The ψ-retire (M5.8
+#         cleanup) touched engine3_observables, so exercise these to catch a dropped
+#         @ti.kernel decorator (would raise "called from Python-scope"). ------------
+print("\n(5) observables kernels (update_trackers_M + compute_energyH_density_M)")
+from openwave.xperiments.m5_liquid_crystal import engine3_observables as obs
+trackers = medium.Trackers(wf.grid_size)
+observables = medium.FieldObservables(wf.grid_size)
+seeds.seed_biaxial_hedgehog_M(wf, c, c, c, 0.06 * N, 3.0, 0.30)
+pde.eigen_decompose(wf)
+ok_kernels = True
+try:
+    obs.update_trackers_M(wf, trackers, 0.05 * wf.dx_am, wf.lc_delta)
+    obs.compute_energyH_density_M(wf, observables, 0.2998, 0.05 * wf.dx_am, 0.0, 0.0, 0.0, 0.0, 1.0)
+except Exception as e:
+    ok_kernels = False
+    print(f"    EXCEPTION: {type(e).__name__}: {e}")
+report("update_trackers_M + compute_energyH_density_M run as KERNELS (not Python-scope)", ok_kernels)
+if ok_kernels:
+    eH = observables.energyH_density_aJ.to_numpy()
+    report(f"energyH density finite (max={np.abs(eH).max():.2e})", np.all(np.isfinite(eH)))
+
 print("\n  => headless check done. dV_M g-independent + bounded V-on evolve = the GUI "
-      "explosion is fixed (V_M spatial-block-only). GUI re-test confirms on screen.")
+      "explosion is fixed; observables kernels run. GUI re-test confirms on screen.")

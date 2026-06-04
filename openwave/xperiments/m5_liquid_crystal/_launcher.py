@@ -116,18 +116,6 @@ class SimulationState:
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
-        # V(ψ) coupling values — populated in compute_timestep, threaded through
-        # to V_psi via evolve_psi + compute_energyH_density. Set to 0 here so
-        # any pre-init kernel call gets free-wave behavior.
-        #   m_freq_kg_rs : Klein-Gordon mass-frequency m·c²/ℏ for the electron
-        #                  (rad/rs storage units; ~7.76e-7 at SIM_SPEED=1)
-        #                  M5.2 Step 2 activated this in V_psi + evolve_psi.
-        #   lambda_phi4  : Mexican-hat φ⁴ coupling (1/(am²·rs²)). Set to
-        #                  (c_amrs/dx_am)² for grid-scale restoring force.
-        #                  M5.2 Step 4a activated this — V = ¼λ(|ψ|²−1)²
-        #                  moves the potential minimum to the unit sphere.
-        self.m_freq_kg_rs = 0.0
-        self.lambda_phi4 = 0.0
         # M5.5.4 — Eq.13 LdG V(M)=a·Tr(M²)−b·Tr(M³)+c·(Tr(M²))² couplings for evolve_M /
         # compute_energyH_density_M. Default 0 → free curvature dynamics (V off); the exact
         # Λ=(1,δ,0)-producing values are Q7 (Duda open). Expose as xparameters later.
@@ -214,8 +202,6 @@ class SimulationState:
         self.EXPORT_VIDEO = False
         self.VIDEO_FRAMES = 24
 
-        # Optional wave seed (test xperiment only)
-        self.TEST_SEED = None
         # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
         self.TOPOLOGY_SEED = None
 
@@ -284,8 +270,6 @@ class SimulationState:
         self.EXPORT_VIDEO = diag["EXPORT_VIDEO"]
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
 
-        # Optional wave seed (only present in _test_smoke xperiment)
-        self.TEST_SEED = params.get("test_seed", None)
         # Optional topology seed (only present in _test_topology xperiment, M5.1+)
         self.TOPOLOGY_SEED = params.get("topology_seed", None)
         # M5.1 task 6 — auto-relaxation (optional; 0 = manual via RELAX button only)
@@ -305,7 +289,7 @@ class SimulationState:
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
-        self.wave_field = medium.WaveField(
+        self.wave_field = medium.TensorField(
             self.UNIVERSE_SIZE,
             self.TARGET_VOXELS,
             self.FLUX_MESH_PLANES,
@@ -314,15 +298,10 @@ class SimulationState:
         self.trackers = medium.Trackers(self.wave_field.grid_size)
         self.observables = medium.FieldObservables(self.wave_field.grid_size)
 
-        # Resolution metric: voxels-per-wavelength, declared by the active
-        # xperiment. Sources (in priority order):
-        #   1. TEST_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
-        #   2. (M5.2+) defect Compton wavelength    — particle xperiments
-        #   3. None / 0.0                           — no reference (vacuum tests)
-        if self.TEST_SEED is not None:
-            self.wave_res = float(self.TEST_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
-        else:
-            self.wave_res = 0.0
+        # Resolution metric: voxels-per-wavelength, declared by the active xperiment.
+        # (M5.8 ψ-retire: the TEST_SEED seed-driven source was removed; M5.2+ particle
+        # xperiments will set this from the defect Compton wavelength. 0.0 = no reference.)
+        self.wave_res = 0.0
 
         # Initialize wave-centers
         self.wave_center = particle.WaveCenter(
@@ -357,27 +336,11 @@ class SimulationState:
             self.wave_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
         )  # rs
         self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
-        # V(ψ) couplings — only meaningful for director-class (topology) seeds,
-        # where vacuum is |ψ|=1 (unit sphere). For wave-class seeds (TEST_SEED
-        # plane wave / Gaussian — small ψ around 0), the φ⁴ Mexican-hat with
-        # min at |ψ|=1 creates positive feedback (the (|ψ|²−1) factor ≈ −1
-        # everywhere, so the EL term pulls ψ AWAY from 0 toward the unit
-        # sphere, blowing up the small-amplitude plane wave). Gate on
-        # TOPOLOGY_SEED presence to keep wave-class xperiments (M5.0 smoke
-        # tests) on V(ψ)=0 free-wave dynamics.
+        # V(M) couplings for the matrix substrate. Only director-class (topology)
+        # seeds use a potential, so gate on TOPOLOGY_SEED presence. (M5.8 ψ-retire:
+        # the legacy V(ψ) Klein-Gordon + φ⁴ couplings m_freq_kg_rs / lambda_phi4 were
+        # removed with the Vector(3) ψ engine — V is now the LdG V(M) only.)
         if self.TOPOLOGY_SEED is not None:
-            # Klein-Gordon mass-frequency for the electron (m·c²/ℏ in rad/rs).
-            # Scales with SIM_SPEED via c_amrs so the mass-oscillation timescale
-            # stays consistent with the wave timescale under slow-motion playback.
-            self.m_freq_kg_rs = self.c_amrs / constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
-            # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
-            # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
-            # near the defect core — at λ = (c/dx)² the system NaNs around step 40
-            # of a hedgehog seed. Empirically (research/scripts/m5_2_phi4_defect_survival),
-            # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
-            # 400 steps vs [0.73, 1.21] for free-wave). 0.3·(c/dx)² is the
-            # marginal stability ceiling at the production grid.
-            self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
             # M5.6.5c — Eq.13 LdG V(M) coupling for the matrix substrate (evolve_M /
             # compute_energyH_density_M). The b=0 amplitude well V = a·Tr(M²) + c·(Tr(M²))²
             # pins Tr(M²)→s₂*=1+δ² — confines the energy seen diluting under Evolve PDE —
@@ -403,10 +366,7 @@ class SimulationState:
             else:
                 self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         else:
-            # Wave-class seed (TEST_SEED plane wave) — disable V(ψ) entirely
-            # so evolve_psi runs the free-wave equation `∂²ψ/∂t² = c²·∇²ψ`.
-            self.m_freq_kg_rs = 0.0
-            self.lambda_phi4 = 0.0
+            # No topology seed → no potential (free curvature dynamics, V = 0).
             self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
 
     def reset_sim(self):
@@ -416,8 +376,6 @@ class SimulationState:
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
-        self.m_freq_kg_rs = 0.0
-        self.lambda_phi4 = 0.0
         self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
@@ -695,19 +653,8 @@ def initialize_xperiment(state):
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
-    # Optional initial-condition seed for test xperiments
-    if state.TEST_SEED is not None:
-        seed = state.TEST_SEED
-        polarization = ti.Vector(seed["POLARIZATION"], dt=ti.f32)
-        seeds.seed_gaussian(
-            state.wave_field,
-            state.c_amrs,
-            state.dt_rs,
-            seed["AMPLITUDE_AM"],
-            seed["VOXELS_PER_WAVELENGTH"],
-            polarization,
-            seed["DIRECTION_AXIS"],
-        )
+    # (M5.8 ψ-retire: the legacy TEST_SEED Gaussian/plane-wave seeding path was
+    # removed with the Vector(3) ψ engine — all live xperiments use TOPOLOGY_SEED.)
 
     # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
     if state.TOPOLOGY_SEED is not None:
@@ -799,9 +746,9 @@ def relax_field(state, n_steps):
     """Run N gradient-descent relaxation steps on the director field (M5.1 task 6).
 
     Lowers the Frank elastic energy by smoothing the seeded hedgehog blend
-    zone, while preserving topology via soft-core pinning. After all N steps,
-    psi_am and psi_prev_am hold the same relaxed field so subsequent
-    EVOLVE PSI sees ψ̇ = 0 (no spurious time-derivative artifact).
+    zone, while preserving topology via soft-core pinning. relax_director_step
+    writes director_nhat_new; rebuild_M_from_director then writes all three M
+    buffers equal (Ṁ = 0) so subsequent Evolve PDE starts from a static state.
 
     Args:
         state: SimulationState with wave_field + pin_centers/signs/n_defects
@@ -820,7 +767,7 @@ def relax_field(state, n_steps):
     for _ in range(n_steps):
         pde.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
         # M5.4: relaxation operates on director_nhat (the principal eigenvector of M).
-        # Copy the relaxed director back. NOT swap_buffers — static update.
+        # Copy the relaxed director back. NOT a buffer swap — static update.
         wf.director_nhat.copy_from(wf.director_nhat_new)
     # Rebuild M from the relaxed director so M_am, the ‖M−D‖/‖Ṁ‖ trackers, and the
     # flux-mesh orientation mode stay consistent with the relaxed director.

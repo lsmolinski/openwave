@@ -99,7 +99,7 @@ def compute_force_vector(
     scale_factor).
 
     Args:
-        wave_field: WaveField instance (used for dx_am and grid dims)
+        wave_field: TensorField instance (used for dx_am and grid dims)
         observables: FieldObservables instance — reads `energyH_density_aJ`
             (populated by engine3_observables.compute_energyH_density before
             this kernel)
@@ -204,7 +204,7 @@ def integrate_motion_euler(
     x_new = x_old + v_new * dt  (position in grid indices)
 
     Args:
-        wave_field: WaveField instance (for dx voxel size)
+        wave_field: TensorField instance (for dx voxel size)
         wave_center: WaveCenter instance with force/velocity/position fields
         dt_rs: Timestep in rontoseconds
     """
@@ -327,7 +327,7 @@ def integrate_motion_leapfrog(
     This is equivalent to standard leapfrog and is symplectic.
 
     Args:
-        wave_field: WaveField instance (for dx voxel size)
+        wave_field: TensorField instance (for dx voxel size)
         wave_center: WaveCenter instance with force/velocity/position fields
         dt_rs: Timestep in rontoseconds
     """

@@ -36,22 +36,19 @@ def plot_probe_wave_profile(wave_field):
     Plot the displacement profile along the x-axis through the probe position.
 
     Args:
-        wave_field: WaveField instance containing displacement data
+        wave_field: TensorField instance containing displacement data
     """
 
     # Define probe position
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
-    # Extract displacement along x-axis at center (y, z).
-    # ψ is Vector(3); plot magnitude (|ψ|) — single scalar per voxel.
-    # M5.0d.3: removed broken references to `velocity_am` (field doesn't exist
-    # in M5) and to a "transverse" component (M5 doesn't decompose L/T at the
-    # storage layer — that lives in derived observables).
+    # Extract the M-substrate "displacement" along x-axis at center (y, z).
+    # M5.8 ψ-retire: the Vector(3) ψ field is gone; the director-substrate analog of
+    # displacement is the in-plane tilt of the director n̂ away from the ẑ vacuum,
+    # √(n_x²+n_y²) — zero in the uniaxial vacuum, rises inside a defect.
     x_indices = np.arange(wave_field.nx)
-    displacements = np.zeros(wave_field.nx)
-
-    for i in range(wave_field.nx):
-        displacements[i] = float(wave_field.psi_am[i, py, pz].norm())
+    dn = wave_field.director_nhat.to_numpy()
+    displacements = np.hypot(dn[:, py, pz, 0], dn[:, py, pz, 1])
 
     distances = x_indices - px
 
@@ -64,12 +61,12 @@ def plot_probe_wave_profile(wave_field):
         displacements,
         color=colormap.viridis_palette[2][1],
         linewidth=2,
-        label="|ψ| (am)",
+        label="director tilt √(nx²+ny²)",
     )
     plt.axhline(y=0, color="w", linestyle="--", alpha=0.3)
     plt.axvline(x=0, color="r", linestyle="--", alpha=0.3)
     plt.xlabel("Distance from probe center (grid indices)", family="Monospace")
-    plt.ylabel("|ψ| (am)", family="Monospace")
+    plt.ylabel("director tilt √(nx²+ny²)", family="Monospace")
     plt.title("WAVE PROFILE", family="Monospace")
     plt.grid(True, alpha=0.3)
     plt.legend()
@@ -87,7 +84,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
 
     Args:
         timestep: Current simulation timestep
-        wave_field: WaveField instance
+        wave_field: TensorField instance
         trackers: Trackers instance
     """
     global _timestep_buffer, _timestep_log_initialized
@@ -96,11 +93,10 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
     # Capture probe values
-    # ψ is a Vector(3); record its magnitude for a single CSV scalar column.
-    # M5.0d.3: scale_factor was removed — values are now recorded in their native
-    # storage units (am, rHz). M5.2+ may revisit signed-component logging once
-    # polarization conventions are settled.
-    displacement_am = float(wave_field.psi_am[px, py, pz].norm())
+    # M5.8 ψ-retire: ψ is gone; record the director in-plane tilt √(nx²+ny²) as the
+    # M-substrate displacement analog (the ‖M−D‖_F amplitude is logged below too).
+    dn = wave_field.director_nhat[px, py, pz]
+    displacement_am = float(np.hypot(dn[0], dn[1]))
     amp_local_emarms_am = float(trackers.amp_local_emarms_am[px, py, pz])
     freq_local_cross_rHz = float(trackers.freq_local_cross_rHz[px, py, pz])
 
@@ -203,14 +199,14 @@ def plot_probe_values():
     fig = plt.figure(figsize=(9, 7), facecolor=colormap.DARK_GRAY[1])
     fig.suptitle("OPENWAVE Analytics", fontsize=20, family="Monospace")
 
-    # Plot 1: |ψ| Displacement + RMS Amplitude over time (top)
+    # Plot 1: director-tilt displacement + RMS amplitude over time (top)
     plt.subplot(2, 1, 1)
     plt.plot(
         data["timesteps"],
         data["displacements"],
         color=colormap.viridis_palette[2][1],
         linewidth=2,
-        label="|ψ| (am)",
+        label="director tilt",
     )
     plt.plot(
         data["timesteps"],

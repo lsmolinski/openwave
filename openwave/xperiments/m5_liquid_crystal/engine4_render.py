@@ -501,18 +501,19 @@ def update_moment_glyph(
 # The flux mesh is a VISUALIZATION layer — it converts simulation-side
 # scalars/vectors to per-vertex colors and Z-axis warps so the user can "see"
 # what the field is doing. It is not physics; nothing here feeds back into
-# evolve_psi or any tracker. Treat it as a display driver.
+# evolve_M or any tracker. Treat it as a display driver.
 #
 # VECTOR-FIELD RENDERING NUANCE (worth remembering when M5.0g+ adds new
 # wave_menu options for energy density, curl, divergence, energy flux,
 # etc.):
 #
-# ψ is a Vector(3) field, but the flux mesh maps every voxel to ONE scalar
-# (one color, one Z-warp height). The current "Displacement (Magnitude)"
-# mode renders |ψ| = ψ.norm(). For a y-polarized seed ψ_y = A·sin(k·x):
+# The M substrate yields vector observables (the director n̂, ∇·n̂, ∇×n̂, force
+# vectors), but the flux mesh maps every voxel to ONE scalar (one color, one
+# Z-warp height). A magnitude projection |v| = v.norm() rectifies a signed field
+# — e.g. for a y-polarized v_y = A·sin(k·x):
 #
-#     |ψ| = A·|sin(k·x)|         period λ/2 — looks like 2× as many bumps
-#     ψ_y = A· sin(k·x)          period λ — the "true" sinusoid (signed)
+#     |v| = A·|sin(k·x)|         period λ/2 — looks like 2× as many bumps
+#     v_y = A· sin(k·x)          period λ — the "true" sinusoid (signed)
 #
 # Magnitude is the right scalar for energy-density-style observables (always
 # positive, ∝ |ψ|²) but rectifies signed waves and visually doubles their
@@ -526,7 +527,7 @@ def update_moment_glyph(
 #
 # For the flux mesh specifically (one scalar per vertex), each new wave_menu
 # entry should pick one explicitly and not silently fall back to .norm().
-# This becomes important once we have curl(ψ), force vectors, energy flux,
+# This becomes important once we have curl(n̂), force vectors, energy flux,
 # etc. — all of which are vector quantities that need a deliberate scalar
 # projection to be rendered.
 
@@ -608,7 +609,7 @@ def update_flux_mesh_values(
     Should be called every frame after wave propagation to update visualization.
 
     Args:
-        wave_field: WaveField instance with flux mesh fields and ψ data
+        wave_field: TensorField instance with flux mesh fields and ψ data
         trackers: Trackers — reads amp/freq (WAVE_MENU 2 / 3 + colormap range)
         observables: FieldObservables — reads energyH/energyF (WAVE_MENU 4 / 5)
         wave_menu: Selected Wave displayed with color palette

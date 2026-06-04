@@ -2,115 +2,19 @@
 M5 ENGINE — FIELD OBSERVABLES (engine3_observables)
 
 Derived measurements computed from the field each frame:
-  - update_trackers          per-voxel amplitude/frequency EMA (Trackers)
-  - compute_energyH_density  Hamiltonian energy density (FieldObservables)
-  - compute_energyF_density  Frank elastic energy density
-  - compute_winding_number   topological charge Q on a sphere (CPU numpy)
-  - sample_avg_* + helpers   3-plane global aggregates
+  - update_trackers_M          per-voxel ‖M−D‖_F amplitude + ‖Ṁ‖_F clock (Trackers)
+  - compute_energyH_density_M  Hamiltonian energy density (FieldObservables)
+  - compute_energyF_density    Frank elastic energy density
+  - compute_winding_number     topological charge Q on a sphere (CPU numpy)
+  - sample_avg_* + helpers     3-plane global aggregates
 
-Depends on engine2_pde (V_psi, used by compute_energyH_density).
+Depends on engine2_pde (V_M, used by compute_energyH_density_M).
 """
 
 import taichi as ti
 import numpy as np
 
 from . import engine2_pde as pde
-
-# ================================================================
-# TRACKERS — PER-VOXEL AMPLITUDE & FREQUENCY
-# ================================================================
-# Trackers run after evolve_psi each step. They derive observable scalars
-# from ψ (the field) without touching it — read-only on psi_am, write to the
-# tracker fields in-place. EMA / zero-crossing logic preserved from M4 but
-# adapted to vector ψ:
-#   - amp_local_emarms_am  : RMS of |ψ| over recent history (EMA on |ψ|²)
-#   - freq_local_cross_rHz : zero-crossing rate of ψ_z (chosen polarization axis)
-#
-# PERFORMANCE NOTE (deferred to M5.0i): this is a SECOND full-grid pass over
-# ψ — evolve_psi already touched every voxel; we re-stream ψ and ψ_prev
-# from memory just to compute trackers. At 100M voxels this costs ~5 GB of
-# extra memory bandwidth per step (~25–30% of total per-step traffic).
-#
-# M2 avoided this by computing trackers INSIDE the same loop as the wave
-# update, but M2's wave kernel was analytical (no neighbor dependency), so
-# trackers could read the just-written ψ trivially. M5's leapfrog can do the
-# same: in a merged kernel, write ψ_new then immediately use it (with
-# ψ_prev already in registers) for tracker EMA / zero-crossing — gives true
-# central-difference ψ̇ for free, more accurate than the forward diff used
-# below (psi_new gets consumed by swap_buffers before update_trackers
-# can see it, so we fall back to (ψ − ψ_prev) / dt here).
-#
-# Splitting was deliberate for M5.0d: cleaner kernel boundaries, AMR-ready
-# (octree retrofit in M5.6/M5.8 prefers single-purpose kernels), and trackers
-# are skippable in tests (e.g., M5.0h dispersion regression). Profile-first
-# in M5.0i — alongside swap_buffers' rotating-pointer optimization (see
-# medium.py:swap_buffers docstring), this is the second-largest known
-# bandwidth target on the per-step path.
-
-
-@ti.kernel
-def update_trackers(
-    wave_field: ti.template(),  # type: ignore
-    trackers: ti.template(),  # type: ignore
-    dt_rs: ti.f32,  # type: ignore
-    elapsed_t_rs: ti.f32,  # type: ignore
-):
-    """
-    Update per-voxel amplitude and frequency trackers from ψ.
-
-    Reads: wave_field.psi_am, wave_field.psi_prev_am
-    Writes: trackers.amp_local_emarms_am,
-            trackers.freq_local_cross_rHz,
-            trackers.last_crossing
-
-    Amplitude:
-        |ψ|² is the squared vector magnitude (scalar). EMA:
-            rms² ← α·|ψ|² + (1−α)·rms²_old
-        with a small unconditional decay so stale regions fade.
-
-    Frequency:
-        Zero crossing tracked on ψ_z (polarization axis chosen by convention).
-        Detect sign change between psi_prev and psi: positive-going crossing
-        marks one period boundary. Period_rs = elapsed − last_crossing,
-        smoothed via EMA. If no crossing: untouched, decays naturally.
-
-    Note: vector polarization is unknown a priori — using ψ_z as the canonical
-    crossing channel. For radial wave-center fields (annihilation1) this is
-    the longitudinal component near the equator; for wave seeds along x
-    with ŷ polarization, ψ_z stays at 0, so freq tracker stays at base value.
-    M5.0e will replace this with magnitude-zero-crossing or per-component tracking.
-    """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
-    decay = ti.cast(0.999, ti.f32)  # ~1000 frames to ~37%
-    alpha_rms = ti.cast(0.005, ti.f32)
-    alpha_freq = ti.cast(0.05, ti.f32)
-    min_period_rs = ti.cast(2.0, ti.f32) * dt_rs
-
-    for i, j, k in ti.ndrange(nx, ny, nz):
-        # RMS amplitude via EMA on |ψ|²
-        psi_curr = wave_field.psi_am[i, j, k]
-        psi_prev = wave_field.psi_prev_am[i, j, k]
-        psi2 = psi_curr.norm_sqr()
-        rms2_old = trackers.amp_local_emarms_am[i, j, k] ** 2
-        rms2_new = alpha_rms * psi2 + (1.0 - alpha_rms) * rms2_old
-        trackers.amp_local_emarms_am[i, j, k] = ti.sqrt(rms2_new) * decay
-
-        # Zero-crossing frequency on ψ_z (canonical channel)
-        prev_z = psi_prev[2]
-        curr_z = psi_curr[2]
-        if prev_z < 0.0 and curr_z >= 0.0:
-            period_rs = elapsed_t_rs - trackers.last_crossing[i, j, k]
-            if period_rs > min_period_rs:
-                measured_freq = 1.0 / period_rs
-                old_freq = trackers.freq_local_cross_rHz[i, j, k]
-                trackers.freq_local_cross_rHz[i, j, k] = (
-                    alpha_freq * measured_freq + (1.0 - alpha_freq) * old_freq
-                )
-            trackers.last_crossing[i, j, k] = elapsed_t_rs
-
-        # Unconditional frequency decay (counteracted by zero-crossing updates)
-        trackers.freq_local_cross_rHz[i, j, k] = trackers.freq_local_cross_rHz[i, j, k] * decay
-
 
 # ================================================================
 # MATRIX-SUBSTRATE TRACKERS (M5.4) — amplitude ‖M−D‖_F + clock ‖Ṁ‖_F
@@ -142,7 +46,7 @@ def update_trackers_M(
             trackers.freq_local_cross_rHz (EMA of ‖Ṁ‖_F        — clock ω / thermal ω)
 
     Args:
-        wave_field: WaveField (reads M_am, M_prev_am)
+        wave_field: TensorField (reads M_am, M_prev_am)
         trackers: Trackers (writes the per-voxel amp/freq EMA fields)
         dt_rs: timestep (rs) — divides ‖M − M_prev‖_F to give the rate ‖Ṁ‖_F
         delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta) → D_vac diagonal
@@ -177,90 +81,6 @@ def update_trackers_M(
         trackers.freq_local_cross_rHz[i, j, k] = (
             alpha_freq * mdot_mag + (1.0 - alpha_freq) * old_freq
         ) * decay
-
-
-# ================================================================
-# ENERGY DENSITY (HAMILTONIAN) — PER-VOXEL ENERGY FIELD
-# ================================================================
-# H(x) = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
-#
-# Naming convention: the quantity stored is ENERGY density (aJ per voxel).
-# The "_H" suffix tags which formula was used to compute it (Hamiltonian).
-# Future formulas would parallel: `_L` for Lagrangian density, `_K` for
-# kinetic-only, etc.
-#
-# Populated by compute_energyH_density into observables.energyH_density_aJ
-# each step; consumed by:
-#   - force_motion.compute_force_vector  → F = −∇E per wave-center
-#   - sample_avg_trackers (below)         → 3-plane mean → dashboard total
-#   - launcher WAVE_MENU=4 flux mesh      → visualization
-#
-# This is a third full-grid pass per step (alongside evolve_psi and
-# update_trackers). Performance optimization (merge into evolve_psi)
-# is M5.0i territory; we land it as a separate kernel for clarity in M5.0g.
-
-
-@ti.kernel
-def compute_energyH_density(
-    wave_field: ti.template(),  # type: ignore
-    observables: ti.template(),  # type: ignore
-    c_amrs: ti.f32,  # type: ignore
-    dt_rs: ti.f32,  # type: ignore
-    m_freq_rs: ti.f32,  # type: ignore
-    lambda_phi4: ti.f32,  # type: ignore
-):
-    """
-    Compute per-voxel energy density (Hamiltonian formula) into
-    observables.energyH_density_aJ.
-    H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
-
-    Reads:  wave_field.psi_am, wave_field.psi_prev_am
-    Writes: observables.energyH_density_aJ
-
-    Boundary handling: 1-cell halo (gradient stencil); boundary voxels left
-    at zero (Dirichlet BC in ψ ⇒ ψ ≈ 0 at edges ⇒ H ≈ 0 trivially).
-
-    Kinetic ψ̇ uses forward difference (ψ − ψ_prev)/dt because psi_new is
-    consumed by swap_buffers before this kernel runs — same compromise as
-    update_trackers. Central-difference ψ̇ becomes available once those
-    two kernels are merged into evolve_psi (M5.0i optimization).
-
-    PHYSICAL-SCALING TODO — M5.2: the field is currently named `_aJ` but
-    actually stores `(am/rs)²` per voxel — the kernel writes raw kinematic
-    Hamiltonian density without the physical-energy conversion factor
-    (ρ_medium × voxel_volume_am³ × INTERNAL_ENERGY_TO_AJ ≈ matches M4's
-    `E = ρ·V·(f·A)²` formula). Sufficient for M5.0g–M5.0i because:
-      (a) F = −∇E only depends on the gradient (ratios survive scaling)
-      (b) Tests against Exp 4 KG dispersion check ω(k), not absolute E
-    But once M5.2 introduces V(ψ) terms with explicit dimensional
-    couplings (Klein-Gordon mass, Close Eq. 23, LdG potential), we MUST
-    apply the physical-scaling factor here so the V term and the
-    kinetic+gradient terms add in the same units. See dashboard "(rel.)"
-    labels in _launcher.py for the corresponding display caveat.
-    """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
-    inv_dt = 1.0 / dt_rs
-    half_c2 = 0.5 * c_amrs**2
-    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
-
-    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        psi = wave_field.psi_am[i, j, k]
-        psi_prev = wave_field.psi_prev_am[i, j, k]
-
-        # Kinetic: ½ |ψ̇|²
-        psi_dot = (psi - psi_prev) * inv_dt
-        kinetic = 0.5 * psi_dot.norm_sqr()
-
-        # Gradient: ½ c² |∇ψ|²  (central-difference on each axis, component-wise)
-        d_dx = (wave_field.psi_am[i + 1, j, k] - wave_field.psi_am[i - 1, j, k]) * inv_2dx
-        d_dy = (wave_field.psi_am[i, j + 1, k] - wave_field.psi_am[i, j - 1, k]) * inv_2dx
-        d_dz = (wave_field.psi_am[i, j, k + 1] - wave_field.psi_am[i, j, k - 1]) * inv_2dx
-        gradient = half_c2 * (d_dx.norm_sqr() + d_dy.norm_sqr() + d_dz.norm_sqr())
-
-        # Potential: V(ψ) — KG mass term (Step 2) + Mexican-hat φ⁴ (Step 4a)
-        potential = pde.V_psi(psi, m_freq_rs, lambda_phi4)
-
-        observables.energyH_density_aJ[i, j, k] = kinetic + gradient + potential
 
 
 @ti.kernel
@@ -521,7 +341,7 @@ def compute_winding_number(
 
     Args:
         psi_np: (nx, ny, nz, 3) numpy array of director-field values
-                (typically `wave_field.psi_am.to_numpy()`).
+                (typically `wave_field.director_nhat.to_numpy()`).
         center_vox: (cx, cy, cz) tuple of voxel-coord defect center.
         radius_vox: sphere radius in voxel units. Should be small enough that
                     the sphere fits inside the grid but large enough to be
@@ -727,7 +547,7 @@ def sample_avg_trackers(
     separation of concerns.
 
     Args:
-        wave_field: WaveField (grid dimensions)
+        wave_field: TensorField (grid dimensions)
         trackers: Trackers (reads amp/freq per-voxel fields; writes the two
             global aggregates)
     """
@@ -789,7 +609,7 @@ def sample_avg_observables(
     FieldObservables is self-contained.
 
     Args:
-        wave_field: WaveField (grid dimensions)
+        wave_field: TensorField (grid dimensions)
         observables: FieldObservables (reads energyH/energyF per-voxel fields;
             writes the two global aggregates)
     """
