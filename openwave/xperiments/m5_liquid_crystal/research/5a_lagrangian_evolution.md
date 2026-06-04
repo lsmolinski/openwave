@@ -652,6 +652,56 @@ This verifies our understanding of the energy functional before any 4D build.
 > system each step) or a constrained scheme. The Euler–Lagrange equations are left in Mathematica
 > in the paper (Fig.3, not transcribed) — derive + confirm them before coding the kernel.
 
+**M5.8.0b-1/0b-2 — the EOM derived + verified (2026-06-04, `sandbox_v8/m5_8_0b_eom_derivation.py`).**
+The coupled Euler–Lagrange equations + the Legendre inversion confirm all three checks: the
+Hamiltonian reduces to the 0a energy under the static-kink+`ψ=ωt` ansatz ✓, the `ψ`-EL is a pure
+conservation law (`∂ℒ/∂ψ=0`, a Noether current) ✓, and `dE/dω=0` recovers `ω*²=αI₂/(2βI₄)` (Eq.4) ✓.
+The kernel update is `H·[φ_tt, ψ_tt]ᵀ = b` with the **non-canonical mass matrix** (leading order in the
+`−αR²` mechanism):
+
+```text
+H ≈ |  2 − 2α ψ_x²     2α φ_x ψ_x |        b = −(spatial + V′ + mixed φ_tx, ψ_tx terms)
+    |  2α φ_x ψ_x      −2α φ_x²    |        det H = −4α φ_x²
+```
+
+Two structural facts shape the stepper:
+
+- **Off-diagonal `2α φ_x ψ_x ≠ 0`** couples `φ_tt` and `ψ_tt` ⇒ the leapfrog must **invert `H` each
+  step** (no vanilla wave update). It is `∝ ψ_x`, so the static-kink+`ψ=ωt` ansatz (`ψ_x=0`)
+  **decouples** — why 0a's reduction was clean; the dynamical run is where it bites.
+- **`det H ∝ φ_x²`** ⇒ (a) **`ψ` is inertia-less in the vacuum** — it has independent dynamics only
+  where `φ_x≠0` (off the core `H` is singular, `ψ` slaved). This is the **1D shadow of "the clock lives
+  on the hedgehog where `C_μν≠0`"** (§10b / M5.6.2b) — the kernel masks/regularizes `ψ` off the core.
+  (b) **`H[1,1] = −2α φ_x² < 0`** — `ψ`'s inertia is *negative* (the `−αR²` indefinite signature): the
+  negative-energy mechanism is right there in the mass matrix (turning the clock on *lowers* energy).
+  Well-posed where `det H ≠ 0`.
+
+**M5.8.0b-3/0b-4 — the field leapfrog + the *ghost* finding (2026-06-04, `sandbox_v8/m5_8_0b_toy_leapfrog.py`).**
+Building the field stepper from the `H`/`b` above and running it confirmed both structural facts
+*numerically* — and surfaced the central one:
+
+- **Energy gate ✓ (the time crystal, dynamically).** With `ε=0` (the pure toy, which auto-localizes the
+  `ψ`-energy since `R=0` in the vacuum ⇒ `ℋ_vac=0`), the seeded static-kink+`ψ=ωt` ansatz gives
+  `E(ω*)=2.25 < E(0)=2.73` — the oscillating state is the minimum. *(2.25 vs the analytic 2.03 is the
+  standard-tanh shape vs the optimized profile, not an error.)* **A regularizing `ε(ψ_t²−ψ_x²)` is the
+  WRONG fix** — `ψ=ωt` winds over the whole box, so `ε` adds a spurious box-extensive `ε·ω²·L_box` (we
+  saw `E` jump to 14.2). The pure toy localizes `ψ`-energy for free; `ε`-reg breaks it.
+- **The `ψ`-sector is a GHOST ⇒ free evolution is ill-posed.** `H = diag(+2, −2αφ_x²)` is **indefinite**
+  (one positive, one negative eigenvalue): `ψ` is a **negative-kinetic (ghost) mode** — that *is* the
+  negative-energy propulsion made explicit. A naive **explicit** stepper of a ghost is unstable; the
+  field leapfrog blows up at `t≈1.2`, exactly where the indefinite-`H` structure predicts. So the
+  physical dynamics are **constrained** — they live on the bounded-energy manifold (the `ψ=ωt` ansatz
+  the variational 0a uses), not free ghost evolution. This is precisely Duda's "**bounded negative
+  energy — mass can't go below zero**" guard (§10c): topology bounds `E` below, so the real motion stays
+  on the constraint surface. **Consequence for M5.8.2:** the 4D Minkowski kernel has the *same*
+  indefinite `(−,+,+,+)` `Γ₀` signature ⇒ it needs a **constrained / projected** integrator, NOT a
+  vanilla explicit leapfrog. Gate (ii) "the clock holds dynamically" is therefore demonstrated with a
+  **collective-coordinate** reduction (rigorous, robust), not free field evolution — **done**
+  (`m5_8_0b_collective_clock.py`): reducing to `(w,Θ)` makes the ghost `Θ` cyclic ⇒ `p_Θ`
+  Noether-conserved ⇒ stable. It reproduces the analytic Eq.5 anchor *exactly* (`ω*=1.0712=√(70/61)`,
+  `E*=2.1257`, `E*<E(0)=2.74`); the clock holds at `ω*` with machine-precision energy conservation
+  (drift `~10⁻¹⁵`) over `t=60`, robust under a +5% width perturbation.
+
 ### 10b. The 3+1D promotion — what M5.8 actually builds (Fig.2 / paper [1] Eq.42)
 
 The toy model's `−αR²` is the 1+1D stand-in for the genuine mechanism: in the full 3+1D
