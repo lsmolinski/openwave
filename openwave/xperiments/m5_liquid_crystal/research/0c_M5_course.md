@@ -37,7 +37,7 @@ them.
 | [4 ✅](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
 | [5 ✅](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
 | [6 ✅](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
-| [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
+| [7 ✅](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
@@ -1425,63 +1425,133 @@ outcome + a falsifiable **test**, in M5's least-developed sector.
 > *magnetism as a dynamical (relativistic) correction to Coulomb between moving charges (Feynman
 > framing) vs the permanent magnet's static B from aligned spin-topology (no moving charge needed)*.
 
-(to be filled during the session)
+### L8 The one-sentence version
 
-> **Prerequisite from L2:** the **three Frank distortion modes** (splay `∇·n̂` = electric; `frank_twist` + bend `∇×n̂` = magnetic) and the **two-meanings-of-"twist"** correction (`frank_twist` of `n̂` in
-> space vs the QM `clock_twist` of the δ-axis in time) are unpacked in `0c §L2` ("The three Frank
-> distortion modes"). The causal link — *`clock_twist` spins → magnetic moment → circulating B → `∇×n̂`
-> lights up* — is the spine of the magnetic-moment story below.
->
-> **★ MAGNETIC MOMENT — dedicated unpack (Rodrigo flagged 2026-05-30: "I still don't fully grasp
-> it").** Teach this against **Duda's electron slide** (`Screenshot 2026-05-28 at 3.15.48 PM` — the
-> one with the bar magnet `m`, the `B` field lines, the spin axis + `ω` Larmor inset). That slide is
-> literally the L8 target picture: **electric charge** `E ∝ 1/r²` (left), **magnetic dipole** `B ∝
-> 1/r³` (center bar magnet), and the **gyroscope / spin** `L = ℏ/2` ticking at the Zitterbewegung
-> `ω ≈ 2mc²/ℏ` (right). All three are *the same defect* seen through three observables.
->
-> *Questions to answer in L8 so the moment clicks (relate each to what we built in the VIZ.4 session
-> 2026-05-30):*
->
-> | Question | Tie to what we built / where it lives |
-> | --- | --- |
-> | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the `clock_twist` δ-axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
-> | **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
-> | **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
-> | **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 thermal A/ω (the spin rate, L7). |
-> | **Why does B fall off so much faster than E?** (see the falloff headsup below — careful: field ≠ force ≠ our observable) | The `1/r³` (B) vs `1/r` (our `∇·n̂` E observable) gap is exactly why the B viz needed a different colormap calibration (γ-spread). |
-> | **Permanent magnet (Q8) — static B, no moving charge?** Aligned spin-topology: many defects with their moments `m̂` locked parallel ⇒ macroscopic static `B`. No *translating* charge needed — the "current" is the frozen collective spin (the L7 collective mode). | Forward link to the L7 collective mode + the M5.8 multi-defect work (5e). |
->
-> **★ FALLOFF HEADSUP (Rodrigo 2026-05-31) — don't conflate field / force / our observable.** The
-> question "B ∝ 1/r³ vs E ∝ 1/r?" mixes three different things. Keep them separate:
->
-> | | Electric | Magnetic | Gravitational |
-> | --- | --- | --- | --- |
-> | **What we RENDER** (glyph/mesh observable) | `∇·n̂` splay — hedgehog `n̂=r̂` ⇒ `2/r` → **1/r** | placeholder dipole `B` → **1/r³** | *not yet* — the boost-`g` field, M5.8 4D (`4b §4.7`) |
-> | **Real FIELD of a point source** | charge (monopole): `E ∝ 1/r²` | dipole (no monopole): `B ∝ 1/r³` | mass (monopole): `g ∝ 1/r²` |
-> | **Real FORCE law** | Coulomb: `F ∝ 1/r²` | dipole–dipole: `F ∝ 1/r⁴` | Newton: `F ∝ 1/r²` |
->
-> So: ✅ our **B observable** is `1/r³` and our **E observable** is `1/r` (this IS why the B viz
-> collapsed to black under a linear map — 9× steeper). ❌ but the real **electric field/force is
-> `1/r²`** (Coulomb), NOT `1/r`; the `1/r` is specifically our `∇·n̂` *splay* observable, which
-> tracks the Coulomb **potential** (∝1/r), not the field. In M5 the actual Coulomb behavior showed
-> up as the **interaction energy** `E(d) ∝ 1/d` between two defects (M5.1/M5.4), so the force
-> `−dE/dr ∝ 1/r²`. **Why magnetic *starts* steeper:** nature has electric monopoles (charges) →
-> the E series starts at `1/r²`; it has **no magnetic monopole** → the B series starts one multipole
-> higher, at the **dipole** = `1/r³`. Compare like-for-like and the asymmetry vanishes: an electric
-> *dipole* field also falls as `1/r³`. (Quadrupole `1/r⁴`, etc.)
->
-> **Gravity is the third case — and it's a monopole, like electricity.** Mass is a gravitational
-> "charge" with only ONE sign (always positive ⇒ always attractive), so the gravitational field is a
-> **monopole**: `g ∝ 1/r²`, force `F ∝ 1/r²` — the SAME falloff as the electric charge. So the family
-> is: **monopole fields (electric charge, mass) → `1/r²`; dipole field (magnetism, no monopole) →
-> `1/r³`.** When OpenWave renders gravity (M5.8 4D, the boost-`g` axis; viz spec in `4b §4.7`), expect
-> it to spread on screen like E (gentle `1/r²`), not like the steep `1/r³` B that needed γ-compression
-> — and use a single-sign sequential palette (no ± / bluered), since there's no "negative mass".
->
-> Optional hands-on when teaching: launch **`_viz_sample_dipole`**, toggle WM7 bluered (radial N/S),
-> flip to the Magnetic-Field glyphs (state 3, field lines), and watch the YELLOW `m̂` — then state
-> plainly that this is a *placeholder shape*; the real moment is *generated by* the clock's spin at
-> M5.8. The point of the session was to make the *picture* legible before the physics produces it.
+Every force is the substrate's frame **bending** in a different way: **electric** = the director
+**splaying** (`∇·n̂`, a charge); **magnetic** = the director **circulating** (`∇×n̂` = `frank_twist` +
+bend, lit up by the clock's spin); **gravity** = the frame **boosting into the time axis** (the `g`-axis,
+GEM). What you *feel* is always the mechanical pull `F = −∇E` — downhill in stored energy (L5).
+
+### The four forces — one frame, four bends
+
+Duda's complete model unifies them as **curvatures of the same frame** `M=O·D·Oᵀ` — the connection
+`Γ_μ = Oᵀ∂_μO` rotated/boosted in different planes (`5a §5d` + the Wolfram-article extract in `0b` M5.8):
+
+| Force | The bend | Generator | Falls off |
+| --- | --- | --- | --- |
+| **electric** | **splay** of `n̂` (`∇·n̂`) — charge | tilt `Γ²,Γ³` (high-energy) | field `1/r²`, force `1/r²` |
+| **magnetic** | **circulation** of `n̂` (`∇×n̂` = `frank_twist`+bend) | tilt, *dynamic* | field `1/r³` (dipole — no monopole) |
+| **QM / clock** | **twist** of the `δ` axis (`clock_twist`) | `δ`-twist `Γ¹` (low-energy) | — (the phase, L7) |
+| **gravity** | **boost** into the `g` time axis | boost `Γ¹` (the `g`-axis) | field `1/r²`, force `1/r²` (GEM) |
+
+The same `M` carries all of them at once: a hedgehog *is* a charge; when it spins (the clock) it *also*
+shows a magnetic moment; in 4D it *also* has a gravitational mass. **Three observables, one defect.**
+
+### Electric — splay → charge → Coulomb
+
+The **electric field is the director splaying**: `∇·n̂ ≠ 0`. A hedgehog (`n̂ = r̂`) is **pure splay** =
+a **point charge**. Two facts make this *the* electric force:
+
+- **Charge is quantized because it's topological.** The total splay through a surface is an *integer*
+  winding number (Gauss–Bonnet, the topological cousin of Gauss's law) → charge comes in whole units
+  (no half-electron), *for free*, from topology (L4). Faber's 30-year program; the LC labs see exactly
+  this quantization.
+- **Coulomb falls out of the energy.** Integrate the field energy of two hedgehogs vs separation → the
+  interaction energy `E(d) ∝ 1/d`, so the force `−dE/dr ∝ 1/r²` = **Coulomb**, *attractive* for opposite
+  winding. OpenWave reproduced this: `R²=0.97` relaxed, `R²=0.996` vs Duda's analytic Fig. 2 (M5.1/M5.4).
+
+### Maxwell — both routes
+
+Full Maxwell electromagnetism emerges two equivalent ways (both verified M5.6):
+
+| Route | What it says |
+| --- | --- |
+| **hydro ↔ EM dictionary** | the substrate's flow has a vorticity `ω = ∇×v` obeying the same equations as `B = ∇×A`; EM is "frictionless-superfluid hydrodynamics" *with charge quantization added* |
+| **Faber curvature** | `Γ_i = (∂_i n̂)×n̂` (local rotation axis), `R_μν = Γ_μ×Γ_ν` (closed field strength), `ℒ_EM = −(αℏc/16π) R*_μν R̄^μν` — the **dual** formulation swaps `E↔B` so topological charges become **electric monopoles** (real charges) + **magnetic dipoles** (no monopoles) |
+
+### Magnetic — circulation, and the magnetic MOMENT
+
+Magnetism is the director **circulating**: `∇×n̂ = frank_twist + bend` (L2). The piece to nail — the
+**magnetic moment** — is *the clock's spin seen as a tiny current loop*. Duda's electron slide is the
+target picture: **charge** `E ∝ 1/r²` (left), **magnetic dipole** `B ∝ 1/r³` (center bar magnet),
+**gyroscope/spin** `L = ℏ/2` at `ω ≈ 2mc²/ℏ` (right) — all *the same defect*, three observables. Five
+questions (tied to the VIZ.4 session, 2026-05-30):
+
+| Question | Tie to what we built / where it lives |
+| --- | --- |
+| **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the `clock_twist` δ-axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
+| **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
+| **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
+| **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 thermal A/ω (the spin rate, L7). |
+| **Permanent magnet (Q8) — static B, no moving charge?** Aligned spin-topology: many defects with their moments `m̂` locked parallel ⇒ macroscopic static `B`. No *translating* charge needed — the "current" is the frozen collective spin (the L7 collective mode). | Forward link to the L7 collective mode + the M5.8 multi-defect work (5e). |
+
+**Feynman framing vs the permanent magnet.** Between *moving* charges, magnetism is the **relativistic
+correction** to Coulomb (length-contracted charge density in the moving frame) — the dynamic route. A
+**permanent magnet** needs no translating charge: its `B` is the *static* sum of frozen, aligned
+spin-moments (the collective mode). Same `B`, two origins — both are `∇×n̂` lit up.
+
+### Don't conflate field / force / our observable (the falloff headsup)
+
+The question "B ∝ 1/r³ vs E ∝ 1/r?" mixes **three different things**. Keep them separate:
+
+| | Electric | Magnetic | Gravitational |
+| --- | --- | --- | --- |
+| **What we RENDER** (glyph/mesh observable) | `∇·n̂` splay — hedgehog `n̂=r̂` ⇒ `2/r` → **1/r** | placeholder dipole `B` → **1/r³** | *not yet* — the boost-`g` field, M5.8 4D (`4b §4.7`) |
+| **Real FIELD of a point source** | charge (monopole): `E ∝ 1/r²` | dipole (no monopole): `B ∝ 1/r³` | mass (monopole): `g ∝ 1/r²` |
+| **Real FORCE law** | Coulomb: `F ∝ 1/r²` | dipole–dipole: `F ∝ 1/r⁴` | Newton: `F ∝ 1/r²` |
+
+So: ✅ our **B observable** is `1/r³` and our **E observable** is `1/r` (this IS why the B viz collapsed
+to black under a linear map — 9× steeper). ❌ but the real **electric field/force is `1/r²`** (Coulomb),
+NOT `1/r`; the `1/r` is specifically our `∇·n̂` *splay* observable, which tracks the Coulomb **potential**
+(∝1/r). In M5 the actual Coulomb behavior showed up as the **interaction energy** `E(d) ∝ 1/d`
+(M5.1/M5.4), force `−dE/dr ∝ 1/r²`. **Why magnetic starts steeper:** nature has electric monopoles
+(charges) → the E series starts at `1/r²`; it has **no magnetic monopole** → the B series starts one
+multipole higher, at the **dipole** = `1/r³`. Compare like-for-like (an electric *dipole* also falls as
+`1/r³`) and the asymmetry vanishes.
+
+### Gravity — boost into the time axis (GEM)
+
+Gravity is the frame **boosting into the `g` time axis** (L3). In Duda's complete model this is
+**gravitoelectromagnetism (GEM)**: the boost dynamics give a *second set of Maxwell equations*
+(`∇·E_g = −4πGρ_g`, `∇×B_g = −(4πG/c²)J_g + …`) — a real, *measured* effect (**Gravity Probe B**,
+frame-dragging). Two consequences:
+
+- **Monopole, like electricity.** Mass is a one-sign "charge" (always +, always attractive) ⇒ the
+  gravitational field is a **monopole**: `g ∝ 1/r²`, force `1/r²` — the *same* falloff as electric
+  charge. The family: **monopole fields (charge, mass) → `1/r²`; dipole field (magnetism) → `1/r³`.**
+- **Render it like E, not B.** When OpenWave draws gravity (M5.8 4D boost-`g`; spec `4b §4.7` / roadmap
+  M5.8.7) expect a gentle `1/r²` spread (like E) and a **single-sign sequential palette** (no ±/bluered
+  — there is no "negative mass"). The clock-rate gradient `∇g` *is* the pull (L3).
+
+### The two layers of "force" — field vs the pull you feel
+
+Two distinct things both called "force":
+
+| Layer | Is | Example |
+| --- | --- | --- |
+| **the field** | a **curvature** of the frame (`E/B = R_μν`; `g` = boost curvature) | what the glyphs/meshes render |
+| **the mechanical pull** | `F = −∇E` — downhill in *stored energy* (L5) | why two charges actually move |
+
+The field is the *structure*; the pull is its *energy gradient*. Charge/mass don't "reach out" — each
+defect sits in the energy landscape the others shape, and rolls downhill.
+
+> **Hands-on (optional).** Launch **`sample magnetic dipole`**, toggle WM7 bluered (radial N/S), flip to the
+> Magnetic-Field glyphs (state 3, field lines), and watch the YELLOW `m̂` — then remember it's a
+> *placeholder shape*; the real moment is *generated by* the clock's spin at M5.8. The session's point
+> was to make the *picture* legible before the physics produces it.
+
+### L8 Q&A / clarifications (2026-06-04)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what's the common thread of all forces? | each is the frame `M` **bending** a different way (splay/circulation/twist/boost); the pull you feel is always `F=−∇E`. | above |
+| 2 | why is electric = splay? | `∇·n̂` (splay) is the charge density; a hedgehog is pure splay = a point charge, quantized because topological (Gauss–Bonnet). | above |
+| 3 | what IS the magnetic moment? | the **clock's spin axis** seen as a current loop (`m̂ ∝ ∫∇×n̂`) — spin ⇒ moment, not an independent thing. | above |
+| 4 | why no moment on a static hedgehog? | pure splay, `∇×n̂≈0` → no circulating `B`. A moment needs the clock's *spin* (M5.8). | above |
+| 5 | permanent magnet with no moving charge? | aligned, frozen collective spin-moments (the L7 collective mode) → static `B`. | above |
+| 6 | why does B fall off faster than E? | no magnetic monopole → B starts at the **dipole** (`1/r³`); E starts at the **monopole** (`1/r²`). Like-for-like they match. | above |
+| 7 | what is gravity here? | the frame **boosting** into the `g` time axis = **GEM** (Gravity Probe B); monopole `g∝1/r²`, always attractive. | above, L3 |
+| 8 | field vs the force I feel? | the **field** = curvature of the frame; the **pull** = `−∇E` (downhill in stored energy). | above, L5 |
 
 ### L8 Anchors
 
@@ -1490,6 +1560,9 @@ outcome + a falsifiable **test**, in M5's least-developed sector.
 | `engine3_observables.py` (`compute_director_em`) | the E/B observable |
 | `5a §5d` | EM-from-tilts math |
 | `3a` | Coulomb visual geometry |
+| `0b` M5.8 (Full-text extract) | Faber `R_μν=Γ_μ×Γ_ν` quantized EM + GEM (Gravity Probe B) |
+| `theory/…Wolfram Community.pdf` | the EM-hydro dictionary + Γ generator→force map |
+| `4b §4.7` | gravity / GEM viz spec (M5.8.7) |
 
 ---
 

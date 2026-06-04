@@ -52,7 +52,7 @@ TOPOLOGY_SEED = {
 
 XPARAMETERS = {
     "meta": {
-        "X_NAME": "VIZ Magnetic Dipole",
+        "X_NAME": "SAMPLE Magnetic Dipole",
         "DESCRIPTION": "Analytic dipole B placeholder — validate N/S coloring + B glyphs + moment glyph (VIZ.4)",
     },
     "camera": {
