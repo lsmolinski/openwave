@@ -100,6 +100,44 @@ sub-cells, impossible.
 > The order parameter is the coarsest description that still carries the
 topology / charge / clock physics.
 
+### Why an ellipsoid at each voxel? — and is it a molecule?
+
+Three layers of answer, each with a different honesty status.
+
+**Layer 1 — the *mathematical* reason (solid).** The ellipsoid (a symmetric matrix) is the *smallest*
+object that carries everything the physics needs at once:
+
+| Object | Carries | Can't do |
+| --- | --- | --- |
+| scalar | a number | no orientation |
+| vector (arrow) | **one** axis | polar (head≠tail), can't twist |
+| **symmetric matrix / ellipsoid** | direction **+** shape (3 distinct axes) **+** a twistable frame **+** apolarity (`n̂≡−n̂`) | — |
+
+Topology/charge needs the orientable frame, mass/QM needs the biaxial twist, the clock needs the null
+axis (L2). The ellipsoid is the **minimal carrier** — that's the real "why."
+
+**Layer 2 — yes, the liquid-crystal model (borrowed framework).** The ellipsoid is the **Landau–de
+Gennes order parameter**, lifted from liquid-crystal physics (Duda: *the vacuum is a liquid-crystal-
+**like** medium; particles are defects in its alignment*). **But it is NOT a molecule — even in a real
+liquid crystal.** There the order parameter `M = ⟨n⊗n⟩` is a **coarse-grained average** over *many*
+rod/disc molecules (how aligned they are on average), not one molecule's shape. We borrow the *math*,
+not a literal molecule.
+
+**Layer 3 — what *is* each ellipsoid, really? (open hypothesis).** Two readings:
+
+| Reading | Verdict |
+| --- | --- |
+| the fundamental unit is an **ellipsoid-object** | **No** — `M` is an *order parameter* (an average). Within M5 the **field `M(x)` is fundamental** (evolved directly, no sub-structure). |
+| **Planck granules tracing a fast elliptical orbit**, so particles only feel the time-averaged ellipsoid | **Yes — the model's deeper-ontology candidate** (the granule-orbit *covariance* reading above): a fast orbit's position-cloud covariance `⟨(x−x̄)(x−x̄)ᵀ⟩` *literally is* `O·D·Oᵀ`. ⚠️ open hypothesis — aligned with OpenWave's wave-structure-of-matter roots (M1 granule, Yee/M3), but M5 doesn't sim granules (Planck-in-a-voxel ≈ 10⁵¹ sub-cells). |
+
+And the honest one-line summary, layer by layer:
+
+| Layer | Status |
+| --- | --- |
+| ellipsoid = minimal order parameter with the right DoF | ✅ solid (the modeling choice) |
+| it's the LC framework, borrowed — vacuum = aligned medium, particle = defect | ✅ the analogy (and even real LC's ellipsoid is an *average*, not a molecule) |
+| underneath: Planck granules orbiting → their covariance *is* the ellipsoid | ⚠️ open hypothesis (our WSM roots; M5 evolves `M` directly, doesn't sim granules) |
+
 ### Why a matrix and not an arrow (the M5.2 → M5.4 story)
 
 The field used to be a Vector(3) `ψ` (one arrow/voxel, `psi_am`, now legacy `medium.py:153`).
@@ -115,6 +153,14 @@ negative, `medium.py:16`). An arrow can't carry:
 So in M5.4 the substrate became the matrix `M` — a real `ti.Matrix.field(3,3)` triple buffer
 `M_prev_am, M_am, M_new_am` (`medium.py:169-171`). Stored as the full 9 numbers, but only **6 are
 independent** (`M` is symmetric, `Mᵀ=M`).
+
+**Why a full `3×3` (9 floats) and not the packed 6?** Because the operators we run every step —
+matrix products and **commutators** `[A,B]=AB−BA` (the `A_μ`/`F_μν` curvature, Eq.19/20) — produce
+**non-symmetric** intermediates that a 6-pack can't even hold, so you'd unpack→9→compute→repack on
+every op. Plus `ti.Matrix.field(3,3)` gives native compiled matrix algebra + a trivial `3→4`
+promotion (M5.8), and the 33% memory saving is negligible against the voxel-count budget — the field
+is *operated on* constantly, the opposite of the rarely-touched, transfer-heavy data that
+packed-symmetric storage (e.g. BLAS triangular formats) is meant for.
 
 > **One word, two jobs (named in L2).** "Twist" collides, so the repo splits it into atomic tokens:
 > `frank_twist` = how the director twists *in space* (`n̂·(∇×n̂)` → magnetism, L8) vs `clock_twist` =
@@ -145,6 +191,7 @@ grain; a particle = a permanent swirl the elasticity can't smooth out.*
 | 10 | how do the eigenvalues map to the ellipsoid axes? | eigenvalue = axis length. Live 3D biaxial `diag(1, δ, 0)`: `1`→longest `a` (**`director n̂`**, EM axis), `δ`→middle `b` (QM, `~ℏ`), `0`→flat `c` (null → 4D clock). `O(x)` rotates the whole ellipsoid per voxel. (`medium.py:19` writes the general `diag(g,1,δ)`; `g`=gravity is the 4D addition.) See the figure in L2. | L2 (physics labels) |
 | 11 | if `D` is frozen/global, why store + recompute `WaveField.eigenvalues` each frame? why `g,1,δ` not `a,b,c`? | the global `D` is the *ideal vacuum* spectrum (a constant — **not** stored per voxel). `WaveField.eigenvalues` stores the **local** eigenvalues of the actual `M(x,t)`, which **deviate** from `D`: (a) cores **melt** to isotropic `(1+δ)/3` (Faber regularization, `engine1_seeds.py:500`), (b) dynamics breathe the amplitude `Tr(M²)`. Recomputed every frame because the **director** (eigenvectors, via `O(x)`) changes every step — `eigen_decompose` returns eigenvectors *and* eigenvalues together. Symbols `g/1/δ/0` encode physics (gravity / EM-unity / QM`~ℏ` / null), not generic geometry — `a/b/c` would lose the hierarchy `g≫1≫δ~ℏ>0`. | L2 (map), L5 (V min) |
 | 12 | does `δ ~ ℏ` corroborate the Planck-granule orbit hypothesis? | **intriguing rhyme, not corroboration.** Solid part: `δ` is the `clock_twist` eigenvalue carrying the QM phase `exp(iEt/ℏ)` → KG mass (M5.6, verified). Speculative part: reading eigenvalues as orbit-variances (Q9) puts `ℏ` in the smallest orbital extent — but `ℏ` is an *action* and `δ` a *dimensionless ratio* (a role-identification in natural units), and the granule/Planck layer is itself unproven. Hold as a research thread, not evidence. | L7 (clock), L1/Q9 (granule) |
+| 13 | is the ellipsoid an actual molecule (like in a real liquid crystal)? | **No — not even in real LC.** There the order parameter `M = ⟨n⊗n⟩` is a coarse-grained *average* over many molecules (how aligned they are), not one molecule's shape. We borrow that *math* for the subatomic vacuum, where the **field `M` is fundamental** (evolved directly, no sub-structure). The deeper "Planck granules orbiting → their covariance *is* the ellipsoid" reading is an **open hypothesis** (WSM roots), not asserted. | above (*Why an ellipsoid?*), Q9 |
 
 ### L1 Anchors
 
@@ -212,6 +259,100 @@ above is drawn axis-aligned (`O = identity`):
 - **Spectra by phase:** uniaxial M5.4 placeholder `diag(1, δ, δ)` (`δ=LC_DELTA=0.5` — one director
   axis, enough for Coulomb) → biaxial M5.6 `diag(1, δ, 0)` → full 4D `diag(g, 1, δ, 0)` adds `g` =
   gravity/boost (L3). Hierarchy `g ≫ 1 ≫ δ ~ ℏ > 0`.
+
+### Decoding `M = O·D·Oᵀ` — eigenvectors, eigenvalues & the `Oᵀ` sandwich
+
+A symmetric matrix splits cleanly into **orientation** and **shape**:
+
+| Symbol | Is | Holds |
+| --- | --- | --- |
+| `O = [v₁ \| v₂ \| v₃]` | an orthogonal matrix — its **columns are the eigenvectors** | the 3 **unit** axis *directions* (a rotated frame) |
+| `D = diag(λ₁, λ₂, λ₃)` | a diagonal matrix — the **eigenvalues** | the 3 axis *lengths* (magnitudes) |
+
+The precise reading of "3 vectors + magnitudes":
+
+- The **eigenvectors are unit vectors** (magnitude 1) — pure *directions*, mutually **perpendicular**
+  (orthonormal). That perpendicularity is *exactly* what makes the matrix symmetric (spectral theorem).
+- The **eigenvalue is the stretch** along its eigenvector: `M·vᵢ = λᵢ·vᵢ` — apply `M` to the unit
+  direction `vᵢ` and it scales by `λᵢ`.
+- So the **"real" axis vector** of the ellipsoid is `λᵢ·vᵢ` (direction × length); *that* has magnitude
+  `λᵢ`. The eigenvector alone is the unit direction; the eigenvalue is the length.
+
+Picture: apply `M` to a unit sphere → an **ellipsoid** whose semi-axes **point along the eigenvectors**
+with **lengths = the eigenvalues**. Equivalently `M = λ₁(v₁v₁ᵀ) + λ₂(v₂v₂ᵀ) + λ₃(v₃v₃ᵀ)` — each
+eigenvalue times the projector onto its axis.
+
+**What `·Oᵀ` is doing** — `M = O·D·Oᵀ` is a **rotate → stretch → rotate-back** sandwich (read
+right-to-left as it acts on a vector `x`):
+
+| Step | Operation | Does |
+| --- | --- | --- |
+| 1 | `Oᵀ·x` | rotate `x` **into** the ellipsoid's own frame |
+| 2 | `D·(…)` | **stretch** by the eigenvalues |
+| 3 | `O·(…)` | rotate **back** to the world frame |
+
+`Oᵀ` is **not new data** — it's `O` transposed (the same 3 angles), and since `O` is orthogonal
+`Oᵀ = O⁻¹`. You need *both* sides because you're rotating a **shape**: one side alone (`O·D`) isn't
+symmetric and isn't a valid ellipsoid. `D` is the ellipsoid in *its own* coordinates; `O(·)Oᵀ`
+re-expresses it in *world* coordinates.
+
+#### Worked example — where each value lives
+
+Eigenvalues `D = diag(3, 2, 1)`, rotated **45° about z**:
+
+```text
+            [ 3 0 0 ]              [ 0.707 -0.707  0 ]
+   D   =    [ 0 2 0 ]     O   =    [ 0.707  0.707  0 ]   (45° about z)
+            [ 0 0 1 ]              [ 0      0      1 ]
+
+                        [ 2.5  0.5  0 ]
+   M = O·D·Oᵀ   =        [ 0.5  2.5  0 ]
+                        [ 0    0    1 ]
+```
+
+The 6 stored entries:
+
+| Slot | Value | Note |
+| --- | --- | --- |
+| `Mxx` | 2.5 | **not** an eigenvalue |
+| `Myy` | 2.5 | the tilt smears the eigenvalues across the diagonal |
+| `Mzz` | 1 | z wasn't rotated → this *is* its eigenvalue |
+| `Mxy` | **0.5** | the **tilt coupling** — nonzero *because* the ellipsoid is turned off-axis |
+| `Mxz` | 0 | no tilt into z |
+| `Myz` | 0 | no tilt into z |
+
+**The lesson:** the eigenvalues `(3,2,1)` are *not in slots* — they're **mixed with the orientation**
+across all 6 numbers. You read eigenvalues straight off the diagonal **only** when axis-aligned
+(`O = I` → `M = D`, off-diagonals 0). The off-diagonals are the **tilt record**; the Cardano
+`eigen_decompose` **un-mixes** the 6 entries back into clean `(eigenvalues, eigenvectors)` — for this
+`M`, `λ = 3, 2, 1` with the `λ=3` eigenvector `(1,1,0)/√2` (the 45° direction).
+
+#### The DoF count + how it's stored
+
+| Piece | Naive | After orthonormality | What it is |
+| --- | --- | --- | --- |
+| 3 eigenvectors (orientation) | 9 | **3** | the frame `O` = 3 rotation angles (`SO(3)`) |
+| 3 eigenvalues (shape) | 3 | **3** | the lengths `D` |
+| **total** | | **6** | the 6 independent entries |
+
+So `M` encodes **3 magnitudes + 3 orientation angles**. `medium.py` stores the **6 raw symmetric
+entries**; the eigenvectors/values are **computed on demand** (Cardano, every frame) — the matrix is
+the truth, the axes are *read out* of it (L1's "derived caches"). *(Why a full `3×3` of 9 floats
+instead of packing the 6 → L1.)*
+
+#### The rotation angles — between what?
+
+The 3 angles of `O` measure the orientation of the **ellipsoid's own axes** vs the **fixed lab/grid
+axes** (`x̂, ŷ, ẑ`). In the example, one angle = **45°** = the angle between the long axis and the lab
+`x`-axis. They split exactly as the physics map says:
+
+| Angle(s) | Between | Physics |
+| --- | --- | --- |
+| **2** | where the **major axis `n̂`** points vs the grid (latitude + longitude on a sphere) | the **tilt** of `n̂` → **EM** |
+| **1** | the spin of the **minor axes about `n̂`** | the **`clock_twist`** → QM / the clock |
+
+Same 3 numbers, two physical jobs: 2 for *which way the director points*, 1 for *how the minor axes
+are spun about it* (the L1-Q8 leftover DoF). **The 4×4 version → L3** (one more axis, `SO(3) → SO(1,3)`).
 
 ### The M4 ellipse → M5 ellipsoid bridge (+ chirality, δ↔ℏ)
 
@@ -444,6 +585,24 @@ it; it adds **one thing — a time axis** — and both time-sector phenomena fal
 | --- | --- | --- |
 | **Gravity** = the time axis's **scale** `g` | spectrum `diag(1, δ, 0)` → `diag(g, 1, δ, 0)`; `g` scales the *time* axis, and `∇g` (how it varies in space) = the gravitational field | mirrors GR (`Φ` lives in the time-time metric `g₀₀`; gravity = time-rate varying in space). `g` is **absent in the live 3D run** — no time slot → no gravity. (Render spec: L8 / `4b §4.7`.) ⚠️ framework's least-developed sector — design expectation, not yet verified. |
 | **The clock / engine** = a **rotation into** the time axis | the frame `O` goes `SO(3)` (spatial rotations) → `SO(1,3)` (Lorentz: rotations **and boosts**); the `(−+++)` sign flip makes the oscillating state **lower-energy than static** (M5.8.0a: `E(ω=0)=2.87 > E*=2.02`) → spinning is the ground state | the Zitterbewegung clock **propels itself** — fuel = the rest mass (`ℏω = mc²`). In free 3D (all-`+`) spinning only *costs* energy → it disperses (M5.7.2); **4D = the stable time-crystal** (`5a §10b`, L7). The *why* (negative-energy mechanism) → L7. |
+
+### The 4×4 matrix — same decode, one more axis
+
+The L2 decode (`M = O·D·Oᵀ`, unit-eigenvectors + eigenvalue-magnitudes) carries straight over — you
+just add a 4th axis (the **time** axis):
+
+| | 3×3 (now) | 4×4 (M5.8) |
+| --- | --- | --- |
+| eigenvectors | 3 unit directions | **4** unit directions (a 4D frame — adds the **time** axis) |
+| eigenvalues | `(1, δ, 0)` | `(g, 1, δ, 0)` — adds `g` (gravity / time-scale) |
+| independent numbers | 6 | **10** (4 diagonal + 6 off-diagonal) |
+| DoF split | 3 shape + 3 orientation | **4 shape + 6 frame** |
+| frame group | `SO(3)` — 3 rotations | **`SO(1,3)`** — 3 rotations **+ 3 boosts** (Lorentz: the 4th axis is *time*, Minkowski signature) |
+
+The one genuinely new thing: the 4th eigenvector can **boost** (rotate *into* time), not just rotate
+in space. A spatial rotation is compact / trigonometric (`cos/sin`); a boost is hyperbolic
+(`cosh/sinh`) under the `(−+++)` signature (the boost-vs-tilt distinction, L2). That extra boost
+freedom is the whole gravity (`g`) + clock story below.
 
 ### The two "times" — `dt` vs the matrix time axis
 
