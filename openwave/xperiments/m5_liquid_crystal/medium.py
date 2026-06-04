@@ -3,31 +3,26 @@ LIQUID-CRYSTAL Model Medium Data-Grid
 
 Object Classes @spacetime module.
 
-LIQUID-CRYSTAL evolves the field ψ via a Lagrangian-derived PDE:
-    ∂²_t ψ = c²·∇²ψ − ∂V/∂ψ
-
-The field stores granule displacement (M3/M4 conceptual continuity) but is named ψ
-to reflect its M5 role as the configuration variable of the Lagrangian. Time
-evolution uses a triple-buffer leapfrog scheme (psi_prev_am, psi_am, psi_new_am).
+LIQUID-CRYSTAL evolves the Landau–de Gennes order parameter M(x) via the Eq.18
+matrix action (M5.5): the leapfrog ∂²_t M = c²·∇·G(M) − ∂V_M/∂M, where G is the
+curvature flux. M is the 4×4 (M5.8) real-symmetric tensor
+    M(x) = O(x)·D·O^T(x),   D = diag(1, δ, 0, g)
+with O(x) the per-voxel dynamical SO(1,3) frame and D the frozen spectrum (the
+spatial 3×3 block diag(1,δ,0) + the M5.8 time/boost axis g). Time evolution uses a
+matrix triple-buffer leapfrog (M_prev_am, M_am, M_new_am).
 
 ────────────────────────────────────────────────────────────────────────────
-M5.4 MATRIX-FIELD SUBSTRATE MIGRATION (in progress, 2026-05-26)
+SUBSTRATE HISTORY — Vector(3) ψ → matrix M (M5.4 migration, M5.8 ψ-retire)
 ────────────────────────────────────────────────────────────────────────────
-M5.2 closed as an informative negative: the Vector(3) director ψ cannot host
-the paper's physics. The substrate becomes the Landau–de Gennes order parameter
-    M(x) = O(x)·D·O^T(x)            (real-symmetric 3×3)
-where D = diag(g, 1, δ) is the frozen global eigenvalue spectrum and O(x) is the
-per-voxel dynamical rotation. M5.4 carries the M5.1 static-topology results onto
-this substrate (feasibility proven in research/sandbox_v3/m5_3_matrix_feasibility.py).
-
-Migration is ADDITIVE-then-cleanup to keep the engine runnable at every step:
-  - M_am / M_prev_am / M_new_am  — the matrix triple buffer (the new substrate)
+M5.2 closed as an informative negative: the Vector(3) director ψ cannot host the
+paper's physics, so M5.4 migrated the substrate to the LdG order parameter M
+(feasibility: research/sandbox_v3/m5_3_matrix_feasibility.py). The M5.8 ψ-retire
+then DELETED the legacy Vector(3) ψ triple-buffer and its wave engine (evolve_psi,
+the ∇²/∇·/∇× operators, V_psi) entirely. The live substrate is:
+  - M_am / M_prev_am / M_new_am  — the 4×4 matrix triple buffer (the substrate)
   - director_nhat / eigenvalues  — DERIVED per-frame via eigen_decompose (the
-    principal eigenvector of M is the director the M5.1 machinery consumes)
-  - psi_am / psi_prev_am / psi_new_am  — RETIRING. The wave-displacement role
-    dies (no displacement vector in an orientation field); the director role
-    moves to director_nhat. These Vector(3) buffers are removed in the final
-    M5.4 cleanup once every consumer reads director_nhat. See 4b_rendering_features.md.
+    principal eigenvector of M's spatial block is the director the render + M5.1
+    Coulomb machinery consume). See 4b_rendering_features.md.
 """
 
 import taichi as ti
@@ -40,26 +35,37 @@ from openwave.common import colormap, constants, utils
 # only needs a uniaxial spectrum to reproduce the M5.1 Coulomb topology on M.
 LC_DELTA = 0.5
 
+# M5.8.1 — 4D substrate promotion. The matrix field is now 4×4: the spatial 3×3
+# block (indices 0,1,2 = x,y,z — the M5.4/M5.6 order parameter) PLUS a 4th axis
+# (index 3) = the time/boost axis, eigenvalue g of the paper's D=diag(g,1,δ,0).
+# Putting time at index 3 lets the existing 3×3-Cardano eigensolver read the spatial
+# block [0:3,0:3] UNCHANGED (the director is its principal eigenvector). In M5.8.1 g
+# is a CONSTANT, boost-DECOUPLED background (M = block-diag(M_spatial, g)) so the
+# spatial dynamics are identical to 3D (validated: sandbox_v8/m5_8_1_4x4_promotion.py);
+# the Minkowski coupling that drives the clock lands in M5.8.2.
+MDIM = 4          # matrix substrate dimension (was 3)
+LC_G = 8.0        # time-axis (boost/gravity) eigenvalue g ≫ 1, constant in M5.8.1
+
 
 @ti.data_oriented
-class WaveField:
+class TensorField:
     """
-    Lagrangian wave field on a cell-centered grid with attometer scaling.
+    Lagrangian tensor field on a cell-centered grid with attometer scaling.
 
-    Triple-buffer leapfrog convention:
-        psi_prev_am — ψ at t−dt (history buffer; read by stencil)
-        psi_am      — ψ at t    (current buffer; read by stencil)
-        psi_new_am  — ψ at t+dt (output buffer; written by leapfrog kernel)
+    Matrix triple-buffer leapfrog convention:
+        M_prev_am — M at t−dt (history buffer; read by stencil)
+        M_am      — M at t    (current buffer; read by stencil)
+        M_new_am  — M at t+dt (output buffer; written by evolve_M)
 
-    After each leapfrog step, swap_buffers() cycles: prev ← curr, curr ← new.
-    psi_new_am is overwritten by the next step.
+    After each leapfrog step, swap_matrix_buffers() cycles: prev ← curr, curr ← new.
+    M_new_am is overwritten by the next step.
 
     AMR-readiness convention:
-        Kernels MUST read grid dimensions via wave_field.nx / .ny / .nz attributes
+        Kernels MUST read grid dimensions via tensor_field.nx / .ny / .nz attributes
         (or the .grid_size tuple). Do NOT bake fixed (nx, ny, nz) constants into
         @ti.kernel signatures — that would prevent the M5.6 / M5.8 AMR retrofit
         from swapping in an octree-based field-storage layer without rewriting
-        kernels. Field access via wave_field.psi_am[i, j, k] is the canonical pattern.
+        kernels. Field access via tensor_field.M_am[i, j, k] is the canonical pattern.
 
     This class:
     - Cell-centered cubic grid
@@ -85,7 +91,7 @@ class WaveField:
         viz_stride=4,
     ):
         """
-        Initialize WaveField from universe size with automatic voxel sizing.
+        Initialize TensorField from universe size with automatic voxel sizing.
 
         Args:
             init_universe_size: Simulation domain size [x, y, z] in meters.
@@ -141,18 +147,10 @@ class WaveField:
         # ================================================================
         # DATA STRUCTURE & INITIALIZATION
         # ================================================================
-        # PROPAGATED VECTOR FIELDS (values in attometers for f32 precision)
-        # This avoids catastrophic cancellation in difference calculations
-        # Scales 1e-17 m values to ~10 am, well within f32 range
-        #
-        # Triple-buffer leapfrog scheme:
-        #     psi_prev_am — ψ at t−dt (history; read-only during step)
-        #     psi_am      — ψ at t    (current; read-only during step + 6-point Laplacian)
-        #     psi_new_am  — ψ at t+dt (output; written by leapfrog kernel)
-        # After each step, swap_buffers() cycles prev ← curr, curr ← new.
-        self.psi_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t
-        self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t−dt
-        self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
+        # The propagated field is the matrix order parameter M (declared below);
+        # the M5.8 ψ-retire removed the legacy Vector(3) ψ triple-buffer (psi_am /
+        # psi_prev_am / psi_new_am) and its swap_buffers — the live substrate is the
+        # 4×4 M triple-buffer (M_am / M_prev_am / M_new_am) with swap_matrix_buffers.
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
 
         # ================================================================
@@ -166,9 +164,9 @@ class WaveField:
         # evolution that lands in M5.5. In M5.4 only M_am is populated (by the
         # matrix seeders) and read (by eigen_decompose); M_prev/M_new are allocated
         # now so the buffer layout is final.
-        self.M_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t
-        self.M_prev_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
-        self.M_new_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
+        self.M_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t (4×4: spatial 0:3 + time idx 3)
+        self.M_prev_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
+        self.M_new_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
 
         # DERIVED per-frame from M_am by engine2_pde.eigen_decompose (the lynchpin
         # kernel — see 4b_rendering_features.md). director_nhat is the principal
@@ -186,6 +184,7 @@ class WaveField:
         # relax_director_step writes the next director here, then M is rebuilt from it.
         self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
         self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
+        self.lc_g = LC_G  # M5.8.1 time-axis (index 3) eigenvalue g; read by kernels via tensor_field.lc_g
 
         # M5.5.4 — Eq.18 matrix-action leapfrog (simple ½‖Ṁ‖² kinetic + faithful
         # potential U = 4Σ‖[M_μ,M_ν]‖² + V(M)). The curvature flux
@@ -193,9 +192,9 @@ class WaveField:
         # is computed everywhere by compute_curvature_flux from M_am; evolve_M then
         # takes its divergence Σ_α ∂_α G_α as the force. Two-pass (G field, then
         # divergence) keeps each kernel a 1-cell halo instead of one 2-cell mega-kernel.
-        self.curv_flux_x = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
-        self.curv_flux_y = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
-        self.curv_flux_z = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_x = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_y = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_z = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
 
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
@@ -324,49 +323,11 @@ class WaveField:
         self.moment_glyph_vertices = ti.Vector.field(3, ti.f32, 4)
         self.moment_glyph_colors = ti.Vector.field(3, ti.f32, 4)
 
-    def swap_buffers(self):
-        """
-        Cyclic shift of the triple-buffer leapfrog state.
-
-        Called once per timestep, AFTER the leapfrog kernel has written psi_new_am.
-        Shift:
-            psi_prev_am ← psi_am      (the just-completed step's "current" becomes "previous")
-            psi_am      ← psi_new_am  (the just-completed step's "next" becomes "current")
-            psi_new_am  is left as-is — it will be overwritten by the next leapfrog step
-
-        Implementation note: uses Taichi's field.copy_from() — two full-grid GPU copies
-        per step. M5.0i profile (2026-05-08): copies are ~34 % of step time at 384³
-        (≈6.9 ms of 19.4 ms total).
-
-        WHY NOT ROTATING-POINTER (investigated and rejected in M5.0i):
-            The naive optimization — rotate Python attribute names so the same three
-            ti.field allocations cycle through prev/curr/new roles — silently breaks
-            correctness. Cause: Taichi's `ti.template()` caches attribute lookups at
-            kernel-compilation time, NOT at each call. So when @ti.kernel reads
-            `wave_field.psi_am` during tracing, Taichi binds that to the SPECIFIC
-            ti.field instance that wave_field.psi_am pointed to AT FIRST CALL. Later
-            calls with the same `wave_field` Python object reuse the cached binding —
-            attribute rotation on `wave_field` itself is invisible to the cached
-            kernel. M5.0h dispersion test reproduced this: after rotation, c² recovery
-            regressed from ±0.5 % to −19 % systematically, because the leapfrog kept
-            reading the originally-bound prev/curr fields whose data was now in the
-            wrong roles.
-            The proper fix (deferred): pass fields explicitly to kernels —
-            `evolve_psi(psi_prev, psi_curr, psi_new, ...)` — so each rotation
-            creates a distinct template-arg tuple that Taichi compiles separately
-            (3 cyclic permutations → 3 cached compilations). That's a 2–3 hr refactor
-            of every kernel that touches the triple buffer; not justified by current
-            budget (51 fps at 384³ is well over the 20 fps floor). Re-evaluate when
-            M5.2's V(ψ) makes per-step work heavier and the 35 % win matters.
-        """
-        self.psi_prev_am.copy_from(self.psi_am)
-        self.psi_am.copy_from(self.psi_new_am)
-
     def swap_matrix_buffers(self):
         """Cycle the matrix triple buffer after evolve_M (M5.5.4): M_prev ← M, M ← M_new.
 
-        Matrix analog of swap_buffers, called once per evolve_M step. Same caveat as
-        swap_buffers re: ti.template attribute caching — use copy_from, not pointer rotation.
+        Called once per evolve_M step. ti.template caches attribute lookups at compile
+        time, so use copy_from — NOT pointer rotation (silently breaks the leapfrog).
         """
         self.M_prev_am.copy_from(self.M_am)
         self.M_am.copy_from(self.M_new_am)
@@ -626,10 +587,10 @@ class Trackers:
         Initialize tracker fields for wave-property monitoring.
 
         Args:
-            grid_size: Grid dimensions [nx, ny, nz] matching WaveField.
+            grid_size: Grid dimensions [nx, ny, nz] matching TensorField.
         """
         # LOCAL FIELDS per voxel (stateful)
-        # Amplitude tracks A via EMA of |ψ| and RMS calculation
+        # Amplitude tracks A via EMA of the ‖M−D‖_F deviation and RMS calculation
         # Frequency tracks local oscillation rate via zero-crossing detection
         self.amp_local_emarms_am = ti.field(dtype=ti.f32, shape=grid_size)  # am, rms amp
         self.last_crossing = ti.field(dtype=ti.f32, shape=grid_size)  # rs, last zero crossing
@@ -671,7 +632,7 @@ class FieldObservables:
         Initialize derived-scalar fields.
 
         Args:
-            grid_size: Grid dimensions [nx, ny, nz] matching WaveField.
+            grid_size: Grid dimensions [nx, ny, nz] matching TensorField.
         """
         # Per-voxel ENERGY density (HAMILTONIAN formula):
         #     H = ½|ψ̇|² + ½c²|∇ψ|² + V(ψ)
@@ -686,8 +647,8 @@ class FieldObservables:
         #     statement F = −∇E is canonical regardless of how E is derived.
         #   - sample_avg_observables  →  3-plane-sampled global mean
         #   - launcher WAVE_MENU=4 flux-mesh visualization
-        # In M5.0g–M5.1 the V(ψ) term is zero; M5.2 plugs in Klein-Gordon
-        # mass + Close Eq. 23 + LdG via the V_psi hook in engine2_pde.
+        # The potential term is the LdG V(M) (Eq.13) via the V_M hook in engine2_pde;
+        # off (a=b=c=0) unless the xperiment sets LDG_STIFFNESS_K > 0.
         self.energyH_density_aJ = ti.field(dtype=ti.f32, shape=grid_size)  # aJ-per-voxel
 
         # Per-voxel FRANK ELASTIC energy density (M5.1):
@@ -737,7 +698,7 @@ if __name__ == "__main__":
         2e-15,
     ]  # m, simulation domain [x, y, z] dimensions (can be asymmetric)
 
-    wave_field = WaveField(
+    tensor_field = TensorField(
         UNIVERSE_SIZE, target_voxels=3.5e8
     )  # 350M voxels (~14GB), 1B voxels (~40GB)
 
@@ -746,13 +707,13 @@ if __name__ == "__main__":
         f"  Requested universe: [{UNIVERSE_SIZE[0]:.1e}, {UNIVERSE_SIZE[1]:.1e}, {UNIVERSE_SIZE[2]:.1e}] m"
     )
     print(
-        f"  Actual universe: [{wave_field.universe_size[0]:.1e}, {wave_field.universe_size[1]:.1e}, {wave_field.universe_size[2]:.1e}] m"
+        f"  Actual universe: [{tensor_field.universe_size[0]:.1e}, {tensor_field.universe_size[1]:.1e}, {tensor_field.universe_size[2]:.1e}] m"
     )
-    print(f"  Grid size: {wave_field.nx} x {wave_field.ny} x {wave_field.nz} voxels")
-    print(f"  Voxel edge: {wave_field.dx:.2e} m (cubic - same for all axes)")
-    print(f"  Voxel count: {wave_field.voxel_count:,}")
-    print(f"  Voxel edge (am): {wave_field.dx_am:.2f} am")
-    print(f"  Universe volume: {wave_field.universe_volume:.2e} m³")
+    print(f"  Grid size: {tensor_field.nx} x {tensor_field.ny} x {tensor_field.nz} voxels")
+    print(f"  Voxel edge: {tensor_field.dx:.2e} m (cubic - same for all axes)")
+    print(f"  Voxel count: {tensor_field.voxel_count:,}")
+    print(f"  Voxel edge (am): {tensor_field.dx_am:.2f} am")
+    print(f"  Universe volume: {tensor_field.universe_volume:.2e} m³")
     print(f"  Note: voxels-per-wavelength resolution is now xperiment-driven")
     print(f"        (declared via TEST_SEED or defect Compton wavelength)")
 

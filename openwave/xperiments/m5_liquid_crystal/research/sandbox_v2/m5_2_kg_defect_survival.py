@@ -1,3 +1,7 @@
+# ⚠️ ARCHIVE (M5.8 ψ-retire, 2026-06-04): validated the retired Vector(3) ψ engine.
+# The functions this script calls (evolve_psi / seed_gaussian|vacuum|hedgehog / V_psi /
+# the ∇²,∇·,∇× operators) were DELETED in the M5.8 ψ-retire. Kept as a historical
+# record of the M5.0–M5.3 milestone; NOT expected to run against the current 4×4 engine.
 """
 M5.2 Step 3 — Defect-Survival Check under EVOLVE PSI (headless)
 

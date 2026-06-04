@@ -110,24 +110,12 @@ class SimulationState:
     """Manages the state of the simulation."""
 
     def __init__(self):
-        self.wave_field = None
+        self.tensor_field = None
         self.trackers = None  # Trackers (M3/M4 wave statistics: amp, freq, EMA-RMS)
         self.observables = None  # FieldObservables (M5 derived scalars: energyH, energyF)
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
-        # V(ψ) coupling values — populated in compute_timestep, threaded through
-        # to V_psi via evolve_psi + compute_energyH_density. Set to 0 here so
-        # any pre-init kernel call gets free-wave behavior.
-        #   m_freq_kg_rs : Klein-Gordon mass-frequency m·c²/ℏ for the electron
-        #                  (rad/rs storage units; ~7.76e-7 at SIM_SPEED=1)
-        #                  M5.2 Step 2 activated this in V_psi + evolve_psi.
-        #   lambda_phi4  : Mexican-hat φ⁴ coupling (1/(am²·rs²)). Set to
-        #                  (c_amrs/dx_am)² for grid-scale restoring force.
-        #                  M5.2 Step 4a activated this — V = ¼λ(|ψ|²−1)²
-        #                  moves the potential minimum to the unit sphere.
-        self.m_freq_kg_rs = 0.0
-        self.lambda_phi4 = 0.0
         # M5.5.4 — Eq.13 LdG V(M)=a·Tr(M²)−b·Tr(M³)+c·(Tr(M²))² couplings for evolve_M /
         # compute_energyH_density_M. Default 0 → free curvature dynamics (V off); the exact
         # Λ=(1,δ,0)-producing values are Q7 (Duda open). Expose as xparameters later.
@@ -214,8 +202,6 @@ class SimulationState:
         self.EXPORT_VIDEO = False
         self.VIDEO_FRAMES = 24
 
-        # Optional wave seed (test xperiment only)
-        self.TEST_SEED = None
         # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
         self.TOPOLOGY_SEED = None
 
@@ -284,8 +270,6 @@ class SimulationState:
         self.EXPORT_VIDEO = diag["EXPORT_VIDEO"]
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
 
-        # Optional wave seed (only present in _test_smoke xperiment)
-        self.TEST_SEED = params.get("test_seed", None)
         # Optional topology seed (only present in _test_topology xperiment, M5.1+)
         self.TOPOLOGY_SEED = params.get("topology_seed", None)
         # M5.1 task 6 — auto-relaxation (optional; 0 = manual via RELAX button only)
@@ -305,28 +289,23 @@ class SimulationState:
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
-        self.wave_field = medium.WaveField(
+        self.tensor_field = medium.TensorField(
             self.UNIVERSE_SIZE,
             self.TARGET_VOXELS,
             self.FLUX_MESH_PLANES,
             viz_stride=self.VIZ_STRIDE,
         )
-        self.trackers = medium.Trackers(self.wave_field.grid_size)
-        self.observables = medium.FieldObservables(self.wave_field.grid_size)
+        self.trackers = medium.Trackers(self.tensor_field.grid_size)
+        self.observables = medium.FieldObservables(self.tensor_field.grid_size)
 
-        # Resolution metric: voxels-per-wavelength, declared by the active
-        # xperiment. Sources (in priority order):
-        #   1. TEST_SEED["VOXELS_PER_WAVELENGTH"]   — seed-driven xperiments
-        #   2. (M5.2+) defect Compton wavelength    — particle xperiments
-        #   3. None / 0.0                           — no reference (vacuum tests)
-        if self.TEST_SEED is not None:
-            self.wave_res = float(self.TEST_SEED.get("VOXELS_PER_WAVELENGTH", 0.0))
-        else:
-            self.wave_res = 0.0
+        # Resolution metric: voxels-per-wavelength, declared by the active xperiment.
+        # (M5.8 ψ-retire: the TEST_SEED seed-driven source was removed; M5.2+ particle
+        # xperiments will set this from the defect Compton wavelength. 0.0 = no reference.)
+        self.wave_res = 0.0
 
         # Initialize wave-centers
         self.wave_center = particle.WaveCenter(
-            self.wave_field.grid_size,
+            self.tensor_field.grid_size,
             self.NUM_SOURCES,
             self.SOURCES_POSITION,
             self.SOURCES_OFFSET_DEG,
@@ -354,30 +333,14 @@ class SimulationState:
         # Tight CFL bound against physical c (= c_amrs / SIM_SPEED), with safety
         # factor — so cfl_factor saturates at (cfl_safety² / 3) at SIM_SPEED=1.
         self.dt_rs = (
-            self.wave_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
+            self.tensor_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
         )  # rs
-        self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
-        # V(ψ) couplings — only meaningful for director-class (topology) seeds,
-        # where vacuum is |ψ|=1 (unit sphere). For wave-class seeds (TEST_SEED
-        # plane wave / Gaussian — small ψ around 0), the φ⁴ Mexican-hat with
-        # min at |ψ|=1 creates positive feedback (the (|ψ|²−1) factor ≈ −1
-        # everywhere, so the EL term pulls ψ AWAY from 0 toward the unit
-        # sphere, blowing up the small-amplitude plane wave). Gate on
-        # TOPOLOGY_SEED presence to keep wave-class xperiments (M5.0 smoke
-        # tests) on V(ψ)=0 free-wave dynamics.
+        self.cfl_factor = round((self.c_amrs * self.dt_rs / self.tensor_field.dx_am) ** 2, 7)
+        # V(M) couplings for the matrix substrate. Only director-class (topology)
+        # seeds use a potential, so gate on TOPOLOGY_SEED presence. (M5.8 ψ-retire:
+        # the legacy V(ψ) Klein-Gordon + φ⁴ couplings m_freq_kg_rs / lambda_phi4 were
+        # removed with the Vector(3) ψ engine — V is now the LdG V(M) only.)
         if self.TOPOLOGY_SEED is not None:
-            # Klein-Gordon mass-frequency for the electron (m·c²/ℏ in rad/rs).
-            # Scales with SIM_SPEED via c_amrs so the mass-oscillation timescale
-            # stays consistent with the wave timescale under slow-motion playback.
-            self.m_freq_kg_rs = self.c_amrs / constants.COMPTON_WAVELENGTH_REDUCED_ELECTRON_AM
-            # Mexican-hat φ⁴ coupling. Natural grid scale is (c/dx)², but the
-            # nonlinear feedback amplifies |ψ| excursions caused by the Laplacian
-            # near the defect core — at λ = (c/dx)² the system NaNs around step 40
-            # of a hedgehog seed. Empirically (research/scripts/m5_2_phi4_defect_survival),
-            # 0.1·(c/dx)² is comfortably stable (|ψ| stays in [0.83, 1.18] over
-            # 400 steps vs [0.73, 1.21] for free-wave). 0.3·(c/dx)² is the
-            # marginal stability ceiling at the production grid.
-            self.lambda_phi4 = 0.1 * (self.c_amrs / self.wave_field.dx_am) ** 2
             # M5.6.5c — Eq.13 LdG V(M) coupling for the matrix substrate (evolve_M /
             # compute_energyH_density_M). The b=0 amplitude well V = a·Tr(M²) + c·(Tr(M²))²
             # pins Tr(M²)→s₂*=1+δ² — confines the energy seen diluting under Evolve PDE —
@@ -390,32 +353,29 @@ class SimulationState:
             ldg_k = float(self.TOPOLOGY_SEED.get("LDG_STIFFNESS_K", 0.0))
             if ldg_k > 0.0:
                 delta = float(self.TOPOLOGY_SEED.get("BIAXIAL_DELTA", 0.3))
-                self.ldg_c = ldg_k * self.c_amrs**2 / self.wave_field.dx_am**4
+                self.ldg_c = ldg_k * self.c_amrs**2 / self.tensor_field.dx_am**4
                 self.ldg_a = -2.0 * self.ldg_c * (1.0 + delta * delta)  # min at s₂*=1+δ²
                 self.ldg_b = 0.0
                 # vacuum potential V_M(D=diag(1,δ,0)) — subtracted in the energyH display so
                 # the negative well bottom doesn't swamp the structure (kernel docstring).
+                # M5.8.1: V_M acts on the SPATIAL 3×3 block only (the time-g axis is decoupled),
+                # so the vacuum traces are the spatial diag(1,δ,0) ones — no g terms.
                 tr2_vac = 1.0 + delta * delta
                 tr3_vac = 1.0 + delta * delta * delta
                 self.ldg_v0 = self.ldg_a * tr2_vac - self.ldg_b * tr3_vac + self.ldg_c * tr2_vac**2
             else:
                 self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         else:
-            # Wave-class seed (TEST_SEED plane wave) — disable V(ψ) entirely
-            # so evolve_psi runs the free-wave equation `∂²ψ/∂t² = c²·∇²ψ`.
-            self.m_freq_kg_rs = 0.0
-            self.lambda_phi4 = 0.0
+            # No topology seed → no potential (free curvature dynamics, V = 0).
             self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
 
     def reset_sim(self):
         """Reset simulation state."""
-        self.wave_field = None
+        self.tensor_field = None
         self.trackers = None
         self.c_amrs = 0.0
         self.dt_rs = 0.0
         self.cfl_factor = 0.0
-        self.m_freq_kg_rs = 0.0
-        self.lambda_phi4 = 0.0
         self.ldg_a = self.ldg_b = self.ldg_c = self.ldg_v0 = 0.0
         self.elapsed_t_rs = 0.0
         self.clock_start_time = time.time()
@@ -517,25 +477,25 @@ def display_wave_menu(state):
     with render.gui.sub_window("WAVE MENU", 0.00, 0.79, 0.15, 0.21) as sub:
         if sub.checkbox("Deviation (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("Thermal Amp (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("Thermal Clock (omega)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("ENERGY (Hamiltonian)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("ENERGY (Frank Elastic)", state.WAVE_MENU == 5):
             state.WAVE_MENU = 5
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("EM div (charge/E)", state.WAVE_MENU == 6):
             state.WAVE_MENU = 6
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         if sub.checkbox("EM curl (rotation/B)", state.WAVE_MENU == 7):
             state.WAVE_MENU = 7
-            state.wave_field.create_flux_mesh()
+            state.tensor_field.create_flux_mesh()
         # VIZ.2: WM7 color toggle — orange ‖∇×n̂‖ magnitude (off) vs bluered signed (∇×n̂)·ẑ
         # → N=red/S=blue poles (on). The vector-warp (fabric-twist) is always on for WM7.
         if state.WAVE_MENU == 7:
@@ -613,12 +573,12 @@ def display_data_dashboard(state):
         sub.text(f"Wave Speed (c): {constants.WAVE_SPEED:.1e} m/s")
 
         sub.text("\n--- SIMULATION DOMAIN ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Universe: {state.wave_field.max_universe_edge:.1e} m")
-        sub.text(f"Voxel Count: {state.wave_field.voxel_count:,}")
+        sub.text(f"Universe: {state.tensor_field.max_universe_edge:.1e} m")
+        sub.text(f"Voxel Count: {state.tensor_field.voxel_count:,}")
         sub.text(
-            f"Grid Size: {state.wave_field.nx} x {state.wave_field.ny} x {state.wave_field.nz}"
+            f"Grid Size: {state.tensor_field.nx} x {state.tensor_field.ny} x {state.tensor_field.nz}"
         )
-        sub.text(f"Voxel Edge: {state.wave_field.dx:.2e} m")
+        sub.text(f"Voxel Edge: {state.tensor_field.dx:.2e} m")
 
         sub.text("\n--- RESOLUTION ---", color=colormap.LIGHT_BLUE[1])
         # wave_res is xperiment-driven; 0.0 means no reference λ declared.
@@ -693,19 +653,8 @@ def initialize_xperiment(state):
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
-    # Optional initial-condition seed for test xperiments
-    if state.TEST_SEED is not None:
-        seed = state.TEST_SEED
-        polarization = ti.Vector(seed["POLARIZATION"], dt=ti.f32)
-        seeds.seed_gaussian(
-            state.wave_field,
-            state.c_amrs,
-            state.dt_rs,
-            seed["AMPLITUDE_AM"],
-            seed["VOXELS_PER_WAVELENGTH"],
-            polarization,
-            seed["DIRECTION_AXIS"],
-        )
+    # (M5.8 ψ-retire: the legacy TEST_SEED Gaussian/plane-wave seeding path was
+    # removed with the Vector(3) ψ engine — all live xperiments use TOPOLOGY_SEED.)
 
     # Optional topology seed (M5.1+ vacuum / hedgehog xperiments)
     if state.TOPOLOGY_SEED is not None:
@@ -713,7 +662,7 @@ def initialize_xperiment(state):
         seed_mode = topo.get("MODE", "vacuum")  # "vacuum" or "hedgehog"
 
         if seed_mode == "vacuum":
-            seeds.seed_vacuum_M(state.wave_field, state.wave_field.lc_delta)
+            seeds.seed_vacuum_M(state.tensor_field, state.tensor_field.lc_delta)
             print("[M5.4] seeded matrix vacuum (M = δI + (1−δ)ẑ⊗ẑ everywhere)")
 
         elif seed_mode == "hedgehog":
@@ -721,7 +670,7 @@ def initialize_xperiment(state):
             # convert to voxel coords and bundle into ti.fields for the kernel.
             defects = topo["DEFECTS"]  # list of {"CENTER": [x,y,z], "SIGN": ±1}
             n_defects = len(defects)
-            wf = state.wave_field
+            wf = state.tensor_field
 
             centers_np = np.zeros((n_defects, 3), dtype=np.int32)
             signs_np = np.zeros(n_defects, dtype=np.int32)
@@ -757,7 +706,7 @@ def initialize_xperiment(state):
         elif seed_mode == "biaxial_hedgehog":
             # M5.6.5a: a single BIAXIAL hedgehog M = O·D(s(r))·Oᵀ, D = diag(1, δ, 0)
             # (frame O=[r̂|e_Θ|e_Φ] + disclination smoothstep + radial eigenvalue melt).
-            wf = state.wave_field
+            wf = state.tensor_field
             center = topo.get("CENTER", [0.5, 0.5, 0.5])
             cx = int(round(center[0] * (wf.nx - 1)))
             cy = int(round(center[1] * (wf.ny - 1)))
@@ -785,7 +734,7 @@ def initialize_xperiment(state):
         # VIZ.3: populate the derived eigenframe (director_nhat + director_mid +
         # eigenvalues) from the seeded M so a PAUSED boot renders the δ-clock-hand
         # glyph correctly before the first Evolve-PDE step. Cheap, runs once.
-        pde.eigen_decompose(state.wave_field)
+        pde.eigen_decompose(state.tensor_field)
 
     if state.INSTRUMENTATION:
         print("\n" + "=" * 64)
@@ -797,12 +746,12 @@ def relax_field(state, n_steps):
     """Run N gradient-descent relaxation steps on the director field (M5.1 task 6).
 
     Lowers the Frank elastic energy by smoothing the seeded hedgehog blend
-    zone, while preserving topology via soft-core pinning. After all N steps,
-    psi_am and psi_prev_am hold the same relaxed field so subsequent
-    EVOLVE PSI sees ψ̇ = 0 (no spurious time-derivative artifact).
+    zone, while preserving topology via soft-core pinning. relax_director_step
+    writes director_nhat_new; rebuild_M_from_director then writes all three M
+    buffers equal (Ṁ = 0) so subsequent Evolve PDE starts from a static state.
 
     Args:
-        state: SimulationState with wave_field + pin_centers/signs/n_defects
+        state: SimulationState with tensor_field + pin_centers/signs/n_defects
         n_steps: number of relax_director_step iterations to run
 
     Step size: τ = 0.4 · dx²/6 (40% of the heat-equation CFL bound for headroom).
@@ -812,13 +761,13 @@ def relax_field(state, n_steps):
         # No defects → nothing to pin; gradient descent on a uniform field
         # has nothing to do (∇²n = 0 everywhere). Skip.
         return
-    wf = state.wave_field
+    wf = state.tensor_field
     cfl_bound = (wf.dx_am**2) / 6.0  # τ < dx²/(2·dim·K) with dim=3, K=1
     tau = 0.4 * cfl_bound
     for _ in range(n_steps):
         pde.relax_director_step(wf, tau, state.pin_centers, state.pin_signs, state.n_defects)
         # M5.4: relaxation operates on director_nhat (the principal eigenvector of M).
-        # Copy the relaxed director back. NOT swap_buffers — static update.
+        # Copy the relaxed director back. NOT a buffer swap — static update.
         wf.director_nhat.copy_from(wf.director_nhat_new)
     # Rebuild M from the relaxed director so M_am, the ‖M−D‖/‖Ṁ‖ trackers, and the
     # flux-mesh orientation mode stay consistent with the relaxed director.
@@ -842,7 +791,7 @@ def compute_propagation(state):
     free curvature dynamics; the faithful curvature kinetic (degenerate metric, O-DoF)
     is the M5.6 refinement. (The retired ψ leapfrog stays dormant; see engine2_pde.)
     """
-    wf = state.wave_field
+    wf = state.tensor_field
     pde.compute_curvature_flux(wf)
     pde.evolve_M(wf, state.c_amrs, state.dt_rs, state.ldg_a, state.ldg_b, state.ldg_c)
     wf.swap_matrix_buffers()
@@ -867,7 +816,7 @@ def compute_field_observables(state):
     # carry-over. e_scale=1.0 (bare units; the physical-energy calibration is tied to a
     # reference mass scale → deferred to M5.9). Consumed by flux-mesh WAVE_MENU=4.
     observables.compute_energyH_density_M(
-        state.wave_field,
+        state.tensor_field,
         state.observables,
         state.c_amrs,
         state.dt_rs,
@@ -882,25 +831,25 @@ def compute_field_observables(state):
     # F = (K/2)·|∇n̂|²  → observables.energyF_density_aJ.
     # Consumed by flux-mesh WAVE_MENU=5; M5.1 task 6 (gradient-descent
     # monotone-decrease diagnostic); M5.1 task 7 (Coulomb 1/d fit).
-    observables.compute_energyF_density(state.wave_field, state.observables, observables.K_FRANK)
+    observables.compute_energyF_density(state.tensor_field, state.observables, observables.K_FRANK)
 
     # EM-FROM-TILTS OBSERVABLES (M5.6.5b "see EM") ======================
     # ∇·n̂ (splay = Coulomb-charge-like) + ‖∇×n̂‖ (twist+bend = B-like circulation).
     # Consumed by flux-mesh WAVE_MENU 6 (∇·n̂, bluered) / 7 (‖∇×n̂‖, ironbow).
-    observables.compute_director_em(state.wave_field, state.observables)
+    observables.compute_director_em(state.tensor_field, state.observables)
     # VIZ.4: overwrite the curl (B) field with an analytic dipole placeholder so the
     # N/S coloring + B glyphs render correctly before the real circulating B exists
     # (M5.8). div (charge) is left as the real seeded splay for context. Same center-
     # voxel convention as the biaxial_hedgehog seed so the dipole sits on the defect.
     if state.DIPOLE_SAMPLE:
-        wf = state.wave_field
+        wf = state.tensor_field
         cx = state.DIPOLE_CENTER[0] * (wf.nx - 1)
         cy = state.DIPOLE_CENTER[1] * (wf.ny - 1)
         cz = state.DIPOLE_CENTER[2] * (wf.nz - 1)
         observables.fill_dipole_sample_B(
             wf, state.observables, state.DIPOLE_AXIS, cx, cy, cz, state.DIPOLE_R0_VOX, 1.0
         )
-    observables.compute_director_em_scale(state.wave_field, state.observables)
+    observables.compute_director_em_scale(state.tensor_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
     # ‖M−D‖_F amplitude (thermal A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
@@ -908,7 +857,7 @@ def compute_field_observables(state):
     # modes + dashboard reflect the static seeded/relaxed state. Replaces the
     # ψ-based update_trackers (which now only fires on the retiring EVOLVE PSI path).
     observables.update_trackers_M(
-        state.wave_field, state.trackers, state.dt_rs, state.wave_field.lc_delta
+        state.tensor_field, state.trackers, state.dt_rs, state.tensor_field.lc_delta
     )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ================================
@@ -918,10 +867,10 @@ def compute_field_observables(state):
     # Two separate samplers per the 2026-05-11 SoC refactor: Trackers and
     # FieldObservables each own their own 3-plane pass.
     if state.frame % 60 == 0 or state.frame == 10 or state.PAUSED:
-        observables.sample_avg_trackers(state.wave_field, state.trackers)
-        observables.sample_avg_observables(state.wave_field, state.observables)
+        observables.sample_avg_trackers(state.tensor_field, state.trackers)
+        observables.sample_avg_observables(state.tensor_field, state.observables)
         state.energyH_total = (
-            state.observables.energyH_global_avg_aJ[None] * state.wave_field.voxel_count
+            state.observables.energyH_global_avg_aJ[None] * state.tensor_field.voxel_count
         ) * constants.ATTOJOULE  # J
     state.amp_global_rms = state.trackers.amp_global_emarms_am[None] * constants.ATTOMETER  # m
     state.freq_global_avg = state.trackers.freq_global_avg_rHz[None] / constants.RONTOSECOND  # Hz
@@ -930,9 +879,9 @@ def compute_field_observables(state):
     state.energyF_global_avg = state.observables.energyF_global_avg_aJ[None] * constants.ATTOJOULE
 
     if state.INSTRUMENTATION:
-        instrument.log_timestep_data(state.frame, state.wave_field, state.trackers)
+        instrument.log_timestep_data(state.frame, state.tensor_field, state.trackers)
         if state.frame == 500:
-            instrument.plot_probe_wave_profile(state.wave_field)
+            instrument.plot_probe_wave_profile(state.tensor_field)
 
 
 def compute_force_motion(state):
@@ -946,13 +895,13 @@ def compute_force_motion(state):
 
     # Compute force from energy gradient, then integrate motion
     force_motion.compute_force_vector(
-        state.wave_field,
+        state.tensor_field,
         state.observables,
         state.wave_center,
     )
     if state.APPLY_MOTION:
         force_motion.integrate_motion_leapfrog(
-            state.wave_field,
+            state.tensor_field,
             state.wave_center,
             state.dt_rs,
         )
@@ -964,7 +913,7 @@ def compute_force_motion(state):
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
     # Detect and handle particle annihilation (opposite phase WCs meeting).
     # Threshold: WCs can be at grid diagonal positions and dt_rs may cause larger jumps.
-    # M5.0d.3: hardcoded to 6 voxels (was state.wave_field.ewave_res / 2). Defects
+    # M5.0d.3: hardcoded to 6 voxels (was state.tensor_field.ewave_res / 2). Defects
     # don't physically have a single universal interaction radius; M5.2 will replace
     # this with a per-defect-type Compton-wavelength-based threshold.
     annihilation_threshold = 6.0  # in voxels
@@ -980,7 +929,7 @@ def _curl_projection(state):
     projection (radial=0, center unused). center is in voxel coords.
     """
     if state.DIPOLE_SAMPLE:
-        wf = state.wave_field
+        wf = state.tensor_field
         return 1, ti.Vector(
             [
                 state.DIPOLE_CENTER[0] * (wf.nx - 1),
@@ -995,10 +944,10 @@ def _curl_projection(state):
 def render_elements(state):
     """Render grid, edges, flux mesh and test particles."""
     if state.SHOW_GRID:
-        render.scene.lines(state.wave_field.grid_lines, width=1, color=colormap.COLOR_MEDIUM[1])
+        render.scene.lines(state.tensor_field.grid_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_EDGES:
-        render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
+        render.scene.lines(state.tensor_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
     if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
         # VIZ.4: for the dipole sample, color the bluered B by the RADIAL projection
@@ -1006,7 +955,7 @@ def render_elements(state):
         # matching a bar magnet). General runs use the fixed-axis projection (radial=0).
         curl_radial, curl_center = _curl_projection(state)
         viz.update_flux_mesh_values(
-            state.wave_field,
+            state.tensor_field,
             state.trackers,
             state.observables,
             state.WAVE_MENU,
@@ -1016,7 +965,7 @@ def render_elements(state):
             curl_radial,  # VIZ.4: 1 = radial (∇×n̂)·r̂ → true N/S poles (dipole sample)
             curl_center,  # defect center in voxel coords (radial mode only)
         )
-        flux_mesh.render_flux_mesh(render.scene, state.wave_field, state.SHOW_FLUX_MESH)
+        flux_mesh.render_flux_mesh(render.scene, state.tensor_field, state.SHOW_FLUX_MESH)
 
     # M5.1 director-glyph overlay — line segments showing n̂ orientation,
     # signed-component RGB so opposite directions are visually opposite.
@@ -1036,7 +985,7 @@ def render_elements(state):
             # gradient color uses the SAME signed N/S projection as the WM7 mesh
             curl_radial, curl_center = _curl_projection(state)
             viz.update_em_vector_glyphs(
-                state.wave_field,
+                state.tensor_field,
                 state.observables,
                 glyph_length,
                 em_scale,
@@ -1048,14 +997,14 @@ def render_elements(state):
                 curl_center,
             )
             render.scene.lines(
-                state.wave_field.director_glyph_vertices,
-                per_vertex_color=state.wave_field.director_glyph_colors,
+                state.tensor_field.director_glyph_vertices,
+                per_vertex_color=state.tensor_field.director_glyph_colors,
                 width=2.0,
             )
             # half-arrow barb pass — B vectors are polar; the tip shows circulation direction
             render.scene.lines(
-                state.wave_field.director_glyph_arrow_vertices,
-                per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                state.tensor_field.director_glyph_arrow_vertices,
+                per_vertex_color=state.tensor_field.director_glyph_arrow_colors,
                 width=2.0,
             )
         else:  # Director-only (0) / Director+Delta (1) / E-field (2) — centered glyph kernel
@@ -1063,7 +1012,7 @@ def render_elements(state):
             glyph_mode = 1 if state.GLYPH_VECTOR == 2 else 0  # 0=Director, 1=E-field
             show_delta = 1 if state.GLYPH_VECTOR == 1 else 0  # delta cross-bar only in state 1
             viz.update_director_glyphs(
-                state.wave_field,
+                state.tensor_field,
                 state.observables,
                 glyph_length,
                 state.SHOW_GLYPHS,
@@ -1074,15 +1023,15 @@ def render_elements(state):
                 show_delta,
             )
             render.scene.lines(
-                state.wave_field.director_glyph_vertices,
-                per_vertex_color=state.wave_field.director_glyph_colors,
+                state.tensor_field.director_glyph_vertices,
+                per_vertex_color=state.tensor_field.director_glyph_colors,
                 width=2.0,
             )
             # Second-segment pass: delta cross-bar (state 1) OR E +→− barb (mode 1).
             # The arrow buffer is always written (blanked in director-only state 0).
             render.scene.lines(
-                state.wave_field.director_glyph_arrow_vertices,
-                per_vertex_color=state.wave_field.director_glyph_arrow_colors,
+                state.tensor_field.director_glyph_arrow_vertices,
+                per_vertex_color=state.tensor_field.director_glyph_arrow_colors,
                 width=2.0,
             )
 
@@ -1090,7 +1039,7 @@ def render_elements(state):
     # Rendered independently of SHOW_GLYPHS so the moment is always visible alongside
     # the N/S-colored field. YELLOW + thick so it reads as the principal axis.
     if state.DIPOLE_SAMPLE:
-        wf = state.wave_field
+        wf = state.tensor_field
         viz.update_moment_glyph(
             wf,
             state.DIPOLE_AXIS,
@@ -1113,15 +1062,15 @@ def render_elements(state):
     if state.SHOW_GRANULES and state.SHOW_FLUX_MESH > 0:
         granule_radius = 0.001  # in screen space (relative to max universe edge and scale factor)
         amp_boost = state.WARP_MESH  # Boost granule displacement for better visibility
-        nx, ny = state.wave_field.nx, state.wave_field.ny
+        nx, ny = state.tensor_field.nx, state.tensor_field.ny
         # Shared VIZ_STRIDE drives both granules and director glyphs — same density,
         # so granules visually align with the underlying glyphs (M5.1 consolidation).
         stride = max(1, state.VIZ_STRIDE)
         sampled_nx = (nx + stride - 1) // stride
         sampled_ny = (ny + stride - 1) // stride
         num_render = sampled_nx * sampled_ny
-        viz.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
-        pos_np = state.wave_field.position_render.to_numpy()[:num_render]
+        viz.sample_position_to_render(state.tensor_field, amp_boost, stride, num_render)
+        pos_np = state.tensor_field.position_render.to_numpy()[:num_render]
         render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
 
 

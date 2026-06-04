@@ -68,7 +68,7 @@ VELOCITY_DAMPING = 0.999
 
 @ti.kernel
 def compute_force_vector(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     observables: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
 ):
@@ -99,14 +99,14 @@ def compute_force_vector(
     scale_factor).
 
     Args:
-        wave_field: WaveField instance (used for dx_am and grid dims)
+        tensor_field: TensorField instance (used for dx_am and grid dims)
         observables: FieldObservables instance — reads `energyH_density_aJ`
             (populated by engine3_observables.compute_energyH_density before
             this kernel)
         wave_center: WaveCenter instance — writes computed forces into
             `wave_center.force[wc_idx]`
     """
-    dx_am = wave_field.dx_am
+    dx_am = tensor_field.dx_am
 
     # Precompute weights: 1/d^GRADIENT_WEIGHT_FALLOFF for each shell d = 1..R
     w_sum = ti.cast(0.0, ti.f32)
@@ -129,9 +129,9 @@ def compute_force_vector(
         F_z = ti.cast(0.0, ti.f32)
 
         # Grid dimensions
-        nx = wave_field.nx
-        ny = wave_field.ny
-        nz = wave_field.nz
+        nx = tensor_field.nx
+        ny = tensor_field.ny
+        nz = tensor_field.nz
 
         # Boundary check (need d voxels of halo on each side)
         if (
@@ -193,7 +193,7 @@ def compute_force_vector(
 
 @ti.kernel
 def integrate_motion_euler(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
     dt_rs: ti.f32,  # type: ignore
 ):
@@ -204,7 +204,7 @@ def integrate_motion_euler(
     x_new = x_old + v_new * dt  (position in grid indices)
 
     Args:
-        wave_field: WaveField instance (for dx voxel size)
+        tensor_field: TensorField instance (for dx voxel size)
         wave_center: WaveCenter instance with force/velocity/position fields
         dt_rs: Timestep in rontoseconds
     """
@@ -215,7 +215,7 @@ def integrate_motion_euler(
     accel_conv_qg = ti.cast(1e-3, ti.f32)  # (F_N / m_qg) * 1e-3 -> am/rs²
 
     # Voxel size in attometers for position conversion
-    dx_am = wave_field.dx / ti.cast(ATTOMETER, ti.f32)
+    dx_am = tensor_field.dx / ti.cast(ATTOMETER, ti.f32)
 
     for wc_idx in range(wave_center.num_sources):
         # Skip inactive (annihilated) WCs
@@ -268,9 +268,9 @@ def integrate_motion_euler(
 
         # # Clamp position to grid boundaries (with margin for gradient sampling)
         # margin = ti.cast(2, ti.f32)  # Keep 2 voxels from edge
-        # nx_f = ti.cast(wave_field.nx, ti.f32)
-        # ny_f = ti.cast(wave_field.ny, ti.f32)
-        # nz_f = ti.cast(wave_field.nz, ti.f32)
+        # nx_f = ti.cast(tensor_field.nx, ti.f32)
+        # ny_f = ti.cast(tensor_field.ny, ti.f32)
+        # nz_f = ti.cast(tensor_field.nz, ti.f32)
 
         # wave_center.position_float[wc_idx][0] = ti.max(
         #     margin, ti.min(nx_f - margin, wave_center.position_float[wc_idx][0])
@@ -301,7 +301,7 @@ def integrate_motion_euler(
 
 @ti.kernel
 def integrate_motion_leapfrog(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
     dt_rs: ti.f32,  # type: ignore
 ):
@@ -327,12 +327,12 @@ def integrate_motion_leapfrog(
     This is equivalent to standard leapfrog and is symplectic.
 
     Args:
-        wave_field: WaveField instance (for dx voxel size)
+        tensor_field: TensorField instance (for dx voxel size)
         wave_center: WaveCenter instance with force/velocity/position fields
         dt_rs: Timestep in rontoseconds
     """
     accel_conv_qg = ti.cast(1e-3, ti.f32)  # (F_N / m_qg) * 1e-3 -> am/rs²
-    dx_am = wave_field.dx / ti.cast(ATTOMETER, ti.f32)
+    dx_am = tensor_field.dx / ti.cast(ATTOMETER, ti.f32)
     damping = ti.cast(VELOCITY_DAMPING, ti.f32)
 
     for wc_idx in range(wave_center.num_sources):

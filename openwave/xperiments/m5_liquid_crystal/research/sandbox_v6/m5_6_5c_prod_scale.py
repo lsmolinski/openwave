@@ -1,3 +1,7 @@
+# ⚠️ ARCHIVE (M5.8.1 4×4 promotion, 2026-06-04): written for the 3×3 matrix substrate.
+# It builds 3×3 M arrays (M_am.from_numpy of diag(1,δ,0)), now a shape mismatch vs the
+# 4×4 field block-diag(spatial, g). Kept as a historical record of the M5.4–M5.6 milestone;
+# would need a 4×4 migration to run. Live 4×4 regression: sandbox_v8/m5_8_1_headless_check.py.
 """M5.6.5c — find PRODUCTION-unit LdG coefficients with the real evolve_M kernel.
 
 The sandbox proved the b=0 amplitude well confines (dimensionless). But production
