@@ -358,15 +358,31 @@ def seed_hedgehog(
 
 
 @ti.func
-def uniaxial_M(n, delta):  # type: ignore
-    """Uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from a unit director n̂.
+def embed4(msp, g):  # type: ignore
+    """M5.8.1 — embed a 3×3 spatial order parameter into the 4×4 substrate as
+    block-diag(M_spatial, g): time axis = index 3 (eigenvalue g), boost-DECOUPLED
+    (the time row/col off-diagonals are 0). The spatial block [0:3,0:3] is the M5.4/
+    M5.6 order parameter, so the 3×3-Cardano eigensolver reads it unchanged."""
+    m4 = ti.Matrix.zero(ti.f32, 4, 4)
+    for a in ti.static(range(3)):
+        for bb in ti.static(range(3)):
+            m4[a, bb] = msp[a, bb]
+    m4[3, 3] = g
+    return m4
 
-    Eigenvalues (1, δ, δ), principal eigenvector = n̂ — the M5.4 embedding of a
-    director into the matrix substrate. Verified by the eigen_decompose round-trip
-    (spectrum recovers (1, δ, δ); director recovers n̂ at 0.9995).
+
+@ti.func
+def uniaxial_M(n, delta, g):  # type: ignore
+    """Uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from a unit director n̂, embedded
+    in the 4×4 substrate (M5.8.1: block-diag(spatial, g)).
+
+    Spatial eigenvalues (1, δ, δ), principal eigenvector = n̂; the 4th (time) axis = g.
+    Verified by the eigen_decompose round-trip (spectrum recovers (1, δ, δ); director
+    recovers n̂ at 0.9995).
     """
     eye = ti.Matrix.identity(ti.f32, 3)
-    return delta * eye + (1.0 - delta) * n.outer_product(n)
+    msp = delta * eye + (1.0 - delta) * n.outer_product(n)
+    return embed4(msp, g)
 
 
 @ti.kernel
@@ -385,7 +401,7 @@ def seed_vacuum_M(
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     z_hat = ti.Vector([0.0, 0.0, 1.0])
-    m_vac = uniaxial_M(z_hat, delta)
+    m_vac = uniaxial_M(z_hat, delta, wave_field.lc_g)
     for i, j, k in ti.ndrange(nx, ny, nz):
         wave_field.M_am[i, j, k] = m_vac
         wave_field.M_prev_am[i, j, k] = m_vac
@@ -456,7 +472,7 @@ def seed_hedgehog_M(
         n_blended = w_vac * n_combined + (1.0 - w_vac) * z_hat
         n_unit = n_blended / (n_blended.norm() + 1e-12)
 
-        m = uniaxial_M(n_unit, delta)
+        m = uniaxial_M(n_unit, delta, wave_field.lc_g)
         wave_field.M_am[i, j, k] = m
         wave_field.M_prev_am[i, j, k] = m
         wave_field.M_new_am[i, j, k] = m
@@ -521,9 +537,10 @@ def seed_biaxial_hedgehog_M(
         d0 = d_iso + srad * (1.0 - d_iso)
         d1 = d_iso + srad * (delta - d_iso)
         d2 = d_iso + srad * (0.0 - d_iso)
-        m = (d0 * rhat.outer_product(rhat)
-             + d1 * etheta.outer_product(etheta)
-             + d2 * ephi.outer_product(ephi))
+        m_sp = (d0 * rhat.outer_product(rhat)
+                + d1 * etheta.outer_product(etheta)
+                + d2 * ephi.outer_product(ephi))
+        m = embed4(m_sp, wave_field.lc_g)  # M5.8.1: 4×4 block-diag(spatial, g)
         wave_field.M_am[i, j, k] = m
         wave_field.M_prev_am[i, j, k] = m
         wave_field.M_new_am[i, j, k] = m

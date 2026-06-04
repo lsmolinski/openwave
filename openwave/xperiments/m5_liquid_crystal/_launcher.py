@@ -395,6 +395,8 @@ class SimulationState:
                 self.ldg_b = 0.0
                 # vacuum potential V_M(D=diag(1,δ,0)) — subtracted in the energyH display so
                 # the negative well bottom doesn't swamp the structure (kernel docstring).
+                # M5.8.1: V_M acts on the SPATIAL 3×3 block only (the time-g axis is decoupled),
+                # so the vacuum traces are the spatial diag(1,δ,0) ones — no g terms.
                 tr2_vac = 1.0 + delta * delta
                 tr3_vac = 1.0 + delta * delta * delta
                 self.ldg_v0 = self.ldg_a * tr2_vac - self.ldg_b * tr3_vac + self.ldg_c * tr2_vac**2

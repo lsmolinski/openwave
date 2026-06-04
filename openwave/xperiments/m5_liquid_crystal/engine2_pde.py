@@ -417,9 +417,15 @@ def rebuild_M_from_director(wave_field: ti.template(), delta: ti.f32):  # type: 
     The uniaxial inverse of eigen_decompose.
     """
     eye = ti.Matrix.identity(ti.f32, 3)
+    g = wave_field.lc_g  # M5.8.1: time-axis (index 3) eigenvalue
     for i, j, k in wave_field.director_nhat:
         n = wave_field.director_nhat[i, j, k]
-        m = delta * eye + (1.0 - delta) * n.outer_product(n)
+        msp = delta * eye + (1.0 - delta) * n.outer_product(n)  # 3×3 spatial
+        m = ti.Matrix.zero(ti.f32, 4, 4)  # embed block-diag(spatial, g)
+        for a in ti.static(range(3)):
+            for bb in ti.static(range(3)):
+                m[a, bb] = msp[a, bb]
+        m[3, 3] = g
         wave_field.M_am[i, j, k] = m
         wave_field.M_prev_am[i, j, k] = m
         wave_field.M_new_am[i, j, k] = m
@@ -488,18 +494,33 @@ def V_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     dynamics (V off). Rotation-invariant ⇒ acts only on the eigenvalue/regularization
     sector (m5_5_3 finding).
     """
-    m2 = m @ m
+    # M5.8.1 — act on the SPATIAL 3×3 block ONLY. The time axis (index 3, eigenvalue g)
+    # is boost-decoupled and must NOT feed Tr(M²)/Tr(M³): including g²(=64)/g³(=512)
+    # would inflate the LdG potential and its force by orders of magnitude → blow-up.
+    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
+                     [m[1, 0], m[1, 1], m[1, 2]],
+                     [m[2, 0], m[2, 1], m[2, 2]]])
+    m2 = msp @ msp
     tr2 = m2.trace()
-    tr3 = (m2 @ m).trace()
+    tr3 = (m2 @ msp).trace()
     return a * tr2 - b * tr3 + c * tr2 * tr2
 
 
 @ti.func
 def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
-    """∂V_LG/∂M = 2a·M − 3b·M² + 4c·Tr(M²)·M  (clean matrix derivative for symmetric M)."""
-    m2 = m @ m
+    """∂V_LG/∂M = 2a·M − 3b·M² + 4c·Tr(M²)·M, on the SPATIAL 3×3 block; time row/col
+    force = 0 (g decoupled — M5.8.1). Mirrors V_M's spatial-only restriction."""
+    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
+                     [m[1, 0], m[1, 1], m[1, 2]],
+                     [m[2, 0], m[2, 1], m[2, 2]]])
+    m2 = msp @ msp
     tr2 = m2.trace()
-    return 2.0 * a * m - 3.0 * b * m2 + 4.0 * c * tr2 * m
+    dsp = 2.0 * a * msp - 3.0 * b * m2 + 4.0 * c * tr2 * msp  # 3×3
+    d4 = ti.Matrix.zero(ti.f32, 4, 4)
+    for i in ti.static(range(3)):
+        for j in ti.static(range(3)):
+            d4[i, j] = dsp[i, j]
+    return d4
 
 
 @ti.kernel
@@ -552,9 +573,22 @@ def evolve_M(
             + (wave_field.curv_flux_z[i, j, k + 1] - wave_field.curv_flux_z[i, j, k - 1])
         ) * inv_2dx
         force = c2 * div_G - dV_M(wave_field.M_am[i, j, k], a, b, c)
-        wave_field.M_new_am[i, j, k] = (
+        m_new = (
             2.0 * wave_field.M_am[i, j, k] - wave_field.M_prev_am[i, j, k] + dt2 * force
         )
+        # M5.8.1 — freeze the time axis (index 3): a constant, boost-decoupled g
+        # background. The curvature force already preserves the block; this also pins
+        # it under V-on (where dV_M would otherwise nudge M[3,3]). M5.8.2 replaces this
+        # with the real Minkowski time dynamics.
+        g_here = wave_field.M_am[i, j, k][3, 3]
+        m_new[0, 3] = 0.0
+        m_new[3, 0] = 0.0
+        m_new[1, 3] = 0.0
+        m_new[3, 1] = 0.0
+        m_new[2, 3] = 0.0
+        m_new[3, 2] = 0.0
+        m_new[3, 3] = g_here
+        wave_field.M_new_am[i, j, k] = m_new
 
 
 # ================================================================

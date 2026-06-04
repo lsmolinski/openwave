@@ -152,8 +152,14 @@ def update_trackers_M(
     alpha_rms = ti.cast(0.005, ti.f32)
     alpha_freq = ti.cast(0.05, ti.f32)
     inv_dt = 1.0 / dt_rs
-    # ẑ-vacuum order parameter D_vac = δ·I + (1−δ)·ẑ⊗ẑ = diag(δ, δ, 1)
-    d_vac = ti.Matrix([[delta, 0.0, 0.0], [0.0, delta, 0.0], [0.0, 0.0, 1.0]])
+    # M5.8.1 — 4×4 ẑ-vacuum D_vac = diag(δ, δ, 1, g): spatial uniaxial (director = ẑ,
+    # eigenvalue 1 at index 2) + the time axis (index 3) = g. The Frobenius deviation
+    # now spans the time block (g−g=0 in vacuum) so the amplitude tracker stays ≈0.
+    g = wave_field.lc_g
+    d_vac = ti.Matrix([[delta, 0.0, 0.0, 0.0],
+                       [0.0, delta, 0.0, 0.0],
+                       [0.0, 0.0, 1.0, 0.0],
+                       [0.0, 0.0, 0.0, g]])
 
     for i, j, k in ti.ndrange(nx, ny, nz):
         m = wave_field.M_am[i, j, k]

@@ -40,6 +40,17 @@ from openwave.common import colormap, constants, utils
 # only needs a uniaxial spectrum to reproduce the M5.1 Coulomb topology on M.
 LC_DELTA = 0.5
 
+# M5.8.1 — 4D substrate promotion. The matrix field is now 4×4: the spatial 3×3
+# block (indices 0,1,2 = x,y,z — the M5.4/M5.6 order parameter) PLUS a 4th axis
+# (index 3) = the time/boost axis, eigenvalue g of the paper's D=diag(g,1,δ,0).
+# Putting time at index 3 lets the existing 3×3-Cardano eigensolver read the spatial
+# block [0:3,0:3] UNCHANGED (the director is its principal eigenvector). In M5.8.1 g
+# is a CONSTANT, boost-DECOUPLED background (M = block-diag(M_spatial, g)) so the
+# spatial dynamics are identical to 3D (validated: sandbox_v8/m5_8_1_4x4_promotion.py);
+# the Minkowski coupling that drives the clock lands in M5.8.2.
+MDIM = 4          # matrix substrate dimension (was 3)
+LC_G = 8.0        # time-axis (boost/gravity) eigenvalue g ≫ 1, constant in M5.8.1
+
 
 @ti.data_oriented
 class WaveField:
@@ -166,9 +177,9 @@ class WaveField:
         # evolution that lands in M5.5. In M5.4 only M_am is populated (by the
         # matrix seeders) and read (by eigen_decompose); M_prev/M_new are allocated
         # now so the buffer layout is final.
-        self.M_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t
-        self.M_prev_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
-        self.M_new_am = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
+        self.M_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t (4×4: spatial 0:3 + time idx 3)
+        self.M_prev_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
+        self.M_new_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
 
         # DERIVED per-frame from M_am by engine2_pde.eigen_decompose (the lynchpin
         # kernel — see 4b_rendering_features.md). director_nhat is the principal
@@ -186,6 +197,7 @@ class WaveField:
         # relax_director_step writes the next director here, then M is rebuilt from it.
         self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
         self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
+        self.lc_g = LC_G  # M5.8.1 time-axis (index 3) eigenvalue g; read by kernels via wave_field.lc_g
 
         # M5.5.4 — Eq.18 matrix-action leapfrog (simple ½‖Ṁ‖² kinetic + faithful
         # potential U = 4Σ‖[M_μ,M_ν]‖² + V(M)). The curvature flux
@@ -193,9 +205,9 @@ class WaveField:
         # is computed everywhere by compute_curvature_flux from M_am; evolve_M then
         # takes its divergence Σ_α ∂_α G_α as the force. Two-pass (G field, then
         # divergence) keeps each kernel a 1-cell halo instead of one 2-cell mega-kernel.
-        self.curv_flux_x = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
-        self.curv_flux_y = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
-        self.curv_flux_z = ti.Matrix.field(3, 3, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_x = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_y = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.curv_flux_z = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
 
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
