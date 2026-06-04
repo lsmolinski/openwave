@@ -604,6 +604,45 @@ in space. A spatial rotation is compact / trigonometric (`cos/sin`); a boost is 
 (`cosh/sinh`) under the `(−+++)` signature (the boost-vs-tilt distinction, L2). That extra boost
 freedom is the whole gravity (`g`) + clock story below.
 
+### Why a 4th axis — not just different 3D frequencies?
+
+A fair pushback: *couldn't each ellipsoid just spin at its own rate in 3D — why a whole new axis?* You
+*can* spin in 3D, but a 3D spin is the wrong object for two reasons, and the time axis fixes both:
+
+| The time axis is needed for… | Because a 3D spin can't |
+| --- | --- |
+| **stability** (the engine) | a spatial spin only *costs* energy → radiates away (disperses, M5.7.2). Winding into the time axis gets the `(−+++)` **negative-energy** sign → spinning is the *ground state* (L7). |
+| **the matter wave** (momentum / de Broglie `λ`) | the decisive one — see below |
+
+**The decisive reason — moving matter must *wave*.** At rest the clock winds purely in time at
+`ω₀ = mc²/ℏ`. Set the particle *moving* and relativity says a **boost mixes time into space** — the
+time-winding tilts partly into a **space**-winding, so the phase now **varies across space** = a
+**wave**, `λ = h/p`. That *is* the **de Broglie matter wave** (interference, diffraction, orbit
+quantization), which de Broglie *derived* (1924) from exactly "a moving clock + relativity." A boost
+can only mix time into space if there's a **time axis to mix** — so a 3D-only spin gives *spinning
+tops with no quantum wave behavior*; the 4th axis is what turns the rest-**clock** into the
+moving-**wave** (de Broglie λ → L7).
+
+**What the 4 extra values store.** The symmetric `3×3` has 6 numbers; the `4×4` has 10 → **4 new
+numbers, all in the *time* sector**:
+
+| New entries (4) | Raw block | Holds | Renderable? |
+| --- | --- | --- | --- |
+| **time-axis scale** (the new `g` eigenvalue) | `M₀₀` (time-time) | the local **rate-of-time** = gravitational potential / clock-rate | only its *shadow* — the gravity-well / clock-rate field (M5.8.7) |
+| **time-space mixing** (3 new boosts) | `M₀ᵢ` (time-space, ×3) | how the frame **leans into time** = the **clock** (at rest) + **motion / momentum** (moving → the de Broglie wave) | only its *shadow* — the δ-sweep + the de Broglie wave |
+
+So the honest read: the 4 new numbers are a genuine part of the field **state**, but they're the
+**time-sector** state (a clock-rate + a winding-into-time) — **not a spatial direction**. They evolve
+every `dt` step like the spatial block, but you can't draw them as an arrow; only their **shadows**
+(clock-rate, gravity, the δ-sweep, the matter wave) are visible — the same "render the shadow, not the
+thing" as L7's clock and the gravity render plan.
+
+**The "call it frequency" reframe is the right mental model.** The time axis's *job* is to carry a
+**frequency** (the particle's proper-time clock, `ω` set by its mass); the *axis* is just what makes
+that frequency a genuine relativistic clock (stable + waves when moving) rather than a dispersing
+spatial spin. ⚠️ Exact entry↔eigenvalue bookkeeping (`M₀₀` vs `g` vs the null `0`) is M5.8 detail; the
+*structure* (time-scale + time-space mixing, unrenderable except as shadows) is the robust part.
+
 ### The two "times" — `dt` vs the matrix time axis
 
 The conceptual key (Rodrigo's Q, 2026-05-31): there is **one** physical time playing **two roles**,
@@ -729,6 +768,30 @@ made visible (read the arrangement, not the single arrow). These emergence chann
 time-rate / heat** — are exactly the levers the SABER unification builds on (`SABER 0_OVERVIEW §4`);
 this lesson is where the *physics* intuition for them lives.
 
+#### Common gravity confusions — clarified
+
+- **"Mass curves *time*" vs "spacetime":** for *slow* matter it's ~all **time** curvature (Wheeler);
+  space curvature is real but subdominant — it shows up for light (the famous **2× light-bending**).
+  So "curves time" is the everyday statement; "spacetime" is needed for light.
+- **Why clocks run *slower* near a mass (not faster):** two *different* masses, two jobs. Your **own**
+  mass sets your **own** clock frequency (`ℏω=mc²` → heavier = *faster* own clock — muon vs electron).
+  Sitting in a **big external** mass's well dilates you → *slower* (gravitational time dilation).
+  **GPS proves it:** satellite clocks (weaker gravity) run ~45 µs/day *faster* than ground clocks. And
+  **things fall toward where time runs slower** — that bending of the worldline *is* the fall (if
+  clocks ran *faster* near mass, things would fall *away*).
+- **"Sources," not "steals":** a mass doesn't drain the vacuum's energy — it **sources** the time-rate
+  field `g(x)` around it (like a charge sourcing `E`). The "well" is the *shape of the potential*, not
+  depleted vacuum.
+- **Always attractive, but weak:** any two masses attract (gravity is monopole, always `+`), but
+  ~10⁴²× weaker than EM between two electrons — so EM wins everywhere except where it cancels (neutral
+  bulk matter, large masses). Larger mass → deeper well.
+- **The negative-energy "debt" (a real intuition):** gravitational *potential* energy is **negative**
+  (bound systems weigh *less* — the mass defect). The "balances to zero" hunch is a real speculative
+  idea — the **zero-energy universe** (positive rest-mass energy cancelled by negative gravitational PE
+  → net ≈ 0; Tryon / Hawking / Krauss). ⚠️ But GR's gravitational field energy is *non-local* (can't be
+  pinned per-voxel), and M5's gravity-energy ledger is **unbuilt (M5.8)** — so the intuition is right,
+  the exact accounting is the open hard part.
+
 ### Clock vs engine — it's both
 
 "Clock" = the *measurement* (it ticks at a fixed `ω=2mc²/ℏ`, the de Broglie clock Catillon measured).
@@ -748,6 +811,10 @@ motion — the spin *is* the rest energy. (The energetic *why* is L7.)
 | 6 | how is gravity related to EM? | both are **curvature of the frame** — EM = curving toward a *spatial* axis, gravity = curving (boost) toward the *time* axis. "Gravity is a bend in time" (Wheeler's curved-time). | above, L8 |
 | 7 | can we render gravity / the time axis? | not the time axis itself (not a spatial direction), but its **shadows**: `g(x)` gravity-well heatmap, `∇g` pull glyphs, per-voxel clock-rate (time dilation). Needs the 4D `g`-axis (M5.8). | above, `4b §4.7` |
 | 8 | is the self-propelling clock perpetual motion? | no — the spin **is** the rest energy (`ℏω=mc²`); the Minkowski `(−+++)` sign makes spinning the ground state, not a free lunch. The energetic *why* is L7. | L7 |
+| 9 | why a 4th *axis* — couldn't ellipsoids just spin at different 3D rates? | a 3D spin (a) **disperses** (no stabilizing `(−+++)` sign) and (b) can't **wave when it moves** — only a winding *into the time axis* lets a boost mix it into a spatial wave = the **de Broglie `λ`**. 3D spins = spinning tops, no quantum waves. | above (*Why a 4th axis*), L7 |
+| 10 | what's stored in the 4 new 4×4 values? | the **time-sector** state: `M₀₀` (time-axis scale = clock-rate / gravity) + `M₀ᵢ` (time-space mixing = the clock + motion/momentum). A real state, but **not spatial** → renderable only as shadows. | above (*Why a 4th axis*) |
+| 11 | why do clocks run *slower* near a mass if mass propels the clock? | two masses, two jobs: your **own** mass → your **own** clock *faster*; a **big external** mass's well → *slower* (GPS-confirmed). Things fall toward slower time. | above (*Common gravity confusions*) |
+| 12 | "mass curves spacetime" or "curves time"? | for slow matter ~all **time** (Wheeler); space curvature shows up for light (2× bending). "Curves time" = the everyday statement. | above |
 | 9 | are `clock_twist`, the clock-engine, and the de Broglie clock the same thing? | **same phenomenon, three aspects — hand / motor / dial.** `clock_twist` = the *motion* (the δ-axis winding about `n̂`, the DoF); **clock-engine** = the *mechanism* that keeps it turning for free (Minkowski negative-energy, M5.8); **de Broglie clock** = the *observable* tick at `ω=2mc²/ℏ` = the mass (Catillon). So a running clock-engine *is* a de Broglie clock; the `clock_twist` is what it winds. (3×3 has the hand but it disperses; the real motor is 4D. Don't confuse with `frank_twist` — spatial/magnetic.) | L7 |
 
 ### L3 Anchors
