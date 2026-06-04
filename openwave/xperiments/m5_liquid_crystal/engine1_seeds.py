@@ -54,7 +54,7 @@ def uniaxial_M(n, delta, g):  # type: ignore
 
 @ti.kernel
 def seed_vacuum_M(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     delta: ti.f32,  # type: ignore
 ):
     """Fill the matrix field with the topological-vacuum ground state (n̂ = ẑ).
@@ -63,23 +63,23 @@ def seed_vacuum_M(
     all three matrix buffers + director_nhat (= ẑ). The matrix vacuum seeder.
 
     Args:
-        wave_field: TensorField (writes M_am, M_prev_am, M_new_am, director_nhat)
-        delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta)
+        tensor_field: TensorField (writes M_am, M_prev_am, M_new_am, director_nhat)
+        delta: uniaxial minor-axis eigenvalue (tensor_field.lc_delta)
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     z_hat = ti.Vector([0.0, 0.0, 1.0])
-    m_vac = uniaxial_M(z_hat, delta, wave_field.lc_g)
+    m_vac = uniaxial_M(z_hat, delta, tensor_field.lc_g)
     for i, j, k in ti.ndrange(nx, ny, nz):
-        wave_field.M_am[i, j, k] = m_vac
-        wave_field.M_prev_am[i, j, k] = m_vac
-        wave_field.M_new_am[i, j, k] = m_vac
-        wave_field.director_nhat[i, j, k] = z_hat
-        wave_field.director_nhat_new[i, j, k] = z_hat
+        tensor_field.M_am[i, j, k] = m_vac
+        tensor_field.M_prev_am[i, j, k] = m_vac
+        tensor_field.M_new_am[i, j, k] = m_vac
+        tensor_field.director_nhat[i, j, k] = z_hat
+        tensor_field.director_nhat_new[i, j, k] = z_hat
 
 
 @ti.kernel
 def seed_hedgehog_M(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     centers_voxel: ti.template(),  # type: ignore
     signs: ti.template(),  # type: ignore
     domain_quarter_voxels: ti.f32,  # type: ignore
@@ -94,14 +94,14 @@ def seed_hedgehog_M(
     gate directly (centers ±d/2 along x, signs ±1).
 
     Args:
-        wave_field: TensorField (writes M_am, M_prev_am, M_new_am, director_nhat)
+        tensor_field: TensorField (writes M_am, M_prev_am, M_new_am, director_nhat)
         centers_voxel: ti.field (n_defects, 3) i32 — centers in voxel coords
         signs: ti.field (n_defects,) i32 — +1 outward / −1 inward per defect
         domain_quarter_voxels: f32 — D/4 in voxel units (w_vac falloff radius)
         n_defects: i32 — number of active defects
-        delta: uniaxial minor-axis eigenvalue (wave_field.lc_delta)
+        delta: uniaxial minor-axis eigenvalue (tensor_field.lc_delta)
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     z_hat = ti.Vector([0.0, 0.0, 1.0])
     soft_core_voxels = ti.cast(0.2, ti.f32)
     proximity_floor = ti.cast(0.5, ti.f32)
@@ -138,17 +138,17 @@ def seed_hedgehog_M(
         n_blended = w_vac * n_combined + (1.0 - w_vac) * z_hat
         n_unit = n_blended / (n_blended.norm() + 1e-12)
 
-        m = uniaxial_M(n_unit, delta, wave_field.lc_g)
-        wave_field.M_am[i, j, k] = m
-        wave_field.M_prev_am[i, j, k] = m
-        wave_field.M_new_am[i, j, k] = m
-        wave_field.director_nhat[i, j, k] = n_unit
-        wave_field.director_nhat_new[i, j, k] = n_unit
+        m = uniaxial_M(n_unit, delta, tensor_field.lc_g)
+        tensor_field.M_am[i, j, k] = m
+        tensor_field.M_prev_am[i, j, k] = m
+        tensor_field.M_new_am[i, j, k] = m
+        tensor_field.director_nhat[i, j, k] = n_unit
+        tensor_field.director_nhat_new[i, j, k] = n_unit
 
 
 @ti.kernel
 def seed_biaxial_hedgehog_M(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     cx: ti.i32,  # type: ignore
     cy: ti.i32,  # type: ignore
     cz: ti.i32,  # type: ignore
@@ -178,7 +178,7 @@ def seed_biaxial_hedgehog_M(
         rhoc_vox: z-axis disclination-melt scale (voxels)
         delta: middle eigenvalue δ (D = diag(1, δ, 0))
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     d_iso = (1.0 + delta) / 3.0                          # isotropic value, trace-preserving
     eps = ti.cast(1e-6, ti.f32)
     for i, j, k in ti.ndrange(nx, ny, nz):
@@ -206,11 +206,11 @@ def seed_biaxial_hedgehog_M(
         m_sp = (d0 * rhat.outer_product(rhat)
                 + d1 * etheta.outer_product(etheta)
                 + d2 * ephi.outer_product(ephi))
-        m = embed4(m_sp, wave_field.lc_g)  # M5.8.1: 4×4 block-diag(spatial, g)
-        wave_field.M_am[i, j, k] = m
-        wave_field.M_prev_am[i, j, k] = m
-        wave_field.M_new_am[i, j, k] = m
-        wave_field.director_nhat[i, j, k] = rhat
-        wave_field.director_nhat_new[i, j, k] = rhat
+        m = embed4(m_sp, tensor_field.lc_g)  # M5.8.1: 4×4 block-diag(spatial, g)
+        tensor_field.M_am[i, j, k] = m
+        tensor_field.M_prev_am[i, j, k] = m
+        tensor_field.M_new_am[i, j, k] = m
+        tensor_field.director_nhat[i, j, k] = rhat
+        tensor_field.director_nhat_new[i, j, k] = rhat
 
 

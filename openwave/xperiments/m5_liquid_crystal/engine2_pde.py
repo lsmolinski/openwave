@@ -20,7 +20,7 @@ import taichi as ti
 # MATRIX OPERATORS (M5.4 — Landau–de Gennes substrate M = O·D·O^T)
 # ================================================================
 # The Vector(3) toolkit above operates on the retiring ψ field. These operate on
-# the real-symmetric 3×3 order parameter M stored in wave_field.M_am. All three
+# the real-symmetric 3×3 order parameter M stored in tensor_field.M_am. All three
 # primitives were de-risked in research/sandbox_v3/m5_3_matrix_feasibility.py
 # (storage round-trip, commutator vs analytic, ti.sym_eig director recovery 0.9995)
 # before this production port.
@@ -126,7 +126,7 @@ def eigvec_for(m, lam):  # type: ignore
 
 @ti.func
 def matrix_laplacian(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
     k: ti.i32,  # type: ignore
@@ -135,25 +135,25 @@ def matrix_laplacian(
 
     Taichi matrix arithmetic is element-wise for + and scalar ·, so the same
     stencil that gives the Vector(3) Laplacian gives the matrix Laplacian with no
-    per-component loop. Reads wave_field.M_am; returns a 3×3 matrix in [1/am].
+    per-component loop. Reads tensor_field.M_am; returns a 3×3 matrix in [1/am].
     1-cell halo (caller skips boundary). Used by the matrix evolution (M5.5) and
     by operator-verification tests in M5.4.
     """
     face_sum = (
-        wave_field.M_am[i + 1, j, k]
-        + wave_field.M_am[i - 1, j, k]
-        + wave_field.M_am[i, j + 1, k]
-        + wave_field.M_am[i, j - 1, k]
-        + wave_field.M_am[i, j, k + 1]
-        + wave_field.M_am[i, j, k - 1]
+        tensor_field.M_am[i + 1, j, k]
+        + tensor_field.M_am[i - 1, j, k]
+        + tensor_field.M_am[i, j + 1, k]
+        + tensor_field.M_am[i, j - 1, k]
+        + tensor_field.M_am[i, j, k + 1]
+        + tensor_field.M_am[i, j, k - 1]
     )
-    center = wave_field.M_am[i, j, k]
-    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+    center = tensor_field.M_am[i, j, k]
+    return (face_sum - 6.0 * center) / (tensor_field.dx_am**2)
 
 
 @ti.func
 def antisym_A_mu(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
     k: ti.i32,  # type: ignore
@@ -166,43 +166,43 @@ def antisym_A_mu(
     the same machinery in the [M, ∂_μM] arrangement. 1-cell halo. Consumed by the
     Eq.20 curvature F_μν and the Eq.18 action — both assembled in M5.5.
     """
-    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
-    m = wave_field.M_am[i, j, k]
-    dM_x = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
-    dM_y = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
-    dM_z = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    m = tensor_field.M_am[i, j, k]
+    dM_x = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+    dM_y = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+    dM_z = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
     return commutator(m, dM_x), commutator(m, dM_y), commutator(m, dM_z)
 
 
 @ti.func
 def compute_laplacian_director(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     i: ti.i32,  # type: ignore
     j: ti.i32,  # type: ignore
     k: ti.i32,  # type: ignore
 ):
     """∇²n̂ at voxel [i, j, k] — 6-point stencil on the DERIVED director field.
 
-    Identical form to compute_laplacian, but reads wave_field.director_nhat (the
+    Identical form to compute_laplacian, but reads tensor_field.director_nhat (the
     matrix-substrate director, eigenvector of M) rather than the retiring ψ. The
     M5.4 director-equivalent relaxation gradient-descends the Frank energy on this
     field. 1-cell halo (caller skips boundary). (compute_laplacian on ψ stays for
     the retiring wave leapfrog until the M5.4 cleanup deletes it.)
     """
     face_sum = (
-        wave_field.director_nhat[i + 1, j, k]
-        + wave_field.director_nhat[i - 1, j, k]
-        + wave_field.director_nhat[i, j + 1, k]
-        + wave_field.director_nhat[i, j - 1, k]
-        + wave_field.director_nhat[i, j, k + 1]
-        + wave_field.director_nhat[i, j, k - 1]
+        tensor_field.director_nhat[i + 1, j, k]
+        + tensor_field.director_nhat[i - 1, j, k]
+        + tensor_field.director_nhat[i, j + 1, k]
+        + tensor_field.director_nhat[i, j - 1, k]
+        + tensor_field.director_nhat[i, j, k + 1]
+        + tensor_field.director_nhat[i, j, k - 1]
     )
-    center = wave_field.director_nhat[i, j, k]
-    return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
+    center = tensor_field.director_nhat[i, j, k]
+    return (face_sum - 6.0 * center) / (tensor_field.dx_am**2)
 
 
 @ti.kernel
-def rebuild_M_from_director(wave_field: ti.template(), delta: ti.f32):  # type: ignore
+def rebuild_M_from_director(tensor_field: ti.template(), delta: ti.f32):  # type: ignore
     """Rebuild the uniaxial order parameter M = δ·I + (1−δ)·n̂⊗n̂ from director_nhat.
 
     Called after the director-equivalent relaxation so M_am, the `‖M−D‖_F`/`‖Ṁ‖_F`
@@ -212,22 +212,22 @@ def rebuild_M_from_director(wave_field: ti.template(), delta: ti.f32):  # type: 
     The uniaxial inverse of eigen_decompose.
     """
     eye = ti.Matrix.identity(ti.f32, 3)
-    g = wave_field.lc_g  # M5.8.1: time-axis (index 3) eigenvalue
-    for i, j, k in wave_field.director_nhat:
-        n = wave_field.director_nhat[i, j, k]
+    g = tensor_field.lc_g  # M5.8.1: time-axis (index 3) eigenvalue
+    for i, j, k in tensor_field.director_nhat:
+        n = tensor_field.director_nhat[i, j, k]
         msp = delta * eye + (1.0 - delta) * n.outer_product(n)  # 3×3 spatial
         m = ti.Matrix.zero(ti.f32, 4, 4)  # embed block-diag(spatial, g)
         for a in ti.static(range(3)):
             for bb in ti.static(range(3)):
                 m[a, bb] = msp[a, bb]
         m[3, 3] = g
-        wave_field.M_am[i, j, k] = m
-        wave_field.M_prev_am[i, j, k] = m
-        wave_field.M_new_am[i, j, k] = m
+        tensor_field.M_am[i, j, k] = m
+        tensor_field.M_prev_am[i, j, k] = m
+        tensor_field.M_new_am[i, j, k] = m
 
 
 @ti.kernel
-def eigen_decompose(wave_field: ti.template()):  # type: ignore
+def eigen_decompose(tensor_field: ti.template()):  # type: ignore
     """THE LYNCHPIN (4b_rendering_features.md): refresh director_nhat + eigenvalues from M_am.
 
     Per voxel: eigen-decompose M_am, store the sorted spectrum (λ₁≥λ₂≥λ₃) in
@@ -245,25 +245,25 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
     branch stays smooth from seed onward; on a cold field (n̂_prev = 0) the dot is 0
     and no flip occurs.
     """
-    for i, j, k in wave_field.M_am:
-        m = wave_field.M_am[i, j, k]
+    for i, j, k in tensor_field.M_am:
+        m = tensor_field.M_am[i, j, k]
         n, evals = principal_director(m)
         # sort eigenvalues descending λ₁≥λ₂≥λ₃ (3-element selection sort)
         e0, e1, e2 = evals[0], evals[1], evals[2]
         lo = ti.min(e0, ti.min(e1, e2))
         hi = ti.max(e0, ti.max(e1, e2))
         mid = e0 + e1 + e2 - lo - hi
-        wave_field.eigenvalues[i, j, k] = ti.Vector([hi, mid, lo])
+        tensor_field.eigenvalues[i, j, k] = ti.Vector([hi, mid, lo])
         # sign-continuous principal director
-        if n.dot(wave_field.director_nhat[i, j, k]) < 0.0:
+        if n.dot(tensor_field.director_nhat[i, j, k]) < 0.0:
             n = -n
-        wave_field.director_nhat[i, j, k] = n
+        tensor_field.director_nhat[i, j, k] = n
         # VIZ.3: middle (δ) eigenvector = the "clock-hand" axis that sweeps around
         # the director under the Zitterbewegung twist. Same apolar sign-continuity.
         nm = eigvec_for(m, mid)
-        if nm.dot(wave_field.director_mid[i, j, k]) < 0.0:
+        if nm.dot(tensor_field.director_mid[i, j, k]) < 0.0:
             nm = -nm
-        wave_field.director_mid[i, j, k] = nm
+        tensor_field.director_mid[i, j, k] = nm
 
 
 # ================================================================
@@ -278,7 +278,7 @@ def eigen_decompose(wave_field: ti.template()):  # type: ignore
 # (F_μ0² = 4‖[M_μ,Ṁ]‖², degenerate metric) is the M5.6 refinement.
 #
 # Two-pass per step: compute_curvature_flux (G_α everywhere, 1-cell halo) → evolve_M
-# (divergence of G + V-force, leapfrog, 2-cell halo) → wave_field.swap_matrix_buffers().
+# (divergence of G + V-force, leapfrog, 2-cell halo) → tensor_field.swap_matrix_buffers().
 
 
 @ti.func
@@ -319,30 +319,30 @@ def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
 
 
 @ti.kernel
-def compute_curvature_flux(wave_field: ti.template()):  # type: ignore
+def compute_curvature_flux(tensor_field: ti.template()):  # type: ignore
     """Curvature flux G_α = 8 Σ_ν [[M_α,M_ν],M_ν] = ∂U_curv/∂M_α → curv_flux_{x,y,z}.
 
     M_α = ∂_α M (central diff of M_am). [[A,B],B] is symmetric (antisym⊗sym), so each
     G_α is symmetric. 1-cell halo (caller skips boundary). Run before evolve_M.
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
-    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        mx = (wave_field.M_am[i + 1, j, k] - wave_field.M_am[i - 1, j, k]) * inv_2dx
-        my = (wave_field.M_am[i, j + 1, k] - wave_field.M_am[i, j - 1, k]) * inv_2dx
-        mz = (wave_field.M_am[i, j, k + 1] - wave_field.M_am[i, j, k - 1]) * inv_2dx
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
         # G_α = 8 Σ_{ν≠α} [[M_α,M_ν],M_ν]  (ν=α term is zero)
-        wave_field.curv_flux_x[i, j, k] = 8.0 * (
+        tensor_field.curv_flux_x[i, j, k] = 8.0 * (
             commutator(commutator(mx, my), my) + commutator(commutator(mx, mz), mz))
-        wave_field.curv_flux_y[i, j, k] = 8.0 * (
+        tensor_field.curv_flux_y[i, j, k] = 8.0 * (
             commutator(commutator(my, mx), mx) + commutator(commutator(my, mz), mz))
-        wave_field.curv_flux_z[i, j, k] = 8.0 * (
+        tensor_field.curv_flux_z[i, j, k] = 8.0 * (
             commutator(commutator(mz, mx), mx) + commutator(commutator(mz, my), my))
 
 
 @ti.kernel
 def evolve_M(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
     a: ti.f32,  # type: ignore
@@ -353,29 +353,29 @@ def evolve_M(
 
     M_new = 2M − M_prev + (dt)²·[c²·div(G) − dV_M(M)].  Reads M_am, M_prev_am,
     curv_flux_* (from compute_curvature_flux); writes M_new_am. Caller then calls
-    wave_field.swap_matrix_buffers(). 2-cell halo (G is a 1-cell-halo quantity, its
+    tensor_field.swap_matrix_buffers(). 2-cell halo (G is a 1-cell-halo quantity, its
     divergence needs one more). Dirichlet BC: boundary M_new left untouched (seeders
     write all three M buffers, per the triple-buffer BC rule).
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
-    inv_2dx = 1.0 / (2.0 * wave_field.dx_am)
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
     c2 = c_amrs * c_amrs
     dt2 = dt_rs * dt_rs
     for i, j, k in ti.ndrange((2, nx - 2), (2, ny - 2), (2, nz - 2)):
         div_G = (
-            (wave_field.curv_flux_x[i + 1, j, k] - wave_field.curv_flux_x[i - 1, j, k])
-            + (wave_field.curv_flux_y[i, j + 1, k] - wave_field.curv_flux_y[i, j - 1, k])
-            + (wave_field.curv_flux_z[i, j, k + 1] - wave_field.curv_flux_z[i, j, k - 1])
+            (tensor_field.curv_flux_x[i + 1, j, k] - tensor_field.curv_flux_x[i - 1, j, k])
+            + (tensor_field.curv_flux_y[i, j + 1, k] - tensor_field.curv_flux_y[i, j - 1, k])
+            + (tensor_field.curv_flux_z[i, j, k + 1] - tensor_field.curv_flux_z[i, j, k - 1])
         ) * inv_2dx
-        force = c2 * div_G - dV_M(wave_field.M_am[i, j, k], a, b, c)
+        force = c2 * div_G - dV_M(tensor_field.M_am[i, j, k], a, b, c)
         m_new = (
-            2.0 * wave_field.M_am[i, j, k] - wave_field.M_prev_am[i, j, k] + dt2 * force
+            2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k] + dt2 * force
         )
         # M5.8.1 — freeze the time axis (index 3): a constant, boost-decoupled g
         # background. The curvature force already preserves the block; this also pins
         # it under V-on (where dV_M would otherwise nudge M[3,3]). M5.8.2 replaces this
         # with the real Minkowski time dynamics.
-        g_here = wave_field.M_am[i, j, k][3, 3]
+        g_here = tensor_field.M_am[i, j, k][3, 3]
         m_new[0, 3] = 0.0
         m_new[3, 0] = 0.0
         m_new[1, 3] = 0.0
@@ -383,7 +383,7 @@ def evolve_M(
         m_new[2, 3] = 0.0
         m_new[3, 2] = 0.0
         m_new[3, 3] = g_here
-        wave_field.M_new_am[i, j, k] = m_new
+        tensor_field.M_new_am[i, j, k] = m_new
 
 
 # ================================================================
@@ -397,7 +397,7 @@ def evolve_M(
 #
 # Stability: τ < dx²/(2·dim·K) by the standard heat-equation CFL condition.
 # For dim=3 in 3D the bound is τ < dx²/(6·K). Use ~50% of the bound for
-# headroom; the launcher computes this from wave_field.dx_am at runtime.
+# headroom; the launcher computes this from tensor_field.dx_am at runtime.
 #
 # Output buffer convention: writes director_nhat_new. The caller swaps it into
 # director_nhat, then rebuild_M_from_director writes all three M buffers equal so
@@ -424,7 +424,7 @@ def evolve_M(
 
 @ti.kernel
 def relax_director_step(
-    wave_field: ti.template(),  # type: ignore
+    tensor_field: ti.template(),  # type: ignore
     tau: ti.f32,  # type: ignore
     pin_centers: ti.template(),  # type: ignore
     pin_signs: ti.template(),  # type: ignore
@@ -433,8 +433,8 @@ def relax_director_step(
     """
     One gradient-descent step on the Frank elastic energy `H_F = (K/2)·|∇n̂|²`.
 
-    Reads:  wave_field.director_nhat
-    Writes: wave_field.director_nhat_new  (caller copies → director_nhat)
+    Reads:  tensor_field.director_nhat
+    Writes: tensor_field.director_nhat_new  (caller copies → director_nhat)
 
     M5.4: repointed from the retiring ψ buffers onto the matrix-substrate director
     (director_nhat = principal eigenvector of M). The math is byte-identical to the
@@ -443,7 +443,7 @@ def relax_director_step(
     director via rebuild_M_from_director.
 
     Args:
-        wave_field: TensorField with the director field in director_nhat
+        tensor_field: TensorField with the director field in director_nhat
         tau: step size (must satisfy τ < dx²/(6·K) for stability)
         pin_centers: ti.field shape (n_defects, 3) i32 — defect centers in voxel coords
         pin_signs: ti.field shape (n_defects,) i32 — ±1 per defect (pin direction)
@@ -454,28 +454,28 @@ def relax_director_step(
     `∂n/∂τ = K·∇²n` and the K can be absorbed into the step size (τ_eff = K·τ).
     For K=1 (M5.1 default) this is τ_eff = τ.
     """
-    nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
 
     # ---- Interior: tangent-projected gradient step + renormalization ----
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        n = wave_field.director_nhat[i, j, k]
-        lap = compute_laplacian_director(wave_field, i, j, k)
+        n = tensor_field.director_nhat[i, j, k]
+        lap = compute_laplacian_director(tensor_field, i, j, k)
         n_dot_lap = n.dot(lap)
         dn = lap - n_dot_lap * n  # tangent projection (remove component along n)
         n_new = n + tau * dn
         norm = n_new.norm() + 1e-12
-        wave_field.director_nhat_new[i, j, k] = n_new / norm
+        tensor_field.director_nhat_new[i, j, k] = n_new / norm
 
     # ---- Boundary: preserve Dirichlet BC by copying from current director ----
     for j, k in ti.ndrange(ny, nz):
-        wave_field.director_nhat_new[0, j, k] = wave_field.director_nhat[0, j, k]
-        wave_field.director_nhat_new[nx - 1, j, k] = wave_field.director_nhat[nx - 1, j, k]
+        tensor_field.director_nhat_new[0, j, k] = tensor_field.director_nhat[0, j, k]
+        tensor_field.director_nhat_new[nx - 1, j, k] = tensor_field.director_nhat[nx - 1, j, k]
     for i, k in ti.ndrange(nx, nz):
-        wave_field.director_nhat_new[i, 0, k] = wave_field.director_nhat[i, 0, k]
-        wave_field.director_nhat_new[i, ny - 1, k] = wave_field.director_nhat[i, ny - 1, k]
+        tensor_field.director_nhat_new[i, 0, k] = tensor_field.director_nhat[i, 0, k]
+        tensor_field.director_nhat_new[i, ny - 1, k] = tensor_field.director_nhat[i, ny - 1, k]
     for i, j in ti.ndrange(nx, ny):
-        wave_field.director_nhat_new[i, j, 0] = wave_field.director_nhat[i, j, 0]
-        wave_field.director_nhat_new[i, j, nz - 1] = wave_field.director_nhat[i, j, nz - 1]
+        tensor_field.director_nhat_new[i, j, 0] = tensor_field.director_nhat[i, j, 0]
+        tensor_field.director_nhat_new[i, j, nz - 1] = tensor_field.director_nhat[i, j, nz - 1]
 
     # ---- Pin defect cores (soft Dirichlet at single closest voxel) ----
     for d in range(n_defects):
@@ -483,4 +483,4 @@ def relax_director_step(
         cj = pin_centers[d, 1]
         ck = pin_centers[d, 2]
         sgn = ti.cast(pin_signs[d], ti.f32)
-        wave_field.director_nhat_new[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])
+        tensor_field.director_nhat_new[ci, cj, ck] = ti.Vector([0.0, 0.0, sgn])

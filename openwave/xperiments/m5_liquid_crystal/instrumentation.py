@@ -31,23 +31,23 @@ _BUFFER_FLUSH_INTERVAL = 100  # Flush every N timesteps
 # ================================================================
 
 
-def plot_probe_wave_profile(wave_field):
+def plot_probe_wave_profile(tensor_field):
     """
     Plot the displacement profile along the x-axis through the probe position.
 
     Args:
-        wave_field: TensorField instance containing displacement data
+        tensor_field: TensorField instance containing displacement data
     """
 
     # Define probe position
-    px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
+    px, py, pz = tensor_field.nx // 2, tensor_field.ny // 2, tensor_field.nz // 2
 
     # Extract the M-substrate "displacement" along x-axis at center (y, z).
     # M5.8 ψ-retire: the Vector(3) ψ field is gone; the director-substrate analog of
     # displacement is the in-plane tilt of the director n̂ away from the ẑ vacuum,
     # √(n_x²+n_y²) — zero in the uniaxial vacuum, rises inside a defect.
-    x_indices = np.arange(wave_field.nx)
-    dn = wave_field.director_nhat.to_numpy()
+    x_indices = np.arange(tensor_field.nx)
+    dn = tensor_field.director_nhat.to_numpy()
     displacements = np.hypot(dn[:, py, pz, 0], dn[:, py, pz, 1])
 
     distances = x_indices - px
@@ -79,23 +79,23 @@ def plot_probe_wave_profile(wave_field):
     print("\nPlot wave_profile saved to:\n", save_path, "\n")
 
 
-def log_timestep_data(timestep: int, wave_field, trackers) -> None:
+def log_timestep_data(timestep: int, tensor_field, trackers) -> None:
     """Record all timestep data to a buffer, flush periodically to reduce I/O overhead.
 
     Args:
         timestep: Current simulation timestep
-        wave_field: TensorField instance
+        tensor_field: TensorField instance
         trackers: Trackers instance
     """
     global _timestep_buffer, _timestep_log_initialized
 
     # Define probe position
-    px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
+    px, py, pz = tensor_field.nx // 2, tensor_field.ny // 2, tensor_field.nz // 2
 
     # Capture probe values
     # M5.8 ψ-retire: ψ is gone; record the director in-plane tilt √(nx²+ny²) as the
     # M-substrate displacement analog (the ‖M−D‖_F amplitude is logged below too).
-    dn = wave_field.director_nhat[px, py, pz]
+    dn = tensor_field.director_nhat[px, py, pz]
     displacement_am = float(np.hypot(dn[0], dn[1]))
     amp_local_emarms_am = float(trackers.amp_local_emarms_am[px, py, pz])
     freq_local_cross_rHz = float(trackers.freq_local_cross_rHz[px, py, pz])

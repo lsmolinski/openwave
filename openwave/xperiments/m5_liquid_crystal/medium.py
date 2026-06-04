@@ -61,11 +61,11 @@ class TensorField:
     M_new_am is overwritten by the next step.
 
     AMR-readiness convention:
-        Kernels MUST read grid dimensions via wave_field.nx / .ny / .nz attributes
+        Kernels MUST read grid dimensions via tensor_field.nx / .ny / .nz attributes
         (or the .grid_size tuple). Do NOT bake fixed (nx, ny, nz) constants into
         @ti.kernel signatures — that would prevent the M5.6 / M5.8 AMR retrofit
         from swapping in an octree-based field-storage layer without rewriting
-        kernels. Field access via wave_field.M_am[i, j, k] is the canonical pattern.
+        kernels. Field access via tensor_field.M_am[i, j, k] is the canonical pattern.
 
     This class:
     - Cell-centered cubic grid
@@ -184,7 +184,7 @@ class TensorField:
         # relax_director_step writes the next director here, then M is rebuilt from it.
         self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
         self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
-        self.lc_g = LC_G  # M5.8.1 time-axis (index 3) eigenvalue g; read by kernels via wave_field.lc_g
+        self.lc_g = LC_G  # M5.8.1 time-axis (index 3) eigenvalue g; read by kernels via tensor_field.lc_g
 
         # M5.5.4 — Eq.18 matrix-action leapfrog (simple ½‖Ṁ‖² kinetic + faithful
         # potential U = 4Σ‖[M_μ,M_ν]‖² + V(M)). The curvature flux
@@ -698,7 +698,7 @@ if __name__ == "__main__":
         2e-15,
     ]  # m, simulation domain [x, y, z] dimensions (can be asymmetric)
 
-    wave_field = TensorField(
+    tensor_field = TensorField(
         UNIVERSE_SIZE, target_voxels=3.5e8
     )  # 350M voxels (~14GB), 1B voxels (~40GB)
 
@@ -707,13 +707,13 @@ if __name__ == "__main__":
         f"  Requested universe: [{UNIVERSE_SIZE[0]:.1e}, {UNIVERSE_SIZE[1]:.1e}, {UNIVERSE_SIZE[2]:.1e}] m"
     )
     print(
-        f"  Actual universe: [{wave_field.universe_size[0]:.1e}, {wave_field.universe_size[1]:.1e}, {wave_field.universe_size[2]:.1e}] m"
+        f"  Actual universe: [{tensor_field.universe_size[0]:.1e}, {tensor_field.universe_size[1]:.1e}, {tensor_field.universe_size[2]:.1e}] m"
     )
-    print(f"  Grid size: {wave_field.nx} x {wave_field.ny} x {wave_field.nz} voxels")
-    print(f"  Voxel edge: {wave_field.dx:.2e} m (cubic - same for all axes)")
-    print(f"  Voxel count: {wave_field.voxel_count:,}")
-    print(f"  Voxel edge (am): {wave_field.dx_am:.2f} am")
-    print(f"  Universe volume: {wave_field.universe_volume:.2e} m³")
+    print(f"  Grid size: {tensor_field.nx} x {tensor_field.ny} x {tensor_field.nz} voxels")
+    print(f"  Voxel edge: {tensor_field.dx:.2e} m (cubic - same for all axes)")
+    print(f"  Voxel count: {tensor_field.voxel_count:,}")
+    print(f"  Voxel edge (am): {tensor_field.dx_am:.2f} am")
+    print(f"  Universe volume: {tensor_field.universe_volume:.2e} m³")
     print(f"  Note: voxels-per-wavelength resolution is now xperiment-driven")
     print(f"        (declared via TEST_SEED or defect Compton wavelength)")
 
