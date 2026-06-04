@@ -1089,7 +1089,96 @@ can't relax and can't rest → **motion** → the clock (L7).
 > on a non-uniform (hedgehog) background; `V(M)` — confines amplitude `Tr(M²)` but NOT orientation
 > (the root cause of the M5.7 free-dispersal nulls); energy conservation as the correctness test*.
 
-(to be filled during the session)
+### L6 The one-sentence version
+
+The **"Evolve PDE"** button runs a **leapfrog**: each frame, every voxel's `M` is nudged by the
+**force from its neighbors** (the curvature) plus the **potential `V`**, then stepped forward by `dt`.
+**Energy conservation** is the proof the stepper is honest. And the key dynamical fact: `V` holds the
+field's **amplitude** but lets its **orientation wander** — which is *why* free 3D defects disperse
+(L5, L7).
+
+### The leapfrog — how `evolve_M` steps the field
+
+The field obeys `M̈ = force` (Newton's 2nd law for the field — the Euler–Lagrange equation of the
+L5 action). The numerical stepper keeps `M` at **three times** and marches:
+
+```text
+   M_new = 2·M − M_prev + (force)·dt²
+   (then rotate the buffers: prev ← M ← new)
+```
+
+This is the **leapfrog / Verlet** integrator — position and velocity are staggered (velocity lives at
+half-steps). It's **symplectic**: it conserves a (slightly shifted) energy *exactly*, so there's no
+long-term energy drift — the run stays stable. Each "Evolve PDE" frame is one such step (`evolve_M` in
+`engine2_pde.py`, on the live `compute_curvature_flux → evolve_M → swap_matrix_buffers` path).
+
+The **force** has two parts (the two `U` terms from L5):
+
+| Force part | Pulls the field toward… | Physics |
+| --- | --- | --- |
+| **curvature** `F_μν = [M_μ, M_ν]` (the neighbor coupling) | smoother alignment (less bent) | the elastic / Frank restoring force |
+| **potential** `∇V(M)` | the vacuum shape (the right amplitude) | the LdG confinement |
+
+### Two kinetic metrics — faithful vs simple (and why it matters)
+
+How do you measure the *kinetic* energy of the moving frame? There are two:
+
+| Kinetic | Form | Status |
+| --- | --- | --- |
+| **faithful** | `4Σ‖[M_μ, Ṁ]‖²` — the true `O(x)∈SO(3)` metric from the action | correct inertia, but heavier |
+| **simple** | `½‖Ṁ‖²` — flat Frobenius | **shipped in production** |
+
+The simple one is **well-behaved** (its only null mode is the *trace*, which the traceless curvature
+force never excites — so no spurious gauge-sloshing), but it **mis-sets the physical-mode inertia** →
+the clock **frequency** comes out off by **×[0.6, 3.0]**. So the split is deliberate: **production uses
+simple** (a faithful qualitative visualizer), and the **M5.8 clock-frequency run uses the faithful
+kinetic** (`5a §5g`, the `m5_6_2b` evolution). Same physical modes, different inertia.
+
+### When does the clock turn on? — only on a defect background
+
+The `clock_twist` is **dynamical only when the field is non-uniform**. The trigger is the gauge source
+`C_μν = [M_μ^bg, M_ν^bg]`:
+
+| Background | `C_μν` | Twist dynamics |
+| --- | --- | --- |
+| smooth / uniform (vacuum, single generator) | `≈ 0` | **no self-sourcing** — `clock_twist` just sits (no mass gap, M5.5.2) |
+| **biaxial hedgehog** (multiple generators) | `≠ 0`, `~1/r²` | the defect **dynamically sources its own twist** + a restoring **mass** → `ψ=0` is *not* static → it **oscillates** (M5.6.2b) |
+
+So the clock **comes alive on a defect, not in the vacuum** — which is why the vacuum xparameter does
+nothing under Evolve PDE (L1/L5), while a hedgehog sloshes. That self-sourced oscillation is the **clock
+seed** (→ L7).
+
+### `V(M)` — confines amplitude, NOT orientation (the M5.7 root cause)
+
+The LdG potential `V(M)` holds the field's **amplitude** `Tr(M²)` (the magnitude stays bounded, energy
+gathered) — but it does **NOT** confine the **orientation** (the director frame can wander freely).
+That single fact is the **root cause of the M5.7 free-dispersal**:
+
+- amplitude pinned ⇒ the **Hamiltonian `H` stays contained** (energyH WM4 — the gathered core);
+- orientation free ⇒ the **director disperses** ⇒ the **Frank/orientation energy dissipates** (energyF WM5).
+
+That's *exactly* the `H`-contained-vs-`F`-dissipating split you watched on the biaxial xparameter (L5),
+and the rod's orientation spreading. The escape: **4D** (the clock stabilizes orientation, L7) or a
+**drive** (9b sustains it).
+
+### Energy conservation — the correctness test
+
+`H` must stay **constant** under Evolve PDE. This is *the* validation that the integrator + physics are
+right: a symplectic leapfrog conserves `H` to **~0.03% at small `dt`** (drift `2.15% → 1.13% → 0.03%`
+as `dt → 0`, M5.5.4). If `H` drifts, the dynamics are wrong. **Bounded-not-bug:** `H` can *slosh
+spatially* (the energy moves around) while the **total stays conserved** — that's healthy, not a
+blow-up (the GUI "Evolve PDE" check Rodrigo confirmed).
+
+### L6 Q&A / clarifications (2026-06-04)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what is "Evolve PDE" actually doing? | a **leapfrog** step: `M_new = 2M − M_prev + force·dt²`, then buffer-rotate. The force = neighbor curvature + `∇V`. Symplectic → energy-conserving. | above |
+| 2 | why two kinetic metrics? | **simple `½‖Ṁ‖²`** ships (well-behaved, no gauge-slosh) but mis-sets inertia → clock frequency off ×[0.6,3.0]; the **faithful `4Σ‖[M_μ,Ṁ]‖²`** is used for the M5.8 frequency run. | above, `5a §5g` |
+| 3 | why does the clock need a defect to turn on? | the twist is self-sourced by `C_μν=[M_μ,M_ν]`, which is `≈0` on a smooth background but `≠0` on the biaxial hedgehog → only a defect drives its own oscillation. | above |
+| 4 | why does a free defect disperse? | `V` confines **amplitude** (`Tr M²`) but **not orientation** → the director wanders off (the `H`-held / Frank-dissipating split). Fixed by 4D (L7) or a drive (9b). | above, L5/L7 |
+| 5 | what does energy conservation prove? | that the integrator is honest — a symplectic leapfrog holds `H` to ~0.03% at small `dt`. Drift ⇒ wrong dynamics. | above |
+| 6 | is the energy "sloshing" a bug? | **no** — `H` can move around in space while the **total is conserved** (bounded-not-bug). A real bug would be `H` *growing* (blow-up). | above |
 
 ### L6 Anchors
 
