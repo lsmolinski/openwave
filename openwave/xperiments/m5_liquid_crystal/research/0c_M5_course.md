@@ -36,7 +36,7 @@ them.
 | [3 ✅](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
 | [4 ✅](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
 | [5 ✅](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
-| [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
+| [6 ✅](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
 | [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
@@ -1197,197 +1197,212 @@ blow-up (the GUI "Evolve PDE" check Rodrigo confirmed).
 > mechanism (depth here)**; **spin-½** (SO(3) double-cover, the `2ω` doubling, `L=ℏ/2`); the de
 > Broglie wavelength λ; the bridge to 4D / teleparallelism (structure set up in L3)*.
 > *(Merges old L7 + the old spin-½ deep-dive: spin-½ is a property of this clock.)*
->
-> **Seed intuition (to develop).**
->
-> *Why it can't sit still — the knotted rubber band.* A rubber band stretched between two posts
-> relaxes flat (a static ground state). Tie a topological **knot** in the middle: the tension still
-> wants to relax, but topology forbids untying the knot. The band can neither relax fully nor sit
-> statically at the knotted-stretched configuration — so the knot **vibrates** at a frequency set
-> by the local elastic restoring force. The oscillation is the compromise between the *topological*
-> constraint (cannot unwind) and the *energetic* constraint (wants minimum elastic energy): they
-> can't both be satisfied in a static configuration, so the next-lowest-energy state is *moving*.
->
-> *What to picture — a spinning arrow, not a bouncing ball.* Don't picture the defect as a point
-> bouncing on a spring (translation). Picture a point with a **spinning arrow stuck through it**:
-> the arrow is the local director orientation, and it **rotates** about an axis at `ω = 2mc²/ℏ`.
-> The defect's *position* is fixed (or slowly drifting under external forces); the field's
-> *orientation* at and around the defect rotates at the Zitterbewegung frequency.
->
-> *The one-sentence version.* A topological defect in a Lagrangian field with the right potential
-> (Duda's φ⁴ + curvature coupling, or M5's full LdG + Skyrme + KG) is **permanently displaced from
-> the vacuum minimum but cannot fully relax due to topology**, so it oscillates around its
-> constrained position at `ω = 2mc²/ℏ` — and the oscillation is **rotational** (the director winds
-> around an axis), not translational.
->
-> *Open questions to resolve in this lesson:* is the clock a steady **spin** (ω only, like a wheel / a spinning top
-> / the Earth) or an **oscillation** (A & ω, like a pendulum)? And where do the **magnetic moment**,
-> **spin-½**, and the **de Broglie λ** live in this picture?
->
-> *Preliminary resolution (2026-05-30, from L1 Q&A):* it is a **SPIN**, not a pendulum — `ψ = ωt`,
-> the phase angle winds *linearly* (toy model + Dirac `exp(iEt/ℏ)`). Why a spin and not a swing: the
-> phase has **no preferred angle** (every phase has identical energy — the unconfined orientation
-> direction, the same fact as "V confines amplitude not orientation", L6), so it rotates freely
-> rather than being pulled back to a center. The rate isn't free, though — the time-crystal `−αω²`
-> term energetically *selects* `ω = 2mc²/ℏ`. **Axis:** the **`clock_twist` about the director `n̂`**
-> (the principal axis, eigenvalue `1` = EM axis; generator `Gx`, a rotation in the `δ`–`0` plane,
-> `5a §7a`) — `n̂` stays put while the δ-axis (`director_mid`, λ=`δ`) and null axis (λ=`0`) sweep
-> *around* it (the "spinning arrow", and the leftover DoF from L1 Q8). Contrast with **EM = tilting
-> `n̂` itself** (L1 Q2 / L8). Caveat: the clean
-> steady spin is the *ideal/target* — in 3D the free defect disperses (M5.7.2), so confirming it at
-> `ω=2mc²/ℏ` needs 4D (M5.8, structure in L3).
->
-> *Refinement — "spin" does NOT mean "no amplitude" (2026-05-30):* a spin is **constant-amplitude**,
-> not amplitude-free — like a point on a wheel, `(R·cos ωt, R·sin ωt)` has both a radius `R` and a
-> rate `ω`. The clock's amplitude (radius/modulus, set by the rest mass) is *fixed* at the ground
-> state, not absent; what makes it a spin vs a pendulum is the absence of a restoring force, not the
-> absence of `A`. So the joint **`(A, ω)`** picture holds: `ω` = the rate (launcher WM3 "Thermal
-> Clock"), `A` = the rotational radius/excitation amplitude (WM2 "Thermal Amp"). Ground state: both
-> fixed. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate shifts (FM) — exactly
-> the dual channels M5.7.3 saw respond to driving (`A_core`→3×, director at `f_d`). (The
-> heat-as-`(A,ω)`-excess *interpretation* is SABER/DHC, kept in the SABER repo
-> here it's just the substrate clock's two observables.)
->
-> *What the "radius" is, and what spins (2026-05-30):* as the frame twists about the director `n̂`,
-> the δ–`0` block `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal
-> `(δ/2)sin(2ωt)`. So the **radius = the eigenvalue gap `(δ − 0)/2 = δ/2`** (the QM-`δ` axis sets
-> its size), and the observable cycles at **`2ω`** — the apolar `n̂⊗n̂` doubling (a 180° turn looks
-> identical), the likely origin of `ω_Zitt = 2mc²/ℏ` (confirm in M5.8). And *what* spins is the
-> **orientation field as one collective phase-locked mode** localized on the defect (the director
-> `n̂` = the fixed axle, the δ-axis `director_mid` = the clock-hand; all hands synchronized) — **not**
-> the defect-as-a-point and **not** independent voxels.
->
-> **★ "Collective mode" — flagged 2026-05-30 to unpack when we teach L7.**
->
-> *The mental image to hold:* a 3D field of **compass needles all precessing in lock-step**. Each
-> needle (ellipsoid) turns, but the meaningful object is the **collective phase**. The director `n̂`
-> at each point is the fixed **axle**; the δ-axis (`director_mid`) is the **clock-hand** sweeping
-> around it — and all the clock-hands across the defect's neighborhood are **synchronized**.
->
-> *Why it matters:* the **defect** is the stable topological knot that *hosts* the clock; the
-> **clock** is the collective `clock_twist` mode the knot carries. So "the particle" = defect (topology,
-> permanent) **+** its intrinsic clock (the collective oscillation). And thermal `(A, ω)` is a
-> **per-defect collective property**, not an individual-voxel one. *(3D caveat: the free collective
-> mode disperses — M5.7.2 — so it needs 4D to self-sustain, M5.8, or a drive, 9b.)*
->
-> *Questions to answer in L7 so this clicks:*
->
-> 1. **What makes the needles lock-step?** — the elastic (Frank) coupling between neighbours + the
->    hedgehog's own `C_μν` source: the lowest-energy way to carry a `clock_twist` is *coherently*, so one
->    collective phase `ψ(t)` wins over each voxel doing its own thing.
-> 2. **How can a single `ψ(t)` describe a whole 3D region?** — it's a **collective coordinate /
->    normal mode**: like a drumhead's fundamental mode, *one* amplitude sets the whole membrane's
->    shape. `ψ` is that one number for the defect's `clock_twist` mode.
-> 3. **Why a "mode" and not a rigid point-spin?** — it has **spatial extent + a profile** (peaked at
->    the core, fading out, weighted by the texture) — a standing-wave/breather-like object, not a
->    structureless spinning dot.
-> 4. **Precise vs idealized:** "lock-step" is the *coherent ideal*; really `ψ = ψ(x, t)` is a field
->    with a spatial profile. *How coherent/localized it stays* is exactly the M5.7.2 dispersal
->    result (free 3D radiates it away) → M5.8 (4D stabilizes) / 9b (drive sustains).
-> 5. **Engine tie-in:** this is the `O(x) ∈ SO(3)` rotation DoF from `5a §9` / `m5_6_2b` — the
->    collective `clock_twist` is a coherent excitation of that rotation field, not of `M`'s raw components.
->
-> ---
->
-> **★ THE ENGINE — depth (Rodrigo 2026-05-31): why the clock self-sustains.** The clock is not just
-> a measurement — it is an **engine** that propels its own rotation. Develop here:
->
-> - **The negative-energy mechanism (the fuel).** In 4D the kinetic term picks up the Minkowski
->   `(−+++)` sign: a rotation that leans into the time axis contributes *negatively* to the energy.
->   So the oscillating state is **lower-energy than the static one** — verified in the 1+1D toy model
->   (M5.8.0a: `E(ω=0)=2.87 > E*=2.02 = E(ω*=1.29)`). Spinning is the ground state; it costs nothing
->   to keep running because stopping would cost *more*. Fuel = the rest mass itself (`ℏω = mc²`).
-> - **Why 3D can't (the contrast).** In the space-only 3×3 (all-`+` signature) a rotation only *adds*
->   energy → the free defect sheds it and disperses (M5.7.2). The engine needs the time axis's
->   negative-signature term, i.e. 4D (L3 sets up the structure). A *driven* 3D defect (9b) borrows
->   the energy externally — a motor with a power cord, not yet a self-contained engine.
-> - **Not perpetual motion.** The spin *is* the rest energy; you can't extract it without destroying
->   the particle. What CAN be modulated is the *excess* above ground state (`(A,ω)` — the thermal
->   channel) and, speculatively, the rate/scale (time/gravity) — the SABER unification thesis
->   (`SABER 0_OVERVIEW §4`), an engineering bet on this mechanism, not a claim it's free energy.
->
-> **★ SPIN-½ — folded in here (was the old L11 deep-dive).** Spin-½ is a property *of this clock*, so
-> it lives in this lesson. Three threads:
->
-> | Thread | One-line | Anchor |
-> | --- | --- | --- |
-> | **The `2ω` apolar doubling** | the clock's observable cycles at `2ω` because the order parameter is apolar (`n̂⊗n̂`, a 180° turn looks identical) → the origin of `ω_Zitt = 2mc²/ℏ` | the "radius/what-spins" note above |
-> | **The SO(3) double-cover** | a 2π rotation does **not** restore the state (you need 4π) — the topological signature of spin-½; `O∈SO(3)` lifts to `SU(2)` | `5a §10` |
-> | **Spin = the clock's angular momentum** | `L = ℏ/2` is the conserved angular momentum of the self-propelled rotation (the engine's "flywheel") | M5.8 |
->
-> Full concreteness needs the 4D clock (M5.8, structure in L3). Tie-in: Duda's slide gyroscope/`L=ℏ/2`
-> inset (the L8 magnetic-moment figure).
->
-> ---
->
-> **★ Seeing the clock — the spatial "shadow" (Rodrigo 2026-06-01).** What you *render* is not the
-> clock itself but its **3D shadow**. The real 4D clock winds in a plane that **mixes a space axis
-> with the time axis** (L3); you can't draw "into time" (no 4th spatial direction to point a glyph
-> into). But its **3D projection** is exactly the **δ-axis direction changing** — so the **CYAN δ
-> cross-bar sweeping around `n̂`** (VIZ.3 glyph state 1) is the *visible shadow* of the space-time
-> rotation. Same "render the shadow, not the thing" trick as gravity (we draw `g(x)`/`∇g`, never
-> "time" — L3). So: a coherent cyan sweep = the clock ticking; today it's an **incoherent wobble**
-> (the free defect disperses, M5.7.2) — the clean coherent tick needs **M5.8** (or a drive, 9b).
->
-> **★ What a "time-crystal" actually IS (Rodrigo 2026-06-01).** The term (Frank Wilczek, 2012) is by
-> analogy to an ordinary crystal:
->
-> | | breaks which symmetry | its stable state is… |
-> | --- | --- | --- |
-> | **ordinary crystal** | *spatial* translation | periodic in **space** (atoms in a repeating lattice — the lowest-energy state isn't uniform) |
-> | **time-crystal** | *time* translation | periodic in **time** — it **ticks forever in its ground state**, with no energy input |
->
-> So a time-crystal is matter whose *rest* configuration is **perpetually moving in a fixed cycle** —
-> not driven, not winding down. **The particle is exactly this:** the de Broglie clock spins at
-> `ω=2mc²/ℏ` *at rest*, forever, because **spinning is the ground state** (the Minkowski `(−+++)`
-> sign — the engine above). That's why it's "not perpetual motion" — the tick **is** the rest energy,
-> not free energy from nothing.
->
-> *History / honesty:* Wilczek's original *equilibrium* time-crystal was shown impossible by no-go
-> theorems (Bruno 2013; Watanabe–Oshikawa 2015) for ordinary positive-energy Hamiltonians; what's
-> been built in the lab are **driven "discrete time-crystals"** (trapped ions 2017; Google Sycamore
-> 2021) — period-doubling subharmonic responses, *not* ground-state ticks. **Duda's claim is
-> stronger:** the Minkowski negative-energy term changes the energy landscape so a *genuine*
-> ground-state time-crystal becomes allowed — *sidestepping* the no-go theorems via the relativistic
-> signature. ⚠️ That's the hypothesis M5.8 is built to test, not established physics.
->
-> **★ Validation prize — 1D done, 3D is the frontier (Rodrigo Q 2026-06-01).** The toy-model **paper**
-> (Duda, arXiv:2501.04036) works the mechanism explicitly in **1+1D**; we reproduced that (M5.8.0a).
-> The paper itself lays the ladder **1+1D → 2+1D → 3+1D** as the open goal. A full **3D**
-> self-sustaining time-crystal clock in OpenWave would be a genuine result — *potentially* a first —
-> **but we cannot claim "first":** Duda runs his own 3D LC simulator (posts output screenshots), so
-> he may be ahead or in parallel, and this is M5's **least-certain, hardest** sector (free 3D defects
-> *disperse*, M5.7). Frame it as **the prize / the concrete deliverable to Duda et al.**, not a
-> guaranteed primacy. (It would also be exactly the *positive anchor* Jeff Yee flagged as the only
-> thing that certifies the engine — `0b §Validation logic`.)
->
-> **Lesson map (so the clock threads don't blur):** **L3** sets up the *structure* (the 4th axis
-> exists; the clock = a rotation into time; the hand = the δ-axis). **L7 (here)** is the *mechanism*
-> (the negative-energy engine, spin-½, `ω=2mc²/ℏ`). Mental model: **see the hand** (δ cross-bar,
-> today) **→ the motor** (4D Minkowski sign, M5.8) **→ the full why** (this lesson). Term glossary
-> (hand/motor/dial = `clock_twist` / clock-engine / de Broglie clock) is in `L3 Q&A` #9.
->
-> **★ Energy distribution after the 4D clock — does the "rod" localize? (forward observable, Rodrigo
-> 2026-06-01).** Today the static biaxial seed shows a box-spanning **z-axis energy "rod"** in
-> `energyH` (WAVE_MENU 4) — the disclination line (L4 / L5). **After M5.8 we'd expect a *different,
-> stable* distribution**, and recomputing `energyH` around the candidate lepton is a clean
-> **acceptance check** (logged as roadmap **M5.8.8**):
->
-> | What M5.8 changes | Why |
-> | --- | --- |
-> | energy **stops dispersing** | the 4D clock stabilizes orientation → the M5.7.2 Frank-leak stops; stable, not diluting |
-> | field **relaxes off the gauge-fixed seed** | the straight-z rod is the *seed's* construction, not dynamical — the true configuration reshapes it |
-> | the clock **time-averages** the structure | a winding frame precesses / smears a static feature (a spinning-top's axially-symmetric blur) |
->
-> **What can't vanish:** the disclination *topology* is forced (`π₁ = Q₈`, the biaxial charge lives in
-> a line/loop — L4) → it **transforms, not disappears**. **Physical hint:** a box-spanning line has
-> energy `∝ length` (extensive) — *not* how a **localized** particle looks; a localized defect should
-> **close into a finite ring/loop** (hopfion-adjacent) and/or a **clock-smeared shell** — compact,
-> closer to spherically symmetric (electron-like). **Honest status:** ✅ expect a different/stable,
-> *localized* distribution; ⚠️ but **UNCOMPUTED** — don't claim "M5.8 gives a clean spherical
-> electron"; it's a hoped outcome + a falsifiable **test**, in M5's least-developed sector.
 
-(to be filled during the session)
+### L7 The one-sentence version
+
+A topological defect **can't fully relax** (topology forbids unwinding, L4) and **can't sit static**
+(Derrick, L4) — so it does the only thing left: it **oscillates**. The oscillation is a **spin** of the
+director frame at `ω = 2mc²/ℏ`, and in 4D the Minkowski sign makes that spin the **ground state** — a
+**self-propelling clock-engine**, a **time-crystal**. Spin-½ is a property *of* this clock.
+
+### Why it can't sit still — the knotted rubber band
+
+A rubber band stretched between two posts relaxes flat (a static ground state). Tie a topological
+**knot** in the middle: the tension still wants to relax, but topology forbids untying the knot. The
+band can neither relax fully nor sit statically at the knotted-stretched configuration — so the knot
+**vibrates** at a frequency set by the local elastic restoring force. The oscillation is the
+**compromise** between the *topological* constraint (can't unwind) and the *energetic* constraint
+(wants minimum elastic energy): they can't both be satisfied statically, so the next-lowest-energy
+state is **moving** (the L4/L5 hand-off, made concrete).
+
+### What to picture — a spinning arrow, not a bouncing ball
+
+Don't picture the defect as a point bouncing on a spring (translation). Picture a point with a
+**spinning arrow stuck through it**: the arrow is the local director orientation, and it **rotates**
+about an axis at `ω = 2mc²/ℏ`. The defect's *position* is fixed (or slowly drifting under external
+forces); the field's *orientation* at and around the defect rotates at the Zitterbewegung frequency.
+
+**Spin, not a pendulum.** It's a **SPIN** (`ψ = ωt`, the phase winds *linearly* — the toy model + Dirac
+`exp(iEt/ℏ)`), not a swing. Why: the phase has **no preferred angle** (every phase has identical energy
+— the unconfined orientation, the same "V confines amplitude not orientation" fact, L6), so it rotates
+freely rather than being pulled back to a center. The *rate* isn't free, though — the time-crystal
+`−αω²` term energetically **selects** `ω = 2mc²/ℏ`.
+
+**The axis** is the **`clock_twist` about the director `n̂`** (the principal axis, eigenvalue `1`;
+generator `Gx`, a rotation in the `δ`–`0` plane, `5a §7a`): `n̂` stays put while the δ-axis
+(`director_mid`, λ=`δ`) and null axis (λ=`0`) sweep *around* it (the "spinning arrow", the leftover DoF
+from L1 Q8). Contrast: **EM = tilting `n̂` itself** (L1 Q2 / L8). *(Caveat: the clean steady spin is the
+ideal — in 3D the free defect disperses, M5.7.2; confirming `ω=2mc²/ℏ` needs 4D, M5.8.)*
+
+### Spin ≠ "no amplitude" — the `(A, ω)` picture
+
+A spin is **constant-amplitude**, not amplitude-*free* — like a point on a wheel, `(R·cos ωt, R·sin ωt)`
+has both a radius `R` and a rate `ω`. The clock's amplitude (set by the rest mass) is *fixed* at the
+ground state, not absent; what makes it a spin vs a pendulum is the **absence of a restoring force**,
+not the absence of `A`. So the joint **`(A, ω)`** picture holds:
+
+| Observable | Is | Launcher |
+| --- | --- | --- |
+| `ω` | the rate (the clock frequency) | WM3 "Thermal Clock" |
+| `A` | the rotational radius / excitation amplitude | WM2 "Thermal Amp" |
+
+Ground state: **both fixed**. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate
+shifts (FM), exactly the dual channels M5.7.3 saw under driving (`A_core`→3×, director at `f_d`). *(The
+heat-as-`(A,ω)`-excess **interpretation** is SABER/DHC, kept in the SABER repo; here it's just the
+substrate clock's two observables.)*
+
+**What the "radius" is, and what spins.** As the frame twists about `n̂`, the `δ`–`0` block
+`R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal `(δ/2)·sin(2ωt)`. So the
+**radius = the eigenvalue gap `(δ−0)/2 = δ/2`** (the QM-`δ` axis sets its size), and the observable
+cycles at **`2ω`** — the apolar `n̂⊗n̂` doubling (a 180° turn looks identical), the likely origin of
+`ω_Zitt = 2mc²/ℏ` (confirm in M5.8). And *what* spins is the **orientation field as one collective
+phase-locked mode** localized on the defect (`n̂` = the fixed axle, the δ-axis = the clock-hand, all
+hands synchronized) — **not** the defect-as-a-point and **not** independent voxels.
+
+### The collective mode — compass needles in lock-step
+
+The clock is a **collective mode**, not a point-spin. The mental image: a 3D field of **compass needles
+all precessing in lock-step**. Each needle (ellipsoid) turns, but the meaningful object is the
+**collective phase** — the director `n̂` at each point is the fixed **axle**, the δ-axis (`director_mid`)
+is the **clock-hand** sweeping around it, and all the clock-hands across the defect's neighborhood are
+**synchronized**.
+
+Why it matters: the **defect** is the stable topological knot that *hosts* the clock; the **clock** is
+the collective `clock_twist` mode the knot carries. So **"the particle" = defect (topology, permanent) + its
+intrinsic clock (the collective oscillation)** — and thermal `(A, ω)` is a **per-defect**
+property, not a per-voxel one. *(3D caveat: the free collective mode disperses, M5.7.2 → needs 4D to
+self-sustain, M5.8, or a drive, 9b.)*
+
+Five things that make it click:
+
+| # | Question | Answer |
+| --- | --- | --- |
+| 1 | what makes the needles lock-step? | the elastic (Frank) coupling between neighbours + the hedgehog's own `C_μν` source — the lowest-energy way to carry a `clock_twist` is **coherently**, so one phase `ψ(t)` wins over each voxel doing its own thing |
+| 2 | how can one `ψ(t)` describe a whole 3D region? | it's a **collective coordinate / normal mode** — like a drumhead's fundamental, *one* amplitude sets the whole membrane's shape |
+| 3 | why a "mode," not a rigid point-spin? | it has **spatial extent + a profile** (peaked at the core, fading out) — a standing-wave / breather, not a structureless dot |
+| 4 | precise vs idealized? | "lock-step" is the *coherent ideal*; really `ψ = ψ(x,t)` with a profile. How coherent it stays *is* the M5.7.2 result (free 3D radiates it away → M5.8 stabilizes / 9b drives) |
+| 5 | engine tie-in | this is the `O(x)∈SO(3)` rotation DoF (`5a §9` / `m5_6_2b`) — the collective `clock_twist` is a coherent excitation of that rotation field, not of `M`'s raw components |
+
+![Duda's electron-clock animation — a hedgehog of biaxial ellipsoids, each spinning about its director at the de Broglie clock rate](images/clock.gif)
+
+**Figure — Duda's electron-clock render** (Wolfram Community, ["Time crystal ϕ⁴ kink as toy model…"](https://community.wolfram.com/groups/-/m/t/3398814)) — the literal picture of this lesson. The fanned ellipsoids are the **hedgehog** (L4 — charge = topology); each one **spinning about its director** is the `clock_twist` (the δ-axis sweeping `n̂`) — the **collective mode** ticking in lock-step. The same object carries **spin / angular momentum + magnetic dipole + de Broglie clock** (L7 → L8). The lower spiral is **neutrino oscillation "along axis 2↔3"** — the field swinging in the `δ`–`0` block (L2 axes; 3 light/stable types, left/right handed). The bottom strip is **β-decay reconnection** (neutron → W⁻ → proton + electron + neutrino; L10 / 9d). ⚠️ Duda's conceptual render — corroborates our framing, not an M5 result.
+
+### THE ENGINE — why the clock self-sustains
+
+The clock isn't just a *measurement* — it's an **engine** that propels its own rotation:
+
+- **The negative-energy mechanism (the fuel).** In 4D the kinetic term picks up the Minkowski `(−+++)`
+  sign: a rotation that leans into the time axis contributes *negatively* to the energy. So the
+  oscillating state is **lower-energy than the static one** — verified in the 1+1D toy model (M5.8.0a:
+  `E(ω=0)=2.87 > E*=2.02 = E(ω*=1.29)`). Spinning is the ground state; it costs nothing to keep running
+  because stopping would cost *more*. Fuel = the rest mass itself (`ℏω = mc²`).
+- **Why 3D can't (the contrast).** In the space-only 3×3 (all-`+` signature) a rotation only *adds*
+  energy → the free defect sheds it and disperses (M5.7.2). The engine needs the time axis's
+  negative-signature term, i.e. 4D (structure in L3). A *driven* 3D defect (9b) borrows the energy
+  externally — a motor with a power cord, not yet a self-contained engine.
+- **Not perpetual motion.** The spin *is* the rest energy; you can't extract it without destroying the
+  particle. What CAN be modulated is the *excess* above ground state (`(A,ω)` — the thermal channel)
+  and, speculatively, the rate/scale (time/gravity) — the SABER unification thesis (`SABER 0_OVERVIEW
+  §4`), an engineering bet on this mechanism, not a claim it's free energy.
+
+### Spin-½ — a property of this clock
+
+Spin-½ is a property *of this clock* (it was the old L11 deep-dive). Three threads:
+
+| Thread | One-line | Anchor |
+| --- | --- | --- |
+| **The `2ω` apolar doubling** | the clock's observable cycles at `2ω` because the order parameter is apolar (`n̂⊗n̂`, a 180° turn looks identical) → the origin of `ω_Zitt = 2mc²/ℏ` | the "radius/what-spins" note above |
+| **The SO(3) double-cover** | a 2π rotation does **not** restore the state (you need 4π) — the topological signature of spin-½; `O∈SO(3)` lifts to `SU(2)` | `5a §10` |
+| **Spin = the clock's angular momentum** | `L = ℏ/2` is the conserved angular momentum of the self-propelled rotation (the engine's "flywheel") | M5.8 |
+
+Full concreteness needs the 4D clock (M5.8, structure in L3). Tie-in: Duda's slide gyroscope / `L=ℏ/2`
+inset (the L8 magnetic-moment figure).
+
+### Seeing the clock — the spatial "shadow"
+
+What you *render* is not the clock itself but its **3D shadow**. The real 4D clock winds in a plane
+that **mixes a space axis with the time axis** (L3); you can't draw "into time" (no 4th spatial
+direction to point a glyph into). But its **3D projection** is exactly the **δ-axis direction
+changing** — so the **CYAN δ cross-bar sweeping around `n̂`** (VIZ.3 glyph state 1) is the *visible
+shadow* of the space-time rotation. Same "render the shadow, not the thing" trick as gravity (we draw
+`g(x)`/`∇g`, never "time" — L3). So: a coherent cyan sweep = the clock ticking; today it's an
+**incoherent wobble** (the free defect disperses, M5.7.2) — the clean coherent tick needs **M5.8** (or
+a drive, 9b).
+
+### What a "time-crystal" actually is
+
+The term (Frank Wilczek, 2012) is by analogy to an ordinary crystal:
+
+| | breaks which symmetry | its stable state is… |
+| --- | --- | --- |
+| **ordinary crystal** | *spatial* translation | periodic in **space** (atoms in a repeating lattice — the lowest-energy state isn't uniform) |
+| **time-crystal** | *time* translation | periodic in **time** — it **ticks forever in its ground state**, with no energy input |
+
+So a time-crystal is matter whose *rest* configuration is **perpetually moving in a fixed cycle** — not
+driven, not winding down. **The particle is exactly this:** the de Broglie clock spins at `ω=2mc²/ℏ`
+*at rest*, forever, because **spinning is the ground state** (the Minkowski `(−+++)` sign — the engine
+above). That's why it's "not perpetual motion" — the tick **is** the rest energy, not free energy from
+nothing.
+
+*History / honesty:* Wilczek's original *equilibrium* time-crystal was shown impossible by no-go
+theorems (Bruno 2013; Watanabe–Oshikawa 2015) for ordinary positive-energy Hamiltonians; what's been
+built in the lab are **driven "discrete time-crystals"** (trapped ions 2017; Google Sycamore 2021) —
+period-doubling subharmonic responses, *not* ground-state ticks. **Duda's claim is stronger:** the
+Minkowski negative-energy term changes the energy landscape so a *genuine* ground-state time-crystal
+becomes allowed — *sidestepping* the no-go theorems via the relativistic signature. ⚠️ That's the
+hypothesis M5.8 is built to test, not established physics.
+
+### Validation prize — 1D done, 3D is the frontier
+
+The toy-model **paper** (Duda, [arXiv:2501.04036](https://arxiv.org/abs/2501.04036)) works the mechanism explicitly in **1+1D**; we
+reproduced that (M5.8.0a). The paper itself lays the ladder **1+1D → 2+1D → 3+1D** as the open goal. A
+full **3D** self-sustaining time-crystal clock in OpenWave would be a genuine result — *potentially* a
+first — **but we cannot claim "first":** Duda runs his own 3D LC simulator (posts output screenshots),
+so he may be ahead or in parallel, and this is M5's **least-certain, hardest** sector (free 3D defects
+*disperse*, M5.7). Frame it as **the prize / the concrete deliverable to Duda et al.**, not a
+guaranteed primacy. (It would also be exactly the *positive anchor* Jeff Yee flagged as the only thing
+that certifies the engine — `0b §Validation logic`.)
+
+### Lesson map — so the clock threads don't blur
+
+**L3** sets up the *structure* (the 4th axis exists; the clock = a rotation into time; the hand = the
+δ-axis). **L7 (here)** is the *mechanism* (the negative-energy engine, spin-½, `ω=2mc²/ℏ`). Mental
+model: **see the hand** (δ cross-bar, today) **→ the motor** (4D Minkowski sign, M5.8) **→ the full
+why** (this lesson). Term glossary (hand/motor/dial = `clock_twist` / clock-engine / de Broglie clock)
+is in `L3 Q&A` #9.
+
+### Forward observable — does the energy "rod" localize? (M5.8.8)
+
+Today the static biaxial seed shows a box-spanning **z-axis energy "rod"** in `energyH` (WAVE_MENU 4) —
+the disclination line (L4 / L5). **After M5.8 we'd expect a *different, stable* distribution**, and
+recomputing `energyH` around the candidate lepton is a clean **acceptance check** (roadmap **M5.8.8**):
+
+| What M5.8 changes | Why |
+| --- | --- |
+| energy **stops dispersing** | the 4D clock stabilizes orientation → the M5.7.2 Frank-leak stops; stable, not diluting |
+| field **relaxes off the gauge-fixed seed** | the straight-z rod is the *seed's* construction, not dynamical — the true configuration reshapes it |
+| the clock **time-averages** the structure | a winding frame precesses / smears a static feature (a spinning-top's axially-symmetric blur) |
+
+**What can't vanish:** the disclination *topology* is forced (`π₁ = Q₈`, the biaxial charge lives in a
+line/loop — L4) → it **transforms, not disappears**. **Physical hint:** a box-spanning line has energy
+`∝ length` (extensive) — *not* how a **localized** particle looks; a localized defect should **close
+into a finite ring/loop** (hopfion-adjacent) and/or a **clock-smeared shell** — compact, closer to
+spherically symmetric (electron-like). **Honest status:** ✅ expect a different/stable, *localized*
+distribution; ⚠️ but **UNCOMPUTED** — don't claim "M5.8 gives a clean spherical electron"; it's a hoped
+outcome + a falsifiable **test**, in M5's least-developed sector.
+
+### L7 Q&A / clarifications (2026-06-04)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | spin or oscillation? | a **spin** (`ψ=ωt`, no restoring force) — but *constant-amplitude*, so the joint **`(A, ω)`** picture holds (radius + rate). | above |
+| 2 | what actually spins? | the **orientation field as one collective phase-locked mode** on the defect (`n̂`=axle, δ-axis=hand) — not a point, not independent voxels. | above |
+| 3 | why is it an *engine*, not just a clock? | the Minkowski `(−+++)` sign makes the spinning state **lower-energy than static** (M5.8.0a) → spinning is the ground state, self-sustaining. | above |
+| 4 | is it perpetual motion? | **no** — the spin *is* the rest energy (`ℏω=mc²`); only the *excess* `(A,ω)` is modulable (the SABER bet), not free energy. | above |
+| 5 | what's a time-crystal? | matter whose *ground state* is periodic in **time** (Wilczek). The particle is a *genuine* (equilibrium) one, allowed by the negative-energy sign (⚠️ hypothesis; lab DTCs are *driven*). | above |
+| 6 | why spin-½? | the order parameter is apolar + `SO(3)` double-covers `SU(2)` (2π ≠ identity, need 4π); `L=ℏ/2`. | above |
+| 7 | can we see the clock? | only its **shadow** — the δ cross-bar sweep (today an incoherent wobble; coherent @ M5.8). | above |
+| 8 | 1D vs 3D? | the mechanism is validated in **1D** (M5.8.0a); the **3D** self-sustaining clock is the prize — *not* yet done, *not* claimable as "first". | above |
 
 ### L7 Anchors
 
@@ -1397,6 +1412,7 @@ blow-up (the GUI "Evolve PDE" check Rodrigo confirmed).
 | `theory/time_crystal.pdf` | Duda's toy-model paper |
 | `1b` | Derrick / time-crystal (topological-defect notes) |
 | `4a §6` | design-convo notes — the clock |
+| `images/clock.gif` | Duda's electron-clock animation (embedded above; [Wolfram Community](https://community.wolfram.com/groups/-/m/t/3398814)) |
 
 ---
 
