@@ -31,17 +31,17 @@ them.
 
 | # | LESSON | Covers (questions + *added topics*) |
 | --- | --- | --- |
-| [1 ✅](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | [The Medium, The Field, The Grid & The Vacuum](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
-| [2 ✅](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
-| [3 ✅](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
-| [4 ✅](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
-| [5 ✅](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
-| [6 ✅](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
-| [7 ✅](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
-| [8 ✅](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
-| [9 ✅](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
+| [1](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | [The Medium, The Field, The Grid & The Vacuum](#lesson-1--the-medium-the-field-the-grid--the-vacuum) | *the medium = an LdG tensor-field `M(x)` on a 3D space grid, time-evolved; the order-parameter / coarse-graining reading; why a matrix not an arrow (the Vector(3)→matrix story); the vacuum/ground state*; "biaxial top at each voxel" |
+| [2](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | [Each voxel's personality: The Matrix `M = O·D·Oᵀ`, eigenvalues & the physics map](#lesson-2--each-voxels-personality-m--odoᵀ-eigenvalues--the-physics-map) | the 9 numbers (6 independent), `D`=eigenvalues=ellipsoid shape, `O`=eigenvectors=director frame, the director `n̂`; the eigenvalue→physics map (tilt→EM, twist→QM(ℏ), null→clock); the curvature operators `A_μ=[M,∂M]`, `F_μν=[M_μ,M_ν]` (force = curvature of the frame) + grad/div/curl/laplacian; *the M4 6-phasor-ellipse → ellipsoid bridge; natural units & δ↔ℏ* |
+| [3](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | [The 4th dimension: gravity (`g`) + the time axis](#lesson-3--the-4th-dimension-gravity-g--the-time-axis) | the time axis / 0-eigenvalue, `D=diag(g,1,δ,0)`, `O∈SO(1,3)`, *teleparallelism*; gravity = time-axis scale `g`; the clock = rotation-into-time; **the two "times" (`dt` vs the matrix time index)** + the physical analogies; defers the *engine why* (negative-energy mechanism) → L7 |
+| [4](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | [Building a particle: the biaxial hedgehog & topology](#lesson-4--building-a-particle-the-biaxial-hedgehog--topology) | `O=[r̂ \| e_Θ \| e_Φ]` (the three vectors), eigenvalue melt, disclination; *+ winding number = quantized charge, Derrick's theorem → no static soliton* |
+| [5](#lesson-5--energy-mass--the-ground-state) | [Energy, mass & the ground state](#lesson-5--energy-mass--the-ground-state) | *the action principle (ℒ=T−U → EOM); the energy Hamiltonian vs the Frank elastic energy; mass = stored field energy above vacuum (E=mc²); F = −∇E; the ground state* |
+| [6](#lesson-6--dynamics-how-the-field-actually-moves) | [Dynamics: how the field actually moves](#lesson-6--dynamics-how-the-field-actually-moves) | *the leapfrog `evolve_M`; faithful (`4Σ‖[M_μ,Ṁ]‖²`) vs simple (`½‖Ṁ‖²`) kinetic; `V(M)` confines amplitude not orientation (the M5.7 root cause); energy conservation as the validation* |
+| [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
+| [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
+| [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
-| [11✅](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
+| [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -1682,32 +1682,90 @@ as a pure **gauge** artifact — *not* physics. Two rules follow:
 
 ## LESSON 10 — Handedness, chirality & composite particles
 
-> **The finale (M5.8 / M5.9-era).** Two intertwined threads: **handedness/chirality** (the ± that
+> **The finale (M5.8 / M5.9-era).** Two intertwined threads — **handedness/chirality** (the ± that
 > distinguishes matter from antimatter, and helicity for neutrinos) and **composite particles** (9d —
-> how confirmed single defects combine). Both become load-bearing only once the clock (L7), the 4D
-> structure (L3), and the lepton families (M5.9) are in place — hence last.
->
-> 🚧 **Future finale (added 2026-05-31 from the old L12; not taught yet — slotted so it isn't
-> lost).** **Seeds already exist in L2** (the M4-ellipse → ellipsoid bridge: traversal sign =
-> chirality) **and L4** (topological charge sign / the biaxial `Q₈` classes).
->
-> **Where handedness comes in (the threads to develop):**
->
-> | Thread | One-line | Anchor |
-> | --- | --- | --- |
-> | **Orbit traversal sign** | the ellipse/ellipsoid is traversed CW or CCW — a ± that one symmetric matrix carries "for free" alongside direction + shape = **chirality** | L2 seed |
-> | **Matter ↔ antimatter** | the charge-sign / winding-sign flip (the `±` hedgehog) — candidate for the matter/antimatter distinction | L4 (winding), `4b §4.4` |
-> | **Neutrino helicity** | left/right-handed states; closed-vortex-loop candidates carry an intrinsic handedness | `1b`, M5.9 frontier |
-> | **Biaxial subtlety** | a biaxial defect's "sign" is **not** a simple `±` — it's a quaternion class (`π₁(SO(3)/D₂)=Q₈`); handedness there is richer | L4, roadmap 5e |
->
-> **Composite particles (9d).** Once single defects (leptons M5.9, quark-vortices) are confirmed,
-> how they bind into composites (baryons, mesons) — the Cornell-potential quark string (M5.9) is the
-> first composite hook. Deferred program: roadmap **9d**. Chirality is load-bearing here (a proton's
-> quark content has definite handedness).
->
-> Prereqs: L2 (the ellipsoid encodes chirality) + L4 (topology/winding sign) + L7 (clock) + M5.9
-> (lepton families). Tie-in: the M5.6.5e two-defect demo (what "opposite handedness/charge" even
-> means for a biaxial defect).
+> how confirmed single defects bind). Both become load-bearing only once the clock (L7), the 4D
+> structure (L3), and the lepton families (M5.9) are in place — hence last. Seeds were planted in **L2**
+> (ellipse traversal = chirality) and **L4** (winding sign / the biaxial `Q₈` classes).
+
+### L10 The one-sentence version
+
+**Handedness** is a **±** the ellipsoid carries *for free* — a traversal sign (CW/CCW) and a winding
+sign (`±` hedgehog) — and it's what distinguishes **matter from antimatter** and **left- from
+right-handed neutrinos**. **Composites** are how confirmed single defects **bind** (quark strings,
+β-decay reconnection). It's the M5.8/M5.9-era finale because it needs the clock, the families, and the
+4D structure first.
+
+### Two kinds of handedness — traversal sign & winding sign
+
+The order parameter carries chirality two ways, both seeded earlier:
+
+| Thread | One-line | Anchor |
+| --- | --- | --- |
+| **Orbit traversal sign** | the ellipse/ellipsoid is traversed CW or CCW — a ± one symmetric matrix carries "for free" alongside direction + shape = **chirality** | L2 seed |
+| **Matter ↔ antimatter** | the charge-/winding-sign flip (the `±` hedgehog) — candidate for the matter/antimatter distinction | L4 (winding), `4b §4.4` |
+| **Neutrino helicity** | left/right-handed states; closed-vortex-loop candidates carry an intrinsic handedness | `1b`, M5.9 frontier |
+| **Biaxial subtlety** | a biaxial defect's "sign" is **not** a simple `±` — it's a quaternion class (`π₁(SO(3)/D₂)=Q₈`); handedness there is richer | L4, roadmap 5e |
+
+### Matter ↔ antimatter — the winding-sign flip
+
+The cleanest handedness is the **winding sign** of the defect. In the φ⁴/sine-Gordon picture (L7) a
+**kink (+)** and **antikink (−)** are the particle and antiparticle — same mass, opposite winding. Two
+consequences carry straight over from the toy model (Wolfram article):
+
+- **Pair creation / annihilation.** A kink and antikink can be **created in pairs** and **annihilate**,
+  releasing their **mass as massless radiation** (photons) — `E=mc²` run backwards. The winding must
+  balance (`+1` and `−1` cancel to zero), which is *why* matter and antimatter appear and vanish in pairs.
+- **Resting mass.** Each kink, *at rest*, still contains energy (its mass) — the L5 point, now with a
+  sign attached.
+
+### Neutrino helicity & the 3 types
+
+A **neutrino** is modeled as a **short closed vortex loop** (Abrikosov-like) of ellipsoids — *not* a
+hedgehog — which is why it's **light, stable, and chargeless** (no net winding to carry a charge). Its
+handedness and flavor come from *how the loop is twisted*:
+
+| Property | In the model |
+| --- | --- |
+| **3 flavors** (e/μ/τ) | which axis runs *along* the loop — the `δ`–`0` (axis 2↔3) content (L2) |
+| **oscillation** | the loop **rotates** between axis choices — propelled by the clock mechanism (L7); muon↔tau (axes 2↔3) is lowest-energy ⇒ the **dominant** oscillation (matches the data) |
+| **left/right handed** | the twist direction of the loop = helicity; the "**sterile**" state = the `U(1)` phase |
+
+⚠️ All forward / M5.9-frontier — conceptual from Duda's slide, not an M5 result.
+
+### The biaxial subtlety — handedness isn't a simple ±
+
+For a **uniaxial** defect "sign" is a clean `±` (winding `+1` / `−1`). For the **biaxial** order
+parameter the topology is richer: the line defects are classified by `π₁(SO(3)/D₂) = Q₈` — the **eight
+quaternion classes** `{±1, ±i, ±j, ±k}`, *not* a simple `±` (L4). So "opposite handedness/charge" for a
+biaxial defect is a **non-abelian** statement (the order in which you combine defects matters) — exactly
+what the M5.6.5e two-defect demo is built to make concrete.
+
+### Composite particles (9d)
+
+Once *single* defects are confirmed (leptons M5.9, quark-vortices), the next question is **how they
+bind**:
+
+- **Quark strings (Cornell).** Quarks are **topological vortex strings** (1D line defects) bound by the
+  **Cornell potential** `V(r) = −α/r + σ·r` (`σ ≈ 1 GeV/fm`) → **color confinement** (the linear `σr`
+  term never lets them separate) + **asymptotic freedom** (nearly free at short range). Fractional charge
+  `e/3` = a vortex excited by `π/3` instead of `π`. (M5.9 / `1b`.)
+- **β-decay as reconnection.** The slide's bottom strip is a composite process: **neutron → (shift) →
+  (split, energy release) → W⁻ → (reconnection) → proton + electron + neutrino** — defects splitting and
+  reconnecting, conserving winding. The first concrete "composites that *change*" target.
+- **Status.** The **deferred 9d** program — load-bearing chirality lives here (a proton's quark content
+  has definite handedness), but it comes *after* single-defect confirmation.
+
+### L10 Q&A / clarifications (2026-06-04)
+
+| # | Question | Answer (short) | Full in |
+| --- | --- | --- | --- |
+| 1 | what *is* handedness here? | a **±** the ellipsoid carries for free: traversal sign (CW/CCW, L2) + winding sign (`±` hedgehog, L4). | above |
+| 2 | matter vs antimatter? | opposite **winding sign** — kink (+) vs antikink (−); they pair-create and annihilate to radiation (winding cancels). | above |
+| 3 | what's a neutrino in this model? | a **closed vortex loop** (not a hedgehog) → light, stable, chargeless; flavor = which axis runs along the loop (axis 2↔3). | above |
+| 4 | why is biaxial handedness not a simple ±? | the line defects are `Q₈` quaternion classes (non-abelian), not `±1` — combining order matters. | above, L4 |
+| 5 | what binds quarks? | the **Cornell** string `−α/r + σr` (confinement + asymptotic freedom); quarks = vortex strings, charge `e/3` = `π/3` excitation. | above, M5.9 |
+| 6 | when does composites get built? | the **9d** program, *after* single defects (leptons/quarks) are confirmed — chirality is load-bearing there. | above |
 
 ### L10 Anchors
 
@@ -1717,6 +1775,7 @@ as a pure **gauge** artifact — *not* physics. Two rules follow:
 | L2 / L4 seeds | chirality (L2) + winding sign (L4) |
 | `1b` | topological-defect physics notes |
 | `9d` | composite-particles research |
+| `theory/…Wolfram Community.pdf` | kink/antikink pair-creation, neutrino vortex-loop, β-decay reconnection |
 
 ---
 
@@ -1826,6 +1885,38 @@ gradients / rates.
 This extends the emergence-ledger thesis ("the wave is downstream; the substrate is geometry") to
 *why* the SABER control channels — thermal `(A, ω)`, time `ω`, gravity `g`/`∇g` — are **one knob**:
 the same frame-geometry modulated on three axes (`SABER 0_OVERVIEW §4`).
+
+### The de Broglie wave — the one genuinely fundamental wave
+
+The vacuum doesn't wave and topology owns the particle — but there *is* one wave that is **fundamental,
+not radiated**: the **de Broglie matter wave**. It's the reason "OpenWave" still names the right physics.
+
+**Where it comes from (L3 / L7).** At rest, the clock winds purely in *time* (the Zitterbewegung phase
+`e^{−iω₀t}`, `ω₀ = mc²/ℏ`) — no spatial wave, just a tick. Set the particle **moving** and relativity
+boosts that time-winding partly into *space*: the phase now **varies across space** = a travelling wave
+of wavelength **`λ = h/p`**. That *is* the de Broglie wave — and it's why moving matter diffracts,
+interferes, and quantizes its orbits.
+
+| | at rest | moving (`v`) |
+| --- | --- | --- |
+| the clock is… | a pure **time**-winding (a tick, `ω₀=mc²/ℏ`) | a **space**-winding too → a wave |
+| observable | the Zitterbewegung frequency | the **de Broglie wavelength** `λ = h/p` |
+
+**Fundamental, not radiated.** Unlike the radiated EM above (which needs an *accelerating* / *excited*
+defect), the de Broglie wave exists for any *freely moving* particle — it's the **phase of the clock
+itself**, carried along, not energy thrown off, so it doesn't make the defect spiral in. (Phase velocity
+`c²/v > c`; group velocity `= v` — it carries phase, not signal.)
+
+**It's the same wave as the pilot wave.** de Broglie's 1924 matter wave *became* the de Broglie–Bohm
+**pilot wave** — the "Relational" job below. So the model's one fundamental wave wears two hats: the
+**de Broglie wave** (the phase pattern of a moving defect) and the **pilot wave** (that same pattern
+re-coupling to steer it). The only thing still *open* is whether it's a **separate field** or the
+**near-field** of the `∇×n̂`/`∇·n̂` disturbance whose far-field radiates (flagged below).
+
+> ⚠️ **Status.** de Broglie matter waves are **established physics** (electron diffraction; the electron
+> clock itself confirmed — Catillon 2008, `0b` M5.8 anchor). The *M5 mechanism* (a moving 4D clock → a
+> `λ=h/p` spatial wave) is the model's framing (L3/L7) and is **UNCOMPUTED** — demonstrating it needs
+> the 4D clock (M5.8) **plus a moving defect** (the 2+1D rung, M5.8.6).
 
 ### The two jobs of the wave (one settled, one open)
 
