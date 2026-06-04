@@ -582,8 +582,10 @@ clock spin (ties to `0c §L7`). Leave as open until 9b picks the priority.
 
 > 🚧 **Reminder — not buildable yet; needs the 4D substrate.** Gravity in M5 is the **boost
 > eigenvalue** `g` (the 4D addition; the live 3D spectrum is `diag(1, δ, 0)` — `g` only appears once
-> `M` is promoted 3×3 → 4×4 at M5.8). So there is no gravitational field to render until then. Logged
-> here so it's not forgotten when the 4D field exists.
+> `M` is promoted 3×3 → 4×4 at M5.8). So there is no gravitational field to render until then. The
+> physics this viz renders — gravity = **gravitoelectromagnetism (GEM)**, the second-Maxwell set + the
+> `g`-axis boost — is derived in [`5a §10d`](5a_lagrangian_evolution.md) (the M5.8 build spec); this
+> section is the render side of it. Logged here so it's not forgotten when the 4D field exists.
 
 When it lands, mirror the EM viz pattern (one vector-glyph channel + one flux-mesh channel), with its
 own color so it never reads as E/B/director:
