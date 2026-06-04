@@ -384,7 +384,7 @@ The complete-model 4D Hamiltonian is the **4-index generalization of the M5.5 Eq
 
 The four sub-steps **M5.8.0 → M5.8.3** are the spine (1D pre-check → 4D promotion → 4D kinetic → electron clock). Sandbox-first throughout (numpy mirror, N=32 smoke → N=48 resolution-confirm), per the M5.7 discipline. Toy-model anchor: Duda arXiv:2501.04036 (`theory/time_crystal.pdf`, 3pp), `ℋ=φ₀²+φ₁²+(1−φ²)²−αR²+βR⁴` (full math `5a §10a`).
 
-**M5.8.0 — 1D toy-model integrator pre-check (`sandbox_v8`)** — validate the integrator reproduces clock propulsion in Duda's clean 1+1D time-crystal before any 4D work. Math + both anchors: [`5a §10a`](5a_lagrangian_evolution.md).
+**✅ M5.8.0 — 1D toy-model integrator pre-check (`sandbox_v8`)** — validate the integrator reproduces clock propulsion in Duda's clean 1+1D time-crystal before any 4D work. Math + both anchors: [`5a §10a`](5a_lagrangian_evolution.md).
 
 - ✅ **M5.8.0a — variational confirmation (DONE 2026-05-29, quadrature).** With `α=β=1`: the optimized profile `φ=tanh(0.6326x+0.0198x³+0.0203x⁵)` reproduces `ω*=1.2897` / `E*=2.0252` (paper 1.2898 / 2.0252) to 4–5 digits; the analytic standard-tanh anchor (Eq.5: `ω=√(70/61)=1.0712`, `E=2.1257`) is the closed-form cross-check. Static `ω=0` costs `E=2.8673 > 2.0252` ⇒ the oscillating state IS the energy minimum (the time crystal — "oscillation propelled by mass"). [→ formalize the quadrature into `sandbox_v8`; math already in `5a §10a`]
 - ✅ **M5.8.0b — dynamical EOM + leapfrog + the GHOST finding (DONE 2026-06-04, `sandbox_v8/m5_8_0b_*.py`; math in `5a §10a`).** Three sub-steps, all complete:
