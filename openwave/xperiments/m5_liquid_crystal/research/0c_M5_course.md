@@ -1585,8 +1585,8 @@ that matches the lesson — nothing here is new physics, it's the *same `M`* rea
 | Channel | Toggle | Renders | Best for |
 | --- | --- | --- | --- |
 | **director glyphs** | `SHOW_GLYPHS` (planes 0–3) + glyph-state 0–3 | the **frame** `O`: `n̂` arrows, the `δ` cross-bar, or E/B vectors | orientation, the clock, EM direction (L1, L2, L7, L8) |
-| **flux-mesh** | `SHOW_FLUX_MESH` + `WAVE_MENU` | a **scalar observable** colored on 3 orthogonal cut-planes | energy / charge / clock-rate (L5–L8) |
-| **warp-mesh** | `WARP_MESH` | the **height** of that scalar (z-displacement) | making a flux-mesh field's *shape* pop |
+| **flux-mesh** | `SHOW_FLUX_MESH` + `WAVE_MENU` | an **observable** colored on 3 orthogonal cut-planes (color = scalar magnitude) | energy / charge / clock-rate (L5–L8) |
+| **warp-mesh** | `WARP_MESH` | **scalar warp** = Z-height (a divergence, e.g. E `∇·n̂`) **or** **vector warp** = "fabric-twist" by the raw vector (a curl, e.g. B `∇×n̂`) | making a field's *shape* pop — matched to the observable's type |
 | **granules** | `SHOW_GRANULES` | a **point-cloud** sampling the director field | the WSM/granule intuition (L1) — the "grains" of the medium |
 
 ### Director glyphs — the frame itself (4 states)
@@ -1625,9 +1625,13 @@ at M5.9 lepton calibration. WM7's radial-vs-axial projection is the L8 N/S-poles
 
 ### `warp_mesh` & granules — height and the director cloud
 
-- **`warp_mesh`** lifts the flux-mesh into the third dimension: the scalar's value becomes a
-  **z-displacement** (a height-field), so a gentle `1/r` charge cloud or an energy peak reads as
-  *terrain*. Scalar warp (height) is the default; a vector warp displaces along a field direction.
+- **`warp_mesh`** displaces the flux-mesh surface, and the **mode matches the observable's *type***:
+  - **scalar warp** — a Z-axis **height-field**: for a *scalar* observable (a **divergence** like
+    `∇·n̂` charge, or an energy density), value → height, so a `1/r` charge cloud or an energy peak
+    reads as *terrain*. This is what the **electric field (`∇·n̂`, WM6)** uses — divergence is a scalar.
+  - **vector warp** — the **"fabric-twist"**: for a *vector* observable, each vertex is displaced by
+    the **raw 3-component vector** itself. This is what the **magnetic field (`∇×n̂`, WM7)** uses — the
+    curl is a vector, so the surface twists *along* it (always on for WM7).
 - **granules** scatter points through the volume **sampling the director field** — the literal
   "grains" of the medium (L1's WSM/granule reading). They make the *texture* of a defect visible where
   glyphs would be too sparse.
