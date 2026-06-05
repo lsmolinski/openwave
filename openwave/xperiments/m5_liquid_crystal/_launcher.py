@@ -335,6 +335,15 @@ class SimulationState:
         self.dt_rs = (
             self.tensor_field.dx_am * cfl_safety / (self.c_amrs / self.SIM_SPEED * (3**0.5))
         )  # rs
+        # M5.8.2c — the 4D paths derate dt (the fast-collective-mode hierarchy,
+        # 2c seed e). The derate MUST live here, not in initialize_xperiment:
+        # this method runs EVERY frame (the main loop refreshes dt for the
+        # observables + SIM_SPEED slider), so a one-shot derate at init is
+        # silently WIPED on the next frame — the 2026-06-05 signed-GUI
+        # explosion: the constrained kernel ran at the full CFL dt, 78× its
+        # validated ratio (headless was bounded at the derated dt all along).
+        if self.TOPOLOGY_SEED is not None and self.TOPOLOGY_SEED.get("MODE") == "dressed_hedgehog":
+            self.dt_rs *= float(self.TOPOLOGY_SEED.get("DT_SCALE_4D", 0.5))
         self.cfl_factor = round((self.c_amrs * self.dt_rs / self.tensor_field.dx_am) ** 2, 7)
         # V(M) couplings for the matrix substrate. Only director-class (topology)
         # seeds use a potential, so gate on TOPOLOGY_SEED presence. (M5.8 ψ-retire:
@@ -770,15 +779,64 @@ def initialize_xperiment(state):
             pde.compute_tstar(wf)  # V pins to the DRESSED seed
             state.evolve_4d = True
             state.km_inertia_4d = float(topo.get("KM_INERTIA_4D", 30.0))
-            # dt guard (2c seed e): the 4D system's fastest collective mode runs well
-            # above the clock rate — derate dt unless the xperiment overrides.
+            # dt guard (2c seed e): the DT_SCALE_4D derate is applied INSIDE
+            # compute_timestep (which the main loop re-runs every frame — a
+            # one-shot derate here gets wiped, the 2026-06-05 signed-GUI bug).
             dt_scale = float(topo.get("DT_SCALE_4D", 0.5))
-            state.dt_rs *= dt_scale
+            # OPTION B (M5.8.2c): INTEGRATOR_4D "constrained" runs the Minkowski-
+            # SIGNED dynamics under the spectral-projection kernel (B-1-validated:
+            # sandbox_v8/m5_8_2cb). The leapfrog default keeps the safe v1.
+            state.integrator_4d = str(topo.get("INTEGRATOR_4D", "leapfrog"))
+            if state.integrator_4d == "constrained":
+                # act mask — Dirichlet at the seed (interior ∧ off-core ∧
+                # off-axis, the validated 2c-1 boundary treatment; the frozen
+                # core/axis is a documented caveat for the G-2c-1 design)
+                idx = _np.indices((wf.nx, wf.ny, wf.nz)).astype(_np.float32)
+                rxv, ryv, rzv = idx[0] - cx, idx[1] - cy, idx[2] - cz
+                r_vox = _np.sqrt(rxv**2 + ryv**2 + rzv**2)
+                rho_vox = _np.sqrt(rxv**2 + ryv**2)
+                act = _np.zeros((wf.nx, wf.ny, wf.nz), _np.float32)
+                act[2:-2, 2:-2, 2:-2] = 1.0
+                act *= (r_vox > 2.0 * rhoc_vox) * (rho_vox > rhoc_vox)
+                wf.act4d.from_numpy(act)
+                state.n_act_pl = float(
+                    act[wf.nx // 2].sum() + act[:, wf.ny // 2].sum() + act[:, :, wf.nz // 2].sum()
+                )
+                # the 10 orthonormal symmetric 4×4 basis matrices (Frobenius)
+                basis = _np.zeros((10, 4, 4), _np.float32)
+                for a_ in range(4):
+                    basis[a_, a_, a_] = 1.0
+                bi = 4
+                for a_ in range(4):
+                    for c_ in range(a_ + 1, 4):
+                        basis[bi, a_, c_] = basis[bi, c_, a_] = 1.0 / _np.sqrt(2.0)
+                        bi += 1
+                wf.sym_basis.from_numpy(basis)
+                # V at the 4×/τ-units convention: K·0.5/dx⁴ (c² cancels)
+                state.ldg_cc_4d = 0.5 * state.ldg_c / (state.c_amrs * state.c_amrs)
+                # P₀ = A(kick·M_ψ) — the 2c-1 velocity-kick semantics
+                # (dt-independent; kick=0 ⇒ P₀ = 0 exactly)
+                pde.init_P_4d(wf, kick)
+                # Display hygiene: the seeder encodes the kick in M_prev at the
+                # legacy 1/dt semantics — the energyH view's ½‖(M−M_prev)/dt‖²
+                # boot-kinetic is then ~(1/DT_SCALE)² inflated, saturating the
+                # colormap (the "energyH blank/uniform" report, 2026-06-05).
+                # The constrained dynamics never reads M_prev (the kick lives in
+                # P via init_P_4d) — sync it so the displayed velocity starts at
+                # 0 and tracks M − M_prev = dt_eff·Ṁ after each swap.
+                wf.M_prev_am.copy_from(wf.M_am)
+                state.guard4d_frame = 0
+                dt_eff = state.c_amrs * state.dt_rs
+                print(
+                    f"[M5.8.2c-B] CONSTRAINED signed integrator ON: act region "
+                    f"{100.0 * act.mean():.1f}% of grid, dt_eff={dt_eff:.4f} am, "
+                    f"V cc_4d={state.ldg_cc_4d:.3e}"
+                )
             mask_np = wf.stable_mask.to_numpy()
             print(
                 f"[M5.8.2c] seeded DRESSED hedgehog b*={b_star}, r_w={rw_vox:.1f} vox, "
                 f"kick={kick}; stable region {100.0 * mask_np.mean():.1f}% of grid; "
-                f"4D evolve ON (dt×{dt_scale})"
+                f"4D evolve ON (dt×{dt_scale}, integrator={state.integrator_4d})"
             )
 
         else:
@@ -851,7 +909,38 @@ def compute_propagation(state):
     is the M5.6 refinement. (The retired ψ leapfrog stays dormant; see engine2_pde.)
     """
     wf = state.tensor_field
-    if getattr(state, "evolve_4d", False):
+    if getattr(state, "evolve_4d", False) and getattr(state, "integrator_4d", "") == "constrained":
+        # M5.8.2c OPTION B — the Minkowski-SIGNED dynamics under the constrained
+        # spectral-projection kernel (B-1-validated, sandbox_v8/m5_8_2cb). The
+        # exact 2c-1 step order: flux(M, Ṁ_prev) → P += dt·force → global (α,3)
+        # clamp → per-voxel solve (A-eig, keep, P-project, Ṁ = A⁺P) → M update.
+        dt_eff = state.c_amrs * state.dt_rs
+        pde.flux_4d_constrained(wf)
+        pde.update_P_4d(wf, dt_eff, getattr(state, "ldg_cc_4d", 0.0))
+        pde.sample_p03_drift(wf)
+        n_pl = max(getattr(state, "n_act_pl", 0.0), 1.0)
+        pde.apply_p03_clamp(
+            wf, wf.v03_sums[0] / n_pl, wf.v03_sums[1] / n_pl, wf.v03_sums[2] / n_pl
+        )
+        pde.solve_constrained_4d(wf)
+        pde.update_M_4d_constrained(wf, dt_eff)
+        # GUARD (b) — the bounded-energy monitor (load-bearing, roadmap 2c):
+        # every 60 steps pull M and auto-PAUSE on divergence — a NaN/blow-up
+        # must stop the run with a loud message, not scramble the render at
+        # 3 FPS (the 2026-06-05 signed-GUI failure UX).
+        state.guard4d_frame = getattr(state, "guard4d_frame", 0) + 1
+        if state.guard4d_frame % 60 == 0:
+            m_chk = wf.M_am.to_numpy()
+            m_max = float(abs(m_chk).max())
+            if not (m_max < 50.0):  # catches NaN too (NaN comparisons are False)
+                state.PAUSED = True
+                print(
+                    f"[M5.8.2c-B GUARD] max|M| = {m_max:.3e} at step "
+                    f"{state.guard4d_frame} — bounded-energy guard tripped, "
+                    f"AUTO-PAUSED. The signed run diverged; report this step "
+                    f"count (vacuum scale is ~8; threshold 50)."
+                )
+    elif getattr(state, "evolve_4d", False):
         # M5.8.2c — the 4D Minkowski path (dressed-hedgehog seed): signed flux on
         # the stable region + live time axis + the coherent-(α,3)-drift guard.
         pde.compute_curvature_flux_4d(wf)
@@ -1168,7 +1257,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topo_dressed4d"
+    default_xperiment = selected_xperiment_arg or "_topo_dressed4d_signed"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return

@@ -68,19 +68,21 @@ def principal_director(m):  # type: ignore
     q = (a00 + a11 + a22) / 3.0
     p1 = a01 * a01 + a02 * a02 + a12 * a12
     p2 = (a00 - q) ** 2 + (a11 - q) ** 2 + (a22 - q) ** 2 + 2.0 * p1
-    p = ti.sqrt(ti.max(p2 / 6.0, 1e-30))                  # guard isotropic (p2→0)
+    p = ti.sqrt(ti.max(p2 / 6.0, 1e-30))  # guard isotropic (p2→0)
     # B = (M − qI)/p ;  r = det(B)/2, clamped to [−1, 1] (numerical safety for acos)
     b00, b11, b22 = (a00 - q) / p, (a11 - q) / p, (a22 - q) / p
     b01, b02, b12 = a01 / p, a02 / p, a12 / p
-    detB = (b00 * (b11 * b22 - b12 * b12)
-            - b01 * (b01 * b22 - b12 * b02)
-            + b02 * (b01 * b12 - b11 * b02))
+    detB = (
+        b00 * (b11 * b22 - b12 * b12)
+        - b01 * (b01 * b22 - b12 * b02)
+        + b02 * (b01 * b12 - b11 * b02)
+    )
     r = ti.max(-1.0, ti.min(1.0, detB / 2.0))
     phi = ti.acos(r) / 3.0
-    two_pi_3 = 2.0943951023931953                        # 2π/3
-    eig1 = q + 2.0 * p * ti.cos(phi)                     # largest
-    eig3 = q + 2.0 * p * ti.cos(phi + two_pi_3)          # smallest
-    eig2 = 3.0 * q - eig1 - eig3                         # middle
+    two_pi_3 = 2.0943951023931953  # 2π/3
+    eig1 = q + 2.0 * p * ti.cos(phi)  # largest
+    eig3 = q + 2.0 * p * ti.cos(phi + two_pi_3)  # smallest
+    eig2 = 3.0 * q - eig1 - eig3  # middle
     # principal eigenvector = null space of (M − eig1·I): largest of the 3 row cross-products
     row0 = ti.Vector([a00 - eig1, a01, a02])
     row1 = ti.Vector([a01, a11 - eig1, a12])
@@ -292,9 +294,9 @@ def V_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     # M5.8.1 — act on the SPATIAL 3×3 block ONLY. The time axis (index 3, eigenvalue g)
     # is boost-decoupled and must NOT feed Tr(M²)/Tr(M³): including g²(=64)/g³(=512)
     # would inflate the LdG potential and its force by orders of magnitude → blow-up.
-    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
-                     [m[1, 0], m[1, 1], m[1, 2]],
-                     [m[2, 0], m[2, 1], m[2, 2]]])
+    msp = ti.Matrix(
+        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+    )
     m2 = msp @ msp
     tr2 = m2.trace()
     tr3 = (m2 @ msp).trace()
@@ -305,9 +307,9 @@ def V_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
 def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     """∂V_LG/∂M = 2a·M − 3b·M² + 4c·Tr(M²)·M, on the SPATIAL 3×3 block; time row/col
     force = 0 (g decoupled — M5.8.1). Mirrors V_M's spatial-only restriction."""
-    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
-                     [m[1, 0], m[1, 1], m[1, 2]],
-                     [m[2, 0], m[2, 1], m[2, 2]]])
+    msp = ti.Matrix(
+        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+    )
     m2 = msp @ msp
     tr2 = m2.trace()
     dsp = 2.0 * a * msp - 3.0 * b * m2 + 4.0 * c * tr2 * msp  # 3×3
@@ -333,11 +335,14 @@ def compute_curvature_flux(tensor_field: ti.template()):  # type: ignore
         mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
         # G_α = 8 Σ_{ν≠α} [[M_α,M_ν],M_ν]  (ν=α term is zero)
         tensor_field.curv_flux_x[i, j, k] = 8.0 * (
-            commutator(commutator(mx, my), my) + commutator(commutator(mx, mz), mz))
+            commutator(commutator(mx, my), my) + commutator(commutator(mx, mz), mz)
+        )
         tensor_field.curv_flux_y[i, j, k] = 8.0 * (
-            commutator(commutator(my, mx), mx) + commutator(commutator(my, mz), mz))
+            commutator(commutator(my, mx), mx) + commutator(commutator(my, mz), mz)
+        )
         tensor_field.curv_flux_z[i, j, k] = 8.0 * (
-            commutator(commutator(mz, mx), mx) + commutator(commutator(mz, my), my))
+            commutator(commutator(mz, mx), mx) + commutator(commutator(mz, my), my)
+        )
 
 
 @ti.kernel
@@ -368,9 +373,7 @@ def evolve_M(
             + (tensor_field.curv_flux_z[i, j, k + 1] - tensor_field.curv_flux_z[i, j, k - 1])
         ) * inv_2dx
         force = c2 * div_G - dV_M(tensor_field.M_am[i, j, k], a, b, c)
-        m_new = (
-            2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k] + dt2 * force
-        )
+        m_new = 2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k] + dt2 * force
         # M5.8.1 — freeze the time axis (index 3): a constant, boost-decoupled g
         # background. The curvature force already preserves the block; this also pins
         # it under V-on (where dV_M would otherwise nudge M[3,3]). M5.8.2 replaces this
@@ -461,10 +464,8 @@ def compute_stable_mask(tensor_field: ti.template()):  # type: ignore
         p02 = signed_dot4(p0, p2)
         p12 = signed_dot4(p1, p2)
         kin = 4.0 * (p00 + p11 + p22)
-        q = ti.Matrix([[p11 + p22, -p01, -p02],
-                       [-p01, p00 + p22, -p12],
-                       [-p02, -p12, p00 + p11]])
-        _, eigs = principal_director(q)                  # sorted λ₁≥λ₂≥λ₃
+        q = ti.Matrix([[p11 + p22, -p01, -p02], [-p01, p00 + p22, -p12], [-p02, -p12, p00 + p11]])
+        _, eigs = principal_director(q)  # sorted λ₁≥λ₂≥λ₃
         qscale = ti.abs(q[0, 0]) + ti.abs(q[1, 1]) + ti.abs(q[2, 2]) + 1e-30
         if kin > 0.0 and eigs[2] > 1e-6 * qscale:
             tensor_field.stable_mask[i, j, k] = 1.0
@@ -480,9 +481,9 @@ def compute_tstar(tensor_field: ti.template()):  # type: ignore
     nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     for i, j, k in ti.ndrange(nx, ny, nz):
         m = tensor_field.M_am[i, j, k]
-        msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
-                         [m[1, 0], m[1, 1], m[1, 2]],
-                         [m[2, 0], m[2, 1], m[2, 2]]])
+        msp = ti.Matrix(
+            [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+        )
         tensor_field.ldg_tstar[i, j, k] = (msp @ msp).trace()
 
 
@@ -490,9 +491,9 @@ def compute_tstar(tensor_field: ti.template()):  # type: ignore
 def dV_M_dressed(m, cc: ti.f32, tstar: ti.f32):  # type: ignore
     """∂V/∂M for the DRESSED well V = cc·(Tr(M_sp²) − t*(x))²: 4·cc·(t−t*)·M_sp,
     spatial block only (time row/col force = 0 — the M5.8.1 rule)."""
-    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
-                     [m[1, 0], m[1, 1], m[1, 2]],
-                     [m[2, 0], m[2, 1], m[2, 2]]])
+    msp = ti.Matrix(
+        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+    )
     t = (msp @ msp).trace()
     dsp = 4.0 * cc * (t - tstar) * msp
     d4 = ti.Matrix.zero(ti.f32, 4, 4)
@@ -518,12 +519,13 @@ def compute_curvature_flux_4d(tensor_field: ti.template()):  # type: ignore
         fxy = eta_twist_masked(commutator(mx, my), st)
         fxz = eta_twist_masked(commutator(mx, mz), st)
         fyz = eta_twist_masked(commutator(my, mz), st)
-        tensor_field.curv_flux_x[i, j, k] = 8.0 * (
-            commutator(fxy, my) + commutator(fxz, mz))
+        tensor_field.curv_flux_x[i, j, k] = 8.0 * (commutator(fxy, my) + commutator(fxz, mz))
         tensor_field.curv_flux_y[i, j, k] = 8.0 * (
-            commutator(-1.0 * fxy, mx) + commutator(fyz, mz))
+            commutator(-1.0 * fxy, mx) + commutator(fyz, mz)
+        )
         tensor_field.curv_flux_z[i, j, k] = 8.0 * (
-            commutator(-1.0 * fxz, mx) + commutator(-1.0 * fyz, my))
+            commutator(-1.0 * fxz, mx) + commutator(-1.0 * fyz, my)
+        )
 
 
 @ti.kernel
@@ -590,14 +592,16 @@ def evolve_M_4d(
             + (tensor_field.curv_flux_y[i, j + 1, k] - tensor_field.curv_flux_y[i, j - 1, k])
             + (tensor_field.curv_flux_z[i, j, k + 1] - tensor_field.curv_flux_z[i, j, k - 1])
         ) * inv_2dx
-        force = c2 * div_G - dV_M_dressed(tensor_field.M_am[i, j, k], ldg_cc,
-                                          tensor_field.ldg_tstar[i, j, k])
+        force = c2 * div_G - dV_M_dressed(
+            tensor_field.M_am[i, j, k], ldg_cc, tensor_field.ldg_tstar[i, j, k]
+        )
         mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
         my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
         mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
         mloc = 1.0 + km * dx2 * (mx.norm_sqr() + my.norm_sqr() + mz.norm_sqr())
         m_new = (
-            2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k]
+            2.0 * tensor_field.M_am[i, j, k]
+            - tensor_field.M_prev_am[i, j, k]
             + dt2 * force * (1.0 / mloc)
         )
         # guard (a): remove the coherent global (α,3) drift accumulated this step
@@ -608,6 +612,291 @@ def evolve_M_4d(
         m_new[2, 3] -= vm2 * dt_rs
         m_new[3, 2] -= vm2 * dt_rs
         tensor_field.M_new_am[i, j, k] = m_new
+
+
+# ================================================================
+# M5.8.2c OPTION B — THE CONSTRAINED SPECTRAL-PROJECTION INTEGRATOR
+# ================================================================
+# RESTORED 2026-06-05 late evening — this section was erased from the working
+# tree by a stale-IDE-buffer save (the file was open with a pre-Option-B
+# buffer; the GUI "even worse" run executed WITHOUT these kernels). Content
+# identical to the B-2 wiring + the velocity-kick fix.
+#
+# The Minkowski-SIGNED dynamics, stable (INTEGRATOR_4D: "constrained"). The
+# structural finding (2c-2): the signed flux under ANY cheap positive inertia
+# has slow growing modes — only the faithful kinetic works. Per voxel, the
+# inertia operator A(Ṁ) = 4 Σ_i [η[Ṁ,M_i]η, M_i] is eigendecomposed in the
+# 10-dim orthonormal symmetric-matrix basis (OWN cyclic Jacobi on local
+# matrices — NOT ti.sym_eig, the Metal/f32 lesson); only positive-inertia
+# directions evolve (λ > EPS·max|λ|), and P is PROJECTED onto the kept
+# subspace every step (frozen directions must not accumulate momentum — the
+# 2c-1 v2 constraint-switching pump). State is (M, P): symplectic-Euler
+# P += dt·force → clamp → solve Ṁ = A⁺P → M += dt·Ṁ. Validated machine-exact
+# against the f64 numpy reference (sandbox_v8/m5_8_2cb_taichi_constrained.py:
+# field diff 5.5e-15 @890 steps; f32 1e-5 benign; Metal clean; 8.3 ms/step
+# solve at 64³ — B-1 gates [J1][B1][B2][B2m][B3][B4] all PASS, 2026-06-05).
+# ⚠️ KNOWN OPEN (2cb-2 long-horizon): the f32 kernel develops a negative-H
+# ghost runaway past ~1100 steps even in the validated 24³ config (H plateau
+# → collapse; align 1.0 → 0.55 by 6000) — the f64-vs-f32 6000-step
+# scheme-vs-precision discrimination is the active investigation.
+#
+# UNITS + NORMALIZATION: these kernels run the 2c-1 natural convention
+# (c = 1, τ = c·t) — the caller passes dt_eff = c_amrs·dt_rs (am). Fluxes and
+# A both use the 2c-1 4× normalization (the production 8× leapfrog flux is 2×
+# this; a COMMON factor cancels exactly in Ṁ = A⁺P, so the dynamics here is
+# the validated one verbatim). V enters the τ-units force as dV/(2c²) — the
+# launcher passes ldg_cc_4d = LDG_STIFFNESS_K·0.5/dx⁴ (the c² cancels). The
+# constrained path is FULLY signed (no stable-mask blend — the spectral
+# projection IS the exact pointwise ghost treatment) and ignores
+# KM_INERTIA_4D (the faithful A replaces the diagonal shadow).
+
+EPS_EIG_4D = 0.05  # positive-inertia keep threshold (× max|λ| per voxel)
+VCAP_4D = 5.0  # ‖Ṁ‖_F backstop (never engaged in the validated 900-step runs)
+JACOBI_SWEEPS = 20  # max cyclic sweeps (converges in ~6–8)
+JTOL2_4D = (2e-7) ** 2  # relative off-diagonal² stop (f32 eps scale)
+
+
+@ti.func
+def eta_twist(f):  # type: ignore
+    """F → ηFη, unmasked — the constrained path is fully Minkowski-signed."""
+    out = f
+    for a_ in ti.static(range(3)):
+        out[a_, 3] = -f[a_, 3]
+        out[3, a_] = -f[3, a_]
+    return out
+
+
+@ti.kernel
+def init_P_4d(tensor_field: ti.template(), kick: ti.f32):  # type: ignore
+    """P₀ = A(Ṁ₀) with Ṁ₀ = kick·M_ψ — the EXACT 2c-1 kick semantics (a
+    VELOCITY in τ-units, dt-INDEPENDENT; kick = 0 ⇒ P₀ = 0 exactly). NOT the
+    buffer encoding (M − M_prev)/dt: that made the kick velocity scale as
+    1/dt — 16× hotter than validated at the constrained dt (the step-31
+    v-cap engagement in the 2cb-2 repro). Run ONCE post-seed. Md_am gets Ṁ₀
+    on the act region (read by the first flux call — the 2c-1 step-0
+    semantics)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        tensor_field.P_am[i, j, k] = ti.Matrix.zero(ti.f32, 4, 4)
+        tensor_field.Md_am[i, j, k] = ti.Matrix.zero(ti.f32, 4, 4)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        md = kick * tensor_field.M_psi_am[i, j, k]
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        a4 = 4.0 * (
+            commutator(eta_twist(commutator(md, mx)), mx)
+            + commutator(eta_twist(commutator(md, my)), my)
+            + commutator(eta_twist(commutator(md, mz)), mz)
+        )
+        tensor_field.P_am[i, j, k] = a4
+        tensor_field.Md_am[i, j, k] = md * tensor_field.act4d[i, j, k]
+
+
+@ti.kernel
+def flux_4d_constrained(tensor_field: ti.template()):  # type: ignore
+    """The 2c-1 flux (C1-pinned signs): G_i = ∂U/∂M_i − ∂T/∂M_i with
+    dU_i = 4 Σ_{j≠i} [η F̃_ij η, M_j] and dT_i = −4 [η F_0i η, Ṁ] — fully
+    signed, NO mask. Writes curv_flux_x/y/z (border stays zero)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        md = tensor_field.Md_am[i, j, k]
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        fxy = commutator(mx, my)
+        fxz = commutator(mx, mz)
+        fyz = commutator(my, mz)
+        tensor_field.curv_flux_x[i, j, k] = 4.0 * (
+            commutator(eta_twist(fxy), my)
+            + commutator(eta_twist(fxz), mz)
+            + commutator(eta_twist(commutator(md, mx)), md)
+        )
+        tensor_field.curv_flux_y[i, j, k] = 4.0 * (
+            commutator(eta_twist(-1.0 * fxy), mx)
+            + commutator(eta_twist(fyz), mz)
+            + commutator(eta_twist(commutator(md, my)), md)
+        )
+        tensor_field.curv_flux_z[i, j, k] = 4.0 * (
+            commutator(eta_twist(-1.0 * fxz), mx)
+            + commutator(eta_twist(-1.0 * fyz), my)
+            + commutator(eta_twist(commutator(md, mz)), md)
+        )
+
+
+@ti.kernel
+def update_P_4d(tensor_field: ti.template(), dt_eff: ti.f32, ldg_cc4d: ti.f32):  # type: ignore
+    """P += dt_eff·(div G − dV_dressed) — the τ-units force step (ldg_cc4d
+    pre-scaled by the launcher to the 4× convention: K·0.5/dx⁴)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        div_g = (
+            (tensor_field.curv_flux_x[i + 1, j, k] - tensor_field.curv_flux_x[i - 1, j, k])
+            + (tensor_field.curv_flux_y[i, j + 1, k] - tensor_field.curv_flux_y[i, j - 1, k])
+            + (tensor_field.curv_flux_z[i, j, k + 1] - tensor_field.curv_flux_z[i, j, k - 1])
+        ) * inv_2dx
+        force = div_g - dV_M_dressed(
+            tensor_field.M_am[i, j, k], ldg_cc4d, tensor_field.ldg_tstar[i, j, k]
+        )
+        tensor_field.P_am[i, j, k] += dt_eff * force
+
+
+@ti.kernel
+def sample_p03_drift(tensor_field: ti.template()):  # type: ignore
+    """3-mid-plane act-region sums of the (α,3) MOMENTUM components → v03_sums
+    (the 2c-1 global clamp, plane-sampled — Metal-safe, NO full-grid atomics).
+    The caller divides by the act-plane voxel count (launcher-precomputed)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    for a_ in ti.static(range(3)):
+        tensor_field.v03_sums[a_] = 0.0
+    im, jm, km = nx // 2, ny // 2, nz // 2
+    for j, k in ti.ndrange(ny, nz):
+        if tensor_field.act4d[im, j, k] > 0.5:
+            p = tensor_field.P_am[im, j, k]
+            for a_ in ti.static(range(3)):
+                tensor_field.v03_sums[a_] += p[a_, 3]
+    for i, k in ti.ndrange(nx, nz):
+        if tensor_field.act4d[i, jm, k] > 0.5:
+            p = tensor_field.P_am[i, jm, k]
+            for a_ in ti.static(range(3)):
+                tensor_field.v03_sums[a_] += p[a_, 3]
+    for i, j in ti.ndrange(nx, ny):
+        if tensor_field.act4d[i, j, km] > 0.5:
+            p = tensor_field.P_am[i, j, km]
+            for a_ in ti.static(range(3)):
+                tensor_field.v03_sums[a_] += p[a_, 3]
+
+
+@ti.kernel
+def apply_p03_clamp(tensor_field: ti.template(), m0: ti.f32, m1: ti.f32, m2: ti.f32):  # type: ignore
+    """Guard (a): subtract the act-mean (α,3) momentum (act region only), then
+    restore P symmetry everywhere — the exact 2c-1 clamp order."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        if tensor_field.act4d[i, j, k] > 0.5:
+            tensor_field.P_am[i, j, k][0, 3] -= m0
+            tensor_field.P_am[i, j, k][1, 3] -= m1
+            tensor_field.P_am[i, j, k][2, 3] -= m2
+        tensor_field.P_am[i, j, k][3, 0] = tensor_field.P_am[i, j, k][0, 3]
+        tensor_field.P_am[i, j, k][3, 1] = tensor_field.P_am[i, j, k][1, 3]
+        tensor_field.P_am[i, j, k][3, 2] = tensor_field.P_am[i, j, k][2, 3]
+
+
+@ti.kernel
+def solve_constrained_4d(tensor_field: ti.template()):  # type: ignore
+    """THE constrained solve (the B-1-validated kernel), fused per voxel:
+    build the 10×10 inertia operator A in the sym basis → cyclic Jacobi on
+    LOCAL matrices → positive-inertia keep → project P AND solve Ṁ = A⁺P on
+    the kept subspace → act mask + ‖Ṁ‖ backstop. Zero-gradient voxels (grid
+    border) give A = 0 ⇒ all directions frozen ⇒ P, Ṁ → 0 (the 2c-1 limit)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        mx = ti.Matrix.zero(ti.f32, 4, 4)
+        my = ti.Matrix.zero(ti.f32, 4, 4)
+        mz = ti.Matrix.zero(ti.f32, 4, 4)
+        if 0 < i < nx - 1:
+            mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        if 0 < j < ny - 1:
+            my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        if 0 < k < nz - 1:
+            mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        # --- build A[kk,li] = ⟨A_op(E_li), E_kk⟩, then symmetrize ------------
+        aloc = ti.Matrix.zero(ti.f32, 10, 10)
+        for li in range(10):
+            el = tensor_field.sym_basis[li]
+            ae = 4.0 * (
+                commutator(eta_twist(commutator(el, mx)), mx)
+                + commutator(eta_twist(commutator(el, my)), my)
+                + commutator(eta_twist(commutator(el, mz)), mz)
+            )
+            for kk in range(10):
+                aloc[kk, li] = (ae * tensor_field.sym_basis[kk]).sum()
+        for p_ in range(10):
+            for q_ in range(p_ + 1, 10):
+                v = 0.5 * (aloc[p_, q_] + aloc[q_, p_])
+                aloc[p_, q_] = v
+                aloc[q_, p_] = v
+        # --- cyclic Jacobi: A ← JᵀAJ, Q ← QJ ---------------------------------
+        qloc = ti.Matrix.identity(ti.f32, 10)
+        normf2 = (aloc * aloc).sum()
+        off2 = normf2
+        sweep = 0
+        while sweep < JACOBI_SWEEPS and off2 > JTOL2_4D * normf2:
+            for p_ in range(9):
+                for q_ in range(p_ + 1, 10):
+                    apq = aloc[p_, q_]
+                    if ti.abs(apq) > 0:
+                        tau = (aloc[q_, q_] - aloc[p_, p_]) / (2.0 * apq)
+                        t = 1.0 / (ti.abs(tau) + ti.sqrt(1.0 + tau * tau))
+                        if tau < 0:
+                            t = -t
+                        c = 1.0 / ti.sqrt(1.0 + t * t)
+                        s = t * c
+                        for r_ in range(10):  # A ← A·J (cols p,q)
+                            arp = aloc[r_, p_]
+                            arq = aloc[r_, q_]
+                            aloc[r_, p_] = c * arp - s * arq
+                            aloc[r_, q_] = s * arp + c * arq
+                        for r_ in range(10):  # A ← Jᵀ·A (rows p,q)
+                            apr = aloc[p_, r_]
+                            aqr = aloc[q_, r_]
+                            aloc[p_, r_] = c * apr - s * aqr
+                            aloc[q_, r_] = s * apr + c * aqr
+                        for r_ in range(10):  # Q ← Q·J
+                            qrp = qloc[r_, p_]
+                            qrq = qloc[r_, q_]
+                            qloc[r_, p_] = c * qrp - s * qrq
+                            qloc[r_, q_] = s * qrp + c * qrq
+            off2 = 0.0
+            for p_ in range(9):
+                for q_ in range(p_ + 1, 10):
+                    off2 += 2.0 * aloc[p_, q_] * aloc[p_, q_]
+            sweep += 1
+        # --- keep mask + projection + A⁺ solve --------------------------------
+        lmax = 0.0
+        for a_ in range(10):
+            lmax = ti.max(lmax, ti.abs(aloc[a_, a_]))
+        pm = tensor_field.P_am[i, j, k]
+        pc = ti.Vector.zero(ti.f32, 10)
+        for a_ in range(10):
+            pc[a_] = (pm * tensor_field.sym_basis[a_]).sum()
+        pproj = ti.Vector.zero(ti.f32, 10)
+        cdot = ti.Vector.zero(ti.f32, 10)
+        for kk in range(10):
+            lamk = aloc[kk, kk]
+            qp = 0.0
+            for a_ in range(10):
+                qp += qloc[a_, kk] * pc[a_]
+            if lamk > EPS_EIG_4D * (lmax + 1e-30):
+                for a_ in range(10):
+                    pproj[a_] += qloc[a_, kk] * qp
+                    cdot[a_] += qloc[a_, kk] * qp / lamk
+        pnew = ti.Matrix.zero(ti.f32, 4, 4)
+        mdnew = ti.Matrix.zero(ti.f32, 4, 4)
+        for a_ in range(10):
+            pnew += pproj[a_] * tensor_field.sym_basis[a_]
+            mdnew += cdot[a_] * tensor_field.sym_basis[a_]
+        mdnew = mdnew * tensor_field.act4d[i, j, k]
+        vn = ti.sqrt((mdnew * mdnew).sum())
+        if vn > VCAP_4D:
+            mdnew = mdnew * (VCAP_4D / (vn + 1e-30))
+        tensor_field.P_am[i, j, k] = pnew
+        tensor_field.Md_am[i, j, k] = mdnew
+
+
+@ti.kernel
+def update_M_4d_constrained(tensor_field: ti.template(), dt_eff: ti.f32):  # type: ignore
+    """M_new = M + dt_eff·Ṁ (all voxels; Ṁ = 0 outside act ⇒ border/core copy).
+    The caller swaps the triple buffer as usual — render paths read M_am."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        tensor_field.M_new_am[i, j, k] = (
+            tensor_field.M_am[i, j, k] + dt_eff * tensor_field.Md_am[i, j, k]
+        )
 
 
 # ================================================================

@@ -243,7 +243,106 @@ for ldg_k, vtag in ((0.0, "V-off"), (1.0, "V-on")):
            f"max|M|={np.abs(Mend).max():.2f})",
            np.isfinite(Mend).all() and np.abs(Mend).max() < 100.0)
 
+# (6e) M5.8.2c OPTION B — the CONSTRAINED spectral-projection integrator
+# (INTEGRATOR_4D "constrained"): the production kernels driven exactly as the
+# launcher drives them (act mask + sym basis + init_P + the 5-kernel step).
+# The kernel itself is B-1-validated vs the f64 numpy reference in
+# m5_8_2cb_taichi_constrained.py — these gates check the PRODUCTION wiring.
+print("\n(6e) Option B constrained integrator (production wiring)")
+
+
+def setup_constrained():
+    """The launcher's Option-B init (act mask + sym basis) — seed separately,
+    then call compute_tstar + init_P_4d (the launcher order)."""
+    idx = np.indices((tf.nx, tf.ny, tf.nz)).astype(np.float32)
+    r_vox = np.sqrt((idx[0] - c) ** 2 + (idx[1] - c) ** 2 + (idx[2] - c) ** 2)
+    rho_vox = np.sqrt((idx[0] - c) ** 2 + (idx[1] - c) ** 2)
+    act = np.zeros((tf.nx, tf.ny, tf.nz), np.float32)
+    act[2:-2, 2:-2, 2:-2] = 1.0
+    act *= (r_vox > 6.0) * (rho_vox > 3.0)          # RHOC_VOXELS=3 defaults
+    tf.act4d.from_numpy(act)
+    basis = np.zeros((10, 4, 4), np.float32)
+    for a_ in range(4):
+        basis[a_, a_, a_] = 1.0
+    bi = 4
+    for a_ in range(4):
+        for c_ in range(a_ + 1, 4):
+            basis[bi, a_, c_] = basis[bi, c_, a_] = 1.0 / np.sqrt(2.0)
+            bi += 1
+    tf.sym_basis.from_numpy(basis)
+    n_act_pl = float(act[tf.nx // 2].sum() + act[:, tf.ny // 2].sum()
+                     + act[:, :, tf.nz // 2].sum())
+    return act, n_act_pl
+
+
+def constrained_step(dt_eff, cc4d, n_act_pl):
+    pde.flux_4d_constrained(tf)
+    pde.update_P_4d(tf, dt_eff, cc4d)
+    pde.sample_p03_drift(tf)
+    npl = max(n_act_pl, 1.0)
+    pde.apply_p03_clamp(tf, tf.v03_sums[0] / npl, tf.v03_sums[1] / npl,
+                        tf.v03_sums[2] / npl)
+    pde.solve_constrained_4d(tf)
+    pde.update_M_4d_constrained(tf, dt_eff)
+    tf.swap_matrix_buffers()
+
+
+c_amrs = 0.2998
+dt_rs_b = 0.007 * tf.dx_am * 0.95 / (c_amrs * 3**0.5)   # DT_SCALE_4D=0.007 faithful
+dt_eff_b = c_amrs * dt_rs_b
+cc4d = 0.5 * 1.0 / tf.dx_am**4                          # LDG_STIFFNESS_K=1 at 4×/τ units
+
+act, n_act_pl = setup_constrained()
+
+# (6e-i) vacuum identity: uniform M ⇒ zero gradients ⇒ zero flux ⇒ P stays 0,
+# M EXACTLY static under the full constrained step (the sharp wiring gate)
+seeds.seed_vacuum_M(tf, tf.lc_delta)
+pde.compute_tstar(tf)
+M0v = tf.M_am.to_numpy().copy()
+pde.init_P_4d(tf, 0.0)
+for _ in range(10):
+    constrained_step(dt_eff_b, cc4d, n_act_pl)
+dMv = np.abs(tf.M_am.to_numpy() - M0v).max()
+report(f"vacuum EXACTLY static under constrained step (max|ΔM|={dMv:.1e})", dMv < 1e-6)
+
+# (6e-ii) kick=0 ⇒ P₀ = 0 EXACTLY — the velocity-kick semantics Ṁ₀ = kick·M_ψ
+# (the 2c-1 convention; the earlier buffer encoding (M − M_prev)/dt left an
+# f32-reassociation P₀ floor AND made the kick velocity scale as 1/dt)
+seeds.seed_dressed_hedgehog_M(tf, c, c, c, 0.06 * N, 3.0, 0.30, 0.13, RW_VOX, 0.0)
+pde.compute_tstar(tf)
+pde.init_P_4d(tf, 0.0)
+p0_free = np.abs(tf.P_am.to_numpy()).max()
+report(f"kick=0 ⇒ P₀ = 0 exactly (max|P|={p0_free:.1e})", p0_free == 0.0)
+
+# (6e-iii) the production preset run: dressed b*, kicked, V-on, 300 steps —
+# bounded + the velocity backstop never engaged (the B-1 behavior)
+seeds.seed_dressed_hedgehog_M(tf, c, c, c, 0.06 * N, 3.0, 0.30, 0.13, RW_VOX, 0.05)
+pde.compute_tstar(tf)
+pde.init_P_4d(tf, 0.05)
+ok_run = True
+for n in range(300):
+    constrained_step(dt_eff_b, cc4d, n_act_pl)
+    if n % 50 == 49:
+        Mn = tf.M_am.to_numpy()
+        if not np.isfinite(Mn).all() or np.abs(Mn).max() > 100.0:
+            ok_run = False
+            break
+Mend = tf.M_am.to_numpy()
+Mdend = tf.Md_am.to_numpy()
+vmax = np.sqrt(np.einsum("...ab,...ab->...", Mdend, Mdend)).max()
+report(f"constrained 300 steps bounded (dressed b*, kicked, V-on; "
+       f"max|M|={np.abs(Mend).max():.2f})", ok_run and np.abs(Mend).max() < 100.0)
+report(f"velocity backstop never engaged (max‖Ṁ‖={vmax:.3f} < VCAP={pde.VCAP_4D})",
+       vmax < pde.VCAP_4D)
+report(f"Ṁ ≡ 0 outside the act mask (max={np.abs(Mdend[act < 0.5]).max():.1e})",
+       np.abs(Mdend[act < 0.5]).max() < 1e-12)
+Pend = tf.P_am.to_numpy()
+psym = np.abs(Pend - np.swapaxes(Pend, -1, -2)).max()
+report(f"P stays symmetric through clamp+projection (max|P−Pᵀ|={psym:.1e})", psym < 1e-4)
+
 print("\n  => headless check done. dV_M g-independent + bounded V-on evolve = the GUI "
       "explosion is fixed; observables kernels run; the 4D port kernels (dressed seed, "
-      "stable mask, signed flux f32≡f64, b=0 identity, bounded 4D evolve) verified. "
+      "stable mask, signed flux f32≡f64, b=0 identity, bounded 4D evolve) verified; "
+      "the Option B constrained wiring (vacuum identity, P₀=0, bounded kicked signed "
+      "run, backstop idle, act-mask discipline, P symmetry) verified. "
       "GUI re-test confirms on screen.")

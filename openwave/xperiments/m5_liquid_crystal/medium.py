@@ -215,6 +215,19 @@ class TensorField:
         # kept. Seeded once by engine2_pde.compute_tstar (the 2c-2 V-pump fix).
         self.ldg_tstar = ti.field(dtype=ti.f32, shape=self.grid_size)
 
+        # M5.8.2c OPTION B — the CONSTRAINED spectral-projection integrator state
+        # (INTEGRATOR_4D: "constrained"): the Minkowski-SIGNED dynamics evolves
+        # the pair (M, P) — P_am is the canonical momentum density, Md_am the
+        # solved velocity Ṁ = A⁺P (read by the kinetic flux term + diagnostics),
+        # act4d the Dirichlet evolve mask (interior ∧ off-core ∧ off-axis — the
+        # 2c-1 validated boundary treatment), sym_basis the 10 orthonormal
+        # symmetric 4×4 basis matrices (filled once by the launcher). Validated
+        # against the f64 numpy reference in sandbox_v8/m5_8_2cb (B-1 gates).
+        self.P_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.Md_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        self.act4d = ti.field(dtype=ti.f32, shape=self.grid_size)
+        self.sym_basis = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=10)
+
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
         # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s
