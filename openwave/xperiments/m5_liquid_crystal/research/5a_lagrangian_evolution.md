@@ -915,7 +915,7 @@ toy's `−αR²`).
 
 #### The canonical construction recipe (the clock state)
 
-The M5.8.2a ansatz family — each factor is one physical ingredient:
+The M5.8.2a/2b scaffold ansatz family — each factor is one physical ingredient:
 
 ```text
 O(x,t) = O_hh(x) · B(x; b) · R(ωt)            M = O D O^T,  D = diag(1, δ, 0, g)
@@ -923,15 +923,25 @@ O(x,t) = O_hh(x) · B(x; b) · R(ωt)            M = O D O^T,  D = diag(1, δ, 0
 O_hh   the biaxial hedgehog frame [r̂|e_Θ|e_Φ], embedded 4×4 (time row/col = 1)
 B      = exp(b · w(r) · B_a),  B_a = E_{a3} + E_{3a}   — BOOST DRESSING: mixes
          spatial eigen-axis a with the time axis; w(r) core-localized profile
-R(ψ)   = exp(ψ · G_pq) — the CLOCK: rotation in eigen-plane (p,q); canonical
-         plane = (δ, 0) (the article's exp(ψ·Gx); ψ swept = the clock.gif animation)
+R(ψ)   = exp(ψ · G_pq) — the GLOBAL clock rotation in eigen-plane (p,q); plane
+         (δ, 0) (the article's exp(ψ·Gx)). ⚠️ As THE clock mode this global
+         rotation is RULED OUT by 2b (ghost saddle-only) — kept as the scan
+         scaffold; the physical clock is the localized twist (table below)
 ```
 
-| Knob | Meaning | Key facts (2a-measured) |
+| Knob | Meaning | Key facts (2a/2b-measured) |
 | --- | --- | --- |
 | `b = 0` | time axis inert — **the M5.8.1 production state** | fuel block exactly 0; clock costs `+ω²` (the M5.7 null in functional form) |
 | `b > 0` | time axis dressed (the boundary M5.8.2 deliberately crosses) | fuel `C(b) < 0` for every plane×axis combo; static `A(b)` dips `5.97→0.39` at `b≈0.2` (the ω=0 GEM effect) then rises, always `> 0` |
 | `ω` | clock rate | `E(ω,b) = A(b) + ω²·C(b)` exactly (rigid sweep); `ω_M = 2·ω_clock` (apolar doubling, machine-exact) — the `ω = 2mc²/ℏ` factor 2 |
+
+**The winning recipe (post-2b, 2026-06-05)** — what each layer of the actual build is:
+
+| Layer | Winning form | Status |
+| --- | --- | --- |
+| Static ground state | the **boost-dressed** biaxial hedgehog at the GEM dip — `O_hh·B(b*·w(r))`, `b* ≈ 0.13–0.2`, **wide** dressing (`r_w ≈ 3–3.5` in the 48³/L=6 sandbox units): a STABLE center **below** the bare defect (`E* = 2.61 < A(0) = 6.14`), held dynamically (`H` drift 4.9×10⁻⁸) | ✅ 2b |
+| Clock mode | **NOT** the global `R(ωt)` (ghost saddle-only — the net global inertia vanishes at the window edges); the **CORE-LOCALIZED twist field** `ψ(x,t)` about the `(δ,0)` plane on the dressed background — m5_6_2b's massive ψ-mode with the Minkowski `(α,3)` signs | 🚧 2b-2 |
+| Integrator | conserved-`p_Θ` CC on the ansatz manifold (sandbox) / constrained field scheme (production); **never expose the global dressing amplitude as a free coherent DoF** (the 2b runaway channel); bounded-energy monitor (§10c) | ✅ CC · 🚧 field |
 
 Reference cross-check: the article's electron-field generator (§10d) — our 4D seeder must
 reproduce that `M(x)` with the `ψ`-sweep as the clock. The generator → force dictionary is §10d.
@@ -972,6 +982,7 @@ Anchor script: `sandbox_v8/m5_8_2a_4d_hamiltonian.py` (numpy quadrature, 48³, e
 
 | Item | What it adds | Where |
 | --- | --- | --- |
-| 🚧 M5.8.2b — profile-response cap + CC clock | the finite-`ω*` selection (the positive spatial curvature caps `ω` once the profile responds — the article's claim, to verify not assume); CC dynamics `(b, Θ)` with conserved `p_Θ` | sandbox_v8 next |
-| M5.8.2c — production port | the faithful 4D kinetic + constrained stepper into `engine2_pde.py`; deliberately cross the M5.8.1 time-freeze clamp + spatial-block-V boundary | after 2b, Rodrigo-gated |
+| ✅ M5.8.2b — CC landscape (2026-06-05, `m5_8_2b_cc_clock.py`, 8/8 gates) | the global rigid clock mode RULED OUT (ghost branch saddle-only — net inertia vanishes at the window edges, a mode-choice artifact; `ℒ=−ΣF²` is velocity-quadratic in any CC family, no `βR⁴`-style quartic exists); the dressed defect + slow clock is a stable center BELOW the bare static defect (`E*=2.61 < 6.14`); the ghost runaway documented = the channel 2c must not expose | roadmap M5.8.2b log |
+| 🚧 M5.8.2b-2 — field-level clock | the CORE-LOCALIZED twist (m5_6_2b's massive ψ) on the DRESSED hedgehog, evolved with the faithful 4D **signed** kernel (`2Kψ_tt = Σ∂_μJ_μ`, Minkowski `(α,3)` signs): sourced twist, bounded clock, core ω, Minkowski-vs-Euclid ω shift, **does the dressing stop the M5.7 dispersal?** | sandbox_v8 next |
+| M5.8.2c — production port | the faithful 4D kinetic + constrained stepper into `engine2_pde.py`; deliberately cross the M5.8.1 time-freeze clamp + spatial-block-V boundary; do NOT give the global dressing amplitude a free coherent DoF (the 2b ghost channel) | after 2b-2, Rodrigo-gated |
 | M5.8.3 — electron clock `ω` | seed + measure: the dimensionless self-consistency `ω·ℏ/(2H_rest) → 1` (`ℏ ↔ δ`); absolute Hz via the Faber `r₀` scale-fix — the GROUP HEADLINE | after 2c |
