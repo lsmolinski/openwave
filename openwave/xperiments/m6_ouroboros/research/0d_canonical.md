@@ -7,8 +7,9 @@ scratch — this is the canonical specification. The per-iteration
 `0c_sandbox_v*.md` files document the back-and-forth, what failed, and
 why; this doc is just the canonical implementation.
 
-Last updated: 2026-05-22 evening (post sandbox_v10 + Paul/DeepSeek Q45+Q46
-recipe applied — definite DM paper inputs delivered).
+Last updated: 2026-06-05 (post sandbox_v11 — exact scaling symmetry of the
+neutral sector found; (g, λ) scan answered analytically + numerically; Q47
+resolved as scaling identity; DM-paper "BVP inconsistency" closed).
 
 ---
 
@@ -210,6 +211,31 @@ Family-invariant range: B0 ∈ [0.40, 0.60] all give clean ground states
 at g = 1.0. Transition to excited branch (1 node, m_J < 0) at B0 between
 0.6 and 0.7.
 
+### 3.7 Exact scaling symmetry (v11 — closes the (g, λ) parameter space)
+
+With λ ≡ −m_J², the substitution β(r) = a·u(x), x = m_J·r, a = m_J/(2√g)
+maps the neutral ODE onto the **universal, parameter-free equation**
+
+```text
+u'' + (2/x) u' - (2/x²) u - u + u³ = 0
+```
+
+Every (g, λ < 0) ground state is an exact rescaling of one profile u(x).
+Verified on an 18-point grid in `sandbox_v11/m6_v11_neutral_gl_scan.py`:
+
+| Identity | Consequence |
+| --- | --- |
+| η = m_J·η_u, η_u = 0.826287 (universal) | m_J_phys = m_e/η_u = **0.6184 MeV for ALL (g, λ)** — parameter-free prediction; explains Q47's 1.21024 = 1/η_u invariance |
+| H/Q = K_u·m_J², K_u = 7.99999 ≈ 8 | m_χ = (−λ)^{3/2}·η_u·K_u·m_e = 3.3778·(−λ)^{3/2} MeV — depends only on λ; candidate exact identity H = 8 m_J² Q (Q48) |
+| amplitude a = m_J/(2√g) | g is a pure amplitude scale — moves NO mass observable, but does scale the J-A mixing integral (α_JN) since it is linear in β |
+| B0 = u'(0)·m_J²/(2√g) | at fixed B0, m_J ∝ g^{1/4} — converts the (g, B0) chart of v9/v10 to the (g, λ) chart |
+
+Canonical point in (g, λ) coordinates: **(g, λ) = (1.0, −0.264697)** —
+identical to the v9/v10 point (g=1.0, B0=0.5). λ* is fixed by
+m_χ = 0.460 MeV (any g); g = 1.0 by electron universality (Q45). The two
+masses CANNOT independently fix (g, λ): m_J carries no parameter
+information and m_χ only fixes λ.
+
 ---
 
 ## 4. DM paper inputs (v10 extraction recipe)
@@ -318,6 +344,7 @@ For length extraction: any dimensionless length × R_phys gives fm.
 | `sandbox_v8/ouroboros_benchmark.py` | Charged | Lepton spectrum + electron calibration; runnable canonical impl |
 | `sandbox_v9/neutral_bvp_solver_mJ_free.py` | Neutral | True ground-state BVP with proper l=1 BC + B0 fixed + m_J free |
 | `sandbox_v10/m6_v10_canonical_neutral_chaoiton.py` | Neutral | DM paper input extraction (η + m_χ + m_J + C) per Paul/DeepSeek Q45+Q46 recipe |
+| `sandbox_v11/m6_v11_neutral_gl_scan.py` | Neutral | (g, λ) scan + scaling symmetry + λ* locus + Technical-Note failure-mode reproduction + β(r) profile export (`v11_canonical_beta_profile.csv`) |
 | `sandbox_v8/extract_mJ_C_mchi.py` | Neutral (legacy v8) | Earlier extraction using IVP; superseded by v10 (windowed-integration artifact per Q42) |
 
 ---
@@ -326,7 +353,9 @@ For length extraction: any dimensionless length × R_phys gives fm.
 
 | Question | Status |
 | --- | --- |
-| Q47 (NEW) — m_J_corrected = m_J/η family-invariance | Virial identity vs different correction formula; sent to Paul/DeepSeek email v15 |
+| Q47 — m_J_corrected = m_J/η family-invariance | ✅ ANALYTICALLY RESOLVED (v11): 1.21024 = 1/η_u, exact consequence of the scaling symmetry (§3.7); not tunable |
+| Q48 (NEW) — H = 8 m_J² Q exact identity? | Holds to 5 digits across the (g, λ) grid; candidate Pohozaev/virial identity for the 3D l=1 cubic NLS; sent to Paul/DeepSeek for proof |
+| Q49 (NEW) — α_JN mixing-integral definition | β(r) profile delivered (`v11_canonical_beta_profile.csv`); need exact M_JA(0) definition (integrand + measure + normalization) to compute |
 | Q2 — discrete ω selection mechanism | Empirically validated (3 lowest modes = leptons within targets); analytic derivation deferred |
 | Q3 — closed-form ω = 2mc²/ℏ | Not derived; calibration-only |
 | Q6 — QCD reconciliation (3-chaoiton proton) | Future work; pion+ at 3.25% is suggestive |
@@ -343,5 +372,6 @@ For length extraction: any dimensionless length × R_phys gives fm.
 - `0c_sandbox_v8.md` — Sonnet's canonical script + 5-step work program
 - `0c_sandbox_v9.md` — neutral BVP variants A/B + phase 2 ground-state-found
 - `0c_sandbox_v10.md` — Paul/DeepSeek Q45+Q46 recipe applied; DM paper inputs delivered
+- `0c_sandbox_v11.md` — (g, λ) scan + scaling symmetry; DM-paper Technical-Note "BVP inconsistency" closed
 - `theory/` — all Werbos corpus (LoE v1-v9c, Lean theorem, Numerical Benchmark, Hopf invariant proof)
 - Werbos's 9c LoE paper (Zenodo 20330894) — cites Reference [17] = our GitHub repo

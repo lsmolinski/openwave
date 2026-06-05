@@ -14,23 +14,26 @@ answered, or gets demoted.
 | `0b_M6_roadmap.md` | Sandbox sequence + current state + next steps |
 | `0c_sandbox_v*.md` | Per-iteration work log (the questions tracker here lives outside any single sandbox) |
 
-**Last updated:** 2026-05-22 evening (post Paul's v2 DM paper publication at Zenodo 20350105 — M6 collaboration functionally COMPLETE). Paul incorporated all of v15's asks verbatim: m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm in abstract + §2/§3/§4; cover-page byline lists Claude Code on Opus 4.7; three-tier Acknowledgments wording landed verbatim; Reference [27] = our GitHub repo. Q47 (virial-identity interpretation) IMPLICITLY RESOLVED via Paul's use of m_J = 0.618 MeV directly (interpretation a accepted). Acks-update RESOLVED in DM paper; precedent set for future LoE revisions. M6 on permanent hold; email v16 (closing thank-you) drafted. M5 full foreground.
+**Last updated:** 2026-06-05 (M6 REOPENED by Paul's "an urgent problem after all" email — DeepSeek requests a (g, λ) neutral-sector scan to resolve the DM paper v5a "BVP inconsistency" + deliver β(r) for α_JN). Answered same-day via **sandbox_v11**: exact scaling symmetry found — the entire (g, λ<0) plane is one rescaling family of a universal profile u(x); m_J = 0.6184 MeV parameter-free invariant; m_χ = 0.460 MeV fixes λ* = −0.264697 (any g); canonical (g=1.0, λ*) = v9/v10 point (g=1.0, B0=0.5). "Griesi-1 near-trivial" failure reproduced as cold-seed Newton-basin collapse (peak ~10⁻¹¹, their exact number). **Q47 ANALYTICALLY RESOLVED** (1.21024 = 1/η_u, scaling identity). Q48 (H = 8 m_J² Q exact?) + Q49 (M_JA(0) definition for α_JN) NEW — for email v17. Previous state (2026-05-22): DM paper v2 published Zenodo 20350105 with our numbers verbatim; v5a now at Zenodo 20549492.
 
 ---
 
 ## Active count
 
 ```text
-0 IMMEDIATE  All M6 questions either RESOLVED or PARKED on permanent
-             hold post-DM-paper publication (Zenodo 20350105,
-             2026-05-22 evening). M6 collaboration functionally
-             complete.
+2 IMMEDIATE  Q48 — H = 8 m_J² Q exact virial/Pohozaev identity?
+             (holds to 5 digits across the v11 (g, λ) grid; proof
+             would make m_χ(λ) analytic except for η_u = 0.826287).
+             Q49 — exact definition of the J-A mixing integral
+             M_JA(0) (integrand + measure + normalization) so we can
+             compute α_JN from the delivered β(r) profile.
+             Both queued for email v17.
 
-1 PARKED     Q47 — IMPLICITLY RESOLVED as interpretation (a) by Paul's
-on hold      use of m_J = 0.618 MeV directly in DM paper v2. Explicit
-             DeepSeek interpretation of the Pohozaev virial identity
-             still open in principle but not needed for the deliverable.
-             No further action needed unless future round opens.
+1 PARKED     Q47 — ✅ ANALYTICALLY RESOLVED 2026-06-05 (sandbox_v11):
+(resolved)   m_J/η = 1.21024 = 1/η_u is an exact consequence of the
+             neutral ODE's scaling symmetry β = (m_J/2√g)·u(m_J r);
+             universal-profile property, not tunable. Supersedes the
+             "implicitly resolved as interpretation (a)" status.
 
 6 RESOLVED   Q41 (writing role) — declined; staying in numerical
 this session verification lane. Sent in email v11. Settled.
