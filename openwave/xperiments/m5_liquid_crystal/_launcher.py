@@ -735,18 +735,20 @@ def initialize_xperiment(state):
             r0_vox = float(topo.get("R0_FRACTION", 0.06) * max(wf.nx, wf.ny, wf.nz))
             rhoc_vox = float(topo.get("RHOC_VOXELS", 3.0))
             biaxial_delta = float(topo.get("BIAXIAL_DELTA", 0.3))
-            b_star = float(topo.get("B_STAR", 0.13))           # 2b-1 GEM-dip dressing
-            rw_frac = float(topo.get("RW_FRACTION", 0.29))     # ~3.5/12 of the box (2b-1)
+            b_star = float(topo.get("B_STAR", 0.13))  # 2b-1 GEM-dip dressing
+            rw_frac = float(topo.get("RW_FRACTION", 0.29))  # ~3.5/12 of the box (2b-1)
             rw_vox = rw_frac * max(wf.nx, wf.ny, wf.nz)
-            kick = float(topo.get("CLOCK_KICK", 0.0))          # clock phase kick (rad)
+            kick = float(topo.get("CLOCK_KICK", 0.0))  # clock phase kick (rad)
             seeds.seed_dressed_hedgehog_M(
-                wf, cx, cy, cz, r0_vox, rhoc_vox, biaxial_delta, b_star, rw_vox, kick)
-            pde.compute_stable_mask(wf)                        # per-voxel ghost guard (once)
+                wf, cx, cy, cz, r0_vox, rhoc_vox, biaxial_delta, b_star, rw_vox, kick
+            )
+            pde.compute_stable_mask(wf)  # per-voxel ghost guard (once)
             # smooth the mask (seed-time, numpy): the hard signed/Euclid seam at the
             # core pumped the field (2c-2 diagnosis) — a ~3-voxel transition kills
             # the constitutive shock; the flux kernel blends fractional masks.
             mnp = wf.stable_mask.to_numpy()
             import numpy as _np
+
             sm = mnp.astype(_np.float32)
             for _ in range(3):
                 for ax in range(3):
@@ -765,7 +767,7 @@ def initialize_xperiment(state):
             # dressed-V + inertia all active).
             if not bool(topo.get("SIGNED_FLUX_4D", False)):
                 wf.stable_mask.fill(0.0)
-            pde.compute_tstar(wf)                              # V pins to the DRESSED seed
+            pde.compute_tstar(wf)  # V pins to the DRESSED seed
             state.evolve_4d = True
             state.km_inertia_4d = float(topo.get("KM_INERTIA_4D", 30.0))
             # dt guard (2c seed e): the 4D system's fastest collective mode runs well
@@ -856,8 +858,16 @@ def compute_propagation(state):
         pde.sample_v03_drift(wf, state.dt_rs)
         n_pl = float(wf.nx * wf.ny + wf.ny * wf.nz + wf.nx * wf.nz)
         vm = [wf.v03_sums[a] / n_pl for a in range(3)]
-        pde.evolve_M_4d(wf, state.c_amrs, state.dt_rs, state.ldg_c,
-                        vm[0], vm[1], vm[2], getattr(state, "km_inertia_4d", 30.0))
+        pde.evolve_M_4d(
+            wf,
+            state.c_amrs,
+            state.dt_rs,
+            state.ldg_c,
+            vm[0],
+            vm[1],
+            vm[2],
+            getattr(state, "km_inertia_4d", 30.0),
+        )
     else:
         pde.compute_curvature_flux(wf)
         pde.evolve_M(wf, state.c_amrs, state.dt_rs, state.ldg_a, state.ldg_b, state.ldg_c)
@@ -1158,7 +1168,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "_topo_biaxial1_von"
+    default_xperiment = selected_xperiment_arg or "_topo_dressed4d"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
