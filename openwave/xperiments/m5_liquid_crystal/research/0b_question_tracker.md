@@ -17,18 +17,23 @@
 
 ## Empirical validation — key findings → runnable reproductions
 
-The model's verified emergent physics, each with a runnable reproduction script on the current 4×4 engine (all re-verified 2026-06-05, after the M5.8.1 4×4 promotion + ψ-retire — the original numbers reproduced, empirically confirming the promotion is physics-preserving):
+The model's verified emergent physics, each with a runnable reproduction script — on the production 4×4 engine where the finding is engine-level (charge, Coulomb, Eq.18, LdG), standalone numpy/sympy where the finding is analytic (Maxwell routes, KG-geometric, Faber mass), and Duda's own 1+1D toy for the clock. **All re-verified 2026-06-05** after the M5.8.1 4×4 promotion + ψ-retire; the engine-level checks reproduced their original 3×3 numbers, empirically confirming the promotion is physics-preserving:
 
-| Key finding | Runnable reproduction | Result on the 4×4 engine |
+| Key finding | Result | Runnable reproduction |
 | --- | --- | --- |
-| Coulomb: charge + attractive 1/d force between defects | `sandbox_v4/m5_4_coulomb_matrix.py` | ✅ R²=0.9781, b<0 — matches the M5.1 reference (0.978) digit-for-digit |
-| Coulomb — Duda's page-18 Mathematica cross-validation | `sandbox_v4/m5_4_coulomb_page18.py` | ✅ R²=0.9959, attractive |
-| E = ∇·n̂ / B = ∇×n̂ → Maxwell (hydro↔EM dictionary) | `sandbox_v6/m5_6_4a_hydro_em.py` | ✅ PASS — ∇·B=0, Gauss charge identity, Faraday, Lorentz force |
-| EM-from-tilts: Faber R=Γ×Γ → abelian Coulomb far-field | `sandbox_v6/m5_6_4b_faber_curvature_em.py` | ✅ PASS — closed field strength, ‖R‖~1/r², running-coupling onset at r₀ |
-| KG mass is GEOMETRIC (biaxial twist, not an added V) | `sandbox_v6/m5_6_1_kg_operator_check.py` | ✅ PASS — explicit mass cancels exactly; mass from the hedgehog connection Â |
-| Eq.18 matrix evolution conserves energy | `sandbox_v5/m5_5_4_matrix_evolution_check.py` | ✅ secular drift 2.15%→1.13%→0.03% as dt→0 (symplectic) |
-| LdG well confinement (V(M) Eq.13, b=0 amplitude well) | `sandbox_v6/m5_6_5c_prod_scale.py` | ✅ confines ~3.3× across k∈[0.5,25], no blow-up |
-| M5.7 resonance hunt closed-negative (expected — Derrick) | `sandbox_v7/m5_7_*.py` | ✅ runnable, unaffected |
+| Topological charge is INTEGER + ADDITIVE (Q = director winding) | ✅ Q=±0.996 single hedgehogs; pair: ±1 around each core, 0.000 on the enclosing sphere | `m5_8_1_topo_charge.py` |
+| Coulomb: attractive 1/d force between opposite defects | ✅ R²=0.9781, b<0 — matches the M5.1 reference (0.978) digit-for-digit | `m5_4_coulomb_matrix.py` |
+| Coulomb — Duda's page-18 Mathematica cross-validation | ✅ R²=0.9959, attractive | `m5_4_coulomb_page18.py` |
+| E = ∇·n̂ / B = ∇×n̂ → Maxwell (hydro↔EM dictionary) | ✅ PASS — ∇·B=0, Gauss charge identity, Faraday, Lorentz force | `m5_6_4a_hydro_em.py` |
+| EM-from-tilts: Faber R=Γ×Γ → abelian Coulomb far-field | ✅ PASS — closed field strength, ‖R‖~1/r², running-coupling onset at r₀ | `m5_6_4b_faber_curvature_em.py` |
+| KG mass is GEOMETRIC (biaxial twist, not an added V) | ✅ PASS — explicit mass cancels exactly; mass from the hedgehog connection Â | `m5_6_1_kg_operator_check.py` |
+| The biaxial hedgehog SOURCES its own twist + restoring mass (`C_μν≠0` — the M5.8 clock seed) | ✅ ‖C‖~1/r² mass source confirmed; twist sourced by the background curvature + restoring force — stable, energy-conserving | `m5_6_2a_biaxial_hedgehog.py` + `m5_6_2b_biaxial_evolution.py` |
+| Finite defect mass pinned by the core radius, E∝1/r₀ (Faber — the M5.9 lepton calibration handle) | ✅ E·r₀ constant (CV=0.0%); E₀=α_f·ℏc·π/(4r₀); r₀=2.2132 fm → 0.511 MeV e⁻; reproduced on Duda's matrix substrate | `m5_6_3a_faber_regularization.py` + `m5_6_3b_faber_on_M.py` |
+| Eq.18 matrix evolution conserves energy | ✅ secular drift 2.15%→1.13%→0.03% as dt→0 (symplectic) | `m5_5_4_matrix_evolution_check.py` |
+| LdG well confinement (V(M) Eq.13, b=0 amplitude well) | ✅ confines ~3.3× across k∈[0.5,25], no blow-up | `m5_6_5c_prod_scale.py` |
+| Duda's 1+1D time-crystal kink (arXiv:2501.04036) — the clock | ✅ ω* = √(70/61) = 1.0712 reproduced EXACTLY; energy drift ~10⁻¹⁵; clock robust under +5% perturbation | `m5_8_0b_collective_clock.py` |
+| Clock propulsion is SPONTANEOUS + bounded ("propelled by mass") | ✅ ω=0 is an unstable maximum → relaxation spins the clock up to ω*; every seed → ω* (no noise needed); E floor 2.1257 > 0 | `m5_8_0c0d_propulsion_robustness.py` |
+| M5.7 resonance hunt: free defect disperses (expected — Derrick), DRIVEN defect sustains | ✅ free → dispersal (the empirical push to the 4D clock, M5.8); driven → bounded, frequency-selective (A,ω) excess, ~3× free at resonance | `m5_7_*.py` |
 
 No particle stability yet — that is M5.8's job (the particle is a 4D time-crystal, not a static 3D lump; Derrick + Duda + the M5.7 null all agree). Everything above comes straight out of the medium topology.
 
