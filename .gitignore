@@ -212,4 +212,5 @@ imgui.ini
 /openwave/video_export
 
 # AI Agents
-.claude/worktrees/charming-shaw-8044b7/
+.claude/worktrees/
+.claude/*.lock

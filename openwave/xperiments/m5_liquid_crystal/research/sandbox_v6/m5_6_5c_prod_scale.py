@@ -1,7 +1,8 @@
-# ⚠️ ARCHIVE (M5.8.1 4×4 promotion, 2026-06-04): written for the 3×3 matrix substrate.
-# It builds 3×3 M arrays (M_am.from_numpy of diag(1,δ,0)), now a shape mismatch vs the
-# 4×4 field block-diag(spatial, g). Kept as a historical record of the M5.4–M5.6 milestone;
-# would need a 4×4 migration to run. Live 4×4 regression: sandbox_v8/m5_8_1_headless_check.py.
+# ✅ MIGRATED to the 4×4 substrate (2026-06-05) — RUNNABLE key-finding reproduction.
+# Uses the PRODUCTION seeder/kernels (4×4-native since M5.8.1); the Tr(M²) amplitude
+# analysis now reads the SPATIAL 3×3 block (V_M acts spatial-only — the time-g axis is
+# decoupled), so the confinement check is UNCHANGED. (TensorField was WaveField pre-M5.8.)
+# Re-validated on 4×4 (2026-06-05): confines ~3.3× across k∈[0.5,25], no blow-up — consistent.
 """M5.6.5c — find PRODUCTION-unit LdG coefficients with the real evolve_M kernel.
 
 The sandbox proved the b=0 amplitude well confines (dimensionless). But production
@@ -26,12 +27,12 @@ DELTA = 0.30
 S2_STAR = 1.0 + DELTA**2
 N_STEPS = 400
 
-wf = medium.WaveField([EDGE_AM * 1e-18] * 3, target_voxels=N**3)
-dx = wf.dx_am
+tf = medium.TensorField([EDGE_AM * 1e-18] * 3, target_voxels=N**3)
+dx = tf.dx_am
 c_amrs = 0.3
 dt_rs = dx * 0.95 / (c_amrs * np.sqrt(3.0))   # launcher CFL formula at SIM_SPEED=1
 cfl = (c_amrs * dt_rs / dx) ** 2
-nn = wf.nx
+nn = tf.nx
 c = nn // 2
 r0_vox = 0.06 * nn
 rhoc_vox = 3.0
@@ -44,16 +45,19 @@ print(f"cubic-balance unit c²/dx⁴ = {base:.3e}\n")
 
 def amp_dev_after(ldg_c, n_steps):
     """Seed fresh, run n_steps of evolve_M with b=0 well (a=−2c·s2*), return (max_dev, finite)."""
-    seeds.seed_biaxial_hedgehog_M(wf, c, c, c, r0_vox, rhoc_vox, DELTA)
+    seeds.seed_biaxial_hedgehog_M(tf, c, c, c, r0_vox, rhoc_vox, DELTA)
     a = -2.0 * ldg_c * S2_STAR
     devs = []
     for step in range(n_steps):
-        pde.compute_curvature_flux(wf)
-        pde.evolve_M(wf, c_amrs, dt_rs, a, 0.0, ldg_c)
-        wf.swap_matrix_buffers()
+        pde.compute_curvature_flux(tf)
+        pde.evolve_M(tf, c_amrs, dt_rs, a, 0.0, ldg_c)
+        tf.swap_matrix_buffers()
         if step % 40 == 0:
-            M = wf.M_am.to_numpy()
-            s2 = np.einsum("...ab,...ab->...", M, M)   # Tr(M²)=‖M‖_F² (symmetric)
+            M = tf.M_am.to_numpy()
+            # M5.8.1: spatial 3×3 block only — V_M pins the SPATIAL Tr(M²); the
+            # constant-g time axis (index 3) is decoupled and excluded.
+            Msp = M[..., :3, :3]
+            s2 = np.einsum("...ab,...ab->...", Msp, Msp)   # Tr(M_sp²)=‖M_sp‖_F²
             # interior, off the disclination z-axis + point core
             xs = np.arange(nn) - c
             X, Y, Z = np.meshgrid(xs, xs, xs, indexing="ij")

@@ -1,7 +1,9 @@
-# ⚠️ ARCHIVE (M5.8.1 4×4 promotion, 2026-06-04): written for the 3×3 matrix substrate.
-# It builds 3×3 M arrays (M_am.from_numpy of diag(1,δ,0)), now a shape mismatch vs the
-# 4×4 field block-diag(spatial, g). Kept as a historical record of the M5.4–M5.6 milestone;
-# would need a 4×4 migration to run. Live 4×4 regression: sandbox_v8/m5_8_1_headless_check.py.
+# ✅ MIGRATED to the 4×4 substrate (2026-06-05) — RUNNABLE key-finding reproduction.
+# The spatial 3×3 M = O·diag(1,δ,0)·Oᵀ now embeds as block-diag(M_spatial, g) per the
+# M5.8.1 promotion; the velocity kick stays purely spatial (time block 0), so the
+# constant-g axis is inert and the Eq.18 energy-conservation check is UNCHANGED.
+# (TensorField was WaveField pre-M5.8.)
+# Re-validated on 4×4 (2026-06-05): secular drift 2.15%→1.13%→0.03% as dt→0 — PASS (symplectic).
 """
 M5.5.4 — headless validation of the PRODUCTION matrix leapfrog (energy conservation)
 
@@ -37,10 +39,10 @@ VKICK = 0.10           # initial-velocity amplitude (gives real kinetic energy +
 A_V, B_V, C_V = 0.0, 0.0, 0.0   # V off (free curvature dynamics) for the cleanest check
 
 
-def seed_tilt_M(wf, dt, gamma0=GAMMA0, vkick=VKICK):
+def seed_tilt_M(tf, dt, gamma0=GAMMA0, vkick=VKICK):
     """M = Ry(γ(x))·diag(1,δ,0)·Ry(γ)^T (smooth shell tilt, no singularity) + a velocity
     kick: M_prev = M − dt·Ṁ_init, Ṁ_init = vkick·bump·(traceless symmetric perturbation)."""
-    N_ = wf.nx
+    N_ = tf.nx
     xs = np.arange(N_) - (N_ - 1) / 2.0
     X, Y, Z = np.meshgrid(xs, xs, xs, indexing="ij")
     R = np.sqrt(X**2 + Y**2 + Z**2)
@@ -57,21 +59,28 @@ def seed_tilt_M(wf, dt, gamma0=GAMMA0, vkick=VKICK):
     bump = np.exp(-((R - r0) / wid) ** 2)
     P = np.array([[0.0, 1.0, 0.0], [1.0, 0.0, 1.0], [0.0, 1.0, 0.0]], np.float32)  # sym, traceless
     Mdot = vkick * bump[..., None, None] * P
-    Mf = M.astype(np.float32)
-    Mprev = (M - dt * Mdot).astype(np.float32)
-    wf.M_am.from_numpy(Mf)
-    wf.M_prev_am.from_numpy(Mprev)
-    wf.M_new_am.from_numpy(Mf)      # BC consistency (boundary never updated by evolve_M)
+    # M5.8.1 — embed in the 4×4 substrate: block-diag(spatial, g); the velocity kick
+    # stays purely spatial (time block 0), so the constant-g axis is inert.
+    M4 = np.zeros(M.shape[:-2] + (4, 4), np.float32)
+    M4[..., :3, :3] = M
+    M4[..., 3, 3] = medium.LC_G
+    Mdot4 = np.zeros_like(M4)
+    Mdot4[..., :3, :3] = Mdot
+    Mf = M4
+    Mprev = (M4 - dt * Mdot4).astype(np.float32)
+    tf.M_am.from_numpy(Mf)
+    tf.M_prev_am.from_numpy(Mprev)
+    tf.M_new_am.from_numpy(Mf)      # BC consistency (boundary never updated by evolve_M)
 
 
-def energy_symmetric(wf, dx, dt):
+def energy_symmetric(tf, dx, dt):
     """Verlet-consistent energy: H = ½‖(M_new−M_prev)/2dt‖²_F + 4Σ‖[M_μ,M_ν]‖²_F (V=0).
 
     Call AFTER evolve_M, BEFORE swap (M_am=M(t), M_prev=M(t−dt), M_new=M(t+dt)). Uses the
     SYMMETRIC velocity — the quantity the leapfrog actually conserves (the one-sided
     Ṁ in the production kernel is for instantaneous display, not conservation tracking).
     """
-    Mam = wf.M_am.to_numpy(); Mprev = wf.M_prev_am.to_numpy(); Mnew = wf.M_new_am.to_numpy()
+    Mam = tf.M_am.to_numpy(); Mprev = tf.M_prev_am.to_numpy(); Mnew = tf.M_new_am.to_numpy()
     v = (Mnew - Mprev) / (2.0 * dt)                       # symmetric velocity at t
     sl = (slice(1, -1),) * 3                              # interior (matches kernel halo)
     kin = 0.5 * (v[sl] ** 2).sum()
@@ -84,19 +93,19 @@ def energy_symmetric(wf, dx, dt):
     return float(kin + U)
 
 
-def run(wf, ob, dt, n_steps):
-    seed_tilt_M(wf, dt)
-    dx = wf.dx_am
-    M_init = wf.M_am.to_numpy().copy()
+def run(tf, ob, dt, n_steps):
+    seed_tilt_M(tf, dt)
+    dx = tf.dx_am
+    M_init = tf.M_am.to_numpy().copy()
     Hs = []
     for step in range(n_steps):
-        pde.compute_curvature_flux(wf)
-        pde.evolve_M(wf, C_AMRS, dt, A_V, B_V, C_V)
+        pde.compute_curvature_flux(tf)
+        pde.evolve_M(tf, C_AMRS, dt, A_V, B_V, C_V)
         if step % 40 == 0:
-            Hs.append(energy_symmetric(wf, dx, dt))      # measure before swap
-        wf.swap_matrix_buffers()
+            Hs.append(energy_symmetric(tf, dx, dt))      # measure before swap
+        tf.swap_matrix_buffers()
     Hs = np.array(Hs)
-    Mf = wf.M_am.to_numpy()
+    Mf = tf.M_am.to_numpy()
     H0 = Hs[0]
     drift = (Hs.max() - Hs.min()) / abs(H0) if H0 != 0 else 0.0      # bounded oscillation range
     # secular trend: linear fit slope × total span, as a fraction of H0 (the real
@@ -113,16 +122,16 @@ def main():
     print("=" * 70)
     print("M5.5.4 — production matrix leapfrog: energy conservation (dt-convergence)")
     print("=" * 70)
-    wf = medium.WaveField([N * 1e-18] * 3, target_voxels=N**3)   # dx_am ≈ 1 (natural units)
-    ob = medium.FieldObservables(wf.grid_size)
-    print(f"    grid {wf.nx}³   dx_am={wf.dx_am:.3f}   c={C_AMRS}  γ0={GAMMA0}  vkick={VKICK}  V=off")
+    tf = medium.TensorField([N * 1e-18] * 3, target_voxels=N**3)   # dx_am ≈ 1 (natural units)
+    ob = medium.FieldObservables(tf.grid_size)
+    print(f"    grid {tf.nx}³   dx_am={tf.dx_am:.3f}   c={C_AMRS}  γ0={GAMMA0}  vkick={VKICK}  V=off")
     print(f"    Eq.18 leapfrog ∂²_tM = c²·div(G) − dV_M;  expect drift ∝ dt² (symplectic)\n")
 
     # Same physical time T≈12 at each dt; drift should fall ~4× as dt halves.
     T = 12.0
     results = []
     for dt in (0.02, 0.01, 0.005):
-        drift, secular, rms, finite, H0 = run(wf, ob, dt, int(T / dt))
+        drift, secular, rms, finite, H0 = run(tf, ob, dt, int(T / dt))
         results.append((dt, drift, secular, rms))
         print(f"    dt={dt:.3f}  steps={int(T/dt):4d}  H0={H0:.3e}  osc-range={100*drift:5.2f}%  "
               f"SECULAR={100*secular:5.2f}%  RMS(M−M₀)={rms:.3f}  finite={finite}")

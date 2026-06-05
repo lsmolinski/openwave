@@ -1,0 +1,113 @@
+==============================================================================
+M6 v11 — neutral sector (g, lambda) scan  [Paul/DeepSeek 2026-06-05 request]
+==============================================================================
+
+STEP 1 — Regression anchor: v9/v10 solver at (g=1.0, B0=0.5)
+------------------------------------------------------------------------------
+  m_J_raw = +0.514461   (v10: +0.514460)
+  eta = 0.425093   (v10: 0.4251)
+  (H/Q)_spherical = 2.117354   (v10: 2.1173)
+  m_chi = 0.4599 MeV   m_J = 0.6184 MeV
+  peak beta = 0.6970 @ r = 1.779   nodes = 0   tail/peak = 1.10e-05
+  >> NOTE vs v5a Technical Note: this IS direct BVP integration of the
+     ODE; peak amplitude is O(1), not 1e-11. Near-trivial collapse only
+     occurs in the fixed-lambda formulation with a cold seed (Step 5).
+
+  Universal constants of u(x):  eta_u = 0.826287   K_u = 7.999959
+  Scaling-law predictions:
+    m_J_phys = m_e/eta_u = 0.618428 MeV   for ALL (g, lambda)
+    m_chi(lambda) = (-lambda)^(3/2) * eta_u*K_u*m_e = 3.377839 * (-lambda)^(3/2) MeV   (g-independent)
+
+STEP 2 — Direct (g, lambda) grid scan (fixed-lambda BVP, scaling seed)
+------------------------------------------------------------------------------
+      g     lambda   m_J_raw    B0_out     peak nodes  m_chi(MeV)  m_J(MeV)  H/Q/mJ^2   mJ/eta
+   0.50  -0.090000   0.30000   0.24045   0.5748     0      0.0912    0.6184   7.99982  1.21024
+   0.50  -0.160000   0.40000   0.42746   0.7664     0      0.2162    0.6184   7.99988  1.21024
+   0.50  -0.264671   0.51446   0.70711   0.9858     0      0.4599    0.6184   7.99992  1.21024
+   0.50  -0.360000   0.60000   0.96180   1.1496     0      0.7296    0.6184   7.99993  1.21023
+   0.50  -0.640000   0.80000   1.70990   1.5329     0      1.7294    0.6184   7.99995  1.21023
+   0.50  -1.000000   1.00000   2.67178   1.9161     0      3.3778    0.6184   7.99995  1.21023
+   1.00  -0.090000   0.30000   0.17002   0.4065     0      0.0912    0.6184   7.99980  1.21025
+   1.00  -0.160000   0.40000   0.30226   0.5420     0      0.2162    0.6184   7.99985  1.21024
+   1.00  -0.264671   0.51446   0.50000   0.6970     0      0.4599    0.6184   7.99991  1.21024
+   1.00  -0.360000   0.60000   0.68010   0.8129     0      0.7296    0.6184   7.99992  1.21024
+   1.00  -0.640000   0.80000   1.20908   1.0839     0      1.7294    0.6184   7.99994  1.21023
+   1.00  -1.000000   1.00000   1.88923   1.3549     0      3.3778    0.6184   7.99995  1.21023
+   2.00  -0.090000   0.30000   0.12022   0.2874     0      0.0912    0.6184   7.99977  1.21025
+   2.00  -0.160000   0.40000   0.21373   0.3832     0      0.2162    0.6184   7.99982  1.21024
+   2.00  -0.264671   0.51446   0.35355   0.4929     0      0.4599    0.6184   7.99987  1.21024
+   2.00  -0.360000   0.60000   0.48090   0.5748     0      0.7296    0.6184   7.99991  1.21024
+   2.00  -0.640000   0.80000   0.85495   0.7664     0      1.7294    0.6184   7.99993  1.21023
+   2.00  -1.000000   1.00000   1.33589   0.9580     0      3.3778    0.6184   7.99994  1.21023
+
+  >> m_J(MeV) column is constant and m_chi depends only on lambda:
+     the masses CANNOT independently fix (g, lambda). lambda fixes m_chi;
+     g only rescales the profile amplitude (beta ~ 1/sqrt(g)).
+
+STEP 3 — Locus m_chi = 0.460 MeV (brentq on lambda, per g)
+------------------------------------------------------------------------------
+  Analytic (scaling law): lambda* = -0.264695 (m_J_raw = 0.514485)
+  g = 0.50:  lambda* = -0.264696   (m_J_raw = 0.514487)
+  g = 1.00:  lambda* = -0.264697   (m_J_raw = 0.514487)
+  g = 2.00:  lambda* = -0.264698   (m_J_raw = 0.514488)
+
+STEP 4 — Definitive profile at canonical (g=1, lambda*) for alpha_JN
+------------------------------------------------------------------------------
+  (g, lambda) = (1.0, -0.264697)   m_J_raw = 0.514487
+  B0_out = 0.500050  (v9/v10 canonical B0 = 0.5 — same point)
+  m_chi = 0.4600 MeV   m_J = 0.6184 MeV
+  C = 770.2 MeV*fm  (K_1 fit residual 3.79e-02)
+  peak beta = 0.6971 @ r = 1.781 (687.8 fm)   nodes = 0   tail/peak = 1.91e-07
+  Profile exported: /Users/xrodz/Documents/source_code/OPENWAVE-LABS/openwave/openwave/xperiments/m6_ouroboros/research/sandbox_v11/v11_canonical_beta_profile.csv  (4000 points)
+
+STEP 5 — Reproducing the v5a Technical-Note failure modes
+------------------------------------------------------------------------------
+  5a. Fixed-lambda BVP, COLD seed (the 'Griesi-1 near-trivial' mode):
+      B0_init =  0.1:  success=True  peak = 6.116e-12  (TRIVIAL collapse)
+      B0_init =  0.5:  success=True  peak = 2.895e-24  (TRIVIAL collapse)
+      B0_init =  1.0:  success=True  peak = 5.113e-11  (TRIVIAL collapse)
+      scaling seed:   success=True  peak = 1.3549  nodes = 0  (SOLITON — same code, correct seed)
+      >> required amplitude at lambda=-1, g=1 is a = m_J/(2 sqrt(g)) = 0.5;
+         cold r*exp(-r) seeds sit in the trivial Newton basin.
+  5b. Wrong l=1 regularity (template BC beta'(RMIN)=0):
+         cold seed:  success=True  peak = 1.654e-24  (TRIVIAL collapse)
+      scaling seed:  success=True  peak = 1.355e+00  (soliton)
+      >> wrong BC collapses from cold seeds (v9 phase 2 observation);
+         with a scaling-quality seed the RMIN BC error is O(RMIN^2) and
+         the soliton still wins — the trivial Newton basin (cold-start
+         amplitude) is the dominant failure mechanism.
+  5c. The v9/v10 production formulation avoids both: B0 is a hard BC
+      (amplitude pinned, trivial solution excluded) and m_J is the free
+      eigenvalue. Shooting/IVP failure is separate — documented Q42.
+
+STEP 6 — Scaling-law cross-checks
+------------------------------------------------------------------------------
+  m_J/eta over grid:  mean = 1.210238  spread = 1.77e-05   (v10 invariant: 1.21024)
+  (H/Q)/m_J^2 over grid:  mean = 7.999893  spread = 1.85e-04
+  >> (H/Q)/m_J^2 = 7.9999 ~ 8: candidate exact virial
+     (Pohozaev) identity H = 8 m_J^2 Q for the l=1 cubic NLS — would
+     explain v10's Q47 invariance analytically. For Paul/DeepSeek.
+
+  g^(1/4) law at fixed B0=0.5 (v10 g-scan reproduction):
+    g = 0.50:  m_J = +0.43261   scaling prediction m_J(1)*g^0.25 = +0.43261
+    g = 1.00:  m_J = +0.51446   scaling prediction m_J(1)*g^0.25 = +0.51446
+    g = 1.60:  m_J = +0.57860   scaling prediction m_J(1)*g^0.25 = +0.57861
+
+==============================================================================
+SUMMARY — answers to DeepSeek's three asks
+==============================================================================
+
+  1. Neutral-sector parameters from first principles:
+       The (g, lambda) scan is analytically degenerate (exact scaling family).
+       m_J = 0.6184 MeV is parameter-free (invariant over the whole plane).
+       m_chi = 0.460 MeV fixes lambda* = -0.264697 (any g).
+       g fixed at 1.0 by electron universality (Q45) -> amplitude determined.
+       Canonical: (g, lambda) = (1.0, -0.2647)  [= v9/v10 point (g=1, B0=0.5)]
+  2. Definitive beta(r) profile: v11_canonical_beta_profile.csv (natural + fm).
+  3. BVP inconsistency resolved:
+       - 'near-trivial at all B0': cold-seed Newton basin at fixed lambda
+         (5a) or wrong regularity BC (5b). Not present in v9/v10 formulation.
+       - 'shooting code wrong masses': IVP windowing artifact, documented Q42.
+       - v5a Technical Note correction needed: our 0.460/0.618 WERE direct BVP
+         integration (+ Q46 eta recipe), not an energy-functional fit.
+

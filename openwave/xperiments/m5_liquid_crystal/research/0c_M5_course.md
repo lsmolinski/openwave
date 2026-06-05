@@ -823,7 +823,7 @@ motion — the spin *is* the rest energy. (The energetic *why* is L7.)
 | --- | --- |
 | `5a §10b` | the 4×4 promotion math |
 | `4a §6` | design-convo notes — the 4th axis |
-| `theory/time_crystal.pdf` | Duda's toy-model paper |
+| `theory/time_crystal_toy_model.pdf` | Duda's toy-model paper |
 | `4b §4.7` | gravitational-field FUTURE viz — the clock-rate render plan |
 
 ---
@@ -1409,7 +1409,7 @@ outcome + a falsifiable **test**, in M5's least-developed sector.
 | Anchor | What it is |
 | --- | --- |
 | `5a §10` | the toy model (clock math) |
-| `theory/time_crystal.pdf` | Duda's toy-model paper |
+| `theory/time_crystal_toy_model.pdf` | Duda's toy-model paper |
 | `1b` | Derrick / time-crystal (topological-defect notes) |
 | `4a §6` | design-convo notes — the clock |
 | `images/clock.gif` | Duda's electron-clock animation (embedded above; [Wolfram Community](https://community.wolfram.com/groups/-/m/t/3398814)) |

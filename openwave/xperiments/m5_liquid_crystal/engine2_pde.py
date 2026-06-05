@@ -387,6 +387,230 @@ def evolve_M(
 
 
 # ================================================================
+# M5.8.2c — 4D MINKOWSKI EVOLUTION (flag-gated; the time axis goes LIVE)
+# ================================================================
+# The signed curvature flux is the 3D production flux with F → ηFη
+# (η = diag(1,1,1,−1), time = matrix index 3) — the 5a §10d ℋ sign rule:
+# spatial matrix pairs positive, (α,3) pairs negative. Sandbox anchors:
+# m5_8_2a (fuel) → 2b-1 (CC) → 2b-2 (field clock) → 2c-1 (full nonlinear,
+# f64 numpy — THE cross-validation reference for these f32 kernels).
+# Ghost guard: the per-voxel stable_mask (K>0 ∧ Q(∇ψ) positive-definite,
+# computed ONCE post-seed) selects signed flux on the stable region and the
+# always-stable Euclidean flux on the fuel shell (the 2b-2 λ≈15.6/t linear
+# runaway sector — its propulsion physics needs the constrained faithful
+# kernel, future work; v1 keeps it Euclidean-stable). Global guard: the
+# coherent (α,3) velocity drift is sampled on 3 mid-planes (Metal-safe —
+# NO full-grid reductions, the atomics lesson) and subtracted in evolve.
+
+
+@ti.func
+def eta_twist_masked(f, stable: ti.f32):  # type: ignore
+    """F → ηFη blended by the stable mask: (α,3)/(3,α) comps × (1 − 2·stable).
+
+    stable=1 → the Minkowski-signed twist; stable=0 → identity (Euclidean
+    fallback on the fuel shell)."""
+    s = 1.0 - 2.0 * stable
+    out = f
+    for a_ in ti.static(range(3)):
+        out[a_, 3] = f[a_, 3] * s
+        out[3, a_] = f[3, a_] * s
+    return out
+
+
+@ti.func
+def signed_dot4(a4, b4):  # type: ignore
+    """⟨A,B⟩_s = Σ A∘(ηBη): spatial-pair comps +, (α,3) comps − (full-matrix sum)."""
+    acc = 0.0
+    for p_ in ti.static(range(4)):
+        for q_ in ti.static(range(4)):
+            sgn = 1.0
+            if ti.static((p_ == 3) != (q_ == 3)):
+                sgn = -1.0
+            acc += a4[p_, q_] * b4[p_, q_] * sgn
+    return acc
+
+
+@ti.kernel
+def compute_stable_mask(tensor_field: ti.template()):  # type: ignore
+    """Per-voxel ghost guard (run ONCE post-seed): stable_mask = 1 where the
+    signed clock kernel is well-posed — K(x) > 0 AND the 3×3 gradient-stiffness
+    form Q(∇ψ) is positive-definite (the 2b-2 criterion, exact):
+
+        P_i = [M_i, M_ψ] ,  p_ij = ⟨P_i, P_j⟩_s ,  K = 4 Σ_i p_ii
+        Q_ii = Σ_(j≠i) p_jj ,  Q_ij = −p_ij  (i≠j) ;  stable ⇔ K>0 ∧ minEig(Q)>0
+
+    minEig via the analytic Cardano solver (NOT ti.sym_eig — the Metal/f32
+    lesson). Boundary voxels default to 0 (Euclidean). Seed-time cost only.
+    """
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        tensor_field.stable_mask[i, j, k] = 0.0
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        m_psi = tensor_field.M_psi_am[i, j, k]
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        p0 = commutator(mx, m_psi)
+        p1 = commutator(my, m_psi)
+        p2 = commutator(mz, m_psi)
+        p00 = signed_dot4(p0, p0)
+        p11 = signed_dot4(p1, p1)
+        p22 = signed_dot4(p2, p2)
+        p01 = signed_dot4(p0, p1)
+        p02 = signed_dot4(p0, p2)
+        p12 = signed_dot4(p1, p2)
+        kin = 4.0 * (p00 + p11 + p22)
+        q = ti.Matrix([[p11 + p22, -p01, -p02],
+                       [-p01, p00 + p22, -p12],
+                       [-p02, -p12, p00 + p11]])
+        _, eigs = principal_director(q)                  # sorted λ₁≥λ₂≥λ₃
+        qscale = ti.abs(q[0, 0]) + ti.abs(q[1, 1]) + ti.abs(q[2, 2]) + 1e-30
+        if kin > 0.0 and eigs[2] > 1e-6 * qscale:
+            tensor_field.stable_mask[i, j, k] = 1.0
+
+
+@ti.kernel
+def compute_tstar(tensor_field: ti.template()):  # type: ignore
+    """Seed the per-voxel V(M) amplitude target t*(x) = Tr(M_sp²) of the CURRENT
+    field (call once, right after seeding): the dressed seed becomes the exact
+    V-equilibrium — zero static V-force (the 2c-0 'pin the well to the DRESSED
+    amplitude' design input; fixes the 2c-2 slow V-pump on the off-minimum
+    dressed shell). The well then confines amplitude EXCURSIONS, not the seed."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        m = tensor_field.M_am[i, j, k]
+        msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
+                         [m[1, 0], m[1, 1], m[1, 2]],
+                         [m[2, 0], m[2, 1], m[2, 2]]])
+        tensor_field.ldg_tstar[i, j, k] = (msp @ msp).trace()
+
+
+@ti.func
+def dV_M_dressed(m, cc: ti.f32, tstar: ti.f32):  # type: ignore
+    """∂V/∂M for the DRESSED well V = cc·(Tr(M_sp²) − t*(x))²: 4·cc·(t−t*)·M_sp,
+    spatial block only (time row/col force = 0 — the M5.8.1 rule)."""
+    msp = ti.Matrix([[m[0, 0], m[0, 1], m[0, 2]],
+                     [m[1, 0], m[1, 1], m[1, 2]],
+                     [m[2, 0], m[2, 1], m[2, 2]]])
+    t = (msp @ msp).trace()
+    dsp = 4.0 * cc * (t - tstar) * msp
+    d4 = ti.Matrix.zero(ti.f32, 4, 4)
+    for i in ti.static(range(3)):
+        for j in ti.static(range(3)):
+            d4[i, j] = dsp[i, j]
+    return d4
+
+
+@ti.kernel
+def compute_curvature_flux_4d(tensor_field: ti.template()):  # type: ignore
+    """The 4D signed curvature flux G_α = 8 Σ_ν [tw(F_αν), M_ν], tw = ηFη on the
+    stable region / identity on the fuel shell (stable_mask blend). At b=0 the
+    seed has no (α,3) components ⇒ tw is a no-op ⇒ EXACTLY compute_curvature_flux
+    (the headless identity check). Same two-pass contract as the 3D kernel."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
+        st = tensor_field.stable_mask[i, j, k]
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        fxy = eta_twist_masked(commutator(mx, my), st)
+        fxz = eta_twist_masked(commutator(mx, mz), st)
+        fyz = eta_twist_masked(commutator(my, mz), st)
+        tensor_field.curv_flux_x[i, j, k] = 8.0 * (
+            commutator(fxy, my) + commutator(fxz, mz))
+        tensor_field.curv_flux_y[i, j, k] = 8.0 * (
+            commutator(-1.0 * fxy, mx) + commutator(fyz, mz))
+        tensor_field.curv_flux_z[i, j, k] = 8.0 * (
+            commutator(-1.0 * fxz, mx) + commutator(-1.0 * fyz, my))
+
+
+@ti.kernel
+def sample_v03_drift(tensor_field: ti.template(), dt_rs: ti.f32):  # type: ignore
+    """Sample the coherent (α,3) velocity drift on 3 mid-planes (Metal-safe:
+    plane-scale atomics only — the full-grid-reduction lesson). Results land in
+    tensor_field.v03_sums[0..2]; the caller divides by the plane-voxel count."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    for a_ in ti.static(range(3)):
+        tensor_field.v03_sums[a_] = 0.0
+    inv_dt = 1.0 / dt_rs
+    im, jm, km = nx // 2, ny // 2, nz // 2
+    for j, k in ti.ndrange(ny, nz):
+        d = (tensor_field.M_am[im, j, k] - tensor_field.M_prev_am[im, j, k]) * inv_dt
+        for a_ in ti.static(range(3)):
+            tensor_field.v03_sums[a_] += d[a_, 3]
+    for i, k in ti.ndrange(nx, nz):
+        d = (tensor_field.M_am[i, jm, k] - tensor_field.M_prev_am[i, jm, k]) * inv_dt
+        for a_ in ti.static(range(3)):
+            tensor_field.v03_sums[a_] += d[a_, 3]
+    for i, j in ti.ndrange(nx, ny):
+        d = (tensor_field.M_am[i, j, km] - tensor_field.M_prev_am[i, j, km]) * inv_dt
+        for a_ in ti.static(range(3)):
+            tensor_field.v03_sums[a_] += d[a_, 3]
+
+
+@ti.kernel
+def evolve_M_4d(
+    tensor_field: ti.template(),  # type: ignore
+    c_amrs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    ldg_cc: ti.f32,  # type: ignore
+    vm0: ti.f32,  # type: ignore
+    vm1: ti.f32,  # type: ignore
+    vm2: ti.f32,  # type: ignore
+    km: ti.f32,  # type: ignore
+):
+    """The M5.8.2 leapfrog: the M5.8.1 time-freeze clamp is REPLACED by the soft
+    global guard — the time axis is LIVE. Identical to evolve_M except:
+
+    (i) no (α,3) zeroing and no M[3,3] pin (boost dressing + clock evolve freely);
+    (ii) the sampled coherent (α,3) drift (vm0..2, from sample_v03_drift) is
+        subtracted — the 2b-1 ghost channel (a free GLOBAL dressing mode);
+    (iii) DIAGONAL FAITHFUL-LITE INERTIA m(x) = 1 + km·dx²·Σ_i‖M_i‖²_F dividing
+        the acceleration — the scalar shadow of the faithful kinetic operator
+        A(Ṁ) = 4Σ[η[Ṁ,M_i]η,M_i] that stabilized the 2c-1 spike: inertia grows
+        with local structure (steepening modes get HEAVY and decelerate — the
+        self-regulation the simple kinetic lacks, which let the signed
+        stiffness pump the core, the 2c-2 repro). m → 1 in weak-gradient
+        regions ⇒ the 3D/vacuum limit is untouched; km=0 disables.
+
+    V(M) uses the DRESSED well dV_M_dressed with the per-voxel target t*(x)
+    (compute_tstar, run once post-seed): the seed is the exact V-equilibrium —
+    zero static V-force (the 2c-2 fix for the slow V-pump on the off-minimum
+    dressed shell; 2c-0 energetics unchanged: confinement of excursions kept)."""
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
+    c2 = c_amrs * c_amrs
+    dt2 = dt_rs * dt_rs
+    dx2 = tensor_field.dx_am * tensor_field.dx_am
+    for i, j, k in ti.ndrange((2, nx - 2), (2, ny - 2), (2, nz - 2)):
+        div_G = (
+            (tensor_field.curv_flux_x[i + 1, j, k] - tensor_field.curv_flux_x[i - 1, j, k])
+            + (tensor_field.curv_flux_y[i, j + 1, k] - tensor_field.curv_flux_y[i, j - 1, k])
+            + (tensor_field.curv_flux_z[i, j, k + 1] - tensor_field.curv_flux_z[i, j, k - 1])
+        ) * inv_2dx
+        force = c2 * div_G - dV_M_dressed(tensor_field.M_am[i, j, k], ldg_cc,
+                                          tensor_field.ldg_tstar[i, j, k])
+        mx = (tensor_field.M_am[i + 1, j, k] - tensor_field.M_am[i - 1, j, k]) * inv_2dx
+        my = (tensor_field.M_am[i, j + 1, k] - tensor_field.M_am[i, j - 1, k]) * inv_2dx
+        mz = (tensor_field.M_am[i, j, k + 1] - tensor_field.M_am[i, j, k - 1]) * inv_2dx
+        mloc = 1.0 + km * dx2 * (mx.norm_sqr() + my.norm_sqr() + mz.norm_sqr())
+        m_new = (
+            2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k]
+            + dt2 * force * (1.0 / mloc)
+        )
+        # guard (a): remove the coherent global (α,3) drift accumulated this step
+        m_new[0, 3] -= vm0 * dt_rs
+        m_new[3, 0] -= vm0 * dt_rs
+        m_new[1, 3] -= vm1 * dt_rs
+        m_new[3, 1] -= vm1 * dt_rs
+        m_new[2, 3] -= vm2 * dt_rs
+        m_new[3, 2] -= vm2 * dt_rs
+        tensor_field.M_new_am[i, j, k] = m_new
+
+
+# ================================================================
 # GRADIENT-DESCENT RELAXATION (M5.1 task 6)
 # ================================================================
 # Direct port of Exp 2's relax() inner loop to Taichi:
