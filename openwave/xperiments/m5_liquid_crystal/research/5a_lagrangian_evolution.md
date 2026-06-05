@@ -1,6 +1,6 @@
 # M5.5 + M5.6 — Paper Lagrangian, KG Emergence & Faber Regularization (math reference)
 
-**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`). §10: the **M5.8 foundation** — Duda's 1+1D time-crystal toy model (arXiv:2501.04036, the integrator-validation anchor verified by quadrature 2026-05-29) + the 3+1D promotion math (4-index curvature `F_μναβ`, the Minkowski-signature negative-energy mechanism, the faithful-kinetic prerequisite, the `ω=2mc²/ℏ` calibration).
+**Purpose:** the confirmed mathematical foundation for **M5.5** (the Eq.18 action) and **M5.6** (KG-from-twist emergence). §1–4: Duda's Eq.18 action, the building-block operators, the Eq.35 Euler–Lagrange evolution of the matrix field `M`, the matrix Hamiltonian, the `V(M)` options, and the transcription of Duda's Mathematica source (Fig.9) reducing the twist equation to the hedgehog Klein–Gordon — prototyped in `sandbox_v5`. §5 + §5a–§5g: the **M5.6 findings** — the KG mass is *geometric* (minimal coupling to the hedgehog connection `Â`, M5.6.1), the biaxial hedgehog's curvature `C_μν~1/r²` sources it dynamically (M5.6.2), Faber's `Λ=q₀⁶/r₀⁴` regularization pins the mass scale `E₀∝1/r₀` (M5.6.3), the EM/tilt sector reproduces Maxwell by both routes (M5.6.4), the biaxial seeder is ported to production behind an analytic eigensolver fix (M5.6.5a, §5e), turning V on confines the amplitude via a `b=0` well — the 3-term Eq.13 has no biaxial minimum (M5.6.5c, §5f), and the faithful Eq.18 kinetic differs from the shipped `½‖Ṁ‖²` only in physical-mode inertia (the twist/clock frequency, for M5.8) — not gauge slosh (M5.6.5d, §5g). §5h–§5j: the **M5.7 resonance-hunt** findings — §5h the seeded l=1 resonance (dispersed; null + energy validation at N=48), §5i the defect's intrinsic oscillation (also disperses — second null ⇒ the free particle/clock is 4D, not 3D; motivates M5.8), §5j the **driven** defect (a bounded, frequency-selective `(A,ω)` excess — the lever works; the driven-thermal substrate for 9b; full detail in `9b`). §10: the **M5.8 foundation** — Duda's 1+1D time-crystal toy model (arXiv:2501.04036, the integrator-validation anchor verified by quadrature 2026-05-29) + the 3+1D promotion math (4-index curvature `F_μναβ`, the Minkowski-signature negative-energy mechanism, the faithful-kinetic prerequisite, the `ω=2mc²/ℏ` calibration). §10e: the **CANONICAL RECIPE** — the distilled build-spec (substrate, action, construction recipe, integrator constraints) + the M5.8.2a G1–G7 verification gates (all PASS 2026-06-05: the Minkowski clock fuel is real, signature-dependent, core-localized).
 
 **Source:** Duda, *Framework for liquid crystal based particle models* (arxiv:2108.07896 v7), §II–IV + Fig.9 (math reading **confirmed by Rodrigo 2026-05-26**); Faber & Golubich, *Universe* 11/2025/113 (regularization, §5c).
 
@@ -595,6 +595,10 @@ oscillations propelled by mass, like observed for electron and neutrinos* (arXiv
 2026-05-29** (the variational anchors below reproduce to 4–5 digits). This is the mathematical
 foundation for the M5.8 build plan in [`0b_M5_roadmap.md § Phase M5.8`](0b_M5_roadmap.md).
 
+**The distilled build-spec is §10e (canonical recipe)** — substrate + action + construction
+recipe + integrator constraints + the M5.8.2a G1–G7 gate table. §10a–§10d keep the derivations
+and the discovery narrative.
+
 ### 10a. The 1+1D toy model — the integrator-validation anchor (M5.8.0)
 
 A clean 1+1D scalar realization of "why a resting particle oscillates at `ω = 2mc²/ℏ`" (the de
@@ -854,3 +858,120 @@ Channeling"*, **Found. Phys. 38 (2008) 659–664** (81 MeV e⁻, ⟨110⟩-Si re
 target the M5.8 `ω = 2mc²/ℏ` claim points at; (c) **neutrino = a short closed loop** (Abrikosov-vortex-
 like) of ellipsoids, excited by `π` (lepton) vs `π/3` (quark `e/3`); muon↔tau (axes 2↔3 along the loop)
 is lowest-energy → the dominant oscillation (matches the data) → M5.9.
+
+### 10e. Canonical recipe — the build-spec + the M5.8.2a verification gates (2026-06-05)
+
+The single self-contained statement of **what to build** — substrate, action, conventions,
+construction recipe, integrator constraints, gates — distilled from §10a–§10d. A new contributor
+(or a future session) reads this subsection to rebuild the model from scratch; the evidentiary
+catalog (every headline claim + its runnable script) is the
+[`0b_question_tracker.md`](0b_question_tracker.md) § *Empirical validation* table.
+
+#### The substrate
+
+One matrix field per voxel; the grid stays 3D — **time is not a 4th grid axis, it is the 4th
+matrix axis** (the 3D→4D promotion table is §10b).
+
+```text
+M(x) = O(x) · D · O(x)^T ,   O(x) ∈ SO(1,3) ,   M symmetric 4×4 ,  time = MATRIX INDEX 3
+```
+
+Eigenvalue dictionary (`D` is the local ground-state spectrum; `g ≫ 1 ≫ δ > 0`):
+
+| Eigenvalue | Axis meaning | Production value |
+| --- | --- | --- |
+| `g` | time / boost / gravity axis (index 3) | `LC_G = 8.0` |
+| `1` | EM high-energy axis | 1.0 |
+| `δ` | QM low-energy twist axis (`δ ~ ℏ`) | `lc_delta = 0.3` |
+| `0` | the soft axis | 0.0 |
+
+| Configuration | D | Frame |
+| --- | --- | --- |
+| Vacuum (uniaxial) | `diag(δ, δ, 1, g)` | director = ẑ everywhere |
+| Defect (biaxial hedgehog) | `diag(1, δ, 0, g)` | `O_hh = [r̂ | e_Θ | e_Φ] ⊕ 1` (m5_6_2a), point core `r_c` + z-axis disclination `ρ_c` masks |
+
+#### The action + Hamiltonian
+
+```text
+ℒ = − Σ_{αβμν} F_μναβ F^μναβ − V(M)          (Duda Eq.42; §10b)
+F_μναβ = [∂_μ M, ∂_ν M]_αβ                    (4-index Skyrme curvature:
+                                               μν = derivative, αβ = matrix indices)
+
+Legendre ⇒  ℋ = 2 Σ_{0≤μ<ν≤3} [ Σ_{spatial α<β} (F_μναβ)²  −  Σ_{α=0..2} (F_μνα3)² ] + V(M)
+                 └── positive: spatial matrix block ──┘   └── NEGATIVE: (α,3) time block ──┘
+```
+
+The sign rule (with time = matrix index 3): the sign of every `F²` term is decided by the
+**matrix index pair** — spatial pairs positive, `(α,3)` pairs negative — uniformly over all `μν`.
+The negative `(α,3)` block is the **clock-propulsion fuel** (the 3+1D genuine analog of the 1D
+toy's `−αR²`).
+
+| Piece | Canonical form | Status |
+| --- | --- | --- |
+| Kinetic (faithful) | `T = 4Σ_μ‖[M_μ, Ṁ]‖²` — the `O(x)∈SO(1,3)` metric | validated on ψ-DoF (`m5_6_2b`); production `½‖Ṁ‖²` is the qualitative visualizer only (inertia off ×[0.6,3.0], §5g) |
+| Potential | `V(M)` = Eq.13 LdG (`a·Tr(M²) − b·Tr(M³) + c·Tr(M²)²`), **spatial 3×3 block only** until the time axis couples deliberately | live in production, off by default; `b=0` amplitude well confines ~3.3× |
+| Regularization | Faber `Λ = q₀⁶/r₀⁴` → core melts to isotropic, mass pinned `E ∝ 1/r₀` (`r₀ = 2.2132 fm → 0.511 MeV e⁻`) | the M5.9 calibration handle |
+| `βR⁴` | **DO NOT PORT** — 1+1D-only regulator; in 3D the positive spatial curvature supplies the cap (via profile response — M5.8.2b) | confirmed by the Wolfram article + the 2a parity trend |
+
+#### The canonical construction recipe (the clock state)
+
+The M5.8.2a ansatz family — each factor is one physical ingredient:
+
+```text
+O(x,t) = O_hh(x) · B(x; b) · R(ωt)            M = O D O^T,  D = diag(1, δ, 0, g)
+
+O_hh   the biaxial hedgehog frame [r̂|e_Θ|e_Φ], embedded 4×4 (time row/col = 1)
+B      = exp(b · w(r) · B_a),  B_a = E_{a3} + E_{3a}   — BOOST DRESSING: mixes
+         spatial eigen-axis a with the time axis; w(r) core-localized profile
+R(ψ)   = exp(ψ · G_pq) — the CLOCK: rotation in eigen-plane (p,q); canonical
+         plane = (δ, 0) (the article's exp(ψ·Gx); ψ swept = the clock.gif animation)
+```
+
+| Knob | Meaning | Key facts (2a-measured) |
+| --- | --- | --- |
+| `b = 0` | time axis inert — **the M5.8.1 production state** | fuel block exactly 0; clock costs `+ω²` (the M5.7 null in functional form) |
+| `b > 0` | time axis dressed (the boundary M5.8.2 deliberately crosses) | fuel `C(b) < 0` for every plane×axis combo; static `A(b)` dips `5.97→0.39` at `b≈0.2` (the ω=0 GEM effect) then rises, always `> 0` |
+| `ω` | clock rate | `E(ω,b) = A(b) + ω²·C(b)` exactly (rigid sweep); `ω_M = 2·ω_clock` (apolar doubling, machine-exact) — the `ω = 2mc²/ℏ` factor 2 |
+
+Reference cross-check: the article's electron-field generator (§10d) — our 4D seeder must
+reproduce that `M(x)` with the `ψ`-sweep as the clock. The generator → force dictionary is §10d.
+
+#### The integrator constraints (the ghost lesson)
+
+| Constraint | Why | Source |
+| --- | --- | --- |
+| NO naive explicit leapfrog of the free 4D field | the `(−,+,+,+)` `Γ₀` terms make the time-axis mode a negative-kinetic GHOST — the 1D toy's free leapfrog blew up at `t≈1.2` | `m5_8_0b_toy_leapfrog.py`, §10a |
+| Evolve on the constrained / bounded-energy manifold | collective-coordinate reduction makes the clock phase cyclic ⇒ `p_Θ` Noether-conserved ⇒ stable (1D: drift ~10⁻¹⁵ over t=60) | `m5_8_0b_collective_clock.py` |
+| Evolve the `O` rotation/boost DoF, not M's raw components | the faithful metric `K` is degenerate (trace = null mode) | §9 |
+| The clock is dynamical only ON the hedgehog | `[M_x, Ṁ] = 0` on a uniform background — the commutator structure auto-localizes the clock energy (the 1D `det H ∝ φ_x²` shadow) | `m5_6_2b` + 2a vacuum control (exactly 0) |
+| Bounded energy is the physics guard | topology bounds E below — "mass can't go ≤ 0" (Duda) | §10c; 1D floor `E* = 2.1257 > 0` |
+
+#### Verification gates — M5.8.2a (all PASS, 2026-06-05)
+
+Anchor script: `sandbox_v8/m5_8_2a_4d_hamiltonian.py` (numpy quadrature, 48³, exact §10d ℋ, V=0).
+
+| Gate | Statement | Measured result |
+| --- | --- | --- |
+| G1 | bare clock costs: `C_neg(b=0) = 0` exactly, `C(0) > 0` — no crystal while the time axis is inert (the M5.7 functional null) | ✅ `C_neg = 0.0` exact; `C_pos = +17.07` |
+| G2 | THE FUEL: `∃b` with `C(b) < 0` — Minkowski wins once the time axis is dressed | ✅ all 9 plane×axis combos negative at `b=0.6`; strongest `(1,0)`-plane, `a=2`: `C = −678` |
+| G3 | crystal threshold: `E(ω,b) < E(0,0)` beyond finite `ω_c` — the dressed oscillating defect beats the static one | ✅ `ω_c(b=0.4) = 0.555`; at `b=0.2` the dressed static already wins (`A=0.39 < 5.97`) |
+| G4 | signature control: Euclidean flip (all blocks +) ⇒ no fuel | ✅ `C_E(b) ∈ [+74.9, +2.34×10⁴] > 0 ∀b` |
+| G5 | static mass guard: `A(b) > 0` on a fine scan (§10c at ω=0); the rigid-family ω-unboundedness is the expected toy-without-`βR⁴` artifact — cap = profile response (2b), onset visible | ✅ `A_min = 0.389 > 0`; `C_pos/C_neg`: `0.87 → 0.32 → 0.36 → 0.52 → 0.69 → 0.83` (rises back toward parity) |
+| G6 | localization: fuel density core-localized — the clock lives ON the defect | ✅ falls 10 decades by r≈9 (tail/peak < 10⁻⁴); dressed-vacuum control exactly 0 |
+| G7 | apolar doubling: `M(ψ)` period = π, not 2π ⇒ `ω_M = 2·ω_clock` | ✅ `max|M(π)−M(0)| = 5.6×10⁻¹⁷` vs `|M(π/2)−M(0)| = 0.30` |
+
+1D anchors carried in (M5.8.0, all reproduced by quadrature + CC dynamics):
+
+| Anchor | Value |
+| --- | --- |
+| Analytic kink clock (Eq.5) | `ω* = √(70/61) = 1.0712`, `E* = 2.1257` — CC run holds it exactly, drift 1.88×10⁻¹⁵ |
+| Optimized profile (Fig.1) | `ω* = 1.2898`, `E* = 2.0252` |
+| Energy floor (0d-c) | `E = 2.1257 > 0` over `(w, ω) ∈ [0.6, 2.5] × [0, 2]` |
+
+#### Open items the recipe still needs
+
+| Item | What it adds | Where |
+| --- | --- | --- |
+| 🚧 M5.8.2b — profile-response cap + CC clock | the finite-`ω*` selection (the positive spatial curvature caps `ω` once the profile responds — the article's claim, to verify not assume); CC dynamics `(b, Θ)` with conserved `p_Θ` | sandbox_v8 next |
+| M5.8.2c — production port | the faithful 4D kinetic + constrained stepper into `engine2_pde.py`; deliberately cross the M5.8.1 time-freeze clamp + spatial-block-V boundary | after 2b, Rodrigo-gated |
+| M5.8.3 — electron clock `ω` | seed + measure: the dimensionless self-consistency `ω·ℏ/(2H_rest) → 1` (`ℏ ↔ δ`); absolute Hz via the Faber `r₀` scale-fix — the GROUP HEADLINE | after 2c |
