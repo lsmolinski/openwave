@@ -147,5 +147,103 @@ if ok_kernels:
     eH = observables.energyH_density_aJ.to_numpy()
     report(f"energyH density finite (max={np.abs(eH).max():.2e})", np.all(np.isfinite(eH)))
 
+# --- (6) M5.8.2c — the 4D Minkowski port: dressed seeder, stable mask, signed
+#         flux (b=0 identity vs the 3D kernel + f32-vs-f64 cross-check against the
+#         2c-1 numpy mirror), and a 30-step evolve_M_4d bounded run. -----------------
+print("\n(6) M5.8.2c 4D port (seed_dressed_hedgehog_M + stable_mask + flux_4d + evolve_M_4d)")
+# NOTE: numpy mirrors defined LOCALLY — importing the 2c-1/2c-2 sandbox modules
+# pulls m5_8_2a's module-level ti.init → a SECOND runtime init with live fields
+# → segfault (caught 2026-06-05; Taichi gotcha: never re-init mid-run).
+
+
+def np_tw(A):
+    B = A.copy()
+    B[..., 3, :3] *= -1.0
+    B[..., :3, 3] *= -1.0
+    return B
+
+
+def np_central(f, axis, h):
+    out = np.zeros_like(f)
+    sp_, sm, so = [slice(None)] * f.ndim, [slice(None)] * f.ndim, [slice(None)] * f.ndim
+    sp_[axis], sm[axis], so[axis] = slice(2, None), slice(0, -2), slice(1, -1)
+    out[tuple(so)] = (f[tuple(sp_)] - f[tuple(sm)]) / (2 * h)
+    return out
+
+
+def np_commf(A, B):
+    return (np.einsum("...ac,...cb->...ab", A, B)
+            - np.einsum("...ac,...cb->...ab", B, A))
+
+# (6a) dressed seed + mask
+RW_VOX = 0.29 * N
+seeds.seed_dressed_hedgehog_M(tf, c, c, c, 0.06 * N, 3.0, 0.30, 0.13, RW_VOX, 0.0)
+pde.compute_stable_mask(tf)
+M_np = tf.M_am.to_numpy().astype(np.float64)
+psi_np = tf.M_psi_am.to_numpy().astype(np.float64)
+mask_np = tf.stable_mask.to_numpy()
+report(f"dressed seed finite (max|M|={np.abs(M_np).max():.2f}) + M_psi finite",
+       np.isfinite(M_np).all() and np.isfinite(psi_np).all())
+frac = mask_np.mean()
+report(f"stable mask computed (stable fraction {100 * frac:.1f}% — 2b-2 ballpark ~50-90%)",
+       0.3 < frac < 0.98)
+
+# (6b) f32-vs-f64 kernel cross-check: production G_4d vs 2× the 2c-1 numpy flux
+# (production G_α = 8Σ[twF, M_ν] = 2× the spike's 4Σ[twF, M_j]), computed from the
+# SAME (f32-seeded) M field in f64, with the SAME mask blend.
+pde.compute_curvature_flux_4d(tf)
+Gx_ti = tf.curv_flux_x.to_numpy().astype(np.float64)
+h64 = float(tf.dx_am)
+Mi64 = [np_central(M_np, ax, h64) for ax in range(3)]
+st = mask_np[..., None, None]
+
+
+def tw_blend(F):
+    return F + st * (np_tw(F) - F)
+
+
+Fxy, Fxz = np_commf(Mi64[0], Mi64[1]), np_commf(Mi64[0], Mi64[2])
+Gx_np = 8.0 * (np_commf(tw_blend(Fxy), Mi64[1]) + np_commf(tw_blend(Fxz), Mi64[2]))
+inner = (slice(2, -2),) * 3
+scale = np.abs(Gx_np[inner]).max() + 1e-30
+rel = np.abs(Gx_ti[inner] - Gx_np[inner]).max() / scale
+report(f"flux_4d f32 kernel matches f64 numpy mirror (rel {rel:.2e} < 1e-3)", rel < 1e-3)
+
+# (6c) b=0 identity: no (α,3) components ⇒ flux_4d ≡ flux_3d EXACTLY
+seeds.seed_dressed_hedgehog_M(tf, c, c, c, 0.06 * N, 3.0, 0.30, 0.0, RW_VOX, 0.0)
+pde.compute_stable_mask(tf)
+pde.compute_curvature_flux_4d(tf)
+G4 = tf.curv_flux_x.to_numpy().copy()
+pde.compute_curvature_flux(tf)
+G3 = tf.curv_flux_x.to_numpy()
+ident = np.abs(G4 - G3).max() / (np.abs(G3).max() + 1e-30)
+report(f"b=0 identity: flux_4d ≡ flux_3d (rel diff {ident:.2e} — FP-reassociation only)",
+       ident < 1e-6)
+
+# (6d) 300-step evolve_M_4d bounded, V-off then V-on — the production-DEFAULT
+# stack (SIGNED_FLUX_4D off ⇒ Euclid flux + dressed-t* V pinning + km inertia;
+# the 2c-2 lessons: 30 steps was too short to catch slow pumps — run 300)
+for ldg_k, vtag in ((0.0, "V-off"), (1.0, "V-on")):
+    seeds.seed_dressed_hedgehog_M(tf, c, c, c, 0.06 * N, 3.0, 0.30, 0.13, RW_VOX, 0.05)
+    pde.compute_stable_mask(tf)
+    tf.stable_mask.fill(0.0)        # production default: SIGNED_FLUX_4D off (safe v1)
+    pde.compute_tstar(tf)
+    c_amrs = 0.2998
+    dt_rs = 0.5 * tf.dx_am * 0.95 / (c_amrs * 3**0.5)      # DT_SCALE_4D=0.5 faithful
+    ldg_c_ = ldg_k * c_amrs**2 / tf.dx_am**4
+    for _ in range(300):
+        pde.compute_curvature_flux_4d(tf)
+        pde.sample_v03_drift(tf, dt_rs)
+        n_pl = float(tf.nx * tf.ny + tf.ny * tf.nz + tf.nx * tf.nz)
+        vm = [tf.v03_sums[a_] / n_pl for a_ in range(3)]
+        pde.evolve_M_4d(tf, c_amrs, dt_rs, ldg_c_, vm[0], vm[1], vm[2], 30.0)
+        tf.swap_matrix_buffers()
+    Mend = tf.M_am.to_numpy()
+    report(f"evolve_M_4d 300 steps bounded ({vtag}, kicked, full fix stack; "
+           f"max|M|={np.abs(Mend).max():.2f})",
+           np.isfinite(Mend).all() and np.abs(Mend).max() < 100.0)
+
 print("\n  => headless check done. dV_M g-independent + bounded V-on evolve = the GUI "
-      "explosion is fixed; observables kernels run. GUI re-test confirms on screen.")
+      "explosion is fixed; observables kernels run; the 4D port kernels (dressed seed, "
+      "stable mask, signed flux f32≡f64, b=0 identity, bounded 4D evolve) verified. "
+      "GUI re-test confirms on screen.")

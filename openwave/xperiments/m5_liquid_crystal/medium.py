@@ -196,6 +196,25 @@ class TensorField:
         self.curv_flux_y = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
         self.curv_flux_z = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
 
+        # M5.8.2c — 4D Minkowski evolution support (flag-gated; OFF unless the
+        # xperiment seeds a DRESSED hedgehog). stable_mask (1.0 = Minkowski-signed
+        # flux, 0.0 = Euclidean fallback) is the per-voxel ghost guard: the signed
+        # kernel's gradient stiffness Q(∇ψ) loses positive-definiteness on the fuel
+        # shell (M5.8.2b-2), where a linearized signed evolution is ill-posed —
+        # those voxels evolve with the (always-stable) Euclidean flux instead.
+        # Computed ONCE post-seed by engine2_pde.compute_stable_mask (seed-time
+        # cost only). M_psi_am is the seed clock tangent ∂M/∂Θ (the (δ,0)-plane
+        # rotation pattern) — consumed by the mask kernel + the clock trackers.
+        self.stable_mask = ti.field(dtype=ti.f32, shape=self.grid_size)
+        self.M_psi_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)
+        # 3-plane-sampled coherent (α,3) velocity sums (engine2_pde.sample_v03_drift)
+        self.v03_sums = ti.field(dtype=ti.f32, shape=3)
+        # per-voxel V(M) amplitude target t*(x) = Tr(M_sp²) of the SEED (the 2c-0
+        # design input "pin the well to the DRESSED amplitude"): the dressed seed
+        # then sits exactly AT the V minimum — zero static V-force, confinement
+        # kept. Seeded once by engine2_pde.compute_tstar (the 2c-2 V-pump fix).
+        self.ldg_tstar = ti.field(dtype=ti.f32, shape=self.grid_size)
+
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
         # self.velocity_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am/s

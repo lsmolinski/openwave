@@ -214,3 +214,90 @@ def seed_biaxial_hedgehog_M(
         tensor_field.director_nhat_new[i, j, k] = rhat
 
 
+@ti.kernel
+def seed_dressed_hedgehog_M(
+    tensor_field: ti.template(),  # type: ignore
+    cx: ti.i32,  # type: ignore
+    cy: ti.i32,  # type: ignore
+    cz: ti.i32,  # type: ignore
+    r0_vox: ti.f32,  # type: ignore
+    rhoc_vox: ti.f32,  # type: ignore
+    delta: ti.f32,  # type: ignore
+    b_star: ti.f32,  # type: ignore
+    rw_vox: ti.f32,  # type: ignore
+    kick_theta: ti.f32,  # type: ignore
+):
+    """Seed the M5.8.2 BOOST-DRESSED biaxial hedgehog: M = W·D₄·Wᵀ, W = O₄·B(θ).
+
+    The 2b-1 ground state ported to production: the biaxial hedgehog frame + melt
+    (identical to seed_biaxial_hedgehog_M) DRESSED with a core-localized boost
+    B(θ) mixing the e_Θ eigen-axis (index 1) with the time axis (index 3),
+    θ(r) = b*·exp(−(r/r_w)²). At the ground dressing (b* ≈ 0.13) this LOWERS the
+    static energy below the bare defect (the GEM dip, 5a §10e winning recipe).
+    ⚠️ r̂ stays the spatial principal axis only for modest b* (the boost feeds
+    sinh²·g into the e_Θ spatial eigenvalue: 0.3 → ~0.44 at b*=0.13, still < 1).
+
+    Also writes M_psi_am — the clock tangent ∂M/∂Θ for the (δ,0)-plane rotation
+    (eigen-axes 1↔2): [G, D] = (d₁−d₂)·(E₁₂+E₂₁) conjugated by W. Consumed by
+    compute_stable_mask + the clock trackers.
+
+    kick_theta ≠ 0 starts the clock: M_prev is seeded at clock phase −kick_theta
+    (the leapfrog then opens with Θ̇ = kick_theta/dt — caller picks dt scaling).
+
+    Triple-buffer BC rule: writes M_prev (back-rotated if kicked), M_am, M_new.
+    """
+    nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
+    d_iso = (1.0 + delta) / 3.0
+    eps = ti.cast(1e-6, ti.f32)
+    g_t = tensor_field.lc_g
+    ck = ti.cos(kick_theta)
+    sk = ti.sin(kick_theta)
+    for i, j, k in ti.ndrange(nx, ny, nz):
+        px = ti.cast(i - cx, ti.f32)
+        py = ti.cast(j - cy, ti.f32)
+        pz = ti.cast(k - cz, ti.f32)
+        r2 = px * px + py * py + pz * pz
+        r = ti.sqrt(r2)
+        rho = ti.sqrt(px * px + py * py)
+
+        rinv = 1.0 / ti.max(r, eps)
+        rhat = ti.Vector([px * rinv, py * rinv, pz * rinv])
+        ainv = 1.0 / ti.sqrt(rho * rho + eps)
+        azim = ti.Vector([-py * ainv, px * ainv, 0.0])
+        sdisc = ti.min(rho / rhoc_vox, 1.0)
+        shrink = sdisc * sdisc * (3.0 - 2.0 * sdisc)
+        ephi = azim * shrink
+        ephi = ephi - ephi.dot(rhat) * rhat
+        etheta = ephi.cross(rhat)
+
+        srad = r / ti.sqrt(r2 + r0_vox * r0_vox)
+        d0 = d_iso + srad * (1.0 - d_iso)
+        d1 = d_iso + srad * (delta - d_iso)
+        d2 = d_iso + srad * (0.0 - d_iso)
+
+        # W = O₄·B(θ): O₄ columns = [r̂|e_Θ|e_Φ|t̂], boost mixes col 1 with col 3
+        th = b_star * ti.exp(-(r2 / (rw_vox * rw_vox)))
+        eth = ti.exp(th)                                  # no ti.cosh/sinh — exp identity
+        chb = 0.5 * (eth + 1.0 / eth)
+        shb = 0.5 * (eth - 1.0 / eth)
+        w0 = ti.Vector([rhat[0], rhat[1], rhat[2], 0.0])              # col 0 (eig d0)
+        w1 = ti.Vector([etheta[0] * chb, etheta[1] * chb, etheta[2] * chb, shb])
+        w2 = ti.Vector([ephi[0], ephi[1], ephi[2], 0.0])              # col 2 (eig d2)
+        w3 = ti.Vector([etheta[0] * shb, etheta[1] * shb, etheta[2] * shb, chb])
+        m = (d0 * w0.outer_product(w0) + d1 * w1.outer_product(w1)
+             + d2 * w2.outer_product(w2) + g_t * w3.outer_product(w3))
+        # clock tangent ∂M/∂Θ: [G_(1,2), D] = (d1−d2)(E₁₂+E₂₁) conjugated by W
+        m_psi = (d1 - d2) * (w1.outer_product(w2) + w2.outer_product(w1))
+        # kicked previous step: clock phase −kick_theta rotates eigen-cols 1↔2
+        w1k = w1 * ck - w2 * sk
+        w2k = w2 * ck + w1 * sk
+        m_prev = (d0 * w0.outer_product(w0) + d1 * w1k.outer_product(w1k)
+                  + d2 * w2k.outer_product(w2k) + g_t * w3.outer_product(w3))
+        tensor_field.M_am[i, j, k] = m
+        tensor_field.M_prev_am[i, j, k] = m_prev
+        tensor_field.M_new_am[i, j, k] = m
+        tensor_field.M_psi_am[i, j, k] = m_psi
+        tensor_field.director_nhat[i, j, k] = rhat
+        tensor_field.director_nhat_new[i, j, k] = rhat
+
+
