@@ -1,7 +1,8 @@
-# ⚠️ ARCHIVE (M5.8.1 4×4 promotion, 2026-06-04): written for the 3×3 matrix substrate.
-# It builds 3×3 M arrays (M_am.from_numpy of diag(1,δ,0)), now a shape mismatch vs the
-# 4×4 field block-diag(spatial, g). Kept as a historical record of the M5.4–M5.6 milestone;
-# would need a 4×4 migration to run. Live 4×4 regression: sandbox_v8/m5_8_1_headless_check.py.
+# ✅ MIGRATED to the 4×4 substrate (2026-06-05) — RUNNABLE key-finding reproduction.
+# The spatial 3×3 M = n⊗n now embeds as block-diag(M_spatial, g) per the M5.8.1 promotion;
+# the constant-g time block adds 0 to gradients/commutators, so the page-18 physics check
+# is UNCHANGED. (TensorField was WaveField pre-M5.8.)
+# Re-validated on 4×4 (2026-06-05): R²=0.9959, b<0 ATTRACTIVE — PASS.
 """
 M5.4 — Page-18 Mathematica Coulomb cross-validation (headless)
 
@@ -51,18 +52,18 @@ PLOT_PATH = PLOT_DIR / "m5_4_coulomb_page18.png"
 
 
 @ti.kernel
-def compute_curvature_energy(wf: ti.template(), out: ti.template()):  # type: ignore
+def compute_curvature_energy(tf: ti.template(), out: ti.template()):  # type: ignore
     """Per-voxel page-18 Hamiltonian density H = Σ_{i<j} ‖[∂_iM, ∂_jM]‖²_F.
 
     Central-differences M_am along each axis, commutes each pair via the production
     pde.commutator, sums the squared Frobenius norms. 1-cell halo (interior only).
     """
-    nx, ny, nz = wf.nx, wf.ny, wf.nz
-    inv_2dx = 1.0 / (2.0 * wf.dx_am)
+    nx, ny, nz = tf.nx, tf.ny, tf.nz
+    inv_2dx = 1.0 / (2.0 * tf.dx_am)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
-        dMx = (wf.M_am[i + 1, j, k] - wf.M_am[i - 1, j, k]) * inv_2dx
-        dMy = (wf.M_am[i, j + 1, k] - wf.M_am[i, j - 1, k]) * inv_2dx
-        dMz = (wf.M_am[i, j, k + 1] - wf.M_am[i, j, k - 1]) * inv_2dx
+        dMx = (tf.M_am[i + 1, j, k] - tf.M_am[i - 1, j, k]) * inv_2dx
+        dMy = (tf.M_am[i, j + 1, k] - tf.M_am[i, j - 1, k]) * inv_2dx
+        dMz = (tf.M_am[i, j, k + 1] - tf.M_am[i, j, k - 1]) * inv_2dx
         cxy = pde.commutator(dMx, dMy)
         cxz = pde.commutator(dMx, dMz)
         cyz = pde.commutator(dMy, dMz)
@@ -81,7 +82,12 @@ def analytical_M(nx, ny, nz, d):
     n = np.stack([sin * x / r, sin * y / r, cos], axis=-1)
     n /= (np.linalg.norm(n, axis=-1, keepdims=True) + 1e-12)
     M = n[..., :, None] * n[..., None, :]  # n⊗n (δ=0 projector, per page-18)
-    return M.astype(np.float32)
+    # M5.8.1 — embed in the 4×4 substrate: block-diag(spatial, g). The constant-g
+    # time block has zero gradient, so the commutator curvature is unchanged.
+    M4 = np.zeros(M.shape[:-2] + (4, 4), np.float32)
+    M4[..., :3, :3] = M
+    M4[..., 3, 3] = medium.LC_G
+    return M4
 
 
 def fit_coulomb(d, E):
@@ -97,16 +103,16 @@ def main():
     print("=" * 70)
     print("M5.4 — Page-18 analytical Coulomb cross-validation (commutator curvature)")
     print("=" * 70)
-    wf = medium.WaveField([UNIVERSE_EDGE_M] * 3, N**3)
-    out = ti.field(ti.f32, shape=wf.grid_size)
-    print(f"Grid: {wf.nx}³  dx={wf.dx_am:.3f} am   H = Σ_(i<j) ‖[∂_iM,∂_jM]‖²")
+    tf = medium.TensorField([UNIVERSE_EDGE_M] * 3, N**3)
+    out = ti.field(ti.f32, shape=tf.grid_size)
+    print(f"Grid: {tf.nx}³  dx={tf.dx_am:.3f} am   H = Σ_(i<j) ‖[∂_iM,∂_jM]‖²")
     print(f"Half-separations d (defects at center±d): {HALF_SEPARATIONS}\n")
 
     E = []
     for d in HALF_SEPARATIONS:
-        wf.M_am.from_numpy(analytical_M(wf.nx, wf.ny, wf.nz, d))
+        tf.M_am.from_numpy(analytical_M(tf.nx, tf.ny, tf.nz, d))
         out.fill(0)
-        compute_curvature_energy(wf, out)
+        compute_curvature_energy(tf, out)
         Es = float(out.to_numpy().sum())
         E.append(Es)
         print(f"  d = {d:3d}   Es = {Es:.4e}")

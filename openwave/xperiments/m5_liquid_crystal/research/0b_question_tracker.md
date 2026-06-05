@@ -11,11 +11,30 @@
 | [`4a_convo_2026.05.12.md`](4a_convo_2026.05.12.md) | Duda thread study — substrate decision, eigenvalue map, slides |
 | [`1a_lagrangian_framework.md`](1a_lagrangian_framework.md) | Framework + the full email thread history |
 
-**Last updated:** 2026-05-28 (**M5.7 COMPLETE** — free disperses→4D/M5.8, driven sustains→9b). M5.4 matrix-field migration done + merged; M5.5 (Eq.18 action + V(M)) core complete (2026-05-26). **M5.6 (biaxial twist + KG emergence + Maxwell) complete (2026-05-27)**: KG mass is **GEOMETRIC** (minimal coupling to the hedgehog connection `Â`, not an added `V_ψ` — Fig.9 reproduced); biaxial hedgehog dynamically sources its own twist + restoring mass (M5.8 clock seed); **Faber regularization ported** → mass pinned `E∝1/r₀` (the M5.9 calibration handle); **Maxwell recovered both routes** (hydro↔EM dictionary + Faber `R=Γ×Γ` closed field strength); production port done — biaxial seeder + analytic Cardano eigensolver (replaced the `ti.sym_eig`-on-biaxial bug) + V-on amplitude confinement + EM/thermal/clock viz (`∇·n̂`/`‖∇×n̂‖` meshes + E/B glyphs, glyph↔mesh alignment fixed). **M5.7 (resonance hunt) complete (2026-05-28):** the free vs driven split — a *free* defect disperses (M5.7.1 seeded + M5.7.2 intrinsic, both resolution-confirmed nulls ⇒ the metastable particle/clock is 4D, M5.8) but a *driven* defect sustains a bounded, frequency-selective `(A,ω)` excess (M5.7.3 9b.1 preview, EM-lever ~3× free at the resonant natural mode ⇒ the driven-thermal substrate for 9b). Carry-overs (5e two-defect, 5f dipole-viz, gauge-charge, ψ-cleanup, Eq.23 cross-check) migrated to M5.8. **Next phase = Rodrigo's call (M5.8 4D Zitterbewegung clock, or full 9b.1 thermal).** **Q7 (exact V(M) coeffs) + Q8 (Faber exact running-coupling) are no longer gates** — M5.6 shipped the Eq.13 `b=0` confinement interim + the validated Faber port; their exact Duda-open forms now feed M5.9 lepton calibration, non-blocking. **Q12** (Bell / Kochen-Specker vs M5's definite-orientation defect) — foundational note in `1b § Foundational stance`.
+**Last updated:** 2026-06-05 (**§ Empirical validation table added** as the document header — every headline M5 claim now has a runnable reproduction, re-verified on the 4×4 engine after the M5.8.1 promotion + ψ-retire). Previous: 2026-05-28 (**M5.7 COMPLETE** — free disperses→4D/M5.8, driven sustains→9b). M5.4 matrix-field migration done + merged; M5.5 (Eq.18 action + V(M)) core complete (2026-05-26). **M5.6 (biaxial twist + KG emergence + Maxwell) complete (2026-05-27)**: KG mass is **GEOMETRIC** (minimal coupling to the hedgehog connection `Â`, not an added `V_ψ` — Fig.9 reproduced); biaxial hedgehog dynamically sources its own twist + restoring mass (M5.8 clock seed); **Faber regularization ported** → mass pinned `E∝1/r₀` (the M5.9 calibration handle); **Maxwell recovered both routes** (hydro↔EM dictionary + Faber `R=Γ×Γ` closed field strength); production port done — biaxial seeder + analytic Cardano eigensolver (replaced the `ti.sym_eig`-on-biaxial bug) + V-on amplitude confinement + EM/thermal/clock viz (`∇·n̂`/`‖∇×n̂‖` meshes + E/B glyphs, glyph↔mesh alignment fixed). **M5.7 (resonance hunt) complete (2026-05-28):** the free vs driven split — a *free* defect disperses (M5.7.1 seeded + M5.7.2 intrinsic, both resolution-confirmed nulls ⇒ the metastable particle/clock is 4D, M5.8) but a *driven* defect sustains a bounded, frequency-selective `(A,ω)` excess (M5.7.3 9b.1 preview, EM-lever ~3× free at the resonant natural mode ⇒ the driven-thermal substrate for 9b). Carry-overs (5e two-defect, 5f dipole-viz, gauge-charge, ψ-cleanup, Eq.23 cross-check) migrated to M5.8. **Next phase = Rodrigo's call (M5.8 4D Zitterbewegung clock, or full 9b.1 thermal).** **Q7 (exact V(M) coeffs) + Q8 (Faber exact running-coupling) are no longer gates** — M5.6 shipped the Eq.13 `b=0` confinement interim + the validated Faber port; their exact Duda-open forms now feed M5.9 lepton calibration, non-blocking. **Q12** (Bell / Kochen-Specker vs M5's definite-orientation defect) — foundational note in `1b § Foundational stance`.
 
 ---
 
-## Active count
+## Empirical validation — key findings → runnable reproductions
+
+The model's verified emergent physics, each with a runnable reproduction script on the current 4×4 engine (all re-verified 2026-06-05, after the M5.8.1 4×4 promotion + ψ-retire — the original numbers reproduced, empirically confirming the promotion is physics-preserving):
+
+| Key finding | Runnable reproduction | Result on the 4×4 engine |
+| --- | --- | --- |
+| Coulomb: charge + attractive 1/d force between defects | `sandbox_v4/m5_4_coulomb_matrix.py` | ✅ R²=0.9781, b<0 — matches the M5.1 reference (0.978) digit-for-digit |
+| Coulomb — Duda's page-18 Mathematica cross-validation | `sandbox_v4/m5_4_coulomb_page18.py` | ✅ R²=0.9959, attractive |
+| E = ∇·n̂ / B = ∇×n̂ → Maxwell (hydro↔EM dictionary) | `sandbox_v6/m5_6_4a_hydro_em.py` | ✅ PASS — ∇·B=0, Gauss charge identity, Faraday, Lorentz force |
+| EM-from-tilts: Faber R=Γ×Γ → abelian Coulomb far-field | `sandbox_v6/m5_6_4b_faber_curvature_em.py` | ✅ PASS — closed field strength, ‖R‖~1/r², running-coupling onset at r₀ |
+| KG mass is GEOMETRIC (biaxial twist, not an added V) | `sandbox_v6/m5_6_1_kg_operator_check.py` | ✅ PASS — explicit mass cancels exactly; mass from the hedgehog connection Â |
+| Eq.18 matrix evolution conserves energy | `sandbox_v5/m5_5_4_matrix_evolution_check.py` | ✅ secular drift 2.15%→1.13%→0.03% as dt→0 (symplectic) |
+| LdG well confinement (V(M) Eq.13, b=0 amplitude well) | `sandbox_v6/m5_6_5c_prod_scale.py` | ✅ confines ~3.3× across k∈[0.5,25], no blow-up |
+| M5.7 resonance hunt closed-negative (expected — Derrick) | `sandbox_v7/m5_7_*.py` | ✅ runnable, unaffected |
+
+No particle stability yet — that is M5.8's job (the particle is a 4D time-crystal, not a static 3D lump; Derrick + Duda + the M5.7 null all agree). Everything above comes straight out of the medium topology.
+
+---
+
+## Active Count
 
 ```text
 0 IMMEDIATE   M5.7 COMPLETE (2026-05-28). Free vs driven split: free

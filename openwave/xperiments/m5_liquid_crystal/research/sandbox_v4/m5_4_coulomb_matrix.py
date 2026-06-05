@@ -1,7 +1,8 @@
-# ⚠️ ARCHIVE (M5.8.1 4×4 promotion, 2026-06-04): written for the 3×3 matrix substrate.
-# It builds 3×3 M arrays (M_am.from_numpy of diag(1,δ,0)), now a shape mismatch vs the
-# 4×4 field block-diag(spatial, g). Kept as a historical record of the M5.4–M5.6 milestone;
-# would need a 4×4 migration to run. Live 4×4 regression: sandbox_v8/m5_8_1_headless_check.py.
+# ✅ MIGRATED to the 4×4 substrate (2026-06-05) — RUNNABLE key-finding reproduction.
+# Uses the PRODUCTION seeders/kernels (seed_hedgehog_M, eigen_decompose, relax_director_step,
+# compute_energyF_density), which are all 4×4-native since M5.8.1 — the director pipeline is
+# dimension-agnostic, so the Coulomb gate is UNCHANGED. (TensorField was WaveField pre-M5.8.)
+# Re-validated on 4×4 (2026-06-05): R²=0.9781, b<0 ATTRACTIVE — PASS (M5.1 ref R²=0.978).
 """
 M5.4 — 1/d Coulomb on the MATRIX substrate (headless gate)
 
@@ -13,7 +14,7 @@ path — isolates the substrate swap from any physics change).
 Director-equivalent pipeline (per the confirmed M5.4 gate design):
     1. seed_hedgehog_M  → M_am (matrix) + director_nhat            [matrix seeder]
     2. eigen_decompose  → director_nhat ← principal eigenvector(M) [THE bridge]
-    3. flow the extracted director into the validated M5.1 working buffer (psi_am)
+    3. flow the extracted director into the validated M5.1 working buffer (director_nhat)
     4. relax_director_step (UNCHANGED M5.1 kernel) → ground state
     5. compute_energyF_density (UNCHANGED M5.1 kernel) → E_total(d)
     6. fit E(d) = a + b/d, R²
@@ -69,23 +70,23 @@ PLOT_PATH = PLOT_DIR / "m5_4_coulomb_matrix.png"
 # ================================================================
 
 
-def setup_defect_pair(wf, d_vox, sign_pair):
+def setup_defect_pair(tf, d_vox, sign_pair):
     """Build centers + signs ti.fields for a hedgehog pair at offset ±d/2 along x."""
     centers = ti.field(dtype=ti.i32, shape=(2, 3))
     signs = ti.field(dtype=ti.i32, shape=(2,))
     half = d_vox // 2
-    centers[0, 0] = wf.nx // 2 - half
-    centers[0, 1] = wf.ny // 2
-    centers[0, 2] = wf.nz // 2
-    centers[1, 0] = wf.nx // 2 + half
-    centers[1, 1] = wf.ny // 2
-    centers[1, 2] = wf.nz // 2
+    centers[0, 0] = tf.nx // 2 - half
+    centers[0, 1] = tf.ny // 2
+    centers[0, 2] = tf.nz // 2
+    centers[1, 0] = tf.nx // 2 + half
+    centers[1, 1] = tf.ny // 2
+    centers[1, 2] = tf.nz // 2
     signs[0] = sign_pair[0]
     signs[1] = sign_pair[1]
     return centers, signs
 
 
-def relax_and_measure_matrix(wf, obs, centers, signs, n_defects, n_steps, tau, dq, delta):
+def relax_and_measure_matrix(tf, obs, centers, signs, n_defects, n_steps, tau, dq, delta):
     """Matrix-substrate director-equivalent relaxation → total Frank energy.
 
     Seeds M, extracts the director from M via eigen_decompose, then relaxes the
@@ -94,15 +95,15 @@ def relax_and_measure_matrix(wf, obs, centers, signs, n_defects, n_steps, tau, d
     as M5.1, so the Coulomb result carries over.
     """
     # 1. seed the matrix order parameter (writes M_am + director_nhat)
-    seeds.seed_hedgehog_M(wf, centers, signs, dq, n_defects, delta)
+    seeds.seed_hedgehog_M(tf, centers, signs, dq, n_defects, delta)
     # 2. extract the director from M (the bridge: director_nhat ← eigenvector(M_am))
-    pde.eigen_decompose(wf)
+    pde.eigen_decompose(tf)
     # 3. relax the director directly (M5.4 relax gradient-descends director_nhat)
     for _ in range(n_steps):
-        pde.relax_director_step(wf, tau, centers, signs, n_defects)
-        wf.director_nhat.copy_from(wf.director_nhat_new)
+        pde.relax_director_step(tf, tau, centers, signs, n_defects)
+        tf.director_nhat.copy_from(tf.director_nhat_new)
     # 4. Frank elastic energy of the relaxed director
-    observables.compute_energyF_density(wf, obs, observables.K_FRANK)
+    observables.compute_energyF_density(tf, obs, observables.K_FRANK)
     return float(obs.energyF_density_aJ.to_numpy().sum())
 
 
@@ -130,15 +131,15 @@ def main():
     print("M5.4 — 1/d Coulomb on the MATRIX substrate (M = O·D·O^T)")
     print("=" * 70)
 
-    wf = medium.WaveField([UNIVERSE_EDGE_M] * 3, TARGET_VOXELS)
-    obs = medium.FieldObservables(wf.grid_size)
-    delta = wf.lc_delta
+    tf = medium.TensorField([UNIVERSE_EDGE_M] * 3, TARGET_VOXELS)
+    obs = medium.FieldObservables(tf.grid_size)
+    delta = tf.lc_delta
 
-    cfl_bound = (wf.dx_am**2) / 6.0
+    cfl_bound = (tf.dx_am**2) / 6.0
     tau = TAU_FRAC * cfl_bound
-    dq = float(DOMAIN_QUARTER_FRACTION * max(wf.nx, wf.ny, wf.nz))
+    dq = float(DOMAIN_QUARTER_FRACTION * max(tf.nx, tf.ny, tf.nz))
 
-    print(f"Grid: {wf.nx}³  dx={wf.dx_am:.3f} am   δ={delta}")
+    print(f"Grid: {tf.nx}³  dx={tf.dx_am:.3f} am   δ={delta}")
     print(f"Relax steps per separation: {N_RELAX}  τ={tau:.3f}")
     print(f"Separations (voxels): {SEPARATIONS}   D/4 blend: {dq:.1f}")
     print()
@@ -147,8 +148,8 @@ def main():
     print("[Opposite-charge pair (+1, −1) — expect ATTRACTIVE, b < 0]")
     E_opp = []
     for d in SEPARATIONS:
-        centers, signs = setup_defect_pair(wf, d, (+1, -1))
-        E_total = relax_and_measure_matrix(wf, obs, centers, signs, 2, N_RELAX, tau, dq, delta)
+        centers, signs = setup_defect_pair(tf, d, (+1, -1))
+        E_total = relax_and_measure_matrix(tf, obs, centers, signs, 2, N_RELAX, tau, dq, delta)
         E_opp.append(E_total)
         print(f"  d = {d:3d}  E = {E_total:.4e}")
     a_opp, b_opp, r2_opp = fit_coulomb(SEPARATIONS, E_opp)
@@ -163,8 +164,8 @@ def main():
     print("[Same-charge pair (+1, +1) — expect REPULSIVE, b > 0]")
     E_same = []
     for d in SEPARATIONS:
-        centers, signs = setup_defect_pair(wf, d, (+1, +1))
-        E_total = relax_and_measure_matrix(wf, obs, centers, signs, 2, N_RELAX, tau, dq, delta)
+        centers, signs = setup_defect_pair(tf, d, (+1, +1))
+        E_total = relax_and_measure_matrix(tf, obs, centers, signs, 2, N_RELAX, tau, dq, delta)
         E_same.append(E_total)
         print(f"  d = {d:3d}  E = {E_total:.4e}")
     a_same, b_same, r2_same = fit_coulomb(SEPARATIONS, E_same)
