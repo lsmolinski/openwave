@@ -39,7 +39,16 @@ The model's verified emergent physics, each with a runnable reproduction script 
 | Boost dressing LOWERS the defect's energy (GEM dip) — the dressed defect is the stable static ground state; the GLOBAL rigid clock mode is ruled out | ✅ dressed center E*=2.61 < bare 6.14, held dynamically (H drift 4.9e-8); ghost branch saddle-only (net global clock inertia vanishes at the window edges) ⇒ the physical clock = the core-localized twist (M5.8.2b-2) | `m5_8_2b_cc_clock.py` |
 | The 4D clock is REAL at field level + the Minkowski signature COHERES it | ✅ core-localized twist on the dressed hedgehog: single coherent mode ω=5.86 (fft/zc agree 0.4%) vs Euclidean multi-mode (89% split); best core retention (0.66 Mink > 0.59 undressed > 0.46 Euclid); ghost geography mapped (stable region 77% at b*; fuel shell λ≈15.6/t linear runaway = the propulsion signature, constrained treatment = 2c) | `m5_8_2b2_field_clock.py` |
 
-No particle stability yet — that is M5.8's job (the particle is a 4D time-crystal, not a static 3D lump; Derrick + Duda + the M5.7 null all agree). Everything above comes straight out of the medium topology.
+Everything above comes straight out of the medium topology. **No particle stability yet** — the 4D mechanism has passed every level tested so far (1D exact → 4D energy functional → CC → linearized field, each with Euclidean kill-controls), but everything to date **freezes the hedgehog background by hand**. What remains open is exactly the following gate list — the first self-consistent test is M5.8.2c:
+
+### Open gates — claimed by the model, NOT yet validated
+
+| Open gate | Honest status | Owner / pass-fail definition |
+| --- | --- | --- |
+| The defect holds ITSELF together (the M5.7 dispersal question, self-consistent) | ❌ NOT yet tested — all 2a/2b results evolve the clock on a frozen defect; 2b-2's retention measured the twist excitation, not the defect | **G-2c-1** (roadmap M5.8.2c): M5.7 re-run on the 4D-dressed defect, full backreaction, resolution-confirmed. Fail = the model fails M5.8 |
+| Fuel-shell saturation (propulsion bounded) | ❌ hypothesis — the Q-not-PD shell runs away at λ≈15.6/t in any linearized kernel; saturation argued from 1D + compactness, not shown | **G-2c-2**: bounded H + amplitudes in the full nonlinear compact-orbit evolution |
+| ω self-selection (spontaneous spin-up — the time-crystal claim proper) | ❌ shown only at 1D-CC level (m5_8_0c); the 3+1D ω=5.86 is a measured mode, not a demonstrated attractor | **G-2c-3**: from a non-spinning dressed defect, the dynamics selects a specific ω |
+| Physical calibration ω = 2mc²/ℏ (the electron Zitterbewegung) | ❌ untouched — sandbox units only | **M5.8.3** (GROUP-HEADLINE gate): `ω·ℏ/(2H_rest) → 1` within 10%; absolute Hz via the Faber `r₀` fix |
 
 ---
 
