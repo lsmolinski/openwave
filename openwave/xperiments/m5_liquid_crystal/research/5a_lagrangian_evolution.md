@@ -591,7 +591,7 @@ M5.4 page-18 energy = `¼Σ‖F_μν‖²`.) This is a substantial numerical bui
 
 **Source:** Duda, *Time crystal φ⁴ kinks by curvature coupling as toy model for mechanism of
 oscillations propelled by mass, like observed for electron and neutrinos* (arXiv:2501.04036 v2,
-24 Jul 2025; local PDF `theory/time_crystal.pdf`, 3pp). Math **read + verified by quadrature
+24 Jul 2025; local PDF `theory/time_crystal_toy_model.pdf`, 3pp). Math **read + verified by quadrature
 2026-05-29** (the variational anchors below reproduce to 4–5 digits). This is the mathematical
 foundation for the M5.8 build plan in [`0b_M5_roadmap.md § Phase M5.8`](0b_M5_roadmap.md).
 
@@ -888,7 +888,7 @@ Eigenvalue dictionary (`D` is the local ground-state spectrum; `g ≫ 1 ≫ δ >
 | Configuration | D | Frame |
 | --- | --- | --- |
 | Vacuum (uniaxial) | `diag(δ, δ, 1, g)` | director = ẑ everywhere |
-| Defect (biaxial hedgehog) | `diag(1, δ, 0, g)` | `O_hh = [r̂ | e_Θ | e_Φ] ⊕ 1` (m5_6_2a), point core `r_c` + z-axis disclination `ρ_c` masks |
+| Defect (biaxial hedgehog) | `diag(1, δ, 0, g)` | `O_hh = [r̂ \| e_Θ \| e_Φ] ⊕ 1` (m5_6_2a), point core `r_c` + z-axis disclination `ρ_c` masks |
 
 #### The action + Hamiltonian
 
@@ -958,7 +958,7 @@ Anchor script: `sandbox_v8/m5_8_2a_4d_hamiltonian.py` (numpy quadrature, 48³, e
 | G4 | signature control: Euclidean flip (all blocks +) ⇒ no fuel | ✅ `C_E(b) ∈ [+74.9, +2.34×10⁴] > 0 ∀b` |
 | G5 | static mass guard: `A(b) > 0` on a fine scan (§10c at ω=0); the rigid-family ω-unboundedness is the expected toy-without-`βR⁴` artifact — cap = profile response (2b), onset visible | ✅ `A_min = 0.389 > 0`; `C_pos/C_neg`: `0.87 → 0.32 → 0.36 → 0.52 → 0.69 → 0.83` (rises back toward parity) |
 | G6 | localization: fuel density core-localized — the clock lives ON the defect | ✅ falls 10 decades by r≈9 (tail/peak < 10⁻⁴); dressed-vacuum control exactly 0 |
-| G7 | apolar doubling: `M(ψ)` period = π, not 2π ⇒ `ω_M = 2·ω_clock` | ✅ `max|M(π)−M(0)| = 5.6×10⁻¹⁷` vs `|M(π/2)−M(0)| = 0.30` |
+| G7 | apolar doubling: `M(ψ)` period = π, not 2π ⇒ `ω_M = 2·ω_clock` | ✅ `max\|M(π)−M(0)\| = 5.6×10⁻¹⁷` vs `\|M(π/2)−M(0)\| = 0.30` |
 
 1D anchors carried in (M5.8.0, all reproduced by quadrature + CC dynamics):
 
