@@ -551,7 +551,7 @@ def display_level_specs(state, level_bar_vertices):
     render.canvas.triangles(level_bar_vertices, color=colormap.ORANGE[1])
     with render.gui.sub_window("LIQUID-CRYSTAL MODEL (M5)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
-        sub.text("Data-Structure: Vector Field")
+        sub.text("Data-Structure: Tensor Field")
         sub.text("Coupling: Non-linear Lagrangian")
         sub.text("Propagation: PDE Solver")
         sub.text("Boundary: Dirichlet Condition")
