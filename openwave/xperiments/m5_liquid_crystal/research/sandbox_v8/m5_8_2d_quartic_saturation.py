@@ -42,6 +42,24 @@ GATES:
 
 USAGE:  python m5_8_2d_quartic_saturation.py            # D1 + scan + gates
         python m5_8_2d_quartic_saturation.py d6 <beta>  # the dt/2 persistence run
+        python m5_8_2d_quartic_saturation.py long <beta> <steps> [dt_scale]
+
+PREREQUISITE: the seed npz `_m5_8_2cb_ref.npz` (uncommitted derived data) —
+regenerate with `CB_STEPS=900 python m5_8_2cb_taichi_constrained.py ref`
+(~5 min; the seed arrays are run-length-independent).
+
+RESULTS (2026-06-05 night — full log in 0b_M5_roadmap.md § M5.8.2d):
+    D1 ✅ machine-symmetric; u_min(seed) = −0.963 ⇒ β scan {0.156, 0.519, 1.558}.
+    D2 ✅ control onset 1300, H → −8.6×10⁹. The ladder kills the runaway:
+    H_end −156 / −39 / +38.8 (β=1.558 stays POSITIVE, align 0.889, clock
+    GROWING). 24k full-dt: relax → THE BOUNCE (floor rebound ~τ=32–36, real,
+    dt-matched) → late positive-H growth = EXPLICIT-STEPPER STIFFNESS (the
+    floor prefactor 1+2β|u| ≈ 4× shrinks the dt margin; ABSENT at dt/2 at the
+    same τ). dt/2 × 48k: bounded end-to-end, H breathing 30–142 — the state
+    lives ≥45 clock periods vs the quadratic action's 2.3. ⚠️ The main()
+    auto-grade printed "NO β saturates" on an arbitrary align ≥ 0.90 cut
+    (missed by 0.011) — read the per-β table, not the headline (the lesson
+    that produced trend_report()).
 """
 import sys
 import time
@@ -513,5 +531,7 @@ if __name__ == "__main__":
     if a and a[0] == "d6":
         raise SystemExit(run_d6(float(a[1])))
     if a and a[0] == "long":
+        if len(a) > 3:                      # optional dt scale (e.g. 0.5)
+            globals()["DT"] = DT * float(a[3])
         raise SystemExit(run_long(float(a[1]), int(a[2])))
     raise SystemExit(main())

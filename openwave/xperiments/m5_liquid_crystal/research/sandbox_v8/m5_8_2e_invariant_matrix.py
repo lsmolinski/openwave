@@ -25,6 +25,26 @@ two saturation knobs + an Euclidean solve twin, and four modes:
               NO runaway) at full precision.
 
 USAGE:  python m5_8_2e_invariant_matrix.py <skyrme|euclid|omega|f64>
+
+PREREQUISITE: `_m5_8_2cb_ref.npz` (regenerate: `CB_STEPS=900 python
+m5_8_2cb_taichi_constrained.py ref`).
+
+RESULTS (2026-06-05 late night — full log in 0b_M5_roadmap.md § M5.8.2e):
+    skyrme — ALL THREE β_E (1.37/4.57/13.7) saturate (bounded, align
+        0.936–0.948) but the clock is 10× weaker (|s| ~3×10⁻³): sign-blind,
+        damps fuel AND clock. The SIGNED quartic is the time-crystal-preferred
+        invariant.
+    euclid — THE KILL-CONTROL HEADLINE: same seed+kick, the Euclid twin's
+        clock DECAYS (1.4e-2 → 6.7e-3) while the Minkowski+quartic clock
+        GROWS (7.6e-3 → 2.4e-2). The signature IS the engine, at full
+        nonlinearity in the saturated regime.
+    omega — the saturated state is STRICTLY PERIODIC: ω₀ = 0.262 with an
+        EXACT 2–5× harmonic comb (breathing period τ = 24, matching the
+        bounce). The fast 2b-2 clock (5.86) is not dominant in s(t) — a
+        phase-sensitive probe is the refinement item. This realization
+        re-showed late-time stepper heating (onset varies with FP ordering).
+    f64 — H 66.6 → 57.9 over 3000 steps, plateau→relax, NO runaway: the f32
+        results stand at full precision (~1% per-probe agreement).
 """
 import sys
 import time
