@@ -74,6 +74,9 @@ from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2a_4d_hamilt
 )
 
 RUN_STEPS = int(os.environ.get("CB_STEPS", STEPS))
+# CB_DT overrides the step size (e.g. CB_DT=0.001 for the dt-halving
+# onset-scaling discriminator — the fixed-τ runaway proof, 2026-06-05)
+DT = float(os.environ.get("CB_DT", DT))
 CHECK_NS = tuple(n_ for n_ in (0, 10, 50, 100, 200, 400, 890) if n_ < RUN_STEPS)
 PERF_N = 64
 PERF_STEPS = 20
