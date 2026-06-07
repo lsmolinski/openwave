@@ -300,6 +300,15 @@ SABER engineering-timeline impact is analyzed in the `1_model_selection.md` (§ 
 
 **THIRD OUTCOME (Track C C3, `m5_8_2f3_breather_orbit.py`, 2026-06-06) — Track C CLOSES with the spontaneity DERIVED**: the reduced CC dynamics finds **the dressed static minimum is UN-SITTABLE** — `K_bb(a*) = −67.6 < 0` (direct-confirmed) with `U″ = +1723 > 0`: energetically minimal, kinetically ghost ⇒ compulsory motion (G-2c-3's spontaneity, derived variationally — and `K_bΘ ≡ 0` under the exact phase average exposes 2b's stabilizing cross-term as sampling residue). But containment is NOT reducible: at anchored β the minimum is fully ghost-kinetic and the orbit exits through the `det 𝕂 = 0` surface where ANY net-inertia reduction is ill-posed — the full field redistributes momentum across modes there (the 2c-1 per-voxel eigenprojection's job). **The M6-transfer's final form: the eigenvalue discipline carried the program exactly as far as a reduction can go — the rest is the field's.** Falsifiable handoff: the unkicked dressed seed in 2d should spontaneously breathe (probe `b_peak`/`u_min`/`H` — the `s(t)` clock probe is blind to the amplitude channel, diagnosing the old machine-zero null).
 
+**TRANSFER VERDICT (2026-06-07): strongly positive, and FINISHED — it paid out differently than designed.** The direct transfer (pose-the-state-as-BVP) closed negative three times in a row — and those negatives were the cheapest, most decisive results of the whole program, because the ladder forced out the real physics. The closing move was the field handoff: 2g confirmed the C3-predicted spontaneity in-field (settled config, `P=0` exact, T regrows 0→5.76, **dt/2-converged to 4 significant digits**) — the M6 methodology delivering M5's missing spontaneity result. The section is CLOSED; M6 stays sandbox-only/repo-as-deliverable.
+
+| Transfer item | What it produced |
+| --- | --- |
+| "Forward-IVP fails / BVP-with-free-eigenvalue works" (v9) | Track C C1→C2-B→C3: both static reductions closed decisive; the reduced dynamics DERIVED the un-sittable minimum — spontaneity as a theorem, not a hope |
+| The chaoiton `gβ⁴` quartic analog | The 2d `u+βu²` saturating quartic — the single term that fixed the 3+1D runaway (≥45 clock periods, f64-anchored) |
+| Pohozaev/virial discipline | The self-consistency probes + the auto-grade honesty pattern (`trend_report`) |
+| `l=1` BC / ansatz lesson | The deepest one: BVP attacks are ANSATZ-GATED — applied three times to kill wrong manifolds fast |
+
 M6 is closed (DM paper published, sandbox-only, no Taichi port), but its sandbox **methodology** transfers to M5. M6's scipy sandbox is far cheaper to prototype in than M5's Taichi matrix substrate, so several M5 unknowns can be de-risked in a scipy M5-sandbox *before* committing Taichi kernels — exactly the path M6 took. **This is sandbox methodology transfer, NOT an M6 production port.**
 
 ### The V(M) lead — M6 settled its potential the hard way, and the method transfers
