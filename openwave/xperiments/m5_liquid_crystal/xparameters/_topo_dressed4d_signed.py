@@ -67,13 +67,6 @@ XPARAMETERS = {
         "SIZE": [UNIVERSE_EDGE, UNIVERSE_EDGE, UNIVERSE_EDGE],
         "TARGET_VOXELS": TARGET_VOXELS,
     },
-    "wave_centers": {
-        "COUNT": 1,
-        "POSITION": [[0.50, 0.50, 0.50]],
-        "PHASE_OFFSETS_DEG": [0],
-        "INIT_VELOCITY": [[0.0, 0.0, 0.0]],
-        "APPLY_MOTION": False,
-    },
     "ui_defaults": {
         "SHOW_AXIS": False,
         "TICK_SPACING": 0.25,

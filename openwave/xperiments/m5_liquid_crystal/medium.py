@@ -673,10 +673,6 @@ class FieldObservables:
         # density, `_K` for kinetic-only.
         # Populated each frame by engine3_observables.compute_energyH_density.
         # Consumed by:
-        #   - force_motion.compute_force_vector  →  F = −∇E (replaces M4's
-        #     postulated F = −∇E with E = ρV(fA)² formula). E is computed
-        #     via the Hamiltonian formula (hence _H prefix); the physics
-        #     statement F = −∇E is canonical regardless of how E is derived.
         #   - sample_avg_observables  →  3-plane-sampled global mean
         #   - launcher WAVE_MENU=4 flux-mesh visualization
         # The potential term is the LdG V(M) (Eq.13) via the V_M hook in engine2_pde;

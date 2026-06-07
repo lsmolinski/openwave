@@ -1,7 +1,7 @@
 """
 Xperiment Launcher
 
-Unified launcher for wave-field xperiments featuring:
+Unified launcher for tensor-field xperiments featuring:
 - UI-based xperiment selection and switching
 - Single source of truth for rendering and UI code
 - Xperiment-specific parameters in /xparameters directory
@@ -21,12 +21,10 @@ from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
 import openwave.xperiments.m5_liquid_crystal.medium as medium
-import openwave.xperiments.m5_liquid_crystal.particle as particle
 import openwave.xperiments.m5_liquid_crystal.engine1_seeds as seeds
 import openwave.xperiments.m5_liquid_crystal.engine2_pde as pde
 import openwave.xperiments.m5_liquid_crystal.engine3_observables as observables
 import openwave.xperiments.m5_liquid_crystal.engine4_render as viz
-import openwave.xperiments.m5_liquid_crystal.force_motion as force_motion
 import openwave.xperiments.m5_liquid_crystal.instrumentation as instrument
 
 # ================================================================
@@ -151,11 +149,6 @@ class SimulationState:
         self.CAM_INIT = [2.00, 1.50, 1.75]
         self.UNIVERSE_SIZE = []
         self.TARGET_VOXELS = 1e8
-        self.NUM_SOURCES = 1
-        self.SOURCES_POSITION = []
-        self.SOURCES_OFFSET_DEG = []
-        self.INIT_VELOCITY = None
-        self.APPLY_MOTION = True
 
         # UI control variables
         self.SHOW_AXIS = False
@@ -232,14 +225,6 @@ class SimulationState:
         self.UNIVERSE_SIZE = list(universe["SIZE"])
         self.TARGET_VOXELS = universe["TARGET_VOXELS"]
 
-        # Wave Centers
-        sources = params["wave_centers"]
-        self.NUM_SOURCES = sources["COUNT"]
-        self.SOURCES_POSITION = sources["POSITION"]
-        self.SOURCES_OFFSET_DEG = sources["PHASE_OFFSETS_DEG"]
-        self.INIT_VELOCITY = sources.get("INIT_VELOCITY", None)
-        self.APPLY_MOTION = sources["APPLY_MOTION"]
-
         # UI defaults
         ui = params["ui_defaults"]
         self.SHOW_AXIS = ui["SHOW_AXIS"]
@@ -288,7 +273,7 @@ class SimulationState:
             self.DIPOLE_R0_VOX = float(topo_seed.get("DIPOLE_R0_VOX", 3.0))
 
     def initialize_grid(self):
-        """Initialize or reinitialize the wave-field grid and wave-centers."""
+        """Initialize or reinitialize the tensor-field grid."""
         self.tensor_field = medium.TensorField(
             self.UNIVERSE_SIZE,
             self.TARGET_VOXELS,
@@ -302,15 +287,6 @@ class SimulationState:
         # (M5.8 ψ-retire: the TEST_SEED seed-driven source was removed; M5.2+ particle
         # xperiments will set this from the defect Compton wavelength. 0.0 = no reference.)
         self.wave_res = 0.0
-
-        # Initialize wave-centers
-        self.wave_center = particle.WaveCenter(
-            self.tensor_field.grid_size,
-            self.NUM_SOURCES,
-            self.SOURCES_POSITION,
-            self.SOURCES_OFFSET_DEG,
-            self.INIT_VELOCITY,
-        )
 
     def compute_timestep(self):
         """Compute timestep from the 3D CFL stability bound.
@@ -418,7 +394,7 @@ def display_xperiment_launcher(xperiment_mgr, state):
     """
     selected_xperiment = None
 
-    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.33) as sub:
+    with render.gui.sub_window("XPERIMENT LAUNCHER", 0.00, 0.00, 0.14, 0.25) as sub:
         sub.text("(needs window reload)", color=colormap.LIGHT_BLUE[1])
         for xp_name in xperiment_mgr.available_xperiments:
             display_name = xperiment_mgr.get_xperiment_display_name(xp_name)
@@ -430,16 +406,12 @@ def display_xperiment_launcher(xperiment_mgr, state):
         if sub.button("Close Launcher (esc)"):
             render.window.running = False
 
-    # TODO: remove hardcoded WIP notice and implement proper xperiment status handling
-    with render.gui.sub_window("WORK-IN-PROGRESS XPERIMENT", 0.40, 0.00, 0.20, 0.08) as sub:
-        sub.text("*** MODEL STILL UNDER DEVELOPMENT ***", color=colormap.RED[1])
-
     return selected_xperiment
 
 
 def display_controls(state):
     """Display the controls UI overlay."""
-    with render.gui.sub_window("CONTROLS", 0.00, 0.33, 0.16, 0.39) as sub:
+    with render.gui.sub_window("CONTROLS", 0.00, 0.25, 0.16, 0.43) as sub:
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_GLYPHS = sub.slider_int("Glyphs", state.SHOW_GLYPHS, 0, 3)
@@ -469,7 +441,6 @@ def display_controls(state):
         #   2=Electric Field (+→− barb, charge-colored), 3=Magnetic Field (∇×n̂).
         # Greek δ is spelled "Delta" — GGUI cannot render Greek glyphs.
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
-        state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         state.SIM_SPEED = sub.slider_float("Speed", state.SIM_SPEED, 0.5, 1.0)
         if state.PAUSED:
             if sub.button(">> EVOLVE PDE >>"):
@@ -483,7 +454,7 @@ def display_controls(state):
 
 def display_wave_menu(state):
     """Display wave properties selection menu."""
-    with render.gui.sub_window("WAVE MENU", 0.00, 0.79, 0.15, 0.21) as sub:
+    with render.gui.sub_window("WAVE MENU", 0.00, 0.75, 0.15, 0.25) as sub:
         if sub.checkbox("Deviation (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
             state.tensor_field.create_flux_mesh()
@@ -515,19 +486,19 @@ def display_wave_menu(state):
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
         if state.WAVE_MENU == 1:  # Displacement on orange gradient
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
-            with render.gui.sub_window("displacement", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("displacement", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 2:  # Thermal Amplitude (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("amplitude", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("amplitude", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
         if state.WAVE_MENU == 3:  # Thermal Clock on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
-            with render.gui.sub_window("omega", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("omega", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
         if state.WAVE_MENU == 4:  # Energy density (Hamiltonian) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("energyH", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("energyH", 0.00, 0.69, 0.08, 0.06) as sub:
                 # Unit label "rel." — value is per-voxel mean × 4 (matches the
                 # colormap range max in update_flux_mesh_values). Underlying field
                 # is in scaled (am/rs)² units, not physical J/m³ — REVIEW IN M5.2
@@ -536,22 +507,22 @@ def display_wave_menu(state):
                 sub.text(f"0      {state.energyH_global_avg*4:.0e}rel.")
         if state.WAVE_MENU == 5:  # Frank elastic density on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
-            with render.gui.sub_window("energyF", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("energyF", 0.00, 0.69, 0.08, 0.06) as sub:
                 # Same "rel." caveat as WAVE_MENU=4 — K_frank=1.0 dimensionless
                 # until M5.6 physical elastic constants land.
                 sub.text(f"0      {state.energyF_global_avg*4:.0e}rel.")
         if state.WAVE_MENU == 6:  # EM divergence ∇·n̂ on greenyellow diverging gradient (signed)
             render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
-            with render.gui.sub_window("div (charge/E)", 0.00, 0.73, 0.08, 0.06) as sub:
+            with render.gui.sub_window("div (charge/E)", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(" -           +")
         if state.WAVE_MENU == 7:  # EM curl: orange magnitude OR bluered signed (∇×n̂)·ẑ N/S
             if state.CURL_COLOR == 1:
                 render.canvas.triangles(br_palette_vertices, per_vertex_color=br_palette_colors)
-                with render.gui.sub_window("B (S/N)", 0.00, 0.73, 0.08, 0.06) as sub:
+                with render.gui.sub_window("B (S/N)", 0.00, 0.69, 0.08, 0.06) as sub:
                     sub.text(" S           N")
             else:
                 render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
-                with render.gui.sub_window("curl (rot/B)", 0.00, 0.73, 0.08, 0.06) as sub:
+                with render.gui.sub_window("curl (rot/B)", 0.00, 0.69, 0.08, 0.06) as sub:
                     sub.text("0           max")
 
 
@@ -646,19 +617,19 @@ def initialize_xperiment(state):
 
     # Initialize color palette scales for gradient rendering and level indicator
     og_palette_vertices, og_palette_colors = colormap.get_palette_scale(
-        colormap.orange, 0.00, 0.72, 0.079, 0.01
+        colormap.orange, 0.00, 0.68, 0.079, 0.01
     )
     ib_palette_vertices, ib_palette_colors = colormap.get_palette_scale(
-        colormap.ironbow, 0.00, 0.72, 0.079, 0.01
+        colormap.ironbow, 0.00, 0.68, 0.079, 0.01
     )
     bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
-        colormap.blueprint, 0.00, 0.72, 0.079, 0.01
+        colormap.blueprint, 0.00, 0.68, 0.079, 0.01
     )
     gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
-        colormap.greenyellow, 0.00, 0.72, 0.079, 0.01
+        colormap.greenyellow, 0.00, 0.68, 0.079, 0.01
     )
     br_palette_vertices, br_palette_colors = colormap.get_palette_scale(
-        colormap.bluered, 0.00, 0.72, 0.079, 0.01
+        colormap.bluered, 0.00, 0.68, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -1050,42 +1021,6 @@ def compute_field_observables(state):
             instrument.plot_probe_wave_profile(state.tensor_field)
 
 
-def compute_force_motion(state):
-    """
-    Compute forces and update particle motion.
-
-    Physics:
-    - Force = -grad(E) where E = rho * V * (f * A)^2
-    - Motion: Euler integration of F = m * a
-    """
-
-    # Compute force from energy gradient, then integrate motion
-    force_motion.compute_force_vector(
-        state.tensor_field,
-        state.observables,
-        state.wave_center,
-    )
-    if state.APPLY_MOTION:
-        force_motion.integrate_motion_leapfrog(
-            state.tensor_field,
-            state.wave_center,
-            state.dt_rs,
-        )
-    else:
-        # Zero-out velocities if not integrating force to motion
-        for wc_idx in range(state.wave_center.num_sources):
-            state.wave_center.velocity_amrs[wc_idx] = ti.Vector([0.0, 0.0, 0.0], dt=ti.f32)
-
-    # Annihilation naturally occurs from wave physics, but needs numerical precision check
-    # Detect and handle particle annihilation (opposite phase WCs meeting).
-    # Threshold: WCs can be at grid diagonal positions and dt_rs may cause larger jumps.
-    # M5.0d.3: hardcoded to 6 voxels (was state.tensor_field.ewave_res / 2). Defects
-    # don't physically have a single universal interaction radius; M5.2 will replace
-    # this with a per-defect-type Compton-wavelength-based threshold.
-    annihilation_threshold = 6.0  # in voxels
-    force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
-
-
 def _curl_projection(state):
     """`(curl_radial, curl_center)` for the bluered N/S projection of ∇×n̂ (B).
 
@@ -1307,7 +1242,6 @@ def main():
         if not state.PAUSED:
             # Run simulation step and update time
             compute_propagation(state)
-            compute_force_motion(state)
             state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time
             state.frame += 1
 
