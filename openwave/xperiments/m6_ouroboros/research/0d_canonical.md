@@ -373,5 +373,6 @@ For length extraction: any dimensionless length × R_phys gives fm.
 - `0c_sandbox_v9.md` — neutral BVP variants A/B + phase 2 ground-state-found
 - `0c_sandbox_v10.md` — Paul/DeepSeek Q45+Q46 recipe applied; DM paper inputs delivered
 - `0c_sandbox_v11.md` — (g, λ) scan + scaling symmetry; DM-paper Technical-Note "BVP inconsistency" closed
+- `0e_dm_paper_review.md` — Section-5 verification of Werbos's DM paper (v8, 2026-06-08): confirms params/profile/F(q); corrects S_vert (63× too large); flags M_JA normalization + stream/acknowledgment attribution
 - `theory/` — all Werbos corpus (LoE v1-v9c, Lean theorem, Numerical Benchmark, Hopf invariant proof)
 - Werbos's 9c LoE paper (Zenodo 20330894) — cites Reference [17] = our GitHub repo
