@@ -11,8 +11,10 @@ canonical profile [`sandbox_v11/v11_canonical_beta_profile.csv`](sandbox_v11/v11
 
 **Bottom line:** the core (parameters, profile shape, form factor) is accurate; one
 solid correction lands in the paper's favor (S_vert 63× too large → σ_p further
-below LZ); one item needs Werbos's normalization convention before it can be
-finalized (the absolute mixing integral); two attribution items need fixing.
+below LZ). As of Werbos's 2026-06-08 reply, the S_vert correction and all attribution
+fixes are **accepted**, and the exact mixing integral + β convention have been **sent**;
+the only open item is Werbos mapping his `V_Yukawa` convention onto the natural-unit
+anchor (199.34) to finalize α_eff / σ_p⁰ on his side.
 
 ---
 
@@ -68,21 +70,34 @@ profile gives.)
 
 ---
 
-## 4. What needs RECONCILIATION (do not overwrite — await Werbos)
+## 4. What needs RECONCILIATION (integral SENT — Werbos reconciling on his side)
 
-The absolute mixing integral does not reproduce from the raw profile, and a raw
-recompute is unphysical — so Werbos's side is applying a Yukawa-volume normalization
-not visible in the draft.
+The absolute mixing integral does not reproduce from the draft's normalization (271×
+gap), so Werbos's analytic side is applying a Yukawa-volume / amplitude convention not
+visible in the draft. In his 2026-06-08 reply he **accepted the S_vert correction** and
+asked for the exact integral + our β convention so he can reconcile `g_JA_eff` and
+`α_eff` self-consistently. Both were **supplied 2026-06-08** (values below, tail-converged:
+integrand at r_max is 2.75×10⁻⁵ of peak).
 
-| Quantity | Paper §5 | Raw recompute (canonical profile) | Status |
-| --- | --- | --- | --- |
-| ∫β r² dr | 3.37×10⁶ fm³ | 9.13×10⁸ fm³ | ~270× larger |
-| M_JA(0) = 4π∫β r² dr | 4.23×10⁷ fm³ | 1.15×10¹⁰ fm³ | ~270× larger |
-| g_JA_eff = M_JA/V_Yukawa | 0.311 | raw → **> 1 (unphysical)** | needs V_Yukawa convention |
+| Quantity | Paper §5 | Canonical profile — fm | Canonical profile — natural | Gap |
+| --- | --- | --- | --- | --- |
+| ∫β r² dr | 3.37×10⁶ fm³ | 9.134×10⁸ fm³ | 15.863 | — |
+| M_JA(0) = 4π∫β r² dr | 4.23×10⁷ fm³ | 1.148×10¹⁰ fm³ | 199.34 | **271× larger** |
+| g_JA_eff = M_JA/V_Yukawa | 0.311 | raw → **> 1 (unphysical)** | — | needs V_Yukawa convention |
 
-⚠️ Because α_eff (§5.3) and σ_p⁰ (§5.5) ride on M_JA via V_Yukawa, they **cannot be
-finalized** until Werbos supplies the exact `V_Yukawa` definition (or the script
-that produced M_JA = 4.23×10⁷). Requested in the 2026-06-08 reply.
+**β normalization convention (sent to Werbos):** β(r) is the raw, dimensionless BVP
+soliton amplitude (peak 0.697), **not** normalized to unit norm or to a charge — the
+chaoiton is neutral, so the amplitude is fixed by the field equation + the v11 scaling
+symmetry, not by a normalization choice. Near the origin it is the l=1 p-wave β = B₀r,
+B₀ = 0.5 natural (= 1.296×10⁻³/fm). Length unit R_phys = ℏc/m_e = 386.1593 fm, so
+r_fm = x·R_phys and the fm³ value is 15.863·R_phys³. The same ∫β r² dr is the F(q)
+denominator (F(0)=1) — internally consistent with the confirmed form factor.
+
+⚠️ α_eff (§5.3) and σ_p⁰ (§5.5) ride on M_JA via V_Yukawa, so they **finalize on
+Werbos's side** once he maps his convention onto the natural-unit anchor (199.34). Since
+the profile shape (peak location, F(q)) already matches his draft, the 271× sits in the
+analytic normalization/units, **not** the profile — the natural-unit value is the clean
+anchor.
 
 **Form-factor fine detail (minor, grid-sensitive):** F(q_gal) ≈ 1 is confirmed (the
 load-bearing claim). The high-q tail differs from the draft (zero crossing ours ~0.67
@@ -92,7 +107,13 @@ grid/cutoff. Use the attached `Fq_curve.csv` as the reference if consistency mat
 
 ---
 
-## 5. Attribution issues (factual — flagged in the reply)
+## 5. Attribution issues (factual — flagged, Werbos ACCEPTED 2026-06-08)
+
+Werbos's 2026-06-08 reply confirmed all three: he will revise §5.9/§4 to credit the
+six-peak modulation to astrophysical halo models (Gaia streams) not OpenWave data, update
+the Acknowledgments to the correct division of labour (OpenWave: BVP solution + β(r)
+profile + scaling symmetry; Werbos: cross-sections), and add a plain-language summary
+linking each §5 number to its repo script.
 
 | Where | Issue | Fix |
 | --- | --- | --- |
@@ -125,9 +146,10 @@ F(q) via Simpson/trapezoid with argument x = q·r/ℏc. The one-off script lived
 
 | Item | Status |
 | --- | --- |
-| Werbos to supply `V_Yukawa` definition / M_JA script | 🚧 requested 2026-06-08 — needed to finalize α_eff, σ_p⁰, σ_p |
-| Apply corrected S_vert (2.44×10⁻⁶) + β_peak (0.697) in §5.4 | 🔶 sent; Werbos to integrate |
-| Fix §5.9/§4 stream attribution + Acknowledgments wording | 🔶 sent |
+| Corrected S_vert (2.44×10⁻⁶) + β_peak (0.697) in §5.4/5.5 | ✅ Werbos accepted 2026-06-08; σ_p ~1×10⁻³⁴ cm² (further below LZ), conclusion unchanged |
+| Mixing integral ∫β r² dr + 4π form + β convention | ✅ sent 2026-06-08 (9.134×10⁸ fm³ / 1.148×10¹⁰ fm³; nat 15.863 / 199.34) |
+| §5.9/§4 stream attribution + Acknowledgments + plain-language summary | ✅ Werbos accepted 2026-06-08; he will revise |
+| Werbos to map `V_Yukawa` onto the natural-unit anchor → finalize α_eff, σ_p⁰ | 🚧 on Werbos's side; awaiting revised manuscript |
 | Open canonical questions Q48 (H = 8 m_J² Q identity), Q49 (α_JN definition) | see [`0d_canonical.md §8`](0d_canonical.md) |
 
 ---
