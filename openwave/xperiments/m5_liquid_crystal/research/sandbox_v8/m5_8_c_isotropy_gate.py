@@ -17,7 +17,7 @@ Three parts, each answerable without the full production engine (V(M) is rotatio
      force (machine-exact, all orders); a two-direction perturbation scales as ε³ (log-log
      slope 3). ⇒ "what is c in the vacuum?" is the WRONG question for Eq.18 — the uniform
      vacuum is transparent; propagation is background-gradient-mediated (defect dressings).
-     Hooks: 9a (what carries EM packets in empty space?) + Q9 (deeper substrate beneath M).
+     Hooks: EM-emergence (what carries EM packets in empty space?) + Q9 (deeper substrate beneath M).
 
   B  STATIC CONE TENSOR (far-field hedgehog): the verified twist EOM (m5_6_2b, 5a §9)
      2K ψ_tt = Σ_μ ∂_μ J_μ has principal symbol  c²(k̂) = 4·(1 − k̂·Gram·k̂ / T),

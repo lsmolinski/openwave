@@ -19,12 +19,12 @@ WHAT WE INHERIT FROM M5.6 (do not rebuild — this is the numpy mirror of produc
     the perturbation lives purely in the kinetic + curvature (twist) sector. Correct: V
     confines amplitude, the l=1 twist is the QM/δ sector V leaves alone.
 
-THE PERTURBATION (design locked 2026-05-28, SABER-grounded).  An l=1 director rotation
+THE PERTURBATION (design locked 2026-05-28).  An l=1 director rotation
 about ŷ:  M_pert = R_y(α)·M_bg·R_y(α)ᵀ ,  α(x) = δθ_peak · g(x) ,  g = f(r)·(z/r) (the
 Y_10 dipole pattern), f a shell localized to the defect's textured region. Rotating the
 director IS what an EM-wave lever does (M5.6.4 Maxwell-from-tilts), so the M5.7 seed = the
-9b.1 modulation lever — one code path. A/λ=1 ⇒ δθ_peak=2π (a full turn at the shell peak);
-the per-defect length scale (λ=4r₀) matches the thermal hypothesis (heat lives in the
+modulation lever — one code path. A/λ=1 ⇒ δθ_peak=2π (a full turn at the shell peak);
+the per-defect length scale (λ=4r₀) matches the per-defect picture (the excitation lives in the
 defect's own (A,ω) excess, not box-scale modes).
 
 KEY PHYSICS FINDING (informs the baseline).  The curvature force is CUBIC in ∂M, so around

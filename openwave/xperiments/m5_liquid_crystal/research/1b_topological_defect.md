@@ -88,9 +88,9 @@ The same field plays both roles in M5: *topology* describes how it's CONFIGURED;
 | EM static field | Topology | Static defect → static director texture |
 | EM radiation | Waves | Accelerating / annihilating defect |
 | Photon emission | Waves | Energy release from topology event |
-| Thermal excess (per-defect) | Waves | Per-defect oscillation above ground state |
+| `(A, ω)` excess (per-defect) | Waves | Per-defect oscillation above ground state |
 
-**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The thermal-excess row connects to the per-defect heat-as-oscillation hypothesis introduced in `OUTGOING-WAVE L+T DECOMPOSITION § Coupling to thermal excess` below, and its 9b.1 Sine-Gordon kink falsifiability test in [`0_ROADMAP.md` 9b.1](../../m3_wolff_lafreniere/research/0_ROADMAP.md). Applied-tech implications of this hypothesis are explored in engineering work outside the OpenWave scope.
+**Crucial distinction:** electrostatic force ≠ electromagnetic waves. In M5, electrostatic is a *static topology* phenomenon (Frank elastic); EM waves are a *dynamic* phenomenon (field oscillation). Two completely different mechanisms in the same underlying field. The `(A, ω)`-excess row is the per-defect oscillation-above-ground picture — the outgoing-wave amplitude/frequency excursion of an excited defect.
 
 ### Strategic implication — where to look when
 
@@ -433,7 +433,7 @@ Each of the three mechanisms is *necessary*; none is sufficient.
 **Why this distinction matters for OpenWave's framework**:
 
 - Strong force in M5 = an extension of M3's near-field standing-wave lock-in physics (which IS retained in M5) plus the M5.7 vortex-string contribution. **Same family** as M3's mechanism, just with topology adding the string piece
-- Orbital force in M5 = genuinely *new* combined-channel physics that M3 cannot produce. **Different family** from same-mass-class lock-in. M3 cannot reach atoms by scaling up; cross-mass-class machinery (M6.4 in the post-M5 sketch) is a separate engineering effort
+- Orbital force in M5 = genuinely *new* combined-channel physics that M3 cannot produce. **Different family** from same-mass-class lock-in. M3 cannot reach atoms by scaling up; cross-mass-class machinery (M6.4 in the post-M5 sketch) is a separate effort
 
 This is why Jeff's 2026-04-17 reply was important — he flagged that M3's near-field physics covers "three force regimes" (intra-particle, strong, orbital) in his EWT vocabulary. Looking at it through M5's mechanism lens, that's not strictly accurate: M3's wave-interference mechanism cleanly covers same-mass-class binding (intra-particle and strong, as Jeff noted), but **orbital binding requires the additional de-Broglie + quasi-static-center machinery on top of M3's near-field physics**. The standing-wave lock-in is one of three layered ingredients in atoms, not the whole story.
 
@@ -470,19 +470,19 @@ See also Dr. Duda's email-thread challenge: *"Without charge quantization your e
 
 ### The twist degree of freedom — quantum phase as a derived field state
 
-The director field has a third degree of freedom alongside topology (winding → charge) and amplitude (oscillation magnitude → mass / thermal content): a **local rotation phase φ around the principal axis** at each point. This twist DoF is the natural home for the **quantum phase** in the Liquid-Crystal framework.
+The director field has a third degree of freedom alongside topology (winding → charge) and amplitude (oscillation magnitude → mass / excitation content): a **local rotation phase φ around the principal axis** at each point. This twist DoF is the natural home for the **quantum phase** in the Liquid-Crystal framework.
 
 | DoF | What it is | What it physically gives | Quantization |
 | --- | --- | --- | --- |
 | Topology (orientation winding) | Net rotation of `n̂` over a closed surface around the defect | Charge `Q` (integer) | Integer winding; geometric (Gauss-Bonnet) |
-| Amplitude (oscillation magnitude) | Excursion of the field above its ground state | Mass / thermal content | Continuous above `A_0`; quantized in finite-T |
+| Amplitude (oscillation magnitude) | Excursion of the field above its ground state | Mass / excitation content | Continuous above `A_0`; quantized when excited |
 | **Twist** (phase φ around principal axis) | Local rotation phase of the director field | **Quantum phase** (and its winding = Berry phase) | 2π-quantized when integrated around a defect or path |
 
 In `S^1 ⊂ SO(3)` terms (per Dr. Duda's 2026-04 framing on the Models of Particles thread), the twist field is the `S^1` quantum-phase carrier sitting inside the larger `SO(3)` order-parameter manifold whose `S^2` part carries the topological charge. The single Liquid-Crystal framework therefore unifies:
 
 - `S^2 → Q` (topological charge, EM)
 - `S^1 → φ` (quantum phase, twist)
-- `A` (amplitude excitation, thermal degree of freedom)
+- `A` (amplitude excitation degree of freedom)
 
 This connects directly to the formula linking superfluid-like velocity to phase and EM vector potential: `v_m = ℏ∇φ − qA`. In M5 terms, the gradient of the twist phase φ contributes to the field's effective momentum / current alongside the EM-vector-potential term — both arise from the same order parameter, just from different rotation channels (`S^1` vs `S^2`) of the underlying SO(3).
 
@@ -577,12 +577,12 @@ Under CPT symmetry, "emission" is the time-reverse of "absorption" — they are 
 | --- | --- |
 | Excited atom radiates a photon → ground state | Ground-state atom is *receiving* a photon from a future absorber, viewed in time-reversed direction |
 | Cold detector absorbs a photon → excited state | Excited detector is *emitting* a photon into the past, viewed time-reversed |
-| Spontaneous emission (no apparent absorber) | Apparent only — the mathematical formalism still requires `ψ_f`; in practice the absorber is some thermal mode of the surrounding field |
+| Spontaneous emission (no apparent absorber) | Apparent only — the mathematical formalism still requires `ψ_f`; in practice the absorber is some mode of the surrounding field |
 | Stimulated emission | Direct CPT mirror of stimulated absorption — same coupling, time-reversed |
 
 **Why this matters for M5**: the time-symmetric Lagrangian dynamics of M5 (Hermitian, Lorentz-invariant → CPT by theorem) means the simulator does not produce one-directional "emission events" any more than it produces one-directional "absorption events". What M5 produces is field couplings between defects through their shared environment — and whether the observer reads a given coupling event as "emission" or "absorption" depends on which defect's clock runs which direction. The apparent radiation asymmetry of our universe (electrons spontaneously radiate but do not spontaneously climb up energy levels) is a **boundary-condition effect** — there are more absorbers in our future than emitters in our past — not a feature of the underlying dynamics. M5 should reproduce both cases naturally; testing this is part of the CPT-symmetry validation in [2a_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments](2a_path_to_m5.md).
 
-**Engineering connection**: the CPT-paired absorption/emission framework is also the structural basis for the **negative-radiation-pressure regime** — when stimulated emission dominates over absorption, the photon flux exerts a *pulling* force on the source instead of a pushing force. This is the regime where coherent amplitude-extraction operations (gain media, biased semiconductors, certain metamaterial regimes) become possible. M5's CPT-symmetric dynamics provide the substrate; engineering applications of the negative-radiation-pressure regime are the downstream consumer of this physics.
+**Negative-radiation-pressure regime**: the CPT-paired absorption/emission framework is also the structural basis for the **negative-radiation-pressure regime** — when stimulated emission dominates over absorption, the photon flux exerts a *pulling* force on the source instead of a pushing force. This is the regime where coherent amplitude-extraction operations (gain media, biased semiconductors, certain metamaterial regimes) become possible. M5's CPT-symmetric dynamics provide the substrate.
 
 ### Intrinsic oscillation — the time-crystal mechanism (preview)
 
@@ -833,7 +833,7 @@ All four were *separate postulates* in EWT and quantum mechanics. In M5, they're
 
 ## OUTGOING-WAVE L+T DECOMPOSITION — MAGNETISM AS THE TRANSVERSE CHANNEL
 
-The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (9b.7 / 9b.8 / 9b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)) all build on it.
+The "magnetic moment = transverse-wave emission" entry in the unification table above (and the L/T-mixed rotation-mode entry earlier in `What the rotation looks like — flavors`) is load-bearing enough to deserve a dedicated section. This makes it explicit, since Phase 4 (EM / magnetic emergence) and the post-M5 cross-domain-coupling phases (in [2a_path_to_m5.md](2a_path_to_m5.md)) all build on it.
 
 ### The decomposition
 
@@ -875,24 +875,6 @@ Macroscopic magnetism appears when one or more of the averaging above is broken:
 3. **Frequency downshift of the effective T-component oscillation** → exposes the field to the inertial-response regime where test particles can resolve it. This is a **falsifiable physics question** for Phase 4 — see [2a_path_to_m5.md § Phase 4 explicit goals](2a_path_to_m5.md#phase-4--explicit-goals-refined-2026-05) for the experimental design. If the high-ω averaging can be defeated by a heterodyne / mixing / low-pass operation on the wave field, magnetism becomes inertially observable at the downshifted frequency. If not, the averaging is fundamental and magnetism stays bound to the existing two manifesting conditions
 
 The third route is the new physics target Phase 4 must validate (or falsify); the first two are well-established empirical phenomena (permanent magnets and electromagnets) that any viable framework must reproduce — and this one does, by construction, from the L+T decomposition + coherent-summing argument.
-
-### Coupling to thermal excess (per-defect heat-magnetism wave-level link)
-
-If thermal excess is the joint (A, ω) excess of the defect's intrinsic oscillation (the Phase 7 thermal hypothesis), then thermal excess scales the *outgoing wave's amplitude* — and the outgoing wave's amplitude scales **both** the L-component AND the T-component. Therefore:
-
-> **Thermal excess scales the latent magnetic-component magnitude of the outgoing wave at the per-defect level.** Heat and magnetism are coupled at the wave level — they are different observable channels of one underlying outgoing-wave content.
-
-Mainstream phenomena consistent with this prediction:
-
-- **Curie temperature** — above some `T_c`, ferromagnets lose alignment. In the L+T framing, thermal randomization breaks the coherent T-component summing across the domain (the alignment manifesting condition fails)
-- **Magnetocaloric effect** — applied magnetic-field changes produce temperature changes at fixed pressure
-- **Pyromagnetic / thermomagnetic coefficients** — per-material temperature-magnetization coupling constants
-
-In mainstream physics these are separate empirical phenomena requiring separate constitutive relations. In this framework they share a per-defect substrate. **9b.9 in [2a_path_to_m5.md](2a_path_to_m5.md)** is the cross-validation phase that checks whether thermal excess scales the outgoing T-component magnitude as the L+T decomposition predicts.
-
-### Note on engineering operationalization
-
-Engineering primitives that explore the L+T decomposition (polarization-selective extraction, frequency-downshift to manifest the T-component as a usable variable mag field, load-coupling to the outgoing wave) live in the **SABER repo** cross-repo discipline. OpenWave's responsibility is to validate the underlying physics — that the L+T decomposition is observable, separable, and has the predicted thermal-coupling magnitudes. SABER's responsibility is to engineer. This document and the Phase 4 / Phase 7 plans in [2a_path_to_m5.md](2a_path_to_m5.md) cover only the physics side.
 
 ---
 

@@ -41,7 +41,7 @@ them.
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
 | [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
-| [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **heat — THE hypothesis** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / blackbody-IR envelope / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
+| [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
 
@@ -653,7 +653,7 @@ and the 3×3 sim uses only one:
 | **The projector** | `dt` | the parameter you *advance* to get the next frame (`M(t+dt)=M(t)+…`) — how any movie is computed | ✅ always |
 | **A direction to lean into** | the matrix's 4th slot | a spacetime *direction* the field's orientation `O` can point along — like x/y/z, but time | ❌ only at 4×4 |
 
-**Physical analogies** (the unlock for SABER engineering on the clock):
+**Physical analogies** (how the clock emerges at 4×4):
 
 - **Clock-hand.** In L7 the δ-axis is the "clock-hand" sweeping around the director `n̂`. *What plane
   does the hand sweep in?* In **3×3** it can only sweep a **spatial** plane (δ–0) — `dt` advances but
@@ -672,7 +672,7 @@ and the 3×3 sim uses only one:
   carries a hand that winds into time → the real clock.
 
 > 🚧 More physical analogies to develop here at teach time — Rodrigo flagged this as the key intuition
-> for SABER engineering on the clock/time/gravity lever (`SABER 0_OVERVIEW §4`). Take the time it needs.
+> for the clock / time / gravity picture. Take the time it needs.
 
 ### Is the clock a second time? — coordinate vs proper time
 
@@ -692,9 +692,8 @@ a parallel time. **No `dt` step → no tick.**
 **But the "two channels" intuition is right in spirit** — the load-bearing part: each defect ticks at
 its **own rate `ω`** (set by its mass/energy). Under *one* shared `dt`, different defects accumulate
 *different phase*. That gap — between the single coordinate time everyone shares and each particle's
-own proper-time *rate* — **is exactly time dilation**, and it is the SABER time-dynamics / gravity
-lever (modulate `ω` ⇒ locally engineer rate-of-time; in a gravity gradient `ω` even varies across
-*space* = the `∇g` story, L8).
+own proper-time *rate* — **is exactly time dilation** (vary `ω` ⇒ the local rate-of-time changes; in a
+gravity gradient `ω` even varies across *space* = the `∇g` story, L8).
 
 > ⚠️ **Per-DEFECT, not per-voxel.** The L7 collective mode locks all of one defect's voxels into a
 > *single* phase `ψ(t)` at one `ω` (compass needles in lock-step); different *defects* (different
@@ -724,14 +723,13 @@ particle-clock) → the ensemble average of all proper-times is the coordinate t
 Time bottoms out in mass-propelled movement, not in a clock.
 
 > ⚠️ All of this is the *relational-time hypothesis* (our roots + Duda's framing), not a proven M5
-> result — and the thermal/energy *consequences* of "the floor is lossless / perpetual" belong in the
-> SABER repo (`3_HYPOTHESIS.md §7.1`); here it's just the substrate's time-emergence picture.
+> result; here it's just the substrate's time-emergence picture.
 
 ### Why gravity + clock arrive together
 
 Gravity = the time axis's *scale* (`g`); the clock = a *rotation into* the time axis. Both need the
 time axis to exist → both arrive at 4×4, neither sooner. That single structural addition is why the
-SABER unification (thermal/time/gravity as one lever) is even conceivable — `SABER 0_OVERVIEW §4`.
+clock (a rotation *into* time) and gravity (a *scaling* of time) are two operations on the one time axis.
 
 ### Gravity = a "bend" in time (+ Wheeler + the render plan)
 
@@ -765,8 +763,8 @@ arrow (no 4th spatial dimension to point a glyph into). But — same trick as "w
 The "bend in time" becomes visible the same way bend does in the director glyphs — **not in one glyph
 but in the *pattern***: clocks ticking progressively slower toward a mass *is* the gradient-of-time
 made visible (read the arrangement, not the single arrow). These emergence channels — **EM / gravity /
-time-rate / heat** — are exactly the levers the SABER unification builds on (`SABER 0_OVERVIEW §4`);
-this lesson is where the *physics* intuition for them lives.
+time-rate** — all read out of the one frame geometry; this lesson is where the *physics* intuition for
+them lives.
 
 #### Common gravity confusions — clarified
 
@@ -1159,7 +1157,7 @@ That single fact is the **root cause of the M5.7 free-dispersal**:
 
 That's *exactly* the `H`-contained-vs-`F`-dissipating split you watched on the biaxial xparameter (L5),
 and the rod's orientation spreading. The escape: **4D** (the clock stabilizes orientation, L7) or a
-**drive** (9b sustains it).
+**drive** (M5.7.3 sustains it).
 
 ### Energy conservation — the correctness test
 
@@ -1176,7 +1174,7 @@ blow-up (the GUI "Evolve PDE" check Rodrigo confirmed).
 | 1 | what is "Evolve PDE" actually doing? | a **leapfrog** step: `M_new = 2M − M_prev + force·dt²`, then buffer-rotate. The force = neighbor curvature + `∇V`. Symplectic → energy-conserving. | above |
 | 2 | why two kinetic metrics? | **simple `½‖Ṁ‖²`** ships (well-behaved, no gauge-slosh) but mis-sets inertia → clock frequency off ×[0.6,3.0]; the **faithful `4Σ‖[M_μ,Ṁ]‖²`** is used for the M5.8 frequency run. | above, `5a §5g` |
 | 3 | why does the clock need a defect to turn on? | the twist is self-sourced by `C_μν=[M_μ,M_ν]`, which is `≈0` on a smooth background but `≠0` on the biaxial hedgehog → only a defect drives its own oscillation. | above |
-| 4 | why does a free defect disperse? | `V` confines **amplitude** (`Tr M²`) but **not orientation** → the director wanders off (the `H`-held / Frank-dissipating split). Fixed by 4D (L7) or a drive (9b). | above, L5/L7 |
+| 4 | why does a free defect disperse? | `V` confines **amplitude** (`Tr M²`) but **not orientation** → the director wanders off (the `H`-held / Frank-dissipating split). Fixed by 4D (L7) or a drive (M5.7.3). | above, L5/L7 |
 | 5 | what does energy conservation prove? | that the integrator is honest — a symplectic leapfrog holds `H` to ~0.03% at small `dt`. Drift ⇒ wrong dynamics. | above |
 | 6 | is the energy "sloshing" a bug? | **no** — `H` can move around in space while the **total is conserved** (bounded-not-bug). A real bug would be `H` *growing* (blow-up). | above |
 
@@ -1243,13 +1241,12 @@ not the absence of `A`. So the joint **`(A, ω)`** picture holds:
 
 | Observable | Is | Launcher |
 | --- | --- | --- |
-| `ω` | the rate (the clock frequency) | WM3 "Thermal Clock" |
-| `A` | the rotational radius / excitation amplitude | WM2 "Thermal Amp" |
+| `ω` | the rate (the clock frequency) | WM3 "Clock (ω)" |
+| `A` | the rotational radius / excitation amplitude | WM2 "Amp (A)" |
 
-Ground state: **both fixed**. *Excitation/heat* modulates **both** — radius grows (AM) and/or rate
-shifts (FM), exactly the dual channels M5.7.3 saw under driving (`A_core`→3×, director at `f_d`). *(The
-heat-as-`(A,ω)`-excess **interpretation** is SABER/DHC, kept in the SABER repo; here it's just the
-substrate clock's two observables.)*
+Ground state: **both fixed**. *Excitation* modulates **both** — radius grows (AM) and/or rate
+shifts (FM), exactly the dual channels M5.7.3 saw under driving (`A_core`→3×, director at `f_d`). Here
+these are just the substrate clock's two observables.
 
 **What the "radius" is, and what spins.** As the frame twists about `n̂`, the `δ`–`0` block
 `R(ψ)·diag(δ,0)·R(ψ)ᵀ` makes the field *components* oscillate — off-diagonal `(δ/2)·sin(2ωt)`. So the
@@ -1269,9 +1266,9 @@ is the **clock-hand** sweeping around it, and all the clock-hands across the def
 
 Why it matters: the **defect** is the stable topological knot that *hosts* the clock; the **clock** is
 the collective `clock_twist` mode the knot carries. So **"the particle" = defect (topology, permanent) + its
-intrinsic clock (the collective oscillation)** — and thermal `(A, ω)` is a **per-defect**
+intrinsic clock (the collective oscillation)** — and the `(A, ω)` excitation is a **per-defect**
 property, not a per-voxel one. *(3D caveat: the free collective mode disperses, M5.7.2 → needs 4D to
-self-sustain, M5.8, or a drive, 9b.)*
+self-sustain, M5.8, or a drive, M5.7.3.)*
 
 Five things that make it click:
 
@@ -1280,7 +1277,7 @@ Five things that make it click:
 | 1 | what makes the needles lock-step? | the elastic (Frank) coupling between neighbours + the hedgehog's own `C_μν` source — the lowest-energy way to carry a `clock_twist` is **coherently**, so one phase `ψ(t)` wins over each voxel doing its own thing |
 | 2 | how can one `ψ(t)` describe a whole 3D region? | it's a **collective coordinate / normal mode** — like a drumhead's fundamental, *one* amplitude sets the whole membrane's shape |
 | 3 | why a "mode," not a rigid point-spin? | it has **spatial extent + a profile** (peaked at the core, fading out) — a standing-wave / breather, not a structureless dot |
-| 4 | precise vs idealized? | "lock-step" is the *coherent ideal*; really `ψ = ψ(x,t)` with a profile. How coherent it stays *is* the M5.7.2 result (free 3D radiates it away → M5.8 stabilizes / 9b drives) |
+| 4 | precise vs idealized? | "lock-step" is the *coherent ideal*; really `ψ = ψ(x,t)` with a profile. How coherent it stays *is* the M5.7.2 result (free 3D radiates it away → M5.8 stabilizes / a drive maintains it) |
 | 5 | engine tie-in | this is the `O(x)∈SO(3)` rotation DoF (`5a §9` / `m5_6_2b`) — the collective `clock_twist` is a coherent excitation of that rotation field, not of `M`'s raw components |
 
 ![Duda's electron-clock animation — a hedgehog of biaxial ellipsoids, each spinning about its director at the de Broglie clock rate](images/clock.gif)
@@ -1298,12 +1295,11 @@ The clock isn't just a *measurement* — it's an **engine** that propels its own
   because stopping would cost *more*. Fuel = the rest mass itself (`ℏω = mc²`).
 - **Why 3D can't (the contrast).** In the space-only 3×3 (all-`+` signature) a rotation only *adds*
   energy → the free defect sheds it and disperses (M5.7.2). The engine needs the time axis's
-  negative-signature term, i.e. 4D (structure in L3). A *driven* 3D defect (9b) borrows the energy
+  negative-signature term, i.e. 4D (structure in L3). A *driven* 3D defect (M5.7.3) borrows the energy
   externally — a motor with a power cord, not yet a self-contained engine.
 - **Not perpetual motion.** The spin *is* the rest energy; you can't extract it without destroying the
-  particle. What CAN be modulated is the *excess* above ground state (`(A,ω)` — the thermal channel)
-  and, speculatively, the rate/scale (time/gravity) — the SABER unification thesis (`SABER 0_OVERVIEW
-  §4`), an engineering bet on this mechanism, not a claim it's free energy.
+  particle. What CAN be modulated is the *excess* above ground state (`(A,ω)`) and, speculatively, the
+  rate/scale (time/gravity) — but the spin itself *is* the rest energy, not free energy.
 
 ### Spin-½ — a property of this clock
 
@@ -1327,7 +1323,7 @@ changing** — so the **CYAN δ cross-bar sweeping around `n̂`** (VIZ.3 glyph s
 shadow* of the space-time rotation. Same "render the shadow, not the thing" trick as gravity (we draw
 `g(x)`/`∇g`, never "time" — L3). So: a coherent cyan sweep = the clock ticking; today it's an
 **incoherent wobble** (the free defect disperses, M5.7.2) — the clean coherent tick needs **M5.8** (or
-a drive, 9b).
+a drive, M5.7.3).
 
 ### What a "time-crystal" actually is
 
@@ -1398,7 +1394,7 @@ outcome + a falsifiable **test**, in M5's least-developed sector.
 | 1 | spin or oscillation? | a **spin** (`ψ=ωt`, no restoring force) — but *constant-amplitude*, so the joint **`(A, ω)`** picture holds (radius + rate). | above |
 | 2 | what actually spins? | the **orientation field as one collective phase-locked mode** on the defect (`n̂`=axle, δ-axis=hand) — not a point, not independent voxels. | above |
 | 3 | why is it an *engine*, not just a clock? | the Minkowski `(−+++)` sign makes the spinning state **lower-energy than static** (M5.8.0a) → spinning is the ground state, self-sustaining. | above |
-| 4 | is it perpetual motion? | **no** — the spin *is* the rest energy (`ℏω=mc²`); only the *excess* `(A,ω)` is modulable (the SABER bet), not free energy. | above |
+| 4 | is it perpetual motion? | **no** — the spin *is* the rest energy (`ℏω=mc²`); only the *excess* `(A,ω)` is modulable, not free energy. | above |
 | 5 | what's a time-crystal? | matter whose *ground state* is periodic in **time** (Wilczek). The particle is a *genuine* (equilibrium) one, allowed by the negative-energy sign (⚠️ hypothesis; lab DTCs are *driven*). | above |
 | 6 | why spin-½? | the order parameter is apolar + `SO(3)` double-covers `SU(2)` (2π ≠ identity, need 4π); `L=ℏ/2`. | above |
 | 7 | can we see the clock? | only its **shadow** — the δ cross-bar sweep (today an incoherent wobble; coherent @ M5.8). | above |
@@ -1482,7 +1478,7 @@ questions (tied to the VIZ.4 session, 2026-05-30):
 | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the `clock_twist` δ-axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
 | **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
 | **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
-| **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 thermal A/ω (the spin rate, L7). |
+| **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 amplitude/clock A/ω (the spin rate, L7). |
 | **Permanent magnet (Q8) — static B, no moving charge?** Aligned spin-topology: many defects with their moments `m̂` locked parallel ⇒ macroscopic static `B`. No *translating* charge needed — the "current" is the frozen collective spin (the L7 collective mode). | Forward link to the L7 collective mode + the M5.8 multi-defect work (5e). |
 
 **Feynman framing vs the permanent magnet.** Between *moving* charges, magnetism is the **relativistic
@@ -1613,8 +1609,8 @@ spin.)*
 | WM | Label | Observable | Palette | Lesson |
 | --- | --- | --- | --- | --- |
 | **1** | Deviation (Magnitude) | how far `M` is from the vacuum shape | orange | L1 — vacuum = flat (zero everywhere) |
-| **2** | Thermal Amp (EMA RMS) | the oscillation **amplitude `A`** | ironbow | L7 — the clock's radius (the `(A,ω)` pair) |
-| **3** | Thermal Clock (ω) | the **clock rate `ω`** | blueprint | L7 — the de Broglie tick (`ω=2mc²/ℏ`) |
+| **2** | Amp (A) (EMA RMS) | the oscillation **amplitude `A`** | ironbow | L7 — the clock's radius (the `(A,ω)` pair) |
+| **3** | Clock (ω) | the **clock rate `ω`** | blueprint | L7 — the de Broglie tick (`ω=2mc²/ℏ`) |
 | **4** | ENERGY (Hamiltonian) | `energyH` — the **full** Hamiltonian density | ironbow | L5 / L6 — mass = stored energy (the "rod") |
 | **5** | ENERGY (Frank Elastic) | `energyF` — the **director-only** elastic density | ironbow | L5 / L6 — the part that *dissipates* (M5.7.2) |
 | **6** | EM div (charge / E) | `∇·n̂` **splay** (signed) | greenyellow diverging | L8 — electric charge |
@@ -1786,9 +1782,9 @@ bind**:
 > *the* ontology. In M5/M6, **topology quietly took over the matter sector** (particle = defect, not
 > wave-packet), so the honest question is: where does "wave" live now? This capstone resolves it —
 > waves dropped from *substrate* to *emergent*, and the **emergence ledger** below locates matter,
-> **force, EM waves, heat, and time** as strata, **none of them sourced by a base wave**. The wave's
-> own two jobs split: the **radiated** job is settled (it *is* the EM-waves stratum, through which
-> heat is shed); the **relational (pilot)** job is left as an open question.
+> **force, EM waves, and time** as strata, **none of them sourced by a base wave**. The wave's
+> own two jobs split: the **radiated** job is settled (it *is* the EM-waves stratum); the
+> **relational (pilot)** job is left as an open question.
 
 ### Scope — this question only exists in M5/M6
 
@@ -1811,8 +1807,8 @@ longer the substrate.
 ### THE EMERGENCE LEDGER — what comes from where (none of it a base wave)
 
 The reconciliation: the M5 universe is an **emergence ledger**. A static substrate is *given*;
-matter, force, EM waves, heat, and time each appear as *patterns* on it. Read the right-hand column
-top to bottom and it says the same thing six times — **topology and defect-oscillation generate
+matter, force, EM waves, and time each appear as *patterns* on it. Read the right-hand column
+top to bottom and it says the same thing five times — **topology and defect-oscillation generate
 everything; the wave is downstream, never the source.**
 
 | Layer | What it is | How it emerges — *not* from a base wave | Anchor |
@@ -1821,13 +1817,12 @@ everything; the wave is downstream, never the source.**
 | **MATTER** (the particle) | topological **defect** (hedgehog); charge/spin = topological invariants | from **topology** — winding number = quantized charge; Derrick forbids a static lump → it must be a 4D **clock** | L4, L7, M5.8 |
 | **TIME** (emergent) | **proper/particle-time** + **shared-time** (`dt`) | **proper-time** = the defect's own `clock_twist` rotation (the matrix time-index — structural, per-defect, mass-propelled); **shared-time** = the grid's evolution parameter `dt` that everything steps by and **humans perceive**. Both emerge from **oscillation / evolution**, not from a wave. | L3, L7 |
 | **FORCES** (emergent) | electric, magnetic, gravity | **static topology**: splay `∇·n̂` = charge → Coulomb (1/d), g-axis gradient → gravity (1/r²); **frame dynamics**: magnetic `frank_twist`+bend `∇×n̂` = the Feynman velocity correction. *Never* wave-interference — that wrong-layer attempt is exactly the M3/EWT **sinc-flip**. | L8, 3a |
-| **EM WAVES** (emergent) | radiated EM disturbances — the far-field a defect throws off | a defect radiates only when **accelerating / excited** (Larmor); the ground-state clock does **not** radiate. Propagating `∇×n̂`/`∇·n̂` disturbances = photons. | 9a |
-| **HEAT** *(THE hypothesis, emergent)* | the thermal `(A, ω)` excess of the defect's oscillation above ground | **Heat = `(A, ω)` excess above the ground-state floor** — the SABER/9b core hypothesis; sheds *through* the EM-waves channel on de-excitation, where blackbody/IR is the low-frequency **envelope** (not the carrier — caveat below). | 9b |
+| **EM WAVES** (emergent) | radiated EM disturbances — the far-field a defect throws off | a defect radiates only when **accelerating / excited** (Larmor); the ground-state clock does **not** radiate. Propagating `∇×n̂`/`∇·n̂` disturbances = photons. | future |
 
 ### GEOMETRY all the way down — EM, Gravity, Time as one substrate
 
 The ledger's deeper reading: not just "the wave is downstream," but **everything in it is *geometry*
-of the frame `M`** — and the three SABER channels (EM, gravity, time) are one substrate seen three
+of the frame `M`** — and the three channels (EM, gravity, time) are one substrate seen three
 ways. Three claims say it:
 
 | Claim | Precise form | Which geometry | Status |
@@ -1848,17 +1843,17 @@ Two refinements keep the slogans exact:
 
 **One more split — static vs the time-axis fields (Rodrigo, 2026-06-01).** **Electric** is the lone
 field that is *purely spatial and static* — present at rest, from the static topology alone.
-**Magnetic, gravity, and thermal all switch on only with the 4th (time / clock) axis** (M5.8): a
+**Magnetic, gravity, and the clock's `(A, ω)` excess all switch on only with the 4th (time / clock) axis** (M5.8): a
 static defect is radial, so `∇×n̂ ≈ 0` — **no real magnetic field until the clock spins** (the spinning
 moment *generates* the circulation). Magnetic is the clock's *spatial* signature (motion); gravity its
-*temporal* signature (mass-energy curving time); thermal its *excess*.
+*temporal* signature (mass-energy curving time); the `(A, ω)` excess is its amplitude/rate excursion.
 
 | Field / form | Sourced by | Needs the clock / time axis? | Live in OpenWave |
 | --- | --- | --- | --- |
 | **Electric** | static topology — splay `∇·n̂` (charge) | **no** — purely spatial, present at rest | ✅ M5.4 / M5.6 (Coulomb) |
 | **Magnetic** | the spinning clock's circulation `∇×n̂`, **× spatial geometry** | **yes** — needs MOTION (the moment); a static defect has `∇×n̂ ≈ 0` | 🔶 Maxwell machinery M5.6; real B @ M5.8 |
 | **Gravity** | mass-energy curving the time axis (`∇g`) | **yes** — needs the `g`-axis | 🚧 M5.8 / M5.9 |
-| **Thermal** | **excess** `(A, ω)` clock oscillation | **yes** — needs the clock | 🔶 driven preview M5.7.3; 9b |
+| **`(A, ω)` excess** | **excess** `(A, ω)` clock oscillation | **yes** — needs the clock | 🔶 driven preview M5.7.3 |
 
 The chain is therefore **not linear — it forks and merges** (your instinct, 2026-06-01):
 
@@ -1871,7 +1866,7 @@ defect-field geometry  (topological frame M)
       └─ MOTION (clock-engine, propelled by mass)
             └─ PROPER TIME  (the clock = the rate of that motion)
                   ├──→ GRAVITY   (∇g = curvature of the time axis)
-                  ├──→ THERMAL   (excess (A,ω) clock oscillation)
+                  ├──→ EXCESS    (excess (A,ω) clock oscillation)
                   └─ × geometry ──→ MAGNETIC   (circulation ∇×n̂; MERGE = motion × space)
 ```
 
@@ -1883,8 +1878,8 @@ curvature of that same geometry** — *spatial* curvature = electric, *spatial �
 gradients / rates.
 
 This extends the emergence-ledger thesis ("the wave is downstream; the substrate is geometry") to
-*why* the SABER control channels — thermal `(A, ω)`, time `ω`, gravity `g`/`∇g` — are **one knob**:
-the same frame-geometry modulated on three axes (`SABER 0_OVERVIEW §4`).
+*why* EM, time, and gravity are **one geometry** — the same frame `M` read on three axes (`(A, ω)`
+excess, the rate `ω`, the scale `g`/`∇g`).
 
 ### The de Broglie wave — the one genuinely fundamental wave
 
@@ -1922,11 +1917,11 @@ re-coupling to steer it). The only thing still *open* is whether it's a **separa
 
 Zooming into the wave itself: your voice-note candidates ("only EM?", "orbital lock-in?", "ellipsoid
 oscillation?", "what do the oscillations generate?") collapse into **two jobs** — one settled (it's
-the EM-waves stratum above, with heat shed through it), one still open:
+the EM-waves stratum above), one still open:
 
 | Wave job | Status | What it is | Examples / mechanism |
 | --- | --- | --- | --- |
-| **Radiated** | settled (= the EM-waves stratum; heat's shed channel) | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, 9a/photons), gravitational waves (g-gradient ripples) |
+| **Radiated** | settled (= the EM-waves stratum) | far-field disturbances the defect's clock throws off | EM waves (propagating `∇×n̂`/`∇·n̂` disturbances, photons), gravitational waves (g-gradient ripples) |
 | **Relational (pilot)** | **open question** | the near-field standing wave the defect *generates and re-couples to* — guides its own motion, quantizes orbits, binds composites | de Broglie–Bohm pilot wave / WSM / Couder walking-droplet analogy (the 2+1D rung, M5.8.6) |
 
 > 🚧 **Open question (flagged, not resolved — 2026-06-01).** Is the pilot wave a *separate* wave, or
@@ -1948,17 +1943,8 @@ Map that onto a defect:
 | Defect at rest, ground-state clock | **No** | static director field → static E/B; the bare `clock_twist` is a *stationary* internal phase (like a quantum stationary state with no oscillating dipole) — this is *why* a ground-state particle / orbiting electron doesn't spiral in |
 | Defect accelerating / transitioning / carrying **excess** `(A, ω)` above ground | **Yes** | the excess sheds as radiation when the defect de-excites/decoheres — your "excess intrinsic oscillation leaking out as EM" |
 
-So **blackbody / thermal-IR radiation** is a natural candidate for the *radiated* job: the EM thrown
-off by thermally-excited defect clocks shedding their `(A, ω)` excess (the **9b** "heat = `(A, ω)`
-excess" program is the scientific home for this).
-
-> ⚠️ **Carrier vs envelope caveat (don't conflate scales).** The bare Zitterbewegung clock is
-> `ω = 2mc²/ℏ` — for an electron ≈ `2.5×10²⁰ Hz` (gamma-ray range), **not** IR. Thermal IR sits near
-> `~10¹³ Hz` (300 K Wien peak ≈ 10 µm) — about **7 orders below** the carrier. So blackbody/IR is
-> **not** the raw clock frequency; it's the low-frequency **envelope / modulation / collective
-> de-excitation** riding on the carrier. Treat the clock as the carrier and the thermal spectrum as
-> the sideband — keep these separate or the picture is wrong by `10⁷`. (This is the falsifiable seam
-> for 9b; the *engineering* lever built on it lives in the SABER docs.)
+So **radiation from excited defects** is a natural candidate for the *radiated* job: the EM thrown
+off by an excited defect clock shedding its `(A, ω)` excess as it de-excites.
 
 ### Identity note — is "OpenWave" still apt?
 
@@ -1971,8 +1957,6 @@ relevance. The name still points at the right physics — it just sits one layer
 
 | Anchor | What it is |
 | --- | --- |
-| `9a` | radiated EM packets |
-| `9b` | heat as `(A, ω)` excess — the radiated-thermal seam |
 | `5a §10` + L7 | the clock |
 | `L3` | the two times — proper vs shared |
 | `L8` / `3a` | force emergence |

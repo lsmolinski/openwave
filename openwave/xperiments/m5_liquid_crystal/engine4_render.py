@@ -206,7 +206,7 @@ def update_director_glyphs(
         field, so it is always unit-length + its fixed colors. Both axes apolar
         (centered, no head/tail) ⇒ gauge-stable. The delta bar is the clock-hand axis
         (the would-be Zitterbewegung spin; in free 3D it only tilts/disperses —
-        coherent spin needs M5.8/9b).
+        coherent spin needs M5.8 or a drive).
       - **mode=1 E-field** — `director_nhat` as a POLAR field line: honors size
         (shaft ∝ |∇·n̂| charge density) + color (single = `_GLYPH_E_COLOR`, gradient =
         greenyellow charge), with a +→− half-barb. The +→− *orientation* is

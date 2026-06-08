@@ -282,12 +282,12 @@ Without the 0, you'd have a regular Lorentzian metric structure. With the 0, the
 
 | Notion | Where | What it means |
 | --- | --- | --- |
-| Phase 9c time dynamics | 9c_time_dynamics.md | `f = c/λ` varies per voxel |
+| Per-voxel local-time | relational-time picture | `f = c/λ` varies per voxel |
 | M5.8 4D extension | Duda paper §V | Lorentz algebra at each voxel |
 
 These are related but not identical:
 
-- Phase 9c says: the rate of change differs per voxel because λ(x) is a scalar field. That's a per-voxel scalar clock-rate.
+- The per-voxel local-time picture says: the rate of change differs per voxel because λ(x) is a scalar field. That's a per-voxel scalar clock-rate.
 - M5.8 4D says: the matrix algebra at each voxel becomes Lorentz-covariant. The boost component `Γ^0(x)` varies per voxel, a per-voxel "time-direction tilt".
 
 Both can coexist eventually — they answer different sub-questions about "what does local time mean here?". The grid stays 3D in both; neither makes time a 4th grid axis.
@@ -648,7 +648,7 @@ sum over past bounce points `r_p` at times `t_p`; `δ` spatial decay, `τ` memor
 
 Duda's own **Maximal Entropy Random Walk**: a time-symmetric (Boltzmann) path ensemble whose stationary density is the **QM ground state** with Anderson-like localization. The Born rule emerges as `ρ ∝ ψ²` from combining past (`ρ ∝ ψ`) and future (`ρ ∝ ψ`) trajectory ensembles — verified against STM electron-density maps of Ga₁₋ₓMnₓAs.
 
-**Relevance — two M5 touch-points:** (a) it is Duda's answer to the *"`ρ = |ψ|²` statistics"* question — the classical→Born-rule bridge that complements the topology + clock bridges; (b) it is a natural framing for **9b thermal statistics** (the per-defect `(A, ω)` ensemble → macroscopic distribution is a max-entropy path-ensemble problem). Candidate tool, not yet on the roadmap.
+**Relevance — two M5 touch-points:** (a) it is Duda's answer to the *"`ρ = |ψ|²` statistics"* question — the classical→Born-rule bridge that complements the topology + clock bridges; (b) it is a natural framing for the per-defect `(A, ω)` ensemble → macroscopic distribution (a max-entropy path-ensemble problem). Candidate tool, not yet on the roadmap.
 
 ### 11b.5 The "two-ingredient Schrödinger" framing (conceptual scaffold)
 
@@ -673,7 +673,7 @@ Speculative aside (low priority, noted not adopted): the deck floats electron su
 | Hydro↔EM dictionary (§11b.1) | M5.5 | cross-check route for EM-from-tilts |
 | Faber quantized-EM Lagrangian (§11b.2) | M5.5 | port alongside LdG potential |
 | Path-memory kernel + quantization laws (§11b.3) | M3-in-M5 orbit quantization | reference model + validation targets |
-| MERW → Born rule (§11b.4) | `ρ=\|ψ\|²` question; 9b statistics | candidate tool |
+| MERW → Born rule (§11b.4) | `ρ=\|ψ\|²` question; (A,ω) ensemble statistics | candidate tool |
 | Two-ingredient Schrödinger framing (§11b.5) | M5 overview / outreach | framing paragraph |
 
 ---
@@ -705,4 +705,4 @@ Speculative aside (low priority, noted not adopted): the deck floats electron su
 | --- | --- |
 | `reference_duda_lcb_paper` | eigenvalue → force-scale mapping (was framed as lepton-mass scale); add slides as companion source |
 | `m5-path` (project_m5_path) | substrate decision locked → matrix M (full, not Q-tensor) |
-| `thermal-amplitude-hypothesis` | the matrix substrate is the explicit field-theoretic home for the hypothesis |
+| `(A, ω)` excess | the matrix substrate is the explicit field-theoretic home for the per-defect excitation |

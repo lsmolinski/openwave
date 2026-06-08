@@ -252,7 +252,7 @@ topological invariants of that defect.**
 | LCDs use nematic liquid crystals; defects are visible under polarized light | Visualization analog — actual lab pictures of these defects exist |
 | Bush & Couder walking droplets reproduce pilot-wave behavior | Hydrodynamic analog of quantum mechanics in classical fluids |
 | Liu et al. *Nature Physics* 2026 — first direct laser creation of isolated hopfions and skyrmions in real LC | Lab anchor: the topological structures M5 hypothesizes for particles have been made in matter |
-| Schwinger 1969 + Faber regularization | Mainstream physics ancestry of the same math (see Schwinger family tree in SABER `1_model_selection.md`) |
+| Schwinger 1969 + Faber regularization | Mainstream physics ancestry of the same math (the Schwinger family tree) |
 
 ### One-line summary
 

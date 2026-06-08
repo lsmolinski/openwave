@@ -1,10 +1,10 @@
 """
-M5.7.3 — 9b.1 driven-oscillation preview: can an EM-like lever sustain the defect's (A, ω)?
+M5.7.3 — driven-oscillation preview: can an EM-like lever sustain the defect's (A, ω)?
 
 M5.7.1 (seeded) + M5.7.2 (intrinsic) established that a *freely-evolving* 3D defect DISPERSES
-its excess orientation energy — no free metastable clock (that's 4D / M5.8). But heat in the
-SABER hypothesis is a *maintained* (A, ω) excess — sustained by a continuous drive (a bath / an
-EM lever), not a one-shot free oscillation. So the question this previews (the heart of 9b.1):
+its excess orientation energy — no free metastable clock (that's 4D / M5.8). But a *maintained*
+(A, ω) excess — sustained by a continuous drive (a bath / an EM lever), not a one-shot free
+oscillation — is a separate question. So the question this previews:
 
     Does a continuous EM-wave-like drive hold the defect in an excited (A, ω) state
     (vs the free dispersal), and at what frequency does the lever couple best?
@@ -29,13 +29,13 @@ METRICS.
     Driven: held elevated if the lever couples. **Sustained A_core = mean over the last third.**
   • Response: FFT the core director — does it ring at the drive f_d (forced response)?
   • Resonance: sweep f_d → the f_d that maximizes sustained A_core = the defect's natural mode
-    (the frequency a real EM lever should use — the 9b.1 "FM" handle).
+    (the frequency a real EM lever should use — the "FM" handle).
   • H(t) grows under drive (closed Dirichlet box has no energy sink — the box fills up; that is
     NOT a failure, just not the metric). We track it only to flag numerical blow-up.
 
-BRIDGE TO SABER.  A sustained, frequency-selective driven (A, ω) is the field-theoretic basis of
-"heat = maintained (A, ω) excess" + identifies the modulation frequency the EM lever should use.
-(Physics framing only here; device/engineering specifics → SABER docs.)
+DRIVEN-EXCESS SUBSTRATE.  A sustained, frequency-selective driven (A, ω) is the field-theoretic
+basis of a *maintained* excitation excess + identifies the modulation frequency the EM lever
+should use.
 
 USAGE:
     python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v7.m5_7_3_driven_oscillation
@@ -256,7 +256,7 @@ def response_at(ndir, f_d):
 def main():
     print("=" * 82)
     print(
-        "M5.7.3 — 9b.1 driven-oscillation preview: can an EM-like lever sustain the defect (A,ω)?"
+        "M5.7.3 — driven-oscillation preview: can an EM-like lever sustain the defect (A,ω)?"
     )
     print(
         f"  grid {N}³  L={L}  c={C_WAVE}  dt={DT}  steps={N_STEPS}  δ={DELTA}  A_drive={A_DRIVE}  f32"
@@ -310,17 +310,17 @@ def main():
             f"  → THE EM LEVER WORKS: a continuous drive at f_d≈{best['fd']:.2f}/t holds the defect in a"
         )
         print(
-            "    maintained (A,ω) excess — the field-theoretic basis of heat-as-driven-excess (9b.1)."
+            "    maintained (A,ω) excess — the field-theoretic basis of a driven excitation excess."
         )
     elif sustained:
         print(
-            "  → The lever sustains the excitation but the resonance is broad — map the band in 9b.1."
+            "  → The lever sustains the excitation but the resonance is broad — map the band in follow-up sweeps."
         )
     else:
         print(
             "  → The lever does not clearly sustain the excitation at this A_drive — tune amplitude /"
         )
-        print("    frequency, or the sustained-thermal-state needs the 4D clock substrate (M5.8).")
+        print("    frequency, or the sustained-excitation state needs the 4D clock substrate (M5.8).")
     print("PASS" if finite else "FAIL — blow-up (reduce A_drive or dt)")
     print("=" * 82)
     return 0 if finite else 1

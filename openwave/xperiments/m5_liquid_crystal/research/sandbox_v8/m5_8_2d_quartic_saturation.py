@@ -74,7 +74,7 @@ if str(REPO_ROOT) not in sys.path:
 
 # ti-free import chain (the 2c-1 reference pieces)
 from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2c1_full_evolution import (  # noqa: E402
-    N, DT, EPS_EIG, VCAP, B_STAR, SYM_BASIS,
+    N, RC, R_W, DT, EPS_EIG, VCAP, B_STAR, SYM_BASIS,
     seed_M, build_grid, central, tw, from_coeff,
 )
 
@@ -86,7 +86,8 @@ STEPS = 6000
 PROBE = 100
 MAX_SWEEPS = 20
 JTOL2 = (2e-7) ** 2
-REF_NPZ = HERE / "_m5_8_2cb_ref.npz"
+_SFX = ("" if N == 24 else f"_N{N}") + ("" if RC == 0.8 else f"_RC{RC:g}") + ("" if R_W == 3.5 else f"_RW{R_W:g}")
+REF_NPZ = HERE / f"_m5_8_2cb_ref{_SFX}.npz"
 
 
 def np_commf(A, B):

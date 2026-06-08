@@ -925,14 +925,12 @@ def update_M_4d_constrained(tensor_field: ti.template(), dt_eff: ti.f32):  # typ
 # Without this, gradient descent can numerically dissolve the defect on a
 # discrete grid (topology is not strictly preserved by discretization).
 #
-# M7 FORWARD-LINK: this kernel is mathematically the γ → ∞ limit of a damped
+# FORWARD-LINK: this kernel is mathematically the γ → ∞ limit of a damped
 # wave equation `∂²_t ψ = c²∇²ψ − γ·∂_t ψ`. Although the relaxation use is
 # purely numerical (no physics interpretation in M5.1), the same primitives
-# — Laplacian stencil, tangent projection, soft-core pin — will be reused
-# in M7 thermal-modulation kernels where γ becomes a PHYSICAL damping
-# coefficient (radiation loss, phonon coupling, EM-load impedance). See
-# `research/2a_path_to_m5.md § Beyond M6 — thermal mechanics pathway`
-# for the infrastructure-foundation discussion.
+# — Laplacian stencil, tangent projection, soft-core pin — could be reused
+# in future damped-dynamics kernels where γ becomes a PHYSICAL damping
+# coefficient (radiation loss, phonon coupling).
 
 
 @ti.kernel

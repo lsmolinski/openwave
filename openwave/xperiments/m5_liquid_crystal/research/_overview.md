@@ -966,9 +966,9 @@ A natural extension of the matter hierarchy: **OpenWave's full scope is broader 
 | Output domain | What M5 must compute | Why it matters |
 | --- | --- | --- |
 | **MATTER** | Particle emergence (leptons, quarks, nucleons, atoms) | Foundation — every other output is measured against it |
-| **FORCES** | Electric, strong, magnetic, gravitational — all derived from a single Lagrangian | Forces are how matter *interfaces* with engineering. Quantitative force-law predictions at the device scale |
-| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Most engineering interaction with matter is through EM. RF/microwave/optical interaction is core to device design |
-| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); thermal-EM coupling; blackbody emergence | Thermal mechanics drives most energy-conversion technology |
+| **FORCES** | Electric, strong, magnetic, gravitational — all derived from a single Lagrangian | Forces are how matter *interacts* with the world. Quantitative force-law predictions from first principles |
+| **ELECTROMAGNETIC WAVES** | Photon emission/absorption, EM dispersion, polarization, antenna-medium coupling | Most interaction with matter is through EM. RF/microwave/optical coupling is central to how matter and fields interact |
+| **HEAT** | Thermal energy at the wave / spin-coherence level (not bulk kinetic temperature); blackbody emergence | A complete field theory must reproduce thermal mechanics as an emergent output |
 
 **Why all four are co-equal goals**: a simulator that does only matter is a particle-physics tool. A simulator that does matter + forces + EM + heat from one Lagrangian is a **complete classical-field-theoretic description** — that's the integrated value of the platform.
 
@@ -981,8 +981,6 @@ OpenWave is not "an alternative QFT simulator" or "a liquid-crystal modeling too
 That positioning is what makes OpenWave scientifically interesting (a deeper-than-QFT first-principles framework). The matter layers we've been validating in M5.0–M5.8 are the necessary prerequisite for the force / EM / heat outputs that come in Phase 4–6+.
 
 Full roadmap with output-domain dependency chains in [2a_path_to_m5.md § Beyond matter — forces, EM waves, heat](2a_path_to_m5.md#beyond-matter--forces-em-waves-heat).
-
-There is a separate applied-technology counterpart project (SABER) that consumes these physics outputs to develop new tech. SABER lives in its own repo and is out of scope for this document.
 
 ### How does OpenWave handle quantum phase, and what about entanglement?
 
@@ -997,7 +995,7 @@ A topological defect in M5 has three independent observables (see [1b_topologica
 | DoF | Channel | What it gives |
 | --- | --- | --- |
 | Topology (winding of director orientation) | `S²` of `SO(3)` | Charge `Q` (integer, geometric) |
-| Amplitude (oscillation magnitude) | radial above ground state | Mass / thermal content |
+| Amplitude (oscillation magnitude) | radial above ground state | Mass / excitation content |
 | **Twist** (rotation phase around principal axis) | `S¹` of `SO(3)` | **Quantum phase** φ, and its winding = Berry phase |
 
 The twist DoF is the natural home for what's normally called the "quantum phase" — Dr. Duda's S¹-as-twist framing maps directly onto it. The framework already unifies the EM-charge and quantum-phase channels into one SO(3) order parameter; nothing extra is bolted on.
@@ -1034,7 +1032,7 @@ This has several useful consequences:
 
 - **Pair creation ↔ pair annihilation are CPT mirrors.** A hedgehog + anti-hedgehog forming from incoming traveling waves (creation) is the time-reverse of two counter-winding defects relaxing into outgoing traveling waves (annihilation). Same equation, opposite time direction
 - **Same-winding pairs are CPT-forbidden from annihilating.** This was already a planned M5.4 test (see [3d § M5.4 mechanism-distinguishing tests](2a_path_to_m5.md#phase-m54--electron-stability--dynamic-coulomb-recovery-the-headline-goal)) — under CPT, it's revealed as a topological-symmetry consequence rather than just a topological-counting argument
-- **Absorption ↔ stimulated emission are CPT mirrors.** Per Duda's deck and standard QED, the rate equations `∂N₂/∂t = B₁₂ ρ(ν) N₁` (absorption) and `∂N₂/∂t = −B₂₁ ρ(ν) N₂` (stimulated emission) are CPT-related. M7.x thermal phases will reproduce this structure if the framework is consistent
+- **Absorption ↔ stimulated emission are CPT mirrors.** Per Duda's deck and standard QED, the rate equations `∂N₂/∂t = B₁₂ ρ(ν) N₁` (absorption) and `∂N₂/∂t = −B₂₁ ρ(ν) N₂` (stimulated emission) are CPT-related. Future phases will reproduce this structure if the framework is consistent
 - **Negative radiation pressure is CPT-allowed.** Whenever stimulated emission dominates over absorption (e.g., gain media, reverse-biased semiconductors, certain metamaterial regimes), the CPT-mirror operation produces a momentum transfer in the opposite direction from standard photon push — i.e., the radiation pulls the surface outward instead of pushing it inward. M5 should reproduce this regime when the appropriate population inversion is seeded
 
 These give M5 a natural validation surface beyond just charge / mass / pair-dynamics: any test of CPT-mirror behavior is simultaneously a test of M5's framework consistency. Specific experiment in [2a_path_to_m5.md § Beyond M5.8 — phase, Berry, and entanglement experiments — CPT symmetry validation](2a_path_to_m5.md).
