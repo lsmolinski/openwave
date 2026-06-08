@@ -398,8 +398,7 @@ The full physics hierarchy maps cleanly onto M5 phases:
 | **1d — Closed vortex loop** | Neutrino topology variant (SO(3)~SU(2)) | M5.9 (alternative seed) | 🚧 |
 | **1e — Two-defect annihilation** | Dynamic Coulomb 1/d² + e⁺/e⁻ annihilation | M5.7+ pair test | 🚧 |
 | **2 — Open vortex string** | Quark-antiquark (meson), Cornell potential `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm | M5.9 (Cornell) | 🚧 |
-| **THERMAL — Per-defect (A, ω) excess** | Heat as joint amplitude+frequency excess above defect ground state | **9b — THERMAL HEADLINE (SABER MAIN GOAL)** | 🚧 (unblocked when M5.7 lands) |
-| **3 — Baryons (3 string endpoints)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites | 9d (DEFERRED post-9b) | not planned |
+| **3 — Baryons (3 string endpoints)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites | 9d (DEFERRED) | not planned |
 | **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | 9d (DEFERRED) | not planned |
 | **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus | 9d (DEFERRED — also needs cross-mass-class machinery) | not planned |
 | **6 — Molecules / bulk matter** | Multi-atom bonding | Long-term | not planned |
@@ -409,7 +408,6 @@ The full physics hierarchy maps cleanly onto M5 phases:
 Each higher layer requires the layer below to be working correctly:
 
 - **Layer 1** (lepton) requires Layer 0 (vacuum that supports topological defects) — checked by M5.0/M5.1 invariant tests (✅)
-- **THERMAL** (per-defect (A, ω) excess) requires Layer 1a (matrix-substrate metastable defect) — gated on M5.7 success; runs in parallel with M5.8/M5.9
 - **Layer 2** (meson / vortex string) requires Layer 1 (defect machinery + force diagnostics) — checked by M5.9 Cornell-potential validation passing
 - **Layer 3** (nucleon) requires Layer 2 (validated string-tension physics + 3-endpoint Y-configuration handling) — gated on M5.9 success
 - **Layer 4** (nucleus) requires Layer 3 (working nucleon + residual-force model)
@@ -436,7 +434,7 @@ For the conceptual companion to this roadmap, see [_overview.md § Where do quar
 
 A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [1b_topological_defect.md § The twist degree of freedom](1b_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
 
-These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below thermal (9b) and composites (9d).
+These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below composites (9d).
 
 | Phase candidate | Headline test | Layered on |
 | --- | --- | --- |
@@ -444,7 +442,7 @@ These are exploratory targets, not committed milestones. They naturally slot in 
 | **Hydrodynamic Aharonov-Bohm analog** | Seed a topological vortex string (M5.7 setup); send a plane wave past it; measure the phase shift on the far side as a function of impact parameter. Should reproduce the Berry-1980 hydrodynamic AB result and the recent 2026 reproduction (phys.org/news/2026-04-simulation-famous-quantum-effect-reveals.html) | M5.7 (vortex string seeding) |
 | **Two-defect concurrence analog** | Seed a positronium-like e⁺/e⁻ pair (M5.4 setup). Vary the initial conditions over a complete basis of "computational states." Measure the redistribution of geometric phases across initial states. Compare to the Orion sum rule prediction `(1/2π) Σ γ_n = 2m·ν_H` and the Wootters-concurrence-vs-phase pattern from the paper | M5.4 (e⁺/e⁻ pair test) |
 | **Topological sum rule test** | Implement the same "gate" (e.g. defect-pair SWAP-analog) via two M5 evolution paths from different topological classes. Measure the per-state Berry phases; verify the sum is the same (`2m·ν_H` invariant) but the redistribution differs. Direct analog of the SWAP₁ vs SWAP₂ comparison in the paper's Fig. 3 | M5.4 + post-M5 (gate-analog protocols defined) |
-| **CPT symmetry validation** | M5's Lagrangian is Hermitian and Lorentz-invariant by construction → must satisfy CPT (theorem). Verify numerically that pair creation and annihilation operate as CPT mirrors, that same-winding pairs are CPT-forbidden from annihilating (already a planned M5.4 test, here recognized as a CPT consequence), and that absorption / stimulated-emission analogs are CPT-paired (per Duda's 2026-04 deck on negative radiation pressure). Failure mode = a hidden T-symmetry-breaking term in the implementation | M5.4 (pair dynamics) + M7.x (thermal absorption / stimulated emission) |
+| **CPT symmetry validation** | M5's Lagrangian is Hermitian and Lorentz-invariant by construction → must satisfy CPT (theorem). Verify numerically that pair creation and annihilation operate as CPT mirrors, that same-winding pairs are CPT-forbidden from annihilating (already a planned M5.4 test, here recognized as a CPT consequence), and that absorption / stimulated-emission analogs are CPT-paired (per Duda's 2026-04 deck on negative radiation pressure). Failure mode = a hidden T-symmetry-breaking term in the implementation | M5.4 (pair dynamics) |
 
 #### Why this matters for OpenWave
 
@@ -499,21 +497,16 @@ Heat is *deepest* in the dependency chain because it requires simulated atoms to
 
 ### Phase 4 — explicit goals (refined 2026-05)
 
-Phase 4 (EM / magnetic emergence) is not yet detail-scoped at the per-experiment level the way M5.0–M5.8 are; it sits as a "post-M5" phase. The goals below are the concrete physics targets Phase 4 must meet — refined 2026-05 in light of the SABER questions that depend on Phase 4 results. They are physics-only; engineering operationalization stays in SABER.
+Phase 4 (EM / magnetic emergence) is not yet detail-scoped at the per-experiment level the way M5.0–M5.8 are; it sits as a "post-M5" phase. The goals below are the concrete physics targets Phase 4 must meet — refined 2026-05. They are physics-only.
 
 | Phase 4 goal | What it validates | Why it matters |
 | --- | --- | --- |
-| **L+T decomposition of defect-emitted wave as separable observables** | The defect's outgoing wave carries longitudinal (electric / scalar) AND transverse (magnetic) components, measurable independently and controllable independently | Already implicit in [1b_topological_defect.md § Outgoing-wave L+T decomposition](1b_topological_defect.md). Phase 4 elevates from "stated" to "numerically verified, with engineering-relevant amplitudes". Required for any downstream method that targets L vs T independently |
-| **Polarization-selective response in dielectric / ferromagnetic / metasurface analogs** | A simulated material with anisotropic structure exhibits selective transmission / reflection of L vs T components of the defect-emitted wave | Validates that the L+T decomposition is engineering-actionable — the components can be filtered, rotated, mode-converted by structures analogous to optical polarizers. Without this validation, "manipulate L and T separately" is a hopeful claim |
-| **Frequency-downshift inertial-response test** | Apply a heterodyne / low-pass / mixing operation on the high-ω T-component of a single defect's outgoing wave; measure whether the downshifted-effective-frequency variable mag field exerts measurable force on a test charged particle (electron analog) | Tests the physics underlying the engineering primitive. The "averaged-out at high ω" intuition is correct; whether a downshift operation defeats that averaging is the falsifiable open question. Pass = downshift principle works; fail = the averaging is not engineering-recoverable, magnetism stays inertially invisible at all engineered frequencies |
-| **Heat-magnetism co-scaling** (joint with 9b.9) | Confirm thermal excess in a defect's joint (A, ω) state scales the magnitude of the outgoing wave's T-component as predicted | Closes the loop between Phase 4 (T-component physics) and Phase 7 (thermal-content physics). If the T-component does NOT scale with thermal excess, heat-magnetism per-defect coupling needs revision and downstream engineering pivots accordingly |
+| **L+T decomposition of defect-emitted wave as separable observables** | The defect's outgoing wave carries longitudinal (electric / scalar) AND transverse (magnetic) components, measurable independently and controllable independently | Already implicit in [1b_topological_defect.md § Outgoing-wave L+T decomposition](1b_topological_defect.md). Phase 4 elevates from "stated" to "numerically verified". Required for any method that targets L vs T independently |
+| **Polarization-selective response in dielectric / ferromagnetic / metasurface analogs** | A simulated material with anisotropic structure exhibits selective transmission / reflection of L vs T components of the defect-emitted wave | Validates that the L+T decomposition is physically actionable — the components can be filtered, rotated, mode-converted by structures analogous to optical polarizers. Without this validation, "manipulate L and T separately" is a hopeful claim |
+| **Frequency-downshift inertial-response test** | Apply a heterodyne / low-pass / mixing operation on the high-ω T-component of a single defect's outgoing wave; measure whether the downshifted-effective-frequency variable mag field exerts measurable force on a test charged particle (electron analog) | Tests the underlying physics. The "averaged-out at high ω" intuition is correct; whether a downshift operation defeats that averaging is the falsifiable open question. Pass = downshift principle works; fail = the averaging is not recoverable, magnetism stays inertially invisible at all frequencies |
 | **Maxwell from director-field curl** (already implied) | Standard Maxwell equations emerge from the LdG director field's curl + boost-axis dynamics in the appropriate continuum limit | Existence proof that the M5 framework reproduces conventional EM at the macroscopic limit; required for credibility with the broader physics community |
 
-The first three goals are particularly load-bearing for downstream applied-tech work — every Phase 4 → SABER handoff depends on them.
-
-### Applied-technology counterpart
-
-The applied-technology counterpart of OpenWave's open-source physics work is the SABER project (separate repo at `neptunyalabs/SABER`). The split is intentional: OpenWave publishes scientific findings (open-source, eventually peer-reviewable); SABER develops engineering implementations. SABER consumes the physics outputs of M5+ matter / forces / EM / heat work. **OpenWave's scope is the science; SABER's scope is the engineering.** This document is OpenWave's roadmap and stops at the physics.
+This document is OpenWave's M5 roadmap and stops at the physics.
 
 ---
 

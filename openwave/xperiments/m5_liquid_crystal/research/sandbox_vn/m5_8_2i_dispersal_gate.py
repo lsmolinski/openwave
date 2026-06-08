@@ -16,7 +16,7 @@ M5.8 mechanism), does the FREE defect (no kick, no drive, spontaneous
 breathing) (a) keep its STRUCTURE (alignment), (b) keep a CORE-LOCALIZED
 energy excess (vs decay-to-uniform), (c) with the breathing fundamental ω₁
 CONVERGED in resolution (vs the M5.7 frequency drift)? Genuinely open —
-fail = the model fails M5.8 (the driven/9b path is a separate question).
+fail = the model fails M5.8 (the driven-excess path is a separate question).
 
 DESIGN
   Arms (all FREE: Ṁ₀ = P₀ = 0 exactly — the spontaneous state IS the test):

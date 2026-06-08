@@ -12,7 +12,7 @@
 | [`1a_lagrangian_framework.md`](1a_lagrangian_framework.md) | Framework + the full email thread history |
 | [`5a_lagrangian_evolution.md § 10e`](5a_lagrangian_evolution.md) | Canonical build-spec: substrate + action + construction recipe + verification gates |
 
-**Last updated:** 2026-06-08 (**THE FULL ZBW PROGRAM LANDED 2026-06-07, N-1…N-6e** — M5.8 sandbox arc complete). Headlines, all machine-checked: the quadratic action has no 3+1D clock saturation (dt-invariant runaway); the signed quartic `u+βu²` saturates it; the saturated state is a self-starting, frequency-RIGID, quasi-periodic breather whose ω₁ is an ATTRACTOR (start- AND dressing-energy-independent — it belongs to the core); it HOLDS resolution-robustly (N-2: the M5.7 dispersal REVERSES under the quartic — defect structure decays slower at 48³ than 24³); it classifies as a MOLTEN CLOCK (low-dim chaos on a persistent comb) that REGULARIZES toward a near-regular cold ground state; the invariant matrix is COMPLETE (signed-u winner / Skyrme damps / A4 pinned / covariant deferred); matter+light share a maximal radial cone ceiling; the first ABSOLUTE ω = 5.5×10¹⁹ rad/s sits ~28× below 2m_ec²/ℏ (a STRUCTURAL gap given rigidity); no intrinsic spin J above the box-torque floor (the clock is J-neutral). The retired claim of record: the earlier "strictly periodic ω₀=0.262 comb" was an FFT-window artifact, caught + retired. M5 now PAUSES for the Duda RESULTS report; 9b/SABER opens. Earlier: 2026-06-05 (2c-1 + Option B spike — the full self-consistent 4D evolution is stable under the constrained spectral-projection integrator).
+**Last updated:** 2026-06-08 (**THE FULL ZBW PROGRAM LANDED 2026-06-07, N-1…N-6e** — M5.8 sandbox arc complete). Headlines, all machine-checked: the quadratic action has no 3+1D clock saturation (dt-invariant runaway); the signed quartic `u+βu²` saturates it; the saturated state is a self-starting, frequency-RIGID, quasi-periodic breather whose ω₁ is an ATTRACTOR (start- AND dressing-energy-independent — it belongs to the core); it HOLDS resolution-robustly (N-2: the M5.7 dispersal REVERSES under the quartic — defect structure decays slower at 48³ than 24³); it classifies as a MOLTEN CLOCK (low-dim chaos on a persistent comb) that REGULARIZES toward a near-regular cold ground state; the invariant matrix is COMPLETE (signed-u winner / Skyrme damps / A4 pinned / covariant deferred); matter+light share a maximal radial cone ceiling; the first ABSOLUTE ω = 5.5×10¹⁹ rad/s sits ~28× below 2m_ec²/ℏ (a STRUCTURAL gap given rigidity); no intrinsic spin J above the box-torque floor (the clock is J-neutral). The retired claim of record: the earlier "strictly periodic ω₀=0.262 comb" was an FFT-window artifact, caught + retired. M5 now PAUSES for the Duda RESULTS report. Earlier: 2026-06-05 (2c-1 + Option B spike — the full self-consistent 4D evolution is stable under the constrained spectral-projection integrator).
 
 ---
 
@@ -46,7 +46,7 @@ The model's verified emergent physics, each with a runnable reproduction script 
 | **ω IS AN ATTRACTOR — the breathing fundamental is a property of the STATE (N-1)** | ✅ kicked / EXACTLY-unkicked / jittered starts share ω₁ ≈ 1.09/1.15/1.07 (± one FFT bin) + a 2ω₁ harmonic, detrend-stable (2.5/5/10 τ dial); the state is QUASI-periodic — the 2e "strict ω₀=0.262 comb" RETIRED (window artifact, caught by pre-registered scrutiny); rod readout: the breather is near-isotropic + core-centered (A_z≈1.1 vs static 5.6), NOT a rod mode | `sandbox_vn/m5_8_2h_omega_attractor.py` |
 | **The FIRST ZBW ratio measurement** `ω₁/(2H_rest)` (N-3 — feeds N-6, the promoted ZBW program) | ✅ measured, lattice-natural units: ω₁/(2H_static) = 0.0326/0.0343/0.0326 across the 3 arms (5.4% spread — start-independent, the unit-free statement); H_static(dressed seed, T=0) = 16.74; the breather is strongly excited (H_dyn ≈ 2.7–2.8 × H_static). NO pass/fail vs 1 claimed. **N-6b ABSOLUTE (2026-06-07): under explicit postulates (energy↔0.511 MeV; lattice action↔ℏ) ω = 5.51×10¹⁹ rad/s vs the electron ZBW 1.553×10²¹ — a factor ≈28 short, STRUCTURAL given the N-6a rigidity** (not closable by energy bookkeeping; candidates: V-on/Faber-r₀ core, faithful kinetic, or the action postulate — the V=0 frame is scale-free so no length anchor exists) | `sandbox_vn/m5_8_2j_zbw_ratio.py` |
 | **The EM-tilt cone check (N-4) — SHARED CEILING, DIFFERENT TANGENTIAL OPTICS** | ✅ all 3 channel generators (twist Gx, tilts Gy/Gz) share the MAXIMAL cone: fast direction RADIAL, identical ceiling c(r̂)/2 = 1.0000 at N=48 & 64, stiff axis exactly tangential — matter (KG) and light (EM) signals have the SAME maximal speed on the defect background (local SR survives as cone-relative kinematics, radially). Tangential shapes DIFFER per channel: twist (0, 0.33, 0.67) mild 1.74 cone (N-stable, reproduces the c-isotropy gate); Gy near-rank-1 (10:1); Gz rank-1 ≤1e-3 (consistent with EXACT — non-propagating along one tangential direction). Static principal-symbol scope; dynamic tilt transit = refinement | `sandbox_vn/m5_8_2k_tilt_cone.py` |
-| **The saturated breather is a MOLTEN CLOCK (N-6d) — the DTC classification** | ✅ controls-anchored battery: persistent ω₁ comb + LOW-DIMENSIONAL CHAOTIC dressing (λ_max ≈ +0.4–0.7/τ, D₂ ≈ 2.7–3.0 — dynamical, NOT additive noise; the noisy-clock control keeps λ ≈ +0.01); the 0-1 K-test exposed as unreliable both ways on this data class (false-1 on noise, false-0 on oversampling) — D₂+λ carry the verdict; molten-ness GROWS with excitation (least-excited arm D₂ 1.70) ⇒ the ground clock may be regular (N-6c tests it) + the SABER thermal bridge (molten-ness = per-defect heat candidate; `9b_thermal_energy.md`) | `sandbox_vn/m5_8_2n_chaos_battery.py` |
+| **The saturated breather is a MOLTEN CLOCK (N-6d) — the DTC classification** | ✅ controls-anchored battery: persistent ω₁ comb + LOW-DIMENSIONAL CHAOTIC dressing (λ_max ≈ +0.4–0.7/τ, D₂ ≈ 2.7–3.0 — dynamical, NOT additive noise; the noisy-clock control keeps λ ≈ +0.01); the 0-1 K-test exposed as unreliable both ways on this data class (false-1 on noise, false-0 on oversampling) — D₂+λ carry the verdict; molten-ness GROWS with excitation (least-excited arm D₂ 1.70) ⇒ the ground clock may be regular (N-6c tests it) | `sandbox_vn/m5_8_2n_chaos_battery.py` |
 | **The unit-free ZBW law test (N-6a): ω IS RIGID — the naive law fails, informatively** | ✅ R_W dressing family (knob-gated, 177.8% H spread, identical probe regions): ω₁ = 1.152/1.188/1.191 (within one FFT bin) across H_static 11.0/16.7/29.1 and H_dyn 23.8/43.9/93.7 — **exponent ω ∝ H^0.033 vs the ZBW law's 1**. The breathing frequency does NOT track dressing energy: it is RIGID (the DTC robustness property) and belongs to the defect CORE — which the V=0 stack cannot vary (the bare frame is scale-free) ⇒ the true ZBW mass family requires the V-on/Faber-r₀ core (resumed-track scope). The v1 RC family was an audit-caught no-op (RC never enters the seed; exponent void); v1 bonus: ω is probe-region-structured (outer shell reads 2ω₁ dominant) | `sandbox_vn/m5_8_2m_zbw_law.py` |
 | **The excitation floor (N-6c phase 1): a cold defect CANNOT be prepared by kicking** | ✅ weak-kick arms (0.0125/0.025) land at the SAME-or-higher H_dyn as the 0.05 control (49.2/52.4 vs 47.6 — excitation ∝ kick² is swamped): the seed's own spontaneous release floors excitation at ~1.7× H_rest — the un-sittable minimum's preparation-physics face; cooling requires DAMPING (the settle protocol). Within the accessible band ω₁ scatters 1.09–1.60 with no E-trend (mode composition, consistent with the rigidity finding) and molten metrics stay uniformly high (D₂ 2.3–3.0). **THE GROUND-CLOCK READOUT (phase 2, deep-settle route): THE CLOCK REGULARIZES** — T drained 45.8 → 0.21 (217×), restart P=0 exact; the coldest measured state (T = 2.36, third 1 of the regrowth): **λ_max +0.110 (≈ the short-window bias floor — consistent-with-REGULAR; hot arms +0.5–0.75) and D₂ 1.68 (hot: 2.7–3.0; two-tone control 1.15)** ⇒ cold defect = near-regular clock, hot = molten — the melting curve's cold anchor; the molten-clock bridge closes the right way. Full coldness FORBIDDEN by un-sittability (T regrows — the self-start IS the obstruction: a feature). ω along the regrowth: 1.58 cold → 2.73 heated → [13.6 numerical/cascade]; the saturated attractor 1.09–1.15 — ω is state/mode-dependent, not E-monotone. Cold-ω ⇒ N-6b absolute 7.3e19 rad/s (~21× short — the structural gap stands) | `sandbox_vn/m5_8_2o_omega_of_E.py` |
 | **The first spin readout (N-6e): a clean NULL + an instrument bound** | ✅ the rotation Noether charge J (internal + orbital, 3 axes) derived + gated (G1 pairing 1.000000 exact). ★ THE CLOCK KICK IS J-NEUTRAL (J < 1e-4 at t→0 despite finite P — the Θ-twist cancels over the hedgehog sphere): the ZBW breathing channel carries NO net frame angular momentum. G2 failed informatively — BOX TORQUE (the 24³ walls break rotation invariance; secular J growth O(1–10) by t=6; the wall-contacting settled arm reads J~10 immediately) ⇒ canonical states carry no intrinsic J above the noise floor; an ℏ/2-class measurement needs torque-free boundaries (production scale). Spin-½ candidates for the resumed track: polarized/spinning seeds, hopfions, far-field tilt J | `sandbox_vn/m5_8_2p_spin_readout.py` |
@@ -73,11 +73,11 @@ Everything above comes straight out of the medium topology. **No particle stabil
               defect DISPERSES (M5.7.1 seeded + M5.7.2 intrinsic, both NULL
               resolution-confirmed) ⇒ particle/clock is 4D (M5.8); DRIVEN
               defect SUSTAINS a bounded frequency-selective (A,ω) excess
-              (M5.7.3 9b.1 preview, EM-lever ~3× free at resonance) ⇒ the
-              driven-thermal substrate for 9b. Root cause of free dispersal:
+              (M5.7.3 preview, EM-lever ~3× free at resonance) ⇒ the
+              driven-excess substrate. Root cause of free dispersal:
               V confines amplitude not orientation (M5.6.5c). Carry-overs
               migrated to M5.8. NEXT PHASE = Rodrigo's call (M5.8 4D clock,
-              or full 9b.1 thermal).
+              or the driven-excess lever).
 
 1 SELF-       Q11 Close's Eq.23 exact form — NO LONGER a hard gate (PLAN B
 DETERMINE         = self-determination, likely Plan A): Eq.23 is in his
@@ -104,7 +104,7 @@ DETERMINE         = self-determination, likely Plan A): Eq.23 is in his
               Q5  substrate: full M = ODO^T vs Q-tensor (full M)
               Q6  eigenvalue → physics mapping (1=EM, δ=QM, g=gravity)
 
-Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.7 complete; M5.8 (4D clock) / 9b.1 (thermal) next — Rodrigo's call.
+Total: 12 questions (0 immediate, 7 open, 5 resolved). M5.7 complete; M5.8 (4D clock) next — Rodrigo's call.
 ```
 
 ---
@@ -162,9 +162,9 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Composites (nuclei, atoms, hopfions) | Multi-defect / knot configurations | DEFERRED → 9d |
 | Zitterbewegung clock `ω = 2mc²/ℏ` | Biaxial hedgehog dynamically sources its own twist (M5.6.2b: `ψ = 0` is NOT static = the clock seed); 4D Lorentz negative-energy from `0`-eigenvalue propels it | 🚧 M5.8 (GROUP HEADLINE; build spec `5a §10d` + reorganized roadmap M5.8 gates/breadth/carry-overs/unblocks; faithful kinetic per M5.6.5d) |
 | Spin (real, transportable, conserved) | Director orientation = topological invariant; preserved by dynamics | ✅ inherent; empirical anchor: graphene spin-transport |
-| First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | ✅ **M5.7 COMPLETE (2026-05-28) — the particle is 4D (M5.8), not 3D.** **M5.7.1 (seeded l=1) + M5.7.2 (intrinsic oscillation) = TWO confirmed NULLS:** both seeded and intrinsic 3D orientation energy disperse (apparent N=32 localization washed out at N=48 in both; intrinsic osc frequency 0.25→0.10/t = resolution-dependent, not a converged clock). **Root cause: V confines amplitude but NOT orientation** (M5.6.5c, rotation-invariant). Consistent with Derrick + Duda's framework: the stable particle is the **4D Zitterbewegung clock** (Fig.10), so 3D dispersing is *expected* — M5.7 empirically motivates M5.8 (4D) as necessary. Nuance: topological defect itself permanent (winding conserved); *driven* oscillation is a separate question — **M5.7.3 (9b.1 preview, 2026-05-28) confirmed the EM-like lever sustains a bounded, frequency-selective `(A,ω)` excess (~3× free, resonant at the natural mode), resolution-confirmed** → the driven-thermal substrate for 9b. Energy-conservation bankable (N=48 H-drift 0.01%). (`5a §5h/§5i`, `9b § M5.7.3`) |
+| First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | ✅ **M5.7 COMPLETE (2026-05-28) — the particle is 4D (M5.8), not 3D.** **M5.7.1 (seeded l=1) + M5.7.2 (intrinsic oscillation) = TWO confirmed NULLS:** both seeded and intrinsic 3D orientation energy disperse (apparent N=32 localization washed out at N=48 in both; intrinsic osc frequency 0.25→0.10/t = resolution-dependent, not a converged clock). **Root cause: V confines amplitude but NOT orientation** (M5.6.5c, rotation-invariant). Consistent with Derrick + Duda's framework: the stable particle is the **4D Zitterbewegung clock** (Fig.10), so 3D dispersing is *expected* — M5.7 empirically motivates M5.8 (4D) as necessary. Nuance: topological defect itself permanent (winding conserved); *driven* oscillation is a separate question — **M5.7.3 (preview, 2026-05-28) confirmed the EM-like lever sustains a bounded, frequency-selective `(A,ω)` excess (~3× free, resonant at the natural mode), resolution-confirmed** → the driven-excess substrate. Energy-conservation bankable (N=48 H-drift 0.01%). (`5a §5h/§5i/§5j`) |
 | Lorentz contraction / relativistic kinematics | Wave-equation relativistic invariance of the matrix dynamics | ✅ structural; quantitative test = M5.8 |
-| Annihilation (Q=+1 + Q=−1 → vacuum + photons) | Topology cancellation event releases stored field energy as outgoing EM waves | ✅ substrate; quantify in 9a |
+| Annihilation (Q=+1 + Q=−1 → vacuum + photons) | Topology cancellation event releases stored field energy as outgoing EM waves | ✅ substrate; quantify (future) |
 
 **Mass → Zitterbewegung target table (M5.8 validation):**
 
@@ -192,60 +192,29 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Magnetism (coherent macroscopic) | Coherent T-component summing across aligned defects (permanent magnets) or coherent motion (electromagnets) — reproduces both standard regimes by construction | ✅ structural |
 | Atomic orbital "force" | NOT fundamental — EM Coulomb + de Broglie standing-wave quantization | → 9d |
 
-### EM WAVES (9a — photon emergence)
+### EM WAVES (photon emergence)
 
 | Phenomenon | M5 numerical mechanism | Status |
 | --- | --- | --- |
 | Maxwell wave-packet propagation | Tilt modes of `M` propagate at `c` (abelian linear limit of Faber `R`) | ✅ M5.6.4 |
-| Outgoing-wave divergence + curl decomposition | Each defect emits a **divergence/radial** part (`∇·n̂` = electric splay — the longitudinal/Coulomb piece in EWT/M3 terms) + a **curl/circulation** part (`∇×n̂` = magnetic — the transverse/radiative piece); the Helmholtz split (M5-native div+curl = EWT's L+T). Shared single `ω = 2mc²/ℏ` Zitterbewegung clock at defect core | ✅ structural; per-defect quantification = 9b.7 |
+| Outgoing-wave divergence + curl decomposition | Each defect emits a **divergence/radial** part (`∇·n̂` = electric splay — the longitudinal/Coulomb piece in EWT/M3 terms) + a **curl/circulation** part (`∇×n̂` = magnetic — the transverse/radiative piece); the Helmholtz split (M5-native div+curl = EWT's L+T). Shared single `ω = 2mc²/ℏ` Zitterbewegung clock at defect core | ✅ structural; per-defect quantification = future |
 | Running coupling vs distance | Faber `α_sol(d)`: `‖R‖ ~ 1/r²` far field; `‖R‖·r²` rolls off within `r₀` = onset of non-abelian short-range | ✅ M5.6.4 |
-| Photon (quantized EM excitation) | Tilt-mode standing waves on the matrix substrate; quantization mechanism = the 9a research program | 🚧 9a |
-| Annihilation → photon emission | Q=+1 + Q=−1 topological cancellation dumps stored field energy into outgoing EM waves | ✅ structural; quantify in 9a |
+| Photon (quantized EM excitation) | Tilt-mode standing waves on the matrix substrate; quantization mechanism = a future research program | 🚧 future |
+| Annihilation → photon emission | Q=+1 + Q=−1 topological cancellation dumps stored field energy into outgoing EM waves | ✅ structural; quantify (future) |
 | Static field vs radiation distinction | Static EM = static topology (Frank elastic, no waves); radiation = dynamic tilt-mode propagation. Different mechanisms in the same field | ✅ structural |
-
-### THERMAL (9b — heat / SABER counterpart)
-
-> **Falsifiable hypothesis:** heat is the joint `(A, ω)` excess of subatomic defect oscillation above its ground state `(A₀, ω₀)`. The energy-dimensional quantity is `(A·ω)²` — `E_kin = ½m(Aω)²`; the bare `A·ω` has units of *velocity* (peak speed) not energy. Falsifiability test = 9b.1.
-
-| Phenomenon | M5 numerical mechanism | Status |
-| --- | --- | --- |
-| Temperature observable | Joint `(A, ω)` excess; `A = ‖M − D‖_F` amplitude tracker (WAVE_MENU 2), `ω = ‖Ṁ‖_F` clock-rate tracker (WAVE_MENU 3) — already wired in production | 🚧 9b.0 (def + absolute-zero check) |
-| Heat = per-defect kinetic energy | `E_kin = ½m(Aω)²` — single-particle quantum-mechanical degree of freedom, NOT ensemble-only statistical | hypothesis → 9b.1 falsifies/validates |
-| Modulation lever (engineering trigger) | EM-wave tilt-wave drive on the `(A, ω)` state; AM/FM (5 sub-experiments 10.1a–e) | 🔶 **M5.7.3 PREVIEW (2026-05-28): the lever WORKS** — a continuous EM-like drive sustains the defect `(A,ω)` at ~3× free, bounded steady-state, frequency-selective (resonant at the natural mode); both FM (rings at f_d) + AM (3× amplitude); resolution-confirmed N=32→N=48. Field-theoretic basis for heat-as-driven-excess. Full 9b.1 (10.1a–e) is next. (`9b § M5.7.3`) |
-| Soliton-breather correspondence | Compare 9b.1 amplitude oscillations to known Sine-Gordon / φ⁴ breather modes | 🚧 9b.2 |
-| Multi-defect amplitude statistics | Seed N ∈ {10², 10³, 10⁴} defects, run to equilibrium → Boltzmann or Bose-Einstein distribution | 🚧 9b.3 |
-| Specific heat `C_V(T)` | Derived from 9b.3 statistics; reproduce Dulong-Petit (high T) + Einstein-Debye (low T) + electronic scaling | 🚧 9b.4 (stiff prediction — wrong scaling = hypothesis falsified) |
-| Blackbody spectrum | Thermalized-ensemble emission; Wien displacement law + Stefan-Boltzmann scaling | 🚧 9b.5 |
-| Phase-coherence transition at low T | Defect-ensemble transition to coherent ground state (superconducting / BEC analog); reproduce critical temperatures for known materials | 🚧 9b.6 |
-| Outgoing-wave thermal content | Thermal excess expressed in outgoing wave's amplitude/frequency/polarization at engineering distance from defect core — the addressable channel for indirect modulation | 🚧 9b.7-.8 |
-| Heat ↔ magnetism wave-level coupling | Thermal excess scales the T-component of the outgoing wave — explains Curie temperature, magnetocaloric, pyromagnetic from one substrate | 🚧 9b.9 |
-
-### What 9a / 9b / 9c share — same dynamics, three readings
-
-| Reading | What it measures | Role of `ω` |
-| --- | --- | --- |
-| 9a (EM waves) | Outgoing wave at frequency ω = photon | ω = wave frequency |
-| 9b (Thermal) | `(A, ω)` excess of defect oscillation | ω = thermal frequency |
-| 9c (Time / clock) | Zitterbewegung `ω = 2mc²/ℏ` | ω = intrinsic local clock |
-
-Shared infrastructure: `(A, ω)` trackers + outgoing-wave measurement + EM viz (`∇·n̂` / `‖∇×n̂‖` meshes + E/B glyphs). Build once, each stage reads a projection. See `0b_M5_roadmap.md § Parallel research stages` for the full link.
 
 ### CURRENT LIMITATIONS — what M5 does NOT yet do
 
 | Limitation | Phase that addresses it |
 | --- | --- |
-| No FREE metastable resonance in 3D — M5.7.1 (seeded) + M5.7.2 (intrinsic) both disperse; the stable particle/clock is 4D (`5a §5h/§5i`) | M5.8 (4D Zitterbewegung clock — the actual stable particle). Driven oscillation (9b.1 lever) is the separate near-term test (M5.7.3 preview). |
+| No FREE metastable resonance in 3D — M5.7.1 (seeded) + M5.7.2 (intrinsic) both disperse; the stable particle/clock is 4D (`5a §5h/§5i`) | M5.8 (4D Zitterbewegung clock — the actual stable particle). Driven oscillation (the driven-excess lever) is the separate near-term test (M5.7.3 preview). |
 | No Zitterbewegung frequency measurement | M5.8 (faithful kinetic on `O(x) ∈ SO(3)`, per M5.6.5d) |
 | Lepton mass ratios not calibrated to PDG | M5.9 |
 | Gravity emergence not run (still 3D) | M5.8 (4D + SO(1,3) Lorentz) |
 | Quark string + Cornell `σ ≈ 1 GeV/fm` not validated | M5.9 |
-| Photon quantization mechanism not formalized | 9a |
-| Thermal hypothesis not falsified/validated | 9b.1 (SABER engineering trigger) |
-| Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
-| Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target |
-| Heat ↔ magnetism wave-level cross-validation | 9b.9 |
-| Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
-| Composites (nuclei, atoms, hopfions) deferred | 9d (post-9b) |
+| Photon quantization mechanism not formalized | future (post-M5) || Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
+| Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target || Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
+| Composites (nuclei, atoms, hopfions) deferred | 9d |
 | Exact biaxial-stable `V(M)` coeffs `Λ = (1, δ, 0)` | Q7 → M5.9 (M5.6 ships b=0 confinement interim) |
 | Exact Faber running-coupling profile (vs imposed `arctan`) | Q8 → M5.9 (M5.6 ports the validated mechanism) |
 
@@ -260,16 +229,16 @@ The long-running hardest-pieces tracker for M5 (mirrors M6's). These are the loa
 | Matrix substrate migration (Vector(3) ψ → `M = ODO^T`) | M5.4 ✅ | ✅ **COMPLETE (2026-05-26).** `ti.Matrix.field(3,3)` triple buffer + `eigen_decompose` lynchpin (director recovery 0.9995) + matrix seeders + `‖M−D‖_F`/`‖Ṁ‖_F` trackers. **M5.1 Coulomb reproduced on M** — R²=0.9704 relaxed + R²=0.9959 analytical page-18 cross-val, both attractive. Operators verified vs analytic. Rendering re-sourced from M (on-screen verified); live wave path retired (ψ engine dormant legacy). | — |
 | **V(M) potential form** (Duda's #1 limitation, Q7) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Eq.13 LdG implemented + V-on confinement live (`LDG_STIFFNESS_K`). Key finding: 3-term form has **no biaxial minimum** → M5.6.5c uses a `b=0` amplitude well (confines `Tr(M²)`, leaves δ flat). Exact biaxial-stable `Λ=(1,δ,0)` form = Q7, Duda-open → M5.9. | ✅ strong (see below) |
 | Regularization (Faber) to activate V(M) + running coupling (Duda #2, Q8) | M5.6 ✅ | ✅ **M5.6 (2026-05-27).** Faber MTF ported: `E₀=α_f ℏc·π/(4r₀)` reproduced, `Λ=q₀⁶/r₀⁴` mapped onto M, **mass pinned `E∝1/r₀`**, `R=Γ×Γ`→Maxwell + running-coupling onset at `r₀`. Mass knob is now physical `r₀`. Exact `arctan`-profile re-derivation → M5.9. | 🔶 partial |
-| First metastable resonance (no static soliton) | M5.7 ✅ → M5.8 | ✅ **M5.7 COMPLETE (2026-05-28) — free vs driven split.** Free defect disperses (M5.7.1 seeded + M5.7.2 intrinsic, both NULL; root cause V confines amplitude not orientation, M5.6.5c) ⇒ the stable particle is the **4D Zitterbewegung clock (M5.8)** (3D dispersing is expected per Derrick — M5.7 empirically motivates the 4D extension). **Driven defect SUSTAINS** a bounded, frequency-selective `(A,ω)` excess (M5.7.3 9b.1 preview, EM-lever ~3× free at the resonant natural mode) ⇒ the driven-thermal substrate for 9b. Energy-conservation bankable (N=48 H-drift 0.01%). `5a §5h/§5i`, `9b § M5.7.3`. | ✅ strong (→ M5.8 / 9b) |
+| First metastable resonance (no static soliton) | M5.7 ✅ → M5.8 | ✅ **M5.7 COMPLETE (2026-05-28) — free vs driven split.** Free defect disperses (M5.7.1 seeded + M5.7.2 intrinsic, both NULL; root cause V confines amplitude not orientation, M5.6.5c) ⇒ the stable particle is the **4D Zitterbewegung clock (M5.8)** (3D dispersing is expected per Derrick — M5.7 empirically motivates the 4D extension). **Driven defect SUSTAINS** a bounded, frequency-selective `(A,ω)` excess (M5.7.3 preview, EM-lever ~3× free at the resonant natural mode) ⇒ the driven-excess substrate. Energy-conservation bankable (N=48 H-drift 0.01%). `5a §5h/§5i/§5j`. | ✅ strong (→ M5.8) |
 | KG-from-twist emergence | M5.6 ✅ | ✅ **DONE (2026-05-27).** KG mass is **GEOMETRIC** — minimal coupling to the hedgehog connection `Â`, the explicit mass term cancels, core regularization generates `mass²(r)=3r_c²/(2 reg²)` (Fig.9 reproduced, `5a §5a-c`). Biaxial hedgehog port + z-axis disclination handling done; defect dynamically sources its own twist (M5.8 clock seed). | — |
-| Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. See [9c § clock propulsion](9c_time_dynamics.md#the-de-broglie-clock-is-intrinsic--group-consensus-on-clock-propulsion-2026-05). | 🔶 partial |
-| Biaxial eigenvalue hierarchy → lepton masses (Duda #3/#9/#10) | M5.9 | Calibration parameters; post-SABER-trigger. | — |
-| Weak-force clean SU(2) mechanism (Duda #7, Q10) | — | GAP. Beta decay as topology reconnection is partial. Out of SABER scope. | — |
+| Zitterbewegung clock / 4D negative-energy propulsion | M5.8 | Mechanism known (Fig.10); toy-model numerics available (slide p.33). **Externally validated 2026-05** as THE hard problem: group consensus that ALL macroscopic analogues fail at intrinsic non-damping oscillation (Couder droplets need a shaker; spinning needles damp like a pendulum) — only the elementary-particle clock is intrinsic + non-damping, so propulsion must be intrinsic. Validates the 4D negative-energy direction. | 🔶 partial |
+| Biaxial eigenvalue hierarchy → lepton masses (Duda #3/#9/#10) | M5.9 | Calibration parameters (M5.9). | — |
+| Weak-force clean SU(2) mechanism (Duda #7, Q10) | — | GAP. Beta decay as topology reconnection is partial. Out of near-term scope. | — |
 | Deeper substrate beneath M (Duda #8, Q9) | — | PARKED. Matches granule-level picture. | — |
 
 ### Duda's stated limitations of his own LdGS / M5 model
 
-Physics limitations Duda (or his papers, as quoted in our notes) flags about his own framework. Sourced from the M5 research docs; reproduced from `NEPTUNYA/SABER/1_model_selection.md` (physics content — the SABER engineering-timeline analysis stays in that doc).
+Physics limitations Duda (or his papers, as quoted in our notes) flags about his own framework. Sourced from the M5 research docs.
 
 | # | Limitation | Source |
 | --- | --- | --- |
@@ -286,7 +255,7 @@ Physics limitations Duda (or his papers, as quoted in our notes) flags about his
 
 ### Which M5 phase each limitation gates (physics roadmap)
 
-SABER engineering-timeline impact is analyzed in the `1_model_selection.md` (§ "How the limitations affect SABER timeline"); here we keep only the OpenWave-physics phase-gating. The chain `M5.5 → M5.6 → M5.7 → 9b` is the documented bridge to the SABER thermal counterpart (see [`9b_thermal_energy.md`](9b_thermal_energy.md)).
+This table keeps the OpenWave-physics phase-gating for each of Duda's stated limitations.
 
 | Limitation | Gates | Reading |
 | --- | --- | --- |
@@ -294,7 +263,7 @@ SABER engineering-timeline impact is analyzed in the `1_model_selection.md` (§ 
 | #2 regularization | M5.6 ✅ | The hard step — **ported cleanly (2026-05-27)**. Faber's MTF mapped onto M, mass pinned `E∝1/r₀`, `R=Γ×Γ`→Maxwell. M5.6 unblocked; exact running-coupling form → M5.9. |
 | #6 no static solitons | (design) | Already a design choice — pursue Close's `l=1` resonance protocol (M5.7), not static seeds. |
 | #7 weak force | — | Out of all near-term scope. |
-| #9 biaxial hierarchy | M5.9 | Lepton masses are post-SABER-trigger; a scientific deliverable, not an engineering input. |
+| #9 biaxial hierarchy | M5.9 | Lepton masses are a scientific deliverable (M5.9). |
 
 ---
 
@@ -351,11 +320,11 @@ Imported from `m6_ouroboros/research/0b_model_gates.md` § "What M6 offers regar
 | Charge quantization via Chern-Simons / Hopf (Lean-proved) | Different topological flavor (Hopf-linking) from M5's Brouwer-winding — but confirms charge-from-topology is robust across frameworks |
 | Methodology cross-pollination (η, `l=1` BC, virial diagnostic) | Listed above — the concrete transferable pieces |
 
-**Caveat (load-bearing):** M6 is **not** the thermal substrate and does not supply M5's `(A, ω)` thermal degree of freedom — that lives on M5's matrix field. M6's contribution to M5 is **method + credibility cross-validation**, not physics substrate. A hypothetical M6-substrate thermal cross-check would require a full Taichi production port (ensemble + external-drive kernels), which is NO-GO / deferred indefinitely.
+**Caveat (load-bearing):** M6 is **not** the substrate for M5's `(A, ω)` excitation degree of freedom — that lives on M5's matrix field. M6's contribution to M5 is **method + credibility cross-validation**, not physics substrate. A hypothetical M6-substrate cross-check would require a full Taichi production port (ensemble + external-drive kernels), which is NO-GO / deferred indefinitely.
 
 ---
 
 ## Notes on scope
 
 - This tracker covers **M5 physics/framework questions for the group** (Duda / Close / Yee) plus the hardest-pieces board. M5.4 implementation decisions (Taichi storage layout, eigen-kernel design, granule/glyph UX calls) are tracked as **roadmap tasks** in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and [`4b_rendering_features.md`](4b_rendering_features.md), not here — same split as M6 (questions here, sandbox tasks in the work log).
-- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. **M5.6 (complete 2026-05-27) now gives a strong results bundle to seed a Q7/Q8 outreach**: the Eq.18 action runs in production + is energy-conserving, KG mass is geometric (Fig.9), Maxwell recovered both routes, Faber ported with mass pinned `E∝1/r₀`, and the **V(M)-is-rotation-invariant finding** (V acts only on the eigenvalue/regularization sector, not the twist) + the **3-term-LdG-has-no-biaxial-minimum** result sharpen the Q7 ask — Duda's exact `Λ=(1,δ,0)` Eq.13 coeffs + Faber's exact running-coupling scheme (Q8) are the natural questions, now feeding M5.9 calibration. **M5.7 (complete 2026-05-28) adds a further outreach hook** — the free-disperses/driven-sustains split (the particle is 4D; the EM lever sustains a bounded `(A,ω)` excess) is a clean result to share with Close (Q11) + Duda, no longer a question. None blocks current work (M5.7 complete; next = M5.8 or 9b.1, Rodrigo's call).
+- M5 has **no active email round in flight** (unlike M6's intense Werbos/DeepSeek cadence). Duda's last substantive reply was 2026-05-15. **M5.6 (complete 2026-05-27) now gives a strong results bundle to seed a Q7/Q8 outreach**: the Eq.18 action runs in production + is energy-conserving, KG mass is geometric (Fig.9), Maxwell recovered both routes, Faber ported with mass pinned `E∝1/r₀`, and the **V(M)-is-rotation-invariant finding** (V acts only on the eigenvalue/regularization sector, not the twist) + the **3-term-LdG-has-no-biaxial-minimum** result sharpen the Q7 ask — Duda's exact `Λ=(1,δ,0)` Eq.13 coeffs + Faber's exact running-coupling scheme (Q8) are the natural questions, now feeding M5.9 calibration. **M5.7 (complete 2026-05-28) adds a further outreach hook** — the free-disperses/driven-sustains split (the particle is 4D; the EM lever sustains a bounded `(A,ω)` excess) is a clean result to share with Close (Q11) + Duda, no longer a question. None blocks current work (M5.7 complete; next = M5.8, Rodrigo's call).

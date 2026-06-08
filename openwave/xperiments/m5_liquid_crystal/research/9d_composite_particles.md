@@ -1,8 +1,8 @@
 # 9d — Composite Particles
 
-**Parallel research stage** — DEFERRED post-9b. Layers 3–5 are major undertakings; sub-stages sketched here for forward visibility but NOT on the critical path. 9b is the priority once foundations exist.
+**Parallel research stage** — DEFERRED. Layers 3–5 are major undertakings; sub-stages sketched here for forward visibility but NOT on the critical path. Pursued once foundations exist.
 
-> Pursued only if 9b succeeds and resources permit. Hopfions, knots → nuclei. Liu et al. 2026 lab anchor (`project_particle_defect_correspondence` memory).
+> Pursued only if foundations succeed and resources permit. Hopfions, knots → nuclei. Liu et al. 2026 lab anchor (`project_particle_defect_correspondence` memory).
 
 | Sub-phase | Layer | Headline |
 | --- | --- | --- |
@@ -22,4 +22,4 @@ Atom-scale simulations (9d.4 onward) need additional architectural capability be
 
 This is structurally different from the same-mass cases: positronium (M5.7+) and quark-quark binding (M5.9) DO use direct Zitterbewegung interference; hydrogen-like atoms (9d.4) cannot. The transition criterion is `ω_a ≈ ω_b` (frequency-matched, direct interference works) vs `|ω_a − ω_b| ≫ min(ω_a, ω_b)` (frequency-mismatched, requires the three-mechanism layering above).
 
-This testing-architecture distinction is **gating** for atom-scale simulations: 9d.4 cannot succeed by simply scaling up the same-mass mechanism. The cross-mass machinery is a separate engineering effort.
+This testing-architecture distinction is **gating** for atom-scale simulations: 9d.4 cannot succeed by simply scaling up the same-mass mechanism. The cross-mass machinery is a separate effort.

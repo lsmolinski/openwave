@@ -23,13 +23,13 @@ from . import engine2_pde as pde
 # tracker-redefinitions table). Reuses the SAME Trackers fields, EMA cadence, and
 # 3-plane aggregation (sample_avg_trackers) — only the sampled quantity changes:
 #   - amplitude = ‖M − D_vac‖_F  (Frobenius deviation from the ẑ-vacuum order
-#       parameter D_vac = diag(δ, δ, 1)) → thermal A of SABER's joint (A, ω)
+#       parameter D_vac = diag(δ, δ, 1)) → amplitude A (the joint (A, ω) excess)
 #   - frequency = ‖Ṁ‖_F = ‖M − M_prev‖_F / dt  (order-parameter rotation rate)
-#       → de Broglie clock ω (M5.8 headline) / thermal ω. Zero for a static
+#       → de Broglie clock ω (M5.8 headline). Zero for a static
 #         configuration; becomes the genuine clock once M is leapfrogged (M5.6+).
 # The ψ_z zero-crossing it replaces was always a convention hack (the update_trackers
 # docstring admits it) — the matrix rotation rate is the real thing. This is the
-# "measurement infra lands EARLY" deliverable from the M5.3 thermal-prereq analysis.
+# "measurement infra lands EARLY" deliverable from the M5.3 analysis.
 
 
 @ti.kernel
@@ -42,8 +42,8 @@ def update_trackers_M(
     """Matrix-substrate amplitude/frequency trackers (see section header).
 
     Reads:  tensor_field.M_am, tensor_field.M_prev_am
-    Writes: trackers.amp_local_emarms_am  (EMA of ‖M − D_vac‖_F — thermal A)
-            trackers.freq_local_cross_rHz (EMA of ‖Ṁ‖_F        — clock ω / thermal ω)
+    Writes: trackers.amp_local_emarms_am  (EMA of ‖M − D_vac‖_F — amplitude A)
+            trackers.freq_local_cross_rHz (EMA of ‖Ṁ‖_F        — clock ω)
 
     Args:
         tensor_field: TensorField (reads M_am, M_prev_am)

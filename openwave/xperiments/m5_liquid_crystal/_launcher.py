@@ -208,8 +208,7 @@ class SimulationState:
         # Auto-relax on seed — set by xperiment via AUTO_RELAX_STEPS in topology_seed.
         # Relaxation is a numerical ground-state-finder, not physics, so there's
         # no demo / interactive use case — every seed gets relaxed once,
-        # silently, before the user sees the field. M7 (thermal modulation)
-        # will introduce proper interactive heat-modulation controls.
+        # silently, before the user sees the field.
         self.AUTO_RELAX_STEPS = 0
 
     def apply_xparameters(self, params):
@@ -458,10 +457,10 @@ def display_wave_menu(state):
         if sub.checkbox("Deviation (Magnitude)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
             state.tensor_field.create_flux_mesh()
-        if sub.checkbox("Thermal Amp (EMA RMS)", state.WAVE_MENU == 2):
+        if sub.checkbox("Amp (A) (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
             state.tensor_field.create_flux_mesh()
-        if sub.checkbox("Thermal Clock (omega)", state.WAVE_MENU == 3):
+        if sub.checkbox("Clock (omega)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
             state.tensor_field.create_flux_mesh()
         if sub.checkbox("ENERGY (Hamiltonian)", state.WAVE_MENU == 4):
@@ -488,11 +487,11 @@ def display_wave_menu(state):
             render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
-        if state.WAVE_MENU == 2:  # Thermal Amplitude (EMA RMS) on ironbow gradient
+        if state.WAVE_MENU == 2:  # Amplitude (A) (EMA RMS) on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2:.0e}m")
-        if state.WAVE_MENU == 3:  # Thermal Clock on blueprint gradient
+        if state.WAVE_MENU == 3:  # Clock (omega) on blueprint gradient
             render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
             with render.gui.sub_window("omega", 0.00, 0.69, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.freq_global_avg*2:.0e}Hz")
@@ -989,8 +988,8 @@ def compute_field_observables(state):
     observables.compute_director_em_scale(state.tensor_field, state.observables)
 
     # MATRIX-SUBSTRATE TRACKERS (M5.4) ==================================
-    # ‖M−D‖_F amplitude (thermal A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
-    # every frame (incl. paused) so the flux-mesh "Thermal Amp"/"Thermal Clock"
+    # ‖M−D‖_F amplitude (A) + ‖Ṁ‖_F clock-ω. EMA on the current M; runs
+    # every frame (incl. paused) so the flux-mesh "Amp (A)"/"Clock (omega)"
     # modes + dashboard reflect the static seeded/relaxed state. Replaces the
     # ψ-based update_trackers (which now only fires on the retiring EVOLVE PSI path).
     observables.update_trackers_M(

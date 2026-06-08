@@ -9,11 +9,11 @@ TWO LOAD-BEARING QUESTIONS RIDE ON THIS RUN (made sharp by N-6d + N-6a):
      class was 5.86; the saturated state runs 1.1–1.2; N-6a showed ω is
      RIGID against dressing energy — is it also rigid against EXCITATION,
      or does it soften the way 5.86 → 1.1 suggests?)
-  2. THERMAL (the molten-clock bridge): N-6d found molten-ness GROWS with
+  2. MOLTEN-CLOCK: N-6d found molten-ness GROWS with
      excitation (D₂ 1.70 low-E vs 2.7–3.0 high-E). Does the clock
      REGULARIZE toward the ground state (λ → bias floor, D₂ → ~1)?
-     YES ⇒ a clean rest clock + a thermal sector when excited (both the
-     ZBW identification and the SABER heat picture close); NO ⇒ honest
+     YES ⇒ a clean rest clock + a molten sector when excited (the
+     ZBW identification closes); NO ⇒ honest
      trouble for de Broglie-phase coherence — reported either way.
 
 DESIGN: the standard seed (R_W = 3.5, β = 1.558), kicked at
