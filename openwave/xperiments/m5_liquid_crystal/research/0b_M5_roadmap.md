@@ -17,12 +17,12 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 | Where is M5? | M5.0–M5.7 ✅ closed. M5.8's sandbox arc essentially complete: the quadratic action REFUTED (dt-invariant runaway at τ ≈ 2 clock periods), the `u+βu²` quartic SATURATES (bounded breathing, f64-anchored), the saturated state is a QUASI-PERIODIC breather with a reproducible fundamental ω₁ ≈ 1.1 + 2ω₁ harmonic — the SAME ω₁ from kicked, exactly-unkicked, and jittered starts = the ATTRACTOR (m5_8_2h; the earlier "strictly periodic ω₀ = 0.262 + exact comb" was an FFT-window artifact, RETIRED 2026-06-07), and SPONTANEITY is CONFIRMED (a settled zero-momentum config self-starts, dt/2-converged to 4 significant digits) |
 | Is the model "working"? | YES at the mechanism level — the full ZBW program (N-1…N-6e, 2026-06-07) lands every existence claim: a bounded, self-starting, frequency-RIGID clock that HOLDS resolution-robustly (the M5.7 dispersal reversed under the quartic), classified a MOLTEN CLOCK that REGULARIZES toward a near-regular cold ground state. NOT claimed: the electron IDENTIFICATION — the first absolute ω is 5.5×10¹⁹ rad/s, ~28× below 2m_ec²/ℏ (a STRUCTURAL gap given ω-rigidity, pointing at the V-on/Faber-r₀ core); no intrinsic spin J above the box-torque floor; strict single-line periodicity. The identification track is the paused NG-1/NG-3 work |
 | Validation mode | **HEADLESS-FIRST (decision 2026-06-07)**: gates + npz caches + trend tables + plots. Rendering = communication/demo only — it gates nothing (NG-6; policy note in `5a §10e`) |
-| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT (§3 — assemble from the headline tables) → **M5 active development PAUSES at this milestone**; the parallel stages (9b first) become the active program |
+| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT is WRITTEN (§3 → `10_summary_report.md`) → **M5 active development PAUSES at this milestone**; the parallel stages (9b first) become the active program |
 | M6 | Cross-pollination CLOSED 2026-06-07, strongly positive (§1 #25; full verdict in the tracker); M6 itself stays sandbox-only / permanent hold |
 
 ---
 
-## 1. DONE — the validated record (in order of completion)
+## DONE — the validated record (in order of completion)
 
 One line per result; the full logs live in the [ARCHIVE](#archive--detailed-phase-logs) below. Every headline claim has a runnable reproduction (the commands table at the end of this section + the tracker's evidentiary catalog).
 
@@ -100,39 +100,11 @@ Status update (2026-06-07): the M5.8.2 arc supplies strong anchor-class evidence
 | 2o ω(E) + the ground clock (from `research/sandbox_vn/`) | `python m5_8_2o_omega_of_E.py run` (~70 min) then `settle 48000` + `restart 48000` (~11 + 35 min) | excitation floor ~1.7× H_rest (kicks can't cool); ground readout: λ +0.110, D₂ 1.68 at T = 2.36 — REGULARIZES |
 | 2p the first spin readout (from `research/sandbox_vn/`) | `python m5_8_2p_spin_readout.py 6000` (~2 min; needs the 2o settled npz) | G1 pairing 1.000000 exact; the clock kick is J-NEUTRAL (J < 1e-4 at t→0); G2 = box torque (secular J growth — the 24³ walls) |
 
----
-
-## 2. NEXT — before the Duda report (all headless)
-
-**✅ THE PRE-REPORT LADDER IS COMPLETE (2026-06-07, one day):** N-1 → #27, N-3 → #28, N-4 → #29, N-2 → #30, N-5 → #31, N-6a–d → #32, N-6e → #33 — all moved to §1 DONE with repro rows. **Nothing gates §3 anymore: THE DUDA REPORT IS NEXT** (assemble from the two HEADLINE CONSOLIDATION tables in the Phase M5.8 section; Rodrigo's prose; then M5 PAUSES and 9b/SABER opens).
-
----
-
-## 3. THE DUDA REPORT — then M5 pauses
-
-**Plan (Rodrigo, 2026-06-07): this is a RESULTS REPORT, not a questions email.** The full N-1…N-6e ladder landed 2026-06-07 — bullets below refreshed with all results; ready to compose (2026-06-08). After it: **M5 active development PAUSES at this milestone** — OpenWave remains the open science record (every claim reproducible from the repo); the active research continues in the parallel stages (9b thermal first, §5). Open theory items are stated as *findings we note*, not as asks — if Duda engages, the thread reopens on his input.
-
-Content bullets (Scientific bucket — Rodrigo writes the prose). **The TLDR's spine = the two HEADLINE CONSOLIDATION tables in the Phase M5.8 section (time-crystal "does it work" + ZBW "does it exist / is it the electron's" ladders) — finalize them when N-2/N-6 land, then write the report from them:**
-
-The payoff for the Duda report: the TLDR can now make the strong claim cleanly — "a Zitterbewegung clock exists in 3+1D" (existence rows, all machine-checked) — while the identification rows carry their own honest statuses, so neither claim borrows credibility from the other. Pairs with Table 1's "does the time-crystal model work" as the two-headline spine.
-
-| Section | Content bullets |
-| --- | --- |
-| Greeting + framing | Following the 2026-06-01 exchange: the 3+1D field test of the 2501.04036 mechanism is done; reporting results + pausing the thread at this milestone |
-| TLDR | The quadratic action has NO clock saturation at 3+1D (dt-invariant runaway at fixed τ ≈ 2 clock periods, f32≡f64); a saturating quartic `u+βu²` on the signed spatial-curvature density restores bounded dynamics (the 1D βR⁴, transplanted); the saturated state is a quasi-periodic breather whose fundamental (ω₁ + a 2ω₁ harmonic) is the SAME from kicked, exactly-unkicked, and jittered starts — the frequency is a property of the state, an attractor; it SELF-STARTS from a settled zero-momentum configuration (dt-converged) — spontaneity demonstrated. The clock EXISTS and is the electron-clock's structural twin (rigid frequency, self-starting, holds resolution-robustly), but is NOT YET the electron quantitatively: the first absolute ω lands ~28× below 2m_ec²/ℏ — a structural gap that points at physics the V=0 sandbox provably omits (the V-on/Faber-r₀ core) |
-| What was done | Matrix field `M = ODOᵀ`, `D = diag(1, δ, 0, g)`, the full Eq.42-form signed Hamiltonian; a constrained spectral-projection integrator (the only stable scheme found — every cheap positive-inertia kinetic has slow growing modes); a CC/variational ladder ruling out all static reductions; Euclidean kill-controls at every level |
-| What works | Bounded breathing over the full measured horizon (≥8 fundamental periods, dt-converged); the signature IS the engine (same seed+kick: the Euclid clock decays 2×, Minkowski grows 3×); spontaneity (an energetically-minimal, kinetically-ghost dressed minimum — it cannot sit still); the ω-ATTRACTOR (kicked/unkicked/jittered starts share ω₁ + 2ω₁ within FFT resolution, detrend-robust); the breathing is near-isotropic and core-centered — NOT a disclination-rod mode (A_z ≈ 1.1 vs the rod baseline 5.6); ★ the defect HOLDS resolution-robustly (N-2: structural decay SLOWS 24³→48³ at every matched t — the M5.7 dispersal reversed under the quartic); ★ the frequency is RIGID (N-6a: ω₁ flat across a 2.6× mass family — it belongs to the core); ★ the state classifies as a MOLTEN CLOCK that REGULARIZES toward a near-regular cold ground state (N-6d/c: cold λ +0.11/D₂ 1.68 vs hot λ +0.7/D₂ 3.0) |
-| What doesn't / honest | No particle-stability claim; NOT strictly periodic — quasi-periodic (resolved fundamental + harmonic over broadband drift; our own earlier "exact harmonic comb" claim was an FFT-window artifact we caught and retired); the linear fast clock (5.86 class) is NOT carried by the saturated state (softens ~5× — the ZBW ratio is measured against the breathing fundamental); explicit-stepper stiffness near the quartic floor (late-time horizons numerically limited); single defect only; natural units. ★ the first ABSOLUTE ω = 5.5×10¹⁹ rad/s is ~28× below 2m_ec²/ℏ — and ω-rigidity makes this a STRUCTURAL gap (not closable by energy bookkeeping), pointing at the V-on/Faber-r₀ core / faithful kinetic / the action-↔ℏ postulate; ★ no intrinsic spin J above the 24³ box-torque floor (the clock kick is J-neutral — spin-½, if carried, lives in other sectors) |
-| Findings we note (informational, not asks) | (a) the invariant matrix is COMPLETE (all candidates measured/classified): the signed quartic `u+βu²` is the working invariant; the Skyrme `β_E·u_E²` saturates but damps the clock 10× (sign-blind); the M6-style amplitude quartic is GEOMETRICALLY PINNED on this state class (no lever arm — the fuel is in the curvature sector); the covariant `𝒮+β𝒮²` adds nothing statically and its dynamics needs a non-quadratic Legendre inversion (deferred with reason); (b) the signature-as-engine result (Euclid decays / Minkowski grows) at full nonlinearity; (c) the un-sittable minimum (ghost breathing inertia at the energetic minimum) reads as the 3+1D face of Fig 10's negative-energy auto-propulsion; (d) the quadratic runaway onsets at a fixed PHASE (~2 clock periods), suggestively parametric; (e) the FIRST ZBW-ratio measurement: ω₁/(2H_rest) = 0.033 ± 5% in lattice-natural units, start-independent (ω₁ is an attractor) — the absolute ω = 2mc²/ℏ comparison awaits the r₀ mass calibration; the saturated breather's clock is the breathing fundamental, the linear fast mode (5.86 class) is not carried at saturation; (f) the cone structure: matter (twist/KG) and light (tilt/EM) channels share the MAXIMAL radial signal speed on the defect background (identical ceiling, both resolutions) while the tangential cone shapes are channel-dependent — one tilt polarization is non-propagating along one tangential direction (rank-1 Gram, consistent with exact); (g) the saturated state is a MOLTEN CLOCK — a persistent ω₁ comb on low-dimensional chaotic dressing (λ_max +0.4–0.7/τ, D₂ 2.7–3.0) whose intensity grows with excitation (the per-defect thermal sector); (h) the clock REGULARIZES toward the ground state (the cold settled state is near-regular), and full coldness is forbidden by the un-sittability that drives the self-start — the clock and its heat are one object; (i) the clock channel carries no net frame angular momentum (the Θ-twist cancels over the hedgehog sphere) — a clean spin null at sandbox scale, bounded by box torque |
-| Closing | M5 pauses here; the repo (scripts + docs) reproduces everything stated; grateful for the framework — happy to pick the thread back up. The 2+1D pilot-wave rung (his 2026-06-01 push) flagged as the natural next step if the thread reopens |
-
----
-
-## 4. BACKLOG — NOT gating (new numbering, 2026-06-07)
+## BACKLOG — NOT gating (new numbering, 2026-06-07)
 
 Nothing here gates §2/§3 or the 9b start. Two tiers; archival detail for each lives in the ARCHIVE section.
 
-### 4.1 Paused science track (resume if/when M5 resumes)
+### Paused track
 
 | # | Item | One-liner |
 | --- | --- | --- |
@@ -142,7 +114,7 @@ Nothing here gates §2/§3 or the 9b start. Two tiers; archival detail for each 
 | NG-4 | **M5.8 breadth** (was 8.4–8.8) | Cross-particle ω test; `−b·Tr(M³)` propulsion toggle; the 2+1D pilot-wave rung (Couder/Bush analogs — flagged in the report closing); gravity/time-dilation viz suite. (The rod-localization check ↑ folded into N-1, 2026-06-07) |
 | NG-5 | **9a / 9c / 9d stage starts** | EM packets, time dynamics, composites — each has its own research file (§5) |
 
-### 4.2 Nice-to-have / demos / cleanups
+### Nice-to-have / demos / cleanups
 
 | # | Item | One-liner |
 | --- | --- | --- |
@@ -155,7 +127,7 @@ Nothing here gates §2/§3 or the 9b start. Two tiers; archival detail for each 
 
 ---
 
-## 5. PARALLEL RESEARCH STAGES (the post-pause active programs)
+## PARALLEL RESEARCH STAGES (the post-pause active programs)
 
 Forward-looking research programs in their own files — run alongside / after the linear M5.x phases. Each carries its own scientific test program:
 

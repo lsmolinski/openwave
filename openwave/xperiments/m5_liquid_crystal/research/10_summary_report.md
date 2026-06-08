@@ -1,10 +1,42 @@
 # M5 Summary Report — Results & Canonical Implementation
 
-**Purpose:** the single results-of-record for the M5 Liquid-Crystal program — every headline test as `topic | verdict + one-sentence finding + source script`, organized into the three validation bodies (**Liquid Crystal**, **Time Crystal**, **Zitterbewegung-clock existence**), followed by the **canonical implementation** (what works — the build that produced these results). This is the document the Duda RESULTS report is written from; the per-phase narrative lives in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and the hardest-pieces board in [`0b_question_tracker.md`](0b_question_tracker.md).
+**Purpose:** the results-of-record for the M5 Liquid-Crystal program (OpenWave). A narrative report of the 3+1D time-crystal field test, then every headline test as `topic | verdict + one-sentence finding + source script`, organized into the three validation bodies (**Liquid Crystal**, **Time Crystal**, **Zitterbewegung-clock existence**), then the **canonical implementation** (what works — the build that produced these results). The per-phase narrative lives in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and the hardest-pieces board in [`0b_question_tracker.md`](0b_question_tracker.md).
 
-**Reading the verdict column:** the first line of each descriptive cell is the result — ✅ PASS / POSITIVE, ❌ NEGATIVE, ⚠️ NEGATIVE-INFORMATIVE or honest caveat. Scope throughout (unless noted): single defect, natural/lattice units, Duda's Eq.18-class matrix dynamics `M = ODOᵀ`, sandbox grids 24³/48³, f32 GPU with f64 numpy cross-checks. **Engine-vs-model (Yee, 2026-06-01):** a model failing to reach the electron does NOT imply the engine is wrong; only a positive certifies the engine — these results are the strongest positive-class anchor M5 has produced.
+**Reading the verdict column:** the first line of each descriptive cell is the result — ✅ PASS / POSITIVE, ❌ NEGATIVE, ⚠️ NEGATIVE-INFORMATIVE or honest caveat. Scope throughout (unless noted): single defect, natural/lattice units, Duda's Eq.18-class matrix dynamics `M = ODOᵀ`, sandbox grids 24³/48³, f32 GPU with f64 numpy cross-checks.These results are the strongest positive-class anchor M5 has produced.
 
 **Last updated:** 2026-06-08 (the full N-1…N-6e ZBW program, 2026-06-07).
+
+---
+
+## Report — the 3+1D time-crystal field test
+
+Following exchange with Jarek Duda, this is the finished 3+1D field test of the time-crystal mechanism from arXiv:2501.04036. It is a results report — there are no open questions in it, just what came out. Everything stated here is reproducible from the OpenWave repository (scripts plus per-experiment notes): [REPO URL].
+
+**Setup.** The field is the matrix `M = O D Oᵀ` with `D = diag(1, δ, 0, g)`, δ = 0.3, time as the fourth index. The dynamics is the Eq.18 signed Hamiltonian with the Minkowski (α,3) block. The only stable integrator found is a constrained spectral-projection scheme that keeps the positive-inertia directions per voxel and projects the momentum onto that subspace every step — every cheap positive-inertia kinetic tried has slow growing modes. All runs are headless on 24³ and 48³ grids, f32 on GPU with f64 numpy cross-checks (they agree to about 1% everywhere checked), and a full-Euclidean twin ran as a kill-control at every stage.
+
+**The quadratic action does not saturate at 3+1D.** The bare `−ΣF²` action runs away at a fixed phase, about two clock periods, and the onset is dt-invariant (it scales exactly with dt under halving), identical in f64, f32 and Metal, grid-independent across 24³ and 63³, and independent of the potential and the momentum clamp. That the runaway onsets at a fixed phase rather than a fixed time is suggestively parametric. This is the field-level version of the toy model's own requirement for a βR⁴ floor.
+
+**A saturating quartic restores bounded dynamics.** Adding `V = u + β u²` on the signed spatial-curvature density `u = 2 Σ_(i<j) ⟨F_ij,F_ij⟩_s`, with β fixed by `2β|u_min| ≈ 3`, bounds the runaway: H breathes over the full horizon, the floor-bounce is real, and it is dt-converged and f64-confirmed.
+
+**The signature is what drives it, not the nonlinearity.** With the same seed and kick, the Euclidean twin's clock decays while the Minkowski-plus-quartic clock grows by about 3×. The (α,3) block is doing the work.
+
+**The saturated state self-starts.** A configuration damped to rest, restarted with momentum exactly zero, regrows kinetic energy from zero (to 5.76 by τ = 4000, H conserved to 0.5%), reproduced at half dt to four significant figures. A zero-momentum field spontaneously moves. The collective-coordinate analysis behind this finds the dressed minimum to be un-sittable — energetically minimal but carrying ghost breathing inertia (K_bb < 0) — which reads as the 3+1D face of the negative-energy auto-propulsion in Fig 10 of the paper.
+
+**Its frequency is a property of the state.** The breathing fundamental is the same — within one FFT bin — whether the run is kicked, exactly unkicked, or seeded with small random jitter. One honest correction belongs here: an earlier reading claimed a strictly periodic ω₀ = 0.262 with an exact harmonic comb; pre-registered scrutiny showed that was an FFT-window artifact — the peak moved with the window length and the comb was just bin arithmetic. The honest statement is that the state is quasi-periodic: a resolved fundamental plus a 2ω harmonic riding on broadband drift.
+
+**The defect holds, and the holding is resolution-robust.** This is the M5.7 dispersal question asked again under the quartic with full backreaction. The structural alignment decays slower at 48³ than at 24³ at every matched time, settling toward a plateau well above the random baseline, and the result does not depend on the masking. This is the reverse of the M5.7 free-defect behaviour, where the wash-out strengthened with resolution.
+
+**The frequency belongs to the core, not the dressing.** Across a family of states spanning a 2.6× range in rest energy (varying the dressing width), the fundamental is constant to within one bin — the exponent of ω against energy is about 0.03, not 1. So the naive ω ∝ mass law does not hold for the dressing energy; the frequency is set by the core, which the V = 0 frame cannot vary because it is scale-free.
+
+**The absolute number, and where it falls short.** Under two explicit postulates — the rest energy mapped to 0.511 MeV and the lattice action unit mapped to ℏ — the clock runs at about 5.5×10¹⁹ rad/s, roughly 28× below the electron Zitterbewegung 2mc²/ℏ. Because the frequency is rigid against energy, that gap is structural rather than something closable by energy bookkeeping; it points at physics this V = 0 sandbox does not contain — the V-on/Faber-r₀ core, the faithful kinetic, or the action-to-ℏ postulate itself. This is reported as the first measurement, not as a pass or fail.
+
+**Two more readings.** A chaos battery classifies the saturated state as a molten clock — a persistent coherent fundamental on low-dimensional chaotic dressing whose intensity grows with excitation — and the deep-settled cold state reads near-regular, so the clock appears to tick cleanly toward the ground state and melt as it heats. Full coldness is forbidden by the same un-sittability that makes it self-start. Separately, the rotation Noether charge of the clock kick is zero: the Θ-twist cancels over the hedgehog sphere, so the breathing channel carries no net frame angular momentum at this scale — though box torque on the 24³ grid bounds that measurement, so it is not read as a spin-½ statement either way.
+
+**What is not claimed.** No particle-stability result; the state is a molten clock, not a strict single-line oscillator. The absolute frequency is 28× off. There is no intrinsic spin above the box-torque floor. It is a single defect in natural units, and the explicit stepper stiffens near the quartic floor so the very-late-time horizons are numerically limited.
+
+**Standing.** The repository reproduces everything above. The framework has been a genuinely productive thing to build against. The 2+1D pilot-wave rung raised on 2026-06-01 is the natural next step if the thread reopens.
+
+The detailed per-test evidence — every claim above plus the Liquid-Crystal substrate validations and the canonical build — follows.
 
 ---
 
