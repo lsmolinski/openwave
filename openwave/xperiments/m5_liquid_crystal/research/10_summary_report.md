@@ -1,4 +1,4 @@
-# M5 — Results & Canonical Implementation
+# M5 Summary Report — Results & Canonical Implementation
 
 **Purpose:** the single results-of-record for the M5 Liquid-Crystal program — every headline test as `topic | verdict + one-sentence finding + source script`, organized into the three validation bodies (**Liquid Crystal**, **Time Crystal**, **Zitterbewegung-clock existence**), followed by the **canonical implementation** (what works — the build that produced these results). This is the document the Duda RESULTS report is written from; the per-phase narrative lives in [`0b_M5_roadmap.md`](0b_M5_roadmap.md) and the hardest-pieces board in [`0b_question_tracker.md`](0b_question_tracker.md).
 
