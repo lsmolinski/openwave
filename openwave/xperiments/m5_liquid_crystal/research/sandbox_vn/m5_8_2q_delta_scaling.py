@@ -1,0 +1,159 @@
+"""
+M5.8.2q — DUDA CALIBRATION (2026-06-08): the δ-scaling of the rest energy.
+
+Jarek Duda's 2026-06-08 reply: the QED Lagrangian maps onto our D = diag(1, δ, 0, g):
+the quantum-phase (Dirac-kinetic) term ~ δ² ↔ ℏc ("tiny"), the mass term ↔ g
+(gravity), so the PHYSICAL hierarchy is δ ~ ℏ ≪ 1 ≪ g ~ 1/δ — he suggests δ ~ 10⁻¹⁰
+and g·δ ≈ 1, while we ran at δ = 0.3, g = 8. His barb: the clock came out
+"surprisingly close (5.5e19 rad/s, ~28× below the electron ZBW) — especially for
+using much too large delta." This script measures the δ-dependence DIRECTLY.
+
+PHASE A (this file) — the SEED-LEVEL rest energy H_static(δ), with g = 1/δ:
+  H is seed-only (no evolution, no FFT) ⇒ exact and cheap. The clock RATIO that
+  answers Duda is ω·δ/(2·H_static) (the m5_8_2j "ℏ↔δ" convention) — ω needs the
+  evolution (Phase B, separate), but H(δ) is the part that scales hardest and is
+  computed here over a fine δ grid in seconds.
+
+CORRECTNESS GATE: at (δ = 0.3, g = 8.0) this MUST reproduce the N-3 record —
+  H_static = 16.74, H_quad (quadratic part) = 9.21 (m5_8_2j_zbw_ratio.py:29).
+
+USAGE:  python m5_8_2q_delta_scaling.py
+"""
+import sys
+from pathlib import Path
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+# seed geometry + energy primitives (no edits to validated modules) ───────────
+from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2a_4d_hamiltonian import (  # noqa: E402
+    conj, boost_field, matmul,
+)
+from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2c1_full_evolution import (  # noqa: E402
+    L, B_STAR, A_BOOST, central, tw,
+)
+from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2cb_taichi_constrained import (  # noqa: E402
+    build_grid_n,
+)
+from openwave.xperiments.m5_liquid_crystal.research.sandbox_vn.m5_8_2h_omega_attractor import (  # noqa: E402
+    np_commf,
+)
+
+# the validated seed constants (the N-3 / 24³ β=1.558 stack)
+N = 24
+R_W = 3.5            # dressing width (2c1 default, the knob that enters seed_M)
+RC = 0.8            # point-core radius
+RHOC = 0.8          # disclination-line regularization
+BETA = 1.558        # the quartic saturation coefficient
+
+
+def seed_M(delta, g_time):
+    """The boost-dressed biaxial-hedgehog 4×4 seed at (δ, g) — exactly the 2cb seed."""
+    grid = build_grid_n(N, L)
+    r, rho, h, O4 = grid["r"], grid["rho"], grid["h"], grid["O4"]
+    w = np.exp(-((r / R_W) ** 2))
+    W = matmul(O4, boost_field(B_STAR * w, A_BOOST))
+    D4 = np.diag([1.0, delta, 0.0, g_time])
+    M0 = conj(W, D4)
+    inter = np.zeros(r.shape, bool)
+    inter[2:-2, 2:-2, 2:-2] = True
+    act = inter & (r > 2 * RC) & (rho > RHOC)
+    return M0, act, h
+
+
+def u_density(M, h):
+    """Signed-quartic energy density u = Σ_{i<j} 2·F:tw(F), F = [∂_iM, ∂_jM]."""
+    u = 0.0
+    Mi = [central(M, ax, h) for ax in range(3)]
+    for i in range(3):
+        for j in range(i + 1, 3):
+            F = np_commf(Mi[i], Mi[j])
+            u = u + 2.0 * np.einsum("...ab,...ab->...", F, tw(F))
+    return u
+
+
+def H_of(delta, g_time):
+    M0, act, h = seed_M(delta, g_time)
+    u0 = u_density(M0, h)
+    H_quad = float(u0[act].sum()) * h ** 3
+    H_static = float((u0 + BETA * u0 * u0)[act].sum()) * h ** 3
+    return H_static, H_quad
+
+
+def main():
+    print("=" * 78)
+    print("M5.8.2q — DUDA CALIBRATION: rest energy H_static(δ), g = 1/δ  [24³ seed]")
+    print("=" * 78)
+
+    # ── CORRECTNESS GATE ─────────────────────────────────────────────────────
+    Hs, Hq = H_of(0.3, 8.0)
+    ok = abs(Hs - 16.74) < 0.05 and abs(Hq - 9.21) < 0.05
+    print(f"\n[gate] (δ=0.3, g=8.0):  H_static = {Hs:.4f}  H_quad = {Hq:.4f}"
+          f"   (N-3 record 16.74 / 9.21)  {'PASS ✓' if ok else 'FAIL ✗'}")
+    if not ok:
+        print("  !!! seed does not reproduce the record — ABORT, do not trust the sweep")
+        return 1
+
+    # ── δ-sweep, g = 1/δ (Duda's g·δ = 1) ────────────────────────────────────
+    print("\n[A] δ-scaling with g = 1/δ:")
+    print("  |    δ    |    g=1/δ   | H_static | H_quad |  H_static/δ² | H_static·δ |")
+    print("  | --- | --- | --- | --- | --- | --- |")
+    deltas = [0.3, 0.1, 0.03, 0.01, 0.003, 0.001]
+    rows = []
+    for d in deltas:
+        g = 1.0 / d
+        Hs, Hq = H_of(d, g)
+        rows.append((d, g, Hs, Hq))
+        print(f"  | {d:7.3f} | {g:10.3f} | {Hs:8.3f} | {Hq:7.3f} |"
+              f" {Hs / d**2:11.3f} | {Hs * d:9.4f} |")
+
+    # ── log-log scaling fit  H_static ~ δ^p ─────────────────────────────────
+    dd = np.array([r[0] for r in rows])
+    HH = np.array([r[2] for r in rows])
+    pos = HH > 0
+    if pos.sum() >= 2:
+        p, logA = np.polyfit(np.log(dd[pos]), np.log(HH[pos]), 1)
+        print(f"\n  fit: H_static ≈ {np.exp(logA):.3f} · δ^({p:.3f})  "
+              f"(g = 1/δ co-varied)")
+
+    # ── g-sensitivity (δ = 0.3 fixed) — validates Duda's neglect-gravity ─────
+    print("\n[B] g-sensitivity at δ = 0.3 (does the rest energy feel the gravity axis?):")
+    print("  |    g    | H_static | H_quad | Δ vs g=8 |")
+    print("  | --- | --- | --- | --- |")
+    Hs8, _ = H_of(0.3, 8.0)
+    for g in [1.0 / 0.3, 8.0, 100.0, 1000.0]:
+        Hs, Hq = H_of(0.3, g)
+        print(f"  | {g:7.3f} | {Hs:8.3f} | {Hq:7.3f} | {100*(Hs/Hs8 - 1):+7.2f}% |")
+
+    # ── [C] δ-sweep with GRAVITY DECOUPLED (g = 8 fixed) — Duda's neglect-grav ─
+    # the physically meaningful sweep: isolate the quantum-phase (δ) sector with
+    # the divergent gravity axis held as a fixed background.
+    print("\n[C] δ-scaling with gravity DECOUPLED (g = 8 fixed) — the clean δ-sector:")
+    print("  |    δ    | H_static | H_quad | H_static/H(δ=0.3) |")
+    print("  | --- | --- | --- | --- |")
+    Hs_ref, _ = H_of(0.3, 8.0)
+    rows_c = []
+    for d in deltas:
+        Hs, Hq = H_of(d, 8.0)
+        rows_c.append((d, Hs, Hq))
+        print(f"  | {d:7.3f} | {Hs:8.4f} | {Hq:7.4f} | {Hs / Hs_ref:8.4f} |")
+    dc = np.array([r[0] for r in rows_c])
+    Hc = np.array([r[1] for r in rows_c])
+    p2, logA2 = np.polyfit(np.log(dc), np.log(Hc), 1)
+    print(f"\n  fit (g fixed): H_static ≈ {np.exp(logA2):.3f} · δ^({p2:.3f})  "
+          f"— floor as δ→0 means the δ-axis is a SMALL correction to a g/1-axis core")
+
+    print("\n  READ: H(δ) scaling + g-sensitivity feed the clock ratio ω·δ/(2H) — the")
+    print("  ω(δ) half (the evolution) is Phase B. If H ∝ δ² and ω is δ-rigid, the")
+    print("  ratio ω·δ/(2H) ∝ 1/δ → GROWS toward 1 as δ→0 (Duda's prescription would")
+    print("  calibrate the clock). The fit above + Phase B settle which.")
+    print("=" * 78)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
