@@ -11,8 +11,28 @@ canonical profile [`sandbox_v11/v11_canonical_beta_profile.csv`](sandbox_v11/v11
 
 **Bottom line:** the core (parameters, profile shape, form factor) is accurate; one
 solid correction lands in the paper's favor (S_vert 63× too large → σ_p further
-below LZ); one item needs Werbos's normalization convention before it can be
-finalized (the absolute mixing integral); two attribution items need fixing.
+below LZ). As of Werbos's 2026-06-08 reply, the S_vert correction and all attribution
+fixes are **accepted**, and the exact mixing integral + β convention have been **sent**.
+
+**2026-06-08 (2nd round) — normalization resolved.** Werbos/DeepSeek flagged that the
+raw mixing integral is 271× the draft, so `g_JA_eff = M_JA/V_Yukawa` → 84.3 (>1,
+unphysical) → σ_p ~10⁻¹⁹ (excluded). **Diagnosis: the formula is the bug, not the
+profile.** `g_JA_eff = M_JA/V_Yukawa` is *linear in the β amplitude* (M_JA ∝ β;
+V_Yukawa is a fixed geometric volume) so it is not a valid rescaling-invariant mixing
+fraction. The β amplitude is **physical, not a free normalization** — the chaoiton is
+neutral (Q_CS=0, no charge to normalize to); the scale is pinned by the field equation
+via a = m_J/(2√g) (the same solution giving m_χ = 0.460). A correctly-built σ_p depends
+on β **only through amplitude-invariant ratios** — F(q) (F(0)=1 normalization,
+F(q_gal)=0.99999985) and S_vert (ratio of two β-values, corrected 2.44×10⁻⁶) — so the
+8×/271× has **zero** effect on σ_p; corrected S_vert pushes σ_p *down* ~63× to
+~1×10⁻³⁴ cm² (further below LZ). Fix on Werbos's side: define g_JA_eff Lagrangian-level
+(fixed JᵘAᵘ + m_J², amplitude-independent) or as an amplitude-cancelling ratio (normalize
+M_JA by the soliton's own J-norm √∫β²r²dr, not external V_Yukawa). **Structural flag:**
+the chaoiton is l=1 — M_JA(0)=4π∫βr²dr projects onto l=0, but ∫Y₁dΩ=0, so the true
+zero-momentum monopole coupling vanishes (= what "neutral" should mean); M_JA(0) is
+likely the wrong object and the surviving coupling is dipole/higher, with S_vert as the
+spatial stand-in. Full record + reproducible numbers in
+[`sandbox_v11/dm_paper_supplement/normalization_resolution.md`](sandbox_v11/dm_paper_supplement/normalization_resolution.md).
 
 ---
 
@@ -68,21 +88,51 @@ profile gives.)
 
 ---
 
-## 4. What needs RECONCILIATION (do not overwrite — await Werbos)
+## 4. The 271× mixing-integral gap — RESOLVED (normalization is a formula artifact)
 
-The absolute mixing integral does not reproduce from the raw profile, and a raw
-recompute is unphysical — so Werbos's side is applying a Yukawa-volume normalization
-not visible in the draft.
+The absolute mixing integral is 271× the draft. **Root cause: `g_JA_eff = M_JA/V_Yukawa`
+is not a valid mixing fraction** — it is linear in the β amplitude (M_JA ∝ β; V_Yukawa is
+a fixed geometric volume independent of β), so it is not invariant under rescaling of β,
+which is precisely the property DeepSeek (correctly) says a physical mixing fraction must
+have. Plugging the physical amplitude in gives g_JA_eff = 84.3 and σ_p⁰ ≈ 2.3×10⁻¹⁹ cm²
+(excluded) — a signal the *estimator* is wrong, not that the chaoiton is excluded.
 
-| Quantity | Paper §5 | Raw recompute (canonical profile) | Status |
-| --- | --- | --- | --- |
-| ∫β r² dr | 3.37×10⁶ fm³ | 9.13×10⁸ fm³ | ~270× larger |
-| M_JA(0) = 4π∫β r² dr | 4.23×10⁷ fm³ | 1.15×10¹⁰ fm³ | ~270× larger |
-| g_JA_eff = M_JA/V_Yukawa | 0.311 | raw → **> 1 (unphysical)** | needs V_Yukawa convention |
+| Quantity | Paper §5 (draft) | Canonical profile — fm | natural | |
+| --- | --- | --- | --- | --- |
+| ∫β r² dr | 3.37×10⁶ fm³ | 9.134×10⁸ fm³ | 15.863 | |
+| M_JA(0) = 4π∫β r² dr | 4.23×10⁷ fm³ | 1.148×10¹⁰ fm³ | 199.34 | 271× draft |
+| g_JA_eff = M_JA/V_Yukawa | 0.311 | **84.35 (>1, unphysical)** | — | non-invariant ⇒ the bug |
+| σ_p⁰ (∝ g_JA_eff⁴) | 4.25×10⁻²⁹ cm² | **2.3×10⁻¹⁹ cm² (excluded)** | — | if raw value used |
 
-⚠️ Because α_eff (§5.3) and σ_p⁰ (§5.5) ride on M_JA via V_Yukawa, they **cannot be
-finalized** until Werbos supplies the exact `V_Yukawa` definition (or the script
-that produced M_JA = 4.23×10⁷). Requested in the 2026-06-08 reply.
+**Decomposition of the 271×:** 8.21× is amplitude (peak 0.697 vs draft 0.085), the
+remaining **33× is shape/extent** — so the draft's M_JA did *not* come from the canonical
+profile even amplitude-matched. The draft's 0.311 / 6.5×10⁻³³ are convention artifacts
+that happened to land below LZ, not robust numbers.
+
+**β normalization convention:** β(r) is the raw, dimensionless BVP soliton amplitude
+(peak 0.697), **not** normalized to unit norm or to a charge — the chaoiton is neutral
+(Q_CS = 0, nothing to normalize to), so the amplitude is fixed by the field equation via
+the v11 scaling symmetry a = m_J/(2√g) (the same solution giving m_χ = 0.460), not by a
+choice. It **cannot** be rescaled down to recover 0.311. Near the origin it is the l=1
+p-wave β = B₀r, B₀ = 0.5 natural (= 1.295×10⁻³/fm). R_phys = ℏc/m_e = 386.16 fm.
+
+**The resolution (amplitude-invariant σ_p):** a correctly-built cross-section depends on
+β only through ratios where the scale cancels — F(q) (F(0)=1; F(q_gal)=0.99999985) and
+S_vert = (β(0.84)/β_peak)² (corrected 2.44×10⁻⁶). The 8×/271× has **zero** effect; the
+corrected S_vert *lowers* σ_p ~63× to ~1×10⁻³⁴ cm² (further below LZ, conclusion
+strengthened).
+
+**Fix on Werbos's side (sent):** define g_JA_eff so the amplitude drops out — either
+Lagrangian-level (J–A mixing set by the fixed JᵘAᵘ coupling and m_J², amplitude-independent;
+β enters only via F(q) and S_vert), or as an explicit amplitude-cancelling ratio (normalize
+M_JA by the soliton's own J-norm √∫β²r²dr = 4.4×10⁵ fm³ scale, not the external V_Yukawa).
+
+**Structural flag (likely the cleanest answer):** the chaoiton is l=1 (p-wave). M_JA(0) =
+4π∫β r² dr implicitly projects onto l=0, but ∫Y₁ dΩ = 0 over the sphere, so the true
+zero-momentum **monopole coupling vanishes** — arguably the meaning of "neutral." If so
+M_JA(0) is the wrong object entirely; the surviving coupling is dipole/higher (auto-suppressed),
+with S_vert the spatial stand-in. Posed to Werbos + DeepSeek as a question (his framework
+to confirm).
 
 **Form-factor fine detail (minor, grid-sensitive):** F(q_gal) ≈ 1 is confirmed (the
 load-bearing claim). The high-q tail differs from the draft (zero crossing ours ~0.67
@@ -92,7 +142,13 @@ grid/cutoff. Use the attached `Fq_curve.csv` as the reference if consistency mat
 
 ---
 
-## 5. Attribution issues (factual — flagged in the reply)
+## 5. Attribution issues (factual — flagged, Werbos ACCEPTED 2026-06-08)
+
+Werbos's 2026-06-08 reply confirmed all three: he will revise §5.9/§4 to credit the
+six-peak modulation to astrophysical halo models (Gaia streams) not OpenWave data, update
+the Acknowledgments to the correct division of labour (OpenWave: BVP solution + β(r)
+profile + scaling symmetry; Werbos: cross-sections), and add a plain-language summary
+linking each §5 number to its repo script.
 
 | Where | Issue | Fix |
 | --- | --- | --- |
@@ -110,8 +166,10 @@ are his Gaia-stream files):
 
 | File | Contents |
 | --- | --- |
+| `normalization_resolution.md` | the 2026-06-08 mixing-integral resolution: corrected S_vert, raw-g_JA_eff blow-up (documented, not hidden), amplitude-invariant fix, l=1 monopole flag |
 | `beta_small_r_comparison.csv` / `.png` | r_fm, numerical β, linear fit β = B₀r (B₀ = 1.295×10⁻³/fm); the l=1 small-r linearity |
 | `Fq_curve.csv` / `.png` | q (MeV) vs F(q) form factor, computed F(q) = ∫β j₀(qr) r² dr / ∫β r² dr |
+| (regen) `regenerate_supplement.py` | reproducible regenerator for all of the above from the canonical CSV |
 | (source) `v11_canonical_beta_profile.csv` | the canonical β(r) profile (r_natural, r_fm, β, dβ/dr) |
 
 **Recompute method (reproducible):** parse the canonical CSV; ℏc = 197.327 MeV·fm,
@@ -125,9 +183,12 @@ F(q) via Simpson/trapezoid with argument x = q·r/ℏc. The one-off script lived
 
 | Item | Status |
 | --- | --- |
-| Werbos to supply `V_Yukawa` definition / M_JA script | 🚧 requested 2026-06-08 — needed to finalize α_eff, σ_p⁰, σ_p |
-| Apply corrected S_vert (2.44×10⁻⁶) + β_peak (0.697) in §5.4 | 🔶 sent; Werbos to integrate |
-| Fix §5.9/§4 stream attribution + Acknowledgments wording | 🔶 sent |
+| Corrected S_vert (2.44×10⁻⁶) + β_peak (0.697) in §5.4/5.5 | ✅ Werbos accepted 2026-06-08; σ_p ~1×10⁻³⁴ cm² (further below LZ), conclusion unchanged |
+| Mixing integral ∫β r² dr + 4π form + β convention | ✅ sent 2026-06-08 (9.134×10⁸ fm³ / 1.148×10¹⁰ fm³; nat 15.863 / 199.34) |
+| **Normalization (271× gap) — g_JA_eff non-invariance** | ✅ resolved + reply sent 2026-06-08 (2nd round): formula is linear in β ⇒ not a valid mixing fraction; σ_p rides on amplitude-invariant F(q) + S_vert only; raw plug-in (g=84) is the bug, not the profile. See §4 + `normalization_resolution.md` |
+| §5.9/§4 stream attribution + Acknowledgments + plain-language summary | ✅ Werbos accepted 2026-06-08; he will revise. ⚠️ Desktop docx still credits Griesi with "computing the key cross-sections" — re-flag (cross-sections are Werbos-side) |
+| Werbos to redefine g_JA_eff amplitude-invariantly (Lagrangian-level or √∫β²r²dr norm) → finalize α_eff, σ_p⁰ | 🚧 on Werbos's side; awaiting revised manuscript |
+| l=1 monopole vanishing (∫Y₁dΩ=0) ⇒ M_JA(0) is wrong object? | 🚧 posed to Werbos + DeepSeek 2026-06-08; his framework to confirm |
 | Open canonical questions Q48 (H = 8 m_J² Q identity), Q49 (α_JN definition) | see [`0d_canonical.md §8`](0d_canonical.md) |
 
 ---
