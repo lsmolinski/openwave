@@ -26,7 +26,7 @@ import numpy as np
 
 N = 48
 L = 6.0
-DELTA = 0.3                     # D = diag(1, δ, 0)
+DELTA = float(os.environ.get("M58_DELTA", "0.3"))   # D = diag(1, δ, 0); M58_DELTA env overrides (Duda δ-calibration 2026-06-08)
 RC = float(os.environ.get("M58_RC", "0.8"))   # point-core radius; M58_RC env overrides (N-6a ZBW mass family)
 RHOC = 0.8                      # disclination-line regularization (z-axis, ρ=0)
 D = np.diag([1.0, DELTA, 0.0])

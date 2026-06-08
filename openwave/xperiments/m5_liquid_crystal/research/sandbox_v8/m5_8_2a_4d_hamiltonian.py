@@ -45,6 +45,7 @@ GATES:
 
 USAGE:  python m5_8_2a_4d_hamiltonian.py
 """
+import os
 import sys
 from pathlib import Path
 
@@ -59,7 +60,7 @@ from openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2a_biaxial_h
     build_frame, matmul, commf, central, RC, RHOC, DELTA, N,
 )
 
-G_TIME = 8.0                              # the time-axis eigenvalue (production LC_G)
+G_TIME = float(os.environ.get("M58_G", "8.0"))   # time-axis eigenvalue; M58_G env overrides (Duda δ-calibration 2026-06-08)
 D4 = np.diag([1.0, DELTA, 0.0, G_TIME])   # D = diag(1, δ, 0, g), time = index 3
 R_W = 2.5                                 # boost-dressing radial width  w(r)=exp(−(r/R_W)²)
 SP_PAIRS = [(0, 1), (0, 2), (1, 2)]       # spatial matrix-index pairs  → POSITIVE in ℋ
