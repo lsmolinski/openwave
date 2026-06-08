@@ -219,3 +219,16 @@ imgui.ini
 openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_N*.npz
 openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_RC*.npz
 openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_RW*.npz
+
+# Heavy REGENERABLE npz caches (>1MB) — kept local, regen from the scripts (repro table in 0b_M5_roadmap.md).
+# seed refs + precision twins (regen: <CB env> python m5_8_2cb_taichi_constrained.py <ref|ti cpu f64|...>)
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ti_*.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/*.npz.bak
+# Track C tabulations (regen: python m5_8_2f*.py all — one-time ~110s each)
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2f2_tables.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2f_tables.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2f3_kin.npz
+# settled configs (regen: m5_8_2g settle / m5_8_2o settle)
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2g_settled.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_vn/_m5_8_2o_settled.npz
