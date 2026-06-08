@@ -20,12 +20,14 @@ This script (structure-first, like M5.6.1a) verifies:
 USAGE:
     python -m openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2a_biaxial_hedgehog
 """
+import os
+
 import numpy as np
 
 N = 48
 L = 6.0
 DELTA = 0.3                     # D = diag(1, δ, 0)
-RC = 0.8                        # point-core regularization (r=0)
+RC = float(os.environ.get("M58_RC", "0.8"))   # point-core radius; M58_RC env overrides (N-6a ZBW mass family)
 RHOC = 0.8                      # disclination-line regularization (z-axis, ρ=0)
 D = np.diag([1.0, DELTA, 0.0])
 

@@ -109,6 +109,18 @@ M5.7.1 (seeded l=1 perturbation) and M5.7.2 (the defect's intrinsic oscillation)
 
 **Direct consequence — the M5.7.3 / "9b.1 preview" (driven-oscillation) experiment is the natural bridge:** apply a continuous EM-wave-like drive to the defect and test whether it sustains a steady-state `(A, ω)` (vs the free-evolution dispersal). If it does, the joint-`(A, ω)`-as-heat hypothesis has its substrate confirmed at the field-theoretic level and 9b.1's full sub-experiments (AM/FM 10.1a–e) follow.
 
+#### ★ The MOLTEN-CLOCK bridge — the first in-data contact between the M5.8 clock and the heat hypothesis (N-6d, 2026-06-07)
+
+The M5.8 N-6d chaos battery (`sandbox_vn/m5_8_2n_chaos_battery.py`) classified the saturated quartic breather as a **molten clock**: a persistent coherent fundamental (ω₁ — the N-1 attractor) riding on low-dimensional CHAOTIC dressing (λ_max ≈ +0.4–0.7 per τ, D₂ ≈ 2.7–3.0 — dynamical, not additive noise, by the control ladder). Put against this hypothesis:
+
+| Heat hypothesis statement | N-6d measurement |
+| --- | --- |
+| Heat = the joint `(A, ω)` excess of defect oscillation ABOVE its ground state | The excited breather (H_dyn ≈ 2.8× H_rest) hosts its excess energy as the chaotic dressing AROUND the coherent clock |
+| The excess is the per-defect kinetic content (temperature's substrate) | The dressing is quantifiable: λ_max / D₂ / broadband power fraction = a **temperature-like axis for a single defect** |
+| Less excitation ⇒ less heat | The least-excited arm (R1-settled) is markedly less molten (D₂ 1.70 vs 2.7–3.0) — the first two points of a per-defect "melting curve" T(E) |
+
+**Candidate dictionary (hypothesis to test, registered 2026-06-07): molten-ness IS the microscopic face of per-defect heat** — cold particle = regular clock, hot particle = molten clock; the M5.7.3 drive pumps exactly this axis. If the M5.8 N-6c weak-kick runs confirm the clock REGULARIZES toward the ground state, the picture closes: a clean ZBW clock at rest + a measurable thermal (molten) sector when excited — the clock and its heat in one object. 9b.1 inherits the battery (λ/D₂/broadband fraction) as its temperature observables alongside WM2/WM3. Honest caveats: stepper-stiffness numerical heating must be separated from physical molten-ness (dt-cross-check of λ/D₂ = the hardening item); single defect, natural units.
+
 **The M5.7 arc, resolved (2026-05-28) — free disperses, driven sustains:**
 
 | Sub-step | Question | Result |

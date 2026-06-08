@@ -45,6 +45,7 @@ resolution-confirm is part of G-2c-1 proper at Step 4):
 
 USAGE:  python m5_8_2c1_full_evolution.py
 """
+import os
 import sys
 import time
 from pathlib import Path
@@ -63,10 +64,10 @@ from openwave.xperiments.m5_liquid_crystal.research.sandbox_v6.m5_6_2a_biaxial_h
     matmul, commf, RC, RHOC, DELTA,
 )
 
-N = 24                      # spike grid (coarse — resolution-confirm at Step 4)
+N = int(os.environ.get("M58_N", "24"))   # spike grid; M58_N env overrides (the N-2 resolution confirm, sandbox_vn/m5_8_2i)
 L = 6.0
 B_STAR = 0.13
-R_W = 3.5
+R_W = float(os.environ.get("M58_RW", "3.5"))   # dressing width; M58_RW env overrides (N-6a ZBW family — the knob that ACTUALLY enters seed_M)
 PLANE = (1, 2)
 A_BOOST = 1
 DT = 0.002

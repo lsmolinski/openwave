@@ -84,7 +84,12 @@ MAX_SWEEPS = 20
 
 
 def npz_path(tag):
-    return HERE / f"_m5_8_2cb_{tag}.npz"
+    sfx = "" if N == 24 else f"_N{N}"   # off-default grids get their own caches (N-2)
+    if RC != 0.8:
+        sfx += f"_RC{RC:g}"             # off-default core radii too (historical N-6a misfire)
+    if R_W != 3.5:
+        sfx += f"_RW{R_W:g}"            # the REAL seed-structure knob (N-6a redesign)
+    return HERE / f"_m5_8_2cb_{tag}{sfx}.npz"
 
 
 def make_masks(g):

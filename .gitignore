@@ -214,3 +214,8 @@ imgui.ini
 # AI Agents
 .claude/worktrees/
 .claude/*.lock
+
+# Heavy regenerable sandbox caches — off-default-grid seed refs (N-2/N-6a; regen: CB_STEPS=2 + M58_N/M58_RC env)
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_N*.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_RC*.npz
+openwave/xperiments/m5_liquid_crystal/research/sandbox_v8/_m5_8_2cb_ref_RW*.npz
