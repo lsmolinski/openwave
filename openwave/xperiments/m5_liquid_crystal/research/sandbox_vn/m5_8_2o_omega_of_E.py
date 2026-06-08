@@ -35,11 +35,35 @@ RESULTS (2026-06-07 — the weak-kick phase + the redesign it forced):
     at kick 0.0125 reads as MODE COMPOSITION, not energy — consistent with
     N-6a's rigidity); molten metrics uniformly high (D₂ 2.3–3.0,
     λ +0.5–0.75) — no regularization visible because NO arm is cold.
-  ⇒ the ground-clock measurement runs through the SETTLE route (modes
-    `settle` + `restart` below): deep S4 damping → dense restart → ω/D₂/λ
-    on the early low-E thirds (the un-sittable regrowth IS the excitation
-    axis, sampled in time). Ground-readout results: the printed thirds
-    table (_m5_8_2o_ground.npz).
+  ⇒ the ground-clock measurement ran through the SETTLE route — RESULTS:
+  ★ THE CLOCK REGULARIZES TOWARD THE GROUND STATE (the molten bridge
+    closes in the right direction). Deep S4 (48000 damped steps): T
+    drained 45.8 → 0.21 (217×, H → −165 still slowly descending — the
+    downhill never ends, per 2g). Restart, P = 0 exact, thirds of the
+    regrowth (E grows along the run — the un-sittable axis sampled in
+    time):
+    | window  | T (median) | ω₁ (dial)            | D₂    | λ_max  |
+    | third 1 | 2.36 COLD  | 1.583 (3.20*,1.51,1.58) | 1.68 | +0.110 |
+    | third 2 | ~1100 heated | 2.731 (dial-tight)  | 15.6† | −0.059 |
+    | third 3 | ~1.5e5 CASCADE | 13.60 (dial-tight) | 7.4† | +0.335 |
+    (* the 2ω rank-flip; † estimator breakdown on nonstationary/cascade
+    data — thirds 2-3 are regime-labeled, not load-bearing)
+  · THE COLD ROW IS THE FINDING: λ_max +0.110 (vs +0.5–0.75 hot; the
+    800-sample bias floor is ABOVE the 2400-sample +0.06 floor — i.e.
+    consistent-with-REGULAR) and D₂ 1.68 (vs 2.7–3.0 hot; two-tone
+    control 1.15; R1's transit state 1.70) at T = 2.36 — the coldest
+    state this program has measured. Cold defect ⇒ near-regular clock;
+    hot defect ⇒ molten. The melting curve now has its cold anchor.
+  · FULL coldness is FORBIDDEN by the mechanism itself (un-sittability:
+    T regrows immediately) — "the ground clock" is the T → 0 limit of a
+    trend that is now measured to bend the right way. A feature, not a
+    bug: the clock self-starts BECAUSE it cannot be fully cold.
+  · ω along the regrowth: 1.58 (cold) → 2.73 (heated transient) →
+    [13.6 numerical]; the saturated attractor sits at 1.09–1.15 (2h) —
+    ω is STATE-dependent (mode composition), not simply E-monotone;
+    the N-6a rigidity statement applies within the saturated class.
+  · ZBW absolute with the COLD ω (1.58): 7.3e19 rad/s — still ~21×
+    short; the structural-gap conclusion (N-6b) unchanged.
 
 USAGE:  python m5_8_2o_omega_of_E.py run [steps]     (the 2 weak-kick arms)
         python m5_8_2o_omega_of_E.py settle [steps]  (deep S4 damping)
