@@ -212,8 +212,10 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Lepton mass ratios not calibrated to PDG | M5.9 |
 | Gravity emergence not run (still 3D) | M5.8 (4D + SO(1,3) Lorentz) |
 | Quark string + Cornell `σ ≈ 1 GeV/fm` not validated | M5.9 |
-| Photon quantization mechanism not formalized | future (post-M5) || Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
-| Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target || Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
+| Photon quantization mechanism not formalized | future (post-M5) |
+| Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
+| Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target |
+| Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
 | Composites (nuclei, atoms, hopfions) deferred | 9d |
 | Exact biaxial-stable `V(M)` coeffs `Λ = (1, δ, 0)` | Q7 → M5.9 (M5.6 ships b=0 confinement interim) |
 | Exact Faber running-coupling profile (vs imposed `arctan`) | Q8 → M5.9 (M5.6 ports the validated mechanism) |
