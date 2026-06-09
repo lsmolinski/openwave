@@ -91,6 +91,17 @@ The counts tell the platform story plainly: M5 has the widest validated coverage
 
 The three frameworks escape Derrick's theorem three different ways (standing-wave interference, topology + time-periodic resonance, oscillation), and the table makes the triangulation visible: particle stability requires time-periodicity in every framework that achieves it, charge quantization only emerges where there is topology, and lepton mass spectra remain the open problem in all three. That convergence-and-divergence pattern is the platform's scientific product.
 
+## MODEL PROFILE (decision-relevant attributes)
+
+The coverage matrix scores phenomena; this companion table scores the model-level attributes a reader needs to weigh the columns: parameter economy, what formal artifacts back the claims, and what would falsify each model next.
+
+| Attribute | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| --- | --- | --- | --- |
+| Free parameters | δ (quantum phase), g (gravity/time axis), plus 1-2 potential (LdG) coefficients; the boost dressing b enters the clock sector. Calibration handles: Faber r₀ (mass), Coulomb units<br>`m5_liquid_crystal/research/4c_convo_2026.06.08.md` | 3 claimed (g, λ, ω); the neutral sector's exact scaling symmetry closes the (g, λ) plane, making m_J parameter-free (in-platform result)<br>`m6_ouroboros/research/0c_sandbox_v11.md` | EWT's analytic wave constants (amplitude, wavelength, density); in-sim runs add documented envelope/threshold choices per script<br>`m3_wolff_lafreniere/research/0a_equations.md` |
+| Formal artifacts | Every claim backed by a runnable open script + research note; documented negatives (M5.2, the M5.7 nulls) preserved as results<br>`m5_liquid_crystal/research/10_summary_report.md § Reproduction` | Author's Lean 4 proof artifacts (linking number, mountain-pass existence, power counting) + our independent numerical reproduction of the canonical profile and benchmark<br>`m6_ouroboros/research/0d_canonical.md` | Runnable scripts + an explicit honest-blockers status doc<br>`m3_wolff_lafreniere/research/0_STATUS.md` |
+| Falsifiable near-term tests | Unit-free g-factor ≈ 2 from the fixed-clock electron (ELECTRON-ID, in progress); the absolute-ω calibration chain (Coulomb units + LdG-to-rest-energy)<br>`m5_liquid_crystal/research/0b_M5_roadmap.md § ELECTRON-ID` | Author's roadmap: NEGF vertex check, sub-MeV searches, six-peak Gaia-stream annual modulation of the J-field flux<br>`m6_ouroboros/research/0e_dm_paper_review.md` | K-selectivity under perturbation (currently failing, and documented as such)<br>`m3_wolff_lafreniere/research/0_STATUS.md` |
+| Direct-detection compatibility (DM) | n/a (no DM candidate claimed) | Dipole-suppressed chaoiton-proton cross section claimed compatible with direct-detection bounds (the monopole coupling vanishes by angular-momentum orthogonality; the numerical chain is still being reconciled on the author's side)<br>`m6_ouroboros/research/0e_dm_paper_review.md`, `sandbox_v11/dm_paper_supplement/` | n/a |
+
 ## Per-model results of record
 
 | Model | Deep dive |
