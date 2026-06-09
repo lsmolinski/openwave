@@ -31,7 +31,7 @@ if str(REPO_ROOT) not in sys.path:
 
 # seed geometry + energy primitives (no edits to validated modules) ───────────
 from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2a_4d_hamiltonian import (  # noqa: E402
-    conj, boost_field, matmul,
+    conj, boost_field, matmul, SP_PAIRS, TM_PAIRS,
 )
 from openwave.xperiments.m5_liquid_crystal.research.sandbox_v8.m5_8_2c1_full_evolution import (  # noqa: E402
     L, B_STAR, A_BOOST, central, tw,
@@ -51,18 +51,43 @@ RHOC = 0.8          # disclination-line regularization
 BETA = 1.558        # the quartic saturation coefficient
 
 
-def seed_M(delta, g_time):
-    """The boost-dressed biaxial-hedgehog 4×4 seed at (δ, g) — exactly the 2cb seed."""
+def seed_M(delta, g_time, b_star=B_STAR):
+    """The boost-dressed biaxial-hedgehog 4×4 seed at (δ, g, b_star) — exactly the 2cb seed."""
     grid = build_grid_n(N, L)
     r, rho, h, O4 = grid["r"], grid["rho"], grid["h"], grid["O4"]
     w = np.exp(-((r / R_W) ** 2))
-    W = matmul(O4, boost_field(B_STAR * w, A_BOOST))
+    W = matmul(O4, boost_field(b_star * w, A_BOOST))
     D4 = np.diag([1.0, delta, 0.0, g_time])
     M0 = conj(W, D4)
     inter = np.zeros(r.shape, bool)
     inter[2:-2, 2:-2, 2:-2] = True
     act = inter & (r > 2 * RC) & (rho > RHOC)
     return M0, act, h
+
+
+def u_sectors(M, h):
+    """Quadratic energy density split by Duda's question: EM = +spatial-block
+    curvature (curvature of ROTATIONS, η-positive), GEM = −time-mixing curvature
+    (curvature of BOOSTS, η-negative = the clock fuel). u_EM + u_GEM ≡ u_density."""
+    Mi = [central(M, ax, h) for ax in range(3)]
+    uEM, uGEM = 0.0, 0.0
+    for i in range(3):
+        for j in range(i + 1, 3):
+            F = np_commf(Mi[i], Mi[j])
+            sp = sum(F[..., a, b] ** 2 for a, b in SP_PAIRS)
+            tm = sum(F[..., a, b] ** 2 for a, b in TM_PAIRS)
+            uEM = uEM + 4.0 * sp                  # 2 (η-contraction) × 2 (ordered pairs)
+            uGEM = uGEM - 4.0 * tm                # NEGATIVE — Minkowski boost block
+    return uEM, uGEM
+
+
+def sectors_of(delta, g_time, b_star):
+    M0, act, h = seed_M(delta, g_time, b_star)
+    uEM, uGEM = u_sectors(M0, h)
+    a = act
+    EM = float(uEM[a].sum()) * h ** 3
+    GEM = float(uGEM[a].sum()) * h ** 3
+    return EM, GEM
 
 
 def u_density(M, h):
@@ -76,12 +101,16 @@ def u_density(M, h):
     return u
 
 
-def H_of(delta, g_time):
-    M0, act, h = seed_M(delta, g_time)
+def H_of_b(delta, g_time, b_star):
+    M0, act, h = seed_M(delta, g_time, b_star)
     u0 = u_density(M0, h)
     H_quad = float(u0[act].sum()) * h ** 3
     H_static = float((u0 + BETA * u0 * u0)[act].sum()) * h ** 3
     return H_static, H_quad
+
+
+def H_of(delta, g_time):
+    return H_of_b(delta, g_time, B_STAR)
 
 
 def main():
@@ -144,13 +173,46 @@ def main():
     dc = np.array([r[0] for r in rows_c])
     Hc = np.array([r[1] for r in rows_c])
     p2, logA2 = np.polyfit(np.log(dc), np.log(Hc), 1)
-    print(f"\n  fit (g fixed): H_static ≈ {np.exp(logA2):.3f} · δ^({p2:.3f})  "
-          f"— floor as δ→0 means the δ-axis is a SMALL correction to a g/1-axis core")
+    print(f"\n  fit (g fixed): H_static ≈ {np.exp(logA2):.3f} · δ^({p2:.3f}),  "
+          f"floor as δ→0 means the δ-axis is a SMALL correction to a g/1-axis core")
 
-    print("\n  READ: H(δ) scaling + g-sensitivity feed the clock ratio ω·δ/(2H) — the")
-    print("  ω(δ) half (the evolution) is Phase B. If H ∝ δ² and ω is δ-rigid, the")
-    print("  ratio ω·δ/(2H) ∝ 1/δ → GROWS toward 1 as δ→0 (Duda's prescription would")
-    print("  calibrate the clock). The fit above + Phase B settle which.")
+    # ── [D] BOOST-SCAN (Duda 2026-06-09): gravity enters via the BOOST, not g ──
+    # the physical gravity knob is the time-axis tilt b_star·g, not the eigenvalue g.
+    print("\n[D] boost-scan at δ=0.3, g=8 (vary the boost b_star, the physical gravity knob):")
+    print("  | b_star | b_star·g | H_static | EM (rotations,+) | GEM (boosts,−) | |GEM|/EM |")
+    print("  | --- | --- | --- | --- | --- | --- |")
+    for b in [0.0, 0.05, 0.13, 0.30, 0.60, 1.00]:
+        Hs, _ = H_of_b(0.3, 8.0, b)
+        EM, GEM = sectors_of(0.3, 8.0, b)
+        ratio = abs(GEM) / EM if EM else float("nan")
+        print(f"  | {b:6.3f} | {b*8:8.3f} | {Hs:9.4f} | {EM:9.4f} | {GEM:+10.4f} | {ratio:7.4f} |")
+
+    print("\n[D2] b_star·g is the knob (equal product → equal GEM, NOT equal g):")
+    print("  | b_star |   g   | b_star·g | GEM (boosts) |")
+    print("  | --- | --- | --- | --- |")
+    for b, g in [(0.13, 8.0), (0.013, 80.0), (0.13, 80.0), (1.30, 8.0)]:
+        _, GEM = sectors_of(0.3, g, b)
+        print(f"  | {b:6.3f} | {g:5.1f} | {b*g:8.3f} | {GEM:+10.4f} |")
+
+    # ── [E] EM/GEM ratio (Duda's "rotations-EM vs boosts-GEM" question) ─────────
+    print("\n[E] EM/GEM Lagrangian ratio at the physical boost (Duda's question):")
+    print("  | b_star | EM (curv. of rotations) | GEM (curv. of boosts) | EM/|GEM| | EM+GEM vs H_quad |")
+    print("  | --- | --- | --- | --- | --- |")
+    for b in [0.13, 0.01]:
+        EM, GEM = sectors_of(0.3, 8.0, b)
+        _, Hq = H_of_b(0.3, 8.0, b)
+        emgem = EM / abs(GEM) if GEM else float("inf")
+        print(f"  | {b:6.3f} | {EM:9.4f} | {GEM:+10.4f} | {emgem:8.2f} | "
+              f"{EM+GEM:.4f} vs {Hq:.4f} |")
+
+    print("\n  READ: at b_star=0 the GEM (boost) block is EXACTLY 0, so gravity enters")
+    print("  only through the boost. In the physical small-tilt regime GEM ∝ (b_star·g)²")
+    print("  (the 0.13·8 and 0.013·80 pair match at GEM≈−9.3; the large pairs diverge")
+    print("  because the boost is sinh-nonlinear). At a physical small boost (b=0.01)")
+    print("  EM/|GEM| = 210: the EM sector (curvature of rotations, the 1-axis Faber")
+    print("  unit vector) dominates and GEM is a tiny NEGATIVE (clock-fuel) correction")
+    print("  that REDUCES the rest energy. The earlier 'gravity-dominated' reading")
+    print("  raised g at fixed b_star, an unphysically large tilt. EM+GEM = H_quad exactly.")
     print("=" * 78)
     return 0
 

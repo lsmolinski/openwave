@@ -17,7 +17,7 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 | Where is M5? | M5.0–M5.7 ✅ closed. M5.8's sandbox arc essentially complete: the quadratic action REFUTED (dt-invariant runaway at τ ≈ 2 clock periods), the `u+βu²` quartic SATURATES (bounded breathing, f64-anchored), the saturated state is a QUASI-PERIODIC breather with a reproducible fundamental ω₁ ≈ 1.1 + 2ω₁ harmonic — the SAME ω₁ from kicked, exactly-unkicked, and jittered starts = the ATTRACTOR (m5_8_2h; the earlier "strictly periodic ω₀ = 0.262 + exact comb" was an FFT-window artifact, RETIRED 2026-06-07), and SPONTANEITY is CONFIRMED (a settled zero-momentum config self-starts, dt/2-converged to 4 significant digits) |
 | Is the model "working"? | YES at the mechanism level — the full ZBW program (N-1…N-6e, 2026-06-07) lands every existence claim: a bounded, self-starting, frequency-RIGID clock that HOLDS resolution-robustly (the M5.7 dispersal reversed under the quartic), classified a MOLTEN CLOCK that REGULARIZES toward a near-regular cold ground state. NOT claimed: the electron IDENTIFICATION — the first absolute ω is 5.5×10¹⁹ rad/s, ~28× below 2m_ec²/ℏ (a STRUCTURAL gap given ω-rigidity, pointing at the V-on/Faber-r₀ core); no intrinsic spin J above the box-torque floor; strict single-line periodicity. The identification track is the NG-1/NG-3 work |
 | Validation mode | **HEADLESS-FIRST (decision 2026-06-07)**: gates + npz caches + trend tables + plots. Rendering = communication/demo only — it gates nothing (NG-6; policy note in `5a §10e`) |
-| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT is WRITTEN (§3 → `10_summary_report.md`); the parallel stages become the active program. **Duda 2026-06-08 follow-up CLOSED** (δ/g calibration) — see "DUDA 2026-06-08 FOLLOW-UP": the rest energy is gravity-axis dominated (`∝g⁸`, `g=1/δ` diverges) and δ-flat with gravity decoupled, so the δ knob does NOT calibrate the clock (`R ∝ δ`); the calibration lives in the Coulomb-unit + LdG-to-rest-energy directions (NG-1/NG-12) |
+| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT is WRITTEN (§3 → `10_summary_report.md`); the parallel stages become the active program. **Duda δ/g follow-up CLOSED** (06-08 + 06-09 correction; see "DUDA 2026-06-08 FOLLOW-UP"): the δ knob does NOT calibrate the clock (`R ∝ δ`); gravity enters only via the boost tilt `b·g` (Duda 2026-06-09 correction: EM dominates the rest energy ~210:1 at a physical boost, GEM is the tiny negative clock-fuel); calibration lives in the Coulomb-unit + LdG-to-rest-energy directions (NG-1/NG-12) |
 | M6 | Cross-pollination CLOSED 2026-06-07, strongly positive (§1 #25; full verdict in the tracker); M6 itself stays sandbox-only / permanent hold |
 
 ---
@@ -102,6 +102,8 @@ Status update (2026-06-07): the M5.8.2 arc supplies strong anchor-class evidence
 
 ## DUDA 2026-06-08 FOLLOW-UP — the δ / g calibration
 
+**Full correspondence record:** [`4c_convo_2026.06.08.md`](4c_convo_2026.06.08.md) (the email thread + both rounds of runs). This section is the findings summary.
+
 After the report, Duda read `10_summary_report.md` (now seeing the 3+1D **4×4** tensor sim correctly — `D = diag(1, δ, 0, g)`) and added Manfried Faber. His directions, with the QED Lagrangian he attached as the decoder ring:
 
 | QED term (his image) | coefficient | our `D` axis | his prescription |
@@ -117,7 +119,7 @@ Plus: fix units by comparing to Coulomb or the clock (ours are dimensionless); t
 | Finding | Result |
 | --- | --- |
 | `g=1/δ` (his hierarchy) | H_static **diverges** `∝ δ^(−6.8)` (→9×10¹⁶ at δ=0.001) — the literal physical scale is numerically impossible, matching his own "too large for full simulations → neglect gravity" |
-| g-sensitivity at δ=0.3 | the rest energy is **gravity-axis dominated**: `∝ g⁸` in the quartic (g 8→100 ⇒ H ×5.7×10⁷) — `g` is the real energy knob, not δ; we had used an arbitrary g=8 |
+| g-sensitivity at δ=0.3 (⚠️ SUPERSEDED, see 2026-06-09 addendum) | raising `g` at FIXED boost gives `∝ g⁸`, first read as "gravity-dominated." Duda corrected this 2026-06-09: gravity enters ONLY through the boost tilt `b·g`, not the eigenvalue `g`. Raising `g` at fixed boost is an unphysically large tilt, not gravity. The physical picture is in the addendum below |
 | δ-sweep, gravity **decoupled** (g=8 fixed) | H_static is **δ-flat**: 16.74→20.64 across δ 0.3→0.001 (fit `δ^(−0.04)`) — the quantum-phase δ-axis is only a ~23% correction to a g/major-axis core |
 
 **The clock-ratio consequence** — combining the measured δ-flat `H_rest` with the N-6a ZBW law (`ω ∝ H_rest`, so `ω/2H ≈ 0.033`):
@@ -126,7 +128,25 @@ Plus: fix units by comparing to Coulomb or the clock (ours are dimensionless); t
 
 **Takeaway:** the calibration lives in Duda's *other two* directions — fix units via Coulomb (calibrate on one observable, predict the clock) and tune the LdG potential to rest energy (the Faber-`r₀` handle, NG-1) — **not** in δ at fixed functional. Gravity must be decoupled (`g=1/δ` diverges), which independently confirms "put clock propulsion by hand."
 
-**Reproduce:** `python m5_8_2q_delta_scaling.py` (seed-level, ~10 s). The direct ω(δ) on the settled state (the `2h` run_dense path) is deferred — `m5_8_2q_omega.py` is the scaffold, but its fresh-seed probe reads a still-settling state (ω 0.60 ≠ canonical 1.10); the conclusion does not depend on it (it follows from the measured δ-flat H + the validated ZBW law).
+**Reproduce:** `python m5_8_2q_delta_scaling.py` (seed-level, ~10 s). The direct ω(δ) on the settled state (the `2h` run_dense path) is deferred. `m5_8_2q_omega.py` is the scaffold, but its fresh-seed probe reads a still-settling state (ω 0.60 ≠ canonical 1.10); the conclusion does not depend on it (it follows from the measured δ-flat H + the validated ZBW law).
+
+### 2026-06-09 addendum: Duda's boost correction + the EM/GEM split
+
+Duda disagreed with "rest energy dominated by gravity," and he is right. Verified against the seed code: the hedgehog frame `O4 = block-diag(O3, 1)` leaves the time axis fixed, and the boost `boost_field(b·w, a=1)` is the ONLY channel mixing the g/time axis into the spatial gradients. So `g` enters the energy only as the boost tilt `b·g`. The earlier `∝g⁸` came from raising `g` at fixed boost `b=0.13`, i.e. inflating the tilt `b·g` from ~1 to ~130, an unphysically large boost, not gravity.
+
+**What we ran** (`2q` Phase D/E): split the quadratic seed energy into Duda's two sectors via the signed η-blocks (`SP_PAIRS` spatial = EM = curvature of rotations, η-positive; `TM_PAIRS` time-mixing = GEM = curvature of boosts, η-negative). `EM + GEM = H_quad` exactly (split validated).
+
+| Finding | Result |
+| --- | --- |
+| boost = 0 | GEM (boost block) is **exactly 0**: gravity contributes nothing without the time-axis tilt |
+| physical knob | `GEM ∝ (b·g)²` in the small-tilt regime (the `b=0.13,g=8` and `b=0.013,g=80` pair both give GEM ≈ −9.3; large pairs diverge via the `sinh` nonlinearity) |
+| EM/GEM ratio (Duda's question) | NOT a constant: **210:1** at a physical small boost (`b=0.01`), **2:1** at the clock dressing (`b=0.13`); scales as `1/(b·g)²`. EM (the 1-axis, Faber unit vector) dominates the rest energy in every physical case |
+| GEM sign | **negative** (the Minkowski clock-fuel block), so the boost/clock REDUCES the rest energy by `|GEM|` |
+| mass-reduction (Duda's "how much?") | `|GEM|/EM ∝ (b·g)²`: ~0.5% at a physical boost, up to ~50% at the (large) clock dressing. Stopping the Zitterbewegung removes the negative GEM and the mass rises |
+
+**Caveat:** this split is on the STATIC seed, so it weighs EM and gravity but NOT the quantum-phase δ sector, whose energy lives in the fast (~10²¹ Hz) clock evolution (Duda's point). That dynamical weighing is the open piece (NG-12).
+
+**Reproduce:** `python m5_8_2q_delta_scaling.py` (Phase D/E, seed-level, ~15 s). Sent to Duda 2026-06-09.
 
 ## BACKLOG — NOT gating (new numbering, 2026-06-07)
 
@@ -141,7 +161,7 @@ Nothing here gates §2/§3 or the parallel stages. Two tiers; archival detail fo
 | NG-3 | **M5.9 — leptons + Cornell quarks** | 3 axis-choices → e/μ/τ mass calibration; Cornell `V(r) = −α/r + σr`; the `e_scale` physical-units hook lands here |
 | NG-4 | **M5.8 breadth** (was 8.4–8.8) | Cross-particle ω test; `−b·Tr(M³)` propulsion toggle; the 2+1D pilot-wave rung (Couder/Bush analogs — flagged in the report closing); gravity/time-dilation viz suite. (The rod-localization check ↑ folded into N-1, 2026-06-07) |
 | NG-5 | **9d stage start** | composites — its own research file (§5) |
-| NG-12 | **Duda δ/g calibration follow-up** (2026-06-08) | The seed-level energy scaling is DONE (see the "DUDA 2026-06-08 FOLLOW-UP" section). Residual: the *direct* ω(δ) on the SETTLED state (the `2h` run_dense path, not the fresh-seed `2q_omega` scaffold) to confirm the ZBW-law-inferred `R ∝ δ`; and the real calibration axis — fix units via Coulomb + tune LdG to rest energy — which folds into NG-1/NG-3 |
+| NG-12 | **Duda δ/g calibration follow-up** (2026-06-08 + 06-09) | DONE: seed-level δ/g energy scaling + the EM/GEM boost split (06-09 addendum, `2q` Phase D/E). Residual: (a) the δ (quantum-phase) sector is DYNAMICAL (the fast ~10²¹ Hz clock), not captured by the static split, so weighing it needs the ω-dynamics; (b) the direct ω(δ) on the SETTLED state (the `2h` run_dense path, not the fresh-seed `2q_omega` scaffold); (c) the real calibration axis (fix units via Coulomb + tune LdG to rest energy), folding into NG-1/NG-3 |
 
 ### Nice-to-have / demos / cleanups
 

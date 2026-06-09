@@ -29,6 +29,7 @@ HBARC = 197.3269804  # MeV*fm
 M_E = 0.5109989461  # MeV
 R_PHYS = HBARC / M_E  # 386.16 fm
 M_J = 0.618427  # MeV
+M_CHI = 0.460004  # MeV (chaoiton mass; sets galactic momentum transfer q = m_chi*v)
 R_PROTON = 0.84  # fm (proton charge radius)
 ALPHA_J = 1.21
 ALPHA_EM = 1.0 / 137.036
@@ -56,9 +57,21 @@ def j0(x):
     return np.where(np.abs(x) < 1e-12, 1.0, np.sin(x) / np.where(x == 0, 1, x))
 
 
+def j1(x):
+    # spherical Bessel j1(x) = sin x / x^2 - cos x / x ; small-x -> x/3
+    xs = np.where(x == 0, 1.0, x)
+    return np.where(np.abs(x) < 1e-4, x / 3.0, np.sin(xs) / xs**2 - np.cos(xs) / xs)
+
+
 def form_factor(beta, r_fm, q_MeV):
     x = (q_MeV / HBARC) * r_fm
     return trap(beta * j0(x) * r_fm**2, r_fm) / trap(beta * r_fm**2, r_fm)
+
+
+def dipole_form_factor(beta, r_fm, q_MeV):
+    # neutral l=1 chaoiton: monopole forbidden (F(0)=0), leading coupling is dipole
+    x = (q_MeV / HBARC) * r_fm
+    return trap(beta * j1(x) * r_fm**2, r_fm) / trap(beta * r_fm**2, r_fm)
 
 
 def main():
@@ -84,16 +97,35 @@ def main():
     # --- amplitude-invariant alternative (J-norm normalized) ---
     N_J = trap(beta**2 * r_fm**2, r_fm)  # scales as amp^2
 
-    # --- form factor curve ---
+    # --- form factor curve (monopole j0) ---
     q_grid = [0, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.2, 0.3, 0.4,
               0.47, 0.5, 0.7, 1.0, 3.0, 10.0, 30.0, 100.0]
     Fq = {q: form_factor(beta, r_fm, q) for q in q_grid}
+
+    # --- dipole moment + dipole form factor (l=1; 2026-06-09 round) ---
+    I2 = trap(beta * r_fm**2, r_fm)          # = M_JA radial integral, 9.134e8
+    I3 = trap(beta * r_fm**3, r_fm)          # full-tail r^3 moment (needs r->~1e4 fm)
+    R_dipole = I3 / I2                       # dipole radius, fm
+    v_gal = 7e-4                             # galactic DM velocity (units of c)
+    q_gal_fm = M_CHI * v_gal / HBARC         # momentum transfer, fm^-1
+    q_gal_MeV = M_CHI * v_gal
+    Fdip = {q: dipole_form_factor(beta, r_fm, q) for q in q_grid}
+    Fdip_gal2 = dipole_form_factor(beta, r_fm, q_gal_MeV) ** 2
+    sigma0 = 4.25e-29                        # cm^2, hypothetical-monopole prefactor (paper)
+    sigma_p_product = sigma0 * S_vert * Fdip_gal2      # paper's factorization
+    sigma_p_ffonly = sigma0 * Fdip_gal2               # form-factor-only (no double S_vert)
 
     # ---------------- write Fq_curve.csv ----------------
     with open(f"{OUT}/Fq_curve.csv", "w") as f:
         f.write("q_MeV,F_q\n")
         for q in q_grid:
             f.write(f"{q:g},{Fq[q]:.6e}\n")
+
+    # ---------------- write Fq_dipole.csv (l=1) ----------------
+    with open(f"{OUT}/Fq_dipole.csv", "w") as f:
+        f.write("q_MeV,F_dipole\n")
+        for q in q_grid:
+            f.write(f"{q:g},{Fdip[q]:.6e}\n")
 
     # ---------------- write beta_small_r_comparison.csv ----------------
     mask = (r_fm >= 1) & (r_fm <= 7800)  # tabulated small-r region
@@ -187,13 +219,34 @@ and m_J^2, independent of the soliton amplitude; beta enters only via F(q) and S
 Option B -- normalize M_JA by the soliton's own J-norm sqrt(N_J), N_J = int beta^2 r^2 dr
 = {N_J:.4e} fm^3 (scales as amp^2), instead of the external V_Yukawa, so the scale cancels.
 
-## Open structural point (l=1)
+## Dipole coupling (2026-06-09 round -- Werbos adopted the l=1 selection rule)
 
 The chaoiton is l=1 (p-wave). M_JA(0) = 4*pi*int beta r^2 dr implicitly projects
 onto l=0; for a pure l=1 field the angular integral of Y_1 over the sphere vanishes,
-so the true zero-momentum monopole coupling is zero -- arguably the meaning of
-"neutral." If so, M_JA(0) is the wrong object and the surviving coupling is
-dipole/higher (automatically suppressed), with S_vert as the spatial stand-in.
+so the true zero-momentum monopole coupling is zero (the meaning of "neutral").
+Werbos's 2026-06-09 version adopts this: F(0)=0 and the leading coupling is dipole,
+F_dipole(q) = int beta j1(qr) r^2 dr / int beta r^2 dr ~ (q/3) R_dipole at small q,
+with R_dipole = int beta r^3 dr / int beta r^2 dr.
+
+**The r^3 moment must be integrated over the full exponential tail (out to ~1e4 fm).**
+The paper's value (4.28e11 fm^4) corresponds to truncating near r ~ 1450 fm.
+
+| Quantity | June-9 paper | Correct (full tail) |
+| --- | --- | --- |
+| int beta r^3 dr | 4.28e11 fm^4 | {I3:.4e} fm^4 |
+| R_dipole | 4.69e2 fm | {R_dipole:.4e} fm |
+| q_gal = m_chi v / hbar c | 1.6e-6 fm^-1 | {q_gal_fm:.4e} fm^-1 |
+| \\|F_dipole(q_gal)\\|^2 | 6.5e-8 | {Fdip_gal2:.4e} |
+| sigma_p = sigma0 * S_vert * \\|F_dipole\\|^2 | 6.7e-42 cm^2 | {sigma_p_product:.3e} cm^2 |
+
+int beta r^2 dr matches the paper exactly, so the gap is purely the r^3 tail. Still
+~11 orders below LZ; conclusion unchanged.
+
+**Open physics question (posed to Werbos + DeepSeek):** S_vert and \\|F_dipole\\|^2 both
+trace to beta ~ B0 r at small r. The dipole form factor already integrates beta over
+all radii, so multiplying by S_vert may apply the l=1 suppression twice. Form-factor-only
+reading: sigma_p ~ sigma0 * \\|F_dipole\\|^2 = {sigma_p_ffonly:.3e} cm^2 (no extra S_vert).
+Both readings are below LZ.
 
 Regenerate: `python regenerate_supplement.py`
 """
@@ -208,7 +261,13 @@ Regenerate: `python regenerate_supplement.py`
     print(f"  F(q_gal)            = {Fq[3e-4]:.7f}")
     print(f"  M_JA(0)             = {M_JA:.4e} fm^3  ({M_JA/4.23e7:.0f}x draft)")
     print(f"  g_JA_eff RAW        = {g_raw:.2f}  (non-invariant -> the bug)")
-    print("  files: Fq_curve.csv/.png, beta_small_r_comparison.csv/.png,")
+    print("  --- dipole (2026-06-09) ---")
+    print(f"  int beta r^3 dr     = {I3:.4e} fm^4   [paper 4.28e11, truncated ~1450 fm]")
+    print(f"  R_dipole            = {R_dipole:.4e} fm   [paper 4.69e2]")
+    print(f"  |F_dipole(q_gal)|^2 = {Fdip_gal2:.4e}   [paper 6.5e-8]")
+    print(f"  sigma_p (S_vert*Fd) = {sigma_p_product:.3e} cm^2   [paper 6.7e-42]")
+    print(f"  sigma_p (Fd only)   = {sigma_p_ffonly:.3e} cm^2   (no double-S_vert)")
+    print("  files: Fq_curve.csv/.png, Fq_dipole.csv, beta_small_r_comparison.csv/.png,")
     print("         normalization_resolution.md")
 
 

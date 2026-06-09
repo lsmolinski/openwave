@@ -54,12 +54,33 @@ and m_J^2, independent of the soliton amplitude; beta enters only via F(q) and S
 Option B -- normalize M_JA by the soliton's own J-norm sqrt(N_J), N_J = int beta^2 r^2 dr
 = 2.4522e+08 fm^3 (scales as amp^2), instead of the external V_Yukawa, so the scale cancels.
 
-## Open structural point (l=1)
+## Dipole coupling (2026-06-09 round -- Werbos adopted the l=1 selection rule)
 
 The chaoiton is l=1 (p-wave). M_JA(0) = 4*pi*int beta r^2 dr implicitly projects
 onto l=0; for a pure l=1 field the angular integral of Y_1 over the sphere vanishes,
-so the true zero-momentum monopole coupling is zero -- arguably the meaning of
-"neutral." If so, M_JA(0) is the wrong object and the surviving coupling is
-dipole/higher (automatically suppressed), with S_vert as the spatial stand-in.
+so the true zero-momentum monopole coupling is zero (the meaning of "neutral").
+Werbos's 2026-06-09 version adopts this: F(0)=0 and the leading coupling is dipole,
+F_dipole(q) = int beta j1(qr) r^2 dr / int beta r^2 dr ~ (q/3) R_dipole at small q,
+with R_dipole = int beta r^3 dr / int beta r^2 dr.
+
+**The r^3 moment must be integrated over the full exponential tail (out to ~1e4 fm).**
+The paper's value (4.28e11 fm^4) corresponds to truncating near r ~ 1450 fm.
+
+| Quantity | June-9 paper | Correct (full tail) |
+| --- | --- | --- |
+| int beta r^3 dr | 4.28e11 fm^4 | 1.5839e+12 fm^4 |
+| R_dipole | 4.69e2 fm | 1.7340e+03 fm |
+| q_gal = m_chi v / hbar c | 1.6e-6 fm^-1 | 1.6318e-06 fm^-1 |
+| \|F_dipole(q_gal)\|^2 | 6.5e-8 | 8.8964e-07 |
+| sigma_p = sigma0 * S_vert * \|F_dipole\|^2 | 6.7e-42 cm^2 | 9.207e-41 cm^2 |
+
+int beta r^2 dr matches the paper exactly, so the gap is purely the r^3 tail. Still
+~11 orders below LZ; conclusion unchanged.
+
+**Open physics question (posed to Werbos + DeepSeek):** S_vert and \|F_dipole\|^2 both
+trace to beta ~ B0 r at small r. The dipole form factor already integrates beta over
+all radii, so multiplying by S_vert may apply the l=1 suppression twice. Form-factor-only
+reading: sigma_p ~ sigma0 * \|F_dipole\|^2 = 3.781e-35 cm^2 (no extra S_vert).
+Both readings are below LZ.
 
 Regenerate: `python regenerate_supplement.py`
