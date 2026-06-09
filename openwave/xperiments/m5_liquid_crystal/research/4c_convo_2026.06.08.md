@@ -2,7 +2,7 @@
 
 Working record of the multi-day exchange with Jarek Duda (Manfried Faber added mid-thread) that followed the M5.8 results report (`10_summary_report.md`). Captures the correspondence and the runs it triggered, so the back-and-forth is preserved in one place alongside the findings-focused entry in `0b_M5_roadmap.md` ("DUDA 2026-06-08 FOLLOW-UP" + its 2026-06-09 addendum).
 
-**Status:** the δ/g calibration question is closed at the seed level; gravity-domination retracted (Duda was right); EM/GEM split delivered. Open: the δ (quantum-phase) sector is dynamical and not yet weighed; the absolute unit calibration (Coulomb + LdG-to-rest-energy) is the real axis.
+**Status:** the δ/g calibration question is closed at the seed level; gravity-domination retracted (Duda was right); EM/GEM split delivered. Round 3 (2026-06-09 afternoon) converged on the forward program: Duda's `F_μν` decomposition matches our split symbol-for-number, and his 3×3 fixed-clock electron suggestion became the **ElectronID project** (μ + J extraction, roadmap "ELECTRON-ID PROJECT"). Open: the δ (quantum-phase) sector is dynamical and not yet weighed; the absolute unit calibration (Coulomb + LdG-to-rest-energy) is the real axis.
 
 **Cross-refs:** [`0b_M5_roadmap.md`](0b_M5_roadmap.md) (DUDA FOLLOW-UP + 06-09 addendum, NG-12), [`10_summary_report.md`](10_summary_report.md), `sandbox_vn/m5_8_2q_delta_scaling.py` (energy sweep + Phase D/E boost/EM-GEM split), `sandbox_vn/m5_8_2q_omega.py` (ω(δ) scaffold, deferred), `theory/faber_universe_2025.pdf`.
 
@@ -63,7 +63,7 @@ Split the quadratic seed energy into Duda's two sectors via the signed η-blocks
 | GEM (curvature of boosts) | the `g` time axis, via the boost tilt `b·g` | gravity / clock fuel | tiny and NEGATIVE; zero without the boost |
 | quantum phase | the `δ` minor axis | the de Broglie clock | small in the STATIC seed, but its real weight is DYNAMICAL (the fast ~10²¹ Hz clock), not yet measured |
 
-## 7. Open threads
+## 7. Open threads (after round 2)
 
 | Thread | State |
 | --- | --- |
@@ -71,3 +71,47 @@ Split the quadratic seed energy into Duda's two sectors via the signed η-blocks
 | EM/GEM ratio | delivered as a function of the boost; Duda floated Manfried for the deeper Lagrangian-level ratio |
 | absolute unit calibration | the real calibration axis: fix units via Coulomb + tune LdG to rest energy (NG-1/NG-3), not the δ knob |
 | repo | scripts, data, and docs are public at github.com/openwave-labs/openwave |
+
+## 8. Duda 2026-06-09 (round 3): the `F_μν` decomposition + the fixed-clock electron
+
+His third email, with a Mathematica-derived `F_μν` figure as the attachment, consolidates the picture and hands over a practical recipe.
+
+| Point | His text |
+| --- | --- |
+| Parameters to fit | "delta for QM, g for gravity, and probably 1 or 2 parameters of potential", to be found by agreement with physics |
+| EM is primary | "the most important is EM, dynamics of length 1 axis, as n vector in Faber's articles" |
+| QM + GEM tiny | both should be relatively tiny contributions, "crucial especially for clock propulsion" |
+| Clock propulsion terms | the marked NEGATIVE contribution terms coupling spatial rotation `Γ` with boost `Γ̃` (red-boxed in his figure) |
+| Electron picture | hedgehog of the unitary axis → effective Coulomb + electron mass as rest energy; then "evolution of Γ¹ low energy twists of the clock, together with gravitational mass" |
+| Practical suggestion | "maybe try getting such electron with 3x3 field and fixed clock, to get proper magnetic dipole moment and angular momentum of electron" |
+
+**The attached figure decoded.** `M̄_μ` is the connection at `g ≫ 1 ≫ δ > 0`: time-space entries carry `g·Γ̃ᵃ` (boost curvature), spatial entries carry `Γ³, Γ², δΓ¹` (rotation curvature; `δΓ¹` is the QM twist). The commutator `F_μν` then splits into color-coded sectors:
+
+| His sector (figure) | Curvature content | Our split |
+| --- | --- | --- |
+| EM: tilt-tilt | `R¹ + g²R̃¹` | inside our spatial/EM block |
+| QM: tilt-twist | `δR² − δ²R̃²` | ALSO inside our spatial block (we lumped EM+QM, see caveat) |
+| gravity: boosts | the `g²` time-space block | our GEM (time-mixing) block |
+| clock propulsion | the red-boxed NEGATIVE rotation×boost couplings (`−R¹ − g²R̃¹`, `−δR³ − δ²R̃³`) | the negative sign of our GEM block, measured `∝ (b·g)²` |
+
+**Alignment with our numbers:** our Phase E found the time-mixing block negative (the clock fuel) with EM dominating, which is exactly his decomposition with magnitudes attached. **Caveat:** our split was 2-way (spatial vs time-mixing), so our "EM" number lumps his EM (tilt-tilt) with his QM (tilt-twist); separating them is a finer index split within the spatial block (the ElectronID Phase B below).
+
+## 9. The forward program: ELECTRON-ID (agreed 2026-06-09)
+
+Why his fixed-clock suggestion is the right route: the model has mass (rest energy) and charge (effective Coulomb) but not yet μ (magnetic dipole moment, target one Bohr magneton / g≈2) or J (spin, target ℏ/2), the remaining two electron identifiers. Our `2p` spin readout on the DYNAMICAL 4D clock came out J-neutral (`J < 1e-4`, swamped by 24³ box torque), so the dynamical route is washed out. A static 3×3 hedgehog with the clock PINNED at definite phase/winding carries a definite circulating current (→ integrate μ) and a definite field angular momentum (→ integrate J), with the divergent boost sector dropped entirely.
+
+| Phase | What | Status |
+| --- | --- | --- |
+| B: 3-way sector split | refine Phase E to his exact figure: EM (tilt-tilt) vs QM (tilt-twist) vs GEM (boosts), separating the spatial block | 🚧 planned, this week |
+| C: the 3×3 fixed-clock electron | static hedgehog + pinned clock; integrate μ and J; compare to Bohr magneton (g≈2) and ℏ/2 | 🚧 planned, this week |
+
+Roadmap home: `0b_M5_roadmap.md` "ELECTRON-ID PROJECT". Connects to NG-8 (the magnetic-dipole placeholder this would make real) and supersedes the dynamical-route μ/J attempts.
+
+## 10. Open threads (current)
+
+| Thread | State |
+| --- | --- |
+| ElectronID B + C | 🚧 the active program, this week; report back to Duda on results or for advice |
+| δ (quantum-phase) sector weighed dynamically | open (NG-12); Phase B's tilt-twist split gives its STATIC weight as a first step |
+| absolute unit calibration | Coulomb-units + LdG-to-rest-energy (NG-1/NG-3); Duda round 3 reconfirms "1 or 2 parameters of potential" to fit |
+| EM/GEM Lagrangian-level ratio | Duda floated Manfried; our boost-dependent measurement stands as input |
