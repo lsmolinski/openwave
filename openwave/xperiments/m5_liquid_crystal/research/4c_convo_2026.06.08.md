@@ -52,8 +52,8 @@ Split the quadratic seed energy into Duda's two sectors via the signed η-blocks
 | boost = 0 | GEM is exactly 0: gravity contributes nothing without the time-axis tilt. Duda is right, "gravity-dominated" retracted |
 | physical knob | gravity enters only as the boost tilt `b·g`; `GEM ∝ (b·g)²` in the small-tilt regime (raising `g` at fixed boost was an unphysically large tilt) |
 | EM/GEM ratio | NOT a constant: 210:1 at a physical small boost (`b=0.01`), 2:1 at the clock dressing (`b=0.13`), scaling `1/(b·g)²`. EM dominates the rest energy in every physical case |
-| GEM sign | negative (the Minkowski clock-fuel block), so the boost/clock REDUCES the rest energy by `|GEM|` |
-| mass-reduction | `|GEM|/EM ∝ (b·g)²`: ~0.5% at a physical boost, up to ~50% at the large clock dressing. Stopping the Zitterbewegung removes the negative GEM and the mass rises. This is the concrete answer to his "how much" |
+| GEM sign | negative (the Minkowski clock-fuel block), so the boost/clock REDUCES the rest energy by `\|GEM\|` |
+| mass-reduction | `\|GEM\|/EM ∝ (b·g)²`: ~0.5% at a physical boost, up to ~50% at the large clock dressing. Stopping the Zitterbewegung removes the negative GEM and the mass rises. This is the concrete answer to his "how much" |
 
 ## 6. The corrected physical picture
 
@@ -102,8 +102,8 @@ Why his fixed-clock suggestion is the right route: the model has mass (rest ener
 
 | Phase | What | Status |
 | --- | --- | --- |
-| B: 3-way sector split | refine Phase E to his exact figure: EM (tilt-tilt) vs QM (tilt-twist) vs GEM (boosts), separating the spatial block | 🚧 planned, this week |
-| C: the 3×3 fixed-clock electron | static hedgehog + pinned clock; integrate μ and J; compare to Bohr magneton (g≈2) and ℏ/2 | 🚧 planned, this week |
+| B: 3-way sector split | refine Phase E to his exact figure: EM (tilt-tilt) vs QM (tilt-twist) vs GEM (boosts), separating the spatial block | ✅ 2026-06-10: EM 16.34 / QM 2.23 / GEM −9.37 at clock dressing (his hierarchy confirmed); label correction: EM = the (1,2) component (R=Γ×Γ points along the major generator) |
+| C: the 3×3 fixed-clock electron | static hedgehog + pinned clock; integrate μ and J; compare to Bohr magneton (g≈2) and ℏ/2 | ⚠️ 2026-06-10: μ exists only via the TILT/precession channel (0.221 linear response); the twist clock (his Γ¹) is EM-silent; orbital J = 0 structurally (E∥B dyon, no Thomson term); spin = the Noether clock charge L_int (L/Q=ω family, 61.6 φ-flat); g ≈ 2 needs the Coulomb e_scale unit fix first (his "fix units by Coulomb" is REQUIRED, not optional). Full record: roadmap § EID results |
 
 Roadmap home: `0b_M5_roadmap.md` "ELECTRON-ID PROJECT". Connects to NG-8 (the magnetic-dipole placeholder this would make real) and supersedes the dynamical-route μ/J attempts.
 
@@ -111,7 +111,7 @@ Roadmap home: `0b_M5_roadmap.md` "ELECTRON-ID PROJECT". Connects to NG-8 (the ma
 
 | Thread | State |
 | --- | --- |
-| ElectronID B + C | 🚧 the active program, this week; report back to Duda on results or for advice |
+| ElectronID B + C | ✅ run 2026-06-10 (`sandbox_vn/m5_8_2r_electron_id.py`); report-back to the thread pending; residuals (box convergence, e_scale) folded into NG-1/NG-3 |
 | δ (quantum-phase) sector weighed dynamically | open (NG-12); Phase B's tilt-twist split gives its STATIC weight as a first step |
 | absolute unit calibration | Coulomb-units + LdG-to-rest-energy (NG-1/NG-3); Duda round 3 reconfirms "1 or 2 parameters of potential" to fit |
 | EM/GEM Lagrangian-level ratio | Duda floated Manfried; our boost-dependent measurement stands as input |
