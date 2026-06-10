@@ -1,10 +1,11 @@
-# Code owners — every PR needs an approving review from the owners listed
-# here once "Require review from Code Owners" is enabled in the main-branch
-# protection rule (Settings -> Branches).
+# Code owners: every PR needs an approving review from the owners listed
+# here, enforced by the "main protection" ruleset (Settings -> Rules ->
+# Rulesets: "Require a pull request before merging" with "Require review
+# from Code Owners").
 #
 # Note: GitHub never counts a PR author's own approval, so PRs authored by
-# the owner below merge via the admin bypass; this gate exists for
-# external-contributor and agent-authored PRs.
+# the owner below merge via the ruleset's admin bypass (pull requests only);
+# this gate exists for external-contributor and agent-authored PRs.
 
 # Default: all paths
 * @xrodz
