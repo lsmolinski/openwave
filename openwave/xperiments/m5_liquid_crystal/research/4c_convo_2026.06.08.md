@@ -107,7 +107,28 @@ Why his fixed-clock suggestion is the right route: the model has mass (rest ener
 
 Roadmap home: `0b_M5_roadmap.md` "ELECTRON-ID PROJECT". Connects to NG-8 (the magnetic-dipole placeholder this would make real) and supersedes the dynamical-route μ/J attempts.
 
-## 10. Open threads (current)
+## 10. Duda 2026-06-10 (round 4): the coverage-matrix review
+
+Duda replied to `MODELS.md` (now cc'ing Nielsen, Watford, Werbos, Faber, Hal, Vidvuds + the list) with row-by-row commentary on the M5 column, 4 mechanism images attached. All comments incorporated into the matrix cells; two became immediate runs.
+
+| His comment | Action taken |
+| --- | --- |
+| Spin-½: no belt trick needed, the apolar ellipsoid returns at π | **RUN + flipped to ✅**: `m5_8_2s_spin_half_apolar.py` verifies M(φ+π) = M(φ) machine-exact (1e-16, both clock planes) while the frame needs 2π = the double cover; same factor 2 as G7 |
+| Annihilation natural "starting with sine-Gordon" | **RUN**: `sine_gordon_annihilation.py`, the principle trail: integrable pass-through vs damped capture → breather → vacuum (E 16.3 → 0.00, Q = 0 throughout) |
+| DM as thermal noise of non-EM field sectors (with Faber) | cell updated (CMBR analog for weak/strong/grav DOF) |
+| Leptons = 3 energy minima for elementary charge; hard parts = Higgs-like regularization + oscillation (gravity propulsion) | cell updated |
+| Neutrinos: huge stable quark-string loops (Nature s41586-024-08479-6); oscillation = SO(3) rotation (PLB S0370269326000730); "derivable from LdGS" | cell updated + refs; a parameter-finding target he hands us |
+| Cornell linear term from fractional-charge quantization violation (~1 GeV/fm); string-breaking on stretch | quarks + strong cells updated |
+| μ + J from the clock's continuous SO(2) twisting | cell updated; consistent with the EID tilt-channel finding |
+| Baryons = simplest knots, vortex loop around vortex (Nature Physics s41567-025-03107-0); mesons = Möbius-twisted loops (strangeness = twist) | cells updated + ref |
+| Magnetic force needs Γ_i AND Γ_0 (the clock) | cell updated; the EID run computes exactly F_0i from Γ_0, `2r` added to the cell |
+| Gravity "appears naturally going from 3×3 to 4×4 adding boosts" | cell updated: direct endorsement of the implemented M5.8.1 route |
+| Orbital quantization via pilot waves (hydrodynamic quantum analogs, Perrard ncomms4219) | cell updated + ref |
+| Weak: requires the beta-decay study | unchanged (matches the cell) |
+
+**Runnable leads he handed us (future):** neutrino-loop parameters from LdGS (the SO(3) oscillation paper), the fractional-charge pair energy-vs-distance scan (Cornell σ), knot configurations for baryons (with "needs practical approximations" his own caveat).
+
+## 11. Open threads (current)
 
 | Thread | State |
 | --- | --- |
