@@ -85,8 +85,6 @@ Script paths are relative to `openwave/xperiments/`. Rows are grouped by domain:
 | 🚧 planned / not yet | 7 | 12 | 10 |
 | **Total criteria** | **21** | **21** | **21** |
 
-The counts tell the platform story plainly: M5 has the widest validated coverage and the widest remaining program, M6 has fewer but sharper validated claims concentrated where its design aims, and M3 carries the honest negatives that motivated the later models (its documented failures are what pointed at topology and time-periodicity).
-
 ## Reading the table
 
 The three frameworks escape Derrick's theorem three different ways (standing-wave interference, topology + time-periodic resonance, oscillation), and the table makes the triangulation visible: particle stability requires time-periodicity in every framework that achieves it, charge quantization only emerges where there is topology, and lepton mass spectra remain the open problem in all three. That convergence-and-divergence pattern is the platform's scientific product.
