@@ -38,10 +38,7 @@ Models:
 
 Every file reference is an active link to the file in this repository (under `openwave/xperiments/`). Rows are grouped by domain: particles, forces, waves + quantum emergence.
 
-```mermaid
-mindmap
-  root(PARTICLES)
-```
+## PARTICLES (full spectrum)
 
 | Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
 | --- | --- | --- | --- |
@@ -61,10 +58,7 @@ mindmap
 
 ---
 
-```mermaid
-mindmap
-  root[FORCES]
-```
+## FORCES
 
 | Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
 | --- | --- | --- | --- |
@@ -76,10 +70,7 @@ mindmap
 
 ---
 
-```mermaid
-mindmap
-  root((WAVES))
-```
+## WAVES + QUANTUM EMERGENCE
 
 | Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
 | --- | --- | --- | --- |
