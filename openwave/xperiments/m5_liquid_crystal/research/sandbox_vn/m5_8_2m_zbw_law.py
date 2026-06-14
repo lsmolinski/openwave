@@ -93,7 +93,7 @@ KNOB_GATE_MIN_SPREAD = 0.05      # H_fixed must vary ≥5% across members
 
 
 def out_npz(rw):
-    return HERE / f"_m5_8_2m_RW{rw:g}.npz"
+    return HERE / "data" / f"_m5_8_2m_RW{rw:g}.npz"
 
 
 def ref_npz(rw):
