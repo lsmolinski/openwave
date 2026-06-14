@@ -116,7 +116,7 @@ DENSE = 20
 HPROBE = 200
 SPAT = 4000
 DT_RUN = 0.001 * 24.0 / N            # explicit-stepper dt, h-scaled
-OUT_NPZ = HERE / f"_m5_8_2i_gate_N{N}.npz"
+OUT_NPZ = HERE / "data" / f"_m5_8_2i_gate_N{N}.npz"
 
 
 def masks_variant(g, variant):
@@ -283,7 +283,7 @@ def analyze_main():
     print("[N-2 verdict tables] G-2c-1 — judge the trends (closed-box caveat"
           " applies)")
     print("=" * 78)
-    for npz in sorted(HERE.glob("_m5_8_2i_gate_N*.npz")):
+    for npz in sorted((HERE / "data").glob("_m5_8_2i_gate_N*.npz")):
         z = dict(np.load(npz))
         n_grid = int(z["N"])
         print(f"\n── grid {n_grid}³ (β = {float(z['beta']):.4f}, dt ="

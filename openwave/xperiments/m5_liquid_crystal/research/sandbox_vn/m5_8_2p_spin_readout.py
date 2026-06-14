@@ -191,11 +191,11 @@ def main():
     print("\n[arm 2 — the SPONTANEOUS breather (P₀ = 0 exact)]")
     out["spont"] = run_arm(d2, "spont", M0, act, h, XYZ, dt, steps,
                            0.0, Mth, M0)
-    zs = np.load(HERE / "_m5_8_2o_settled.npz")
+    zs = np.load(HERE / "data" / "_m5_8_2o_settled.npz")
     print("\n[arm 3 — the COLD settled restart (the regular clock)]")
     out["cold"] = run_arm(d2, "cold", zs["M_settled"], act, h, XYZ, dt,
                           steps, 0.0, Mth, M0)
-    np.savez(HERE / "_m5_8_2p_spin.npz",
+    np.savez(HERE / "data" / "_m5_8_2p_spin.npz",
              **{k: v for k, v in out.items()}, dt=dt, probe=PROBE)
     print("\n" + "=" * 78)
     print("[N-6e reading] under the N-6b anchors (lattice action ↔ ℏ):"

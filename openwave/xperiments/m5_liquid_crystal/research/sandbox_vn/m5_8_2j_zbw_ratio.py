@@ -132,7 +132,7 @@ def main():
     print("=" * 78)
     print(f"  H_rest A (static dressed seed, T = 0 exact):  quartic"
           f" {H_static:.4f}   (quadratic part {H_quad:.4f})")
-    z = dict(np.load(HERE / "_m5_8_2h_dense.npz"))
+    z = dict(np.load(HERE / "data" / "_m5_8_2h_dense.npz"))
     print("\n  | arm | ω₁ median [min–max over detrend dial] | H_dyn"
           " (median, early dt-converged window) | ω₁/(2H_static) |"
           " ω₁/(2H_dyn) |")

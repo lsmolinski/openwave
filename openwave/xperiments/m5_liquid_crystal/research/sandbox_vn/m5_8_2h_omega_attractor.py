@@ -140,7 +140,7 @@ DENSE = 20                      # dense-probe stride (spacing 0.02 τ at dt/2)
 HPROBE = 200                    # H/T probe stride
 SPAT = 4000                     # rod-metric snapshot stride
 UMIN_CUT = -20.0                # deep-floor cascade marker (healthy: ~−3)
-OUT_NPZ = HERE / "_m5_8_2h_dense.npz"
+OUT_NPZ = HERE / "data" / "_m5_8_2h_dense.npz"
 
 
 def np_commf(A, B):

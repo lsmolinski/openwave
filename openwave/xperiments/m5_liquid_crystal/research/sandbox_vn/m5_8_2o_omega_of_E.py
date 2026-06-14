@@ -100,7 +100,7 @@ H_STATIC = 16.74                 # the validated member's rest energy (2j)
 
 
 def out_npz(k):
-    return HERE / f"_m5_8_2o_k{k:g}.npz"
+    return HERE / "data" / f"_m5_8_2o_k{k:g}.npz"
 
 
 def omega1_from(p2, umin, dsamp):
@@ -213,7 +213,7 @@ def analyze_main():
         Hd = float(np.median(Hwin[:max(len(Hwin) // 3, 1)]))
         D2, lam = molten_metrics(z["p2"], z["umin"], dsamp)
         pts.append((f"kick {kick:g}", Hd, om, dial, D2, lam))
-    zh = dict(np.load(HERE / "_m5_8_2h_dense.npz"))      # the high-E arms
+    zh = dict(np.load(HERE / "data" / "_m5_8_2h_dense.npz"))      # the high-E arms
     for tag in ("R0-kicked", "R2-seed", "R3-jit"):
         om, dial, ne = omega1_from(zh[f"{tag}_p2"], zh[f"{tag}_umin"], dsamp)
         t_end = zh[f"{tag}_t"][ne - 1]
@@ -256,7 +256,7 @@ def settle_main():
     seed = d2.load_seed()
     print(f"[deep settle] S4 damped flow, {steps4} steps (γ = 0.999/step)")
     tr4, M_set = run_spont("S4-deep", seed, d2.DT, steps4, damp=1e-3)
-    np.savez(HERE / "_m5_8_2o_settled.npz", M_settled=M_set,
+    np.savez(HERE / "data" / "_m5_8_2o_settled.npz", M_settled=M_set,
              T_end=tr4["T"][-1], steps=steps4)
     print(f"  T drained {tr4['T'][0]:.3e} → {tr4['T'][-1]:.3e};"
           f" settled config → _m5_8_2o_settled.npz")
@@ -272,7 +272,7 @@ def restart_main():
     steps = int(sys.argv[2]) if len(sys.argv) > 2 else 48000
     dt = DT / 2
     M0s, Mth, act, core, _, h = d2.load_seed()
-    zs = np.load(HERE / "_m5_8_2o_settled.npz")
+    zs = np.load(HERE / "data" / "_m5_8_2o_settled.npz")
     M_set = zs["M_settled"]
     actb = act > 0.5
     n_act = int(act.sum())
@@ -318,7 +318,7 @@ def restart_main():
         if n_ % 8000 == 7999:
             print(f"   [restart] step {n_ + 1:6d} [{time.time() - t0:4.0f}s]"
                   f"  T={hTs[-1]:.3e}  H={hHs[-1]:.4f}  u_min={umins[-1]:+.3f}")
-    np.savez(HERE / "_m5_8_2o_ground.npz", p2=np.array(p2s),
+    np.savez(HERE / "data" / "_m5_8_2o_ground.npz", p2=np.array(p2s),
              umin=np.array(umins), ht=np.array(hts), hH=np.array(hHs),
              hT=np.array(hTs), dt=dt, dense=DENSE)
     # the low-E clock readout: thirds of the run (E grows along it — the

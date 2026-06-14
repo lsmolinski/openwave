@@ -204,7 +204,7 @@ def main():
     battery("CONTROL: two-tone (ideal clock ω₁+2ω₁)", two_tone)
     battery("CONTROL: two-tone + noise (measured broadband level)", noisy)
     battery("CONTROL: Lorenz-x (chaotic reference)", x)
-    z = dict(np.load(HERE / "_m5_8_2h_dense.npz"))
+    z = dict(np.load(HERE / "data" / "_m5_8_2h_dense.npz"))
     for tag in ("R0-kicked", "R1-settled", "R2-seed", "R3-jit"):
         ne = healthy_end(z[f"{tag}_umin"])
         battery(f"{tag} (p2, healthy {ne})", z[f"{tag}_p2"][:ne])
