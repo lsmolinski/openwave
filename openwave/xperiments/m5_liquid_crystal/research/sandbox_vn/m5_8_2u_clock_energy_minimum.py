@@ -44,8 +44,8 @@ if str(HERE) not in sys.path:
 from m5_8_2q_delta_scaling import H_of_b, sectors_of, B_STAR  # noqa: E402
 
 DELTA, G_TIME = 0.3, 8.0          # the calibrated gate point (m5_8_2q)
-OUT_NPZ = HERE / "_m5_8_2u_clock_energy_minimum.npz"
-OUT_PNG = HERE / "_m5_8_2u_clock_energy_minimum.png"
+OUT_NPZ = HERE / "data" / "_m5_8_2u_clock_energy_minimum.npz"
+OUT_PNG = HERE / "plots" / "_m5_8_2u_clock_energy_minimum.png"
 
 
 def main():
