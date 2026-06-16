@@ -20,11 +20,11 @@ import numpy as np
 from openwave.common import colormap, constants
 from openwave.i_o import flux_mesh, render, video
 
-import openwave.xperiments.m4_ewt.medium as medium
-import openwave.xperiments.m4_ewt.particle as particle
-import openwave.xperiments.m4_ewt.wave_engine as ewave
-import openwave.xperiments.m4_ewt.force_motion as force_motion
-import openwave.xperiments.m4_ewt.instrumentation as instrument
+import openwave.xperiments.m3_wolff_lafreniere.medium as medium
+import openwave.xperiments.m3_wolff_lafreniere.particle as particle
+import openwave.xperiments.m3_wolff_lafreniere.wave_engine as ewave
+import openwave.xperiments.m3_wolff_lafreniere.force_motion as force_motion
+import openwave.xperiments.m3_wolff_lafreniere.instrumentation as instrument
 
 # ================================================================
 # XPERIMENT PARAMETERS MANAGEMENT
@@ -63,7 +63,7 @@ class XperimentManager:
             dict: Parameters dictionary or None if loading fails
         """
         try:
-            module_path = f"openwave.xperiments.m4_ewt.xparameters.{xperiment_name}"
+            module_path = f"openwave.xperiments.m3_wolff_lafreniere.xparameters.{xperiment_name}"
             parameters_module = importlib.import_module(module_path)
             importlib.reload(parameters_module)  # Reload for fresh parameters
 
@@ -88,7 +88,7 @@ class XperimentManager:
 
         # Fallback: try to load just for the name
         try:
-            module_path = f"openwave.xperiments.m4_ewt.xparameters.{xperiment_name}"
+            module_path = f"openwave.xperiments.m3_wolff_lafreniere.xparameters.{xperiment_name}"
             parameters_module = importlib.import_module(module_path)
             display_name = parameters_module.XPARAMETERS["meta"]["X_NAME"]
             self.xperiment_display_names[xperiment_name] = display_name
@@ -135,7 +135,6 @@ class SimulationState:
         self.FLUX_MESH_PLANES = [0.5, 0.5, 0.5]
         self.SHOW_FLUX_MESH = 0
         self.WARP_MESH = 300
-        self.SHOW_GRANULES = False
         self.PARTICLE_SHELL = False
         self.TIMESTEP = 0.0
         self.PAUSED = False
@@ -179,7 +178,6 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
-        self.SHOW_GRANULES = ui["SHOW_GRANULES"]
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.TIMESTEP = ui["TIMESTEP"]
         self.PAUSED = ui["PAUSED"]
@@ -263,8 +261,7 @@ def display_controls(state):
         state.SHOW_AXIS = sub.checkbox(f"Axis (ticks: {state.TICK_SPACING})", state.SHOW_AXIS)
         state.SHOW_EDGES = sub.checkbox("Sim Universe Edges", state.SHOW_EDGES)
         state.SHOW_FLUX_MESH = sub.slider_int("Flux Mesh", state.SHOW_FLUX_MESH, 0, 3)
-        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 300)
-        state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
+        state.WARP_MESH = sub.slider_int("Warp Mesh", state.WARP_MESH, 0, 500)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
         state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
@@ -281,28 +278,38 @@ def display_controls(state):
 def display_wave_menu(state):
     """Display wave properties selection menu."""
     with render.gui.sub_window("WAVE MENU", 0.00, 0.80, 0.15, 0.20) as sub:
-        if sub.checkbox("Displacement (Magnitude)", state.WAVE_MENU == 1):
+        if sub.checkbox("Displacement (Scalar)", state.WAVE_MENU == 1):
             state.WAVE_MENU = 1
         if sub.checkbox("Amplitude (EMA RMS)", state.WAVE_MENU == 2):
             state.WAVE_MENU = 2
-        if sub.checkbox("Frequency (L&T)", state.WAVE_MENU == 3):
+        if sub.checkbox("Amplitude (Phasor RMS)", state.WAVE_MENU == 3):
             state.WAVE_MENU = 3
-        if sub.checkbox("ENERGY (Field)", state.WAVE_MENU == 4):
+        if sub.checkbox("Envelope (Signed)", state.WAVE_MENU == 4):
             state.WAVE_MENU = 4
+        if sub.checkbox("ENERGY (Field)", state.WAVE_MENU == 5):
+            state.WAVE_MENU = 5
         # Display gradient palette with 2× average range for headroom (allows peak visualization)
-        if state.WAVE_MENU == 1:  # Displacement on orange gradient
-            render.canvas.triangles(og_palette_vertices, per_vertex_color=og_palette_colors)
+        if state.WAVE_MENU == 1:  # Displacement on greenyellow gradient
+            render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
             with render.gui.sub_window("displacement", 0.00, 0.74, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
-        if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on ironbow gradient
-            render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
+                sub.text(
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                )
+        if state.WAVE_MENU == 2:  # Amplitude (EMA RMS) on viridis gradient
+            render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
             with render.gui.sub_window("amplitude", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
-        if state.WAVE_MENU == 3:  # Frequency (L&T) on blueprint gradient
-            render.canvas.triangles(bp_palette_vertices, per_vertex_color=bp_palette_colors)
-            with render.gui.sub_window("frequency", 0.00, 0.74, 0.08, 0.06) as sub:
-                sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
-        if state.WAVE_MENU == 4:  # Energy on ironbow gradient
+        if state.WAVE_MENU == 3:  # Amplitude (Phasor RMS) on viridis gradient
+            render.canvas.triangles(vr_palette_vertices, per_vertex_color=vr_palette_colors)
+            with render.gui.sub_window("amplitude", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text(f"0       {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m")
+        if state.WAVE_MENU == 4:  # Envelope (Signed) on greenyellow gradient
+            render.canvas.triangles(gy_palette_vertices, per_vertex_color=gy_palette_colors)
+            with render.gui.sub_window("envelope", 0.00, 0.74, 0.08, 0.06) as sub:
+                sub.text(
+                    f"{-state.amp_global_rms*2/state.wave_field.scale_factor:.0e}  {state.amp_global_rms*2/state.wave_field.scale_factor:.0e}m"
+                )
+        if state.WAVE_MENU == 5:  # Energy on ironbow gradient
             render.canvas.triangles(ib_palette_vertices, per_vertex_color=ib_palette_colors)
             with render.gui.sub_window("energy", 0.00, 0.74, 0.08, 0.06) as sub:
                 sub.text(f"0       {state.energy_global_avg*2:.0e}J")
@@ -310,10 +317,10 @@ def display_wave_menu(state):
 
 def display_level_specs(state, level_bar_vertices):
     """Display OpenWave level specifications overlay."""
-    render.canvas.triangles(level_bar_vertices, color=colormap.DARK_BLUE[1])
-    with render.gui.sub_window("VECTOR-WAVE MODEL (M4)", 0.84, 0.01, 0.16, 0.16) as sub:
+    render.canvas.triangles(level_bar_vertices, color=colormap.GREEN[1])
+    with render.gui.sub_window("WOLFF-LAFRENIERE MODEL (M3)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
-        sub.text("Data-Structure: Vector Field")
+        sub.text("Data-Structure: Scalar Field")
         sub.text("Coupling: Phase Sync")
         sub.text("Propagation: Analytical Function")
         sub.text("Boundary: Open (Non-Reflective)")
@@ -328,7 +335,7 @@ def display_data_dashboard(state):
     clock_time = time.time() - state.clock_start_time
     sim_time_years = clock_time / (state.elapsed_t_rs * constants.RONTOSECOND or 1) / 31_536_000
 
-    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.17, 0.16, 0.55) as sub:
+    with render.gui.sub_window("DATA-DASHBOARD", 0.84, 0.17, 0.16, 0.53) as sub:
         state.INSTRUMENTATION = sub.checkbox("Instrumentation ON/OFF", state.INSTRUMENTATION)
         sub.text("--- SPACETIME ---", color=colormap.LIGHT_BLUE[1])
         sub.text(f"Medium Density: {constants.MEDIUM_DENSITY:.1e} kg/m³")
@@ -374,20 +381,20 @@ def initialize_xperiment(state):
     Args:
         state: SimulationState instance with xperiment parameters
     """
-    global og_palette_vertices, og_palette_colors
+    global gy_palette_vertices, gy_palette_colors
+    global vr_palette_vertices, vr_palette_colors
     global ib_palette_vertices, ib_palette_colors
-    global bp_palette_vertices, bp_palette_colors
     global level_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
-    og_palette_vertices, og_palette_colors = colormap.get_palette_scale(
-        colormap.orange, 0.00, 0.73, 0.079, 0.01
+    gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
+        colormap.greenyellow, 0.00, 0.73, 0.079, 0.01
+    )
+    vr_palette_vertices, vr_palette_colors = colormap.get_palette_scale(
+        colormap.viridis, 0.00, 0.73, 0.079, 0.01
     )
     ib_palette_vertices, ib_palette_colors = colormap.get_palette_scale(
         colormap.ironbow, 0.00, 0.73, 0.079, 0.01
-    )
-    bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
-        colormap.blueprint, 0.00, 0.73, 0.079, 0.01
     )
     level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
@@ -400,25 +407,13 @@ def initialize_xperiment(state):
 def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
-    if state.SHOW_FLUX_MESH == 0:
-        # Optimized mode: only compute wave center neighbors (selective voxels)
-        ewave.select_voxels(state.wave_field, state.wave_center)
-        num_selected = state.wave_field.num_selected_voxels[None]
-        ewave.propagate_wave_neighbors(
-            state.wave_field,
-            state.trackers,
-            state.wave_center,
-            state.elapsed_t_rs,
-            num_selected,
-        )
-    else:
-        # Full grid mode: compute all voxels (for flux mesh visualization)
-        ewave.propagate_wave_full(
-            state.wave_field,
-            state.trackers,
-            state.wave_center,
-            state.elapsed_t_rs,
-        )
+    ewave.propagate_wave(
+        state.wave_field,
+        state.trackers,
+        state.wave_center,
+        state.TIMESTEP,
+        state.elapsed_t_rs,
+    )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead
@@ -484,7 +479,7 @@ def render_elements(state):
     if state.SHOW_EDGES:
         render.scene.lines(state.wave_field.edge_lines, width=1, color=colormap.COLOR_MEDIUM[1])
 
-    if state.SHOW_FLUX_MESH > 0 and state.SHOW_GRANULES == False:
+    if state.SHOW_FLUX_MESH > 0:
         ewave.update_flux_mesh_values(
             state.wave_field,
             state.trackers,
@@ -528,21 +523,6 @@ def render_elements(state):
             # Render particle shell at wave-center position
             render.scene.particles(position, radius, color=color)
 
-    # Render granule positional displacement (only when flux mesh is active, since position
-    # is sampled from full-grid displacement data)
-    if state.SHOW_GRANULES and state.SHOW_FLUX_MESH > 0:
-        max_particles = 401
-        granule_radius = 0.001  # in screen space (relative to max universe edge and scale factor)
-        amp_boost = state.WARP_MESH  # Boost granule displacement for better visibility
-        nx, ny = state.wave_field.nx, state.wave_field.ny
-        stride = max(1, int(np.ceil(np.sqrt(nx * ny / max_particles))))
-        sampled_nx = (nx + stride - 1) // stride
-        sampled_ny = (ny + stride - 1) // stride
-        num_render = min(sampled_nx * sampled_ny, max_particles)
-        ewave.sample_position_to_render(state.wave_field, amp_boost, stride, num_render)
-        pos_np = state.wave_field.position_render.to_numpy()[:num_render]
-        render.scene.particles(pos_np, granule_radius, color=colormap.COLOR_MEDIUM[1])
-
 
 # ================================================================
 # MAIN LOOP
@@ -561,7 +541,7 @@ def main():
     state = SimulationState()
 
     # Load xperiment from CLI argument or default
-    default_xperiment = selected_xperiment_arg or "annihilation1"
+    default_xperiment = selected_xperiment_arg or "formation10e_golden_angle_positions"
     if default_xperiment not in xperiment_mgr.available_xperiments:
         print(f"Error: Xperiment '{default_xperiment}' not found!")
         return
@@ -601,7 +581,9 @@ def main():
             render.window.running = False
 
             # os.execv replaces current process (macOS may show harmless warning)
-            os.execv(sys.executable, [sys.executable, __file__, new_xperiment])
+            import subprocess
+            subprocess.run([sys.executable, __file__, new_xperiment])
+            sys.exit()
 
         if not state.PAUSED:
             # Run simulation step and update time
