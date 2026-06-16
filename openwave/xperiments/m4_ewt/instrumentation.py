@@ -106,34 +106,33 @@ def plot_probe_wave_profile(wave_field):
 
 
 def log_timestep_data(timestep: int, wave_field, trackers) -> None:
-    """Record all timestep data to a buffer, flush periodically to reduce I/O overhead.
-
-    Args:
-        timestep: Current simulation timestep
-        wave_field: WaveField instance
-        trackers: Trackers instance
-    """
     global _timestep_buffer, _timestep_log_initialized
 
-    # Define probe position
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
-    # Capture probe values
-    displacement_am = wave_field.displacement_am[px, py, pz] / wave_field.scale_factor
-    amp_local_emarms_am = trackers.amp_local_emarms_am[px, py, pz] / wave_field.scale_factor
-    freq_local_cross_rHz = trackers.freq_local_cross_rHz[px, py, pz] * wave_field.scale_factor
+    # Pobieramy surowe wartości – mogą być ti.Matrix (wektor 3D)
+    disp = wave_field.displacement_am[px, py, pz]
+    amp = trackers.amp_local_emarms_am[px, py, pz]
+    freq = trackers.freq_local_cross_rHz[px, py, pz]
 
-    # Add to buffer
+    # Konwersja na float – jeśli to macierz, bierzemy pierwszą składową
+    def to_float(val):
+        try:
+            # Dla ti.Matrix lub numpy array – długość > 1
+            if hasattr(val, '__len__'):
+                return float(val[0])  # pierwszy element (możesz zmienić na normę)
+            return float(val)
+        except:
+            return 0.0
+
+    displacement_am = to_float(disp) / wave_field.scale_factor
+    amp_local_emarms_am = to_float(amp) / wave_field.scale_factor
+    freq_local_cross_rHz = to_float(freq) * wave_field.scale_factor
+
     _timestep_buffer.append(
-        [
-            timestep,
-            displacement_am,
-            amp_local_emarms_am,
-            freq_local_cross_rHz,
-        ]
+        [timestep, displacement_am, amp_local_emarms_am, freq_local_cross_rHz]
     )
 
-    # Flush buffer periodically
     if len(_timestep_buffer) >= _BUFFER_FLUSH_INTERVAL:
         _flush_timestep_buffer()
 
