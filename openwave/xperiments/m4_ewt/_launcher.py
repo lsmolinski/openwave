@@ -179,7 +179,7 @@ class SimulationState:
         self.FLUX_MESH_PLANES = ui["FLUX_MESH_PLANES"]
         self.SHOW_FLUX_MESH = ui["SHOW_FLUX_MESH"]
         self.WARP_MESH = ui["WARP_MESH"]
-        self.SHOW_GRANULES = ui["SHOW_GRANULES"]
+        self.SHOW_GRANULES = ui.get("SHOW_GRANULES", False)
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
         self.TIMESTEP = ui["TIMESTEP"]
         self.PAUSED = ui["PAUSED"]
