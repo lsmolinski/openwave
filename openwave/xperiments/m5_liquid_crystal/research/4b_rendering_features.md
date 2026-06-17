@@ -193,6 +193,21 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 
 **Premise (Rodrigo, 2026-05-27).** Through M5.5 the viz channels were mostly placeholders — only the energy flux-meshes (`WAVE_MENU` 4/5) carried real signal. The channels are general-purpose *displays*; the value comes from **wiring each to the observable that builds physical intuition** for the phenomena OpenWave investigates (matter / forces / EM). This part is the observable→channel map: pick a physics question, pick the channel + observable that answers it visually.
 
+### The time axis is not renderable — only its shadows (and one exception)
+
+M5.8 is a **4D tensor field**: time enters as a 4th axis, via boosts of the 4×4 frame. You cannot render the time *axis* itself as a static spatial dimension. You can render two things instead:
+
+1. **The time *evolution* directly** — the clock ticking, the breathing, the Zitterbewegung oscillation are an **animation** of the dynamics over the three spatial dimensions. This is the most direct "view" of the time-dynamics: it plays out as motion.
+2. **The 3D *imprints* of the time-axis coupling** — the observable fields a static or quasi-static snapshot shows. These are the "shadows" of the time axis.
+
+| Phenomenon | What it is in M5 | Visualization |
+| --- | --- | --- |
+| **Electric / charge** | `E = ∇·n̂` (director splay): the radial hedgehog diverging at the core like Coulomb charge | **Pure static 3D geometry** — already done (`WAVE_MENU` 6 + E glyph). 3D is enough; no time-projection |
+| **Magnetic / spin** | `B = ∇×n̂` (curl): *zero* for a static radial hedgehog, appears only from the clock's circulation | A **shadow of the time axis** (sourced by the clock), but its spatial curl pattern is 3D-renderable |
+| **Gravity** | boost-tilt of the 4×4 time axis (GEM ∝ (b·g)²): gravitational time dilation | A **shadow of the time axis** |
+
+**The key distinction**: **electric / charge is the one field that is pure static 3D space geometry** (no time at all, just the director splay), which is exactly why it is the easiest and is already built. Magnetism and gravity are 3D *shadows* of the time-axis coupling (renderable, but their origin is the clock / the boost-time-tilt). The clock itself is best **animated** (its time-evolution), not snapshotted. This map decides which demos are static-3D, which are animations, and which are shadows-of-time.
+
 ### The map — physics question → channel + observable
 
 | Phenomenon | "How do I see it?" | Channel | Observable | Status |
