@@ -4,6 +4,8 @@
 
 OpenWave's mission is to build a platform where multiple candidate field-theoretic models are evaluated **numerically, side by side, in the same computational environment**. No single alternative framework can map the space of possibilities on its own: when several independent models are run against the same observables with the same pass/fail criteria, the comparison **triangulates** what is actually out there.
 
+This makes the platform an **open arena** for rigorous, side-by-side numerical verification of candidate models, including unconventional ones the mainstream overlooks, all judged on the same falsifiable criteria. Anyone with a model is invited to put it to the test.
+
 Features that survive across frameworks are likely load-bearing physics; features that only work in one framework, or only with hand-tuning, reveal themselves as such. A null result in one model is ambiguous (model wrong, or engine wrong?); a positive result in any model certifies the engine for all of them.
 
 Anybody can contribute to building these numerical validations. Every cell in the table below is backed by a runnable script or a research document in this repository, and every claim is reproducible, refutable, and extendable under [Apache 2.0](LICENSE).
