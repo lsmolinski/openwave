@@ -124,6 +124,7 @@ OpenWave is a multi-contributor open-source platform. Alongside the theoretical 
 | Contributor | Role |
 | --- | --- |
 | [Rodrigo Griesi](https://github.com/xrodz) (OpenWave Labs) | Founder, lead engineer/researcher, project director — sets vision, methodology, and engineering direction |
+| [Łukasz Smoliński](https://github.com/lsmolinski) | OpenWave Contributor — extended Energy Wave Theory into a body-centered-cubic lattice formulation ([Enhanced EWT](https://zenodo.org/search?q=metadata.creators.person_or_org.name%3A%22Smoli%C5%84ski%2C%20%C5%81ukasz%22&l=list&p=1&s=10&sort=bestmatch)) |
 | [Anthropic Claude Code](https://claude.com/product/claude-code) (Fable 5 Model) | AI agent contributor: code, numerical analysis, derivations, documentation, manuscript review |
 | Community contributors | Repo open to external contributions under [Apache 2.0](LICENSE) |
 
