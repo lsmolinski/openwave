@@ -95,7 +95,7 @@ A 90° phase shift does not resolve the oscillatory force:
 
 No phase rotation or derivative of a periodic function removes its periodicity.
 
-**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (see [Time Dynamics](06_time_dynamics.md): faster cycling = higher pressure/density). This connection is explored in the Non-Linear Wave Equations section (Phase 1c).
+**Note**: granule velocity is still physically significant — it relates directly to medium density ρ (faster cycling = higher pressure/density). This connection is explored in the Non-Linear Wave Equations section (Phase 1c).
 
 ### ✅ Standing vs Traveling Wave Decomposition
 

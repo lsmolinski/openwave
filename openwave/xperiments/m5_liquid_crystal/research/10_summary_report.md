@@ -59,7 +59,7 @@ These establish that the matrix substrate reproduces the established physics Dud
 | Eq.18 matrix evolution conserves energy | ✅ PASS<br>The Duda Eq.18 leapfrog conserves energy: the drift falls 2.15% → 1.13% → 0.03% as dt → 0 (O(dt²)), confirming the production EOM conserves the Hamiltonian to integrator order.<br>`m5_5_4_matrix_evolution_check.py` |
 | LdG potential confinement | ✅ PASS<br>The Landau–de Gennes V(M) confines the amplitude Tr(M²) ~3.3× across k ∈ [0.5, 25] with no blow-up — the well is stable across two decades of stiffness.<br>`m5_6_5c_prod_scale.py` |
 | Free 3D defect disperses (M5.7) | ❌ NEGATIVE (expected — Derrick)<br>Both a seeded l=1 perturbation and the defect's own intrinsic oscillation disperse their orientation energy in pure 3D (localization washed out 32³→48³) — confirming a static/oscillatory 3D particle is forbidden and the stable object must be 4D.<br>`m5_7_1_l1_resonance_seed.py` · `m5_7_2_intrinsic_oscillation.py` |
-| Driven defect sustains an (A,ω) excess (M5.7.3) | ✅ POSITIVE<br>A continuous EM-like drive holds a bounded, frequency-selective (A,ω) excess at ~3× the free baseline at the resonant mode (N=48-confirmed) — a bounded EM-modulation lever on the defect's (A,ω) state exists.<br>`m5_7_3_driven_oscillation.py` |
+| Driven defect sustains an (A,ω) excess (M5.7.3) | ✅ POSITIVE<br>A continuous EM-like drive holds a bounded, frequency-selective (A,ω) excess at ~3× the free baseline at the resonant mode (N=48-confirmed) — a resonant drive holds the defect's (A,ω) state in a maintained excess.<br>`m5_7_3_driven_oscillation.py` |
 
 ---
 

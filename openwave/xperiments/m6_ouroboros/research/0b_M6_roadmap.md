@@ -2,7 +2,7 @@
 
 **Status (2026-06-05 update):** 🔶 **M6 REOPENED for one round** — Paul's "an urgent problem after all" email (2026-06-05) relayed DeepSeek's request for a neutral-sector (g, λ) scan to resolve the DM paper v5a (Zenodo 20549492) "BVP inconsistency" + deliver β(r) for the α_JN calculation. Answered same-day via **sandbox_v11** (`0c_sandbox_v11.md`): exact scaling symmetry closes the entire (g, λ) plane analytically; m_J = 0.6184 MeV parameter-free; λ* = −0.264697 from m_χ = 0.460 MeV; canonical point = v9/v10 point; "Griesi-1 near-trivial" reproduced as cold-seed Newton-basin artifact; β(r) profile exported (`sandbox_v11/v11_canonical_beta_profile.csv`). Q47 analytically resolved; Q48 + Q49 queued for email v17. Previous status below stands otherwise.
 
-**Status:** ✅ ✅ ✅ **M6 WORK COMPLETE — DM PAPER v2 PUBLISHED at Zenodo 20350105 with our v10 numbers + three-tier Acknowledgments verbatim.** Paul's 2026-05-22 8:48 PM email announced the publication; the paper (`theory/_The Neutral Chaoiton_DMv1.docx`) incorporates **all** of v15's asks: m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm verbatim in abstract + §2/§3/§4; cover-page byline lists Claude Code on Opus 4.7; the suggested three-tier Acknowledgments wording (OpenWave Labs + Griesi + Claude Code) landed verbatim; Reference [27] = our GitHub repo. Q47 (virial-identity) implicitly accepted as interpretation (a) — Paul used m_J = 0.618 MeV directly. M6 collaboration with Werbos is functionally complete. **M6 on permanent hold** going forward; M5 returns as full foreground for SABER engineering trigger (M5.4 → 5b.1). Email v16 (closing thank-you) drafted. Resumption only if a future trigger lands per the Stage 2 GO/NO-GO criteria in `0b_model_gates.md`.
+**Status:** ✅ ✅ ✅ **M6 WORK COMPLETE — DM PAPER v2 PUBLISHED at Zenodo 20350105 with our v10 numbers + three-tier Acknowledgments verbatim.** Paul's 2026-05-22 8:48 PM email announced the publication; the paper (`theory/_The Neutral Chaoiton_DMv1.docx`) incorporates **all** of v15's asks: m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm verbatim in abstract + §2/§3/§4; cover-page byline lists Claude Code on Opus 4.7; the suggested three-tier Acknowledgments wording (OpenWave Labs + Griesi + Claude Code) landed verbatim; Reference [27] = our GitHub repo. Q47 (virial-identity) implicitly accepted as interpretation (a) — Paul used m_J = 0.618 MeV directly. M6 collaboration with Werbos is functionally complete. **M6 on permanent hold** going forward; M5 returns as full foreground (M5.4 → 5b.1). Email v16 (closing thank-you) drafted. Resumption only if a future trigger lands per the Stage 2 GO/NO-GO criteria in `0b_model_gates.md`.
 
 Last updated: 2026-05-22 evening (post Paul's v2 DM paper publication at Zenodo 20350105 — M6 work complete; pending items frozen; M5 returns to full foreground).
 
@@ -605,7 +605,7 @@ wait on Q47 interpretation + Acks-update confirmation.
 
 ### M5 return — already foreground
 
-SABER is the primary engineering goal, M5 is its substrate.
+M5 is the primary substrate.
 **M6 sandbox is functionally complete** (G1 + G3 empirically PASSED; G2
 DM PAPER INPUTS DELIVERED via sandbox_v10). M6 stays **sandbox-only**
 per the Stage 2 PRODUCTION NO-GO decision (`0b_model_gates.md`). M6 work
@@ -619,7 +619,7 @@ focus is M5.
 | 3 | M5.5 — Paper Lagrangian + V(M) | Per M5 roadmap |
 | 4 | M5.6 — Biaxial twist + KG emergence | Per M5 roadmap |
 | 5 | M5.7 — Resonance hunt (Close protocol) | Per M5 roadmap |
-| 6 | M5.8 — 4D Zitterbewegung clock | M5 group-headline milestone; aligns with SABER engineering primitive |
+| 6 | M5.8 — 4D Zitterbewegung clock | M5 group-headline milestone |
 
 ### M6 Taichi production decision — DEFERRED INDEFINITELY (sandbox-only)
 
@@ -637,7 +637,6 @@ trigger lands:
 | Trigger | Why it would change the decision |
 | --- | --- |
 | Werbos collaboration deepens into dynamic-sim requests (e.g., multi-chaoiton scattering visualization, time-evolution of chaoitons under external EM drive) | New collaboration deliverable not satisfiable by sandbox |
-| SABER explicitly requires cross-validation of thermal hypothesis on M6 substrate (currently unlikely; M5 is the engineering substrate) | Would need chaoiton-ensemble-with-modulation kernel |
 | Q21 two-chaoiton dynamic Coulomb derivation becomes critical for a peer challenge (Duda critique #4) | Static derivation in v9 §6.1 currently sufficient; dynamic only needed if challenged |
 | External funding or collaborator effort specifically for M6 production work | Removes the time-cost objection |
 

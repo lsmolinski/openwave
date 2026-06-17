@@ -10,7 +10,7 @@ The simulator runs multiple candidate Lagrangian frameworks (scalar-field, vecto
 
 ### Project Goals
 
-OpenWave investigates, in one integrated simulator, four primary domains: **matter** (particle emergence from topological defects + wave dynamics), **forces** (electric, strong, magnetic, gravitational from one classical-field framework), **electromagnetic waves**, and **heat** (thermal mechanics at the defect-oscillation level). Each domain has concrete pass/fail criteria applied uniformly across candidate models.
+OpenWave investigates, in one integrated simulator, four primary domains: **matter** (particle emergence from topological defects + wave dynamics), **forces** (electric, strong, magnetic, gravitational from one classical-field framework), **electromagnetic waves**, and **heat** (whether wave-field degrees of freedom contribute to thermal physics). Each domain has concrete pass/fail criteria applied uniformly across candidate models.
 
 ### What is OpenWave?
 
@@ -45,9 +45,6 @@ OpenWave investigates, in one integrated simulator, four primary domains: **matt
 | `openwave/xperiments/m4_ewt/` | M4 EWT model (vector-field substrate, in development) |
 | `openwave/xperiments/m5_liquid_crystal/` | **Active** — Duda LCB topological-defect model |
 | `openwave/xperiments/m6_ouroboros/` | Werbos chaoiton Lagrangian |
-| `openwave/xperiments/x1_anti_gravity/` | Speculative — gravity modulation xperiments |
-| `openwave/xperiments/x2_thermal_waves/` | Heat at the defect-oscillation level |
-| `openwave/xperiments/x3_time_dynamics/` | Time-dynamics xperiments |
 | `openwave/common/`, `i_o/`, `validations/`, `video_export/` | Shared utilities, rendering, physics-invariant tests |
 
 Refer to `README.md` and `SYS_ARCH.md` for the full Modules Structure and Objects Map.

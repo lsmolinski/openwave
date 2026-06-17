@@ -255,7 +255,7 @@ the closest result we can produce with the current ODE + BVP formulation.
 | **A — Email Paul with algorithm questions** (CHOSEN) | Send concise "we hit a basin problem" email with the 7 attempts summary + three specific algorithm questions. Paul explicitly said *"no need to rush, take your time"*. | He may know the trick immediately. Cheapest path to unblock. |
 | B — Try continuation in m_J² | Start at m_J²=0 (Klein-Gordon limit), find solution, slowly homotope to m_J²=0.5. | ~1-2 days; uncertain landing |
 | C — Switch to scipy.optimize.root + custom Jacobian | Build Newton-Raphson with finite-difference Jacobian. Paul mentioned as alternative method. | ~3-4 hrs to implement; may or may not reach ground state |
-| D — Accept v6.6 H_electron/Q = 1.7112 (0.84% off) | "Good enough" for SABER's purposes (M5 is engineering path). Document v7 attempts, return to M5. | ApJ Section 4 numbers handed off with caveat that we're on excited mode; m_χ DM scan still feasible |
+| D — Accept v6.6 H_electron/Q = 1.7112 (0.84% off) | "Good enough" for the current purpose (M5 is the primary path). Document v7 attempts, return to M5. | ApJ Section 4 numbers handed off with caveat that we're on excited mode; m_χ DM scan still feasible |
 
 **Selected: Option A.** Paul is actively engaged, explicitly invited
 follow-up, and one specific clarifying question saves multi-day exploration
@@ -434,9 +434,9 @@ the 4-function form we've been solving.
 | Possibility (3): Both valid, different particles | Clarify which ansatz hosts which particle; build whichever ansatz hosts the neutral chaoiton (DM candidate, §9.1 Open Q#2). |
 | Doesn't reply within 24-48 hrs | Default to Option C — switch v8 to `scipy.optimize.root` method='lm' with custom Jacobian; OR re-anchor on v1 unilaterally based on §5.1's clear text. |
 
-### Parallel — SABER path stays unblocked
+### Parallel — M5 path stays unblocked
 
-M5 is SABER's primary engineering substrate. With v7
+M5 is the primary substrate. With v7
 blocked on the ansatz question, M5 work proceeds in foreground. M5.4
 substrate migration is queued and not affected by M6 v7's status. The v6.6
 H_electron/Q = 1.7112 (0.84% off) result is already sufficient as the "M6

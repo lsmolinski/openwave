@@ -161,7 +161,7 @@
     <tr>
       <td colspan="3" style="text-align: left; vertical-align: top; padding-left: 16px">
         <b>🚧 LAYER 6 (WIP): Emergent Waves (Photon & Thermal Energy)</b>
-        <br><br>Photons are traveling wave packets — discrete disturbances propagating through the medium that carry energy and apply force upon absorption. Thermal energy is encoded in standing wave amplitude or frequency modulation within particle structure, rather than bulk kinetic motion.
+        <br><br>Photons are traveling wave packets — discrete disturbances propagating through the medium that carry energy and apply force upon absorption. Thermal effects remain an open question in the wave framework (mechanism unresolved).
         <br><br>
       </td>
     </tr>

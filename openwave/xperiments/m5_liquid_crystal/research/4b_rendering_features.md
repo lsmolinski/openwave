@@ -201,15 +201,13 @@ Net: the rendering layer is **not a rewrite**. It is "add the eigen-decompositio
 | **EM — magnetic / rotation** | where is `B`, the rotational? | flux_mesh color (orange magnitude) + B/curl glyph (half-arrow direction) | `‖∇×n̂‖` (`frank_twist`+bend) — magnitude colors; the curl-vector glyph shows direction | ✅ DONE (WAVE_MENU 7 + B glyph) |
 | **Amplitude `A`** | where is the oscillation *amplitude*? | flux_mesh color (ironbow) | `‖M−D‖_F` EMA = amplitude **A** | ✅ wired (WAVE_MENU 2) |
 | **Clock `ω`** | how fast does it tick? | flux_mesh color (blueprint) | `‖Ṁ‖_F` EMA = clock **ω** | ✅ wired (WAVE_MENU 3) |
-| **Joint energy** | the `(A·ω)²` *energy* content in one view | flux_mesh color | **`(A·ω)²`** — NOT `A·ω`. For a defect oscillator `E_kin = ½m(Aω)²`, so `A·ω` alone is peak *velocity* (length/time); the energy-dimensional quantity is `(A·ω)²`. Combine the two trackers as a product-of-squares. | 🚧 DEFERRED (backlog) |
 | **Field energy** | total Hamiltonian / elastic energy | flux_mesh color + scalar warp | `energyH`, `energyF` | ✅ wired (4/5) |
-| **Modulation response** | apply an EM-wave lever → see the `(A·ω)²` shift | time-trace / before-after of `(A·ω)²` under an EM-wave seed | `Δ(A·ω)²` vs an applied tilt-wave | 🚧 DEFERRED (backlog; dynamic; needs an EM-wave seeder) |
 
 ### Channel assignments — what each viz primitive is *best* at
 
 | Channel | Best physical use | Current | Target |
 | --- | --- | --- | --- |
-| flux_mesh **color** | any scalar field on the 3 planes | energy H/F + amplitude/clock A/ω + EM `∇·n̂` (WM6), `‖∇×n̂‖` (WM7) | + `(A·ω)²` joint energy (→ backlog) |
+| flux_mesh **color** | any scalar field on the 3 planes | energy H/F + amplitude/clock A/ω + EM `∇·n̂` (WM6), `‖∇×n̂‖` (WM7) | as above |
 | flux_mesh **scalar warp** | lift the plane by a scalar (3D relief of a field) | energy/amp | pair with whichever color scalar is active |
 | **vector_warp** | ripple the mesh by a *vector* field — best for showing a field *direction* | director deviation `n̂−ẑ` | superseded for B-direction by the **B/curl glyph** (cleaner than mesh ripple) |
 | **director glyphs** | the orientation field itself = the LC "field lines" | principal `n̂` + E/B glyph toggle (shaft = magnitude, half-arrow = direction, color = field/`COLOR_MEDIUM`) | these ARE the EM-analog field lines |
@@ -226,9 +224,7 @@ The director `n̂` is the LC analog of the field; its **distortion modes** map o
 The rest are **deferred past the M5.6 PR** (Rodrigo 2026-05-27):
 
 1. **gauge-stable charge** — UPDATE 2026-05-30 (VIZ.1): the **director-glyph** half is ✅ DONE (centered + barbless = gauge-stable). The **signed-charge WM6** half is **left honest-but-flipping** and deferred to **M5.8** via topological-winding density (`|∇·n̂|`-unsigned was tried + dropped as redundant). The charge-region *expansion* is real free-defect dispersal, not the artifact. See §4.4 + §5.2 #1b.
-1. **`(A·ω)²` joint energy** — product-of-squares color mode from the two existing trackers; `(A·ω)²` (not `A·ω`) is the energy-dimensional quantity. → **backlog**.
 1. **granule amplitude-map** — color each granule by local amplitude `A`. → **backlog**.
-1. **modulation-response** — apply an EM-wave lever, view `Δ(A·ω)²`. → **backlog** (dynamic; needs an EM-wave seeder).
 
 ### As-built log (update as features land)
 
@@ -277,9 +273,7 @@ The `unit`+`single` combination is the **far-field inspection** view (uniform, f
 | Feature | What | Home | Why deferred |
 | --- | --- | --- | --- |
 | **gauge-stable charge** | director glyph (centered+barbless) ✅ DONE (VIZ.1); signed-charge WM6 deferred to M5.8 via winding-density | **glyph: ✅ done; signed charge: M5.8** | re-planned 2026-05-30: glyph centering shipped; WM6 left honest-but-flipping (expansion is real physics) — see §4.4 + §5.2 #1b |
-| **`(A·ω)²` joint energy** | energy-dimensional color mode. `(A·ω)²` not `A·ω` — `E_kin=½m(Aω)²`, so `A·ω` alone is peak *velocity*; the energy quantity is `(A·ω)²` | backlog | the (A,ω) energy view |
 | **granule amplitude-map** | color each granule by local amplitude `A` (sparse scalar map) | backlog | the per-voxel amplitude view |
-| **modulation-response** | apply an EM-wave lever → view `Δ(A·ω)²` | backlog | Dynamic; needs an EM-wave seeder |
 | **B dipole N/S (bluered)** | signed `B·axis` red=N/blue=S | **sample pre-M5.8 (Part 5 #4), real @M5.8 (#7)** | re-planned 2026-05-30: the *render* is buildable now against a placeholder dipole (§4.5/§5.3); only the real circulating-B *source* waits for M5.8 |
 
 > **Re-plan note (2026-05-30):** Part 5 supersedes the homes above for the two EM carry-overs.
@@ -294,7 +288,7 @@ The `unit`+`single` combination is the **far-field inspection** view (uniform, f
 This part organizes the full observable wishlist for the EM + clock-state rendering into one coherent
 catalog: **the physical quantities to display, what each *is* in the substrate, and the render
 channel that conveys it.** The channels are how we will *read* the field's amplitude/clock state and
-*watch* modulation work in the simulator.
+*watch* its dynamics in the simulator.
 
 ### 4.1 The observable catalog — what each quantity IS
 
@@ -317,12 +311,11 @@ as-built stack through VIZ.4 (2026-05-31).** The 4 glyph states (UI checkboxes, 
 | **Magnetic moment μ** | net `∮ B` of the defect / its dipole axis — a single vector per defect | vector (per defect) | future: ∫ `director_curl_field`; **now: HARDCODED `DIPOLE_AXIS`** | 🔶 **HARDCODED placeholder** — VIZ.4 draws a YELLOW moment glyph but `m̂ = DIPOLE_AXIS = +ẑ` is a constant in `_viz_sample_dipole` (`update_moment_glyph`), **NOT computed from the field**. Real μ = compute from the actual circulating B (`m̂ ∝ ∫∇×n̂`) + auto-axis + **remove the hardcoded one** @ M5.8 (§4.5, roadmap 5f stage-2) |
 | **Amplitude `A`** | `‖M−D‖_F` EMA = the clock's rotational **radius** (`≈δ/2`), grows with excitation | scalar | `amp_local_emarms_am` | ✅ live (WM2, ironbow) |
 | **Clock `ω`** | `‖Ṁ‖_F` EMA = the Zitterbewegung rate (director angular speed) | scalar | `freq_local_cross_rHz` | ✅ live (WM3, blueprint) |
-| **Joint `(A·ω)²`** | energy-dimensional content (`E_kin=½m(Aω)²`; `A·ω` alone is peak velocity) | scalar | product of the two trackers | 🚧 backlog |
 | **Gravitational field `g`** | gradient of the boost eigenvalue `g` (mass monopole, `1/r²`) — the 4D addition | vector | none yet (needs 4×4 `M`) | 🚧 M5.8 / §4.7 (PURPLE glyph + density mesh) |
 
 > **Zitterbewegung note (from `0c §L7`):** the amplitude `A` is the *radius* of the spinning
 > director (constant at ground state, `≈δ/2`), `ω` its rate — the two are the AM/FM channels. WM2 +
-> WM3 already show them; the joint `(A·ω)²` view is the single-scalar energy display (→ backlog).
+> WM3 already show them.
 
 #### 4.1.1 How to *see* the Zitterbewegung clock — the spinning director, its ω, its radius
 
@@ -356,7 +349,6 @@ Ways to watch the clock, corrected:
 | spin (alt, cheap) | **perpendicular tick** on the director glyph | add one short barb *perpendicular* to the shaft, oriented by the δ-axis — a mark whose angle tracks the roll. Cheapest "see the roll" hack. | 🚧 needs building |
 | **the rate `ω`** (how fast it ticks) | flux_mesh **WM3 "Clock (ω)"** (blueprint) | color = `‖Ṁ‖_F` EMA = angular speed; brighter = faster. *Measures* the rate (doesn't show rotation). | ✅ live (WM3) |
 | **the radius `A`** (rotational amplitude) | flux_mesh **WM2 "Amp (A)"** (ironbow) | color = `‖M−D‖_F` EMA = how far the frame swings from vacuum = the `≈δ/2` radius; grows with excitation. | ✅ live (WM2) |
-| **the joint energy** `(A·ω)²` | flux_mesh color (new mode) | single scalar = energy content (`E_kin=½m(Aω)²`) | 🚧 backlog |
 | **the orbit traced** (optional) | granule **Zitterbewegung tracer** (§4.6) | a granule traces the **δ-axis tip's** orbit around `n̂` over time — makes the spin *visible as a path* | 🚧 backlog candidate |
 
 **Key reading:** the **secondary-δ-axis glyph** is the only channel that *visually shows the spin*
@@ -637,7 +629,6 @@ deviation scalars every frame.
 | 2 | **VIZ.2 — curl-vector mesh-warp + bluered N/S toggle** (§4.3) — WM7 warps by raw `∇×n̂` vector | ✅ yes | **low** | **✅ DONE (2026-05-30)** |
 | 3 | **VIZ.3 — 4-state glyph select: Director / Director+Delta / E / B** (§4.2) | ✅ yes | **low–med** | **✅ DONE (2026-05-30)** — `director_mid` + `eigvec_for`; `_write_glyph` ti.func w/ `mode` + `show_delta`; refined per Rodrigo (added bare Director-only state so δ never shows alone; slider → 4 checkboxes) *Director states = ellipsoid orientation (agnostic to size/color); E/B polar + barbed; 4 mutually-exclusive checkboxes, "delta" spelled out for GGUI* |
 | 4 | **VIZ.4 — magnetic-dipole viz SAMPLE** (§4.5 stage 1) — hard-coded analytic B → bluered N/S + moment glyph | ✅ yes (placeholder) | **medium** | **✅ DONE (2026-05-30)** — `_viz_sample_dipole` xparam + `fill_dipole_sample_B` + `update_moment_glyph` + `moment_glyph_*` buffers; loader reads `GLYPH_VECTOR`/`SIZE`/`COLOR`/`CURL_COLOR`+dipole keys. Math + headless verified; **on-screen confirmed** — radial `B·r̂` gives N-red-above / S-blue-below + YELLOW moment glyph (the original axial projection's "2 red lobes" was fixed via `_curl_signed_proj`/`curl_radial`) |
-| 5 | **Joint `(A·ω)²` energy** (Part 3) — product-of-squares color mode | ⏸ backlog | low | pending |
 | 6 | **Granule amplitude-map** (§4.6) | ⏸ backlog | low | pending |
 | 7 | **Magnetic-dipole viz REAL** (§4.5 stage 2) — point at the clock's actual circulating B + auto-axis | ⏳ M5.8 | low (render exists from #4) | pending |
 | 8 | **Two-defect interaction** (M5.6.5e) | ⏳ M5.8 | high | pending |
@@ -668,7 +659,6 @@ the *look* early.
 | --- | --- | --- |
 | **Magnetic dipole B** (§4.5) | ideal dipole `B(r) = (μ₀/4π)[3(m̂·r̂)r̂ − m̂]/r³` about a chosen axis, written into `director_curl_field` | the twisting-defect B at M5.8 |
 | **Magnetic moment μ** | a fixed vector at the defect center (e.g. `+ẑ`) | reduction over the real `∇×n̂` |
-| **Joint `(A·ω)²`** | `A(r)·ω(r)` from analytic Gaussians, before the real trackers settle | the live EMA trackers |
 
 **Implementation form:** a debug/sample xparameter (e.g. `_viz_sample_dipole.py`) or a
 `VIZ_PLACEHOLDER` flag that fills the observable field with the analytic function in a one-shot

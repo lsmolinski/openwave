@@ -28,7 +28,7 @@ OpenWave investigates, in one integrated simulator, the chain of subatomic pheno
 - **MATTER** — investigate particle emergence (leptons, quarks, nucleons, atoms) from topological defects + wave dynamics in a Lagrangian field
 - **FORCES** — investigate whether all four forces can emerge from one classical-field framework: electric (from topology), strong (from string tension + standing waves), magnetic (from spin-induced transverse waves), gravitational (from density deficit / 4D boost-axis topology — the most speculative of the four)
 - **ELECTROMAGNETIC WAVES** — photons and EM radiation as travelling perturbations of the vacuum field
-- **HEAT** — thermal-energy mechanics at the defect-oscillation / spin-coherence level (complementary to bulk kinetic temperature; tests whether sub-molecular degrees of freedom contribute to thermal physics)
+- **HEAT** — whether wave-field degrees of freedom beyond bulk kinetic motion contribute to thermal physics
 
 The first domain (matter) is the foundation; the other three are what the simulator is designed to compute *outputs* for. Each is intended to produce measurable quantities that — *if* the framework's predictions match experiment — could inform applied research.
 
