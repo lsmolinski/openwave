@@ -246,7 +246,6 @@ All potentially connected through spin/L-T conversion:
 | **Angular momentum** | Integrated transverse component |
 | **Magnetic moment** | Spatial distribution of T component |
 | **Fine structure constant** | Ratio of L/T coupling strength |
-| **Thermal energy** | Disordered L+T fluctuations |
 
 ## Experimental Plan
 
@@ -319,49 +318,9 @@ This is exactly what we're trying to create — but the IN/OUT transformation at
 
 Key insight from the Wolff image: The standing wave pattern shows amplitude peaks at λ intervals with a 1/r envelope — exactly what we need to create. The IN→OUT transformation at the center (with 720° phase shift / spin) is the mechanism that creates this pattern.
 
-## Heat as Wave Oscillations
+## Thermal Effects (Open)
 
-Our hypothesis about heat:
-
-> Heat is NOT molecular vibration (particle kinetic energy), but rather:
->
-> - Energy wave oscillations inside particle standing waves
-> - Photons (electromagnetic waves) becoming standing waves when trapped inside particle standing wave radius
-> - Related to electron magnetic moment or spin generating magnetic waves
-
-This connects to spin theory:
-
-### Heat → Standing Waves → Spin
-
-If heat is **wave oscillations inside standing waves**, then:
-
-1. **Thermal energy** = increased amplitude of L+T oscillations at WC
-1. **Heat absorption** = photon (EM wave) entering particle standing wave
-1. **Heat emission** = standing wave releasing energy as outgoing EM wave
-
-The **spin mechanism** (L→T conversion) may explain:
-
-- Why heat is related to **magnetic properties** (transverse component)
-- How **photons interact** with standing wave structures
-- The connection between **thermal energy and spin**
-
-### Photon Trapping Inside Standing Wave Radius
-
-The feasibility document suggests:
-
-> Photons (electromagnetic waves) becoming standing waves when trapped inside particle standing wave radius
-
-This implies:
-
-- Particle standing wave has a **characteristic radius**
-- EM waves (photons) within this radius **become part of the standing wave**
-- This is the mechanism for **heat storage** at subatomic level
-
-For our simulation:
-
-- **Standing wave radius** ~ λ (or multiples thereof)
-- Incoming waves within radius **add to standing wave amplitude**
-- L→T conversion at WC **traps energy** as both longitudinal and transverse
+How thermal effects fit into the wave framework remains an open question (mechanism unresolved). The spin / L→T conversion machinery developed above is the relevant physics; any thermal interpretation is deferred.
 
 ## Open Questions
 
@@ -369,10 +328,6 @@ For our simulation:
 1. Is the 720° phase shift related to wavelength or frequency?
 1. How does conversion direction (CW/CCW) affect the pattern?
 1. Can we derive fine structure constant from this model?
-1. How does temperature/thermal motion affect L/T balance?
-1. **NEW**: How do photons "become trapped" in standing wave radius?
-1. **NEW**: Is thermal energy stored as L oscillations, T oscillations, or both?
-1. **NEW**: Does heat change the L/T ratio at wave centers?
 
 ---
 

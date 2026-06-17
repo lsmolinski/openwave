@@ -136,13 +136,12 @@ Variable λ/frequency → variable granule velocity → variable medium pressure
 
 ---
 
-## Spin, Magnetism, and Thermal Energy
+## Spin and Magnetism
 
 **Spin** may be the unifying concept:
 
 - **Magnetic moment from spin**: L→T conversion at WC creates transverse wave emission. Coherent spin alignment = net transverse field = magnetism
-- **Thermal energy from spin**: incoherent spin fluctuations (random T directions) = heat. Higher temperature = more energetic L→T cycling
-- **Gravitational shading from spin**: spin converts L→T, reducing longitudinal amplitude. This L reduction is the gravitational "shadow" — the mechanism behind shading/push-out gravity
+- **Gravitational shading from spin**: spin converts L→T, reducing longitudinal amplitude. This L reduction is the gravitational "shadow", the mechanism behind shading/push-out gravity
 
 The fine-structure constant α may be the L→T conversion ratio. If gravity emerges from repeated application of this coupling, the 10⁻⁴² EM-to-gravitational ratio emerges naturally.
 
@@ -152,7 +151,6 @@ The internal "engine" of a particle operates in the Energy Domain with toroidal 
 
 - **Spin** = toroidal wave flow around the particle core
 - **Magnetic moment** = natural dipole from circulating toroidal current
-- **Thermal energy** = modulation of toroidal flow rate/precession
 - The elliptical displacement trajectories may be cross-sections of toroidal flows
 
 ### Vortex Electron Model (Butto, 2021)
@@ -199,7 +197,7 @@ The isolated interaction cross term gives same→ATT (should be REP). The 2D flu
 - **Smoliński**: r⁵ energy scaling inside soliton's Energy Domain — defines how λ(r) varies near the wave center core
 - **Ψ³ cubic non-linearity**: NLS soliton stabilizer, modifies spatial function from pure sinc
 - **Variable ρ(x)**: from granule velocity — ∇ρ contributes to ∇E with different spatial structure than ∇A, from Smoliński density function
-- Non-coherent superposition (thermal phase jitter)
+- Non-coherent superposition (random phase jitter)
 - Non-spherical propagation (toroidal from spin, diffractive lens)
 
 **Vector (from Phase 1d → M4 3D):**

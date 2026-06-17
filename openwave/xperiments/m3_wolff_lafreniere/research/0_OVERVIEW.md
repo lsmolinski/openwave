@@ -120,7 +120,7 @@ Everything builds bottom-up. Each layer enables the next:
     └── traveling wave disturbances
  
  L6b. HEAT
-    └── thermal standing wave modulation
+    └── thermal effects (open)
 
 ================================================================
  🚧 LAYER 7: COMPOSITE PARTICLE EMERGENCE
@@ -263,8 +263,8 @@ Everything emerges from disturbances in this wave field:
 - **Particles (wave centers)**: localized disturbances that reflect and re-emit waves, changing the wave character and shifting energy spatially. The standing wave structure near a wave center IS the particle
 - **Forces**: energy gradients created by wave interference between wave centers. These gradients generate all known forces — electric, magnetic, gravitational, strong, orbital — and hold matter together at every scale
 - **Photons**: traveling wave packets — disturbances propagating through the medium. Unlike static force fields, photons are discrete packets of energy that travel through space and can apply force on distant particles upon absorption
-- **Heat**: disturbances in standing wave form — thermal energy may be encoded in the amplitude or frequency modulation of standing waves within particle structure, rather than in bulk kinetic motion (see Thermal Energy Hypothesis)
-- **Time**: not a fundamental dimension but an emergent property — the local rate of change determined by wave frequency (f = c/λ). Where λ is shorter, things change faster; where λ is longer, things change slower. Time dilation near massive bodies emerges from λ modulation by wave centers (see Time Dynamics)
+- **Heat**: thermal effects remain an open question in the wave framework (mechanism unresolved)
+- **Time**: not a fundamental dimension but an emergent property, the local rate of change determined by wave frequency (f = c/λ). Where λ is shorter, things change faster; where λ is longer, things change slower. Time dilation near massive bodies emerges from λ modulation by wave centers
 
 **Simulation model**: The medium is modeled as a particle-based fluid simulation where:
 
