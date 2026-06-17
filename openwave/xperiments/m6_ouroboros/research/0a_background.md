@@ -290,7 +290,7 @@ The Sawada anchor in particular is genuinely strong. It's a real measured nuclea
 3. The 2-vector-field structure is simpler than Duda's matrix substrate to implement in Taichi
 4. Time-periodicity as Derrick escape is now triple-confirmed (Duda + Close + Werbos)
 5. Werbos's claimed 62 chaoiton families with L/Q matching electron g-factor is a numerical achievement worth reproducing
-6. The J_μ channel is conceptually similar to EM tilts as a substrate-modulation route
+6. The J_μ channel is conceptually similar to EM tilts as a substrate-forcing route
 
 ### Why it can't replace M5
 
@@ -318,7 +318,7 @@ M5 (Duda):  matrix field M = ODO^T → emergent EM, QM, gravity (3D + 4D)
 
 M6 (Werbos):  two coupled vector fields A, J on Minkowski
               chaoiton-stability test, Sawada nuclear anomaly target
-              alternative substrate for the same thermal hypothesis
+              alternative substrate cross-check
               secondary bet — runs after M5.7 lands
 ```
 

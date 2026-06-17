@@ -138,7 +138,6 @@ the only IMMEDIATE item.
 
 Carried forward from v5/v6 unchanged. Long-tail items that don't block
 the M6 v8 deliverables (lepton spectrum reproduced; DM inputs delivered).
-None of these block SABER engineering trigger either.
 
 | ID | Question | Surfaced | Status |
 | --- | --- | --- | --- |
@@ -447,8 +446,8 @@ M6 production decision (Taichi):
   - Decision deferred (M5 first)
   - Full canonical specification in 0d_canonical.md
 
-M5 returns as foreground engineering track:
-  M5 is SABER's primary substrate. M6 functionally complete on the
+M5 returns as foreground track:
+  M5 is the primary substrate. M6 functionally complete on the
   numerical side (numbers delivered); awaiting Q47 interpretation +
   Acks-update for the final paper-side framing.
 ```

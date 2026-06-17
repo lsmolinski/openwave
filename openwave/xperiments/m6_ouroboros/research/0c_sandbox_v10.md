@@ -131,4 +131,3 @@ v10          →  Apply Q46 recipe: compute eta, m_J_corrected, m_chi = eta·(H/
 - `0c_sandbox_v9.md` — v9 phase 2 ground state that feeds v10 numerical results
 - `sandbox_v10/m6_v10_canonical_neutral_chaoiton.py` — the working script
 - `sandbox_v10/v10_output.txt` — full script output
-- SABER `1_model_selection.md` — coverage matrix updated: DM ✅ via v10 definite numbers

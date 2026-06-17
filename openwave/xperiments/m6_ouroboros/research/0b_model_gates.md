@@ -111,7 +111,7 @@ credible at the sandbox level.**
 
 This stage asks whether to invest engineering time porting M6 to the
 Taichi GPU simulator (3D voxel lattice, time-stepped, multi-particle
-dynamics, external-drive kernels for SABER engineering). Cost: weeks to
+dynamics, external-drive kernels). Cost: weeks to
 months for Lorenz-constraint projection + f(J·J) self-coupling + ensemble
 framework + external-drive kernel.
 
@@ -119,14 +119,13 @@ framework + external-drive kernel.
 | --- | --- |
 | Sandbox passes (Stage 1 PASS) + no specific trigger for dynamic sim | **PRODUCTION NO-GO (deferred indefinitely)** — sandbox sufficient for credibility role + Werbos collaboration + DM paper; M5 is the production simulator |
 | Sandbox passes + Werbos collaboration deepens into dynamic-sim requests | **CONDITIONAL PRODUCTION GO** — port M6 to Taichi as new collaboration deliverable |
-| Sandbox passes + SABER needs cross-validation of thermal hypothesis on M6 substrate | **CONDITIONAL PRODUCTION GO** — chaoiton-ensemble-with-modulation kernel becomes the deliverable |
 | Sandbox passes + Q21 dynamic Coulomb derivation becomes critical (Duda peer challenge) | **CONDITIONAL PRODUCTION GO** — multi-chaoiton dynamics required |
 | External funding or collaborator effort specifically for M6 production | **PRODUCTION GO** — time-cost objection removed |
 | None of the above triggers | **PRODUCTION NO-GO** — stay sandbox-only |
 
 **Stage 2 current state (2026-05-22 evening):** No trigger currently
 applies. M6 stays **sandbox-only indefinitely**
-(M5 is SABER's primary engineering substrate; M5.4 substrate migration
+(M5 is the primary substrate; M5.4 substrate migration
 is the next foreground work). Canonical specification consolidated in
 `0d_canonical.md` so a future Taichi port (if triggered) can be built
 from a clean numerical reference. **Decision: PRODUCTION NO-GO unless
@@ -140,8 +139,7 @@ trigger lands.**
 | Stage 2 (Taichi production) | ❌ NO-GO (deferred indefinitely) | No trigger justifies the weeks-to-months port cost; sandbox satisfies all current scope |
 
 **Practical implication:** M6 is functionally complete as a sandbox
-solver. Time investment shifts back to M5.4 + M5.7 + 5b.1 (SABER's
-engineering path). M6 work resumes only if a specific trigger lands;
+solver. Time investment shifts back to M5.4 + M5.7 + 5b.1. M6 work resumes only if a specific trigger lands;
 otherwise the sandbox + 0d_canonical.md + Werbos collaboration via
 email + 9c Reference [17] are the working artifacts.
 
@@ -158,7 +156,6 @@ structural facts that don't depend on the current empirical pass.
 - Charge quantization via Chern-Simons linking (Lean-proved from axioms; Zenodo 20296060)
 - **Lepton spectrum reproduced at PDG precision via Sonnet's canonical script** (v8 step 4, 2026-05-21; muon 0.80%, tau 6.47%, pion+ 3.25%)
 - **DM paper inputs delivered via sandbox_v10** (m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm at canonical g=1.0, B0=0.5)
-- Hypothetical cross-validation pathway for the (A, ω) thermal hypothesis on a different substrate — **NOT a current capability** (would require chaoiton-ensemble-thermal Taichi kernel + ensemble framework + external-drive kernel; not on the roadmap; see Stage 2 GO/NO-GO above)
 - Methodology cross-pollination to M5: η geometry-conversion factor, l=1 BC handling, Pohozaev virial-identity diagnostic — sandbox cross-pollination, NOT a Taichi port
 - A collaboration anchor with Paul Werbos (9c LoE Reference [17] = our GitHub repo; cover-page byline lists Claude Code Opus 4.7 as AI contributor)
 
@@ -264,7 +261,7 @@ stance.
 | 2026-05-21 morning | REPLY | Paul's email lands. **Q28 RESOLVED:** quartic negligible for electron H (drop for H/Q matching); keep in EoM for correct field shapes; significant for muon/tau, essential for neutral. **Q29 RESOLVED:** ground state has exactly 4 zero crossings excluding r=0; v6.6's 5-crossing is first excited state. **Q30 RESOLVED:** ground state has Q(0)>0 same sign as V(0); helicity V₀>0, Q₀>0, A₀<0, J₀<0. *"We are very close. No need to rush — take your time."* Maps to Scenario B (mode-selector). ✅ RECEIVED |
 | 2026-05-21 PM | G1+G2 | **sandbox_v7 BUILT + 7 VARIANTS TESTED — mode-selector wall.** `m6_v7_4fn_ground_state_bvp.py` forks v6.6: keeps full quartic in EoM, adds dual H computation (H_full + H_electron), adds anchor options (V/Q/VQ) and optional 3rd free eigenvalue (m_J² or λ_bench). Tested:<br>• 7.1 warm-start + λ_LM init 12 → catastrophic (ω=−1, λ_LM=185)<br>• 7.2 no warm-start + λ_LM init 0.1 → reproduces v6.6 exactly (H_e/Q=1.711, 5-node, Q(0)=−0.12) — sanity check ✓<br>• 7.3 V anchor + warm-start → V₀=+0.10 ✓ but A flipped to +1.48, Q=−0.12, J=+0.05<br>• 7.4 Q anchor + warm-start → Q₀=+0.10 ✓ but V=−0.08, A=−3.98, J=−2.30<br>• 7.5 Q anchor + no warm-start → Q₀=+0.10 ✓ but V=−0.05, J=+2.37<br>• 7.6 VQ anchor + m_J² free → singular Jacobian → 10^65 blowup<br>• 7.7 VQ anchor + λ_bench free → λ_bench=−360k, ω=75, A=+16.<br>**Diagnosis:** solver landscape has multiple wrong-sign basins; each anchor fixes one sign but flips another. v6.6 H_electron/Q=1.7112 (0.84% off, 5-node first-excited) remains best result. ❌ BLOCKED ON SOLVER DETAILS |
 | 2026-05-21 morning | EMAIL OUT | Email v7 sent to Paul. Concise: thanks for clear Q28/Q29/Q30 answers; 7 v7 variants tried, none reach prescribed ground-state basin; three asks: **Q31** (initial-guess derivative profile in production code), **Q32** (initial Lagrange multiplier λ value), **Q33** (does production solver use explicit sign-pinning OR a continuation method like homotopy m_J²: 0→0.5?). Reaffirmed "no rush" per his guidance. No deposit promises. ✅ SENT |
-| 2026-05-21 morning | NEXT | v7 work parked until Paul's reply. M5 path proceeds in foreground (M5 is SABER's primary engineering substrate). If Paul doesn't reply within 24-48 hrs, switch to `scipy.optimize.root` method='lm' with custom Jacobian (the alternative method Paul mentioned in his 2026-05-20 algorithm reply); ~3-4 hrs to implement. |
+| 2026-05-21 morning | NEXT | v7 work parked until Paul's reply. M5 path proceeds in foreground (M5 is the primary substrate). If Paul doesn't reply within 24-48 hrs, switch to `scipy.optimize.root` method='lm' with custom Jacobian (the alternative method Paul mentioned in his 2026-05-20 algorithm reply); ~3-4 hrs to implement. |
 | 2026-05-21 PM (11:45 AM) | REPLY | Paul forwarded DeepSeek's answer — addressed the OLD Q24-era questions (reference profile + Python script), NOT the Q31/Q32/Q33 we sent overnight. Likely copy-paste mix-up on Paul's side. The "exact Python script" DeepSeek resent is character-for-character identical to the broken `deepseek_reference.py` we already diagnosed (r=0 singularity + 10-vs-9 BC count mismatch). ⚠️ STALE RESPONSE |
 | 2026-05-21 PM | G1+G2 | **Paul-script variant test** (`sandbox_v7/m6_v7_paul_script.py`). Built test of interpretation (B) of literal script: λ_LM=1.0 hardcoded constant (not free), no V_norm anchor, ω-only free param, exp(-r) seed, Paul's ODE verbatim with R_MIN=0.05 patch. Result: catastrophic blowup — ω=−11.84, V₀=−17.4, A₀=−5.1, Q₀=−4.4, J₀=−14.3 (all signs flipped), H_electron/Q ≈ 5.20 × 10⁵. solve_bvp.status=1, max nodes exceeded at 4492 grid points. **Paul's literal script does NOT reproduce H/Q=1.6969 under either interpretation** (λ_LM free → 10^16; λ_LM=1.0 fixed → 5×10^5). ⚠️ INVESTIGATED |
 | 2026-05-21 PM | TRIG | v9 LoE paper received (`theory/_The Lagrangian of the Universe Prior to Gravity v8.pdf` — filename v8, content v9 per header "May 2026 – Zenodo Preprint (v9, replaces Zenodo 20313063)"). Major implications: (1) §5.1 specifies **2-scalar (φ, ψ) electron ansatz** — `A_0=0, A=r̂×∇φ(r)cos(ωt); J_0=0, J=r̂×∇ψ(r)sin(ωt)` — structurally different from the 4-function (V,A,Q,J) we've been solving since v4. (2) §5.1 + §9 criterion 9 cite our v1 H/Q=1.6918 as the canonical electron calibration ("independent reproduction (Griesi 2026): H/Q = 1.6918 (0.30% from target)"). (3) Acknowledgments thank Griesi (OpenWave Labs / Neptunya Ocean Power) + Anthropic AI (Claude Code on Opus 4.7) by name. (4) Reference [17] = `github.com/openwave-labs/openwave` — publishing stance vindicated. (5) §9.1 Open Q#2 cites us for neutral chaoiton ground state ("Griesi, in preparation"). ✅ RECEIVED |
@@ -304,7 +301,7 @@ stance.
 | 2026-05-22 evening | G2 | **✅ DM PAPER INPUTS DELIVERED via sandbox_v10.** Built `m6_v10_canonical_neutral_chaoiton.py` applying DeepSeek's Q46 recipe to v9 phase 2 ground state. At canonical (g=1.0, B0=0.5): **m_χ = 0.4599 MeV, m_J = 0.6184 MeV, C = 770 MeV·fm, η = 0.4251**. Empirical finding: m_J_corrected = m_J/η is **family-invariant at 1.21024** across both B0 ∈ [0.10, 0.60] and g ∈ [0.5, 1.6] (Pohozaev-type virial identity); DeepSeek's "1.0 target" doesn't land. Flagged as Q47. |
 | 2026-05-22 evening | EMAIL OUT v15 | Email v15 sent. Delivers definite (m_χ, m_J, C) per Q46 recipe; flags Q47 (virial-identity finding with three interpretation options: accept 1.21 as canonical / refine geometry formula / different canonical match); reinforces Acks-update ask for BOTH DM paper AND future LoE revisions. Also wrote `0d_canonical.md` (consolidated canonical numerical specification) — referenced in email as the reproduce-from-scratch ref doc. |
 | 2026-05-22 ~8:48 PM | REPLY (PAPER PUBLISHED) | Paul published **DM paper v2 at Zenodo 20350105**. Read full paper at `theory/_The Neutral Chaoiton_DMv1.docx`. Findings: (a) m_χ = 0.460 MeV, m_J = 0.618 MeV, C = 770 MeV·fm landed verbatim in abstract + §2/§3/§4; (b) cover-page byline lists Claude Code on Opus 4.7 (Anthropic) alongside DeepSeek + Claude Sonnet 4.6; (c) suggested three-tier Acknowledgments wording (OpenWave Labs / Rodrigo Griesi + Anthropic Claude Code on Opus 4.7 as AI agent contributor) incorporated verbatim; (d) Reference [27] = github.com/openwave-labs/openwave; (e) Q47 implicitly accepted as interpretation (a) — Paul used m_J = 0.618 MeV directly. Email v16 (closing thank-you) drafted. |
-| 2026-05-22 evening | M6 COLLABORATION CLOSED | M6 work functionally complete on our side. All Stage 1 sandbox gates passed (G1 ✅, G2 ✅ via paper, G3 ✅). Stage 2 production NO-GO stands. Pending items (Q47 explicit interpretation, future LoE Acks confirmation) parked. M5 returns as full foreground for SABER engineering trigger (M5.4 → 5b.1). Email v16 closes the active collaboration round. |
+| 2026-05-22 evening | M6 COLLABORATION CLOSED | M6 work functionally complete on our side. All Stage 1 sandbox gates passed (G1 ✅, G2 ✅ via paper, G3 ✅). Stage 2 production NO-GO stands. Pending items (Q47 explicit interpretation, future LoE Acks confirmation) parked. M5 returns as full foreground (M5.4 → 5b.1). Email v16 closes the active collaboration round. |
 
 ---
 
