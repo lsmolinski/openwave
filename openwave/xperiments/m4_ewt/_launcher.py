@@ -99,6 +99,13 @@ class XperimentManager:
 
 
 # ================================================================
+# SEED CONFIGURATION (P1; promote to xparameters later)
+# ================================================================
+SEED_MODE = 0  # 0 = gaussian (released from rest), 1 = radial cosine pulse
+SEED_BOOST = 1.0  # seed amplitude multiplier
+
+
+# ================================================================
 # SIMULATION STATE
 # ================================================================
 
@@ -138,6 +145,11 @@ class SimulationState:
         self.SHOW_GRANULES = False
         self.PARTICLE_SHELL = False
         self.TIMESTEP = 0.0
+        # PDE solver: CFL-derived timestep + wave speed (set in initialize_grid)
+        self.SIM_SPEED = 1.0
+        self.c_amrs = 0.0
+        self.dt_rs = 0.0
+        self.cfl_factor = 0.0
         self.PAUSED = False
 
         # Color control variables
@@ -210,6 +222,22 @@ class SimulationState:
             self.SOURCES_OFFSET_DEG,
             self.INIT_VELOCITY,
         )
+
+        # Derive the CFL-safe PDE timestep (needs dx_am), then seed the field once
+        self._compute_timestep()
+        ewave.seed_wave(self.wave_field, self.wave_center, SEED_MODE, SEED_BOOST)
+
+    def _compute_timestep(self):
+        """Derive the CFL-safe PDE timestep and wave speed (am/rs).
+
+        dt is set just inside the 3D Courant limit dt ≤ dx/(c·√3). SIM_SPEED scales
+        the rendered wave speed (c_amrs) without changing dt, so SIM_SPEED ≤ 1 stays stable.
+        """
+        CFL_SAFETY = 0.95  # margin below the 3D Courant boundary (1/√3)
+        c_phys_amrs = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND
+        self.c_amrs = c_phys_amrs * self.SIM_SPEED
+        self.dt_rs = CFL_SAFETY * self.wave_field.dx_am / (c_phys_amrs * (3**0.5))
+        self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -400,25 +428,14 @@ def initialize_xperiment(state):
 def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
-    if state.SHOW_FLUX_MESH == 0:
-        # Optimized mode: only compute wave center neighbors (selective voxels)
-        ewave.select_voxels(state.wave_field, state.wave_center)
-        num_selected = state.wave_field.num_selected_voxels[None]
-        ewave.propagate_wave_neighbors(
-            state.wave_field,
-            state.trackers,
-            state.wave_center,
-            state.elapsed_t_rs,
-            num_selected,
-        )
-    else:
-        # Full grid mode: compute all voxels (for flux mesh visualization)
-        ewave.propagate_wave_full(
-            state.wave_field,
-            state.trackers,
-            state.wave_center,
-            state.elapsed_t_rs,
-        )
+    # PDE solver: leapfrog over all voxels every step (no selective-voxel shortcut)
+    ewave.propagate_wave(
+        state.wave_field,
+        state.trackers,
+        state.c_amrs,
+        state.dt_rs,
+        state.elapsed_t_rs,
+    )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead
@@ -462,7 +479,7 @@ def compute_force_motion(state):
         force_motion.integrate_motion_leapfrog(
             state.wave_field,
             state.wave_center,
-            state.TIMESTEP,
+            state.dt_rs,
         )
     else:
         # Zero-out velocities if not integrating force to motion
@@ -607,7 +624,7 @@ def main():
             # Run simulation step and update time
             compute_wave_oscillation(state)
             compute_force_motion(state)
-            state.elapsed_t_rs += state.TIMESTEP  # Accumulate simulation time
+            state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time (PDE dt)
             state.frame += 1
 
         # Render scene elements
