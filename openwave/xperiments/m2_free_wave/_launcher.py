@@ -321,9 +321,9 @@ def display_wave_menu(state):
                 sub.text(f"0       {state.freq_global_avg*2*state.wave_field.scale_factor:.0e}Hz")
 
 
-def display_level_specs(state, level_bar_vertices):
-    """Display OpenWave level specifications overlay."""
-    render.canvas.triangles(level_bar_vertices, color=colormap.LIGHT_BLUE[1])
+def display_model_specs(state, model_bar_vertices):
+    """Display OpenWave model specifications overlay."""
+    render.canvas.triangles(model_bar_vertices, color=colormap.LIGHT_BLUE[1])
     with render.gui.sub_window("FREE-WAVE MODEL (M2)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Scalar Field")
@@ -419,7 +419,7 @@ def initialize_xperiment(state):
     global vr_palette_vertices, vr_palette_colors
     global ib_palette_vertices, ib_palette_colors
     global bp_palette_vertices, bp_palette_colors
-    global level_bar_vertices
+    global model_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
     gy_palette_vertices, gy_palette_colors = colormap.get_palette_scale(
@@ -437,7 +437,7 @@ def initialize_xperiment(state):
     bp_palette_vertices, bp_palette_colors = colormap.get_palette_scale(
         colormap.blueprint, 0.00, 0.73, 0.079, 0.01
     )
-    level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
+    model_bar_vertices = colormap.get_model_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
     # STATIC CHARGING methods (single radial pulse pattern, fast charge) ==================================
     # Provides initial energy source, dynamic chargers do maintenance around 100%
@@ -625,7 +625,7 @@ def main():
         # Display additional UI elements and scene
         display_wave_menu(state)
         display_data_dashboard(state)
-        display_level_specs(state, level_bar_vertices)
+        display_model_specs(state, model_bar_vertices)
         render.show_scene()
 
         # Capture frame for video export (stops after VIDEO_FRAMES)

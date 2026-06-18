@@ -648,12 +648,12 @@ def get_palette_scale(color_palette, x, y, width, height):
 
 
 # ================================================================
-# Level Bar Geometry - visual indicator for xperiment Level
+# Model Bar Geometry - visual indicator for xperiment Model
 # ================================================================
 
 
-def get_level_bar_geometry(x, y, width, height):
-    """Generate level bar geometry as two triangles forming a rectangle.
+def get_model_bar_geometry(x, y, width, height):
+    """Generate model bar geometry as two triangles forming a rectangle.
 
     Creates a horizontal bar at specified screen coordinates.
     Canvas coordinates: (0,0) at bottom-left, X increases to the right.
@@ -662,7 +662,7 @@ def get_level_bar_geometry(x, y, width, height):
         ti.Vector.field: vertices_field for rendering with canvas.triangles()
     """
     # Create Taichi field for triangle vertices
-    level_bar_vertices = ti.Vector.field(2, dtype=ti.f32, shape=6)
+    model_bar_vertices = ti.Vector.field(2, dtype=ti.f32, shape=6)
 
     # Position parameters (screen coordinates)
     x_left = x
@@ -671,16 +671,16 @@ def get_level_bar_geometry(x, y, width, height):
     y_bottom = 1 - (y + height)
 
     # First triangle (bottom-left, bottom-right, top-left)
-    level_bar_vertices[0] = ti.Vector([x_left, y_bottom])
-    level_bar_vertices[1] = ti.Vector([x_right, y_bottom])
-    level_bar_vertices[2] = ti.Vector([x_left, y_top])
+    model_bar_vertices[0] = ti.Vector([x_left, y_bottom])
+    model_bar_vertices[1] = ti.Vector([x_right, y_bottom])
+    model_bar_vertices[2] = ti.Vector([x_left, y_top])
 
     # Second triangle (top-left, bottom-right, top-right)
-    level_bar_vertices[3] = ti.Vector([x_left, y_top])
-    level_bar_vertices[4] = ti.Vector([x_right, y_bottom])
-    level_bar_vertices[5] = ti.Vector([x_right, y_top])
+    model_bar_vertices[3] = ti.Vector([x_left, y_top])
+    model_bar_vertices[4] = ti.Vector([x_right, y_bottom])
+    model_bar_vertices[5] = ti.Vector([x_right, y_top])
 
-    return level_bar_vertices
+    return model_bar_vertices
 
 
 # ================================================================
