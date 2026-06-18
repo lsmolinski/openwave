@@ -116,4 +116,17 @@ The coverage matrix scores phenomena; this companion table scores the model-leve
 
 ## Contributing a model or a validation
 
-A new framework enters as a new `openwave/xperiments/<model>/` directory with its own `research/` folder; a new validation enters as a runnable script plus a research note documenting pass/fail against the shared criteria above. Negatives are as publishable here as positives. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SYS_ARCH.md`](SYS_ARCH.md) for structure, and open an issue to propose a new column.
+**Yes — new models and validations are welcome, and the bar is reproducibility, not orthodoxy.** Competing and unconventional frameworks are explicitly in scope (the table already spans three). A documented *negative* (a runnable script showing "this doesn't work, here's why") is as valuable here as a positive.
+
+**What you can contribute:**
+
+- A **new model / framework** → a new `openwave/xperiments/<model>/` directory with its own `research/` folder, evaluated against the same shared criteria as the existing columns (it becomes a new column in the table above).
+- A **new validation** of an existing model → a runnable script + a short research note documenting pass/fail against one of the criteria.
+
+**How (the standard open-source flow; full setup in [`CONTRIBUTING.md`](CONTRIBUTING.md)):**
+
+1. For a new model, **open an issue or discussion first** to propose it — so a maintainer can add your column and point you at the evaluation criteria.
+2. **Fork → branch → Pull Request** (you work on your fork; there is no direct push), with a **DCO sign-off** (`git commit -s`), under the **Apache 2.0** license.
+3. A maintainer reviews and merges the PR.
+
+**Is there moderation?** Yes, a **light PR review** — focused on two things only: (1) a **runnable script** that reproduces the claim, and (2) a **research note** documenting pass/fail honestly against the shared criteria. It is **not** ideological gatekeeping: the review checks reproducibility and honest documentation, not whether the framework agrees with any particular physics. See [`CONTRIBUTING.md`](CONTRIBUTING.md) (setup, PR flow, DCO) and [`SYS_ARCH.md`](SYS_ARCH.md) (repo structure).
