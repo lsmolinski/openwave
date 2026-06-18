@@ -111,8 +111,12 @@ class WaveField:
         # PROPAGATED VECTOR FIELDS (values in attometers for f32 precision)
         # This avoids catastrophic cancellation in difference calculations
         # Scales 1e-17 m values to ~10 am, well within f32 range
-        # Wave displacement vector field (ψ)
-        self.displacement_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ
+        # Wave displacement vector field (ψ) — leapfrog triple buffer
+        # psi_am is the current field (renamed from displacement_am); prev/new added
+        # for the time-integrated PDE engine. Allocated now; wired in by the PDE phase.
+        self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
+        self.psi_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t
+        self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t-dt
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)

@@ -314,9 +314,9 @@ def display_model_specs(state, model_bar_vertices):
     with render.gui.sub_window("EWT MODEL (M4)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Vector Field")
-        sub.text("Coupling: Phase Sync")
-        sub.text("Propagation: Analytical Function")
-        sub.text("Boundary: Open (Non-Reflective)")
+        sub.text("Coupling: Non-linear Lagrangian")
+        sub.text("Propagation: PDE Solver")
+        sub.text("Boundary: Dirichlet Condition")
         if sub.button("Wave Notation Guide"):
             webbrowser.open(
                 "https://github.com/openwave-labs/openwave/blob/main/openwave/wave_notation.md"

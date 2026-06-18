@@ -49,7 +49,7 @@ def plot_probe_wave_profile(wave_field):
 
     # Sample longitudinal displacement values
     for i in range(wave_field.nx):
-        displacements[i] = wave_field.displacement_am[i, py, pz]
+        displacements[i] = wave_field.psi_am[i, py, pz]
         displacements_T[i] = wave_field.velocity_am[i, py, pz]
 
     # Calculate distance from center in grid indices
@@ -111,7 +111,7 @@ def log_timestep_data(timestep: int, wave_field, trackers) -> None:
     px, py, pz = wave_field.nx // 2, wave_field.ny // 2, wave_field.nz // 2
 
     # Pobieramy surowe wartości – mogą być ti.Matrix (wektor 3D)
-    disp = wave_field.displacement_am[px, py, pz]
+    disp = wave_field.psi_am[px, py, pz]
     amp = trackers.amp_local_emarms_am[px, py, pz]
     freq = trackers.freq_local_cross_rHz[px, py, pz]
 

@@ -188,7 +188,7 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 
 | Phase | Work | Validation gate |
 | --- | --- | --- |
-| ✅/[ ] P0 Rename + buffers | `psi_am` + `psi_prev_am` + `psi_new_am`; no behavior change | engine still runs identically on `psi_am` |
+| ✅ P0 Rename + buffers | `psi_am` + `psi_prev_am` + `psi_new_am`; no behavior change | engine still runs identically on `psi_am` (headless smoke: 19³ grid, max \|ψ\| ≈ 19.4 am, energy populated, prev buffer 0.0) |
 | [ ] P1 Linear vector PDE | delete WPSW + `select_voxels`; add `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wire launcher seed | a seeded packet propagates at `c`; CFL respected; energy ~flat (offline check) |
 | [ ] P2 Non-linear V | add `V_psi`/`dV_psi` + `V_MODE`; inject `-dt^2 dV` | linear mode == M2 baseline; focusing mode yields a localized, persistent core (soliton candidate) |
 | [ ] P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` / `_soft` + free mode; xparameter selector | each mode sustains a driven WC; A/B compare stability |
