@@ -121,15 +121,17 @@ Note: `energy_local_aJ` stays the existing heuristic so `force_motion.py` (which
 
 ### 4.7 Wave center interaction modes
 
-After the leapfrog update, re-impose each active wave center through a selectable mode (the checklist asks for Dirichlet, Neumann, and a useful third). Positions come from `particle.py`; motion still flows through `force_motion.py` unchanged.
+After the leapfrog update (`psi_am` now current), re-impose each active wave center through a selectable mode in a ball of `radius` voxels around the WC (the WC center is a node; the outer Dirichlet boundary is untouched). Positions come from `particle.py`; motion still flows through `force_motion.py` unchanged. Launcher config: `WC_INTERACT_MODE` (0 free / 1 dirichlet / 2 neumann / 3 soft), `WC_BOOST`, `WC_RADIUS`, `WC_SIGMA`.
 
-| Mode | Function | Action at WC voxel(s) | Physics it tests |
+| Mode | Function | Action in the WC ball | Physics it tests |
 | --- | --- | --- | --- |
-| Dirichlet | `interact_wc_dirichlet` | hard-pin `psi = A sin(omega t + offset) r_hat` | driven antenna; clean phase control, reflective |
-| Neumann | `interact_wc_neumann` | pin the normal gradient (inject flux / velocity, not amplitude) | soft drive; lets amplitude back-react |
-| Soft source (3rd) | `interact_wc_soft` | additive Gaussian forcing `psi += A exp(-r^2/2 sigma^2) cos(omega t + offset) r_hat` | continuous radiator with full back-reaction; closest to a free soliton being topped up |
+| 1 Dirichlet | `interact_wc_dirichlet` | hard-pin `psi = A sin(omega t + off) r_hat` (and `psi_prev`) | standing/reflective driven antenna; energy builds at the WC |
+| 2 Neumann | `interact_wc_neumann` | bounded outgoing pin `psi = A sin(omega t + off - k r) r_hat` | radiating flux source (net energy outward); lower peak than Dirichlet |
+| 3 Soft | `interact_wc_soft` | additive `psi += A exp(-r^2/2 sigma^2) cos(omega t + off) r_hat` | continuous radiator with full back-reaction (does not overwrite psi) |
 
-A fourth implicit mode is **no re-drive** (seed once, evolve freely): the purest #201 test of whether the non-linearity self-selects a stable soliton without external forcing. It needs no new function, just "call none". The mode is an xparameter so all four are A/B-testable.
+A fourth mode (`0`) is **free**: no re-drive (seed once, evolve freely), the purest #201 test of whether the non-linearity self-selects a stable soliton without forcing. All four are selectable for A/B testing.
+
+**Neumann finding (P3):** a strict velocity-Neumann pin (fixing `(psi - psi_prev)/dt`) is an unbounded integrator at the CFL `dt` (the drive period is under-resolved) and blows up. Mode 2 is therefore implemented as a value-bounded **outgoing radiating pin** (the `-k r` spatial phase sends energy outward, the flux-source role) rather than a raw velocity pin. A true velocity-Neumann would need the sub-CFL `dt` explored in P5.
 
 ## 5. Per-module work breakdown
 
@@ -193,7 +195,7 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | ✅ P0 Rename + buffers | `psi_am` + `psi_prev_am` + `psi_new_am`; no behavior change | engine still runs identically on `psi_am` (headless smoke: 19³ grid, max \|ψ\| ≈ 19.4 am, energy populated, prev buffer 0.0) |
 | ✅ P1 Linear vector PDE | deleted WPSW + `select_voxels`; added `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wired launcher seed + CFL `dt_rs`/`c_amrs` | headless (40³, CFL²=0.30): no blowup, energy E/E0 ∈ [1.03, 1.07] flat over 80 steps, wavefront expands. GUI visual pass pending (Rodrigo) |
 | ✅ P2 Non-linear V (machinery) | added `V_psi`/`dV_psi` + `V_MODE` (4 modes, 2 coeffs); injected `-dt^2 dV`; launcher `V_MODE`/`V_C1`/`V_C2` (default off) | linear mode (`V_MODE=0`) == M2 baseline ✅; non-linear term active + sign-correct (focusing `c1<0` preserves peak vs defocusing `c1>0`) ✅. A stable soliton core was NOT obtained from a released-gaussian seed (pure cubic collapses in 3D; saturating quintic does not arrest it at the large CFL `dt`) → the soliton search moves to P5 |
-| [ ] P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` / `_soft` + free mode; xparameter selector | each mode sustains a driven WC; A/B compare stability |
+| ✅ P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` (bounded radiating pin) / `_soft` + free mode; launcher `WC_INTERACT_MODE`/`WC_BOOST`/`WC_RADIUS`/`WC_SIGMA` | headless (zero base field, 1 off-center WC): free=quiet, all 3 drives sustain the WC and stay bounded; dirichlet reflective (peak 3.1) vs neumann radiating (more E_tot, peak 1.8) vs soft back-reacting. Strict velocity-Neumann blew up → replaced by the bounded radiating pin |
 | [ ] P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; audit resolution/CFL; clear the cleanup backlog below | full run end-to-end; WCs seed, evolve, and move (force/motion intact) |
 | [ ] P5 Re-attack #201 + soliton search | find the seed profile, coefficients, and (likely sub-CFL) `dt` that hold a stable single-WC soliton on the non-linear substrate, then K-selectivity | a stable localized core forms; does the non-linearity discriminate K=10? (the #201 question) |
 
@@ -205,6 +207,7 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | Vestigial `TIMESTEP` slider | `_launcher.py` (slider + dashboard "Timestep") | repurpose to a `SIM_SPEED` control (0.5-1.0); the PDE now uses the CFL-derived `dt_rs` |
 | Seed config constants | `_launcher.py` `# SEED CONFIGURATION (P1; promote to xparameters later)` (`SEED_MODE`, `SEED_BOOST`) | promote to xparameters so seed mode / boost are per-xperiment |
 | Potential config constants | `_launcher.py` `# POTENTIAL CONFIGURATION (P2; promote to xparameters later)` (`V_MODE`, `V_C1`, `V_C2`) | promote to xparameters so the non-linear potential is per-xperiment |
+| WC interaction config constants | `_launcher.py` `# WAVE CENTER INTERACTION (P3; promote to xparameters later)` (`WC_INTERACT_MODE`, `WC_BOOST`, `WC_RADIUS`, `WC_SIGMA`) | promote to xparameters so the WC drive is per-xperiment |
 
 ## 7. Acceptance criteria
 

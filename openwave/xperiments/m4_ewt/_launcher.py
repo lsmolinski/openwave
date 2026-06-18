@@ -114,6 +114,15 @@ V_C2 = 0.0  # secondary coefficient (q for mode 2, b for mode 3)
 
 
 # ================================================================
+# WAVE CENTER INTERACTION (P3; promote to xparameters later)
+# ================================================================
+WC_INTERACT_MODE = 3  # 0 = free (no re-drive), 1 = dirichlet, 2 = neumann, 3 = soft
+WC_BOOST = 1.0  # WC drive amplitude multiplier (use a small value for soft mode)
+WC_RADIUS = 2  # WC drive region radius (voxels)
+WC_SIGMA = 1.5  # soft-mode Gaussian width (voxels)
+
+
+# ================================================================
 # SIMULATION STATE
 # ================================================================
 
@@ -449,6 +458,30 @@ def compute_wave_oscillation(state):
         V_C1,
         V_C2,
     )
+
+    # Re-drive the wave centers on top of the base wave (P3). Mode 0 = free (no re-drive).
+    if WC_INTERACT_MODE == 1:
+        ewave.interact_wc_dirichlet(
+            state.wave_field,
+            state.wave_center,
+            state.elapsed_t_rs,
+            state.dt_rs,
+            WC_BOOST,
+            WC_RADIUS,
+        )
+    elif WC_INTERACT_MODE == 2:
+        ewave.interact_wc_neumann(
+            state.wave_field,
+            state.wave_center,
+            state.elapsed_t_rs,
+            state.dt_rs,
+            WC_BOOST,
+            WC_RADIUS,
+        )
+    elif WC_INTERACT_MODE == 3:
+        ewave.interact_wc_soft(
+            state.wave_field, state.wave_center, state.elapsed_t_rs, WC_BOOST, WC_SIGMA, WC_RADIUS
+        )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
     # Frame skip reduces GPU->CPU transfer overhead

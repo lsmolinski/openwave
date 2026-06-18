@@ -295,6 +295,152 @@ def propagate_wave(
 
 
 # ================================================================
+# WAVE CENTER INTERACTION  (re-drive WCs on top of the base wave)
+# ================================================================
+# Called each step AFTER propagate_wave (so psi_am is the new current field). Each
+# mode re-imposes the wave centers as localized RADIAL sources on top of the base
+# wave; they are selectable so we can A/B which best captures EWT particle behavior.
+# A 4th "free" mode = call none (seed once, evolve freely). The drive region is a
+# ball of `radius` voxels around each WC; the WC center voxel is a node (r̂ undefined),
+# and the outer Dirichlet boundary is left untouched (ψ=0 there).
+#
+#   dirichlet : hard-pin ψ = A·sin(ωt+off)·r̂           (reflective driven antenna)
+#   neumann   : inject velocity (ψ-ψ_prev)/dt = V·r̂     (soft drive, amplitude floats)
+#   soft      : additive ψ += A·e^{-r²/2σ²}·cos(ωt+off)·r̂  (continuous radiator, back-reaction)
+# ================================================================
+
+
+@ti.kernel
+def interact_wc_dirichlet(
+    wave_field: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    boost: ti.f32,  # type: ignore
+    radius: ti.i32,  # type: ignore
+):
+    """Hard-pin a driven radial oscillation in a ball around each active WC.
+
+    Overwrites ψ and ψ_prev so the leapfrog sees a consistent driven antenna
+    ψ = A·sin(ωt + offset)·r̂ (Dirichlet source; the base wave reflects off the pin).
+    """
+    omega = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor  # rad/rs
+    amp = base_amplitude_am * wave_field.scale_factor * boost
+    rf = ti.cast(radius, ti.f32)
+    for wc in range(wave_center.num_sources):
+        if wave_center.active[wc] == 0:
+            continue
+        c = wave_center.position_grid[wc]
+        off = wave_center.offset[wc]
+        s_now = ti.sin(omega * elapsed_t_rs + off)
+        s_prev = ti.sin(omega * (elapsed_t_rs - dt_rs) + off)
+        for di, dj, dk in ti.ndrange(
+            (-radius, radius + 1), (-radius, radius + 1), (-radius, radius + 1)
+        ):
+            i, j, k = c[0] + di, c[1] + dj, c[2] + dk
+            inside = (0 < i < wave_field.nx - 1) and (0 < j < wave_field.ny - 1) and (
+                0 < k < wave_field.nz - 1
+            )
+            d = ti.Vector([ti.cast(di, ti.f32), ti.cast(dj, ti.f32), ti.cast(dk, ti.f32)])
+            r = d.norm()
+            if inside and r <= rf + 1e-3:
+                r_hat = d / (r + 1e-6)
+                node = ti.select(r < 0.5, 0.0, 1.0)  # node at the WC center voxel
+                wave_field.psi_am[i, j, k] = amp * s_now * r_hat * node
+                wave_field.psi_prev_am[i, j, k] = amp * s_prev * r_hat * node
+
+
+@ti.kernel
+def interact_wc_neumann(
+    wave_field: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
+    boost: ti.f32,  # type: ignore
+    radius: ti.i32,  # type: ignore
+):
+    """Driven OUTGOING (radiating) source in a ball around each active WC.
+
+    Pins a radial traveling wave ψ = A·sin(ωt + offset − k·r)·r̂ (ψ_prev one step
+    retarded). Unlike the standing Dirichlet pin, the −k·r spatial phase sends energy
+    outward, so this is a flux source (net outward radiation) rather than a reflective
+    antenna. It is value-bounded (|ψ| ≤ A) and therefore stable.
+
+    Note: a strict velocity-Neumann pin (fixing (ψ-ψ_prev)/dt) is an unbounded
+    integrator at the CFL dt (the drive period is under-resolved) and blows up; this
+    bounded radiating pin is the stable flux-source stand-in. A true velocity-Neumann
+    would need the sub-CFL dt explored in P5.
+    """
+    omega = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor  # rad/rs
+    wavelength_grid = base_wavelength * wave_field.scale_factor / wave_field.dx
+    k_grid = 2.0 * ti.math.pi / wavelength_grid  # radians per grid index
+    amp = base_amplitude_am * wave_field.scale_factor * boost
+    rf = ti.cast(radius, ti.f32)
+    for wc in range(wave_center.num_sources):
+        if wave_center.active[wc] == 0:
+            continue
+        c = wave_center.position_grid[wc]
+        off = wave_center.offset[wc]
+        for di, dj, dk in ti.ndrange(
+            (-radius, radius + 1), (-radius, radius + 1), (-radius, radius + 1)
+        ):
+            i, j, k = c[0] + di, c[1] + dj, c[2] + dk
+            inside = (0 < i < wave_field.nx - 1) and (0 < j < wave_field.ny - 1) and (
+                0 < k < wave_field.nz - 1
+            )
+            d = ti.Vector([ti.cast(di, ti.f32), ti.cast(dj, ti.f32), ti.cast(dk, ti.f32)])
+            r = d.norm()
+            if inside and r <= rf + 1e-3:
+                r_hat = d / (r + 1e-6)
+                node = ti.select(r < 0.5, 0.0, 1.0)
+                phase_now = omega * elapsed_t_rs + off - k_grid * r
+                phase_prev = omega * (elapsed_t_rs - dt_rs) + off - k_grid * r
+                wave_field.psi_am[i, j, k] = amp * ti.sin(phase_now) * r_hat * node
+                wave_field.psi_prev_am[i, j, k] = amp * ti.sin(phase_prev) * r_hat * node
+
+
+@ti.kernel
+def interact_wc_soft(
+    wave_field: ti.template(),  # type: ignore
+    wave_center: ti.template(),  # type: ignore
+    elapsed_t_rs: ti.f32,  # type: ignore
+    boost: ti.f32,  # type: ignore
+    sigma: ti.f32,  # type: ignore
+    radius: ti.i32,  # type: ignore
+):
+    """Additive Gaussian radial forcing in a ball around each active WC.
+
+    ψ += A·exp(-r²/2σ²)·cos(ωt + offset)·r̂. Does not overwrite ψ, so the field
+    back-reacts freely (a continuous radiator). Use a small boost: additive forcing
+    pumps energy every step and can drive a resonance if too strong.
+    """
+    omega = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor  # rad/rs
+    amp = base_amplitude_am * wave_field.scale_factor * boost
+    rf = ti.cast(radius, ti.f32)
+    inv2s2 = 1.0 / (2.0 * sigma * sigma)
+    for wc in range(wave_center.num_sources):
+        if wave_center.active[wc] == 0:
+            continue
+        c = wave_center.position_grid[wc]
+        off = wave_center.offset[wc]
+        c_now = ti.cos(omega * elapsed_t_rs + off)
+        for di, dj, dk in ti.ndrange(
+            (-radius, radius + 1), (-radius, radius + 1), (-radius, radius + 1)
+        ):
+            i, j, k = c[0] + di, c[1] + dj, c[2] + dk
+            inside = (0 < i < wave_field.nx - 1) and (0 < j < wave_field.ny - 1) and (
+                0 < k < wave_field.nz - 1
+            )
+            d = ti.Vector([ti.cast(di, ti.f32), ti.cast(dj, ti.f32), ti.cast(dk, ti.f32)])
+            r = d.norm()
+            if inside and r <= rf + 1e-3:
+                r_hat = d / (r + 1e-6)
+                node = ti.select(r < 0.5, 0.0, 1.0)
+                env = ti.exp(-(r * r) * inv2s2)
+                wave_field.psi_am[i, j, k] += amp * env * c_now * r_hat * node
+
+
+# ================================================================
 # 3-PLANE SAMPLING FOR AVERAGE TRACKERS
 # ================================================================
 # PERFORMANCE NOTE: Full GPU reduction (atomic_add over all voxels) causes
