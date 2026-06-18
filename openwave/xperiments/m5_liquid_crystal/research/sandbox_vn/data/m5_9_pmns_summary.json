@@ -1,0 +1,68 @@
+{
+ "so3_prediction_TBM": {
+  "theta12_deg": 35.264,
+  "theta13_deg": 0.0,
+  "theta23_deg": 45.0,
+  "dCP_deg": 180.0,
+  "note": "tri-bimaximal: the most symmetric SO(3) rotation; delta_CP=180 forced by real SO(3)"
+ },
+ "measured_NuFIT6": {
+  "theta12": 33.68,
+  "theta13": 8.52,
+  "theta23": 48.5,
+  "theta23_lower": 43.3,
+  "dCP": 177.0,
+  "dCP_range_1sig": [
+   148.0,
+   215.0
+  ]
+ },
+ "verdict_pattern_match": {
+  "theta23_maximal": {
+   "tbm": 45.0,
+   "meas_upper": 48.5,
+   "meas_lower": 43.3,
+   "straddles_45": true
+  },
+  "theta12_trimaximal": {
+   "tbm": 35.26,
+   "meas": 33.68,
+   "delta_deg": -1.58
+  },
+  "theta13_breaking": {
+   "tbm": 0.0,
+   "meas": 8.52,
+   "this_is_the_so3_breaking": true
+  },
+  "dCP": {
+   "so3_predicts": 180.0,
+   "meas": 177.0,
+   "consistent_with_180_at_1sigma": true
+  }
+ },
+ "so3_vs_su3": {
+  "single_SO3_suffices": false,
+  "second_rotation_required": true,
+  "second_rotation_size_deg": 8.52,
+  "second_rotation_is_SMALL": true,
+  "leakage_sin2_theta13": 0.0219,
+  "reading": "SO(3) is the LEADING structure (theta23 maximal, theta12 tri-maximal, dCP~180 all hold); it is broken by a SMALL second coupled rotation = the reactor angle theta_13 ~ 8.5 deg (toward the SU(3)-like coupled structure). delta_CP near 180 => the SO(3) route is currently FAVORED, not falsified."
+ },
+ "delta_CP_test": {
+  "so3_requires_deg": 180.0,
+  "measured_deg": 177.0,
+  "consistent_at_1sigma": true,
+  "falsifier": "if JUNO/DUNE settle delta_CP far from 180, the pure-SO(3) route is wrong",
+  "status": "CONSISTENT (NuFIT 6.0 best fit ~177 deg, near 180) \u2014 the prediction holds for now"
+ },
+ "electron_0p28pct_check": {
+  "duda_excess": 0.0028,
+  "framework": "E_obs/E_pure = 1 + f_off (off-primary-axis energy fraction)",
+  "f_off_for_0p28pct": 0.0028,
+  "naive_theta13_leakage": 0.0219,
+  "naive_over_observed": 7.8,
+  "off_axis_angle_deg_for_0p28pct": 3.03,
+  "reading": "0.28% is NOT simply sin^2(theta13) (that is ~2.2%, ~8x too big). The electron clock is ~8x MORE tightly projected than the free neutrino mixing \u2014 sensible for a bound phase-locked clock. The structure (3 tendencies -> 1 projected DOF -> small excess) matches Duda's reading; the SPECIFIC 0.28% needs the electron defect's measured off-primary-axis energy fraction (the dynamical follow-up).",
+  "status": "STRUCTURAL match; specific number = follow-up (measure f_off on the electron defect)"
+ }
+}
