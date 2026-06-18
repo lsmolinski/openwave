@@ -106,6 +106,14 @@ SEED_BOOST = 1.0  # seed amplitude multiplier
 
 
 # ================================================================
+# POTENTIAL CONFIGURATION (P2; promote to xparameters later)
+# ================================================================
+V_MODE = 1  # non-linear V(ψ): 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+V_C1 = 0.0  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+V_C2 = 0.0  # secondary coefficient (q for mode 2, b for mode 3)
+
+
+# ================================================================
 # SIMULATION STATE
 # ================================================================
 
@@ -437,6 +445,9 @@ def compute_wave_oscillation(state):
         state.c_amrs,
         state.dt_rs,
         state.elapsed_t_rs,
+        V_MODE,
+        V_C1,
+        V_C2,
     )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================

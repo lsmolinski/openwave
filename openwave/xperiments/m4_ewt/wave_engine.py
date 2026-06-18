@@ -138,6 +138,63 @@ def compute_laplacian(
     return (face_sum - 6.0 * center) / (wave_field.dx_am**2)
 
 
+# ================================================================
+# NON-LINEAR POTENTIAL V(ψ)  (swappable; acts on u = ‖ψ‖², NO vector calculus)
+# ================================================================
+# The dynamics use dV_psi (the restoring force, entered as −dt²·dV in the leapfrog).
+# V_psi is the matching scalar potential, kept for offline energy diagnostics.
+# Coefficients (c1, c2) are passed at call time so potentials swap without
+# recompiling the rest. EDIT THESE TWO FUNCTIONS to test new V(ψ) forms.
+#
+#   v_mode 0 linear      : V = 0                              dV = 0
+#   v_mode 1 cubic_nls   : V = (c1/4)·u²                      dV = c1·u·ψ            (c1 = k)
+#   v_mode 2 saturating  : V = (c1/4)·u² − (c2/6)·u³          dV = c1·u·ψ − c2·u²·ψ  (c1 = k, c2 = q)
+#   v_mode 3 double_well : V = −(c1/2)·u + (c2/4)·u²          dV = −c1·ψ + c2·u·ψ    (c1 = a, c2 = b)
+#
+# For a FOCUSING (soliton-forming) cubic use c1 < 0; pure focusing collapses in 3D,
+# so mode 2 adds a defocusing quintic (c2 > 0) to arrest it. Magnitudes are tuned
+# empirically (the field is in scaled am, so the stable range depends on scale).
+# ================================================================
+
+
+@ti.func
+def V_psi(
+    psi,  # type: ignore
+    v_mode: ti.i32,  # type: ignore
+    c1: ti.f32,  # type: ignore
+    c2: ti.f32,  # type: ignore
+):
+    """Scalar non-linear potential V(ψ) on u = ‖ψ‖² (see table above). Offline diagnostics only."""
+    u = psi.dot(psi)
+    out = 0.0
+    if v_mode == 1:
+        out = 0.25 * c1 * u * u
+    elif v_mode == 2:
+        out = 0.25 * c1 * u * u - (c2 / 6.0) * u * u * u
+    elif v_mode == 3:
+        out = -0.5 * c1 * u + 0.25 * c2 * u * u
+    return out
+
+
+@ti.func
+def dV_psi(
+    psi,  # type: ignore
+    v_mode: ti.i32,  # type: ignore
+    c1: ti.f32,  # type: ignore
+    c2: ti.f32,  # type: ignore
+):
+    """Restoring force dV/dψ (3-vector) for V_psi; enters the leapfrog as −dt²·dV_psi."""
+    u = psi.dot(psi)
+    out = ti.Vector([0.0, 0.0, 0.0])
+    if v_mode == 1:
+        out = c1 * u * psi
+    elif v_mode == 2:
+        out = c1 * u * psi - c2 * u * u * psi
+    elif v_mode == 3:
+        out = -c1 * psi + c2 * u * psi
+    return out
+
+
 @ti.kernel
 def propagate_wave(
     wave_field: ti.template(),  # type: ignore
@@ -145,13 +202,17 @@ def propagate_wave(
     c_amrs: ti.f32,  # type: ignore
     dt_rs: ti.f32,  # type: ignore
     elapsed_t_rs: ti.f32,  # type: ignore
+    v_mode: ti.i32,  # type: ignore
+    v_c1: ti.f32,  # type: ignore
+    v_c2: ti.f32,  # type: ignore
 ):
     """
-    Evolve ψ one step by leapfrog over all interior voxels (vector wave PDE).
+    Evolve ψ one step by leapfrog over all interior voxels (non-linear vector wave PDE).
 
-    Discrete form (Verlet / leapfrog), linear for P1:
-        ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ
-    The nonlinear restoring term −dt²·dV(ψ) is added in P2.
+    Continuous PDE: ∂²ψ/∂t² = c²∇²ψ − dV(ψ)
+    Discrete form (Verlet / leapfrog):
+        ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ − dt²·dV(ψ)
+    With v_mode = 0 the dV term is zero and this is exactly the linear wave (M2 baseline).
 
     Boundary: Dirichlet ψ=0 at edges (boundary voxels skipped).
     Trackers (RMS amplitude, zero-crossing frequency) and per-voxel energy are
@@ -163,9 +224,12 @@ def propagate_wave(
         c_amrs: wave speed (am/rs)
         dt_rs: timestep (rs)
         elapsed_t_rs: elapsed simulation time (rs)
+        v_mode: non-linear potential selector (0 linear, 1 cubic, 2 saturating, 3 double-well)
+        v_c1, v_c2: potential coefficients (see V_psi/dV_psi)
     """
     nx, ny, nz = wave_field.nx, wave_field.ny, wave_field.nz
     c2dt2 = (c_amrs * dt_rs) ** 2
+    dt2 = dt_rs * dt_rs  # scales the non-linear restoring term −dt²·dV(ψ)
 
     # Domain center: reference for the radial (longitudinal) zero-crossing scalar
     cx = ti.cast(nx, ti.f32) * 0.5
@@ -175,11 +239,14 @@ def propagate_wave(
     # Update interior voxels (Dirichlet BC: ψ=0 at edges; 6-pt stencil needs a 1-cell buffer)
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 1)):
         laplacian = compute_laplacian(wave_field, i, j, k)
+        psi_cur = wave_field.psi_am[i, j, k]
 
-        # Leap-Frog update (linear; nonlinear V added in P2)
-        # Standard form: ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ
+        # Leap-Frog update: ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ − dt²·dV(ψ)
         psi_new = (
-            2.0 * wave_field.psi_am[i, j, k] - wave_field.psi_prev_am[i, j, k] + c2dt2 * laplacian
+            2.0 * psi_cur
+            - wave_field.psi_prev_am[i, j, k]
+            + c2dt2 * laplacian
+            - dt2 * dV_psi(psi_cur, v_mode, v_c1, v_c2)
         )
         wave_field.psi_new_am[i, j, k] = psi_new
 

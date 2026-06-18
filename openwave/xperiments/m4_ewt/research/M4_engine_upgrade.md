@@ -96,14 +96,14 @@ The linear part is exactly M2 (`propagate_wave`, `wave_engine.py:602`, update at
 
 M5's `V_M` / `dV_M` act on matrix invariants `Tr(M^2)`, `Tr(M^3)` (`engine2_pde.py:286-320`). For a single vector field the natural scalar invariant is `u = ||psi||^2 = psi . psi`. Provide a `@ti.func` pair the user can edit, with a `V_MODE` selector and runtime coefficients (so potentials swap without recompiling the rest):
 
-| `V_MODE` | `V(psi)` | Restoring force `dV_psi` | Tests |
-| --- | --- | --- | --- |
-| 0 `linear` | 0 | 0 | linear sanity, energy conservation |
-| 1 `cubic_nls` | `(k/4) u^2` | `k * u * psi` | Smolinski psi^3 focusing (#201) |
-| 2 `saturating` | `(k/4) u^2 - (q/6) u^3` | `k u psi - q u^2 psi` | soliton stabilizer (focus + defocus) |
-| 3 `double_well` | `-(a/2) u + (b/4) u^2` | `-a psi + b u psi` | symmetry-broken vacuum |
+| `V_MODE` | `V(psi)` | Restoring force `dV_psi` | Coeffs | Tests |
+| --- | --- | --- | --- | --- |
+| 0 `linear` | 0 | 0 | none | linear sanity, energy conservation |
+| 1 `cubic_nls` | `(c1/4) u^2` | `c1 * u * psi` | `c1 = k` | Smolinski psi^3 focusing (#201) |
+| 2 `saturating` | `(c1/4) u^2 - (c2/6) u^3` | `c1 u psi - c2 u^2 psi` | `c1=k, c2=q` | soliton stabilizer (focus + defocus) |
+| 3 `double_well` | `-(c1/2) u + (c2/4) u^2` | `-c1 psi + c2 u psi` | `c1=a, c2=b` | symmetry-broken vacuum |
 
-`dV_psi(psi, params)` returns a 3-vector; `params` carries `(k, q, a, b)` passed at kernel-call time, matching M5's runtime `(a, b, c)` argument style. Mode 0 reproduces M2's linear wave exactly, which is the regression baseline.
+`dV_psi(psi, v_mode, c1, c2)` returns a 3-vector; the two coefficients are passed at kernel-call time (each mode uses at most two), matching M5's runtime-argument style. `V_psi(...)` returns the matching scalar potential for offline energy diagnostics. Mode 0 reproduces M2's linear wave exactly, the regression baseline. **Focusing sign:** `c1 < 0` is focusing (self-amplifying), `c1 > 0` defocusing; confirmed empirically (P2). The leapfrog enters the force as `- dt^2 * dV_psi`.
 
 ### 4.6 Trackers, energy, buffer swap (kept, M2-placed)
 
@@ -192,10 +192,10 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | --- | --- | --- |
 | ✅ P0 Rename + buffers | `psi_am` + `psi_prev_am` + `psi_new_am`; no behavior change | engine still runs identically on `psi_am` (headless smoke: 19³ grid, max \|ψ\| ≈ 19.4 am, energy populated, prev buffer 0.0) |
 | ✅ P1 Linear vector PDE | deleted WPSW + `select_voxels`; added `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wired launcher seed + CFL `dt_rs`/`c_amrs` | headless (40³, CFL²=0.30): no blowup, energy E/E0 ∈ [1.03, 1.07] flat over 80 steps, wavefront expands. GUI visual pass pending (Rodrigo) |
-| [ ] P2 Non-linear V | add `V_psi`/`dV_psi` + `V_MODE`; inject `-dt^2 dV` | linear mode == M2 baseline; focusing mode yields a localized, persistent core (soliton candidate) |
+| ✅ P2 Non-linear V (machinery) | added `V_psi`/`dV_psi` + `V_MODE` (4 modes, 2 coeffs); injected `-dt^2 dV`; launcher `V_MODE`/`V_C1`/`V_C2` (default off) | linear mode (`V_MODE=0`) == M2 baseline ✅; non-linear term active + sign-correct (focusing `c1<0` preserves peak vs defocusing `c1>0`) ✅. A stable soliton core was NOT obtained from a released-gaussian seed (pure cubic collapses in 3D; saturating quintic does not arrest it at the large CFL `dt`) → the soliton search moves to P5 |
 | [ ] P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` / `_soft` + free mode; xparameter selector | each mode sustains a driven WC; A/B compare stability |
 | [ ] P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; audit resolution/CFL; clear the cleanup backlog below | full run end-to-end; WCs seed, evolve, and move (force/motion intact) |
-| [ ] P5 Re-attack #201 | K-selectivity on the non-linear substrate | does the non-linearity discriminate K=10? (the #201 question) |
+| [ ] P5 Re-attack #201 + soliton search | find the seed profile, coefficients, and (likely sub-CFL) `dt` that hold a stable single-WC soliton on the non-linear substrate, then K-selectivity | a stable localized core forms; does the non-linearity discriminate K=10? (the #201 question) |
 
 ### P4 cleanup backlog (logged during P1)
 
@@ -204,6 +204,7 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | Dead `selected_voxels` machinery | `medium.py:196-198` (`max_selected_voxels`, `selected_voxels`, `num_selected_voxels`) | remove; only the deleted `select_voxels()` used them |
 | Vestigial `TIMESTEP` slider | `_launcher.py` (slider + dashboard "Timestep") | repurpose to a `SIM_SPEED` control (0.5-1.0); the PDE now uses the CFL-derived `dt_rs` |
 | Seed config constants | `_launcher.py` `# SEED CONFIGURATION (P1; promote to xparameters later)` (`SEED_MODE`, `SEED_BOOST`) | promote to xparameters so seed mode / boost are per-xperiment |
+| Potential config constants | `_launcher.py` `# POTENTIAL CONFIGURATION (P2; promote to xparameters later)` (`V_MODE`, `V_C1`, `V_C2`) | promote to xparameters so the non-linear potential is per-xperiment |
 
 ## 7. Acceptance criteria
 
@@ -220,7 +221,7 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 
 | Item | Note |
 | --- | --- |
-| `V(psi)` coefficients | the focusing/saturation constants that yield a stable single-WC soliton are unknown; sweep `(k, q)` empirically in P2 |
+| `V(psi)` coefficients + soliton (P2 finding) | machinery is wired and sign-correct, but no stable core formed from a released-gaussian seed: weak `c1` is ~linear, stronger `c1<0` collapses (3D cubic instability), and the saturating quintic did not arrest it at the large CFL `dt` (`dt²≈523` amplifies the stiff term faster than the quintic catches it). The soliton needs a dedicated P5 search: a localized/stationary seed profile, a likely sub-CFL `dt` for the non-linear stiffness, and possibly a mass term. |
 | Frequency tracker | zero-crossing on a vector field needs a chosen component or `\|\|psi\|\|` extremum convention; pick and document one |
 | Boundary reflections | Dirichlet box may reflect radiated energy back onto WCs; if it pollutes #201, add a simple absorbing margin (still no vector calculus) |
 | #202 still blocked | emergent Coulomb needs the L/T div/curl split this cut omits; it is a deliberate follow-up, not delivered here |
