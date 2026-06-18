@@ -525,9 +525,9 @@ def display_wave_menu(state):
                     sub.text("0           max")
 
 
-def display_level_specs(state, level_bar_vertices):
-    """Display OpenWave level specifications overlay."""
-    render.canvas.triangles(level_bar_vertices, color=colormap.ORANGE[1])
+def display_model_specs(state, model_bar_vertices):
+    """Display OpenWave model specifications overlay."""
+    render.canvas.triangles(model_bar_vertices, color=colormap.ORANGE[1])
     with render.gui.sub_window("LIQUID-CRYSTAL MODEL (M5)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Tensor Field")
@@ -612,7 +612,7 @@ def initialize_xperiment(state):
     global bp_palette_vertices, bp_palette_colors
     global gy_palette_vertices, gy_palette_colors
     global br_palette_vertices, br_palette_colors
-    global level_bar_vertices
+    global model_bar_vertices
 
     # Initialize color palette scales for gradient rendering and level indicator
     og_palette_vertices, og_palette_colors = colormap.get_palette_scale(
@@ -630,7 +630,7 @@ def initialize_xperiment(state):
     br_palette_vertices, br_palette_colors = colormap.get_palette_scale(
         colormap.bluered, 0.00, 0.68, 0.079, 0.01
     )
-    level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
+    model_bar_vertices = colormap.get_model_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
     # (M5.8 ψ-retire: the legacy TEST_SEED Gaussian/plane-wave seeding path was
     # removed with the Vector(3) ψ engine — all live xperiments use TOPOLOGY_SEED.)
@@ -1254,7 +1254,7 @@ def main():
         # Display additional UI elements and scene
         display_wave_menu(state)
         display_data_dashboard(state)
-        display_level_specs(state, level_bar_vertices)
+        display_model_specs(state, model_bar_vertices)
         render.show_scene()
 
         # Capture frame for video export (stops after VIDEO_FRAMES)

@@ -276,9 +276,9 @@ def display_wave_menu(state):
                 sub.text(f"0       {state.peak_amplitude:.0e}m")
 
 
-def display_level_specs(state, level_bar_vertices):
-    """Display OpenWave level specifications overlay."""
-    render.canvas.triangles(level_bar_vertices, color=colormap.WHITE[1])
+def display_model_specs(state, model_bar_vertices):
+    """Display OpenWave model specifications overlay."""
+    render.canvas.triangles(model_bar_vertices, color=colormap.WHITE[1])
     with render.gui.sub_window("GRANULE-MOTION MODEL (M1)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Granule-Based Lattice")
         sub.text("Data-Structure: Vector Field")
@@ -347,7 +347,7 @@ def initialize_xperiment(state):
     """
     global og_palette_vertices, og_palette_colors
     global ib_palette_vertices, ib_palette_colors
-    global level_bar_vertices
+    global model_bar_vertices
 
     # Initialize color palettes for gradient rendering and level indicator
     og_palette_vertices, og_palette_colors = colormap.get_palette_scale(
@@ -356,7 +356,7 @@ def initialize_xperiment(state):
     ib_palette_vertices, ib_palette_colors = colormap.get_palette_scale(
         colormap.ironbow, 0.00, 0.73, 0.079, 0.01
     )
-    level_bar_vertices = colormap.get_level_bar_geometry(0.84, 0.00, 0.159, 0.01)
+    model_bar_vertices = colormap.get_model_bar_geometry(0.84, 0.00, 0.159, 0.01)
 
     # Initialize wave sources
     ewave.build_source_vectors(
@@ -514,7 +514,7 @@ def main():
         # Display additional UI elements and scene
         display_wave_menu(state)
         display_data_dashboard(state)
-        display_level_specs(state, level_bar_vertices)
+        display_model_specs(state, model_bar_vertices)
         render.show_scene()
 
         # Capture frame for video export (stops after VIDEO_FRAMES)
