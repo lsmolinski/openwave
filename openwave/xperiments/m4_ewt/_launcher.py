@@ -101,7 +101,7 @@ class XperimentManager:
 # ================================================================
 # SEED CONFIGURATION (P1; promote to xparameters later)
 # ================================================================
-SEED_MODE = 0  # 0 = gaussian (released from rest), 1 = radial cosine pulse
+SEED_MODE = 2  # base wave: 0 = gaussian pulse, 1 = radial cosine pulse, 2 = full
 SEED_BOOST = 1.0  # seed amplitude multiplier
 
 
@@ -223,9 +223,11 @@ class SimulationState:
             self.INIT_VELOCITY,
         )
 
-        # Derive the CFL-safe PDE timestep (needs dx_am), then seed the field once
+        # Derive the CFL-safe PDE timestep (needs dx_am), then seed the base wave once.
+        # The base wave is the medium's always-on ground-state vibration (EWT); it is
+        # sourced from the domain center, NOT from the wave centers (see seed_wave).
         self._compute_timestep()
-        ewave.seed_wave(self.wave_field, self.wave_center, SEED_MODE, SEED_BOOST)
+        ewave.seed_wave(self.wave_field, SEED_MODE, SEED_BOOST, self.dt_rs)
 
     def _compute_timestep(self):
         """Derive the CFL-safe PDE timestep and wave speed (am/rs).

@@ -54,17 +54,19 @@ psi_prev_am  = ti.Vector.field(3, ti.f32, shape=grid)   # psi at t-dt
 
 Trackers stay exactly as today (`medium.py:450-460`): `amp_local_emarms_am`, `freq_local_cross_rHz`, `last_crossing`, `energy_local_aJ`, plus the three global scalars. No new observable fields (the MEDIUM rule: keep trackers, do not add field observables, do not add the director / div / curl fields).
 
-### 4.2 Seed wave (replaces the hardcoded source sum)
+### 4.2 Seed wave = the EWT base wave (NOT wave-center sourced)
 
-A `seed_wave()` kernel, called once from the launcher before the main loop. It superposes the K wave centers (positions from `particle.py`), writes `psi_am`, and sets `psi_prev_am` to define the initial velocity. Inspiration: M5's multi-center radial superposition with soft-core blend (`engine1_seeds.py:80-146`); M2's `charge_full` / `charge_gaussian` (`wave_engine.py:30/93`), but **without** the charging/damping helpers (`compute_charge_envelope`, `compute_damping_factor`).
+In EWT the medium carries an **always-on base wave**: a background ground-state oscillation that fills the whole medium. Particles (wave centers) are localized disturbances riding *on top of* that base wave, not its source. So `seed_wave()` seeds the **base wave**, and it is sourced from the **domain (universe) center**, not from the WC positions. WC sourcing is a separate concern handled by the WC interaction modes in P3 (re-driving at WC positions). This corrects the initial P1 design, which incorrectly summed radial waves from the WC positions.
 
-| Seed mode | Per-center profile | `psi_prev` choice | M2/M5 analog |
+`seed_wave(wave_field, seed_mode, boost, dt_rs)` is called once from the launcher before the main loop. It writes `psi_am` and `psi_prev_am` (the latter sets the initial velocity), radial (longitudinal) displacement `psi = A * profile(r) * r_hat` about the domain center, interior only (Dirichlet `psi = 0` at the boundary). It takes **no** `wave_center` argument. Charging/damping helpers (`compute_charge_envelope`, `compute_damping_factor`) are intentionally omitted.
+
+| Seed mode | Profile (r = distance from domain center) | `psi_prev` | M2 analog |
 | --- | --- | --- | --- |
-| `gaussian` | `A * exp(-r^2 / 2 sigma^2) * r_hat`, `sigma = lambda/2` | `psi_prev = psi` (rest start) | M2 `charge_gaussian` |
-| `radial` | `A * cos(k r) / (k r) * r_hat`, soft-core `r_safe = max(r, r0)` | phase-shifted for outgoing velocity | M2 `charge_full` |
-| `superposed` | weighted sum over K centers, `w ~ 1/(r + floor)`, blended to 0 far field | `psi_prev = psi` | M5 `seed_hedgehog_M` |
+| 0 `gaussian` | `A * exp(-r^2 / 2 sigma^2) * r_hat`, `sigma = lambda/2` | `psi_prev = psi` (rest start) | `charge_gaussian` |
+| 1 `radial` | `A * exp(-r^2 / 2 sigma^2) * cos(k r) * r_hat` | `psi_prev = psi` (rest start) | (cosine-modulated) |
+| 2 `full` | `A * cos(omega t - k r) * r_hat`, domain-filling outgoing wave | `psi_prev` at `t = -dt` (outgoing velocity) | `charge_full` |
 
-Charge / particle identity stays geometric as today: the per-center `offset` phase in `particle.py:70` (0 = electron, pi = positron). The seed writes all three buffers consistently so the leapfrog starts clean.
+Mode 2 is the closest emulation of the always-on base wave (a domain-filling radial oscillation). Modes 0 and 1 are localized pulses, useful for clean propagation / energy-conservation tests. Charge / particle identity (the per-WC `offset` phase, `particle.py:70`) is no longer applied at seed time: it belongs to the WC re-driving in P3, since the base wave itself is particle-independent.
 
 ### 4.3 Laplacian (componentwise, no vector calculus)
 
@@ -192,8 +194,16 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | ✅ P1 Linear vector PDE | deleted WPSW + `select_voxels`; added `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wired launcher seed + CFL `dt_rs`/`c_amrs` | headless (40³, CFL²=0.30): no blowup, energy E/E0 ∈ [1.03, 1.07] flat over 80 steps, wavefront expands. GUI visual pass pending (Rodrigo) |
 | [ ] P2 Non-linear V | add `V_psi`/`dV_psi` + `V_MODE`; inject `-dt^2 dV` | linear mode == M2 baseline; focusing mode yields a localized, persistent core (soliton candidate) |
 | [ ] P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` / `_soft` + free mode; xparameter selector | each mode sustains a driven WC; A/B compare stability |
-| [ ] P4 Launcher + viz + specs | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; audit resolution/CFL | full run end-to-end; WCs seed, evolve, and move (force/motion intact) |
+| [ ] P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; audit resolution/CFL; clear the cleanup backlog below | full run end-to-end; WCs seed, evolve, and move (force/motion intact) |
 | [ ] P5 Re-attack #201 | K-selectivity on the non-linear substrate | does the non-linearity discriminate K=10? (the #201 question) |
+
+### P4 cleanup backlog (logged during P1)
+
+| Item | Where | Action |
+| --- | --- | --- |
+| Dead `selected_voxels` machinery | `medium.py:196-198` (`max_selected_voxels`, `selected_voxels`, `num_selected_voxels`) | remove; only the deleted `select_voxels()` used them |
+| Vestigial `TIMESTEP` slider | `_launcher.py` (slider + dashboard "Timestep") | repurpose to a `SIM_SPEED` control (0.5-1.0); the PDE now uses the CFL-derived `dt_rs` |
+| Seed config constants | `_launcher.py` `# SEED CONFIGURATION (P1; promote to xparameters later)` (`SEED_MODE`, `SEED_BOOST`) | promote to xparameters so seed mode / boost are per-xperiment |
 
 ## 7. Acceptance criteria
 

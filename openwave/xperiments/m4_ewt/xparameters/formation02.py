@@ -22,7 +22,7 @@ import numpy as np
 from openwave.common import constants
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
-TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
 
 # Lock spacing: λ in normalized coords (first lock-in well for Combined W-L)
 # The envelope 2|sin(kr/2)|/r has zeros at r=nλ — these are the energy minima
@@ -225,7 +225,7 @@ XPARAMETERS = {
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 1,
-        "WARP_MESH": 150,
+        "WARP_MESH": 30,
         "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "PARTICLE_SHELL": True,
         "TIMESTEP": 5.0,

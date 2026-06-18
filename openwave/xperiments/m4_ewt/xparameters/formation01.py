@@ -6,7 +6,7 @@ This XPERIMENT showcases:
 """
 
 UNIVERSE_EDGE = 5e-16  # m, universe edge length in meters
-TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
@@ -41,7 +41,7 @@ XPARAMETERS = {
         "SHOW_EDGES": False,  # Toggle to show/hide universe edges
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],  # [x, y, z] positions relative to universe size
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
-        "WARP_MESH": 100,  # Visual warp mesh effect intensity
+        "WARP_MESH": 20,  # Visual warp mesh effect intensity
         "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "PARTICLE_SHELL": False,  # Toggle to enable/disable particle shell rendering
         "TIMESTEP": 1.0,  # Simulation timestep in rontoseconds (10-27s)

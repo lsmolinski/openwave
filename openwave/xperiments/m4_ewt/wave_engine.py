@@ -39,67 +39,71 @@ rho_qgam = constants.MEDIUM_DENSITY_QGAM  # qg/am³, for energy computation in s
 @ti.kernel
 def seed_wave(
     wave_field: ti.template(),  # type: ignore
-    wave_center: ti.template(),  # type: ignore
     seed_mode: ti.i32,  # type: ignore
     boost: ti.f32,  # type: ignore
+    dt_rs: ti.f32,  # type: ignore
 ):
     """
-    Seed the vector field ψ from the K wave centers, once, before the main loop.
-
-    Replaces the analytical per-step source sum. Each active wave center contributes
-    a radial (longitudinal) displacement ψ = A·profile(r)·r̂, superposed over centers.
-    The previous buffer is set equal to ψ (rest start: ∂ψ/∂t = 0) so the leapfrog
-    begins from a consistent state. Charge polarity rides the per-center phase offset
-    (0 → +, π → −). Interior only (Dirichlet ψ=0 at the outer boundary).
+    Seed the medium's BASE WAVE: the always-on background oscillation of the medium
+    at its ground state (EWT). This is NOT sourced from the wave centers — in EWT the
+    base wave fills the whole medium and the wave centers are localized disturbances on
+    top of it, re-driven separately by the WC interaction modes (P3). The base wave
+    radiates from the DOMAIN (universe) center voxel as a radial (longitudinal)
+    displacement ψ = A·profile(r)·r̂. Interior only (Dirichlet ψ=0 at the outer boundary).
 
     seed_mode:
-        0 = gaussian : A·exp(-r²/2σ²)·cos(offset)·r̂        (σ = λ/2), released from rest
-        1 = radial   : A·exp(-r²/2σ²)·cos(k·r + offset)·r̂  (cosine-modulated radial pulse)
+        0 = gaussian : A·exp(-r²/2σ²)·r̂ (σ = λ/2) localized pulse, released from rest
+        1 = radial   : A·exp(-r²/2σ²)·cos(k·r)·r̂ cosine-modulated pulse, released from rest
+        2 = full     : A·cos(ω·t − k·r)·r̂ domain-filling outgoing radial wave (à la M2
+                       charge_full); ψ_prev is set at t = −dt to give an initial outgoing
+                       velocity. Closest emulation of the always-on base wave.
 
     Args:
         wave_field: WaveField instance (psi_am / psi_prev_am / psi_new_am)
-        wave_center: WaveCenter instance (positions, offsets, active flags)
-        seed_mode: initial-profile selector
+        seed_mode: base-wave profile selector
         boost: amplitude multiplier
+        dt_rs: timestep (rs), used by mode 2 to set the t = −dt previous buffer
     """
-    # Wavelength in grid units; Gaussian width σ = λ/2 (grid units)
+    # Domain (universe) center, in grid indices — the base-wave source
+    cx = wave_field.nx * 0.5
+    cy = wave_field.ny * 0.5
+    cz = wave_field.nz * 0.5
+
+    # Wave numbers in grid/scaled units; Gaussian width σ = λ/2 (grid units)
     wavelength_grid = base_wavelength * wave_field.scale_factor / wave_field.dx
     k_grid = 2.0 * ti.math.pi / wavelength_grid  # radians per grid index
+    omega_rs = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor  # rad/rs
     sigma_grid = wavelength_grid / 2.0
     amp = base_amplitude_am * wave_field.scale_factor * boost
 
-    # Seed ψ over interior voxels (Dirichlet ψ=0 at edges)
+    # Seed ψ (and ψ_prev) over interior voxels (Dirichlet ψ=0 at edges)
     for i, j, k in ti.ndrange(
         (1, wave_field.nx - 1), (1, wave_field.ny - 1), (1, wave_field.nz - 1)
     ):
-        psi = ti.Vector([0.0, 0.0, 0.0])
-        for wc_idx in range(wave_center.num_sources):
-            if wave_center.active[wc_idx] == 0:
-                continue
-            # Radial direction from this wave center to the voxel
-            cx = ti.cast(wave_center.position_grid[wc_idx][0], ti.f32)
-            cy = ti.cast(wave_center.position_grid[wc_idx][1], ti.f32)
-            cz = ti.cast(wave_center.position_grid[wc_idx][2], ti.f32)
-            dir_vec = ti.Vector(
-                [ti.cast(i, ti.f32) - cx, ti.cast(j, ti.f32) - cy, ti.cast(k, ti.f32) - cz]
-            )
-            r_grid = dir_vec.norm()
-            r_hat = dir_vec / (r_grid + 1e-6)
-            offset = wave_center.offset[wc_idx]
+        # Radial direction from the DOMAIN CENTER to this voxel
+        dir_vec = ti.Vector(
+            [ti.cast(i, ti.f32) - cx, ti.cast(j, ti.f32) - cy, ti.cast(k, ti.f32) - cz]
+        )
+        r_grid = dir_vec.norm()
+        r_hat = dir_vec / (r_grid + 1e-6)
+        node = ti.select(r_grid < 0.5, 0.0, 1.0)  # node at the exact center (r̂ undefined)
+        envelope = ti.exp(-(r_grid * r_grid) / (2.0 * sigma_grid * sigma_grid))
 
-            envelope = ti.exp(-(r_grid * r_grid) / (2.0 * sigma_grid * sigma_grid))
-            profile = envelope * ti.cos(offset)  # seed_mode 0 (gaussian, polarity from offset)
-            if seed_mode == 1:
-                profile = envelope * ti.cos(k_grid * r_grid + offset)  # radial cosine pulse
-
-            # Radial vector displacement; node at the source center (r̂ undefined there)
-            psi += amp * profile * r_hat * ti.select(r_grid < 0.5, 0.0, 1.0)
+        # Default: gaussian pulse released from rest (mode 0)
+        psi = amp * envelope * r_hat * node
+        psi_prev = psi
+        if seed_mode == 1:  # cosine-modulated radial pulse, released from rest
+            psi = amp * envelope * ti.cos(k_grid * r_grid) * r_hat * node
+            psi_prev = psi
+        elif seed_mode == 2:  # domain-filling outgoing base wave (à la charge_full)
+            psi = amp * ti.cos(-k_grid * r_grid) * r_hat * node
+            psi_prev = amp * ti.cos(omega_rs * (-dt_rs) - k_grid * r_grid) * r_hat * node
 
         wave_field.psi_am[i, j, k] = psi
+        wave_field.psi_prev_am[i, j, k] = psi_prev
 
-    # Rest start: ψ_prev = ψ (zero initial velocity); clear ψ_new
+    # Clear the next buffer
     for i, j, k in ti.ndrange(wave_field.nx, wave_field.ny, wave_field.nz):
-        wave_field.psi_prev_am[i, j, k] = wave_field.psi_am[i, j, k]
         wave_field.psi_new_am[i, j, k] = ti.Vector([0.0, 0.0, 0.0])
 
 
@@ -175,9 +179,7 @@ def propagate_wave(
         # Leap-Frog update (linear; nonlinear V added in P2)
         # Standard form: ψ_new = 2ψ - ψ_prev + (c·dt)²·∇²ψ
         psi_new = (
-            2.0 * wave_field.psi_am[i, j, k]
-            - wave_field.psi_prev_am[i, j, k]
-            + c2dt2 * laplacian
+            2.0 * wave_field.psi_am[i, j, k] - wave_field.psi_prev_am[i, j, k] + c2dt2 * laplacian
         )
         wave_field.psi_new_am[i, j, k] = psi_new
 
@@ -426,7 +428,7 @@ def update_flux_mesh_values(
                 energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_xy_vertices[i, j][2] = (
-                energy_value / univ_edge_z * warp_mesh
+                energy_value / univ_edge_z * warp_mesh / 10
                 + wave_field.flux_mesh_planes[2] * (wave_field.nz / wave_field.max_grid_size)
             )
 
@@ -473,7 +475,7 @@ def update_flux_mesh_values(
                 energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_xz_vertices[i, k][1] = (
-                energy_value / univ_edge_y * warp_mesh
+                energy_value / univ_edge_y * warp_mesh / 10
                 + wave_field.flux_mesh_planes[1] * (wave_field.ny / wave_field.max_grid_size)
             )
 
@@ -520,7 +522,7 @@ def update_flux_mesh_values(
                 energy_value, 0.0, trackers.energy_global_avg_aJ[None] * 2
             )
             wave_field.fluxmesh_yz_vertices[j, k][0] = (
-                energy_value / univ_edge_x * warp_mesh
+                energy_value / univ_edge_x * warp_mesh / 10
                 + wave_field.flux_mesh_planes[0] * (wave_field.nx / wave_field.max_grid_size)
             )
 
