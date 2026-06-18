@@ -1,0 +1,64 @@
+{
+ "question": "where does theta13 come from? (Duda: approximations / choice of potential?)",
+ "answer_short": "the SO(3)-breaking = a charged-lepton (second-rotation) correction to TBM. ROBUST: a CABIBBO-SIZE 1-2 correction gives theta13 ~ 9 deg ~ the measured 8.5 deg (the answer to 'where does theta13 come from'). TENSION (honest): a SINGLE 1-2 correction cannot fit all of NuFIT at once -- a real correction keeps delta_CP=180 but over-rotates theta12; fitting theta12 needs a phase that pushes delta_CP toward ~90-100; and theta23 stays ~45 (the 1-2 rotation cannot reach the upper-octant 48.5). The full fit needs more structure (a 2-3 piece, or a non-TBM neutrino sector) -> the field model's job.",
+ "cabibbo_angle_deg": 13.0,
+ "best_fit_2D": {
+  "theta_e_deg": 12.0,
+  "delta_e_deg": 290.0,
+  "chi2": 13.76,
+  "resulting": {
+   "t12": 32.79,
+   "t13": 8.45,
+   "t23": 44.37,
+   "dCP": 103.3
+  },
+  "nufit": {
+   "t12": 33.68,
+   "t13": 8.52,
+   "t23": 48.5,
+   "dCP": 177.0
+  },
+  "reading": "best single-1-2-correction fit: theta_e ~ Cabibbo-scale, theta12 + theta13 land near NuFIT, but delta_CP comes out ~100 (not 180) and theta23 stays ~45 (misses 48.5). The (theta12, theta13, delta_CP) trade-off is REAL: you can have any two, not all three, from a single 1-2 correction. delta_CP=180 (the SO(3) signature) needs a near-REAL correction, which over-rotates theta12. So delta_CP becomes a SHARP discriminator: NuFIT's delta_CP ~177 (near 180) currently FAVORS the near-real / SO(3)-preserving breaking, NOT a large complex correction."
+ },
+ "which_plane": {
+  "1-2 (Cabibbo-like)": {
+   "theta12": 25.99,
+   "theta13": 9.15,
+   "theta23": 44.26
+  },
+  "1-3": {
+   "theta12": 25.99,
+   "theta13": 9.15,
+   "theta23": 45.74
+  },
+  "2-3": {
+   "theta12": 35.26,
+   "theta13": 0.0,
+   "theta23": 58.0
+  }
+ },
+ "plane_verdict": "the 1-2 (Cabibbo-like) charged-lepton rotation reproduces the observed pattern (theta13 ~ Cabibbo/sqrt2, theta23 stays ~45, theta12 shifts down by the sum rule); a 1-3 rotation overshoots theta13 and misses the solar sum rule; 2-3 mostly moves theta23.",
+ "cabibbo_point": {
+  "theta_e_deg": 13.0,
+  "theta13_deg": 9.15,
+  "theta13_qlc_analytic": 9.19,
+  "theta12_deg": 25.99,
+  "theta23_deg": 44.26,
+  "solar_sum_theta12_plus_thetaC": 38.99,
+  "vs_nufit": {
+   "t12": 33.68,
+   "t13": 8.52,
+   "t23": 48.5,
+   "dCP": 177.0
+  }
+ },
+ "theta13_is_cabibbo_scale": true,
+ "exact_thetaC_over_sqrt2_excluded": "yes (gives ~9.2 deg; NuFIT ~8.5 deg now excludes the EXACT relation) -> target is CABIBBO-SCALE, not the exact relation",
+ "delta_CP": {
+  "real_correction_gives_deg": 180.0,
+  "phase_needed_for_nufit_177": 355.0,
+  "reading": "a REAL charged-lepton correction keeps delta_CP at 0/180 (still the SO(3) signature); a COMPLEX correction phase moves delta_CP continuously -> delta_CP measures the phase of the second rotation. NuFIT ~177 needs only a small phase."
+ },
+ "v_on_argument": "the calibration thread (#217) found V rotation-invariant on the SINGLE clock (dV/dclock=0), so V-on does NOT obviously break the rotation structure -> the charged-lepton / second-rotation correction is the more likely theta13 source than the potential. The inter-flavour V-on case needs the field sim (the follow-up).",
+ "scope": "EFFECTIVE-MODEL: the correction ANGLE is a parameter; the result is the MECHANISM + the Cabibbo scale. The field derivation of the correction SIZE (charged-lepton mass matrix #200 + V-on on the defect) is the named follow-up."
+}
