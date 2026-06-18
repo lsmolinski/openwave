@@ -196,21 +196,21 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | ✅ P1 Linear vector PDE | deleted WPSW + `select_voxels`; added `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wired launcher seed + CFL `dt_rs`/`c_amrs` | headless (40³, CFL²=0.30): no blowup, energy E/E0 ∈ [1.03, 1.07] flat over 80 steps, wavefront expands. GUI visual pass pending (Rodrigo) |
 | ✅ P2 Non-linear V (machinery) | added `V_psi`/`dV_psi` + `V_MODE` (4 modes, 2 coeffs); injected `-dt^2 dV`; launcher `V_MODE`/`V_C1`/`V_C2` (default off) | linear mode (`V_MODE=0`) == M2 baseline ✅; non-linear term active + sign-correct (focusing `c1<0` preserves peak vs defocusing `c1>0`) ✅. A stable soliton core was NOT obtained from a released-gaussian seed (pure cubic collapses in 3D; saturating quintic does not arrest it at the large CFL `dt`) → the soliton search is tracked in [#201](https://github.com/openwave-labs/openwave/issues/201) (oscillon route) |
 | ✅ P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` (bounded radiating pin) / `_soft` + free mode; launcher `WC_INTERACT_MODE`/`WC_BOOST`/`WC_RADIUS`/`WC_SIGMA` | headless (zero base field, 1 off-center WC): free=quiet, all 3 drives sustain the WC and stay bounded; dirichlet reflective (peak 3.1) vs neumann radiating (more E_tot, peak 1.8) vs soft back-reacting. Strict velocity-Neumann blew up → replaced by the bounded radiating pin |
-| ✅ P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; removed dead `selected_voxels`; `TIMESTEP`→`SIM_SPEED`; dashboard shows dt/CFL². xparameters migration of `SEED_`/`V_`/`WC_` configs **deferred until the engine settles** (the 3 backlog rows) | end-to-end ✅ (headless: seed→propagate→WC drive→force→motion; WC moved 2.9 vox, field bounded) |
+| ✅ P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; removed dead `selected_voxels`; `TIMESTEP`→`SIM_SPEED`; dashboard shows dt/CFL². `SEED_`/`V_`/`WC_` configs promoted to a per-xperiment `engine` xparameter section (2026-06-18) | end-to-end ✅ (headless: seed→propagate→WC drive→force→motion; WC moved 2.9 vox, field bounded) |
 
 The M4 substrate upgrade is P0-P4 (done). The downstream physics (single-oscillon search → golden-angle K-selectivity) is **research, tracked in OpenWave issue [#201](https://github.com/openwave-labs/openwave/issues/201)** (see the [scoping comment](https://github.com/openwave-labs/openwave/issues/201#issuecomment-4746612842)), not a phase of this engineering plan.
 
 ### Post-P4 cleanup backlog
 
-The first two items are done (P4). The three xparameters-migration items are **deferred until the engine settles** (decision 2026-06-18): the `SEED_`/`V_`/`WC_` configs stay as launcher globals for now (convenient one-line tweaks during ongoing non-linear tuning), to be promoted once the knobs stabilize.
+All items are done. The xparameters migration (deferred at P4) was completed 2026-06-18 once the M4 substrate froze: the `SEED_`/`V_`/`WC_` configs now live in each xperiment's `engine` section, read by the launcher via an `ENGINE_DEFAULTS` fallback.
 
 | Item | Where | Action |
 | --- | --- | --- |
 | ✅ Dead `selected_voxels` machinery | `medium.py` (`max_selected_voxels`, `selected_voxels`, `num_selected_voxels`) | removed (P4) |
 | ✅ Vestigial `TIMESTEP` slider | `_launcher.py` | repurposed to a `SIM_SPEED` control (0.5-1.0, live `c_amrs`); dashboard shows `dt_rs` + CFL² (P4) |
-| Seed config constants | `_launcher.py` `# SEED CONFIGURATION (P1; promote to xparameters later)` (`SEED_MODE`, `SEED_BOOST`) | promote to xparameters so seed mode / boost are per-xperiment |
-| Potential config constants | `_launcher.py` `# POTENTIAL CONFIGURATION (P2; promote to xparameters later)` (`V_MODE`, `V_C1`, `V_C2`) | promote to xparameters so the non-linear potential is per-xperiment |
-| WC interaction config constants | `_launcher.py` `# WAVE CENTER INTERACTION (P3; promote to xparameters later)` (`WC_INTERACT_MODE`, `WC_BOOST`, `WC_RADIUS`, `WC_SIGMA`) | promote to xparameters so the WC drive is per-xperiment |
+| ✅ Seed config constants | `_launcher.py` → xparameter `engine` section (`SEED_MODE`, `SEED_BOOST`) | promoted to per-xperiment xparameters |
+| ✅ Potential config constants | `_launcher.py` → xparameter `engine` section (`V_MODE`, `V_C1`, `V_C2`) | promoted to per-xperiment xparameters |
+| ✅ WC interaction config constants | `_launcher.py` → xparameter `engine` section (`WC_INTERACT_MODE`, `WC_BOOST`, `WC_RADIUS`, `WC_SIGMA`) | promoted to per-xperiment xparameters |
 
 ## 7. Acceptance criteria
 

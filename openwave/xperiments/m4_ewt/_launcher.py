@@ -99,27 +99,25 @@ class XperimentManager:
 
 
 # ================================================================
-# SEED CONFIGURATION (P1; promote to xparameters later)
+# ENGINE DEFAULTS (fallback when an xperiment omits the "engine" section)
 # ================================================================
-SEED_MODE = 2  # base wave: 0 = gaussian pulse, 1 = radial cosine pulse, 2 = full
-SEED_BOOST = 1.0  # seed amplitude multiplier
-
-
-# ================================================================
-# POTENTIAL CONFIGURATION (P2; promote to xparameters later)
-# ================================================================
-V_MODE = 1  # non-linear V(ψ): 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
-V_C1 = 0.0  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
-V_C2 = 0.0  # secondary coefficient (q for mode 2, b for mode 3)
-
-
-# ================================================================
-# WAVE CENTER INTERACTION (P3; promote to xparameters later)
-# ================================================================
-WC_INTERACT_MODE = 0  # 0 = free (no re-drive), 1 = dirichlet, 2 = neumann, 3 = soft
-WC_BOOST = 1.0  # WC drive amplitude multiplier (use a small value for soft mode)
-WC_RADIUS = 2  # WC drive region radius (voxels)
-WC_SIGMA = 1.5  # soft-mode Gaussian width (voxels)
+# The seed / potential / WC-interaction knobs are per-xperiment xparameters (the
+# "engine" section of each xparameter file). These defaults apply only when a file
+# does not specify a given key.
+ENGINE_DEFAULTS = {
+    # Base wave seed (P1)
+    "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
+    "SEED_BOOST": 1.0,  # seed amplitude multiplier
+    # Non-linear potential V(ψ) (P2)
+    "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+    "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+    "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+    # Wave-center interaction (P3)
+    "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
+    "WC_BOOST": 1.0,  # WC drive amplitude multiplier
+    "WC_RADIUS": 2,  # WC drive ball radius (voxels)
+    "WC_SIGMA": 1.5,  # soft-mode Gaussian width (voxels)
+}
 
 
 # ================================================================
@@ -178,6 +176,17 @@ class SimulationState:
         self.EXPORT_VIDEO = False
         self.VIDEO_FRAMES = 24
 
+        # Engine config (from the xperiment "engine" section; see ENGINE_DEFAULTS)
+        self.SEED_MODE = ENGINE_DEFAULTS["SEED_MODE"]
+        self.SEED_BOOST = ENGINE_DEFAULTS["SEED_BOOST"]
+        self.V_MODE = ENGINE_DEFAULTS["V_MODE"]
+        self.V_C1 = ENGINE_DEFAULTS["V_C1"]
+        self.V_C2 = ENGINE_DEFAULTS["V_C2"]
+        self.WC_INTERACT_MODE = ENGINE_DEFAULTS["WC_INTERACT_MODE"]
+        self.WC_BOOST = ENGINE_DEFAULTS["WC_BOOST"]
+        self.WC_RADIUS = ENGINE_DEFAULTS["WC_RADIUS"]
+        self.WC_SIGMA = ENGINE_DEFAULTS["WC_SIGMA"]
+
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
         # Meta
@@ -224,6 +233,18 @@ class SimulationState:
         self.EXPORT_VIDEO = diag["EXPORT_VIDEO"]
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
 
+        # Engine config (seed / potential / WC interaction); falls back to ENGINE_DEFAULTS
+        engine = {**ENGINE_DEFAULTS, **params.get("engine", {})}
+        self.SEED_MODE = engine["SEED_MODE"]
+        self.SEED_BOOST = engine["SEED_BOOST"]
+        self.V_MODE = engine["V_MODE"]
+        self.V_C1 = engine["V_C1"]
+        self.V_C2 = engine["V_C2"]
+        self.WC_INTERACT_MODE = engine["WC_INTERACT_MODE"]
+        self.WC_BOOST = engine["WC_BOOST"]
+        self.WC_RADIUS = engine["WC_RADIUS"]
+        self.WC_SIGMA = engine["WC_SIGMA"]
+
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
         self.wave_field = medium.WaveField(
@@ -244,7 +265,7 @@ class SimulationState:
         # The base wave is the medium's always-on ground-state vibration (EWT); it is
         # sourced from the domain center, NOT from the wave centers (see seed_wave).
         self._compute_timestep()
-        ewave.seed_wave(self.wave_field, SEED_MODE, SEED_BOOST, self.dt_rs)
+        ewave.seed_wave(self.wave_field, self.SEED_MODE, self.SEED_BOOST, self.dt_rs)
 
     def _compute_timestep(self):
         """Derive the CFL-safe PDE timestep and wave speed (am/rs).
@@ -460,33 +481,38 @@ def compute_wave_oscillation(state):
         state.c_amrs,
         state.dt_rs,
         state.elapsed_t_rs,
-        V_MODE,
-        V_C1,
-        V_C2,
+        state.V_MODE,
+        state.V_C1,
+        state.V_C2,
     )
 
     # Re-drive the wave centers on top of the base wave (P3). Mode 0 = free (no re-drive).
-    if WC_INTERACT_MODE == 1:
+    if state.WC_INTERACT_MODE == 1:
         ewave.interact_wc_dirichlet(
             state.wave_field,
             state.wave_center,
             state.elapsed_t_rs,
             state.dt_rs,
-            WC_BOOST,
-            WC_RADIUS,
+            state.WC_BOOST,
+            state.WC_RADIUS,
         )
-    elif WC_INTERACT_MODE == 2:
+    elif state.WC_INTERACT_MODE == 2:
         ewave.interact_wc_neumann(
             state.wave_field,
             state.wave_center,
             state.elapsed_t_rs,
             state.dt_rs,
-            WC_BOOST,
-            WC_RADIUS,
+            state.WC_BOOST,
+            state.WC_RADIUS,
         )
-    elif WC_INTERACT_MODE == 3:
+    elif state.WC_INTERACT_MODE == 3:
         ewave.interact_wc_soft(
-            state.wave_field, state.wave_center, state.elapsed_t_rs, WC_BOOST, WC_SIGMA, WC_RADIUS
+            state.wave_field,
+            state.wave_center,
+            state.elapsed_t_rs,
+            state.WC_BOOST,
+            state.WC_SIGMA,
+            state.WC_RADIUS,
         )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
