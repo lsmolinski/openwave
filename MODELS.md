@@ -42,7 +42,7 @@ Every file reference is an active link to the file in this repository (under `op
 
 ## PARTICLES (full spectrum)
 
-| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M4) |
 | --- | --- | --- | --- |
 | Charge quantization | ✅ [validated in-platform]<br>Topological winding number of the hedgehog defect (Gauss-Bonnet integer Q = ±1)<br>[`m5_1_winding.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v2/m5_1_winding.py) | ⚠️ [partially validated]<br>Mutual Chern-Simons linking number of A and J flux lines; elementary charge within 0.6% (author's claim + Lean 4 artifacts, not yet re-derived in-platform)<br>[`0d_canonical.md`](openwave/xperiments/m6_ouroboros/research/0d_canonical.md) | ❌ [honest negative]<br>Charge sign imposed via `cos(source_offset)`, not emergent from wave physics<br>[`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md)<br>→ open issue: [#203](https://github.com/openwave-labs/openwave/issues/203) |
 | Electron rest energy (mass) | ✅ [validated in-platform]<br>Hedgehog rest energy with Faber core regularization; mass pinned E ∝ 1/r₀, physical knob r₀ = 2.2132 fm → 0.511 MeV<br>[`m5_6_3b_faber_on_M.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v6/m5_6_3b_faber_on_M.py) | ✅ [validated in-platform]<br>Electron calibration H/Q = 1.6969 reproduced to 0.090% at g = 1.0 (canonical benchmark)<br>[`ouroboros_benchmark.py`](openwave/xperiments/m6_ouroboros/research/sandbox_v8/ouroboros_benchmark.py) | ⚠️ [partially validated]<br>Wave-center standing-wave lock-in demonstrated; mass values come from EWT's analytic equations, not yet from in-sim dynamics<br>[`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md)<br>→ open issue: [#203](https://github.com/openwave-labs/openwave/issues/203) |
@@ -62,7 +62,7 @@ Every file reference is an active link to the file in this repository (under `op
 
 ## FORCES
 
-| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M4) |
 | --- | --- | --- | --- |
 | Electric force (Coulomb 1/r) | ✅ [validated in-platform]<br>E(d) ~ 1/d between two hedgehogs from pure topology, R² = 0.978; reproduced on the production matrix field (R² = 0.97) + analytical page-18 cross-validation (R² = 0.996)<br>[`m5_1_coulomb.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v2/m5_1_coulomb.py), [`m5_4_coulomb_matrix.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v4/m5_4_coulomb_matrix.py) | 🚧 [not yet tested]<br>Static two-charge derivation exists at paper level; force-level Coulomb between chaoitons not yet tested in-platform<br>(none yet) | ❌ [honest negative]<br>Sinc envelope barriers block far-field attraction/repulsion; signed envelope is a modeling choice<br>[`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md)<br>→ open issue: [#202](https://github.com/openwave-labs/openwave/issues/202), [#203](https://github.com/openwave-labs/openwave/issues/203) |
 | Magnetic force | ⚠️ [partially validated]<br>The dual-F construction needs both the spatial Γ_i and the temporal Γ_0, supplied by the electron's de Broglie clock; the fixed-clock run computes exactly that: F_0i from the clock's Γ_0 with the spatial connection (the dipole appears only through the clock's time component Γ_0, pure twist is EM-silent; refs: Barnett effect; Aharonov-Bohm as vorticity, PRL 83, 1966; Zeeman via Coriolis-as-Lorentz, PRL 108, 264503). Per-defect magnetism = S¹-loop topology carried by the curl/transverse component; coherent macroscopic regimes structural; quantitative observability pending<br>[`m5_8_2r_electron_id.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_vn/m5_8_2r_electron_id.py), [`0b_question_tracker.md`](openwave/xperiments/m5_liquid_crystal/research/0b_question_tracker.md) § FORCES | ⚠️ [partially validated]<br>Contained in the A_μ Maxwell sector by construction; no per-defect magnetic structure computed<br>[`0d_canonical.md`](openwave/xperiments/m6_ouroboros/research/0d_canonical.md) | 🚧 [not yet tested]<br>Scalar model carries no polarization structure to support magnetism. Expected to be a result of particle spin.<br>→ open issue: [#203](https://github.com/openwave-labs/openwave/issues/203) |
@@ -74,7 +74,7 @@ Every file reference is an active link to the file in this repository (under `op
 
 ## WAVES + QUANTUM EMERGENCE
 
-| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| Criteria | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M4) |
 | --- | --- | --- | --- |
 | EM waves (Maxwell) | ✅ [validated in-platform]<br>Maxwell recovered by two independent routes: the hydrodynamic dictionary (abelian) and Faber's curvature R = Γ×Γ; tilt modes propagate at c, with the divergence/curl (electric/magnetic) decomposition of each defect's outgoing wave<br>[`m5_6_4a_hydro_em.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v6/m5_6_4a_hydro_em.py), [`m5_6_4b_faber_curvature_em.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v6/m5_6_4b_faber_curvature_em.py) | ✅ [validated in-platform]<br>A_μ is the electromagnetic four-potential by construction; delocalized J-field wave modes coexist with solitons<br>[`0d_canonical.md`](openwave/xperiments/m6_ouroboros/research/0d_canonical.md) | ⚠️ [partially validated]<br>Scalar wave propagation only (no polarization structure)<br>[`research/`](openwave/xperiments/m3_wolff_lafreniere/research/)<br>→ open issue: [#203](https://github.com/openwave-labs/openwave/issues/203) |
 | Quantum wave equation (Klein-Gordon) | ✅ [validated in-platform]<br>Klein-Gordon emerges from the biaxial twist with GEOMETRIC mass (minimal coupling to the hedgehog connection; the explicit mass term cancels, core regularization generates it)<br>[`m5_6_1_kg_operator_check.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v6/m5_6_1_kg_operator_check.py), [`m5_6_1b_twist_evolution.py`](openwave/xperiments/m5_liquid_crystal/research/sandbox_v6/m5_6_1b_twist_evolution.py) | 🚧 [not yet tested]<br>QM not derived; the classical field carries the e^{iωt} ansatz, quantum behavior is outside current scope<br>(none yet) | ⚠️ [partially validated]<br>The scalar wave equation is the postulated substrate, not an emergent result<br>[`0_WAVE_EQUATION.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_WAVE_EQUATION.md)<br>→ open issue: [#203](https://github.com/openwave-labs/openwave/issues/203) |
@@ -82,7 +82,7 @@ Every file reference is an active link to the file in this repository (under `op
 
 ### Summary count
 
-| Status | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| Status | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M4) |
 | --- | --- | --- | --- |
 | ✅ validated in-platform | 8 | 4 | 0 |
 | ⚠️ partial / with caveats | 7 | 5 | 8 |
@@ -99,7 +99,7 @@ The three frameworks escape Derrick's theorem three different ways (standing-wav
 
 The coverage matrix scores phenomena; this companion table scores the model-level attributes a reader needs to weigh the columns: parameter economy, what formal artifacts back the claims, and what would falsify each model next.
 
-| Attribute | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M3) |
+| Attribute | Liquid Crystal (M5) | Ouroboros (M6) | EWT (M4) |
 | --- | --- | --- | --- |
 | Free parameters | δ (quantum phase), g (gravity/time axis), plus 1-2 potential (LdG) coefficients; the boost dressing b enters the clock sector. Calibration handles: Faber r₀ (mass), Coulomb units<br>[`4c_convo_2026.06.08.md`](openwave/xperiments/m5_liquid_crystal/research/4c_convo_2026.06.08.md) | 3 claimed (g, λ, ω); the neutral sector's exact scaling symmetry closes the (g, λ) plane, making m_J parameter-free (in-platform result)<br>[`0c_sandbox_v11.md`](openwave/xperiments/m6_ouroboros/research/0c_sandbox_v11.md) | EWT's analytic wave constants (amplitude, wavelength, density); in-sim runs add documented envelope/threshold choices per script<br>[`0a_equations.md`](openwave/xperiments/m3_wolff_lafreniere/research/0a_equations.md) |
 | Formal artifacts | Every claim backed by a runnable open script + research note; documented negatives (M5.2, the M5.7 nulls) preserved as results<br>[`10_summary_report.md`](openwave/xperiments/m5_liquid_crystal/research/10_summary_report.md) § Reproduction | Author's Lean 4 proof artifacts (linking number, mountain-pass existence, power counting) + our independent numerical reproduction of the canonical profile and benchmark<br>[`0d_canonical.md`](openwave/xperiments/m6_ouroboros/research/0d_canonical.md) | Runnable scripts + an explicit honest-blockers status doc<br>[`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md) |
@@ -112,7 +112,7 @@ The coverage matrix scores phenomena; this companion table scores the model-leve
 | --- | --- |
 | Liquid Crystal (M5) | [`10_summary_report.md`](openwave/xperiments/m5_liquid_crystal/research/10_summary_report.md): the results-of-record; [`0b_M5_roadmap.md`](openwave/xperiments/m5_liquid_crystal/research/0b_M5_roadmap.md): full program; [`0b_question_tracker.md`](openwave/xperiments/m5_liquid_crystal/research/0b_question_tracker.md): emergence catalog + open questions |
 | Ouroboros (M6) | [`0d_canonical.md`](openwave/xperiments/m6_ouroboros/research/0d_canonical.md): canonical numerical specification |
-| EWT (M3) | [`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md): targets, achieved, honest blockers |
+| EWT (M4) | [`0_STATUS.md`](openwave/xperiments/m3_wolff_lafreniere/research/0_STATUS.md): targets, achieved, honest blockers |
 
 ## Contributing a model or a validation
 
