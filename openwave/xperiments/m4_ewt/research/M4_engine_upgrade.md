@@ -131,7 +131,7 @@ After the leapfrog update (`psi_am` now current), re-impose each active wave cen
 
 A fourth mode (`0`) is **free**: no re-drive (seed once, evolve freely), the purest #201 test of whether the non-linearity self-selects a stable soliton without forcing. All four are selectable for A/B testing.
 
-**Neumann finding (P3):** a strict velocity-Neumann pin (fixing `(psi - psi_prev)/dt`) is an unbounded integrator at the CFL `dt` (the drive period is under-resolved) and blows up. Mode 2 is therefore implemented as a value-bounded **outgoing radiating pin** (the `-k r` spatial phase sends energy outward, the flux-source role) rather than a raw velocity pin. A true velocity-Neumann would need the sub-CFL `dt` explored in P5.
+**Neumann finding (P3):** a strict velocity-Neumann pin (fixing `(psi - psi_prev)/dt`) is an unbounded integrator at the CFL `dt` (the drive period is under-resolved) and blows up. Mode 2 is therefore implemented as a value-bounded **outgoing radiating pin** (the `-k r` spatial phase sends energy outward, the flux-source role) rather than a raw velocity pin. A true velocity-Neumann would need a sub-CFL `dt` (the oscillon-search route, now tracked in [#201](https://github.com/openwave-labs/openwave/issues/201)).
 
 ## 5. Per-module work breakdown
 
@@ -194,15 +194,15 @@ Model-level specs to review (a PDE has requirements the analytical engine did no
 | --- | --- | --- |
 | ✅ P0 Rename + buffers | `psi_am` + `psi_prev_am` + `psi_new_am`; no behavior change | engine still runs identically on `psi_am` (headless smoke: 19³ grid, max \|ψ\| ≈ 19.4 am, energy populated, prev buffer 0.0) |
 | ✅ P1 Linear vector PDE | deleted WPSW + `select_voxels`; added `seed_wave`, `compute_laplacian`, `propagate_wave` (V off), swap; wired launcher seed + CFL `dt_rs`/`c_amrs` | headless (40³, CFL²=0.30): no blowup, energy E/E0 ∈ [1.03, 1.07] flat over 80 steps, wavefront expands. GUI visual pass pending (Rodrigo) |
-| ✅ P2 Non-linear V (machinery) | added `V_psi`/`dV_psi` + `V_MODE` (4 modes, 2 coeffs); injected `-dt^2 dV`; launcher `V_MODE`/`V_C1`/`V_C2` (default off) | linear mode (`V_MODE=0`) == M2 baseline ✅; non-linear term active + sign-correct (focusing `c1<0` preserves peak vs defocusing `c1>0`) ✅. A stable soliton core was NOT obtained from a released-gaussian seed (pure cubic collapses in 3D; saturating quintic does not arrest it at the large CFL `dt`) → the soliton search moves to P5 |
+| ✅ P2 Non-linear V (machinery) | added `V_psi`/`dV_psi` + `V_MODE` (4 modes, 2 coeffs); injected `-dt^2 dV`; launcher `V_MODE`/`V_C1`/`V_C2` (default off) | linear mode (`V_MODE=0`) == M2 baseline ✅; non-linear term active + sign-correct (focusing `c1<0` preserves peak vs defocusing `c1>0`) ✅. A stable soliton core was NOT obtained from a released-gaussian seed (pure cubic collapses in 3D; saturating quintic does not arrest it at the large CFL `dt`) → the soliton search is tracked in [#201](https://github.com/openwave-labs/openwave/issues/201) (oscillon route) |
 | ✅ P3 WC interaction modes | `interact_wc_dirichlet` / `_neumann` (bounded radiating pin) / `_soft` + free mode; launcher `WC_INTERACT_MODE`/`WC_BOOST`/`WC_RADIUS`/`WC_SIGMA` | headless (zero base field, 1 off-center WC): free=quiet, all 3 drives sustain the WC and stay bounded; dirichlet reflective (peak 3.1) vs neumann radiating (more E_tot, peak 1.8) vs soft back-reacting. Strict velocity-Neumann blew up → replaced by the bounded radiating pin |
 | ✅ P4 Launcher + viz + specs + cleanup | single psi, seed calls, no energy dashboard, no glyphs, scalar mesh + granule kept; removed dead `selected_voxels`; `TIMESTEP`→`SIM_SPEED`; dashboard shows dt/CFL². xparameters migration of `SEED_`/`V_`/`WC_` configs **deferred until the engine settles** (the 3 backlog rows) | end-to-end ✅ (headless: seed→propagate→WC drive→force→motion; WC moved 2.9 vox, field bounded) |
-| [ ] P5a Single oscillon | target a time-periodic **oscillon** (not a static soliton: Derrick / M5.2): add a mass term + localized seed + sub-CFL substepping; sweep (m², g, q, width, substeps). See "P5 scope" below | a localized time-periodic single-WC structure persists far beyond dispersal time |
-| [ ] P5b K-selectivity (#201) | golden-angle K wave centers on the oscillon substrate ([#201](https://github.com/openwave-labs/openwave/issues/201) / PR [#205](https://github.com/openwave-labs/openwave/pull/205)) | a verdict on whether K=10 is uniquely stable |
 
-### Post-P5 cleanup backlog
+The M4 substrate upgrade is P0-P4 (done). The downstream physics (single-oscillon search → golden-angle K-selectivity) is **research, tracked in OpenWave issue [#201](https://github.com/openwave-labs/openwave/issues/201)** (see the [scoping comment](https://github.com/openwave-labs/openwave/issues/201#issuecomment-4746612842)), not a phase of this engineering plan.
 
-The first two items are done (P4). The three xparameters-migration items are **deferred until the engine settles** (decision 2026-06-18): the `SEED_`/`V_`/`WC_` configs stay as launcher globals for now (convenient one-line tweaks during P5 tuning), to be promoted once the knobs stabilize.
+### Post-P4 cleanup backlog
+
+The first two items are done (P4). The three xparameters-migration items are **deferred until the engine settles** (decision 2026-06-18): the `SEED_`/`V_`/`WC_` configs stay as launcher globals for now (convenient one-line tweaks during ongoing non-linear tuning), to be promoted once the knobs stabilize.
 
 | Item | Where | Action |
 | --- | --- | --- |
@@ -212,44 +212,6 @@ The first two items are done (P4). The three xparameters-migration items are **d
 | Potential config constants | `_launcher.py` `# POTENTIAL CONFIGURATION (P2; promote to xparameters later)` (`V_MODE`, `V_C1`, `V_C2`) | promote to xparameters so the non-linear potential is per-xperiment |
 | WC interaction config constants | `_launcher.py` `# WAVE CENTER INTERACTION (P3; promote to xparameters later)` (`WC_INTERACT_MODE`, `WC_BOOST`, `WC_RADIUS`, `WC_SIGMA`) | promote to xparameters so the WC drive is per-xperiment |
 
-### P5 scope: oscillon search, then K-selectivity
-
-P5 is the physics phase P2 deferred: find a stable, localized single-wave-center structure on the non-linear substrate, then test #201 K-selectivity. It is research (outcomes not guaranteed); the scope below fixes the target, the levers, and the engine additions.
-
-**The key reframe: target an OSCILLON, not a static soliton.** OpenWave already established (CLAUDE.md, confirmed empirically in M5.2) that **Derrick's theorem forbids static stable solitons** in this class, and that EWT particles are **time-periodic resonances** (Zitterbewegung clocks). So P5 searches for an **oscillon / breather**: a spatially-localized, time-periodic, long-lived solution. This is why P2's released-gaussian search found only dispersal-vs-collapse: a static-focusing search has no time-periodic attractor to land on.
-
-**Why P2 found no core (recap):** released gaussian disperses; pure cubic focusing collapses (3D instability); the saturating quintic did not arrest it at the linear-CFL `dt` (`dt²≈523` amplifies the stiff non-linear term faster than the quintic catches it).
-
-**The three levers P5 adds / tunes:**
-
-| Lever | Current state | P5 change |
-| --- | --- | --- |
-| Potential | cubic / saturating / double-well, **no mass term** | add a Klein-Gordon mass `−m²ψ` (the mass gap an oscillon needs). Oscillon vehicle = "massive + saturating": force `= c²∇²ψ − m²ψ + g·u·ψ − q·u²·ψ` (focusing quartic + stabilizing sextic) |
-| Seed | base wave from domain center, `σ = λ/2` fixed | a single **localized bump with tunable width** at a chosen position as the oscillon initial guess (or imaginary-time relaxation to a bound profile) |
-| Numerics | one leapfrog step at the linear CFL `dt` | **sub-CFL substepping**: the non-linear stiffness is not bounded by the linear CFL, so substep `V` (or globally shrink `dt`) until the non-linear term is resolved |
-
-**Engine additions P5 will need (small, scoped):**
-
-| Addition | Detail |
-| --- | --- |
-| `mass2` (m²) in `propagate_wave` | force `= c²∇²ψ − mass2·ψ − dV_psi(...)` (Klein-Gordon mass, separate from the non-linear `V`) |
-| localized single-bump seed mode | a soliton/oscillon ansatz (gaussian/sech) with tunable width at a chosen position (not the domain-filling base wave) |
-| sub-CFL substepping | N substeps per frame, or a `dt` safety that accounts for the local non-linear frequency |
-| offline diagnostics (`research/` scripts, not shipped observables) | localization (Rg / core-energy fraction), lifetime (steps until disperse/collapse), oscillation period (FFT of central amplitude), energy conservation with `V` on |
-
-**Search method:** coarse-to-fine sweep over (m², g, q, seed width, substeps), scored by **lifetime × localization**. Optionally imaginary-time relaxation to find a bound profile, then real-time evolve to test persistence. A "soliton candidate" = a localized, time-periodic structure that persists for many oscillation periods, far longer than the linear gaussian's dispersal time.
-
-**Then #201 (K-selectivity):** once a single stable oscillon exists, place K wave centers in the **golden-angle (spherical phyllotaxis)** configuration from issue [#201](https://github.com/openwave-labs/openwave/issues/201) / PR [#205](https://github.com/openwave-labs/openwave/pull/205) and test whether **K=10** is uniquely stable (and, per the Onion model, whether `K>10` sheds into recursive shells). This is the #201 deliverable on the new substrate.
-
-**Out of P5 scope:** emergent Coulomb (#202) still needs the longitudinal/transverse `div`/`curl` split deferred from this whole cut, a separate future vector-calculus upgrade. If no oscillon is found with these levers, the next escalation is a complex / U(1) field (Q-balls), a larger ontology change (also out of scope).
-
-**Sub-phases + success criteria:**
-
-| Sub-phase | Goal | Success |
-| --- | --- | --- |
-| P5a single oscillon | a stable localized time-periodic single-WC structure | persists far beyond the dispersal time, localized, reproducible across a parameter window |
-| P5b K-selectivity | golden-angle K wave centers on the oscillon substrate | a verdict on whether `K=10` is uniquely stable (#201) |
-
 ## 7. Acceptance criteria
 
 | Criterion | Target |
@@ -257,15 +219,13 @@ P5 is the physics phase P2 deferred: find a stable, localized single-wave-center
 | Linear regression | `V_MODE=0` reproduces an M2-class free wave (dispersion-free propagation at `c`) |
 | Stability | CFL-respecting runs show no blow-up over a long horizon |
 | Energy (linear) | total energy drift small over the run (offline Hamiltonian check in `validations/`) |
-| Soliton (non-linear) | single WC under a focusing `V` holds a localized profile instead of dispersing |
-| M3 sanity | near-field standing-wave lock-in qualitatively reproduces M3 behavior |
 | Interaction modes | all four WC modes (Dirichlet / Neumann / soft / free) run and are A/B-selectable |
 
 ## 8. Open questions and risks
 
 | Item | Note |
 | --- | --- |
-| `V(psi)` coefficients + soliton (P2 finding) | machinery is wired and sign-correct, but no stable core formed from a released-gaussian seed: weak `c1` is ~linear, stronger `c1<0` collapses (3D cubic instability), and the saturating quintic did not arrest it at the large CFL `dt` (`dt²≈523` amplifies the stiff term faster than the quintic catches it). The soliton needs a dedicated P5 search: a localized/stationary seed profile, a likely sub-CFL `dt` for the non-linear stiffness, and possibly a mass term. |
+| `V(psi)` coefficients + soliton (P2 finding) | machinery is wired and sign-correct, but no stable core formed from a released-gaussian seed: weak `c1` is ~linear, stronger `c1<0` collapses (3D cubic instability), and the saturating quintic did not arrest it at the large CFL `dt` (`dt²≈523` amplifies the stiff term faster than the quintic catches it). The soliton search is tracked in [#201](https://github.com/openwave-labs/openwave/issues/201) (oscillon route): a localized seed profile, a likely sub-CFL `dt`, and a mass term, a time-periodic oscillon rather than a static soliton. |
 | Frequency tracker | zero-crossing on a vector field needs a chosen component or `\|\|psi\|\|` extremum convention; pick and document one |
 | Boundary reflections | Dirichlet box may reflect radiated energy back onto WCs; if it pollutes #201, add a simple absorbing margin (still no vector calculus) |
 | #202 still blocked | emergent Coulomb needs the L/T div/curl split this cut omits; it is a deliberate follow-up, not delivered here |
