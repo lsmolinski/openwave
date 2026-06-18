@@ -36,6 +36,7 @@ def init_UI(
     pkg_name = "OPENWAVE"
     title = pkg_name + " (v" + pkg_version + ")"
     width, height = pyautogui.size()
+    # For testing on smaller screens, uncomment the following line to use a fixed resolution:
     # width, height = 1470, 884  # uncomment to test on min supported resolution
 
     window = ti.ui.Window(title, (width, height), vsync=True)
