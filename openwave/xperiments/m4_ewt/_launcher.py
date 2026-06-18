@@ -99,6 +99,28 @@ class XperimentManager:
 
 
 # ================================================================
+# ENGINE DEFAULTS (fallback when an xperiment omits the "engine" section)
+# ================================================================
+# The seed / potential / WC-interaction knobs are per-xperiment xparameters (the
+# "engine" section of each xparameter file). These defaults apply only when a file
+# does not specify a given key.
+ENGINE_DEFAULTS = {
+    # Base wave seed (P1)
+    "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
+    "SEED_BOOST": 1.0,  # seed amplitude multiplier
+    # Non-linear potential V(ψ) (P2)
+    "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+    "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+    "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+    # Wave-center interaction (P3)
+    "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
+    "WC_BOOST": 1.0,  # WC drive amplitude multiplier
+    "WC_RADIUS": 2,  # WC drive ball radius (voxels)
+    "WC_SIGMA": 1.5,  # soft-mode Gaussian width (voxels)
+}
+
+
+# ================================================================
 # SIMULATION STATE
 # ================================================================
 
@@ -137,7 +159,12 @@ class SimulationState:
         self.WARP_MESH = 300
         self.SHOW_GRANULES = False
         self.PARTICLE_SHELL = False
-        self.TIMESTEP = 0.0
+        # PDE solver: CFL-derived timestep + wave speed (set in initialize_grid).
+        # SIM_SPEED scales the rendered wave speed (c_amrs); dt stays at the CFL bound.
+        self.SIM_SPEED = 1.0
+        self.c_amrs = 0.0
+        self.dt_rs = 0.0
+        self.cfl_factor = 0.0
         self.PAUSED = False
 
         # Color control variables
@@ -148,6 +175,17 @@ class SimulationState:
         self.INSTRUMENTATION = False
         self.EXPORT_VIDEO = False
         self.VIDEO_FRAMES = 24
+
+        # Engine config (from the xperiment "engine" section; see ENGINE_DEFAULTS)
+        self.SEED_MODE = ENGINE_DEFAULTS["SEED_MODE"]
+        self.SEED_BOOST = ENGINE_DEFAULTS["SEED_BOOST"]
+        self.V_MODE = ENGINE_DEFAULTS["V_MODE"]
+        self.V_C1 = ENGINE_DEFAULTS["V_C1"]
+        self.V_C2 = ENGINE_DEFAULTS["V_C2"]
+        self.WC_INTERACT_MODE = ENGINE_DEFAULTS["WC_INTERACT_MODE"]
+        self.WC_BOOST = ENGINE_DEFAULTS["WC_BOOST"]
+        self.WC_RADIUS = ENGINE_DEFAULTS["WC_RADIUS"]
+        self.WC_SIGMA = ENGINE_DEFAULTS["WC_SIGMA"]
 
     def apply_xparameters(self, params):
         """Apply parameters from xperiment parameter dictionary."""
@@ -181,7 +219,7 @@ class SimulationState:
         self.WARP_MESH = ui["WARP_MESH"]
         self.SHOW_GRANULES = ui.get("SHOW_GRANULES", False)
         self.PARTICLE_SHELL = ui["PARTICLE_SHELL"]
-        self.TIMESTEP = ui["TIMESTEP"]
+        self.SIM_SPEED = ui.get("SIM_SPEED", 1.0)  # PDE wave-speed scale (TIMESTEP retired)
         self.PAUSED = ui["PAUSED"]
 
         # Color defaults
@@ -194,6 +232,18 @@ class SimulationState:
         self.INSTRUMENTATION = diag["INSTRUMENTATION"]
         self.EXPORT_VIDEO = diag["EXPORT_VIDEO"]
         self.VIDEO_FRAMES = diag["VIDEO_FRAMES"]
+
+        # Engine config (seed / potential / WC interaction); falls back to ENGINE_DEFAULTS
+        engine = {**ENGINE_DEFAULTS, **params.get("engine", {})}
+        self.SEED_MODE = engine["SEED_MODE"]
+        self.SEED_BOOST = engine["SEED_BOOST"]
+        self.V_MODE = engine["V_MODE"]
+        self.V_C1 = engine["V_C1"]
+        self.V_C2 = engine["V_C2"]
+        self.WC_INTERACT_MODE = engine["WC_INTERACT_MODE"]
+        self.WC_BOOST = engine["WC_BOOST"]
+        self.WC_RADIUS = engine["WC_RADIUS"]
+        self.WC_SIGMA = engine["WC_SIGMA"]
 
     def initialize_grid(self):
         """Initialize or reinitialize the wave-field grid and wave-centers."""
@@ -210,6 +260,24 @@ class SimulationState:
             self.SOURCES_OFFSET_DEG,
             self.INIT_VELOCITY,
         )
+
+        # Derive the CFL-safe PDE timestep (needs dx_am), then seed the base wave once.
+        # The base wave is the medium's always-on ground-state vibration (EWT); it is
+        # sourced from the domain center, NOT from the wave centers (see seed_wave).
+        self._compute_timestep()
+        ewave.seed_wave(self.wave_field, self.SEED_MODE, self.SEED_BOOST, self.dt_rs)
+
+    def _compute_timestep(self):
+        """Derive the CFL-safe PDE timestep and wave speed (am/rs).
+
+        dt is set just inside the 3D Courant limit dt ≤ dx/(c·√3). SIM_SPEED scales
+        the rendered wave speed (c_amrs) without changing dt, so SIM_SPEED ≤ 1 stays stable.
+        """
+        CFL_SAFETY = 0.95  # margin below the 3D Courant boundary (1/√3)
+        c_phys_amrs = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND
+        self.c_amrs = c_phys_amrs * self.SIM_SPEED
+        self.dt_rs = CFL_SAFETY * self.wave_field.dx_am / (c_phys_amrs * (3**0.5))
+        self.cfl_factor = round((self.c_amrs * self.dt_rs / self.wave_field.dx_am) ** 2, 7)
 
     def reset_sim(self):
         """Reset simulation state."""
@@ -267,7 +335,7 @@ def display_controls(state):
         state.SHOW_GRANULES = sub.checkbox("Show Granule Motion", state.SHOW_GRANULES)
         state.PARTICLE_SHELL = sub.checkbox("Particle Shell", state.PARTICLE_SHELL)
         state.APPLY_MOTION = sub.checkbox("Apply Motion", state.APPLY_MOTION)
-        state.TIMESTEP = sub.slider_float("Timestep", state.TIMESTEP, 0.1, 15.0)
+        state.SIM_SPEED = sub.slider_float("Sim Speed", state.SIM_SPEED, 0.5, 1.0)
         if state.PAUSED:
             if sub.button(">> PROPAGATE EWAVE >>"):
                 state.PAUSED = False
@@ -314,9 +382,9 @@ def display_model_specs(state, model_bar_vertices):
     with render.gui.sub_window("EWT MODEL (M4)", 0.84, 0.01, 0.16, 0.16) as sub:
         sub.text("Medium: Indexed Voxel Grid")
         sub.text("Data-Structure: Vector Field")
-        sub.text("Coupling: Phase Sync")
-        sub.text("Propagation: Analytical Function")
-        sub.text("Boundary: Open (Non-Reflective)")
+        sub.text("Coupling: Non-linear Lagrangian")
+        sub.text("Propagation: PDE Solver")
+        sub.text("Boundary: Dirichlet Condition")
         if sub.button("Wave Notation Guide"):
             webbrowser.open(
                 "https://github.com/openwave-labs/openwave/blob/main/openwave/wave_notation.md"
@@ -356,7 +424,8 @@ def display_data_dashboard(state):
         sub.text(f"Wavelength: {state.wavelength_global_avg/state.wave_field.scale_factor:.1e} m")
 
         sub.text("\n--- TIME MICROSCOPE ---", color=colormap.LIGHT_BLUE[1])
-        sub.text(f"Timestep: {state.TIMESTEP:.2f} rs")
+        sub.text(f"Sim Speed: {state.SIM_SPEED:.2f}x")
+        sub.text(f"Timestep (dt): {state.dt_rs:.2f} rs  (CFL² {state.cfl_factor:.2f})")
         sub.text(f"Sim Steps (frames): {state.frame:,}")
         sub.text(f"Sim Time: {state.elapsed_t_rs:,.0f} rs")
         sub.text(f"Clock Time: {clock_time:.2f} s")
@@ -400,24 +469,50 @@ def initialize_xperiment(state):
 def compute_wave_oscillation(state):
     """Compute wave propagation, reflection, superposition and update tracker averages."""
 
-    if state.SHOW_FLUX_MESH == 0:
-        # Optimized mode: only compute wave center neighbors (selective voxels)
-        ewave.select_voxels(state.wave_field, state.wave_center)
-        num_selected = state.wave_field.num_selected_voxels[None]
-        ewave.propagate_wave_neighbors(
+    # Live sim-speed: scale the rendered wave speed; dt stays fixed at the CFL bound
+    c_phys = constants.WAVE_SPEED / constants.ATTOMETER * constants.RONTOSECOND
+    state.c_amrs = c_phys * state.SIM_SPEED
+    state.cfl_factor = round((state.c_amrs * state.dt_rs / state.wave_field.dx_am) ** 2, 7)
+
+    # PDE solver: leapfrog over all voxels every step (no selective-voxel shortcut)
+    ewave.propagate_wave(
+        state.wave_field,
+        state.trackers,
+        state.c_amrs,
+        state.dt_rs,
+        state.elapsed_t_rs,
+        state.V_MODE,
+        state.V_C1,
+        state.V_C2,
+    )
+
+    # Re-drive the wave centers on top of the base wave (P3). Mode 0 = free (no re-drive).
+    if state.WC_INTERACT_MODE == 1:
+        ewave.interact_wc_dirichlet(
             state.wave_field,
-            state.trackers,
             state.wave_center,
             state.elapsed_t_rs,
-            num_selected,
+            state.dt_rs,
+            state.WC_BOOST,
+            state.WC_RADIUS,
         )
-    else:
-        # Full grid mode: compute all voxels (for flux mesh visualization)
-        ewave.propagate_wave_full(
+    elif state.WC_INTERACT_MODE == 2:
+        ewave.interact_wc_neumann(
             state.wave_field,
-            state.trackers,
             state.wave_center,
             state.elapsed_t_rs,
+            state.dt_rs,
+            state.WC_BOOST,
+            state.WC_RADIUS,
+        )
+    elif state.WC_INTERACT_MODE == 3:
+        ewave.interact_wc_soft(
+            state.wave_field,
+            state.wave_center,
+            state.elapsed_t_rs,
+            state.WC_BOOST,
+            state.WC_SIGMA,
+            state.WC_RADIUS,
         )
 
     # IN-FRAME DATA SAMPLING & ANALYTICS ==================================
@@ -462,7 +557,7 @@ def compute_force_motion(state):
         force_motion.integrate_motion_leapfrog(
             state.wave_field,
             state.wave_center,
-            state.TIMESTEP,
+            state.dt_rs,
         )
     else:
         # Zero-out velocities if not integrating force to motion
@@ -471,7 +566,7 @@ def compute_force_motion(state):
 
     # Annihilation naturally occurs from wave physics, but needs numerical precision check
     # Detect and handle particle annihilation (opposite phase WCs meeting)
-    # Threshold: WCs can be at grid diagonal positions and TIMESTEP may cause larger jumps
+    # Threshold: WCs can be at grid diagonal positions and dt may cause larger jumps
     annihilation_threshold = state.wave_field.ewave_res / 2.0  # in voxels
     force_motion.detect_annihilation(state.wave_center, annihilation_threshold)
 
@@ -607,7 +702,7 @@ def main():
             # Run simulation step and update time
             compute_wave_oscillation(state)
             compute_force_motion(state)
-            state.elapsed_t_rs += state.TIMESTEP  # Accumulate simulation time
+            state.elapsed_t_rs += state.dt_rs  # Accumulate simulation time (PDE dt)
             state.frame += 1
 
         # Render scene elements

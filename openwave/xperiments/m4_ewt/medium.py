@@ -111,8 +111,12 @@ class WaveField:
         # PROPAGATED VECTOR FIELDS (values in attometers for f32 precision)
         # This avoids catastrophic cancellation in difference calculations
         # Scales 1e-17 m values to ~10 am, well within f32 range
-        # Wave displacement vector field (ψ)
-        self.displacement_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ
+        # Wave displacement vector field (ψ) — leapfrog triple buffer
+        # psi_am is the current field (renamed from displacement_am); prev/new added
+        # for the time-integrated PDE engine. Allocated now; wired in by the PDE phase.
+        self.psi_new_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t+dt
+        self.psi_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t
+        self.psi_prev_am = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)  # am, ψ at t-dt
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
         # TODO: check need for velocity field = pressure / density
         # Wave velocity vector field (v = dψ/dt)
@@ -182,16 +186,6 @@ class WaveField:
         self.fm_plane_z_idx = int(flux_mesh_planes[2] * self.nz)  # z index of flux mesh plane
 
         self.create_flux_mesh()
-
-        # ================================================================
-        # Voxel Selection: for optimized neighbor-only wave computation
-        # ================================================================
-        # When flux mesh visualization is off, we only need wave values at
-        # the 6 neighbors + center of each wave center (for force gradients).
-        # Max selected = 7 voxels per wave center (can have duplicates if WCs are close)
-        self.max_selected_voxels = 7 * 64  # support up to 64 wave centers
-        self.selected_voxels = ti.Vector.field(3, dtype=ti.i32, shape=self.max_selected_voxels)
-        self.num_selected_voxels = ti.field(dtype=ti.i32, shape=())
 
     @ti.kernel
     def populate_grid_lines(self):

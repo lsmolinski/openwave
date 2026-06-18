@@ -19,21 +19,22 @@ import random
 from openwave.common import constants
 
 # ── Universe ────────────────────────────────────────────────────────
-UNIVERSE_EDGE = 1e-15              # m
-TARGET_VOXELS = 100_000_000
+UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
+TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
 
-EWAVE_LENGTH   = constants.EWAVE_LENGTH
-LOCK_SPACING   = EWAVE_LENGTH / UNIVERSE_EDGE   # λ in normalised coords
+EWAVE_LENGTH = constants.EWAVE_LENGTH
+LOCK_SPACING = EWAVE_LENGTH / UNIVERSE_EDGE  # λ in normalised coords
 
 # ── Select K ────────────────────────────────────────────────────────
-K = 11                     # change to test 2..12
-PERTURBATION = 0.1         # fraction of λ, 0.0 = perfect golden‑angle
+K = 11  # change to test 2..12
+PERTURBATION = 0.1  # fraction of λ, 0.0 = perfect golden‑angle
 
 # ── Geometry ────────────────────────────────────────────────────────
 CENTER = (0.5, 0.5, 0.5)
 # Radius chosen so that mean inter‑WC distance ≈ λ/2 (the first lock‑in well).
 # For K=10 a radius ~0.35*LOCK_SPACING works well. Adjust if needed.
 SPHERE_RADIUS = 0.35 * LOCK_SPACING
+
 
 # ── Helper functions ─────────────────────────────────────────────────
 def golden_angle_positions(K, radius, center):
@@ -42,42 +43,40 @@ def golden_angle_positions(K, radius, center):
     Returns list of (x, y, z) in normalised coords.
     """
     points = []
-    phi = math.pi * (3.0 - math.sqrt(5.0))   # golden angle ~2.399963 rad
+    phi = math.pi * (3.0 - math.sqrt(5.0))  # golden angle ~2.399963 rad
     for i in range(K):
-        y = 1.0 - (2.0 * i + 1.0) / K         # y uniformly from 1 to -1
-        r_y = math.sqrt(1.0 - y * y)          # radius of circle at that y
+        y = 1.0 - (2.0 * i + 1.0) / K  # y uniformly from 1 to -1
+        r_y = math.sqrt(1.0 - y * y)  # radius of circle at that y
         theta = phi * i
         x = math.cos(theta) * r_y
         z = math.sin(theta) * r_y
-        points.append((
-            center[0] + x * radius,
-            center[1] + y * radius,
-            center[2] + z * radius
-        ))
+        points.append((center[0] + x * radius, center[1] + y * radius, center[2] + z * radius))
     return points
+
 
 def apply_perturbation(points, fraction, lock_spacing):
     """Random jitter ±fraction of lock_spacing for each coordinate."""
     jittered = []
-    for (x, y, z) in points:
+    for x, y, z in points:
         dx = random.uniform(-fraction, fraction) * lock_spacing
         dy = random.uniform(-fraction, fraction) * lock_spacing
         dz = random.uniform(-fraction, fraction) * lock_spacing
         jittered.append((x + dx, y + dy, z + dz))
     return jittered
 
+
 # ── Generate positions ──────────────────────────────────────────────
 raw_positions = golden_angle_positions(K, SPHERE_RADIUS, CENTER)
 POSITIONS = apply_perturbation(raw_positions, PERTURBATION, LOCK_SPACING)
 
-PHASES = [180] * K   # all same phase (electron‑like)
+PHASES = [180] * K  # all same phase (electron‑like)
 
 # ── XPARAMETERS ─────────────────────────────────────────────────────
 XPARAMETERS = {
     "meta": {
         "X_NAME": f"  /Golden-Angle K={K}",
         "DESCRIPTION": f"K={K} phyllotaxis stability test — "
-                       f"{'expect STABLE' if K == 10 else 'expect UNSTABLE'}",
+        f"{'expect STABLE' if K == 10 else 'expect UNSTABLE'}",
     },
     "camera": {
         "INITIAL_POSITION": [0.94, 0.91, 0.69],
@@ -94,6 +93,20 @@ XPARAMETERS = {
         # To add initial spin, uncomment and supply tangential velocities:
         # "VELOCITIES": compute_spin_velocities(raw_positions, CENTER, omega=...),
     },
+    "engine": {
+        # Base wave seed (P1)
+        "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
+        "SEED_BOOST": 1.0,  # seed amplitude multiplier
+        # Non-linear potential V(ψ) (P2)
+        "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+        "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+        "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+        # Wave-center interaction (P3)
+        "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
+        "WC_BOOST": 1.0,  # WC drive amplitude multiplier
+        "WC_RADIUS": 2,  # WC drive ball radius (voxels)
+        "WC_SIGMA": 1.5,  # soft-mode Gaussian width (voxels)
+    },
     "ui_defaults": {
         "SHOW_AXIS": False,
         "TICK_SPACING": 0.25,
@@ -101,7 +114,7 @@ XPARAMETERS = {
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 3,
-        "WARP_MESH": 150,
+        "WARP_MESH": 30,
         "PARTICLE_SHELL": True,
         "TIMESTEP": 5.0,
         "PAUSED": False,

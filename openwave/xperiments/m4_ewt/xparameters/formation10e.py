@@ -22,7 +22,7 @@ from openwave.common import constants
 from openwave.xperiments.m4_ewt.xparameters.formation02 import generate_K_positions
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
-TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
 
 # Lock spacing: λ in normalized coords (first lock-in well for Combined W-L)
 # The envelope 2|sin(kr/2)|/r has zeros at r=nλ — these are the energy minima
@@ -71,6 +71,20 @@ XPARAMETERS = {
         "PHASE_OFFSETS_DEG": PHASES,
         "APPLY_MOTION": True,
     },
+    "engine": {
+        # Base wave seed (P1)
+        "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
+        "SEED_BOOST": 1.0,  # seed amplitude multiplier
+        # Non-linear potential V(ψ) (P2)
+        "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+        "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+        "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+        # Wave-center interaction (P3)
+        "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
+        "WC_BOOST": 1.0,  # WC drive amplitude multiplier
+        "WC_RADIUS": 2,  # WC drive ball radius (voxels)
+        "WC_SIGMA": 1.5,  # soft-mode Gaussian width (voxels)
+    },
     "ui_defaults": {
         "SHOW_AXIS": False,
         "TICK_SPACING": 0.25,
@@ -78,7 +92,7 @@ XPARAMETERS = {
         "SHOW_EDGES": False,
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],
         "SHOW_FLUX_MESH": 1,
-        "WARP_MESH": 150,
+        "WARP_MESH": 30,
         "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "PARTICLE_SHELL": True,
         "TIMESTEP": 5.0,

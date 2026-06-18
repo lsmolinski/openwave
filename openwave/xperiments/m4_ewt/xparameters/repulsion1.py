@@ -6,7 +6,7 @@ This XPERIMENT showcases:
 """
 
 UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
-TARGET_VOXELS = 100_000_000  # Target voxel count (impacts performance)
+TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
 
 XPARAMETERS = {
     "meta": {
@@ -31,6 +31,20 @@ XPARAMETERS = {
         "PHASE_OFFSETS_DEG": [0, 0],
         "APPLY_MOTION": True,
     },
+    "engine": {
+        # Base wave seed (P1)
+        "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
+        "SEED_BOOST": 1.0,  # seed amplitude multiplier
+        # Non-linear potential V(ψ) (P2)
+        "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+        "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+        "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+        # Wave-center interaction (P3)
+        "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
+        "WC_BOOST": 1.0,  # WC drive amplitude multiplier
+        "WC_RADIUS": 2,  # WC drive ball radius (voxels)
+        "WC_SIGMA": 1.5,  # soft-mode Gaussian width (voxels)
+    },
     "ui_defaults": {
         "SHOW_AXIS": False,  # Toggle to show/hide axis lines
         "TICK_SPACING": 0.25,  # Axis tick marks spacing for position reference
@@ -38,7 +52,7 @@ XPARAMETERS = {
         "SHOW_EDGES": False,  # Toggle to show/hide universe edges
         "FLUX_MESH_PLANES": [0.5, 0.5, 0.5],  # [x, y, z] positions relative to universe size
         "SHOW_FLUX_MESH": 1,  # Flux Mesh toggle, 0: none, 1: xy, 2: xy+xz, 3: xy+xz+yz
-        "WARP_MESH": 300,  # Visual warp mesh effect intensity
+        "WARP_MESH": 30,  # Visual warp mesh effect intensity
         "SHOW_GRANULES": False,  # Toggle to show/hide granule particles (rendered as points)
         "PARTICLE_SHELL": True,  # Toggle to enable/disable particle shell rendering
         "TIMESTEP": 5.0,  # Simulation timestep in rontoseconds (10-27s)
