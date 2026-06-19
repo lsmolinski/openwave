@@ -5,4 +5,4 @@ to study particle and force emergence. GPU-accelerated.
 
 """
 
-__version__ = "1.2.4"
+__version__ = "1.2.5"
