@@ -14,17 +14,6 @@ them.
 
 **Status legend:** ✅ done · 🔶 in progress · 🚧 next · *(blank = pending)*.
 
-> **Curriculum refactor (2026-05-31).** Restructured 12 → 10 lessons, sprouted *by* learning the
-> curriculum. The old L1–L2–L3 arch is re-split into **L1 (the grid/medium/vacuum)** + **L2 (each
-> voxel's "personality" — the matrix, eigenvalues & the physics map, merging old L2+L3)**; the 4×4
-> bridge moved up to **L3** (right after the content lesson, since it's an eigenvalue-spectrum
-> extension); spin-½ folded into the clock at **L7**; handedness + composites is the finale at
-> **L10**. Old numbering: L1→split L1/L2, L2+L3→L2, L10→L3, L4–L9 unchanged, L7+L11→L7, L12→L10.
->
-> **L11 appended (2026-06-01).** A capstone — **"where the waves live"** — documented from a
-> voice-note discussion (not a taught Q&A). It resolves the wave-first-inception vs topology-first-
-> reality tension and sits after the L10 finale as a reflective bookend.
-
 ---
 
 ## Curriculum
@@ -645,8 +634,7 @@ spatial spin. ⚠️ Exact entry↔eigenvalue bookkeeping (`M₀₀` vs `g` vs t
 
 ### The two "times" — `dt` vs the matrix time axis
 
-The conceptual key (Rodrigo's Q, 2026-05-31): there is **one** physical time playing **two roles**,
-and the 3×3 sim uses only one:
+The conceptual key: there is **one** physical time playing **two roles**, and the 3×3 sim uses only one:
 
 | Role | Name | What it is | In 3×3? |
 | --- | --- | --- | --- |
@@ -660,7 +648,7 @@ and the 3×3 sim uses only one:
   the hand has no *time* direction to wind into, so it's a spatial proxy that **disperses** (M5.7.2).
   In **4×4** the hand sweeps a plane that **includes the time axis** — a space-time rotation — and
   *that* winding is the genuine de Broglie phase `e^{-iEt/ℏ}`.
-- **Wristwatch-per-voxel** (Rodrigo's image — correct): each voxel carries its own clock phase, and
+- **Wristwatch-per-voxel**: each voxel carries its own clock phase, and
   the phase *differing voxel-to-voxel* is literally what **momentum / de Broglie wavelength** is.
   *Caveat:* the clock is **not** purely-time and **not** purely-spatial — it's a rotation in a plane
   that **mixes** a space axis with the time axis. `n̂` stays the fixed axle; what winds is the frame in
@@ -671,14 +659,13 @@ and the 3×3 sim uses only one:
   into time*** so it can keep its own clock. A 3×3 particle just sits while `dt` passes; a 4×4 particle
   carries a hand that winds into time → the real clock.
 
-> 🚧 More physical analogies to develop here at teach time — Rodrigo flagged this as the key intuition
+> 🚧 More physical analogies to develop here at teach time
 > for the clock / time / gravity picture. Take the time it needs.
 
 ### Is the clock a second time? — coordinate vs proper time
 
-Tempting to read `dt` and the `clock_twist` as *two independent times* (Rodrigo Q&A 2026-06-01).
-Precise answer: **there is ONE time; the `clock_twist` is not a second dial — it is each particle's
-PROPER TIME.**
+Tempting to read `dt` and the `clock_twist` as *two independent times*.
+Precise answer: **there is ONE time; the `clock_twist` is not a second dial — it is each particle's PROPER TIME.**
 
 | | What it is |
 | --- | --- |
@@ -705,7 +692,7 @@ gravity gradient `ω` even varies across *space* = the `∇g` story, L8).
 
 ### `dt` is not fundamental — it emerges (the relational-time thesis)
 
-Push the question one level down (Rodrigo 2026-06-01) and `dt` itself stops being primitive:
+Push the question one level down and `dt` itself stops being primitive:
 
 - **`dt` is postulated in the sim (a fixed step), but physically it's an *average-out* shared-clock** —
   the coordinate time we humans perceive is the **statistical mean rate** of myriad particle-clocks.
@@ -733,10 +720,7 @@ clock (a rotation *into* time) and gravity (a *scaling* of time) are two operati
 
 ### Gravity = a "bend" in time (+ Wheeler + the render plan)
 
-Map it onto L2's Frank modes (Rodrigo's intuition, 2026-06-01 — and Wheeler agrees): a single
-**boost** is the *tilt* of `n̂` into the time axis; **gravity is when that tilt *varies across
-space*** — the gradient `∇g` — i.e. the **bend-analog** (a Frank-style distortion, but curving into
-*time*, not a spatial axis):
+Map it onto L2's Frank modes: a single **boost** is the *tilt* of `n̂` into the time axis; **gravity is when that tilt *varies across space*** — the gradient `∇g` — i.e. the **bend-analog** (a Frank-style distortion, but curving into *time*, not a spatial axis):
 
 | Sector | local move | the field you feel (its gradient) |
 | --- | --- | --- |
@@ -908,7 +892,7 @@ particle — it **is the shape of the knot**.
 
 ### Charge sign — uniaxial `±` vs biaxial `Q₈`
 
-"Where is the charge sign?" (Rodrigo, 2026-05-30) — it depends on the seed:
+"Where is the charge sign?" — it depends on the seed:
 
 | Seed | Charge knob | What "sign" means |
 | --- | --- | --- |
@@ -1164,8 +1148,7 @@ and the rod's orientation spreading. The escape: **4D** (the clock stabilizes or
 `H` must stay **constant** under Evolve PDE. This is *the* validation that the integrator + physics are
 right: a symplectic leapfrog conserves `H` to **~0.03% at small `dt`** (drift `2.15% → 1.13% → 0.03%`
 as `dt → 0`, M5.5.4). If `H` drifts, the dynamics are wrong. **Bounded-not-bug:** `H` can *slosh
-spatially* (the energy moves around) while the **total stays conserved** — that's healthy, not a
-blow-up (the GUI "Evolve PDE" check Rodrigo confirmed).
+spatially* (the energy moves around) while the **total stays conserved** — that's healthy, not a blow-up (the GUI "Evolve PDE").
 
 ### L6 Q&A / clarifications (2026-06-04)
 
@@ -1477,7 +1460,7 @@ questions (tied to the VIZ.4 session, 2026-05-30):
 | --- | --- |
 | **What IS the magnetic moment `m`?** A vector: the axis + strength of a current loop / spinning charge. For our defect it is the **clock's spin axis** (the `clock_twist` δ-axis, L7) — *not* an independent thing. Spin ⇒ moment. | The **YELLOW moment glyph** (`update_moment_glyph`) is a literal arrow of `m̂`. In VIZ.4 it's a hard-coded `+ẑ` placeholder; at M5.8 it becomes `m̂ ∝ ∫∇×n̂` (the real net circulation) — roadmap 5f stage-2. |
 | **Why does a static hedgehog have NO moment?** It's a pure electric charge: `∇·n̂≠0` (splay) but `∇×n̂≈0` (no circulation) ⇒ no `B`, no poles. A moment needs a *circulating* `B`, which needs a *twisting/spinning* defect (the clock). | This is exactly why VIZ.4 needed a **placeholder** dipole — the static seed produces no real `B` to color yet (`4b §4.5`). The real `B` appears only at M5.8. |
-| **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). Rodrigo's "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
+| **Where do the N/S poles come from?** `B = ∇×n̂` (a vector field). Color it by `B·r̂` (radial, from the defect center): red where `B` flows OUT (N hemisphere), blue where it flows IN (S) → `∝ cosθ` = the bar-magnet picture. *Axial* `B·ẑ` instead lights both ends red (the field's axial component) — real, but not "poles". | The **axial-vs-radial fix** we made this session (`_curl_signed_proj`, `curl_radial`). "2 red spheres" observation IS the axial projection; radial gives Duda's N-red-above / S-blue-below. |
 | **Moment vs spin vs charge — how do they differ?** Charge = `∇·n̂` (scalar, monopole, `1/r²` field). Moment = `∇×n̂` integrated (vector, dipole, `1/r³` field). Spin = the *mechanical* rotation generating the moment (`L=ℏ/2`). The moment is the *magnetic shadow* of the spin. | Three WAVE_MENU/glyph channels: WM6 / E glyphs (charge), WM7 / B glyphs + moment glyph (moment), WM2/WM3 amplitude/clock A/ω (the spin rate, L7). |
 | **Permanent magnet (Q8) — static B, no moving charge?** Aligned spin-topology: many defects with their moments `m̂` locked parallel ⇒ macroscopic static `B`. No *translating* charge needed — the "current" is the frozen collective spin (the L7 collective mode). | Forward link to the L7 collective mode + the M5.8 multi-defect work (5e). |
 
@@ -1841,7 +1824,7 @@ Two refinements keep the slogans exact:
   the geometry moves, and that movement is propelled by mass = stored geometric energy. The chain
   bottoms out in geometry, not in a clock or a "time stuff."
 
-**One more split — static vs the time-axis fields (Rodrigo, 2026-06-01).** **Electric** is the lone
+**One more split — static vs the time-axis fields.** **Electric** is the lone
 field that is *purely spatial and static* — present at rest, from the static topology alone.
 **Magnetic, gravity, and the clock's `(A, ω)` excess all switch on only with the 4th (time / clock) axis** (M5.8): a
 static defect is radial, so `∇×n̂ ≈ 0` — **no real magnetic field until the clock spins** (the spinning
