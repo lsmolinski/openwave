@@ -67,3 +67,9 @@ This is the strongest "M5 models the real electron" certification to date: all f
 - [x] honest note: g is a ratio but cross-sector-dependent (unlike α's single-sector Coulomb); the `4/α` bridge + box-convergence are the named refinements.
 
 Model: M5 Liquid Crystal. Physics-only, headless. Follows #208 (the α + Coulomb calibration that supplies the bridge).
+
+## Coverage-matrix cell prose (preserved from MODELS.md, condensed there 2026-06-19)
+
+The MODELS.md "Magnetic moment μ + spin J" cell (M5 column) was trimmed to a summary on 2026-06-19; its prior full descriptive text is preserved here for the record:
+
+> Comes from the de Broglie clock's continuous SO(2) field twisting of the electron hedgehog, consistent with the fixed-clock electron run: μ exists via the clock's tilt/precession channel (the pure twist phase is EM-silent); orbital J = 0 structurally (emergent E ∥ B); spin = the Noether clock charge L_int; this μ ≠ 0 (tilt) / μ = 0 (twist) / J = 0 structure is box-robust (24³/32³/48³), with the EM/QM/GEM sector split exact to 1e-11. g-factor (#219, 2026-06-17): right-order g ≈ 2, pairing the EM-active tilt μ with the validated twist-clock spin, bridged by K = 4/α (the field-definition (½)⁻² × the EM coupling 1/α from #208), gives g = 1.97 (24³), with the box ladder spanning [1.97, 2.22] across 24→48, bracketing the measured 2.0023. The 4-observable electron (mass, charge, μ, J) is structurally established. Caveats: the 4/α bridge is structurally-motivated (not yet first-principles); μ not box-converged (~+11%/step).

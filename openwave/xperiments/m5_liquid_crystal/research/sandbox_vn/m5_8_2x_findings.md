@@ -75,3 +75,9 @@ The #208 hypothesis is that the absolute scale (and the 28× gap) is set in the 
 - [x] the table of which results become physical numbers once the map exists
 
 Model: M5 Liquid Crystal. Physics-only, headless.
+
+## Coverage-matrix cell prose (preserved from MODELS.md, condensed there 2026-06-19)
+
+The MODELS.md "de Broglie clock (Zitterbewegung)" cell (M5 column) was trimmed to a summary on 2026-06-19; its prior full descriptive text is preserved here for the record:
+
+> Bounded, self-starting, frequency-rigid 3+1D time crystal: quadratic action fails, signed quartic saturates, ω₁ is a start-independent attractor; classified a molten clock that regularizes toward a cold ground state. Energy-minimum property: activating the clock-fuel boost sector lowers the seed rest energy to a minimum ≈ 21% below the clock-stopped (b = 0) value, reproducing the energy-vs-frequency minimum of the ϕ⁴ toymodel arXiv:2501.04036 (the de Broglie clock is the energy-minimizing state, so stopping the clock can only raise energy). Absolute scale (#208 / #217 / #218, 2026-06-17): the simulated clock runs 28× below the electron ZBW under the energy anchor, but this is a recoverable calibration SPLIT, not a model deficit: #208 fixes the scale-free unit map (two free dials c, ℏ) and lands α = |b|/(ℏc) ≈ 1/178 right-order from pure topology; #217 shows the gap is structural (V-on is null on frequency, the faithful F-commutator kinetic is bounded ×3.04); #218 closes it, the energy- and length-anchor (Faber r₀) routes BRACKET the ZBW and their geometric mean recovers it to ~13% (the joint E·r₀ = α·(π/4)·ℏc classical-radius relation). The ZBW scale is recoverable by anchoring energy + length jointly, not the energy postulate alone; the precision refinement (the mass-family test of the geo-mean law) is #220.
