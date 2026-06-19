@@ -94,6 +94,10 @@ OpenWave belongs to the **classical-field-theory-with-topology-and-nonlinearity 
 
 The shared insight: a sufficiently rich classical field, with the right nonlinearity and the right topology, can reproduce phenomena historically attributed to quantum behavior — without operators, Hilbert space, or probability amplitudes.
 
+### How We Work
+
+OpenWave is built to be disconfirmed. Every model is held to concrete, public pass/fail criteria ([MODELS.md](MODELS.md)), and results are reported as what they are, often ratios rather than finished physical numbers, with the limits stated plainly. We would rather find the flaw than defend the thesis, and we treat being wrong as progress. Critiques, replications, and refutations are as welcome as new models.
+
 ### Platform vs. Model — what survives if a model fails
 
 OpenWave is the **simulator and comparison engine**; the candidate frameworks contributed by Yee, Duda, Close, Werbos, and others are **models** running inside that simulator. The platform value comes from hosting multiple frameworks side-by-side on the same numerical engine, running them against shared observables, and providing cause-effect experimentation under perturbation. Those capabilities survive any individual model being wrong: if a candidate framework fails its pass criteria, the platform's value as a comparison engine is intact and another candidate can be tested. The simulator IS the product, not any particular physics it embeds. The model-by-model validation status lives in [MODELS.md](MODELS.md), the side-by-side comparison table with per-criteria status and the script behind every cell.
@@ -285,6 +289,10 @@ Check **[SYSTEM ARCHITECTURE](SYS_ARCH.md)** for more details on OpenWave's Pack
 </div>
 
 ## WANNA HELP?
+
+### WITH IDEAS (anyone, human or AI)
+
+You do not need to write code to contribute. Open a discussion or an issue to propose a reframe, challenge a result, flag an error, or replicate or refute any cell in [MODELS.md](MODELS.md). Some of the sharpest contributions here began as a single issue comment. Newcomers and AI agents are equally welcome.
 
 ### WITH DEVELOPMENT
 
