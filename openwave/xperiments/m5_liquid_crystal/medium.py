@@ -154,16 +154,17 @@ class TensorField:
         self.position_render = ti.Vector.field(3, dtype=ti.f32, shape=(self.nx * self.ny))  # flat
 
         # ================================================================
-        # MATRIX-FIELD SUBSTRATE (M5.4) — the Landau–de Gennes order parameter
+        # MATRIX-FIELD SUBSTRATE (M5.4 order parameter, M5.8.1 4×4 promotion)
         # ================================================================
-        # M(x) = O(x)·D·O^T(x), real-symmetric 3×3, stored as the full 9-component
-        # ti.Matrix.field(3,3) (decided 2026-05-26: matches the proven feasibility
-        # spike, ti.sym_eig-ready, no reassembly; the 6-component symmetric packing
-        # can swap in behind this accessor later if memory binds). Triple buffer
-        # mirrors the psi leapfrog convention — M_prev/M/M_new — for the matrix
-        # evolution that lands in M5.5. In M5.4 only M_am is populated (by the
-        # matrix seeders) and read (by eigen_decompose); M_prev/M_new are allocated
-        # now so the buffer layout is final.
+        # M(x) = O(x)·D·O^T(x), real-symmetric MDIM×MDIM = 4×4 since the M5.8.1
+        # promotion: the spatial 3×3 block (the M5.4 LdG order parameter D=diag(1,δ,0))
+        # PLUS the time/boost axis g at index 3, i.e. D=diag(1,δ,0,g). Stored as the
+        # full 16-component ti.Matrix.field(MDIM,MDIM) (M5.4 decision 2026-05-26: the
+        # dense matrix matches the proven feasibility spike, ti.sym_eig-ready, no
+        # reassembly; the symmetric-packing optimization can swap in behind this
+        # accessor later if memory binds). Triple buffer mirrors the psi leapfrog
+        # convention — M_prev/M/M_new — for the matrix evolution (M5.5 onward);
+        # eigen_decompose reads the spatial [0:3,0:3] block, the time axis stays g.
         self.M_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t (4×4: spatial 0:3 + time idx 3)
         self.M_prev_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
         self.M_new_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
