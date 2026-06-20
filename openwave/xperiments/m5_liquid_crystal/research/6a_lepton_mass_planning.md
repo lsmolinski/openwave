@@ -2,7 +2,9 @@
 
 ## Status
 
-Issue #200 is OPEN (board: Next). The first pass (M5.9.1 + M5.9.3) correctly DIAGNOSED the missing ingredient (a core-volume confiner / Higgs-like vacuum) but used a setup too simplified to compute the masses. Dr. Duda reviewed the posted result and corrected the direction. This doc captures his review, evaluates it, inventories what the real engine already provides, and scopes the serious build.
+Issue #200 is OPEN (board: Next). The first pass (M5.9.1 + M5.9.3) correctly DIAGNOSED the missing ingredient (a core-volume confiner / Higgs-like vacuum) but used a setup too simplified to compute the masses. Dr. Duda reviewed the posted result and corrected the direction. This doc captures his review, evaluates it, inventories what the real engine already provides, and scopes the full production engine build.
+
+> **Execution status (2026-06-20): the full production engine build RAN, locally.** Sub-tasks 1-6 are complete on the production 4x4 engine. Scripts: `m5_9_4_engine_lepton.py` (the signed-energy ledger with the negative boost-GEM gravity + clock-oscillation contributions; minimization) and `m5_9_5_higgs_clock_spectrum.py` (the Higgs/confiner scale-selection, the #220 dynamical clock scan, the spectrum attempt). Results + the honest frontier map are written up in [`m5_9_lepton_mass_clock_findings.md`](m5_9_lepton_mass_clock_findings.md) § "M5.9.4-5: the full production engine 4x4 build". Step-by-step progress in [`checkpoints/`](checkpoints/). All LOCAL: nothing posted to the issue or committed yet (Rodrigo commits/PRs, then publishes the distilled writeup to #200). Headline: the negative gravity term is real and dominant; the Higgs/confiner does not robustly select a scale on the production V (open); the hierarchy origin stays input; the dynamical clock readout is stability-limited. A convincing documented framework + a precise open-problem map (matching mu/tau in one pass was never the bar).
 
 ## Dr. Duda's review (verbatim, 2026-06-20, models-of-particles list)
 
@@ -36,11 +38,11 @@ Reference he gives: Faber MTF regularization paper, MDPI Universe 11/4/113 (2025
 | "the most difficult is regularization in the center of singularity, depending on a Higgs-like potential deforming diag(g,1,delta,0) ... details still to be found" | Confirms our diagnosis (the confiner / Higgs term is the missing piece) but corrects the setting: it deforms the 4x4 `diag(g,1,delta,0)`, not the 3x3, and the exact form is genuinely unknown (an open search). | ✅ confirms + sharpens |
 | "I have no idea what parameters are used (g, delta...); the Python files are much too simple" | Fair, with a clarification: our `sandbox_v9` scripts WERE simple (numpy toys, `delta=0.3` hardcoded, no `g`). But the production M5 engine is NOT simple, it is a full 4x4 Taichi field with documented parameters (see the inventory below). The fix is to run the build on the PRODUCTION engine and document every parameter, not to write more toy scripts. | ✅ valid (methodology) |
 
-**Net.** We correctly diagnosed the missing ingredient, and Duda agrees that is the crux. But the setup was too simplified to compute the masses: wrong field dimension (3x3, no gravity/clock), wrong method (fixed ansatz, not minimization), and the toy scripts hid the real (documented) engine. The "E ~ Lambda^3" result is a toy artifact, not a physics claim. Duda is raising the bar to a serious simulation, not rejecting the direction.
+**Net.** We correctly diagnosed the missing ingredient, and Duda agrees that is the crux. But the setup was too simplified to compute the masses: wrong field dimension (3x3, no gravity/clock), wrong method (fixed ansatz, not minimization), and the toy scripts hid the real (documented) engine. The "E ~ Lambda^3" result is a toy artifact, not a physics claim. Duda is raising the bar to a full production engine simulation, not rejecting the direction.
 
 ## A unifying insight (#200 + #220)
 
-The fix for #200 is the SAME machinery flagged as the residual for #220. Both need the dynamical 4x4 clock field: #200's masses need the clock oscillation + boost (the negative contributions); #220's clock-scaling needs the V-on dynamical readout. One serious build closes both. The clock and the mass are intertwined: the de Broglie clock energy is part of what sets the rest mass.
+The fix for #200 is the SAME machinery flagged as the residual for #220. Both need the dynamical 4x4 clock field: #200's masses need the clock oscillation + boost (the negative contributions); #220's clock-scaling needs the V-on dynamical readout. One full production engine build closes both. The clock and the mass are intertwined: the de Broglie clock energy is part of what sets the rest mass.
 
 ## What the production engine already provides (the inventory)
 
@@ -87,7 +89,7 @@ Compute the charged-lepton rest masses by ENERGY MINIMIZATION on the full 4x4 fi
 
 ### Definition of done
 
-A documented, energy-minimizing 4x4 simulation that: (a) reproduces the electron rest energy by MINIMIZATION (not the fixed ansatz), (b) includes the negative boost + clock contributions in the rest mass, (c) searches the Higgs-potential form for one that selects discrete core scales, (d) reports the three lepton masses (or, honestly, how far off they are and what the potential search showed), (e) ships a full parameter block + the minimizing configurations, reproducible by a third party. Honest: matching mu/tau is NOT guaranteed in one pass; the convincing deliverable is the serious documented framework + the potential search, whether or not the spectrum lands.
+A documented, energy-minimizing 4x4 simulation that: (a) reproduces the electron rest energy by MINIMIZATION (not the fixed ansatz), (b) includes the negative boost + clock contributions in the rest mass, (c) searches the Higgs-potential form for one that selects discrete core scales, (d) reports the three lepton masses (or, honestly, how far off they are and what the potential search showed), (e) ships a full parameter block + the minimizing configurations, reproducible by a third party. Honest: matching mu/tau is NOT guaranteed in one pass; the convincing deliverable is the complete documented framework + the potential search, whether or not the spectrum lands.
 
 ### Sub-tasks (sequence)
 
