@@ -49,7 +49,7 @@ blows up). m5_9_5_results.json (2.1K) + png (59K). All HONEST results below.
   negative contributions but does NOT make the spectrum emerge. Honest, expected per the DoD.
 
 ## Net for the writeup (sub-task 6 next)
-The serious build DELIVERS what Duda asked (4x4, negative gravity + oscillation terms, minimization,
+The full production engine build DELIVERS what Duda asked (4x4, negative gravity + oscillation terms, minimization,
 documented params) and HONESTLY maps the frontier: (i) the boost-GEM negative gravity term is real and
 dominant, (ii) the Higgs/confiner does not robustly select a scale on the production V (open), (iii) the
 hierarchy origin stays input, (iv) the dynamical clock readout is stability-limited. This is a convincing

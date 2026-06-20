@@ -9,16 +9,16 @@ Two issues that the contributor reframes (onspotgithub, 2026-06-18) collapse int
 
 | Pass | Scripts | Field | Method | Status |
 | --- | --- | --- | --- | --- |
-| Serious 4x4 build (§ below, FIRST READ) | `m5_9_4_engine_lepton.py`, `m5_9_5_higgs_clock_spectrum.py` | production 4x4 `diag(g,1,delta,0)` (boost axis live) | signed (Minkowski) energy minimization | current state of the art |
+| Full production engine build (§ below, FIRST READ) | `m5_9_4_engine_lepton.py`, `m5_9_5_higgs_clock_spectrum.py` | production 4x4 `diag(g,1,delta,0)` (boost axis live) | signed (Minkowski) energy minimization | current state of the art |
 | Toy 3x3 precursor (lower sections) | `m5_9_1`, `m5_9_2`, `m5_9_3` | 3x3 `diag(1,delta,0)`, fixed Faber ansatz | evaluate / scan fixed profile | superseded on field dimension + the negative terms; the confiner DIAGNOSIS it reached stays valid |
 
-The toy correctly DIAGNOSED the missing ingredient (a core-volume confiner) but was too simplified to compute masses: a 3x3 field with no `g` (gravity/boost) axis and no clock cannot see the NEGATIVE energy contributions, and a fixed Faber profile is not a minimization. A second-pass review on the models-of-particles list (2026-06-20) flagged exactly this. The serious build below runs on the production 4x4 Taichi engine, adds the signed-energy ledger that makes the negative gravity + oscillation contributions explicit, minimizes (Faber as the starting point only), and documents every parameter.
+The toy correctly DIAGNOSED the missing ingredient (a core-volume confiner) but was too simplified to compute masses: a 3x3 field with no `g` (gravity/boost) axis and no clock cannot see the NEGATIVE energy contributions, and a fixed Faber profile is not a minimization. A second-pass review on the models-of-particles list (2026-06-20) flagged exactly this. The full production engine build below runs on the 4x4 Taichi engine, adds the signed-energy ledger that makes the negative gravity + oscillation contributions explicit, minimizes (Faber as the starting point only), and documents every parameter.
 
-## M5.9.4-5: the serious 4x4 build (FIRST READ)
+## M5.9.4-5: the full production engine 4x4 build (FIRST READ)
 
 ### Why (the second-pass review, 2026-06-20)
 
-| Point raised | What the toy did wrong | What the serious build does |
+| Point raised | What the toy did wrong | What the full production engine build does |
 | --- | --- | --- |
 | "require full 4x4 field allowing negative mass/energy contributions from gravity and oscillations" | 3x3, no `g` axis, no clock => only POSITIVE gradient + potential | production 4x4 `diag(g,1,delta,0)`, boost axis live + the de Broglie clock; a signed (Minkowski) ledger exposes the negative terms |
 | "Faber's ansatz is only the starting point of energy minimization" | evaluated/scanned the FIXED profile `s(r)=r/sqrt(r^2+r0^2)` | gradient-flow minimization (overdamped, `M_prev<-M` each step) relaxes the seed |
@@ -75,7 +75,7 @@ The engine's DISPLAY energy (`compute_energyH_density_M`) is Euclidean (Frobeniu
 
 `H_signed` is non-monotonic in `delta` (minimum at the production `delta=0.30`), spanning 158x over `delta in [0.15,0.70]`; the tau needs 3477x. So `delta` is not the lepton-mass knob, and the discrete hierarchy does not emerge from the biaxial structure on the real engine either. Consistent with the toy's `E~Lambda^3` verdict: the negative contributions are now correctly included, but the hierarchy ORIGIN (why three, why 206.8 / 3477) stays Yukawa input.
 
-### Net for the serious build
+### Net for the full production engine build
 
 The 4x4 build delivers what the second-pass review asked for: the full field with the negative gravity + oscillation contributions made explicit and measured, real energy minimization (Faber as the start only), and fully documented parameters. It HONESTLY maps the frontier: (i) the boost-GEM negative gravity term is real and dominant; (ii) the production Higgs/confiner does not robustly select a scale (open); (iii) the eigenvalue hierarchy origin stays input; (iv) the dynamical clock readout is stability-limited. A convincing documented framework plus a precise open-problem map, which is the honest deliverable (matching mu/tau in one pass was never guaranteed). Artifacts: `m5_9_4_results.json` (17K), `m5_9_4_ledger.png` (70K), `m5_9_5_results.json` (2.1K), `m5_9_5_results.png` (59K); all kept (< 1 MB).
 

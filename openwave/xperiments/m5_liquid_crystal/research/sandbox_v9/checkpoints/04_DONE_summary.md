@@ -1,4 +1,4 @@
-# Checkpoint 04 - #200 serious build COMPLETE (local)
+# Checkpoint 04 - #200 full production engine build COMPLETE (local)
 
 Go 2026-06-20 08:31 EDT. All sub-tasks 1-6 done on the production 4x4 engine. Nothing posted to
 GitHub / committed (Rodrigo's call). The distilled writeup goes to issue #200 only after he commits.
@@ -9,9 +9,9 @@ GitHub / committed (Rodrigo's call). The distilled writeup goes to issue #200 on
 | --- | --- |
 | `m5_9_4_engine_lepton.py` | production 4x4 engine + signed-energy ledger (boost-GEM negative gravity + clock-negative oscillation) + gradient-flow minimization + electron calibration; env-parameterized |
 | `m5_9_5_higgs_clock_spectrum.py` | Higgs/confiner scale-selection (A) + #220 dynamical clock omega(r0) (B) + delta-scan spectrum (C) |
-| `m5_9_lepton_mass_clock_findings.md` | § "M5.9.4-5: the serious 4x4 build (FIRST READ)" - full writeup, toy kept below as precursor |
+| `m5_9_lepton_mass_clock_findings.md` | § "M5.9.4-5: the full production engine 4x4 build (FIRST READ)" - full writeup, toy kept below as precursor |
 | `m5_9_4_results.json` (47^3), `m5_9_4_results_64.json` (63^3), `m5_9_5_results.json` + 3 PNGs | data + plots, all < 70K |
-| `6a_lepton_mass_planning` | Status updated: serious build RAN locally |
+| `6a_lepton_mass_planning` | Status updated: full production engine build RAN locally |
 | `checkpoints/00-04` | step-by-step progress |
 
 ## What it answers (Duda's review)
@@ -29,7 +29,7 @@ GitHub / committed (Rodrigo's call). The distilled writeup goes to issue #200 on
 - #220 dynamical omega(r0): blocked by (clock period >> CFL window) + (constrained integrator instability at long t); analytic scale-covariance principle stands, REFINED (production V non-covariant)
 
 ## Bar check
-DoD said matching mu/tau in one pass was never guaranteed; the deliverable is the serious documented
+DoD said matching mu/tau in one pass was never guaranteed; the deliverable is the full documented
 framework + the potential search, honest about what lands. Delivered exactly that with real
 production-engine runs (47^3 + 63^3 confirmation), the load-bearing new physics (the signed ledger),
 real minimization, and an honest frontier map. Did not fake a spectrum match.

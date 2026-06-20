@@ -1,7 +1,7 @@
 """
 M5.9.4 - lepton rest-energy ledger on the PRODUCTION 4x4 engine, WITH the negative
-energy contributions (boost-GEM + clock activation). The serious replacement for the
-3x3 numpy toy (m5_9_1/2/3) that Dr. Duda correctly flagged as too simplified.
+energy contributions (boost-GEM + clock activation). The full production engine replacement
+for the 3x3 numpy toy (m5_9_1/2/3) that Dr. Duda correctly flagged as too simplified.
 
 WHY THIS SCRIPT EXISTS (Duda's review, 2026-06-20):
   - "3x3 diag(1,delta,0) ... they definitely require full 4x4 field, allowing negative
