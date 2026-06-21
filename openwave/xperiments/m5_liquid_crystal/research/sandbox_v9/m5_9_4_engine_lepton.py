@@ -6,7 +6,13 @@ for the 3x3 numpy toy (m5_9_1/2/3) that Dr. Duda correctly flagged as too simpli
 WHY THIS SCRIPT EXISTS (Duda's review, 2026-06-20):
   - "3x3 diag(1,delta,0) ... they definitely require full 4x4 field, allowing negative
      mass/energy contributions from gravity and oscillations."  -> we now run the
-     production 4x4 Taichi field diag(g,1,delta,0) with the boost (gravity) axis live.
+     production 4x4 Taichi field with the boost (gravity) axis live.
+  CONVENTION (Duda flagged the eta placement, 2026-06-20/21): the ENGINE orders the
+     eigenvalues D = diag(1, delta, 0, g) with g at INDEX 3 (the time/boost axis), and the
+     Minkowski metric (signed_dot4) puts its minus at index 3 too -- so g and the metric minus
+     are on the SAME axis (physics correct). Duda writes D = diag(g,1,delta,0) (g at index 0);
+     in THAT ordering the metric is eta = diag(-1,1,1,1). Same physics, different axis labels.
+     (The new neutrino build #236 adopts Duda's index-0 convention to avoid this confusion.)
   - "Faber's ansatz is only an approximation ... serious calculations use it only as the
      starting point of energy minimization."  -> we MINIMIZE (gradient flow), not evaluate
      a fixed profile.
@@ -16,8 +22,8 @@ WHY THIS SCRIPT EXISTS (Duda's review, 2026-06-20):
 THE LEDGER (the load-bearing new physics):
   The engine's DISPLAY energy compute_energyH_density_M is EUCLIDEAN (Frobenius norm,
   always >= 0) so it cannot show a negative gravity term. The engine's DYNAMICS are
-  Minkowski-signed (signed_dot4, eta = diag(1,1,1,-1)): the (alpha,3)/(3,alpha) "time-axis"
-  components enter with a MINUS sign. We add a SIGNED energy kernel mirroring the display
+  Minkowski-signed (signed_dot4, eta = diag(1,1,1,-1); the minus sits at index 3 = the g/time
+  axis, see CONVENTION above): the (alpha,3)/(3,alpha) "time-axis" components enter with a MINUS sign. We add a SIGNED energy kernel mirroring the display
   one but using signed_dot4 for the curvature. Then per configuration:
 
     H_euclid  = kinetic + c^2*curv_euclid + (V - v0)        (all positive; the old view)

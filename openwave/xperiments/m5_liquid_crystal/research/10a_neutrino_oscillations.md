@@ -4,7 +4,9 @@
 
 Issue [#236](https://github.com/openwave-labs/openwave/issues/236) (OpenWave board: **In progress**). Spun off on Dr. Duda's 2026-06-20 recommendation to "do less but more rigorously": pivot the first serious, article-targeted deliverable from charged-lepton masses to **neutrino oscillations**, because the geometry is simpler (only topological vortices, no point-like defects) and the payoff is higher (the oscillation parameters are a guessing game today, so a derivation from the deeper theory would be genuinely novel).
 
-This doc is the LOCAL plan. It captures Duda's round-2 reply verbatim, evaluates it, scopes the neutrino task, and records the shared blocker. Nothing is published to the issue or committed until the local work is solid (the same discipline as [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md)).
+> **Round 3 (2026-06-21) sharpened the scope , see § "Round 3" below.** The deliverable narrows to the **4 PMNS mixing parameters** (`theta_12`, `theta_23`, `theta_13`, `delta_CP`); absolute masses (`Delta m^2`) are DEFERRED. Our own [#199](https://github.com/openwave-labs/openwave/issues/199) SO(3)/TBM result already gives 3 of the 4; the live target is **`theta_13` = 8.5deg, the SO(3)-breaking**, plus rigorizing the other 3 from the closed-vortex-loop field theory. The neutrino object = a **closed topological-vortex loop**. The parameter+potential search is a genuine open problem WE drive (Duda confirms even he lacks the exact values).
+
+This doc is the LOCAL plan. It captures Duda's round-2 + round-3 replies verbatim, evaluates them, scopes the neutrino task, and records the (now active-search) blocker. Nothing is published to the issue or committed until the local work is solid (the same discipline as [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md)).
 
 | Related work | Link | Relationship |
 | --- | --- | --- |
@@ -66,53 +68,119 @@ The attached image is the QED Lagrangian `L_QED = -hbar*c psi-bar gamma^mu D_mu 
 
 `g ~ 1e10` and `delta ~ 1e-10` in the same tensor is a ~`1e20` dynamic range. That exceeds f32 (the engine's current precision) and stresses f64; energy products would lose all precision. A serious simulation at this regime needs one of: **non-dimensionalization** that factors the scales out of the dynamics, a **perturbative delta expansion** (around delta=0), or extended precision. This shapes the whole build and partly explains why this "serious simulation" has not been done. It is itself a finding to raise with Duda (does he expect a non-dimensionalized formulation, or perturbative delta?).
 
+## Round 3 (2026-06-21): the refined scope , 4 PMNS parameters, closed vortex loops, masses deferred
+
+Duda's round-3 reply refines #236 into a sharp, article-grade target and confirms the parameter search is a genuine open problem (not his to hand over).
+
+### Dr. Duda's round-3 reply (verbatim, 2026-06-21, models-of-particles list)
+
+```text
+Dear Rodrigo,
+
+Thank you, indeed, while there are suggestions for delta~10^-10, g~10^10, finding the exact
+ones turned out surprisingly difficult, even worse for details of potential - you should
+start here, finding these parameters/details for agreements.
+
+In .../sandbox_v9/m5_9_4_engine_lepton.py I still see eta = diag(1,1,1,-1), while -1 should
+be where g is, and I see you also use diag(g,1,delta,0) - so should be in first coordinate:
+eta = diag(-1,1,1,1).
+
+Regarding neutrino mass, here we assume neutrino as closed loops of topological vortex - could
+be huge, like this measured 6.2 pm in https://www.nature.com/articles/s41586-024-08479-6
+However, mass of such loop should depend approximately linearly on its length - should be
+rather seen as density: mass/length.
+This way we can understand why oscillation between neutrinos of different masses do not violate
+energy conservation - by also changing length of the loop.
+I suspect neutrino masses used in oscillation formulation might be these densities per length,
+but it also might be more complicated.
+
+So I would leave masses for later, and first focus on the basic 4 parameters - if writing
+convincing article able to pass peer review, this already would be huge: [image]
+
+Best regards,
+Jarek
+```
+
+The attached image is OUR OWN [#199](https://github.com/openwave-labs/openwave/issues/199) result (the SO(3)/TBM PMNS scorecard vs NuFIT 6.0, reproduced below). Duda is pointing us back at our own validated deliverable and saying: make it rigorous and finish it.
+
+### Evaluation of round-3 points
+
+| Point | Assessment | Impact |
+| --- | --- | --- |
+| "finding the exact g, delta turned out surprisingly difficult, even worse for the potential , you should start here" | The blocker is NOT "Duda hands us numbers". Even he lacks the exact parameters/potential. It is a genuine open SEARCH we drive: find the `(g, delta, potential)` that AGREE with data. | the blocker reframes from "wait for Duda" to "an active parameter + potential SEARCH, the first work" |
+| eta should be `diag(-1,1,1,1)` for `diag(g,1,delta,0)` | CONFIRMED a notation bug in `m5_9_4`'s docstring: it writes `diag(g,1,delta,0)` (g first) but the engine orders `diag(1,delta,0,g)` with g AND the Minkowski minus both at index 3 (verified in `medium.py` + `signed_dot4`). Physics is correct; the docstring misleads. | fix the `m5_9_4` docstring; adopt ONE convention , Duda's `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)` , for the new neutrino code |
+| neutrino = **closed loop** of topological vortex (could be ~6.2 pm, Nature s41586-024-08479-6) | The object model for #236: a CLOSED vortex loop, not point-like, not open. | defines the geometry of the neutrino simulation |
+| mass ~ loop **length** => mass is a **density** (mass/length); oscillation = the loop CHANGES length (so different-mass flavours conserve energy) | The mass / oscillation mechanism. The "neutrino masses" in oscillation formulas may be per-length densities. | the mass approach (deferred); explains energy conservation across oscillation |
+| "leave masses for later, focus on the basic 4 parameters" + the image (our #199 scorecard) | NARROWS the deliverable to the 4 PMNS MIXING parameters; absolute masses (`Delta m^2`) deferred to a later phase. | the scope cut that makes #236 tractable and article-grade |
+
+### The deliverable, narrowed: the 4 PMNS parameters (our #199 scorecard is the target)
+
+The image is our OWN [#199](https://github.com/openwave-labs/openwave/issues/199) result , the SO(3)/TBM prediction vs NuFIT 6.0. It already nails 3 of the 4:
+
+| Parameter | SO(3)/TBM (#199 predicted) | NuFIT 6.0 (measured, NO) | Status |
+| --- | --- | --- | --- |
+| `theta_12` solar | 35.26deg (sin^2 = 1/3) | 33.7deg | ✅ tri-maximal |
+| `theta_23` atmospheric | 45deg (maximal) | straddles 45deg | ✅ maximal |
+| `delta_CP` | 180deg | ~177deg (1sigma [148,215]) | ✅ consistent |
+| `theta_13` reactor | 0deg | 8.5deg | ⚠️ **THE SO(3)-BREAKING , the one open item** |
+
+So #236 is the **rigorous completion of #199**: (a) DERIVE the TBM structure from the closed-vortex-loop FIELD THEORY (vs #199's group-structure argument), and (b) crack the one open item, `theta_13 = 8.5deg`, the SO(3)-breaking. An article on these 4 (the 3 that work + the `theta_13` derivation) "would already be huge" (Duda). Absolute masses are deferred.
+
+### The connecting hypothesis (the central scientific bet of #236)
+
+The SO(3)-breaking that lifts `theta_13` from 0 to 8.5deg is a natural home for the SMALL parameter `delta` (~`1e-10`, the quantum-phase term). If `delta` breaks SO(3) by the right amount to give `theta_13`, it UNIFIES Duda's two threads (the hard parameter search + the `theta_13` target) into one question. This is the hypothesis #236 is built to test.
+
 ## The target: neutrino oscillation parameters from topological-vortex dynamics
 
-### Goal
+### Goal (round-3 scope)
 
-Derive the neutrino oscillation parameters, the mixing angles (`theta_12`, `theta_13`, `theta_23`), the mass-squared differences (`Delta m^2_21`, `Delta m^2_31`), and the CP phase `delta_CP`, from a complete field-theoretic simulation of topological vortices in the M5 substrate, at the CORRECT `(g, delta)` regime with a proper LdG tensor core-regularizing potential, and compare to NuFIT 6.0. Build on #199's SO(3) rotation structure (oscillation = a 3-axis flavour rotation) and its `delta_CP = 180deg` prediction.
+Derive the four PMNS neutrino MIXING parameters (`theta_12`, `theta_23`, `theta_13`, `delta_CP`) from a field-theoretic simulation of CLOSED topological-vortex loops, rigorously completing [#199](https://github.com/openwave-labs/openwave/issues/199): reproduce the 3 it already gives (`theta_12` tri-maximal, `theta_23` maximal, `delta_CP = 180deg`) from the loop dynamics, and DERIVE the one open parameter, `theta_13 = 8.5deg` (the SO(3)-breaking, the central target, hypothesised to come from the small `delta`). Absolute masses (`Delta m^2`) are DEFERRED (the mass-as-loop-length-density model, a later phase). Compare to NuFIT 6.0. The bar is a peer-review-grade article.
 
 ### Approach (the rigorous pipeline)
 
-1. Topological vortices only (no point-like defects), the simplest complete-simulation geometry (Duda's reason for the pivot).
-2. Set `(g, delta)` to the regime Duda specifies (g ~ `1e10`, delta ~ `1e-10`), handled by a non-dimensionalized or perturbative-delta formulation (the `1e20` dynamic range cannot be carried naively).
-3. Regularize the vortex core with the LdG tensor potential Duda specifies (the open "details to be found").
-4. Realize the three flavour states as vortex configurations; the oscillation = the SO(3) rotation dynamics (#199).
-5. Derive the mixing angles + mass-squared differences from the vortex energetics/dynamics; compare to NuFIT 6.0; the `delta_CP = 180deg` (#199) is the cross-check.
-6. Document every parameter + the configurations + the comparison, to article standard (Duda's explicit bar).
+1. **Parameter + potential search FIRST** (Duda: "start here"): an active search for the `(g, delta, vortex-core LdG tensor potential)` that reproduce the #199 scorecard. The exact values are unknown even to Duda , this is our work, not a wait.
+2. Closed topological-vortex **loops** as the neutrino object (not point-like, not open); the three flavours = three loop configurations.
+3. Oscillation = the SO(3) rotation among the loop configurations (#199), realized dynamically in the field.
+4. Reproduce the TBM 3 (`theta_12`, `theta_23`, `delta_CP`) from the loop dynamics (rigorize #199's group-structure argument into a field-theoretic derivation).
+5. **Derive `theta_13`** (the SO(3)-breaking) , test whether the small `delta` sources it (the central hypothesis).
+6. Numerics: a non-dimensionalized or perturbative-`delta` formulation for the ~`1e20` dynamic range; adopt Duda's convention `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)` consistently.
+7. Document every parameter + configuration + comparison to article standard.
 
 ### Definition of done
 
-A documented topological-vortex simulation that (a) runs at the locked `(g, delta)` regime with the locked potential, (b) sets up the three flavour vortex states, (c) derives the oscillation parameters (or, honestly, how far off and why), (d) compares to NuFIT 6.0 with the `delta_CP = 180deg` cross-check, (e) is reproducible by a third party. Honest scope: matching every parameter in one pass is not guaranteed; the convincing deliverable is the rigorous, documented derivation framework.
+A documented closed-vortex-loop simulation that (a) reproduces the TBM 3 (`theta_12`, `theta_23`, `delta_CP`) from the loop dynamics, (b) derives `theta_13` (or honestly reports how far off + why), (c) searches and documents the `(g, delta, potential)` that give agreement, (d) compares to NuFIT 6.0, (e) is reproducible by a third party. Absolute masses deferred. The bar is peer-review-grade.
 
 ### Sub-tasks (sequence)
 
-1. **BLOCKER first**: lock `g`, `delta`, and the vortex-core LdG tensor potential with Duda (numbers + form). [precondition]
-2. Non-dimensionalized / perturbative-delta formulation handling the `1e20` dynamic range. [the numerical method]
-3. Topological-vortex setup for the three flavour states (single-SO(3) per #199). [geometry]
-4. Oscillation dynamics -> the mixing angles + mass-squared differences. [the result]
-5. Compare to NuFIT 6.0 + the `delta_CP = 180deg` cross-check (#199). [validation]
-6. Documentation to article standard (parameters, potential, configurations, comparison). [Duda's bar]
+1. **Parameter + potential SEARCH** (the first work): find the `(g, delta, vortex-core LdG tensor potential)` region that reproduces the #199 scorecard. [the blocker, now an active search]
+2. **Numerical method**: non-dimensionalized / perturbative-`delta` formulation for the `1e20` range; adopt `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)`. [method]
+3. **Closed-vortex-loop setup**: the three flavour loop configurations + the SO(3) rotation among them. [geometry]
+4. **Reproduce the TBM 3** (`theta_12`, `theta_23`, `delta_CP`) from the loop dynamics. [rigorize #199]
+5. **Derive `theta_13`** (the SO(3)-breaking); test the `delta`-sources-`theta_13` hypothesis. [the crux]
+6. **Compare to NuFIT 6.0 + document** to article standard. [the deliverable]
+   (absolute masses / `Delta m^2` via the loop-length-density model = a deferred later phase)
 
 ### Risks / honest unknowns
 
-- The blocker is real: `g`, `delta`, and the potential form are still unspecified in numbers; nothing rigorous runs until Duda pins them.
+- The parameter + potential search is the hard FIRST problem , Duda lacks the exact values too, so it is OUR open search, not a wait. Nothing rigorous runs until we find a `(g, delta, potential)` that reproduces the scorecard.
+- The central hypothesis (the small `delta` sources `theta_13`, the SO(3)-breaking) may fail , `theta_13` could need a different mechanism.
 - The `1e20` dynamic range is a genuine numerical obstacle (non-dimensionalization or perturbative delta required).
-- Whether topological-vortex dynamics actually yield the measured oscillation parameters is the open scientific question (the point of the task).
+- Whether the closed-loop vortex dynamics actually yield the measured mixing angles is the open scientific question (the point of the task).
 - Article standard means full reproducibility + documented parameters/potential/configurations.
 
 ### Stage / tracking
 
 OpenWave issue [#236](https://github.com/openwave-labs/openwave/issues/236) (board: **In progress**; #200 moved to **Next**). Multi-session. Total invisibility upheld (public OpenWave physics only). Research body lands here (this plan + new scripts + a findings doc); the issue gets the distilled writeup updated as the work converges.
 
-## Open questions for Dr. Duda (round 2, content bullets for Rodrigo's reply, not a draft)
+## Open questions for Dr. Duda (round 3, content bullets for the reply, not a draft)
 
-- The precise `g`, `delta`: the values/scaling and the derivation, why g ~ `1e10`, delta ~ `1e-10` (is the constraint `g*delta ~ 1`, or `g/delta ~ 1e20`?). Confirm the mapping to the QED Lagrangian: g <-> the `mc^2` rest-mass term, delta <-> the quantum-phase Dirac term.
-- The vortex-core potential: the specific LdG TENSOR form that regularizes the center (beyond the general Landau-de Gennes reference), the "details to be found".
-- The numerics: given the `1e20` dynamic range, does he expect a non-dimensionalized formulation or a perturbative `delta` expansion?
-- The neutrino setup: confirm the topological-vortex configuration for the three flavours, and that the oscillation is the single-SO(3) rotation dynamics (#199); do the mixing angles come from the vortex geometry or the potential?
-- Validation: NuFIT 6.0 as the target (angles + `Delta m^2` + `delta_CP`); confirm `delta_CP = 180deg` (#199) is the cross-check.
-- Point him to the PRODUCTION build ([`sandbox_v9/m5_9_4_engine_lepton.py`](sandbox_v9/m5_9_4_engine_lepton.py)), not the `m5_9_1` toy he opened: it already uses the LdG tensor potential and the 4x4 g-axis with the Minkowski signature on g.
+The blocker is now an active search (Duda lacks the exact values), so these are leads to ask AND search ourselves:
+
+- The parameter + potential search: any leads on the `(g, delta, vortex-core LdG tensor potential)` region that reproduces the #199 scorecard? (We will drive the search; his intuition narrows it.)
+- The closed loop: the loop topology, and how the three flavours map to loop configurations; is oscillation literally the loop CHANGING LENGTH (the mass-density picture)?
+- `theta_13` (the SO(3)-breaking): is it expected to come from the small `delta`, or another source? (the central hypothesis)
+- Confirm the scope: the 4 PMNS mixing parameters first, absolute masses (as loop-length densities) later.
+- The eta convention: we will ADOPT his `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)` for the new neutrino code, and fix the `m5_9_4` docstring to match the engine's actual index-3 ordering (the physics there is already correct; only the docstring's `diag(g,1,delta,0)` notation misleads).
 
 ## GitHub issue (#236, filed 2026-06-20)
 
