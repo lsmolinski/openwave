@@ -150,15 +150,39 @@ Derive the four PMNS neutrino MIXING parameters (`theta_12`, `theta_23`, `theta_
 
 A documented closed-vortex-loop simulation that (a) reproduces the TBM 3 (`theta_12`, `theta_23`, `delta_CP`) from the loop dynamics, (b) derives `theta_13` (or honestly reports how far off + why), (c) searches and documents the `(g, delta, potential)` that give agreement, (d) compares to NuFIT 6.0, (e) is reproducible by a third party. Absolute masses deferred. The bar is peer-review-grade.
 
-### Sub-tasks (sequence)
+### Sub-tasks: phase-wired (the TBM milestone is the explicit gate)
 
-1. **Parameter + potential SEARCH** (the first work): find the `(g, delta, vortex-core LdG tensor potential)` region that reproduces the #199 scorecard. [the blocker, now an active search]
-2. **Numerical method**: non-dimensionalized / perturbative-`delta` formulation for the `1e20` range; adopt `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)`. [method]
-3. **Closed-vortex-loop setup**: the three flavour loop configurations + the SO(3) rotation among them. [geometry]
-4. **Reproduce the TBM 3** (`theta_12`, `theta_23`, `delta_CP`) from the loop dynamics. [rigorize #199]
-5. **Derive `theta_13`** (the SO(3)-breaking); test the `delta`-sources-`theta_13` hypothesis. [the crux]
-6. **Compare to NuFIT 6.0 + document** to article standard. [the deliverable]
-   (absolute masses / `Delta m^2` via the loop-length-density model = a deferred later phase)
+The work splits into a buildable foundation (no Duda dependency, start NOW), the parameter search that must pass the **TBM gate**, then the `theta_13` crux, then the article. `Depends on` = the hard `blocked by` wiring.
+
+| ID | Sub-task | Phase | Depends on | Effort | Risk |
+| --- | --- | --- | --- | --- | --- |
+| **N1** | Numerical method: non-dimensionalized / perturbative-`delta` formulation for the ~`1e20` range; adopt `diag(g,1,delta,0)` + `eta=diag(-1,1,1,1)` | A foundation (buildable NOW) | - | ~1-2 wk | LOW-MED |
+| **N2** | Closed-vortex-loop sim: the 3 flavour loop configs + the SO(3) rotation dynamics (new `sandbox_v10`) | A foundation | N1 | ~1-2 wk | MED |
+| **N3** | Parameter + potential SEARCH: scan `(g, delta, vortex-core LdG tensor potential)` for agreement with the #199 scorecard, guided by the `delta`->`theta_13` hypothesis | B the search | N1, N2 | weeks-months | HIGH |
+| ★ **GATE** | **TBM milestone** (criteria below) | gate | N3 | - | - |
+| **N4** | Derive `theta_13` (the SO(3)-breaking): test whether the small `delta` (or another mechanism) lifts it 0 -> 8.5deg | C the crux | **TBM GATE** | unknown | HIGH |
+| **N5** | Compare to NuFIT 6.0 + the peer-review article (params, potential, configs, the TBM derivation + `theta_13`) | D the deliverable | TBM GATE (TBM-only article possible) + N4 (full) | ~2-4 wk | MED |
+| **N6** | Absolute masses (`Delta m^2`) via the mass-as-loop-length-density model | E DEFERRED | N4 | later phase | - |
+
+**★ The TBM gate (the explicit milestone).** N3 has found a `(g, delta, potential)` that REPRODUCES the 3 TBM angles , `theta_12` tri-maximal (sin^2 = 1/3), `theta_23` maximal (45deg), `delta_CP = 180deg` , from the closed-loop FIELD DYNAMICS, not the group argument.
+
+- **Why a gate, not just a step:** it is a real, publishable result on its own (the first field-theoretic derivation of TBM from vortex loops), AND it is the precondition for N4 , there is no point chasing `theta_13` until the loop dynamics demonstrably yield the TBM baseline.
+- **PASS:** the 3 angles emerge from the simulation within tolerance -> proceed to N4; N5 may begin a TBM-result article.
+- **FAIL (honest):** if no `(g, delta, potential)` reproduces TBM, that is itself a reportable finding (the closed-loop SO(3) dynamics do not yield TBM -> a different structure is needed), and it redirects the effort rather than wasting it.
+
+**Dependency spine:** `N1 -> N2 -> N3 -> [TBM GATE] -> N4 -> N5` ; `N6` deferred behind N4. N1+N2 (the foundation) need no Duda input and are the first move; N3 (the search) is where Duda's intuition narrows the space.
+
+**N1 + N2 are scoped in detail in [`10n1_foundation_scope.md`](10n1_foundation_scope.md)** (planned + run together on "go N1+N2"; all GitHub #236 posting HELD until the whole N-program finishes).
+
+### Effort + timeline (three clocks, do not conflate)
+
+| Clock | Reality |
+| --- | --- |
+| **Compute (runtime)** | NOT the gate. Per run ~minutes-to-tens-of-minutes on the M4 (the existing 4x4 runs were 1-5 min); a full N3 scan is hours-to-overnight. |
+| **Engineering (N1, N2, N5)** | Bounded: ~`6-9` focused-work weeks total across the buildable parts. |
+| **Science (N3 + N4)** | UNBOUNDED , the open research (find the parameters; derive `theta_13`). This sets the calendar, not compute or engineering. Could converge in weeks, take months, or hit a wall (the FAIL path is still a result). |
+
+Realistic read: a multi-month effort gated by two open research questions (N3, N4), with the **TBM gate** as a real intermediate, publishable win partway through. For external comms: "a months-scale derivation effort with a defined intermediate milestone," never a dated deliverable.
 
 ### Risks / honest unknowns
 
