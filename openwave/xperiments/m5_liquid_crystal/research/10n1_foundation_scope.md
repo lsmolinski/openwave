@@ -6,6 +6,8 @@ The detailed scope for the **foundation phase (N1 + N2)** of the neutrino N-prog
 
 > **WORKFLOW NOTE , this build HOLDS GitHub (Rodrigo's call).** On "go N1+N2" the full task workflow runs (PLAN -> EXECUTE -> FINISH -> REVIEW) with the standard LOCAL artifacts (scripts in `sandbox_v10/`, a findings doc, checkpoints, a terminal TASK REVIEW). BUT **all GitHub #236 posting is HELD until the whole N-program (N1-N5) is finished**: #236 stays `In progress` throughout, NO status change and NO review comment is posted at the end of N1+N2, everything stays local until the N-program completes and the distilled writeup is published once. The resume-ping + mobile completion ping still apply (they are not GitHub).
 
+> **✅ EXECUTED 2026-06-21 (LOCAL).** N1 + N2 are built, run, and self-validated. Foundation record: [`sandbox_v10/n_foundation_findings.md`](sandbox_v10/n_foundation_findings.md). Headlines: N1 cancellation test PASS (perturbative-delta recovers the theta_13 channel to 9.4e-16 where naive f64 returns 0); N2 closed loop seeds with line tension dE/dL=+6.74, the observable pipeline reproduces the #199 TBM angles exactly, the delta->theta_13 channel is exposed; the central tension (theta_13=8.5 deg needs delta~0.15 OR a ~1.5e9 resonance, not delta~1e-10) is surfaced for N3. GitHub #236 stays HELD.
+
 ## Goal of the foundation (N1 + N2)
 
 A **precision-safe closed-vortex-loop simulation** in `sandbox_v10` that: (a) carries the physical regime `g ~ 1e10`, `delta ~ 1e-10` without precision loss (N1); (b) seeds the three neutrino flavour states as closed-loop configurations and evolves the SO(3) rotation among them (N2); (c) exposes the observables the N3 search will read to compare against the [#199](https://github.com/openwave-labs/openwave/issues/199) PMNS scorecard. The foundation does NOT derive the angles , that is N3 (search) + N4 (`theta_13`). It builds the machine they need.
@@ -67,7 +69,8 @@ NOT in scope for N1+N2 (resist scope drift): finding the parameters that reprodu
 | Artifact | Where |
 | --- | --- |
 | N1 numerical method + N2 loop-sim scripts | `sandbox_v10/` (naming finalized at go-time, proposed `n1_*.py` / `n2_*.py`; adjustable) |
-| Findings doc (the foundation record) | `sandbox_v10/` (e.g. `n_foundation_findings.md`) , LOCAL |
+| Findings doc (the foundation record) | [`sandbox_v10/n_foundation_findings.md`](sandbox_v10/n_foundation_findings.md) , LOCAL ✅ |
+| N1 + N2 scripts (executed) | [`sandbox_v10/n1_precision_method.py`](sandbox_v10/n1_precision_method.py), [`sandbox_v10/n2_closed_loop.py`](sandbox_v10/n2_closed_loop.py) |
 | Checkpoints (each sub-result on arrival) | `sandbox_v10/checkpoints/` |
 | This scope | `research/10n1_foundation_scope.md` |
 

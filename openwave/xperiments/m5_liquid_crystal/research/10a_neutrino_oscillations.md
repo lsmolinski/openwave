@@ -174,6 +174,8 @@ The work splits into a buildable foundation (no Duda dependency, start NOW), the
 
 **N1 + N2 are scoped in detail in [`10n1_foundation_scope.md`](10n1_foundation_scope.md)** (planned + run together on "go N1+N2"; all GitHub #236 posting HELD until the whole N-program finishes).
 
+> **✅ N1 + N2 EXECUTED 2026-06-21 (LOCAL, #236 HELD).** Foundation record: [`sandbox_v10/n_foundation_findings.md`](sandbox_v10/n_foundation_findings.md). **N1** PASS , the perturbative-`delta` method recovers the `theta_13` channel to 9.4e-16 where naive f64 returns exactly 0 (the breaking sits 4+ orders below the f64 floor set by the g-sector). **N2** PASS , the closed disclination loop seeds (line tension `dE/dL=+6.74`, bare loop shrinks), the mixing-observable pipeline reproduces the #199 TBM angles exactly (35.264 / 45.000 / 0.000), and the `delta`->`theta_13` channel is exposed. **Central tension for N3:** at O(1) loop coupling `theta_13=8.5 deg` needs `delta~0.15` OR a ~1.5e9 resonant enhancement, NOT `delta~1e-10` , N3 must resolve whether the mixing sees the bare `delta` or `theta_13` rides a near-degenerate gap.
+
 ### Effort + timeline (three clocks, do not conflate)
 
 | Clock | Reality |

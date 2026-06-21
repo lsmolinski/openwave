@@ -1,0 +1,29 @@
+{
+  "convention": "Duda index-0: D=diag(g,1,delta,0), eta=diag(-1,1,1,1)",
+  "g_scale": 10000000000.0,
+  "delta_phys": 1e-10,
+  "dynamic_range": 1e+20,
+  "grid_full": 20,
+  "energy_level": {
+    "delta_phys_times_E1_signal": 2.9898397799891788e+19,
+    "ulp_of_E0": 6.044629098073146e+23,
+    "breaking_signal_below_ulp": true
+  },
+  "graded_orders": {
+    "E0": 3.163744075909447e+39,
+    "E1": 2.9898397799891786e+29,
+    "E2": -3.783470343376973e+20
+  },
+  "naive_E1_at_delta_phys": 0.0,
+  "naive_rel_err_vs_graded": 1.0,
+  "mpmath_reference": {
+    "grid_tiny": 6,
+    "dps": 50,
+    "E1_reference": 7.4761884549213536e+28,
+    "E1_graded_tiny": 7.476188454921361e+28,
+    "E1_naive_tiny": 0.0,
+    "graded_rel_err": 9.412382339204188e-16,
+    "naive_rel_err": 1.0
+  },
+  "cancellation_test_pass": true
+}
