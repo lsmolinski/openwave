@@ -11,7 +11,7 @@ GitHub / committed (Rodrigo's call). The distilled writeup goes to issue #200 on
 | `m5_9_5_higgs_clock_spectrum.py` | Higgs/confiner scale-selection (A) + #220 dynamical clock omega(r0) (B) + delta-scan spectrum (C) |
 | `m5_9_lepton_mass_clock_findings.md` | § "M5.9.4-5: the full production engine 4x4 build (FIRST READ)" - full writeup, toy kept below as precursor |
 | `m5_9_4_results.json` (47^3), `m5_9_4_results_64.json` (63^3), `m5_9_5_results.json` + 3 PNGs | data + plots, all < 70K |
-| `6a_lepton_mass_planning` | Status updated: full production engine build RAN locally |
+| `9a_lepton_mass_planning` | Status updated: full production engine build RAN locally |
 | `checkpoints/00-04` | step-by-step progress |
 
 ## What it answers (Duda's review)
@@ -34,6 +34,6 @@ framework + the potential search, honest about what lands. Delivered exactly tha
 production-engine runs (47^3 + 63^3 confirmation), the load-bearing new physics (the signed ledger),
 real minimization, and an honest frontier map. Did not fake a spectrum match.
 
-## For Rodrigo's Duda reply (content bullets ready in 6a_lepton_mass_planning § "Open questions for Dr. Duda")
+## For Rodrigo's Duda reply (content bullets ready in 9a_lepton_mass_planning § "Open questions for Dr. Duda")
 The open-questions bullets are staged; after Rodrigo commits + publishes the distilled #200 writeup,
 the reply to Duda can point at the signed ledger (the negative gravity term) + the honest open frontier.

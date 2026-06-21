@@ -4,11 +4,11 @@
 
 Issue [#236](https://github.com/openwave-labs/openwave/issues/236) (OpenWave board: **In progress**). Spun off on Dr. Duda's 2026-06-20 recommendation to "do less but more rigorously": pivot the first serious, article-targeted deliverable from charged-lepton masses to **neutrino oscillations**, because the geometry is simpler (only topological vortices, no point-like defects) and the payoff is higher (the oscillation parameters are a guessing game today, so a derivation from the deeper theory would be genuinely novel).
 
-This doc is the LOCAL plan. It captures Duda's round-2 reply verbatim, evaluates it, scopes the neutrino task, and records the shared blocker. Nothing is published to the issue or committed until the local work is solid (the same discipline as [`6a_lepton_mass_planning.md`](6a_lepton_mass_planning.md)).
+This doc is the LOCAL plan. It captures Duda's round-2 reply verbatim, evaluates it, scopes the neutrino task, and records the shared blocker. Nothing is published to the issue or committed until the local work is solid (the same discipline as [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md)).
 
 | Related work | Link | Relationship |
 | --- | --- | --- |
-| Charged-lepton masses (PARKED) | [`6a_lepton_mass_planning.md`](6a_lepton_mass_planning.md) · issue [#200](https://github.com/openwave-labs/openwave/issues/200) | sibling; PARKS behind the SAME blocker (g, delta + the potential). The full production-engine build + Duda's round-1 review live there |
+| Charged-lepton masses (PARKED) | [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md) · issue [#200](https://github.com/openwave-labs/openwave/issues/200) | sibling; PARKS behind the SAME blocker (g, delta + the potential). The full production-engine build + Duda's round-1 review live there |
 | PMNS mixing structure (precursor, CLOSED) | issue [#199](https://github.com/openwave-labs/openwave/issues/199) | established the rotation-group structure (neutrino oscillation = SO(3); quarks = SU(3)/CKM) + the `delta_CP = 180deg` prediction. This task does the DYNAMICAL field-theoretic derivation #199 did not |
 | Effective Dirac / Standard-Model Lagrangian | issue [#197](https://github.com/openwave-labs/openwave/issues/197) | the QED-Lagrangian connection Duda's parameter argument rests on (g <-> the `mc^2` rest-mass term, delta <-> the quantum-phase Dirac term) |
 | Scorecard row | [`../../../../MODELS.md`](../../../../MODELS.md) "neutrino sector" | update when this task lands |
@@ -116,7 +116,7 @@ OpenWave issue [#236](https://github.com/openwave-labs/openwave/issues/236) (boa
 
 ## GitHub issue (#236, filed 2026-06-20)
 
-Filed as [#236](https://github.com/openwave-labs/openwave/issues/236) on `openwave-labs/openwave` (labels `theory` + `help wanted`), board status **In progress**; #200 moved to **Next**. The issue carries the distilled TASK PLANNING (Goal + Approach + DoD + Sub-tasks); links to #199 (precursor), #200 (sibling), #197 (Dirac); the blocker (parameters + potential) stated in the body. No SABER references (total invisibility). The detailed plan stays here in `6b`; the issue's distilled writeup is updated as the work converges.
+Filed as [#236](https://github.com/openwave-labs/openwave/issues/236) on `openwave-labs/openwave` (labels `theory` + `help wanted`), board status **In progress**; #200 moved to **Next**. The issue carries the distilled TASK PLANNING (Goal + Approach + DoD + Sub-tasks); links to #199 (precursor), #200 (sibling), #197 (Dirac); the blocker (parameters + potential) stated in the body. No SABER references (total invisibility). The detailed plan stays here in `10a`; the issue's distilled writeup is updated as the work converges.
 
 ---
-_Local plan (research/6b_neutrino_oscillations.md; research body in research/, scripts to a new sandbox when the parameters are locked). Iterate here; publish the distilled version to the new issue only after it is solid and committed. Cross-refs: [`6a_lepton_mass_planning.md`](6a_lepton_mass_planning.md), #199, #200, #197, [`../../../../MODELS.md`](../../../../MODELS.md)._
+_Local plan (research/10a_neutrino_oscillations.md; research body in research/, scripts to a new sandbox when the parameters are locked). Iterate here; publish the distilled version to the new issue only after it is solid and committed. Cross-refs: [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md), #199, #200, #197, [`../../../../MODELS.md`](../../../../MODELS.md)._

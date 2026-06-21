@@ -3,7 +3,7 @@
 Go-time: 2026-06-20 08:31 EDT. Reset 12:10pm EDT (resume ping armed 16:15 UTC).
 Keeping everything LOCAL per Rodrigo: no GitHub status, no comments. Progress here.
 
-## The corrected pipeline (from 6a_lepton_mass_planning, Duda's critique)
+## The corrected pipeline (from 9a_lepton_mass_planning, Duda's critique)
 
 The toy (m5_9_1/2/3) was 3x3, fixed Faber ansatz, no `g` axis, no clock. The full production engine build
 runs on the PRODUCTION 4x4 Taichi engine and adds the NEGATIVE energy contributions the 3x3

@@ -141,7 +141,7 @@ The build that produced every result above. This is the load-bearing configurati
 | The electron mass/ω calibration | NG-1 — needs the V-on/Faber-r₀ core (the 28× absolute-ω gap lives here); the ratio infrastructure exists, the units fix does not. |
 | The faithful kinetic in production | NG-1 residual — the 5d diagnosis says it corrects the clock FREQUENCY only; re-measure ω₁ under it when production-scale clock runs need it. |
 | Spin-½ as a measured charge | Open — the clock channel is J-neutral; spin-½ (if carried) needs the polarized-seed / hopfion / far-field sectors + torque-free boundaries. |
-| Multi-defect / composites | 9d — everything above is single-defect; ensemble behavior is the many-body question. |
+| Multi-defect / composites | 15a — everything above is single-defect; ensemble behavior is the many-body question. |
 | Strict single-line periodicity | Not claimed — the state is a molten clock (a coherent comb on low-dimensional chaotic dressing), regularizing toward the cold ground state. |
 
 ---

@@ -398,9 +398,9 @@ The full physics hierarchy maps cleanly onto M5 phases:
 | **1d — Closed vortex loop** | Neutrino topology variant (SO(3)~SU(2)) | M5.9 (alternative seed) | 🚧 |
 | **1e — Two-defect annihilation** | Dynamic Coulomb 1/d² + e⁺/e⁻ annihilation | M5.7+ pair test | 🚧 |
 | **2 — Open vortex string** | Quark-antiquark (meson), Cornell potential `V(r) = −α/r + σ·r` with σ ≈ 1 GeV/fm | M5.9 (Cornell) | 🚧 |
-| **3 — Baryons (3 string endpoints)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites | 9d (DEFERRED) | not planned |
-| **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | 9d (DEFERRED) | not planned |
-| **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus | 9d (DEFERRED — also needs cross-mass-class machinery) | not planned |
+| **3 — Baryons (3 string endpoints)** | Proton (uud), neutron (udd) — color-neutral 3-quark composites | 15a (DEFERRED) | not planned |
+| **4 — Multi-nucleon nucleus** | Nucleus binding via residual strong force | 15a (DEFERRED) | not planned |
+| **5 — Atom** | Z electrons in standing-wave orbital shells around nucleus | 15a (DEFERRED — also needs cross-mass-class machinery) | not planned |
 | **6 — Molecules / bulk matter** | Multi-atom bonding | Long-term | not planned |
 
 ### Layer-by-layer dependency chain
@@ -434,7 +434,7 @@ For the conceptual companion to this roadmap, see [_overview.md § Where do quar
 
 A separate research direction prompted by the 2026-04 Models of Particles thread on the Orion–Akkermans paper *"Topological sum rule for geometric phases of quantum gates"* (arxiv:2603.29795). The paper's headline corollary is that nontrivial Hamiltonian topology (`ν_H ≠ 0`) is a **necessary condition for quantum entanglement** — and M5's defect framework satisfies it by construction (every defect has nonzero winding). This opens up a class of experiments that test whether M5's twist degree of freedom (see [1b_topological_defect.md § The twist degree of freedom](1b_topological_defect.md#the-twist-degree-of-freedom--quantum-phase-as-a-derived-field-state)) reproduces the geometric-phase / entanglement structure of standard QM.
 
-These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below composites (9d).
+These are exploratory targets, not committed milestones. They naturally slot in after M5.7 (resonance hunt) provides the validated metastable-defect substrate and M5.9 (Cornell quark strings) provides validated string-defect dynamics. Prioritized below composites (15a).
 
 | Phase candidate | Headline test | Layered on |
 | --- | --- | --- |
