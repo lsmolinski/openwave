@@ -7,12 +7,12 @@ WHY THIS SCRIPT EXISTS (Duda's review, 2026-06-20):
   - "3x3 diag(1,delta,0) ... they definitely require full 4x4 field, allowing negative
      mass/energy contributions from gravity and oscillations."  -> we now run the
      production 4x4 Taichi field with the boost (gravity) axis live.
-  CONVENTION (Duda flagged the eta placement, 2026-06-20/21): the ENGINE orders the
-     eigenvalues D = diag(1, delta, 0, g) with g at INDEX 3 (the time/boost axis), and the
-     Minkowski metric (signed_dot4) puts its minus at index 3 too -- so g and the metric minus
-     are on the SAME axis (physics correct). Duda writes D = diag(g,1,delta,0) (g at index 0);
-     in THAT ordering the metric is eta = diag(-1,1,1,1). Same physics, different axis labels.
-     (The new neutrino build #236 adopts Duda's index-0 convention to avoid this confusion.)
+  CONVENTION (Duda flagged the eta placement, 2026-06-20/21; engine FLIPPED to index-0 on
+     2026-06-21, see research/_convention_refactor/): the ENGINE now orders the eigenvalues
+     D = diag(g, 1, delta, 0) with g at INDEX 0 (the time/boost axis, Duda's convention), and
+     the Minkowski metric (signed_dot4) puts its minus at index 0 too -- so g and the metric
+     minus are on the SAME axis (physics correct). The flip was proven physics-neutral by the
+     golden master (66 invariants, worst rel 4e-7). The neutrino build #236 uses the same index-0.
   - "Faber's ansatz is only an approximation ... serious calculations use it only as the
      starting point of energy minimization."  -> we MINIMIZE (gradient flow), not evaluate
      a fixed profile.
@@ -22,13 +22,13 @@ WHY THIS SCRIPT EXISTS (Duda's review, 2026-06-20):
 THE LEDGER (the load-bearing new physics):
   The engine's DISPLAY energy compute_energyH_density_M is EUCLIDEAN (Frobenius norm,
   always >= 0) so it cannot show a negative gravity term. The engine's DYNAMICS are
-  Minkowski-signed (signed_dot4, eta = diag(1,1,1,-1); the minus sits at index 3 = the g/time
-  axis, see CONVENTION above): the (alpha,3)/(3,alpha) "time-axis" components enter with a MINUS sign. We add a SIGNED energy kernel mirroring the display
+  Minkowski-signed (signed_dot4, eta = diag(-1,1,1,1); the minus sits at index 0 = the g/time
+  axis, see CONVENTION above): the (alpha,0)/(0,alpha) "time-axis" components enter with a MINUS sign. We add a SIGNED energy kernel mirroring the display
   one but using signed_dot4 for the curvature. Then per configuration:
 
     H_euclid  = kinetic + c^2*curv_euclid + (V - v0)        (all positive; the old view)
     H_signed  = kinetic + c^2*curv_signed + (V - v0)        (the physical, conserved energy)
-    boost_GEM = H_euclid - H_signed = 2*c^2*sum_(alpha,3) [M_mu,M_nu]^2   (>= 0, the dip)
+    boost_GEM = H_euclid - H_signed = 2*c^2*sum_(alpha,0) [M_mu,M_nu]^2   (>= 0, the dip)
 
   Rest energy = H_signed of the MINIMIZED, clock-active configuration. The boost lowers it
   (gravity), and activating the clock lowers it further (oscillation). Both are the negative
@@ -112,7 +112,7 @@ e_kins = ti.field(ti.f32, shape=GRID)  # 1/2 signed_dot4(Mdot,Mdot)  (Minkowski 
 e_ce = ti.field(ti.f32, shape=GRID)    # c^2 * curvature_euclid (Frobenius)
 e_cs = ti.field(ti.f32, shape=GRID)    # c^2 * curvature_signed (Minkowski)
 e_pot = ti.field(ti.f32, shape=GRID)   # V_M - v0
-e_boost = ti.field(ti.f32, shape=GRID)  # per-voxel (alpha,3) curvature weight (the GEM density)
+e_boost = ti.field(ti.f32, shape=GRID)  # per-voxel (alpha,0) curvature weight (the GEM density)
 
 trackers = medium.Trackers(GRID)
 observables = medium.FieldObservables(GRID)
@@ -170,8 +170,8 @@ def energy_decompose(tfx: ti.template(),  # type: ignore
         ce[i, j, k] = c2 * 4.0 * curv_e
         cs[i, j, k] = c2 * 4.0 * curv_s
         pot[i, j, k] = pde.V_M(m, a, b, cc) - vv0
-        # GEM density = (alpha,3) part of the curvature: curv_euclid - curv_signed = the dip
-        boost[i, j, k] = c2 * 4.0 * (curv_e - curv_s)  # = 2*c^2*4*sum (alpha,3) comps^2
+        # GEM density = (alpha,0) part of the curvature: curv_euclid - curv_signed = the dip
+        boost[i, j, k] = c2 * 4.0 * (curv_e - curv_s)  # = 2*c^2*4*sum (alpha,0) comps^2
 
 
 @ti.kernel
@@ -269,7 +269,7 @@ def gradient_flow_euclid(n_steps, hist=None):
 def clock_run(n_steps, n_act_pl, record_every=20):
     """Activate the de Broglie clock with the validated CONSTRAINED integrator (the
     B-1-validated dt scale 0.007) and record the full signed ledger over time. With the
-    clock running, the velocity Mdot has (alpha,3) components, so kin_signed picks up the
+    clock running, the velocity Mdot has (alpha,0) components, so kin_signed picks up the
     negative oscillation contribution. Returns a list of per-sample ledgers + a blow-up flag."""
     dt_rs_b = 0.007 * dx_am * 0.95 / (c_amrs * 3 ** 0.5)   # DT_SCALE_4D=0.007 (validated)
     dt_eff_b = c_amrs * dt_rs_b

@@ -7,7 +7,7 @@
   },
   "test_A_fidelity": {
     "E_engine": 5.4160736908670515e-06,
-    "E_numpy_port_index3": 5.4162563475749205e-06,
+    "E_numpy_port_index0": 5.4162563475749205e-06,
     "rel_diff": 3.3724930326748314e-05,
     "tol": 0.0001,
     "pass": true

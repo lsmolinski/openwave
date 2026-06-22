@@ -6,9 +6,10 @@ Object Classes @spacetime module.
 LIQUID-CRYSTAL evolves the Landau–de Gennes order parameter M(x) via the Eq.18
 matrix action (M5.5): the leapfrog ∂²_t M = c²·∇·G(M) − ∂V_M/∂M, where G is the
 curvature flux. M is the 4×4 (M5.8) real-symmetric tensor
-    M(x) = O(x)·D·O^T(x),   D = diag(1, δ, 0, g)
-with O(x) the per-voxel dynamical SO(1,3) frame and D the frozen spectrum (the
-spatial 3×3 block diag(1,δ,0) + the M5.8 time/boost axis g). Time evolution uses a
+    M(x) = O(x)·D·O^T(x),   D = diag(g, 1, δ, 0)   (index-0: time/g axis = array index 0)
+with O(x) the per-voxel dynamical SO(1,3) frame and D the frozen spectrum (the M5.8
+time/boost axis g at index 0 + the spatial 3×3 block diag(1,δ,0) at indices 1,2,3;
+Duda convention, see research/_convention_refactor/CONVENTION.md). Time evolution uses a
 matrix triple-buffer leapfrog (M_prev_am, M_am, M_new_am).
 
 ────────────────────────────────────────────────────────────────────────────
@@ -35,14 +36,14 @@ from openwave.common import colormap, constants, utils
 # only needs a uniaxial spectrum to reproduce the M5.1 Coulomb topology on M.
 LC_DELTA = 0.5
 
-# M5.8.1 — 4D substrate promotion. The matrix field is now 4×4: the spatial 3×3
-# block (indices 0,1,2 = x,y,z — the M5.4/M5.6 order parameter) PLUS a 4th axis
-# (index 3) = the time/boost axis, eigenvalue g of the paper's D=diag(g,1,δ,0).
-# Putting time at index 3 lets the existing 3×3-Cardano eigensolver read the spatial
-# block [0:3,0:3] UNCHANGED (the director is its principal eigenvector). In M5.8.1 g
-# is a CONSTANT, boost-DECOUPLED background (M = block-diag(M_spatial, g)) so the
-# spatial dynamics are identical to 3D (validated: sandbox_v8/m5_8_1_4x4_promotion.py);
-# the Minkowski coupling that drives the clock lands in M5.8.2.
+# M5.8.1 — 4D substrate promotion. The matrix field is 4×4: the time/boost axis at
+# INDEX 0 (eigenvalue g, the paper's D=diag(g,1,δ,0); Duda convention, flipped from the
+# legacy index-3 ordering 2026-06-21 — research/_convention_refactor/CONVENTION.md) PLUS
+# the spatial 3×3 block (indices 1,2,3 = x,y,z — the M5.4/M5.6 order parameter). Callers
+# extract the spatial block [1:4,1:4] for the 3×3-Cardano eigensolver (the director is its
+# principal eigenvector). In M5.8.1 g is a CONSTANT, boost-DECOUPLED background
+# (M = block-diag(g, M_spatial)) so the spatial dynamics are identical to 3D (validated:
+# sandbox_v8/m5_8_1_4x4_promotion.py); the Minkowski coupling driving the clock lands in M5.8.2.
 MDIM = 4          # matrix substrate dimension (was 3)
 LC_G = 8.0        # time-axis (boost/gravity) eigenvalue g ≫ 1, constant in M5.8.1
 
@@ -157,15 +158,16 @@ class TensorField:
         # MATRIX-FIELD SUBSTRATE (M5.4 order parameter, M5.8.1 4×4 promotion)
         # ================================================================
         # M(x) = O(x)·D·O^T(x), real-symmetric MDIM×MDIM = 4×4 since the M5.8.1
-        # promotion: the spatial 3×3 block (the M5.4 LdG order parameter D=diag(1,δ,0))
-        # PLUS the time/boost axis g at index 3, i.e. D=diag(1,δ,0,g). Stored as the
-        # full 16-component ti.Matrix.field(MDIM,MDIM) (M5.4 decision 2026-05-26: the
+        # promotion: the time/boost axis g at index 0 PLUS the spatial 3×3 block (the M5.4
+        # LdG order parameter diag(1,δ,0)) at indices 1,2,3, i.e. D=diag(g,1,δ,0) (Duda
+        # index-0, flipped 2026-06-21 — research/_convention_refactor/CONVENTION.md). Stored
+        # as the full 16-component ti.Matrix.field(MDIM,MDIM) (M5.4 decision 2026-05-26: the
         # dense matrix matches the proven feasibility spike, ti.sym_eig-ready, no
         # reassembly; the symmetric-packing optimization can swap in behind this
         # accessor later if memory binds). Triple buffer mirrors the psi leapfrog
         # convention — M_prev/M/M_new — for the matrix evolution (M5.5 onward);
-        # eigen_decompose reads the spatial [0:3,0:3] block, the time axis stays g.
-        self.M_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t (4×4: spatial 0:3 + time idx 3)
+        # eigen_decompose reads the spatial [1:4,1:4] block, the time axis (index 0) stays g.
+        self.M_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t (4×4: time idx 0 + spatial 1:4)
         self.M_prev_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t−dt
         self.M_new_am = ti.Matrix.field(MDIM, MDIM, dtype=ti.f32, shape=self.grid_size)  # M at t+dt
 
@@ -185,7 +187,7 @@ class TensorField:
         # relax_director_step writes the next director here, then M is rebuilt from it.
         self.director_nhat_new = ti.Vector.field(3, dtype=ti.f32, shape=self.grid_size)
         self.lc_delta = LC_DELTA  # uniaxial minor-axis eigenvalue (M = δI + (1−δ)n̂⊗n̂)
-        self.lc_g = LC_G  # M5.8.1 time-axis (index 3) eigenvalue g; read by kernels via tensor_field.lc_g
+        self.lc_g = LC_G  # time-axis (index 0) eigenvalue g, D=diag(g,1,δ,0); read by kernels via tensor_field.lc_g
 
         # M5.5.4 — Eq.18 matrix-action leapfrog (simple ½‖Ṁ‖² kinetic + faithful
         # potential U = 4Σ‖[M_μ,M_ν]‖² + V(M)). The curvature flux

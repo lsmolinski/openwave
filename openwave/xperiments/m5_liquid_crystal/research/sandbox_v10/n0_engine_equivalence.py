@@ -102,10 +102,11 @@ def numpy_curv_signed(M, dx, c2, time_idx):
     return float(np.sum(c2 * curv))
 
 
-def relabel_to_index0(M):
-    """Engine index-3 (time axis last) -> Duda index-0 (time axis first). sigma maps a
-    Duda index to its engine index: sigma=[3,0,1,2] (Duda time 0 = engine time 3)."""
-    sigma = [3, 0, 1, 2]
+def relabel_to_index3(M):
+    """The engine is now index-0 (time axis first; flipped 2026-06-21). Relabel back to the
+    OLD index-3 (time axis last) to demonstrate the two conventions are identical physics.
+    sigma=[1,2,3,0] (index-0 -> index-3: every index k -> (k-1) mod 4)."""
+    sigma = [1, 2, 3, 0]
     return M[..., sigma, :][..., :, sigma]
 
 
@@ -145,30 +146,30 @@ def main():
     obs.compute_energyH_density_M(tf, observables, c_amrs, dt_rs, ldg_a, ldg_b, ldg_c, v0, 1.0)
     E_engine = float(np.sum(observables.energyH_density_aJ.to_numpy()))
 
-    # ---- pull the identical field, run the numpy port (engine convention, g at index 3) ----
+    # ---- pull the identical field, run the numpy port (engine now stores g at index 0) ----
     M = tf.M_am.to_numpy().astype(np.float64)
-    E_port_eng = numpy_energy_frobenius(M, dx_am, c2, ldg_a, ldg_b, ldg_c, v0, g_idx=3)
+    E_port_eng = numpy_energy_frobenius(M, dx_am, c2, ldg_a, ldg_b, ldg_c, v0, g_idx=0)
 
     relA = abs(E_engine - E_port_eng) / max(abs(E_engine), 1e-30)
     print("\n--- TEST A : fidelity (engine kernel vs numpy port, same field) ---")
     print(f"  E_engine (compute_energyH_density_M) = {E_engine: .8e}")
-    print(f"  E_port   (numpy Frobenius, index-3)  = {E_port_eng: .8e}")
+    print(f"  E_port   (numpy Frobenius, index-0)  = {E_port_eng: .8e}")
     print(f"  relative difference                  = {relA:.3e}   (f32 seed -> tol 1e-4)")
     passA = bool(relA < 1e-4)
 
-    # ---- TEST B : convention invariance (index-3 engine vs index-0 Duda) ----
-    M0 = relabel_to_index0(M)            # same physical field, Duda index-0 labels
+    # ---- TEST B : convention invariance (engine now index-0 vs historical index-3) ----
+    M3 = relabel_to_index3(M)            # same physical field, OLD index-3 labels
     # curvature: Frobenius is label-blind; the SIGNED curvature is the real convention probe
-    cs_eng = numpy_curv_signed(M, dx_am, c2, time_idx=3)     # engine: minus at index 3
-    cs_duda = numpy_curv_signed(M0, dx_am, c2, time_idx=0)   # Duda:   minus at index 0
+    cs_eng = numpy_curv_signed(M, dx_am, c2, time_idx=0)     # engine now: minus at index 0
+    cs_duda = numpy_curv_signed(M3, dx_am, c2, time_idx=3)   # historical: minus at index 3
     # potential: the non-g block must be the SAME 3 spatial axes after relabel
-    V_eng = float(np.sum(_V_M(M, 3, ldg_a, ldg_b, ldg_c)[1:-1, 1:-1, 1:-1]))
-    V_duda = float(np.sum(_V_M(M0, 0, ldg_a, ldg_b, ldg_c)[1:-1, 1:-1, 1:-1]))
+    V_eng = float(np.sum(_V_M(M, 0, ldg_a, ldg_b, ldg_c)[1:-1, 1:-1, 1:-1]))
+    V_duda = float(np.sum(_V_M(M3, 3, ldg_a, ldg_b, ldg_c)[1:-1, 1:-1, 1:-1]))
     relB_curv = abs(cs_eng - cs_duda) / max(abs(cs_eng), 1e-30)
     relB_pot = abs(V_eng - V_duda) / max(abs(V_eng), 1e-30)
-    print("\n--- TEST B : convention invariance (engine index-3 vs Duda index-0) ---")
-    print(f"  signed curvature  index-3 = {cs_eng: .8e}   index-0 = {cs_duda: .8e}   rel = {relB_curv:.2e}")
-    print(f"  LdG potential     index-3 = {V_eng: .8e}   index-0 = {V_duda: .8e}   rel = {relB_pot:.2e}")
+    print("\n--- TEST B : convention invariance (engine now index-0 vs historical index-3) ---")
+    print(f"  signed curvature  index-0 = {cs_eng: .8e}   index-3 = {cs_duda: .8e}   rel = {relB_curv:.2e}")
+    print(f"  LdG potential     index-0 = {V_eng: .8e}   index-3 = {V_duda: .8e}   rel = {relB_pot:.2e}")
     passB = bool(relB_curv < 1e-12 and relB_pot < 1e-12)
 
     passed = bool(passA and passB)
@@ -176,14 +177,14 @@ def main():
     print(f"N0 EQUIVALENCE: {'PASS' if passed else 'FAIL'}")
     print("  A: the numpy port reproduces the engine energy on an identical field (the M5")
     print("     liquid-crystal connection is VERIFIED, not just transcribed).")
-    print("  B: engine index-3 and Duda index-0 are the SAME physics (pure relabel) , so the")
-    print("     engine convention is not 'wrong', and sandbox_v10's index-0 is consistent.")
+    print("  B: the engine (now index-0) and the historical index-3 are the SAME physics (pure")
+    print("     relabel) , the engine + sandbox_v10 + Duda now all share the index-0 convention.")
     print("=" * 80)
 
     summary = {
         "scales": {"g_lc": float(tf.lc_g), "delta": delta, "grid": N, "dx_am": dx_am},
         "test_A_fidelity": {
-            "E_engine": E_engine, "E_numpy_port_index3": E_port_eng,
+            "E_engine": E_engine, "E_numpy_port_index0": E_port_eng,
             "rel_diff": relA, "tol": 1e-4, "pass": passA,
         },
         "test_B_convention_invariance": {
