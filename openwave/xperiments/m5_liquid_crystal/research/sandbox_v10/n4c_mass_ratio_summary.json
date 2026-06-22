@@ -1,0 +1,31 @@
+{
+  "alpha_star_deg": 46.944809618506866,
+  "tbm_err": 2.452296143928834e-10,
+  "eigenvalues": [
+    1690.97078820155,
+    1940.9884452859217,
+    2844.8605550366156
+  ],
+  "eigenvalues_normalized": [
+    1.0,
+    1.1478545098642896,
+    1.6823830280724703
+  ],
+  "spectrum_ratio_string": "1 : 1.148 : 1.682",
+  "observed_splitting_ratio_Dm31_over_Dm21": 33.55140186915888,
+  "map_A_lambda_is_mass": {
+    "ratio": 5.763808900524191,
+    "off_by": 5.821046888995147
+  },
+  "map_B_lambda_is_mass_squared": {
+    "ratio": 4.615233101099219,
+    "off_by": 7.269709055685157
+  },
+  "in_tension": true,
+  "caveat": "the eigenvalue->mass map is undefined (deferred N6, mass-as-loop-length-density); under both natural maps the loop splittings are ~5-7x too compressed vs the observed Dm31^2/Dm21^2 ~ 33.6. Near-term tension FLAG, not a falsification.",
+  "nufit": {
+    "Dm21_sq_eV2": 7.49e-05,
+    "Dm31_sq_eV2": 0.002513,
+    "ordering": "NO"
+  }
+}

@@ -12,7 +12,10 @@ This doc is the LOCAL plan. It captures Duda's round-2 + round-3 replies verbati
 
 | Related work | Link | Relationship |
 | --- | --- | --- |
-| ⭐ Consolidated findings (N0-N4b) | [`10b_findings.md`](10b_findings.md) | the CANONICAL single-file record of the executed rounds (results + implementation detail + artifacts + caveats) , the doc for external (Duda) review |
+| ⭐ N4c findings (honest reframe, CANONICAL framing) | [`10e_findings_N4c.md`](10e_findings_N4c.md) | the post-review record: 1 imposed symmetry + 1 pinned angle (`theta_12`, not energy-selected) + 1 free coupling + open CP sign; mass-ratio tension. **Canonical for what is predicted vs imposed vs fit** , the doc for external (Duda) review |
+| Consolidated findings N0-N4b (implementation detail) | [`10b_findings_N4b.md`](10b_findings_N4b.md) | the N0-N4b canonical implementation record (results + detail + artifacts + caveats); headline framing superseded by 10e |
+| AI peer review (verbatim, cold read) | [`10c_AI_reviewers.md`](10c_AI_reviewers.md) | two independent reviews with no program context; the stress test 10d/10e respond to |
+| Review triage + N4c plan | [`10d_bullet_proof_run.md`](10d_bullet_proof_run.md) | what to implement vs context-gap, and the bullet-proofing run plan |
 | Charged-lepton masses (PARKED) | [`9a_lepton_mass_planning.md`](9a_lepton_mass_planning.md) · issue [#200](https://github.com/openwave-labs/openwave/issues/200) | sibling; PARKS behind the SAME blocker (g, delta + the potential). The full production-engine build + Duda's round-1 review live there |
 | PMNS mixing structure (precursor, CLOSED) | issue [#199](https://github.com/openwave-labs/openwave/issues/199) | established the rotation-group structure (neutrino oscillation = SO(3); quarks = SU(3)/CKM) + the `delta_CP = 180deg` prediction. This task does the DYNAMICAL field-theoretic derivation #199 did not |
 | Effective Dirac / Standard-Model Lagrangian | issue [#197](https://github.com/openwave-labs/openwave/issues/197) | the QED-Lagrangian connection Duda's parameter argument rests on (g <-> the `mc^2` rest-mass term, delta <-> the quantum-phase Dirac term) |

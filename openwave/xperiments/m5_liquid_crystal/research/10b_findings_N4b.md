@@ -9,6 +9,14 @@
 > [`sandbox_v10/n3_findings.md`](sandbox_v10/n3_findings.md) (N3),
 > [`sandbox_v10/n4_findings.md`](sandbox_v10/n4_findings.md) (N4),
 > [`sandbox_v10/n4b_findings.md`](sandbox_v10/n4b_findings.md) (N4b).
+>
+> ⚠️ **SUPERSEDED FOR FRAMING (read with [`10e_findings_N4c.md`](10e_findings_N4c.md)).** A cold-read peer review
+> ([`10c_AI_reviewers.md`](10c_AI_reviewers.md)) showed the "three of four parameters PREDICTED" headline below
+> over-counts: the mu-tau mirror is ONE imposed symmetry, and `theta_23`, `theta_13=0`, \|`delta_CP`\|=90 are its
+> CONSEQUENCES, not independent predictions. The N4c response ([`10e_findings_N4c.md`](10e_findings_N4c.md))
+> tested whether `theta_12`'s magic tilt is energetically selected (it is NOT , the substrate energy is flat in
+> the tilt) and checked the mass-ratio against data (~6x too compressed). The **honest scorecard is in 10e**;
+> this document is retained for the N0-N4b IMPLEMENTATION DETAIL, which is unchanged.
 
 ## 0. Headline
 
