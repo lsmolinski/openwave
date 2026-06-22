@@ -40,7 +40,7 @@ minus both at index 0). The production engine uses the equivalent index-3 orderi
 sandbox adopts index-0 to match Duda and end the recurring confusion.
 
 LOCAL artifact (OpenWave #236 N-program, held until the N-program finishes). Headless.
-Scope: research/10n1_foundation_scope.md.  Run: python3 n1_precision_method.py
+Scope: research/10a_neutrino_oscillations.md § "N1 + N2 foundation scope".  Run: python3 n1_precision_method.py
 """
 
 import json

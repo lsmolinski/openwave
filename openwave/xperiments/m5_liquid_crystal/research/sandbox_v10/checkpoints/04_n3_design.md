@@ -48,4 +48,4 @@ If no (g,delta,potential,arrangement) reproduces TBM from the dynamics, that is 
 ## Discipline
 Headless numpy f64 (the f32 engine can't carry 1e10/1e-10; N0 proved the port is faithful). Checkpoint
 each sub-result here on arrival. No GitHub, no git. Total invisibility (public OpenWave physics only).
-Cross-link findings <-> 10a <-> 10n1 <-> #199.
+Cross-link findings <-> 10a <-> #199.

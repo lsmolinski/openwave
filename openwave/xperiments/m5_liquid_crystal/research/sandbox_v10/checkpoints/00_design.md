@@ -2,9 +2,9 @@
 
 Go-time: 2026-06-21 19:00 EDT. Reset 11:00pm EDT (resume ping armed 03:05 UTC Jun 22).
 HOLD: no GitHub #236 posting until the whole N-program (N1-N5) finishes (Rodrigo's call,
-`research/10n1_foundation_scope.md` WORKFLOW NOTE). Everything LOCAL. Progress logged here.
+`research/10a_neutrino_oscillations.md § N1 + N2 foundation scope` WORKFLOW NOTE). Everything LOCAL. Progress logged here.
 
-Scope source: `research/10n1_foundation_scope.md`. Master plan: `research/10a_neutrino_oscillations.md`.
+Scope source: `research/10a_neutrino_oscillations.md § N1 + N2 foundation scope`. Master plan: `research/10a_neutrino_oscillations.md`.
 
 ## The two deliverables
 

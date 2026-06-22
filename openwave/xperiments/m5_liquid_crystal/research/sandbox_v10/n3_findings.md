@@ -2,7 +2,7 @@
 
 > **LOCAL / HELD.** N3 (the parameter + potential search) of the neutrino N-program, OpenWave issue
 > [#236](https://github.com/openwave-labs/openwave/issues/236). Per
-> [`../10n1_foundation_scope.md`](../10n1_foundation_scope.md) § WORKFLOW NOTE, all GitHub #236 posting is
+> [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md) § "N1 + N2 foundation scope" WORKFLOW NOTE, all GitHub #236 posting is
 > HELD until the whole N-program (N1-N5) finishes; #236 stays `In progress`, nothing is posted at the end
 > of N3. This doc is the local N3 record. Foundation (N0/N1/N2): [`n_foundation_findings.md`](n_foundation_findings.md).
 

@@ -2,11 +2,11 @@
 
 > **LOCAL / HELD.** This is the foundation phase (N1 + N2) of the neutrino N-program, OpenWave
 > issue [#236](https://github.com/openwave-labs/openwave/issues/236). Per
-> [`../10n1_foundation_scope.md`](../10n1_foundation_scope.md) § WORKFLOW NOTE, all GitHub #236
+> [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md) § "N1 + N2 foundation scope" WORKFLOW NOTE, all GitHub #236
 > posting is HELD until the WHOLE N-program (N1-N5) finishes; #236 stays `In progress`, nothing
 > is posted at the end of N1+N2. This doc is the local foundation record.
 
-Scope: [`../10n1_foundation_scope.md`](../10n1_foundation_scope.md) · master plan:
+Scope + master plan:
 [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md) · the SO(3)/TBM target:
 [#199](https://github.com/openwave-labs/openwave/issues/199) · engine reused:
 [`../../medium.py`](../../medium.py), [`../../engine2_pde.py`](../../engine2_pde.py),
@@ -135,7 +135,7 @@ the observable that reads it. Together = the machine N3 drives.
 | `n2_closed_loop.py` + `_summary.json` + `.png` | `python3 n2_closed_loop.py` |
 | `checkpoints/00_design.md`, `01_n1.md`, `02_n2.md` | progress log (this run) |
 
-## Definition of Done (from [`../10n1`](../10n1_foundation_scope.md)) , check
+## Definition of Done (from [`../10a`](../10a_neutrino_oscillations.md) § "N1 + N2 foundation scope") , check
 
 | DoD item | Status |
 | --- | --- |

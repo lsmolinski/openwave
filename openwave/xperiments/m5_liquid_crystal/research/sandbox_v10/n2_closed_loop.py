@@ -17,14 +17,14 @@ file builds the foundation machine the N3 parameter search will drive:
       that issue #199 established as the symmetric limit, and exposing the O(delta) -> theta_13
       channel that N1 proved is computable to machine precision.
 
-WHAT N2 DOES NOT DO (resist scope drift, 10n1 § "NOT in scope"): it does not derive the PMNS
+WHAT N2 DOES NOT DO (resist scope drift, 10a § "N1 + N2 foundation scope" NOT in scope): it does not derive the PMNS
 VALUES from first principles (that is the N3 parameter search), and it does not claim
 theta_13 = 8.5 deg (that is N4). It builds + validates the machine and EXPOSES the channel,
 and it surfaces the central quantitative tension (below) honestly for N3.
 
 Convention: Duda index-0, D=diag(g,1,delta,0), eta=diag(-1,1,1,1) (shared with N1).
 LOCAL artifact (OpenWave #236 N-program, HELD until the N-program finishes). Headless.
-Scope: research/10n1_foundation_scope.md.  Run: python3 n2_closed_loop.py
+Scope: research/10a_neutrino_oscillations.md § "N1 + N2 foundation scope".  Run: python3 n2_closed_loop.py
 """
 
 import json

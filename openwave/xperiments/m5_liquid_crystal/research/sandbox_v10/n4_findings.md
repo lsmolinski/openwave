@@ -2,7 +2,7 @@
 
 > **LOCAL / HELD.** N4 (the theta13 crux + CP sector) of the neutrino N-program, OpenWave issue
 > [#236](https://github.com/openwave-labs/openwave/issues/236). All GitHub #236 posting HELD until the whole
-> N-program finishes (per [`../10n1_foundation_scope.md`](../10n1_foundation_scope.md)). Local record. Builds
+> N-program finishes (per [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md) § "N1 + N2 foundation scope"). Local record. Builds
 > on N3: [`n3_findings.md`](n3_findings.md). Master plan: [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md).
 > Convention index-0 ([`../_convention_refactor/CONVENTION.md`](../_convention_refactor/CONVENTION.md)).
 
