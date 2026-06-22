@@ -1,0 +1,66 @@
+{
+  "convention": "index-0 Duda: D=diag(g,1,delta,0), eta=diag(-1,1,1,1)",
+  "tbm_gate": {
+    "alpha_star_deg": 46.94480319845834,
+    "angles": {
+      "theta12": 35.264393086162734,
+      "theta23": 44.99999999999999,
+      "theta13": 0.0
+    },
+    "eigenvalues": [
+      1690.970700797836,
+      1940.9884063714817,
+      2844.8605359924168
+    ],
+    "status": "PASS (predictions from dynamics)"
+  },
+  "theta13_fit_point": {
+    "delta": 0.1,
+    "eps_star": 0.6394295162847617,
+    "angles": {
+      "theta12": 34.93275772105903,
+      "theta23": 40.59181042045671,
+      "theta13": 8.56003784827611
+    },
+    "status": "FIT (one free O(0.1) mu-tau asymmetry)"
+  },
+  "delta_CP": {
+    "predicted_deg": 180.0,
+    "note": "real symmetric mass matrix -> CP-conserving (delta_CP in {0,180}); 180 matches #199; a genuine value needs a complex/chiral coupling (deferred)"
+  },
+  "scorecard_vs_nufit60_NO": [
+    {
+      "param": "theta12 (deg)",
+      "tbm_gate": 35.264393086162734,
+      "theta13_fit": 34.93275772105903,
+      "nufit": 33.68,
+      "note": "tri-maximal (sin^2=1/3)"
+    },
+    {
+      "param": "theta23 (deg)",
+      "tbm_gate": 44.99999999999999,
+      "theta13_fit": 40.59181042045671,
+      "nufit": 43.3,
+      "note": "maximal (45)"
+    },
+    {
+      "param": "theta13 (deg)",
+      "tbm_gate": 0.0,
+      "theta13_fit": 8.56003784827611,
+      "nufit": 8.56,
+      "note": "0 (TBM) -> 8.5 via mu-tau break"
+    },
+    {
+      "param": "delta_CP (deg)",
+      "tbm_gate": 180.0,
+      "theta13_fit": 180.0,
+      "nufit": 212.0,
+      "note": "180 (real/CP-conserving; #199)"
+    }
+  ],
+  "mass_spectrum_ratios": [
+    1.0,
+    1.1478545461820728,
+    1.6823831037700128
+  ]
+}

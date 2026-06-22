@@ -147,9 +147,15 @@ the observable that reads it. Together = the machine N3 drives.
 NOT in scope (correctly deferred): the parameter search (N3), reproducing the angles = the TBM
 gate, theta_13 = N4, masses = N6.
 
-## Next (N3)
+## Next (N3) , ✅ EXECUTED 2026-06-21 (LOCAL)
 
-Drive this machine: search `g, delta, V_loop, gap`, the LdG potential (Duda's "too simple"
-critique -> the LdG tensor), and the loop dressing, to (a) resolve the central tension and
-(b) reproduce the three TBM angles from loop dynamics = the ★ TBM gate
+Drive this machine: search `g, delta`, the LdG potential, the loop geometry + dressing, to (a) resolve
+the central tension and (b) reproduce the three TBM angles from loop dynamics = the ★ TBM gate
 ([`../10a`](../10a_neutrino_oscillations.md) § "Sub-tasks: phase-wired").
+
+**N3 record: [`n3_findings.md`](n3_findings.md).** ★ TBM GATE PASS , the 3 TBM angles emerge from the
+closed-loop field dynamics at the magic crossing alpha* (theta12=35.26 trimaximal, theta23=45, theta13=0),
+robust across 81/81 geometries. The central tension is RESOLVED + sharpened: a mu-tau-symmetric delta gives
+theta13 = 0 EXACTLY (any delta) , theta13 = 8.5 deg needs an explicit O(0.1) mu-tau ASYMMETRY, NOT the bare
+delta ~ 1e-10 (resonance ruled out). The connecting hypothesis is too simple; theta13 is a separate mu-tau-
+breaking, plausibly chiral (the theta13 <-> delta_CP link). GitHub #236 stays HELD.

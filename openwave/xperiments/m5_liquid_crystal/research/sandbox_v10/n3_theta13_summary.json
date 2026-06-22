@@ -1,0 +1,74 @@
+{
+  "S3a_mutau_symmetric_delta": {
+    "max_theta13_over_delta_deg": 8.4414158629996e-14,
+    "conclusion": "mu-tau-symmetric delta gives theta13 = 0 exactly for any delta"
+  },
+  "S3b_asymmetry_map": {
+    "deltas": [
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.5
+    ],
+    "eps": [
+      0.0,
+      0.1,
+      0.2,
+      0.4,
+      0.6,
+      0.8
+    ],
+    "theta13_grid_deg": [
+      [
+        9.601648384810234e-14,
+        0.08308054515095112,
+        0.3337297893031129,
+        1.2999036648820002,
+        2.575527911705904,
+        4.223868532678564
+      ],
+      [
+        0.0,
+        0.18148468221635947,
+        0.7151272351607656,
+        3.1405550552792922,
+        7.63894765089407,
+        12.768720329933775
+      ],
+      [
+        0.0,
+        0.5452375133364757,
+        2.49776020188325,
+        32.32419048663489,
+        16.545500154361875,
+        10.920752392712814
+      ],
+      [
+        6.824780169563092e-13,
+        3.0130374577247263,
+        5.420457465935769,
+        6.725471131828633,
+        6.774925574496629,
+        5.826211801948208
+      ],
+      [
+        3.939884829745683e-14,
+        0.2840936432920122,
+        0.9870720394977757,
+        2.4039384067309175,
+        2.49012852866496,
+        0.2448526382269357
+      ]
+    ],
+    "bilinear_gain_G_deg": 126.4115061526159,
+    "delta_times_eps_for_8p5deg": 0.06724071454174431
+  },
+  "S3c_resonance": {
+    "delta_tiny": 1e-10,
+    "peak_theta13_deg": 1.3137864548486811e-08,
+    "min_gap": 71.92084134152401,
+    "gap_over_spectrum_needed_for_8p5": 3.2708526184841406e-10
+  },
+  "resolution": "mu-tau-symmetric delta -> theta13 = 0 exactly; theta13 ~ G*delta*eps needs an explicit O(0.1) mu-tau ASYMMETRY eps; resonance cannot rescue delta=1e-10. theta13=8.5 deg is a separate O(0.1) mu-tau-breaking, distinct from the quantum-phase delta~1e-10; plausibly tied to the chiral/CP sector (symmetric biaxiality is CP-even). Sharpens the foundation tension into a structural statement."
+}

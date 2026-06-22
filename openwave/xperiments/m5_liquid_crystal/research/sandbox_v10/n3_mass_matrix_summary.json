@@ -1,0 +1,46 @@
+{
+  "construction": "3 co-located loops, e=ref, mu/tau=Rx(+-alpha) mirror pair; M_mass = grad-overlap + kappa field-overlap (energy Hessian projection)",
+  "convention": "index-0 Duda; far field common zhat; undressed (N1 precision enters with dressing)",
+  "mutau_form_by_construction": true,
+  "sample_alpha_0p6": {
+    "M_mass": [
+      [
+        2075.600710484561,
+        501.4223602280741,
+        501.4223602280741
+      ],
+      [
+        501.4223602280741,
+        2198.13778936008,
+        283.311089456034
+      ],
+      [
+        501.4223602280741,
+        283.311089456034,
+        2198.13778936008
+      ]
+    ],
+    "angles": {
+      "theta12": 37.015394135562666,
+      "theta23": 45.00000000000001,
+      "theta13": 0.0
+    },
+    "eigenvalues": [
+      1540.942968269085,
+      1914.826699904046,
+      3016.1066210315903
+    ],
+    "mutau_violation": 0.0,
+    "magic_residual": 95.57419189652092,
+    "tbm_err": 1.7510044528080115,
+    "params": {
+      "n": 40,
+      "alpha": 0.6,
+      "R_loop": 9.0,
+      "delta": 1e-10,
+      "q": 0.5,
+      "core_vox": 2.0,
+      "kappa": 0.0
+    }
+  }
+}
