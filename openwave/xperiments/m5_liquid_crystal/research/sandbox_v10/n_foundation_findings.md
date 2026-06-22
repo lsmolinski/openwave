@@ -23,6 +23,23 @@ one honest tension is surfaced for the next phase:
 | 2 | The closed disclination loop seeds + carries a measurable **line tension** (bare loop shrinks); the mixing-observable pipeline **reproduces the #199 TBM angles exactly** and **exposes the delta -> theta_13 channel**. | ✅ N2 PASS |
 | 3 | At O(1) loop coupling, theta_13 ~ 1e-8 deg for delta~1e-10 vs the observed **8.5 deg** , a ~**1.5e9** gap. N3 must resolve whether delta is really 1e-10 in the mixing or theta_13 rides a resonant near-degeneracy. | ⚠️ open, for N3 |
 
+## N0 , the M5 engine connection (VERIFIED, not transcribed)
+
+The N1/N2 scripts are standalone numpy , they re-implement the M5 LdG energy functional in f64
+(the engine is f32 and cannot carry the g~1e10 / delta~1e-10 range; it also uses the index-3
+time axis vs Duda's index-0; and the closed loop is new geometry). `n0_engine_equivalence.py`
+proves that re-implementation is faithful, at the engine's toy scales (g=8, delta=0.30):
+
+| Test | Result | Verdict |
+| --- | --- | --- |
+| **A , fidelity** | engine `compute_energyH_density_M` = `5.41607e-6` vs numpy port = `5.41626e-6`, rel diff **3.4e-5** | port reproduces the engine to f32 rounding -> the LC connection is verified ✅ |
+| **B , convention** | signed curvature + LdG potential: engine index-3 vs Duda index-0 agree **bit-identical (rel 0.0)** | index-3 and index-0 are the SAME physics (relabel `sigma=[3,0,1,2]`) ✅ |
+
+Consequence (also the convention-housekeeping answer): the engine's index-3 ordering is not
+"wrong" , it is physically identical to Duda's index-0. The fix for peer-review readability is a
+convention note + a consistency audit (catch any docstring that contradicts the code, the
+m5_9_4 bug class), NOT a risky rewrite of the validated engine.
+
 ## N1 , the precision-safe numerical method
 
 ### The problem (Duda 2026-06-21, made concrete)
@@ -113,6 +130,7 @@ the observable that reads it. Together = the machine N3 drives.
 
 | Artifact | Regenerate |
 | --- | --- |
+| `n0_engine_equivalence.py` + `_summary.json` | `python3 n0_engine_equivalence.py` (imports the live engine, CPU) |
 | `n1_precision_method.py` + `_summary.json` + `.png` | `python3 n1_precision_method.py` |
 | `n2_closed_loop.py` + `_summary.json` + `.png` | `python3 n2_closed_loop.py` |
 | `checkpoints/00_design.md`, `01_n1.md`, `02_n2.md` | progress log (this run) |

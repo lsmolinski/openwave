@@ -5,7 +5,7 @@
 The detailed scope for the **foundation phase (N1 + N2)** of the neutrino N-program ([`10a_neutrino_oscillations.md`](10a_neutrino_oscillations.md) § "Sub-tasks: phase-wired"), to be EXECUTED on Rodrigo's "go N1+N2". N1 (the numerical method) and N2 (the closed-vortex-loop sim) are planned and run **together** as one build , the buildable foundation, no Duda dependency. They produce a precision-safe closed-loop simulation with the mixing observables, ready for the N3 parameter search.
 
 > **WORKFLOW NOTE , this build HOLDS GitHub (Rodrigo's call).** On "go N1+N2" the full task workflow runs (PLAN -> EXECUTE -> FINISH -> REVIEW) with the standard LOCAL artifacts (scripts in `sandbox_v10/`, a findings doc, checkpoints, a terminal TASK REVIEW). BUT **all GitHub #236 posting is HELD until the whole N-program (N1-N5) is finished**: #236 stays `In progress` throughout, NO status change and NO review comment is posted at the end of N1+N2, everything stays local until the N-program completes and the distilled writeup is published once. The resume-ping + mobile completion ping still apply (they are not GitHub).
-
+>
 > **✅ EXECUTED 2026-06-21 (LOCAL).** N1 + N2 are built, run, and self-validated. Foundation record: [`sandbox_v10/n_foundation_findings.md`](sandbox_v10/n_foundation_findings.md). Headlines: N1 cancellation test PASS (perturbative-delta recovers the theta_13 channel to 9.4e-16 where naive f64 returns 0); N2 closed loop seeds with line tension dE/dL=+6.74, the observable pipeline reproduces the #199 TBM angles exactly, the delta->theta_13 channel is exposed; the central tension (theta_13=8.5 deg needs delta~0.15 OR a ~1.5e9 resonance, not delta~1e-10) is surfaced for N3. GitHub #236 stays HELD.
 
 ## Goal of the foundation (N1 + N2)
