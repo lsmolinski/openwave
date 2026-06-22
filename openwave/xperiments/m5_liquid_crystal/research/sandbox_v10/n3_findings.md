@@ -165,5 +165,11 @@ maximal (45 -> 40.59, overshooting 43.30) , the physically expected one-paramete
 
 N4: try to PREDICT the theta13 mu-tau asymmetry from a chiral loop structure (the theta13 <-> delta_CP link),
 and test an A4/S4 origin for the magic angle. N5: assemble the peer-review article from the TBM-gate result +
-the theta13 structural finding. Cross-refs: [`n_foundation_findings.md`](n_foundation_findings.md),
+the theta13 structural finding.
+
+> **✅ N4 FIRST PASS DONE , [`n4_findings.md`](n4_findings.md).** The chiral (Lifshitz) coupling makes the
+> mass matrix complex Hermitian and PREDICTS **delta_CP = +-90 deg (maximal CP violation)**, robustly , the
+> mu-tau-reflection result (Harrison-Scott) realized from the loop geometry. theta13 and delta_CP share ONE
+> chiral origin (the loop handedness). Reframes the N3 theta13 "fit" as the chiral partner of delta_CP. Open:
+> is the handedness a TOPOLOGICAL invariant (writhe) -> would make theta13 + delta_CP fully predicted. Cross-refs: [`n_foundation_findings.md`](n_foundation_findings.md),
 [`../10a_neutrino_oscillations.md`](../10a_neutrino_oscillations.md), [#199](https://github.com/openwave-labs/openwave/issues/199).
