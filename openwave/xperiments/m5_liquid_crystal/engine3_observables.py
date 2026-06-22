@@ -56,14 +56,14 @@ def update_trackers_M(
     alpha_rms = ti.cast(0.005, ti.f32)
     alpha_freq = ti.cast(0.05, ti.f32)
     inv_dt = 1.0 / dt_rs
-    # M5.8.1 — 4×4 ẑ-vacuum D_vac = diag(δ, δ, 1, g): spatial uniaxial (director = ẑ,
-    # eigenvalue 1 at index 2) + the time axis (index 3) = g. The Frobenius deviation
-    # now spans the time block (g−g=0 in vacuum) so the amplitude tracker stays ≈0.
+    # 4×4 ẑ-vacuum D_vac = diag(g, δ, δ, 1) (Duda index-0): time axis (index 0) = g, spatial
+    # uniaxial diag(δ, δ, 1) at indices 1,2,3 (director = ẑ, eigenvalue 1 at index 0). The
+    # Frobenius deviation spans the time block (g−g=0 in vacuum) so the amplitude tracker stays ≈0.
     g = tensor_field.lc_g
-    d_vac = ti.Matrix([[delta, 0.0, 0.0, 0.0],
+    d_vac = ti.Matrix([[g, 0.0, 0.0, 0.0],
                        [0.0, delta, 0.0, 0.0],
-                       [0.0, 0.0, 1.0, 0.0],
-                       [0.0, 0.0, 0.0, g]])
+                       [0.0, 0.0, delta, 0.0],
+                       [0.0, 0.0, 0.0, 1.0]])
 
     for i, j, k in ti.ndrange(nx, ny, nz):
         m = tensor_field.M_am[i, j, k]

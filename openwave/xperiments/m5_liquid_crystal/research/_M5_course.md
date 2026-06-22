@@ -29,7 +29,7 @@ them.
 | [7](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | [The de Broglie clock-engine & spin-½ (Zitterbewegung)](#lesson-7--the-de-broglie-clock-engine--spin-½-zitterbewegung) | *why a topological defect can't relax → oscillates (knotted-rubber-band); the spinning-arrow visual; spinning vs oscillating; ω=2mc²/ℏ; the **engine** (Minkowski negative-energy self-propulsion — depth here); **spin-½** (SO(3) double-cover, 2ω doubling, L=ℏ/2); de Broglie λ; time-crystal* |
 | [8](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | [Force emergence: Coulomb, Maxwell, magnetism, gravity](#lesson-8--force-emergence-coulomb-maxwell-magnetism-gravity) | Coulomb (static topology, 1/d) ↔ Maxwell (dynamic tilts); electric (`∇·n̂`) / magnetic (`∇×n̂`) / gravitational (boosts); *EM orthogonality E⊥B in the tensor field*; magnetic moment; *magnetism as a dynamical correction to Coulomb (Feynman) vs* permanent-magnet static B with no moving charge |
 | [9](#lesson-9--seeing-it-the-visualization-map) | [Seeing it: the visualization map](#lesson-9--seeing-it-the-visualization-map) | glyphs (direction=`n̂`, size, color), `flux_mesh`, `warp_mesh` scalar vs vector, granule positions, WAVE_MENU channels; *+ apolar `n̂≡−n̂` gauge sign-flip caveat* |
-| [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (9d); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
+| [10](#lesson-10--handedness-chirality--composite-particles) | [Handedness, chirality & composite particles](#lesson-10--handedness-chirality--composite-particles) | the finale: **handedness/chirality** (traversal sign CW/CCW = ±; matter/antimatter; neutrino helicity; biaxial `π₁=Q₈` quaternion classes) + **composite particles** (15a); *seeds in L2 (ellipse handedness) + L4 (topology charge sign)* |
 | [11](#lesson-11--where-the-waves-live-m5m6-only) | [CAPSTONE: Where the waves live (M5/M6 only)](#lesson-11--where-the-waves-live-m5m6-only) | the "wave existential crisis": wave-first inception (EWT) vs topology-first reality; the **emergence ledger** (substrate / matter / **force** / **EM waves** / **time — proper + shared**) — each a row, *none* sourced by a base wave; the two jobs of the wave (radiated = settled; pilot = open); *what radiates from the clock? — accelerating-charge / excess-oscillation-leak (open)*; scope = M5/M6 only (M1–M4 are wave-native) |
 
 ---
@@ -1265,7 +1265,7 @@ Five things that make it click:
 
 ![Duda's electron-clock animation — a hedgehog of biaxial ellipsoids, each spinning about its director at the de Broglie clock rate](images/clock.gif)
 
-**Figure — Duda's electron-clock render** (Wolfram Community, ["Time crystal ϕ⁴ kink as toy model…"](https://community.wolfram.com/groups/-/m/t/3398814)) — the literal picture of this lesson. The fanned ellipsoids are the **hedgehog** (L4 — charge = topology); each one **spinning about its director** is the `clock_twist` (the δ-axis sweeping `n̂`) — the **collective mode** ticking in lock-step. The same object carries **spin / angular momentum + magnetic dipole + de Broglie clock** (L7 → L8). The lower spiral is **neutrino oscillation "along axis 2↔3"** — the field swinging in the `δ`–`0` block (L2 axes; 3 light/stable types, left/right handed). The bottom strip is **β-decay reconnection** (neutron → W⁻ → proton + electron + neutrino; L10 / 9d). ⚠️ Duda's conceptual render — corroborates our framing, not an M5 result.
+**Figure — Duda's electron-clock render** (Wolfram Community, ["Time crystal ϕ⁴ kink as toy model…"](https://community.wolfram.com/groups/-/m/t/3398814)) — the literal picture of this lesson. The fanned ellipsoids are the **hedgehog** (L4 — charge = topology); each one **spinning about its director** is the `clock_twist` (the δ-axis sweeping `n̂`) — the **collective mode** ticking in lock-step. The same object carries **spin / angular momentum + magnetic dipole + de Broglie clock** (L7 → L8). The lower spiral is **neutrino oscillation "along axis 2↔3"** — the field swinging in the `δ`–`0` block (L2 axes; 3 light/stable types, left/right handed). The bottom strip is **β-decay reconnection** (neutron → W⁻ → proton + electron + neutrino; L10 / 15a). ⚠️ Duda's conceptual render — corroborates our framing, not an M5 result.
 
 ### THE ENGINE — why the clock self-sustains
 
@@ -1662,7 +1662,7 @@ as a pure **gauge** artifact — *not* physics. Two rules follow:
 ## LESSON 10 — Handedness, chirality & composite particles
 
 > **The finale (M5.8 / M5.9-era).** Two intertwined threads — **handedness/chirality** (the ± that
-> distinguishes matter from antimatter, and helicity for neutrinos) and **composite particles** (9d —
+> distinguishes matter from antimatter, and helicity for neutrinos) and **composite particles** (15a —
 > how confirmed single defects bind). Both become load-bearing only once the clock (L7), the 4D
 > structure (L3), and the lepton families (M5.9) are in place — hence last. Seeds were planted in **L2**
 > (ellipse traversal = chirality) and **L4** (winding sign / the biaxial `Q₈` classes).
@@ -1720,7 +1720,7 @@ quaternion classes** `{±1, ±i, ±j, ±k}`, *not* a simple `±` (L4). So "oppos
 biaxial defect is a **non-abelian** statement (the order in which you combine defects matters) — exactly
 what the M5.6.5e two-defect demo is built to make concrete.
 
-### Composite particles (9d)
+### Composite particles (15a)
 
 Once *single* defects are confirmed (leptons M5.9, quark-vortices), the next question is **how they
 bind**:
@@ -1732,7 +1732,7 @@ bind**:
 - **β-decay as reconnection.** The slide's bottom strip is a composite process: **neutron → (shift) →
   (split, energy release) → W⁻ → (reconnection) → proton + electron + neutrino** — defects splitting and
   reconnecting, conserving winding. The first concrete "composites that *change*" target.
-- **Status.** The **deferred 9d** program — load-bearing chirality lives here (a proton's quark content
+- **Status.** The **deferred 15a** program — load-bearing chirality lives here (a proton's quark content
   has definite handedness), but it comes *after* single-defect confirmation.
 
 ### L10 Q&A / clarifications (2026-06-04)
@@ -1744,7 +1744,7 @@ bind**:
 | 3 | what's a neutrino in this model? | a **closed vortex loop** (not a hedgehog) → light, stable, chargeless; flavor = which axis runs along the loop (axis 2↔3). | above |
 | 4 | why is biaxial handedness not a simple ±? | the line defects are `Q₈` quaternion classes (non-abelian), not `±1` — combining order matters. | above, L4 |
 | 5 | what binds quarks? | the **Cornell** string `−α/r + σr` (confinement + asymptotic freedom); quarks = vortex strings, charge `e/3` = `π/3` excitation. | above, M5.9 |
-| 6 | when does composites get built? | the **9d** program, *after* single defects (leptons/quarks) are confirmed — chirality is load-bearing there. | above |
+| 6 | when does composites get built? | the **15a** program, *after* single defects (leptons/quarks) are confirmed — chirality is load-bearing there. | above |
 
 ### L10 Anchors
 
@@ -1753,7 +1753,7 @@ bind**:
 | `4a §5` | ellipse handedness |
 | L2 / L4 seeds | chirality (L2) + winding sign (L4) |
 | `1b` | topological-defect physics notes |
-| `9d` | composite-particles research |
+| `15a` | composite-particles research |
 | `theory/…Wolfram Community.pdf` | kink/antikink pair-creation, neutrino vortex-loop, β-decay reconnection |
 
 ---

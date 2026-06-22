@@ -1,5 +1,7 @@
 # M5 ROADMAP / LIQUID-CRYSTAL MODEL
 
+> **Index convention (2026-06-21).** The M5 engine now stores the order parameter at INDEX-0: `D = diag(g, 1, δ, 0)`, `eta = diag(-1, 1, 1, 1)` (time/g axis = array index 0, Duda's convention). Dated entries below written before the flip use the legacy index-3 labels (`D = diag(1, δ, 0, g)`; the time-coupled curvature block called the `(α,3)` block) , the SAME physics under the relabel `index k -> (k+1) mod 4` (proven physics-neutral: [`_convention_refactor/CONVENTION.md`](_convention_refactor/CONVENTION.md)). Read `(α,3)` as `(α,0)`.
+
 Full implementation plan, post-sandbox_v1.
 
 A research thread evaluating whether a Lagrangian / topological framework can replace OpenWave's empirical wave-equation search with a first-principles derivation, and produce charge quantization + far-field Coulomb that the M3 scalar model cannot. Sparked by email exchange with Jarek Duda (Jagiellonian) and Robert Close (Clark College) in the "Models of Particles" group.
@@ -17,7 +19,7 @@ For design rationale, M2/M4 inheritance, code mapping, resolution & performance 
 | Where is M5? | M5.0–M5.7 ✅ closed. M5.8's sandbox arc essentially complete: the quadratic action REFUTED (dt-invariant runaway at τ ≈ 2 clock periods), the `u+βu²` quartic SATURATES (bounded breathing, f64-anchored), the saturated state is a QUASI-PERIODIC breather with a reproducible fundamental ω₁ ≈ 1.1 + 2ω₁ harmonic — the SAME ω₁ from kicked, exactly-unkicked, and jittered starts = the ATTRACTOR (m5_8_2h; the earlier "strictly periodic ω₀ = 0.262 + exact comb" was an FFT-window artifact, RETIRED 2026-06-07), and SPONTANEITY is CONFIRMED (a settled zero-momentum config self-starts, dt/2-converged to 4 significant digits) |
 | Is the model "working"? | YES at the mechanism level — the full ZBW program (N-1…N-6e, 2026-06-07) lands every existence claim: a bounded, self-starting, frequency-RIGID clock that HOLDS resolution-robustly (the M5.7 dispersal reversed under the quartic), classified a MOLTEN CLOCK that REGULARIZES toward a near-regular cold ground state. NOT claimed: the electron IDENTIFICATION — the first absolute ω is 5.5×10¹⁹ rad/s, ~28× below 2m_ec²/ℏ (a STRUCTURAL gap given ω-rigidity, pointing at the V-on/Faber-r₀ core); no intrinsic spin J above the box-torque floor; strict single-line periodicity. The identification track is the NG-1/NG-3 work |
 | Validation mode | **HEADLESS-FIRST (decision 2026-06-07)**: gates + npz caches + trend tables + plots. Rendering = communication/demo only — it gates nothing (NG-6; policy note in `5a §10e`) |
-| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT is WRITTEN (§3 → `10_summary_report.md`); the parallel stages become the active program. **Duda δ/g follow-up CLOSED** (06-08 + 06-09 correction; see "DUDA 2026-06-08 FOLLOW-UP"): the δ knob does NOT calibrate the clock (`R ∝ δ`); gravity enters only via the boost tilt `b·g` (Duda 2026-06-09 correction: EM dominates the rest energy ~210:1 at a physical boost, GEM is the tiny negative clock-fuel); calibration lives in the Coulomb-unit + LdG-to-rest-energy directions (NG-1/NG-12). **ELECTRON-ID RUN 2026-06-10** (Duda round-3 program): EID-B ✅ (3-way split confirms his EM/QM/GEM hierarchy, with the R=Γ×Γ label correction) + EID-C ⚠️ (μ exists via the tilt/precession channel only, the twist clock is EM-silent; orbital J = 0 structurally, spin = the Noether clock charge; g ≈ 2 awaits the Coulomb e_scale fix). See "ELECTRON-ID PROJECT § EID results" + `4c_convo_2026.06.08.md` |
+| What happens next | **The §2 ladder is COMPLETE (N-1…N-6e ✅, all 2026-06-07)** → the Duda REPORT is WRITTEN (§3 → `99_summary_report.md`); the parallel stages become the active program. **Duda δ/g follow-up CLOSED** (06-08 + 06-09 correction; see "DUDA 2026-06-08 FOLLOW-UP"): the δ knob does NOT calibrate the clock (`R ∝ δ`); gravity enters only via the boost tilt `b·g` (Duda 2026-06-09 correction: EM dominates the rest energy ~210:1 at a physical boost, GEM is the tiny negative clock-fuel); calibration lives in the Coulomb-unit + LdG-to-rest-energy directions (NG-1/NG-12). **ELECTRON-ID RUN 2026-06-10** (Duda round-3 program): EID-B ✅ (3-way split confirms his EM/QM/GEM hierarchy, with the R=Γ×Γ label correction) + EID-C ⚠️ (μ exists via the tilt/precession channel only, the twist clock is EM-silent; orbital J = 0 structurally, spin = the Noether clock charge; g ≈ 2 awaits the Coulomb e_scale fix). See "ELECTRON-ID PROJECT § EID results" + `4c_convo_2026.06.08.md` |
 | M6 | Cross-pollination CLOSED 2026-06-07, strongly positive (§1 #25; full verdict in the tracker); M6 itself stays sandbox-only / permanent hold |
 
 ---
@@ -104,7 +106,7 @@ Status update (2026-06-07): the M5.8.2 arc supplies strong anchor-class evidence
 
 **Full correspondence record:** [`4c_convo_2026.06.08.md`](4c_convo_2026.06.08.md) (the email thread + both rounds of runs). This section is the findings summary.
 
-After the report, Duda read `10_summary_report.md` (now seeing the 3+1D **4×4** tensor sim correctly — `D = diag(1, δ, 0, g)`) and added Manfried Faber. His directions, with the QED Lagrangian he attached as the decoder ring:
+After the report, Duda read `99_summary_report.md` (now seeing the 3+1D **4×4** tensor sim correctly — `D = diag(1, δ, 0, g)`) and added Manfried Faber. His directions, with the QED Lagrangian he attached as the decoder ring:
 
 | QED term (his image) | coefficient | our `D` axis | his prescription |
 | --- | --- | --- | --- |
@@ -229,7 +231,7 @@ Nothing here gates §2/§3 or the parallel stages. Two tiers; archival detail fo
 | NG-2 | **G-2c-2 hardening** | Stiffness-aware stepper (the deep-floor cascade), horizons ≫45 periods, the engine-side quartic port (the `(1+2β·u)` flux prefactor) when production-scale runs need it |
 | NG-3 | **M5.9 — leptons + Cornell quarks** | 3 axis-choices → e/μ/τ mass calibration; Cornell `V(r) = −α/r + σr`; the `e_scale` physical-units hook lands here |
 | NG-4 | **M5.8 breadth** (was 8.4–8.8) | Cross-particle ω test; `−b·Tr(M³)` propulsion toggle; the 2+1D pilot-wave rung (Couder/Bush analogs — flagged in the report closing); gravity/time-dilation viz suite. (The rod-localization check ↑ folded into N-1, 2026-06-07) |
-| NG-5 | **9d stage start** | composites — its own research file (§5) |
+| NG-5 | **15a stage start** | composites — its own research file (§5) |
 | NG-12 | **Duda δ/g calibration follow-up** (2026-06-08 + 06-09) | DONE: seed-level δ/g energy scaling + the EM/GEM boost split (06-09 addendum, `2q` Phase D/E). Residual: (a) the δ (quantum-phase) sector is DYNAMICAL (the fast ~10²¹ Hz clock), not captured by the static split, so weighing it needs the ω-dynamics; (b) the direct ω(δ) on the SETTLED state (the `2h` run_dense path, not the fresh-seed `2q_omega` scaffold); (c) the real calibration axis (fix units via Coulomb + tune LdG to rest energy), folding into NG-1/NG-3 |
 
 ### Nice-to-have / demos / cleanups
@@ -249,7 +251,7 @@ Nothing here gates §2/§3 or the parallel stages. Two tiers; archival detail fo
 
 Forward-looking research in its own file — run alongside / after the linear M5.x phases, with its own scientific test program:
 
-- **[9d — Composite Particles](9d_composite_particles.md)** — hopfions, knots → nuclei, atomic orbitals. Test program 9d.1 → 9d.5 (Liu et al. 2026 lab anchor). Pursued if foundations succeed and resources permit.
+- **[15a — Composite Particles](15a_composite_particles.md)** — hopfions, knots → nuclei, atomic orbitals. Test program 15a.1 → 15a.5 (Liu et al. 2026 lab anchor). Pursued if foundations succeed and resources permit.
 
 ---
 
@@ -440,7 +442,7 @@ The paper/slides reading task produces this assignment table — confirmation th
 | Open: V(M) form / Faber reg / deeper substrate / weak SU(2) | §12 | M5.5 / M5.6 / — | ✅ Q7 / Q8 / Q9 / Q10 |
 | Mainstream landscape comparison (page 48) | §11 | M5 positioning | framing (no phase) |
 
-**One gap flagged:** the walking-droplet **orbit-quantization** side (path-memory kernel + Landau/Zeeman/double-quantization laws — the standing-wave complement to topology, Jeff Yee's regime) has **no dedicated M5 phase**. It rides on M3-near-field retention but is not a numbered phase. Candidate **future parallel stage** (alongside 9d) if/when orbit quantization becomes a target. Logged here so it isn't lost.
+**One gap flagged:** the walking-droplet **orbit-quantization** side (path-memory kernel + Landau/Zeeman/double-quantization laws — the standing-wave complement to topology, Jeff Yee's regime) has **no dedicated M5 phase**. It rides on M3-near-field retention but is not a numbered phase. Candidate **future parallel stage** (alongside 15a) if/when orbit quantization becomes a target. Logged here so it isn't lost.
 
 ---
 
@@ -781,9 +783,9 @@ From M5.7 — these do **not** gate the headline, but several must be done *duri
 
 > Standard Model correspondence. The biaxial Λ = (g, 1, δ, 0) gives 3 axis-choices → 3 lepton families with the same Q but different masses (e/μ/τ). Cornell potential for quark strings via topological vortex.
 >
-> **Handedness / chirality** (matter↔antimatter charge-sign, neutrino helicity, the biaxial `π₁=Q₈` quaternion classes — not a simple `±`) becomes load-bearing here and at composites (9d) / the two-defect demo (5e). Teaching deep-dive deferred to **`0c` Lesson 10** (the handedness/chirality + composites finale, post-2026-05-31 refactor; seeds in L2 ellipse-handedness + L4 winding-sign).
+> **Handedness / chirality** (matter↔antimatter charge-sign, neutrino helicity, the biaxial `π₁=Q₈` quaternion classes — not a simple `±`) becomes load-bearing here and at composites (15a) / the two-defect demo (5e). Teaching deep-dive deferred to **`0c` Lesson 10** (the handedness/chirality + composites finale, post-2026-05-31 refactor; seeds in L2 ellipse-handedness + L4 winding-sign).
 >
-> **★ Neutrino oscillation = "axis 2↔3" (Duda Wolfram slide, 2026-06-04; see the M5.8 corroboration note).** In `M = O·diag(g,1,δ,0)·Oᵀ`, a **neutrino = the `δ`–`0` (axis 2↔3) content swinging WITHOUT the full hedgehog winding** — hence **light, stable, chargeless**; flavor oscillation `e↔μ↔τ` = the axis-2↔3 swing, with **3 types** distinguished by axis / energy-&-length / left-right handedness / "sterile" `U(1)` phase, sourced by e.g. QCD quark-string hadronization + β-decay (the slide's bottom strip: neutron → W⁻ → proton + electron + neutrino → composites/9d). ⚠️ Conceptual / UNBUILT — a forward observable, not a result.
+> **★ Neutrino oscillation = "axis 2↔3" (Duda Wolfram slide, 2026-06-04; see the M5.8 corroboration note).** In `M = O·diag(g,1,δ,0)·Oᵀ`, a **neutrino = the `δ`–`0` (axis 2↔3) content swinging WITHOUT the full hedgehog winding** — hence **light, stable, chargeless**; flavor oscillation `e↔μ↔τ` = the axis-2↔3 swing, with **3 types** distinguished by axis / energy-&-length / left-right handedness / "sterile" `U(1)` phase, sourced by e.g. QCD quark-string hadronization + β-decay (the slide's bottom strip: neutron → W⁻ → proton + electron + neutrino → composites/15a). ⚠️ Conceptual / UNBUILT — a forward observable, not a result.
 
 - [ ] Seed hedgehogs along the 3 different axes of the biaxial M field
 - [ ] **Calibrate `(g, δ) numerically** against observed lepton-mass ratios: μ/e ≈ 207, τ/e ≈ 3477`. Per Duda 2026-04-19 guidance, these are calibration parameters, not ab-initio derivations

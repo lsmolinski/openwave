@@ -1,0 +1,40 @@
+{
+  "convention": "Duda index-0: D=diag(g,1,delta,0), eta=diag(-1,1,1,1)",
+  "loop_seeder": {
+    "grid": 40,
+    "radii_vox": [
+      5.0,
+      7.0,
+      9.0,
+      11.0,
+      13.0
+    ],
+    "energy_signed": [
+      -54645.56369298201,
+      -54581.273690306545,
+      -54503.24553606147,
+      -54405.41274457789,
+      -54310.21513624623
+    ],
+    "line_tension_dE_dL": 6.736694986799722,
+    "bare_loop_shrinks": true
+  },
+  "observable_pipeline": {
+    "tbm_angles": {
+      "theta12": 35.264389682754654,
+      "theta23": 45.00000000000001,
+      "theta13": 0.0
+    },
+    "pipeline_validates_vs_199": true
+  },
+  "theta13_channel": {
+    "model": "two-level: tan(2 th13) = 2 delta V_loop / gap",
+    "V_loop": 1.0,
+    "gap": 1.0,
+    "theta13_at_delta_phys_deg": 5.729577951308233e-09,
+    "delta_for_nufit_8p5deg": 0.1528653407293302,
+    "coupling_enhancement_needed": 1528653407.2933018
+  },
+  "central_tension": "linear onset + O(1) coupling => theta13 ~ 1e-8 deg at delta~1e-10 vs observed 8.5 deg; needs delta~0.15 or a ~1e9 resonant enhancement. N3 must resolve whether delta is 1e-10 in the mixing or theta13 is sourced by a near-degenerate gap.",
+  "foundation_pass": true
+}

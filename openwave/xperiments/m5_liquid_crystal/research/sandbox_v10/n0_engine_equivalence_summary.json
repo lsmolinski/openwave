@@ -1,0 +1,26 @@
+{
+  "scales": {
+    "g_lc": 8.0,
+    "delta": 0.3,
+    "grid": 31,
+    "dx_am": 31.250000000000068
+  },
+  "test_A_fidelity": {
+    "E_engine": 5.4160736908670515e-06,
+    "E_numpy_port_index0": 5.4162563475749205e-06,
+    "rel_diff": 3.3724930326748314e-05,
+    "tol": 0.0001,
+    "pass": true
+  },
+  "test_B_convention_invariance": {
+    "signed_curv_index3": 2.8000326695465807e-06,
+    "signed_curv_index0": 2.8000326695465807e-06,
+    "rel_diff": 0.0,
+    "potential_index3": -0.002728311207993912,
+    "potential_index0": -0.002728311207993912,
+    "rel_diff_pot": 0.0,
+    "pass": true,
+    "note": "index-3 (engine) and index-0 (Duda) are a pure relabel, zero physics consequence"
+  },
+  "equivalence_pass": true
+}

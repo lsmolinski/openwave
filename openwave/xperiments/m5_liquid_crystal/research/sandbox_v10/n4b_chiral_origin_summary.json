@@ -1,0 +1,60 @@
+{
+  "scan_g_chiral": [
+    {
+      "chi": 1.2,
+      "C_norm": 0.9447330200175585,
+      "delta_CP": 0.0,
+      "theta13": 1.2014099922305779e-11,
+      "E_plus": -54476.47263917555,
+      "E_minus": -54476.47263917555,
+      "dE_handedness": 0.0,
+      "g_chiral": 0.0
+    },
+    {
+      "chi": 1.2,
+      "C_norm": 0.9447330200175585,
+      "delta_CP": -90.0,
+      "theta13": 2.8582550540659297,
+      "E_plus": -54476.47263917555,
+      "E_minus": -54476.47263917555,
+      "dE_handedness": 0.0,
+      "g_chiral": 0.3
+    },
+    {
+      "chi": 1.2,
+      "C_norm": 0.9447330200175585,
+      "delta_CP": -89.99999704244134,
+      "theta13": 5.631099774558012,
+      "E_plus": -54476.47263917555,
+      "E_minus": -54476.47263917555,
+      "dE_handedness": 0.0,
+      "g_chiral": 0.6
+    },
+    {
+      "chi": 1.2,
+      "C_norm": 0.9447330200175585,
+      "delta_CP": -90.0,
+      "theta13": 8.581429333809544,
+      "E_plus": -54476.47263917555,
+      "E_minus": -54476.47263917555,
+      "dE_handedness": 0.0,
+      "g_chiral": 0.94
+    },
+    {
+      "chi": 1.2,
+      "C_norm": 0.9447330200175585,
+      "delta_CP": -89.99999809090409,
+      "theta13": 12.841472444677356,
+      "E_plus": -54476.47263917555,
+      "E_minus": -54476.47263917555,
+      "dE_handedness": 0.0,
+      "g_chiral": 1.5
+    }
+  ],
+  "achiral_g0_no_CP": true,
+  "cp_on_with_chiral": true,
+  "C_is_geometric_indep_of_g": true,
+  "handedness_energy_degenerate": true,
+  "g_chiral_star_for_theta13_8p56": 0.94,
+  "conclusion": "CP (delta_CP AND theta13) is activated by the chiral coupling g_chiral: g_chiral=0 -> no CP (the real N3 limit); g_chiral!=0 -> delta_CP=+-90 + theta13. So CP REQUIRES a chiral (Lifshitz) substrate term. The overlap C is GEOMETRIC (loop arrangement, independent of g_chiral); the achiral LdG is handedness-degenerate (E(+chi)=E(-chi)) so only g_chiral's SIGN selects delta_CP's sign. g_chiral*~0.94=O(1) -> theta13~O(10 deg) natural IF the substrate is chiral at its natural scale. Open substrate question for Duda: does the M5 LdG carry a Lifshitz/cholesteric invariant?"
+}

@@ -157,9 +157,9 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Lepton families `e / μ / τ` | 3 axis-choices of biaxial `Λ = (g, 1, δ)`; same Q, different masses | 🚧 M5.9 calibration |
 | Neutrino | Closed vortex loop (distinct topology class from hedgehog) | 🚧 M5.9 / sub-eV |
 | Quarks (u, d, s, …) | String endpoint — 1D topological vortex (not 0D hedgehog); Cornell `V(r) = −α/r + σ·r`, `σ ≈ 1 GeV/fm` | 🚧 M5.9 |
-| Nucleons (p, n) | 3-string Y-configuration of quark endpoints | DEFERRED → 9d |
-| Atomic orbital binding | EM Coulomb + de Broglie standing-wave quantization (NOT a separate force) | → 9d (cross-mass-class) |
-| Composites (nuclei, atoms, hopfions) | Multi-defect / knot configurations | DEFERRED → 9d |
+| Nucleons (p, n) | 3-string Y-configuration of quark endpoints | DEFERRED → 15a |
+| Atomic orbital binding | EM Coulomb + de Broglie standing-wave quantization (NOT a separate force) | → 15a (cross-mass-class) |
+| Composites (nuclei, atoms, hopfions) | Multi-defect / knot configurations | DEFERRED → 15a |
 | Zitterbewegung clock `ω = 2mc²/ℏ` | Biaxial hedgehog dynamically sources its own twist (M5.6.2b: `ψ = 0` is NOT static = the clock seed); 4D Lorentz negative-energy from `0`-eigenvalue propels it | 🚧 M5.8 (GROUP HEADLINE; build spec `5a §10d` + reorganized roadmap M5.8 gates/breadth/carry-overs/unblocks; faithful kinetic per M5.6.5d) |
 | Spin (real, transportable, conserved) | Director orientation = topological invariant; preserved by dynamics | ✅ inherent; empirical anchor: graphene spin-transport |
 | First metastable resonance ("first long-lived M5 particle") | `l = 1` harmonic seed on biaxial substrate; extended-lifetime localization (NOT static stability — Q1 RESOLVED) | ✅ **M5.7 COMPLETE (2026-05-28) — the particle is 4D (M5.8), not 3D.** **M5.7.1 (seeded l=1) + M5.7.2 (intrinsic oscillation) = TWO confirmed NULLS:** both seeded and intrinsic 3D orientation energy disperse (apparent N=32 localization washed out at N=48 in both; intrinsic osc frequency 0.25→0.10/t = resolution-dependent, not a converged clock). **Root cause: V confines amplitude but NOT orientation** (M5.6.5c, rotation-invariant). Consistent with Derrick + Duda's framework: the stable particle is the **4D Zitterbewegung clock** (Fig.10), so 3D dispersing is *expected* — M5.7 empirically motivates M5.8 (4D) as necessary. Nuance: topological defect itself permanent (winding conserved); *driven* oscillation is a separate question — **M5.7.3 (preview, 2026-05-28) confirmed the EM-like lever sustains a bounded, frequency-selective `(A,ω)` excess (~3× free, resonant at the natural mode), resolution-confirmed** → the driven-excess substrate. Energy-conservation bankable (N=48 H-drift 0.01%). (`5a §5h/§5i/§5j`) |
@@ -176,7 +176,7 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Neutrino | ~10¹⁵ rad/s | sub-eV (closed vortex loop) |
 | Up quark | ~7 × 10²¹ rad/s | string endpoint |
 | Down quark | ~1.4 × 10²² rad/s | string endpoint |
-| Proton | 2.85 × 10²⁴ rad/s | 3-string Y-config (9d) |
+| Proton | 2.85 × 10²⁴ rad/s | 3-string Y-config (15a) |
 
 ### FORCES
 
@@ -190,7 +190,7 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Weak force | PARTIAL — beta decay as topology-reconnection event (defect-class transition: neutron → split → proton + electron + neutrino). No clean SU(2) chiral mechanism yet. | gap → Q10 |
 | Magnetism (intrinsic per-defect) | S¹-loop topology (vs S² for electric charge — different topology, same SO(3) parent); the T-component of the defect's outgoing wave (the L+T decomposition) | ✅ mechanism; ⌛ inertial-observability via frequency-downshift = Phase 4 falsifiable target |
 | Magnetism (coherent macroscopic) | Coherent T-component summing across aligned defects (permanent magnets) or coherent motion (electromagnets) — reproduces both standard regimes by construction | ✅ structural |
-| Atomic orbital "force" | NOT fundamental — EM Coulomb + de Broglie standing-wave quantization | → 9d |
+| Atomic orbital "force" | NOT fundamental — EM Coulomb + de Broglie standing-wave quantization | → 15a |
 
 ### EM WAVES (photon emergence)
 
@@ -216,7 +216,7 @@ What known physical phenomena the M5 substrate reproduces from the Duda Eq.18 ac
 | Weak force — no clean SU(2) chiral mechanism | Q10 (long-tail open) |
 | Inertial observability of magnetism via frequency-downshift | Phase 4 falsifiable target |
 | Foundational stance vs Bell / Kochen-Specker not formally settled | Q12 (foundational; defense template in `1b § Foundational stance`) |
-| Composites (nuclei, atoms, hopfions) deferred | 9d |
+| Composites (nuclei, atoms, hopfions) deferred | 15a |
 | Exact biaxial-stable `V(M)` coeffs `Λ = (1, δ, 0)` | Q7 → M5.9 (M5.6 ships b=0 confinement interim) |
 | Exact Faber running-coupling profile (vs imposed `arctan`) | Q8 → M5.9 (M5.6 ports the validated mechanism) |
 

@@ -1,0 +1,59 @@
+{
+  "predicted": {
+    "theta12": 35.26,
+    "theta23": 45.0,
+    "theta13": 8.56,
+    "delta_CP": 270.0
+  },
+  "nufit_central_1sigma": {
+    "theta12": [
+      33.68,
+      0.7
+    ],
+    "theta23": [
+      43.3,
+      1.0
+    ],
+    "theta13": [
+      8.56,
+      0.11
+    ],
+    "delta_CP": [
+      212.0,
+      30.0
+    ]
+  },
+  "pulls_sigma": {
+    "theta12": 2.257142857142855,
+    "theta23": 1.7000000000000028,
+    "theta13": 0.0,
+    "delta_CP": 1.9333333333333333
+  },
+  "honest_provenance": [
+    {
+      "param": "theta_23 = 45",
+      "provenance": "imposed mu-tau symmetry"
+    },
+    {
+      "param": "theta_13 = 0 (baseline)",
+      "provenance": "imposed mu-tau symmetry"
+    },
+    {
+      "param": "|delta_CP| = 90",
+      "provenance": "imposed mu-tau reflection"
+    },
+    {
+      "param": "theta_12 = 35.26",
+      "provenance": "geometrically PINNED (magic); not energy-selected"
+    },
+    {
+      "param": "theta_13 = 8.56",
+      "provenance": "FREE coupling (g_chiral ~ 0.94)"
+    },
+    {
+      "param": "delta_CP SIGN",
+      "provenance": "UNDETERMINED (handedness-degenerate)"
+    }
+  ],
+  "note": "theta_23/theta_13=0/|delta_CP|=90 are consequences of ONE imposed mu-tau symmetry; theta_12 geometrically pinned (magic) but not energy-selected; theta_13 a free coupling; delta_CP sign undetermined. theta_12 is ~2.3 sigma from data; delta_CP is consistent."
+}

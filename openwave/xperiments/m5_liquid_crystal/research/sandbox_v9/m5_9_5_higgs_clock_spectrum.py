@@ -177,8 +177,9 @@ def setup_constrained():
 def clock_frequency(r0_vox, n_act_pl, n_steps=400, kick=0.05):
     """Run the constrained clock and FFT field probes -> the NATURAL clock frequency omega.
     Probe must be INSIDE the act mask (r_vox>6), else Mdot=0 there. We record the 6 clock-
-    active components M[0,1],M[0,2],M[1,2],M[0,3],M[1,3],M[2,3] at an active equatorial voxel
-    and FFT each; the peak with the most spectral power gives omega (the (alpha,3) components
+    all 6 off-diagonal components of M at an active equatorial voxel (index-0 convention: the
+    time/g axis is index 0, so the (0,k) entries are the time-coupled boost/clock components)
+    and FFT each; the peak with the most spectral power gives omega (the (alpha,0) components
     carry the time-axis de Broglie clock; the (i,j) carry the biaxial frame rotation).
     Returns (omega_peak, probe_amp, blew_up)."""
     seed(r0_vox, b_star=B_STAR, kick=kick)
@@ -188,7 +189,7 @@ def clock_frequency(r0_vox, n_act_pl, n_steps=400, kick=0.05):
     pde.compute_tstar(tf)
     pde.init_P_4d(tf, kick)
     px, py, pz = C + 8, C, C   # equatorial probe INSIDE the act region (r_vox=8 > 6)
-    comps = [(0, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3)]
+    comps = [(1, 2), (1, 3), (2, 3), (0, 1), (0, 2), (0, 3)]  # all 6 off-diagonals (index-0; time axis = 0)
     series = [[] for _ in comps]
     blew_up = False
     for n in range(n_steps):

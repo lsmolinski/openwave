@@ -1,5 +1,7 @@
 # M5.9 lepton mass law + clock-scaling findings (#200, #220)
 
+> **Index convention (2026-06-21).** The M5 engine now stores the order parameter at INDEX-0 (`D = diag(g, 1, δ, 0)`, `eta = diag(-1, 1, 1, 1)`; flipped from the legacy index-3 ordering, proven physics-neutral: [`../_convention_refactor/CONVENTION.md`](../_convention_refactor/CONVENTION.md)). Any `(α,3)` / `index 3` reference below now means `(α,0)` / `index 0`; the boost-GEM results (`curv_euclid − curv_signed`) are convention-invariant and unchanged.
+
 Two issues that the contributor reframes (onspotgithub, 2026-06-18) collapse into one biaxial-hedgehog study:
 
 - **#200**: do the charged leptons follow a mass law from the biaxial hierarchy?

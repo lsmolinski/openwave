@@ -27,14 +27,14 @@ import taichi as ti
 @ti.func
 def embed4(msp, g):  # type: ignore
     """M5.8.1 — embed a 3×3 spatial order parameter into the 4×4 substrate as
-    block-diag(M_spatial, g): time axis = index 3 (eigenvalue g), boost-DECOUPLED
-    (the time row/col off-diagonals are 0). The spatial block [0:3,0:3] is the M5.4/
-    M5.6 order parameter, so the 3×3-Cardano eigensolver reads it unchanged."""
+    block-diag(g, M_spatial): time axis = index 0 (eigenvalue g; Duda D=diag(g,1,δ,0)),
+    boost-DECOUPLED (the time row/col off-diagonals are 0). The spatial block [1:4,1:4]
+    is the M5.4/M5.6 order parameter, extracted by callers for the 3×3-Cardano solver."""
     m4 = ti.Matrix.zero(ti.f32, 4, 4)
     for a in ti.static(range(3)):
         for bb in ti.static(range(3)):
-            m4[a, bb] = msp[a, bb]
-    m4[3, 3] = g
+            m4[a + 1, bb + 1] = msp[a, bb]
+    m4[0, 0] = g
     return m4
 
 
@@ -231,7 +231,7 @@ def seed_dressed_hedgehog_M(
 
     The 2b-1 ground state ported to production: the biaxial hedgehog frame + melt
     (identical to seed_biaxial_hedgehog_M) DRESSED with a core-localized boost
-    B(θ) mixing the e_Θ eigen-axis (index 1) with the time axis (index 3),
+    B(θ) mixing the e_Θ eigen-axis (index 2) with the time axis (index 0),
     θ(r) = b*·exp(−(r/r_w)²). At the ground dressing (b* ≈ 0.13) this LOWERS the
     static energy below the bare defect (the GEM dip, 5a §10e winning recipe).
     ⚠️ r̂ stays the spatial principal axis only for modest b* (the boost feeds
@@ -275,15 +275,16 @@ def seed_dressed_hedgehog_M(
         d1 = d_iso + srad * (delta - d_iso)
         d2 = d_iso + srad * (0.0 - d_iso)
 
-        # W = O₄·B(θ): O₄ columns = [r̂|e_Θ|e_Φ|t̂], boost mixes col 1 with col 3
+        # W eigenvector cols [r̂|e_Θ|e_Φ|t̂] (eig d0,d1,d2,g); boost mixes e_Θ(w1)↔t̂(w3).
+        # Index-0 convention: time axis = array index 0 (Duda D=diag(g,1,δ,0)); spatial at 1,2,3.
         th = b_star * ti.exp(-(r2 / (rw_vox * rw_vox)))
         eth = ti.exp(th)                                  # no ti.cosh/sinh — exp identity
         chb = 0.5 * (eth + 1.0 / eth)
         shb = 0.5 * (eth - 1.0 / eth)
-        w0 = ti.Vector([rhat[0], rhat[1], rhat[2], 0.0])              # col 0 (eig d0)
-        w1 = ti.Vector([etheta[0] * chb, etheta[1] * chb, etheta[2] * chb, shb])
-        w2 = ti.Vector([ephi[0], ephi[1], ephi[2], 0.0])              # col 2 (eig d2)
-        w3 = ti.Vector([etheta[0] * shb, etheta[1] * shb, etheta[2] * shb, chb])
+        w0 = ti.Vector([0.0, rhat[0], rhat[1], rhat[2]])              # eig d0 (r̂ at idx 1-3)
+        w1 = ti.Vector([shb, etheta[0] * chb, etheta[1] * chb, etheta[2] * chb])
+        w2 = ti.Vector([0.0, ephi[0], ephi[1], ephi[2]])             # eig d2 (e_Φ at idx 1-3)
+        w3 = ti.Vector([chb, etheta[0] * shb, etheta[1] * shb, etheta[2] * shb])
         m = (d0 * w0.outer_product(w0) + d1 * w1.outer_product(w1)
              + d2 * w2.outer_product(w2) + g_t * w3.outer_product(w3))
         # clock tangent ∂M/∂Θ: [G_(1,2), D] = (d1−d2)(E₁₂+E₂₁) conjugated by W

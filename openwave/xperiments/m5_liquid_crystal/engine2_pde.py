@@ -214,15 +214,15 @@ def rebuild_M_from_director(tensor_field: ti.template(), delta: ti.f32):  # type
     The uniaxial inverse of eigen_decompose.
     """
     eye = ti.Matrix.identity(ti.f32, 3)
-    g = tensor_field.lc_g  # M5.8.1: time-axis (index 3) eigenvalue
+    g = tensor_field.lc_g  # time-axis (index 0) eigenvalue (Duda D=diag(g,1,δ,0))
     for i, j, k in tensor_field.director_nhat:
         n = tensor_field.director_nhat[i, j, k]
         msp = delta * eye + (1.0 - delta) * n.outer_product(n)  # 3×3 spatial
-        m = ti.Matrix.zero(ti.f32, 4, 4)  # embed block-diag(spatial, g)
+        m = ti.Matrix.zero(ti.f32, 4, 4)  # embed block-diag(g, spatial)
         for a in ti.static(range(3)):
             for bb in ti.static(range(3)):
-                m[a, bb] = msp[a, bb]
-        m[3, 3] = g
+                m[a + 1, bb + 1] = msp[a, bb]
+        m[0, 0] = g
         tensor_field.M_am[i, j, k] = m
         tensor_field.M_prev_am[i, j, k] = m
         tensor_field.M_new_am[i, j, k] = m
@@ -249,7 +249,11 @@ def eigen_decompose(tensor_field: ti.template()):  # type: ignore
     """
     for i, j, k in tensor_field.M_am:
         m = tensor_field.M_am[i, j, k]
-        n, evals = principal_director(m)
+        # spatial 3×3 block (indices 1,2,3; the time/g axis at index 0 is excluded) — index-0 convention
+        msp = ti.Matrix(
+            [[m[1, 1], m[1, 2], m[1, 3]], [m[2, 1], m[2, 2], m[2, 3]], [m[3, 1], m[3, 2], m[3, 3]]]
+        )
+        n, evals = principal_director(msp)
         # sort eigenvalues descending λ₁≥λ₂≥λ₃ (3-element selection sort)
         e0, e1, e2 = evals[0], evals[1], evals[2]
         lo = ti.min(e0, ti.min(e1, e2))
@@ -262,7 +266,7 @@ def eigen_decompose(tensor_field: ti.template()):  # type: ignore
         tensor_field.director_nhat[i, j, k] = n
         # VIZ.3: middle (δ) eigenvector = the "clock-hand" axis that sweeps around
         # the director under the Zitterbewegung twist. Same apolar sign-continuity.
-        nm = eigvec_for(m, mid)
+        nm = eigvec_for(msp, mid)
         if nm.dot(tensor_field.director_mid[i, j, k]) < 0.0:
             nm = -nm
         tensor_field.director_mid[i, j, k] = nm
@@ -291,11 +295,11 @@ def V_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     dynamics (V off). Rotation-invariant ⇒ acts only on the eigenvalue/regularization
     sector (m5_5_3 finding).
     """
-    # M5.8.1 — act on the SPATIAL 3×3 block ONLY. The time axis (index 3, eigenvalue g)
+    # M5.8.1 — act on the SPATIAL 3×3 block ONLY. The time axis (index 0, eigenvalue g)
     # is boost-decoupled and must NOT feed Tr(M²)/Tr(M³): including g²(=64)/g³(=512)
     # would inflate the LdG potential and its force by orders of magnitude → blow-up.
     msp = ti.Matrix(
-        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+        [[m[1, 1], m[1, 2], m[1, 3]], [m[2, 1], m[2, 2], m[2, 3]], [m[3, 1], m[3, 2], m[3, 3]]]
     )
     m2 = msp @ msp
     tr2 = m2.trace()
@@ -308,7 +312,7 @@ def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     """∂V_LG/∂M = 2a·M − 3b·M² + 4c·Tr(M²)·M, on the SPATIAL 3×3 block; time row/col
     force = 0 (g decoupled — M5.8.1). Mirrors V_M's spatial-only restriction."""
     msp = ti.Matrix(
-        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+        [[m[1, 1], m[1, 2], m[1, 3]], [m[2, 1], m[2, 2], m[2, 3]], [m[3, 1], m[3, 2], m[3, 3]]]
     )
     m2 = msp @ msp
     tr2 = m2.trace()
@@ -316,7 +320,7 @@ def dV_M(m, a: ti.f32, b: ti.f32, c: ti.f32):  # type: ignore
     d4 = ti.Matrix.zero(ti.f32, 4, 4)
     for i in ti.static(range(3)):
         for j in ti.static(range(3)):
-            d4[i, j] = dsp[i, j]
+            d4[i + 1, j + 1] = dsp[i, j]
     return d4
 
 
@@ -374,18 +378,18 @@ def evolve_M(
         ) * inv_2dx
         force = c2 * div_G - dV_M(tensor_field.M_am[i, j, k], a, b, c)
         m_new = 2.0 * tensor_field.M_am[i, j, k] - tensor_field.M_prev_am[i, j, k] + dt2 * force
-        # M5.8.1 — freeze the time axis (index 3): a constant, boost-decoupled g
+        # M5.8.1 — freeze the time axis (index 0): a constant, boost-decoupled g
         # background. The curvature force already preserves the block; this also pins
-        # it under V-on (where dV_M would otherwise nudge M[3,3]). M5.8.2 replaces this
+        # it under V-on (where dV_M would otherwise nudge M[0,0]). M5.8.2 replaces this
         # with the real Minkowski time dynamics.
-        g_here = tensor_field.M_am[i, j, k][3, 3]
-        m_new[0, 3] = 0.0
+        g_here = tensor_field.M_am[i, j, k][0, 0]
+        m_new[1, 0] = 0.0
+        m_new[0, 1] = 0.0
+        m_new[2, 0] = 0.0
+        m_new[0, 2] = 0.0
         m_new[3, 0] = 0.0
-        m_new[1, 3] = 0.0
-        m_new[3, 1] = 0.0
-        m_new[2, 3] = 0.0
-        m_new[3, 2] = 0.0
-        m_new[3, 3] = g_here
+        m_new[0, 3] = 0.0
+        m_new[0, 0] = g_here
         tensor_field.M_new_am[i, j, k] = m_new
 
 
@@ -393,8 +397,8 @@ def evolve_M(
 # M5.8.2c — 4D MINKOWSKI EVOLUTION (flag-gated; the time axis goes LIVE)
 # ================================================================
 # The signed curvature flux is the 3D production flux with F → ηFη
-# (η = diag(1,1,1,−1), time = matrix index 3) — the 5a §10d ℋ sign rule:
-# spatial matrix pairs positive, (α,3) pairs negative. Sandbox anchors:
+# (η = diag(−1,1,1,1), time = matrix index 0) — the 5a §10d ℋ sign rule:
+# spatial matrix pairs positive, (α,0) pairs negative. Sandbox anchors:
 # m5_8_2a (fuel) → 2b-1 (CC) → 2b-2 (field clock) → 2c-1 (full nonlinear,
 # f64 numpy — THE cross-validation reference for these f32 kernels).
 # Ghost guard: the per-voxel stable_mask (K>0 ∧ Q(∇ψ) positive-definite,
@@ -402,32 +406,32 @@ def evolve_M(
 # always-stable Euclidean flux on the fuel shell (the 2b-2 λ≈15.6/t linear
 # runaway sector — its propulsion physics needs the constrained faithful
 # kernel, future work; v1 keeps it Euclidean-stable). Global guard: the
-# coherent (α,3) velocity drift is sampled on 3 mid-planes (Metal-safe —
+# coherent (α,0) velocity drift is sampled on 3 mid-planes (Metal-safe —
 # NO full-grid reductions, the atomics lesson) and subtracted in evolve.
 
 
 @ti.func
 def eta_twist_masked(f, stable: ti.f32):  # type: ignore
-    """F → ηFη blended by the stable mask: (α,3)/(3,α) comps × (1 − 2·stable).
+    """F → ηFη blended by the stable mask: (α,0)/(0,α) comps × (1 − 2·stable).
 
     stable=1 → the Minkowski-signed twist; stable=0 → identity (Euclidean
     fallback on the fuel shell)."""
     s = 1.0 - 2.0 * stable
     out = f
-    for a_ in ti.static(range(3)):
-        out[a_, 3] = f[a_, 3] * s
-        out[3, a_] = f[3, a_] * s
+    for a_ in ti.static(range(1, 4)):
+        out[a_, 0] = f[a_, 0] * s
+        out[0, a_] = f[0, a_] * s
     return out
 
 
 @ti.func
 def signed_dot4(a4, b4):  # type: ignore
-    """⟨A,B⟩_s = Σ A∘(ηBη): spatial-pair comps +, (α,3) comps − (full-matrix sum)."""
+    """⟨A,B⟩_s = Σ A∘(ηBη): spatial-pair comps +, (α,0) comps − (full-matrix sum)."""
     acc = 0.0
     for p_ in ti.static(range(4)):
         for q_ in ti.static(range(4)):
             sgn = 1.0
-            if ti.static((p_ == 3) != (q_ == 3)):
+            if ti.static((p_ == 0) != (q_ == 0)):
                 sgn = -1.0
             acc += a4[p_, q_] * b4[p_, q_] * sgn
     return acc
@@ -482,7 +486,7 @@ def compute_tstar(tensor_field: ti.template()):  # type: ignore
     for i, j, k in ti.ndrange(nx, ny, nz):
         m = tensor_field.M_am[i, j, k]
         msp = ti.Matrix(
-            [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+            [[m[1, 1], m[1, 2], m[1, 3]], [m[2, 1], m[2, 2], m[2, 3]], [m[3, 1], m[3, 2], m[3, 3]]]
         )
         tensor_field.ldg_tstar[i, j, k] = (msp @ msp).trace()
 
@@ -492,14 +496,14 @@ def dV_M_dressed(m, cc: ti.f32, tstar: ti.f32):  # type: ignore
     """∂V/∂M for the DRESSED well V = cc·(Tr(M_sp²) − t*(x))²: 4·cc·(t−t*)·M_sp,
     spatial block only (time row/col force = 0 — the M5.8.1 rule)."""
     msp = ti.Matrix(
-        [[m[0, 0], m[0, 1], m[0, 2]], [m[1, 0], m[1, 1], m[1, 2]], [m[2, 0], m[2, 1], m[2, 2]]]
+        [[m[1, 1], m[1, 2], m[1, 3]], [m[2, 1], m[2, 2], m[2, 3]], [m[3, 1], m[3, 2], m[3, 3]]]
     )
     t = (msp @ msp).trace()
     dsp = 4.0 * cc * (t - tstar) * msp
     d4 = ti.Matrix.zero(ti.f32, 4, 4)
     for i in ti.static(range(3)):
         for j in ti.static(range(3)):
-            d4[i, j] = dsp[i, j]
+            d4[i + 1, j + 1] = dsp[i, j]
     return d4
 
 
@@ -507,7 +511,7 @@ def dV_M_dressed(m, cc: ti.f32, tstar: ti.f32):  # type: ignore
 def compute_curvature_flux_4d(tensor_field: ti.template()):  # type: ignore
     """The 4D signed curvature flux G_α = 8 Σ_ν [tw(F_αν), M_ν], tw = ηFη on the
     stable region / identity on the fuel shell (stable_mask blend). At b=0 the
-    seed has no (α,3) components ⇒ tw is a no-op ⇒ EXACTLY compute_curvature_flux
+    seed has no (α,0) components ⇒ tw is a no-op ⇒ EXACTLY compute_curvature_flux
     (the headless identity check). Same two-pass contract as the 3D kernel."""
     nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     inv_2dx = 1.0 / (2.0 * tensor_field.dx_am)
@@ -530,7 +534,7 @@ def compute_curvature_flux_4d(tensor_field: ti.template()):  # type: ignore
 
 @ti.kernel
 def sample_v03_drift(tensor_field: ti.template(), dt_rs: ti.f32):  # type: ignore
-    """Sample the coherent (α,3) velocity drift on 3 mid-planes (Metal-safe:
+    """Sample the coherent (α,0) velocity drift on 3 mid-planes (Metal-safe:
     plane-scale atomics only — the full-grid-reduction lesson). Results land in
     tensor_field.v03_sums[0..2]; the caller divides by the plane-voxel count."""
     nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
@@ -541,15 +545,15 @@ def sample_v03_drift(tensor_field: ti.template(), dt_rs: ti.f32):  # type: ignor
     for j, k in ti.ndrange(ny, nz):
         d = (tensor_field.M_am[im, j, k] - tensor_field.M_prev_am[im, j, k]) * inv_dt
         for a_ in ti.static(range(3)):
-            tensor_field.v03_sums[a_] += d[a_, 3]
+            tensor_field.v03_sums[a_] += d[a_ + 1, 0]
     for i, k in ti.ndrange(nx, nz):
         d = (tensor_field.M_am[i, jm, k] - tensor_field.M_prev_am[i, jm, k]) * inv_dt
         for a_ in ti.static(range(3)):
-            tensor_field.v03_sums[a_] += d[a_, 3]
+            tensor_field.v03_sums[a_] += d[a_ + 1, 0]
     for i, j in ti.ndrange(nx, ny):
         d = (tensor_field.M_am[i, j, km] - tensor_field.M_prev_am[i, j, km]) * inv_dt
         for a_ in ti.static(range(3)):
-            tensor_field.v03_sums[a_] += d[a_, 3]
+            tensor_field.v03_sums[a_] += d[a_ + 1, 0]
 
 
 @ti.kernel
@@ -566,8 +570,8 @@ def evolve_M_4d(
     """The M5.8.2 leapfrog: the M5.8.1 time-freeze clamp is REPLACED by the soft
     global guard — the time axis is LIVE. Identical to evolve_M except:
 
-    (i) no (α,3) zeroing and no M[3,3] pin (boost dressing + clock evolve freely);
-    (ii) the sampled coherent (α,3) drift (vm0..2, from sample_v03_drift) is
+    (i) no (α,0) zeroing and no M[0,0] pin (boost dressing + clock evolve freely);
+    (ii) the sampled coherent (α,0) drift (vm0..2, from sample_v03_drift) is
         subtracted — the 2b-1 ghost channel (a free GLOBAL dressing mode);
     (iii) DIAGONAL FAITHFUL-LITE INERTIA m(x) = 1 + km·dx²·Σ_i‖M_i‖²_F dividing
         the acceleration — the scalar shadow of the faithful kinetic operator
@@ -604,13 +608,13 @@ def evolve_M_4d(
             - tensor_field.M_prev_am[i, j, k]
             + dt2 * force * (1.0 / mloc)
         )
-        # guard (a): remove the coherent global (α,3) drift accumulated this step
-        m_new[0, 3] -= vm0 * dt_rs
-        m_new[3, 0] -= vm0 * dt_rs
-        m_new[1, 3] -= vm1 * dt_rs
-        m_new[3, 1] -= vm1 * dt_rs
-        m_new[2, 3] -= vm2 * dt_rs
-        m_new[3, 2] -= vm2 * dt_rs
+        # guard (a): remove the coherent global (α,0) drift accumulated this step
+        m_new[1, 0] -= vm0 * dt_rs
+        m_new[0, 1] -= vm0 * dt_rs
+        m_new[2, 0] -= vm1 * dt_rs
+        m_new[0, 2] -= vm1 * dt_rs
+        m_new[3, 0] -= vm2 * dt_rs
+        m_new[0, 3] -= vm2 * dt_rs
         tensor_field.M_new_am[i, j, k] = m_new
 
 
@@ -660,9 +664,9 @@ JTOL2_4D = (2e-7) ** 2  # relative off-diagonal² stop (f32 eps scale)
 def eta_twist(f):  # type: ignore
     """F → ηFη, unmasked — the constrained path is fully Minkowski-signed."""
     out = f
-    for a_ in ti.static(range(3)):
-        out[a_, 3] = -f[a_, 3]
-        out[3, a_] = -f[3, a_]
+    for a_ in ti.static(range(1, 4)):
+        out[a_, 0] = -f[a_, 0]
+        out[0, a_] = -f[0, a_]
     return out
 
 
@@ -746,7 +750,7 @@ def update_P_4d(tensor_field: ti.template(), dt_eff: ti.f32, ldg_cc4d: ti.f32): 
 
 @ti.kernel
 def sample_p03_drift(tensor_field: ti.template()):  # type: ignore
-    """3-mid-plane act-region sums of the (α,3) MOMENTUM components → v03_sums
+    """3-mid-plane act-region sums of the (α,0) MOMENTUM components → v03_sums
     (the 2c-1 global clamp, plane-sampled — Metal-safe, NO full-grid atomics).
     The caller divides by the act-plane voxel count (launcher-precomputed)."""
     nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
@@ -757,32 +761,32 @@ def sample_p03_drift(tensor_field: ti.template()):  # type: ignore
         if tensor_field.act4d[im, j, k] > 0.5:
             p = tensor_field.P_am[im, j, k]
             for a_ in ti.static(range(3)):
-                tensor_field.v03_sums[a_] += p[a_, 3]
+                tensor_field.v03_sums[a_] += p[a_ + 1, 0]
     for i, k in ti.ndrange(nx, nz):
         if tensor_field.act4d[i, jm, k] > 0.5:
             p = tensor_field.P_am[i, jm, k]
             for a_ in ti.static(range(3)):
-                tensor_field.v03_sums[a_] += p[a_, 3]
+                tensor_field.v03_sums[a_] += p[a_ + 1, 0]
     for i, j in ti.ndrange(nx, ny):
         if tensor_field.act4d[i, j, km] > 0.5:
             p = tensor_field.P_am[i, j, km]
             for a_ in ti.static(range(3)):
-                tensor_field.v03_sums[a_] += p[a_, 3]
+                tensor_field.v03_sums[a_] += p[a_ + 1, 0]
 
 
 @ti.kernel
 def apply_p03_clamp(tensor_field: ti.template(), m0: ti.f32, m1: ti.f32, m2: ti.f32):  # type: ignore
-    """Guard (a): subtract the act-mean (α,3) momentum (act region only), then
+    """Guard (a): subtract the act-mean (α,0) momentum (act region only), then
     restore P symmetry everywhere — the exact 2c-1 clamp order."""
     nx, ny, nz = tensor_field.nx, tensor_field.ny, tensor_field.nz
     for i, j, k in ti.ndrange(nx, ny, nz):
         if tensor_field.act4d[i, j, k] > 0.5:
-            tensor_field.P_am[i, j, k][0, 3] -= m0
-            tensor_field.P_am[i, j, k][1, 3] -= m1
-            tensor_field.P_am[i, j, k][2, 3] -= m2
-        tensor_field.P_am[i, j, k][3, 0] = tensor_field.P_am[i, j, k][0, 3]
-        tensor_field.P_am[i, j, k][3, 1] = tensor_field.P_am[i, j, k][1, 3]
-        tensor_field.P_am[i, j, k][3, 2] = tensor_field.P_am[i, j, k][2, 3]
+            tensor_field.P_am[i, j, k][1, 0] -= m0
+            tensor_field.P_am[i, j, k][2, 0] -= m1
+            tensor_field.P_am[i, j, k][3, 0] -= m2
+        tensor_field.P_am[i, j, k][0, 1] = tensor_field.P_am[i, j, k][1, 0]
+        tensor_field.P_am[i, j, k][0, 2] = tensor_field.P_am[i, j, k][2, 0]
+        tensor_field.P_am[i, j, k][0, 3] = tensor_field.P_am[i, j, k][3, 0]
 
 
 @ti.kernel

@@ -1,0 +1,72 @@
+{
+  "convention": "index-0 Duda; complex Hermitian chiral mass matrix",
+  "headline_point": {
+    "chi": 1.2,
+    "delta": 0.1,
+    "g_chiral_star": 0.9374227279184749,
+    "angles": {
+      "theta12": 35.72206100379544,
+      "theta23": 44.99999998910816,
+      "theta13": 8.560014451260198,
+      "delta_CP": -89.99999879258174,
+      "sin_delta_CP": -0.9999999999999998,
+      "J": -0.03449528626009092,
+      "eigenvalues": [
+        1783.499900671454,
+        1785.0073622480356,
+        2640.8195183691114
+      ]
+    },
+    "delta_CP_display_deg": 270.0000012074183
+  },
+  "tbm_baseline": {
+    "theta12": 35.26438943341109,
+    "theta23": 45.00000000000847,
+    "theta13": 1.2014099922305779e-11,
+    "delta_CP": 0.0,
+    "sin_delta_CP": 0.0,
+    "J": 0.0,
+    "eigenvalues": [
+      1783.5505687859056,
+      1784.9585987912765,
+      2640.81761371142
+    ]
+  },
+  "scorecard_vs_nufit60_NO": [
+    {
+      "param": "theta12",
+      "tbm_base": 35.26438943341109,
+      "n4_full": 35.72206100379544,
+      "nufit": 33.68,
+      "status": "PREDICTION (trimaximal, magic crossing)"
+    },
+    {
+      "param": "theta23",
+      "tbm_base": 45.00000000000847,
+      "n4_full": 44.99999998910816,
+      "nufit": 43.3,
+      "status": "PREDICTION (maximal, mu-tau mirror)"
+    },
+    {
+      "param": "theta13",
+      "tbm_base": 1.2014099922305779e-11,
+      "n4_full": 8.560014451260198,
+      "nufit": 8.56,
+      "status": "FREE COUPLING (chiral g*=0.94, natural)"
+    },
+    {
+      "param": "delta_CP",
+      "tbm_base": 0.0,
+      "n4_full": 270.0000012074183,
+      "nufit": 212.0,
+      "status": "PREDICTION (maximal; sign=handedness -> 270)"
+    }
+  ],
+  "status_summary": {
+    "theta12": "PREDICTION (trimaximal 35.26; magic crossing)",
+    "theta23": "PREDICTION (maximal 45; mu-tau mirror)",
+    "delta_CP": "PREDICTION (maximal +-90; sign=handedness -> 270 deg data-preferred)",
+    "theta13": "FREE COUPLING (continuous chiral g*=0.94, natural; not topological)"
+  },
+  "gate_status": "FULLY CLOSED , 3 of 4 PMNS parameters PREDICTED, theta13 = 1 free coupling"
+}

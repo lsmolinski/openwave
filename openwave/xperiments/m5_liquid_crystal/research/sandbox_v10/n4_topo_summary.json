@@ -1,0 +1,92 @@
+{
+  "construction": "biaxial loops with self-linking N (N*s azimuthal twist of the secondary director) + chiral complex-Hermitian mass matrix; N integer by single-valuedness",
+  "delta": 0.1,
+  "chi": 0.6,
+  "g_chiral": 1.0,
+  "scan_N": [
+    {
+      "theta12": 32.95777993822016,
+      "theta23": 44.54294682942086,
+      "theta13": 0.37434766674016,
+      "delta_CP": -18.0322324013188,
+      "sin_delta_CP": -0.309551973256396,
+      "J": -0.00046152349127151834,
+      "eigenvalues": [
+        1655.3295817350177,
+        1785.7130795656324,
+        2587.184682310058
+      ],
+      "n_link": -2,
+      "alpha_star": 1.0383931935631918,
+      "C_norm": 1.0182868731214585
+    },
+    {
+      "theta12": 32.828774106326314,
+      "theta23": 44.69610572054819,
+      "theta13": 0.2647043816053302,
+      "delta_CP": -18.257159644150104,
+      "sin_delta_CP": -0.3132824778369465,
+      "J": -0.0003296434985142397,
+      "eigenvalues": [
+        1648.1001131915784,
+        1793.3974940313253,
+        2589.0184129731074
+      ],
+      "n_link": -1,
+      "alpha_star": 1.0383931935631918,
+      "C_norm": 1.053673480395548
+    },
+    {
+      "theta12": 35.26447669502249,
+      "theta23": 45.00000000008632,
+      "theta13": 0.1362074799764078,
+      "delta_CP": -90.0,
+      "sin_delta_CP": -1.0,
+      "J": -0.0005603245821445893,
+      "eigenvalues": [
+        1760.1952741352932,
+        1841.3097649035383,
+        2687.5280747180473
+      ],
+      "n_link": 0,
+      "alpha_star": 1.0383931935631918,
+      "C_norm": 1.0417803677684114
+    },
+    {
+      "theta12": 32.79038147142268,
+      "theta23": 45.360598461419286,
+      "theta13": 0.37133330285156574,
+      "delta_CP": -12.967844056641036,
+      "sin_delta_CP": -0.22440417607364765,
+      "J": -0.00033102278982495055,
+      "eigenvalues": [
+        1651.337097150914,
+        1789.2252196113773,
+        2592.4291016045263
+      ],
+      "n_link": 1,
+      "alpha_star": 1.0383931935631918,
+      "C_norm": 0.9846984851125891
+    },
+    {
+      "theta12": 33.32647719220794,
+      "theta23": 46.20402671967696,
+      "theta13": 1.2592777334823568,
+      "delta_CP": -3.911263475784169,
+      "sin_delta_CP": -0.06821141885195527,
+      "J": -0.0003436114210377604,
+      "eigenvalues": [
+        1656.093009275979,
+        1793.2900418939205,
+        2589.2499489376296
+      ],
+      "n_link": 2,
+      "alpha_star": 1.0383931935631918,
+      "C_norm": 0.88876132685896
+    }
+  ],
+  "verdict": "INCONCLUSIVE / NEGATIVE for clean topological quantization",
+  "n0_clean_maximal_CP": true,
+  "delta_CP_antisymmetric_under_N_flip": false,
+  "reading": "the naive N*s self-linking twist BREAKS mu-tau and degrades the TBM baseline rather than cleanly stepping theta13; only N=0 keeps the clean delta_CP=+-90 structure. 'theta13 topologically quantized' is NOT supported by this construction. A mu-tau-respecting definition of the loop self-linking is the open task. The solid N4 result stays the delta_CP=maximal prediction (n4_chiral, N=0)."
+}
