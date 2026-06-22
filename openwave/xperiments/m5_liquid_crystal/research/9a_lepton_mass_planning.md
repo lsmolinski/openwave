@@ -1,5 +1,7 @@
 # M5.9 lepton mass spectrum (mu, tau): corrected build plan (#200)
 
+> **Index convention (2026-06-21).** The M5 engine now stores the order parameter at INDEX-0: `D = diag(g, 1, δ, 0)`, `eta = diag(-1, 1, 1, 1)` (time/g axis = array index 0). The engine itself was flipped to match the notation this doc already adopts for the new code (proven physics-neutral: [`_convention_refactor/CONVENTION.md`](_convention_refactor/CONVENTION.md)). Any legacy `(α,3)` / `index 3` reference below now means `(α,0)` / `index 0`.
+
 ## Status
 
 Issue #200 is OPEN (board: Next). The first pass (M5.9.1 + M5.9.3) correctly DIAGNOSED the missing ingredient (a core-volume confiner / Higgs-like vacuum) but used a setup too simplified to compute the masses. Dr. Duda reviewed the posted result and corrected the direction. This doc captures his review, evaluates it, inventories what the real engine already provides, and scopes the full production engine build.
@@ -54,9 +56,9 @@ This directly answers "the Python files are much too simple": the toys were simp
 
 | Capability | Where | Notes |
 | --- | --- | --- |
-| 4x4 matrix field (MDIM=4) | `medium.py` (`TensorField`) | M is block-diag(spatial 3x3, `g` on index 3); `LC_G=8.0` (the boost/gravity axis), `LC_DELTA`/`BIAXIAL_DELTA` |
+| 4x4 matrix field (MDIM=4) | `medium.py` (`TensorField`) | M is block-diag(`g` on index 0, spatial 3x3); `LC_G=8.0` (the boost/gravity axis), `LC_DELTA`/`BIAXIAL_DELTA` |
 | Boost-dressed hedgehog seeder | `engine1_seeds.py: seed_dressed_hedgehog_M(tf, cx,cy,cz, r0_vox, rhoc_vox, delta, b_star, rw_vox, kick_theta)` | biaxial frame + Faber melt + core-localized boost mixing `e_Theta` with the time axis (the GEM dip = the negative gravity energy); writes the clock tangent `M_psi` and a clock-phase kick |
-| 4D evolution (time axis live) | `engine2_pde.py: compute_curvature_flux_4d` (Minkowski eta=diag(1,1,1,-1)), `evolve_M_4d(...)` | the clock + boost evolve; drift guard + diagonal inertia `km` |
+| 4D evolution (time axis live) | `engine2_pde.py: compute_curvature_flux_4d` (Minkowski eta=diag(-1,1,1,1)), `evolve_M_4d(...)` | the clock + boost evolve; drift guard + diagonal inertia `km` |
 | Constrained integrator (validated) | `engine2_pde.py: flux_4d_constrained / update_P_4d / solve_constrained_4d / update_M_4d_constrained` | spectral-projection symplectic; f64-vs-f32 validated to 5e-15 |
 | LdG potential | `engine2_pde.py: V_M / dV_M`; coeffs in `_launcher.py` | `V = a.Tr(M^2) - b.Tr(M^3) + c.(Tr M^2)^2` on the spatial block; `ldg_c=K.c^2/dx^4`, `ldg_a=-2.ldg_c.(1+delta^2)`, `ldg_b=0`; well minimum at `Tr(M^2)=1+delta^2`. KNOWN GAP: confines amplitude but does not fully stabilize biaxiality (needs an extra invariant, "Q7", already flagged to Duda) |
 | Hamiltonian energy | `engine3_observables.py: compute_energyH_density_M` | `H = (1/2)\|\|Mdot\|\|^2 + c^2.4.sum\|\|[M_mu,M_nu]\|\|^2 + (V - v0)`; vacuum-subtracted |

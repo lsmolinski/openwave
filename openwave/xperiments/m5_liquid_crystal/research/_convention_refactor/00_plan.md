@@ -93,7 +93,17 @@ ENGINE FLIP COMPLETE + PROVEN (medium + engine1/2/3): compute path 4e-7, render/
 | 6. Freeze sandbox_v1-v8 + vn | ✅ untouched (perfect provenance), documented in `FROZEN_SANDBOXES.md` |
 | 7. Comment audit (engine + #200) | ✅ swept to index-0 (perl + manual); canonical note `CONVENTION.md` |
 
-REMAINING (optional, docs only, lower priority): research `.md` notation sweep , a few docs
-(`0a_background`, `1a_framework`, `0b_question_tracker`, `0b_M5_roadmap`, `5a`) still mention the
-OLD storage `diag(1,δ,0,g)`; conversation logs (`4a_/4c_convo`) are historical records, leave as-is.
-The CODE is fully consistent + proven; this is doc polish.
+### Step 7b , research-doc notation sweep ✅ (2026-06-21)
+
+| Doc | Action |
+| --- | --- |
+| `99_summary_report`, `5a_lagrangian_evolution`, `0b_M5_roadmap` | convention BANNER (dense `(α,3)` narratives describe index-3-era work accurately; banner = "read `(α,3)` as `(α,0)`") |
+| `9a_lepton_mass_planning` | banner + spec lines fixed (g on index 0, eta=diag(-1,1,1,1)) |
+| `10a_neutrino_oscillations` | banner (Duda quotes left verbatim, predate the flip) |
+| `sandbox_v9/m5_9_lepton_mass_clock_findings` | banner (active #200) |
+| `0a_background`, `1a_framework`, `0b_question_tracker` | no change , already use `diag(g,1,δ,0)` |
+| `4a_/4c_convo` conversation logs | LEFT verbatim (historical record) |
+| frozen `sandbox_v1-v8`, `sandbox_vn` | untouched , covered by `FROZEN_SANDBOXES.md` |
+
+CONVENTION REFACTOR COMPLETE. Code flipped + proven (golden master 66/66), #200 re-runs unchanged,
+n0 re-passes, sandboxes frozen, comments + docs swept. Canonical note: `CONVENTION.md`.

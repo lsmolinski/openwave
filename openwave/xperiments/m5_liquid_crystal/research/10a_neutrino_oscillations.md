@@ -1,5 +1,7 @@
 # Neutrino oscillation parameters from topological-vortex dynamics: build plan (#236)
 
+> **Index convention (2026-06-21).** The M5 engine was flipped to store the order parameter at INDEX-0 (`D = diag(g, 1, δ, 0)`, `eta = diag(-1, 1, 1, 1)`) , so the engine now matches the index-0 convention this neutrino build already uses (proven physics-neutral: [`_convention_refactor/CONVENTION.md`](_convention_refactor/CONVENTION.md)). The Duda quotes below (which flagged the old engine's index-3 storage) are verbatim and predate the flip.
+
 ## Status
 
 Issue [#236](https://github.com/openwave-labs/openwave/issues/236) (OpenWave board: **In progress**). Spun off on Dr. Duda's 2026-06-20 recommendation to "do less but more rigorously": pivot the first serious, article-targeted deliverable from charged-lepton masses to **neutrino oscillations**, because the geometry is simpler (only topological vortices, no point-like defects) and the payoff is higher (the oscillation parameters are a guessing game today, so a derivation from the deeper theory would be genuinely novel).
