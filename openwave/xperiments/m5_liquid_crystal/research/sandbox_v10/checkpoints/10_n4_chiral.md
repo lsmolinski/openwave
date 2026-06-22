@@ -33,7 +33,7 @@ This converts delta_CP from "unknown / {0,180}" (N3) into a PREDICTION (maximal)
 
 ## Still open (the rest of N4)
 - theta13 = 8.5 deg needs STRONG chiral coupling (chi~1.2, g_chiral~0.9); is that physical / topological?
-- The "make history" piece: is g_chiral (the handedness) a TOPOLOGICAL invariant (loop writhe / self-linking
+- The "article-grade" piece: is g_chiral (the handedness) a TOPOLOGICAL invariant (loop writhe / self-linking
   integer)? If yes, theta13 + delta_CP are fully predicted from loop topology. Not yet shown.
 - delta_CP sign (+90 vs -90) flips with parameters; the data prefers -90 (=270). What fixes the sign?
 

@@ -1,6 +1,6 @@
 # N4 checkpoint 11 , topological self-linking test: INCONCLUSIVE (honest negative) + the insight
 
-`n4_topo.py` (`n4_topo_summary.json`). Tested the "make history" idea: is the loop handedness a TOPOLOGICAL
+`n4_topo.py` (`n4_topo_summary.json`). Tested the "article-grade" idea: is the loop handedness a TOPOLOGICAL
 integer (self-linking N, `Lk = Tw + Wr`) that quantizes theta13 + delta_CP?
 
 ## Result , NOT a clean quantization

@@ -3,7 +3,7 @@
 N4 / topological test , is the loop HANDEDNESS a topological invariant that sets theta13 + delta_CP?
 
 N4 (n4_chiral.py) showed a chiral coupling predicts delta_CP = +-90 (maximal) and sources theta13, both from
-the loop handedness , but the handedness was a CONTINUOUS knob (chi, g_chiral). The "make history" question:
+the loop handedness , but the handedness was a CONTINUOUS knob (chi, g_chiral). The "article-grade" question:
 is the handedness actually a TOPOLOGICAL integer? A closed loop's director framing has an integer SELF-LINKING
 number N (Calugareanu-White-Fuller: Lk = Tw + Wr, Lk in Z). Adding N full twists of the secondary frame around
 the loop AZIMUTH s is: (a) single-valued ONLY for integer N (so N is quantized by topology); (b) reflection-ODD

@@ -1,0 +1,86 @@
+{
+  "construction": "biaxial loops + mu-tau-EVEN global-azimuth framing N*phi + chiral complex matrix",
+  "delta": 0.1,
+  "chi": 0.6,
+  "g_chiral": 1.0,
+  "scan_N": [
+    {
+      "theta12": 35.26447669502249,
+      "theta23": 45.00000000008632,
+      "theta13": 0.1362074799764078,
+      "delta_CP": -90.0,
+      "sin_delta_CP": -1.0,
+      "J": -0.0005603245821445893,
+      "eigenvalues": [
+        1760.1952741352932,
+        1841.3097649035383,
+        2687.5280747180473
+      ],
+      "mutau_violation": 0.0,
+      "n_link": 0
+    },
+    {
+      "theta12": 32.76328210931102,
+      "theta23": 47.099725034649246,
+      "theta13": 5.102159718704716,
+      "delta_CP": -0.8525481173707425,
+      "sin_delta_CP": -0.014879222603441341,
+      "J": -0.0002979038705152843,
+      "eigenvalues": [
+        1650.2308583920058,
+        1790.3650289059033,
+        2600.192728591647
+      ],
+      "mutau_violation": 42.854864923638274,
+      "n_link": 1
+    },
+    {
+      "theta12": 32.340730892376236,
+      "theta23": 45.53529134718173,
+      "theta13": 1.4887772860143245,
+      "delta_CP": -2.7689296280983315,
+      "sin_delta_CP": -0.048308129758269536,
+      "J": -0.00028339424391131987,
+      "eigenvalues": [
+        1664.2295684397934,
+        1802.3105127916026,
+        2620.1444330018376
+      ],
+      "mutau_violation": 12.98867290807641,
+      "n_link": 2
+    },
+    {
+      "theta12": 32.571563292089444,
+      "theta23": 45.517902607486874,
+      "theta13": 1.2772110298493804,
+      "delta_CP": -3.0133114767758014,
+      "sin_delta_CP": -0.05256796552747879,
+      "J": -0.000265618544380699,
+      "eigenvalues": [
+        1687.8169281327991,
+        1818.7118151722384,
+        2636.8502980354738
+      ],
+      "mutau_violation": 10.314027826787651,
+      "n_link": 3
+    },
+    {
+      "theta12": 32.89060566100954,
+      "theta23": 45.06590491738938,
+      "theta13": 0.40721433135344115,
+      "delta_CP": -8.644104841215526,
+      "sin_delta_CP": -0.150296418706657,
+      "J": -0.00024352879572347956,
+      "eigenvalues": [
+        1704.7197908243754,
+        1828.9267238980183,
+        2648.920075606852
+      ],
+      "mutau_violation": 5.63671442522957,
+      "n_link": 4
+    }
+  ],
+  "tbm_preserved": false,
+  "theta13_clean_topological_ladder": false,
+  "conclusion": "theta13 is CONTINUOUS (chiral material coupling), not topologically quantized; delta_CP (+-90) is the discrete prediction, theta13 is the one free coupling (cholesteric-pitch analogue). The mu-tau-even global framing did not quantize it."
+}
