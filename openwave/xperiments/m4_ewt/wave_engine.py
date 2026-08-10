@@ -355,7 +355,7 @@ def dV_psi(
         # Quintic saturation: cubic focusing + quintic limiting
         # For small u: cubic term dominates (focusing)
         # For large u: quintic term dominates (saturation, prevents blow-up)
-        out = c1 * u * psi - c2 * u * u * psi
+        out = c1 * u * psi + c2 * u * u * psi
     elif v_mode == 3:
         # Double-well potential: symmetry-broken vacuum
         out = -c1 * psi + c2 * u * psi
@@ -443,7 +443,7 @@ def dV_psi(
         # (from the density deficit) while preventing amplitude blow-up
         # (from the quintic term).
         #
-        # Formula: out = c1 * u * psi * modulation - c2 * u * u * psi * modulation
+        # Formula: out = c1 * u * psi * modulation + c2 * u * u * psi * modulation
         # where modulation = deficit_depth * exp(-(r / R_soliton)^2)
         #
         # This is the most physically complete V_MODE, as it includes:
@@ -480,7 +480,7 @@ def dV_psi(
         modulation = deficit_depth * ti.exp(-((r / r_soliton) ** 2))
 
         # Cubic focusing + quintic saturation, both modulated by density profile
-        out = c1 * u * psi * modulation - c2 * u * u * psi * modulation
+        out = c1 * u * psi * modulation + c2 * u * u * psi * modulation
     return out
 
 
