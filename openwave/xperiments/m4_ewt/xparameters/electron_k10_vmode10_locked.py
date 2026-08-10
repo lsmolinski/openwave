@@ -43,18 +43,18 @@ XPARAMETERS = {
         "SEED_MODE": 2,
         "SEED_BOOST": 0.0001,
         "V_MODE": 10,  # Gaussian + saturation
-        "V_C1": -0.40,  # focusing (cubic)
+        "V_C1": -1.0,  # focusing (cubic)
         "V_C2": 0.05,  # saturation (quintic)
         "WC_INTERACT_MODE": 3,
-        "WC_BOOST": 0.1,
+        "WC_BOOST": 0.05,
         "WC_RADIUS": 2,
         "WC_SIGMA": 1.44,
         "R_WALL": 100.0,
         "WALL_HEIGHT": 1.2,
-        "DEFICIT_DEPTH": 0.9,
+        "DEFICIT_DEPTH": 0.99,
         "R_SOLITON": 110.0,
         "SIGMA": 1.5,
-        "PRESSURE_STRENGTH": 0.001,  # vacuum pressure (active for V_MODE >= 4)
+        "PRESSURE_STRENGTH": 0.003,  # vacuum pressure (active for V_MODE >= 4)
         "CFL_SAFETY": 0.01,
     },
     "ui_defaults": {
