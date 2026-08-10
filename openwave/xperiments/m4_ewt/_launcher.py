@@ -535,6 +535,7 @@ def compute_wave_oscillation(state):
             state.wave_field,
             state.wave_center,
             state.elapsed_t_rs,
+            state.dt_rs,
             state.WC_BOOST,
             state.WC_SIGMA,
             state.WC_RADIUS,

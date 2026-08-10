@@ -725,17 +725,21 @@ def interact_wc_soft(
     wave_field: ti.template(),  # type: ignore
     wave_center: ti.template(),  # type: ignore
     elapsed_t_rs: ti.f32,  # type: ignore
+    dt_rs: ti.f32,          
     boost: ti.f32,  # type: ignore
     sigma: ti.f32,  # type: ignore
     radius: ti.i32,  # type: ignore
 ):
     """Additive Gaussian radial forcing in a ball around each active WC.
 
-    ψ += A·exp(-r²/2σ²)·cos(ωt + offset)·r̂. Does not overwrite ψ, so the field
-    back-reacts freely (a continuous radiator). Use a small boost: additive forcing
-    pumps energy every step and can drive a resonance if too strong.
+    ψ     += A·exp(-r²/2σ²)·cos(ωt       + offset)·r̂  (current step)
+    ψ_prev += A·exp(-r²/2σ²)·cos(ω(t-dt) + offset)·r̂  (previous step)
+
+    Both buffers are updated consistently so the leapfrog integrator sees
+    a bounded oscillatory velocity (dψ/dt ∝ sin(ωt)) rather than the
+    unbounded velocity accumulation caused by updating only psi_am.
     """
-    omega = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor  # rad/rs
+    omega = 2.0 * ti.math.pi * base_frequency_rHz / wave_field.scale_factor
     amp = base_amplitude_am * wave_field.scale_factor * boost
     rf = ti.cast(radius, ti.f32)
     inv2s2 = 1.0 / (2.0 * sigma * sigma)
@@ -744,7 +748,8 @@ def interact_wc_soft(
             continue
         c = wave_center.position_grid[wc]
         off = wave_center.offset[wc]
-        c_now = ti.cos(omega * elapsed_t_rs + off)
+        c_now  = ti.cos(omega * elapsed_t_rs          + off)
+        c_prev = ti.cos(omega * (elapsed_t_rs - dt_rs) + off)
         for di, dj, dk in ti.ndrange(
             (-radius, radius + 1), (-radius, radius + 1), (-radius, radius + 1)
         ):
@@ -754,14 +759,18 @@ def interact_wc_soft(
                 and (0 < j < wave_field.ny - 1)
                 and (0 < k < wave_field.nz - 1)
             )
-            d = ti.Vector([ti.cast(di, ti.f32), ti.cast(dj, ti.f32), ti.cast(dk, ti.f32)])
+            d = ti.Vector([
+                ti.cast(di, ti.f32),
+                ti.cast(dj, ti.f32),
+                ti.cast(dk, ti.f32),
+            ])
             r = d.norm()
             if inside and r <= rf + 1e-3:
                 r_hat = d / (r + 1e-6)
                 node = ti.select(r < 0.5, 0.0, 1.0)
                 env = ti.exp(-(r * r) * inv2s2)
-                wave_field.psi_am[i, j, k] += amp * env * c_now * r_hat * node
-
+                wave_field.psi_am[i, j, k]      += amp * env * c_now  * r_hat * node
+                wave_field.psi_prev_am[i, j, k] += amp * env * c_prev * r_hat * node
 
 # ================================================================
 # 3-PLANE SAMPLING FOR AVERAGE TRACKERS
