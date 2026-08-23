@@ -44,8 +44,8 @@ from openwave.xperiments.m4_ewt.xparameters.utils.geometry import (
     generate_positions_by_EWT_geometry,
 )
 
-UNIVERSE_EDGE = 1e-15  # m, universe edge length in meters
-TARGET_VOXELS = 75_000_000  # Target voxel count (impacts performance)
+UNIVERSE_EDGE = 5e-15  # m, universe edge length in meters
+TARGET_VOXELS = 55_000_000  # Target voxel count (impacts performance)
 
 # ════════════════════════════════════════════════════════════════════════════
 # SELECT K VALUE HERE. K=10 is the 1-3-6 tetrahedron, K=11 a golden-angle
@@ -83,11 +83,11 @@ XPARAMETERS = {
     "engine": {
         # Base wave seed (P1)
         "SEED_MODE": 2,  # 0 = gaussian pulse, 1 = radial cosine, 2 = full (domain-filling base wave)
-        "SEED_BOOST": 1.0,  # seed amplitude multiplier
+        "SEED_BOOST": 0.0001,  # seed amplitude multiplier
         # Non-linear potential V(ψ) (P2)
-        "V_MODE": 0,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
-        "V_C1": 0.0,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
-        "V_C2": 0.0,  # secondary coefficient (q for mode 2, b for mode 3)
+        "V_MODE": 3,  # 0 = linear/off, 1 = cubic ψ³, 2 = saturating, 3 = double-well
+        "V_C1": -0.5,  # primary coefficient (k for modes 1/2, a for mode 3); c1 < 0 = focusing
+        "V_C2": 0.1,  # secondary coefficient (q for mode 2, b for mode 3)
         # Wave-center interaction (P3)
         "WC_INTERACT_MODE": 0,  # 0 = free, 1 = dirichlet, 2 = neumann, 3 = soft
         "WC_BOOST": 1.0,  # WC drive amplitude multiplier

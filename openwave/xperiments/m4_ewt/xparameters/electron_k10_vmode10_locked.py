@@ -41,21 +41,22 @@ XPARAMETERS = {
     },
     "engine": {
         "SEED_MODE": 2,
-        "SEED_BOOST": 0.0001,
-        "V_MODE": 10,  # Gaussian + saturation
-        "V_C1": -1.0,  # focusing (cubic)
+        "SEED_BOOST": 0.00000001,
+        "V_MODE": 10,  
+        "V_C1": -1.15,  # focusing (cubic)
         "V_C2": 0.05,  # saturation (quintic)
         "WC_INTERACT_MODE": 3,
-        "WC_BOOST": 0.05,
-        "WC_RADIUS": 2,
+        "WC_BOOST": 0.0005,
+        "WC_RADIUS": 5,
         "WC_SIGMA": 1.44,
         "R_WALL": 100.0,
         "WALL_HEIGHT": 1.2,
-        "DEFICIT_DEPTH": 0.99,
-        "R_SOLITON": 110.0,
-        "SIGMA": 1.5,
-        "PRESSURE_STRENGTH": 0.003,  # vacuum pressure (active for V_MODE >= 4)
-        "CFL_SAFETY": 0.01,
+        "DEFICIT_DEPTH": 0.8,
+        "R_SOLITON": 45.0,
+        "SIGMA": 1.1,
+        "PRESSURE_STRENGTH": 0.1,  # vacuum pressure (active for V_MODE >= 4)
+        "CFL_SAFETY": 0.005,
+        "VELOCITY_DAMPING": 0.99999
     },
     "ui_defaults": {
         "SHOW_AXIS": False,
