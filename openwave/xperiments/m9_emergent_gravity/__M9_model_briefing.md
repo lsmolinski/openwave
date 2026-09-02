@@ -16,7 +16,7 @@
 | Model ID | M9 |
 | Name | NSM (New Standard Model): gravity as entanglement bookkeeping on SM + Einstein-Cartan |
 | Author | Dr. Robert W. McGwier, PhD, CTO, Cohere Technology Group (sole author) |
-| Author contact | GitHub [@n4hy](https://github.com/n4hy), for author-gated questions (definitions, intent, what the model does and does not claim); routing convention in [`dev_docs/CROSS_MODEL_TESTING.md`](../../../dev_docs/CROSS_MODEL_TESTING.md) § 6 |
+| Author contact | GitHub [@n4hy](https://github.com/n4hy), for author-gated questions (definitions, intent, what the model does and does not claim); routing convention in [`dev_docs/CROSS_MODEL_TESTING.md`](../../../dev_docs/CROSS_MODEL_TESTING.md) § 6. ⚠️ Channel unconfirmed since 2026-09-02: the collaborator invitation was issued twice and expired unaccepted, and the author last posted 2026-08-20, so a § 6 Q&A discussion may go unanswered. Treat an M9 author-gated question as open, not as pending an answer |
 | Lineage | Faulkner-Guica-Hartman-Myers-Van Raamsdonk 2014; Casini-Huerta-Myers; Einstein-Cartan-Sciama-Kibble; Hehl-Datta 1971; Jacobson entanglement equilibrium |
 | Primary sources | Author repo [github.com/n4hy/New_Model_Emergent_Gravity](https://github.com/n4hy/New_Model_Emergent_Gravity) (CC-BY-4.0 PDFs under `research/`); registry in [`theory/_CITATIONS.md`](theory/_CITATIONS.md). Specification of the first task: Paper III action (2) |
 | In-repo | Headless only. No launcher. First task: [`research/scripts/hehl_datta.py`](research/scripts/hehl_datta.py) |
