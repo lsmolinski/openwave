@@ -1,0 +1,2380 @@
+{
+ "w012": {
+  "A": {
+   "S1 identity a0 = (d2 - d3)(E23 + E32) on a random diagonal M": {
+    "pass": true,
+    "detail": "max |a0 - target| = 0.00e+00"
+   },
+   "S1 iff: a0 = 0 exactly with (block = m I, decoupled); each of 6 single violations gives a0 != 0": {
+    "pass": true,
+    "detail": "a0(good) == 0: True; violations detected: [np.True_, np.True_, np.True_, np.True_, np.True_, np.True_]"
+   },
+   "S1 frame caveat: a degenerate cell (gap 0) rotated by 0.7 in the (1,2) plane has a0_G1 != 0 but a0_local = 0": {
+    "pass": true,
+    "detail": "gap23 = 2.8e-17, max|a0_G1| = 0.4188 (= (1-m) sin(2 psi)/... nonzero), max|a0_local| = 9.7e-17"
+   },
+   "frame_caveat": {
+    "psi": 0.7,
+    "gap23": 2.7755575615628914e-17,
+    "max_a0_G1": 0.41881613524509564,
+    "max_a0_local": 9.71445146547012e-17
+   }
+  },
+  "B": {
+   "S2 F_0z = (d2 - d3)(d3' - d2')(E23 - E32) and density 4<F,F> = 8 (d2 - d3)^2 (d2' - d3')^2 (d0', d1' drop out)": {
+    "pass": true,
+    "detail": "density 0.0782248136 vs 0.0782248136; d0' = 0.50, d1' = -0.15 present and irrelevant"
+   },
+   "S2 linear ramp: kin/area = (8/3) delta^4 / w": {
+    "pass": true,
+    "detail": "quadrature 9.39130435e-03 vs 9.39130435e-03"
+   },
+   "S2 stencil fact: INS4.branches('sym') is the fwd/bwd energy average (the central-difference d1 branch is never used by a_fields)": {
+    "pass": true,
+    "detail": "[('fwd', 0.5), ('bwd', 0.5)]"
+   },
+   "S2 lattice one-cell layer: the ONLY kinetic cells are (fwd, z, kz-1) and (bwd, z, kz+1), weight 1/2 each, 4 delta^4/h per flank per area": {
+    "pass": true,
+    "detail": "cells = {'fwd/dir2/cell15': 0.04859999999999999, 'bwd/dir2/cell17': 0.04859999999999999}; expected per flank per column = 4.860000e-02"
+   },
+   "S2 flank inertia is INDEPENDENT of the wall cell's (d0, d1, m): the same 2 x 4 delta^4/h for three different degenerate cells at three h": {
+    "pass": true,
+    "detail": {
+     "unrelaxed diag(8,1,.15,.15) h1.5": 0.0432,
+     "unrelaxed diag(8,1,.15,.15) h1.0": 0.0648,
+     "unrelaxed diag(8,1,.15,.15) h0.75": 0.0864,
+     "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.5": 0.0432,
+     "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.0": 0.0648,
+     "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h0.75": 0.0864,
+     "random degenerate diag(7.9,1.2,.1,.1) h1.5": 0.0432,
+     "random degenerate diag(7.9,1.2,.1,.1) h1.0": 0.0648,
+     "random degenerate diag(7.9,1.2,.1,.1) h0.75": 0.0864
+    }
+   },
+   "lattice_flank_table": {
+    "unrelaxed diag(8,1,.15,.15) h1.5": {
+     "nonzero": {
+      "fwd/dir2/cell15": 0.04859999999999999,
+      "bwd/dir2/cell17": 0.04859999999999999
+     },
+     "total_per_area": 0.04319999999999999
+    },
+    "unrelaxed diag(8,1,.15,.15) h1.0": {
+     "nonzero": {
+      "fwd/dir2/cell23": 0.0324,
+      "bwd/dir2/cell25": 0.0324
+     },
+     "total_per_area": 0.0648
+    },
+    "unrelaxed diag(8,1,.15,.15) h0.75": {
+     "nonzero": {
+      "fwd/dir2/cell31": 0.024299999999999995,
+      "bwd/dir2/cell33": 0.024299999999999995
+     },
+     "total_per_area": 0.08639999999999998
+    },
+    "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.5": {
+     "nonzero": {
+      "fwd/dir2/cell15": 0.04859999999999999,
+      "bwd/dir2/cell17": 0.04859999999999999
+     },
+     "total_per_area": 0.04319999999999999
+    },
+    "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.0": {
+     "nonzero": {
+      "fwd/dir2/cell23": 0.0324,
+      "bwd/dir2/cell25": 0.0324
+     },
+     "total_per_area": 0.0648
+    },
+    "W1 snapshot diag(7.999997,1.0033,.1503,.1503) h0.75": {
+     "nonzero": {
+      "fwd/dir2/cell31": 0.024299999999999995,
+      "bwd/dir2/cell33": 0.024299999999999995
+     },
+     "total_per_area": 0.08639999999999998
+    },
+    "random degenerate diag(7.9,1.2,.1,.1) h1.5": {
+     "nonzero": {
+      "fwd/dir2/cell15": 0.0486,
+      "bwd/dir2/cell17": 0.0486
+     },
+     "total_per_area": 0.043199999999999995
+    },
+    "random degenerate diag(7.9,1.2,.1,.1) h1.0": {
+     "nonzero": {
+      "fwd/dir2/cell23": 0.0324,
+      "bwd/dir2/cell25": 0.0324
+     },
+     "total_per_area": 0.0648
+    },
+    "random degenerate diag(7.9,1.2,.1,.1) h0.75": {
+     "nonzero": {
+      "fwd/dir2/cell31": 0.0243,
+      "bwd/dir2/cell33": 0.0243
+     },
+     "total_per_area": 0.08639999999999999
+    }
+   }
+  },
+  "C": {
+   "S3 random planar profile (all 10 entries incl. time row): E_u == 0.0 exactly for fwd/bwd/sym, own F and e_parts; x-perturbed control E_u != 0 (negative here: the eta metric is indefinite on full 4x4 fields)": {
+    "pass": true,
+    "detail": "E_u = {'fwd': (0.0, 0.0), 'bwd': (0.0, 0.0), 'sym': (0.0, 0.0)}; control E_u = -6.691e+02"
+   },
+   "S3 orientation wall: V4 = 0 at random angles in BOTH the (2,3) and (1,2) planes; lattice jump has E_u = 0 and V4 = 0": {
+    "pass": true,
+    "detail": "[np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_]"
+   },
+   "S3 V4_deg for diag(8, 1, 0.15, 0.15) = 1.7994e-6 per volume": {
+    "pass": true,
+    "detail": "own 1.7994130395e-06 vs theirs 1.7994130395e-06"
+   },
+   "V4_deg_min": {
+    "diag_only": {
+     "V4": 6.478885210548598e-07,
+     "d0": 7.99998425112474,
+     "d1": 1.0100500828609236,
+     "m": 0.1483879586285258
+    },
+    "with_M01": {
+     "V4": 6.47888521053747e-07,
+     "theta": [
+      8.065129205667377,
+      1.0751950422377223,
+      0.1483879586930762,
+      -0.7688967047222697
+     ]
+    },
+    "V4_unrelaxed_layer": 1.7994130394803167e-06,
+    "ratio_unrelaxed_over_min": 2.7773497770119495
+   },
+   "S3 QUALIFIER: the RELAXED one-cell layer's V4 is the constrained minimum on the degenerate manifold, strictly below 1.7994e-6": {
+    "pass": true,
+    "detail": "min V4 over diag(d0,d1,m,m) = 6.478885e-07 at d0 7.999984 d1 1.010050 m 0.148388 (ratio 1.7994e-6/min = 2.777); allowing M01: 6.478885e-07 (no further gain); V4 > 0 strictly (power sums p = 1..4 fix the multiset, Newton identities)"
+   }
+  },
+  "D": {
+   "S4 continuum: uniform vacuum with an arbitrary phase phi(x, t), exact jets A_mu = d_mu phi [G1, M]: every F_mu nu = 0 (20 random points)": {
+    "pass": true,
+    "detail": "max |F| = 3.5e-18"
+   },
+   "S4 QUALIFIER: on the LATTICE the same phase field has E_u != 0 and F_0i != 0, both densities O(h^2) (exponent ~2 across h 1.5 -> 0.75 -> 0.375)": {
+    "pass": true,
+    "detail": "E_u/vol: 6.842e-06, 2.391e-06, 6.631e-07 (exp 1.52, 1.85); kin/vol: 3.621e-05, 1.069e-05, 2.829e-06 (exp 1.76, 1.92)"
+   },
+   "S4 non-uniform background M0(z) (random symmetric, full 4x4) with chi(z,t): F_0z = R chi_t [X, d_z M0] R^T, the chi_z chi_t [X,X] piece absent": {
+    "pass": true,
+    "detail": "rel err 8.5e-11 (FD step 1e-5); |F| = 4.000"
+   }
+  },
+  "E": {
+   "S5 f(psi) = 8 (delta - 1)^2 (1 - (1 - delta^2) cos^2 psi): own numeric density at 12 random angles": {
+    "pass": true,
+    "detail": "max rel err 1.2e-15"
+   },
+   "S5 f > 0 everywhere: min f = 8 (1-delta)^2 delta^2 = 0.3528 at psi = 0, so any (1,2) twist carries inertia": {
+    "pass": true,
+    "detail": "min f = 0.3528"
+   },
+   "S5 lattice (1,2) twist over w cells: E_u == 0, V4 = 0, kin/area * w -> int_0^1 f dpsi = 1.3255 (own build, own kin)": {
+    "pass": true,
+    "detail": "kin*w = [1.14405, 1.28184, 1.31472, 1.32281, 1.32482] -> 1.32549; E_u = [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]"
+   },
+   "twist_rows": [
+    {
+     "w_cells": 1,
+     "w": 1.5,
+     "E_u": 0.0,
+     "V4": 6.168464631967338e-32,
+     "kin_per_area": 0.7626988036854105,
+     "kin_x_w": 1.1440482055281158
+    },
+    {
+     "w_cells": 2,
+     "w": 3.0,
+     "E_u": 0.0,
+     "V4": 6.168464631967338e-32,
+     "kin_per_area": 0.42727928502195694,
+     "kin_x_w": 1.281837855065871
+    },
+    {
+     "w_cells": 4,
+     "w": 6.0,
+     "E_u": 0.0,
+     "V4": 5.532341716795707e-31,
+     "kin_per_area": 0.2191196009045415,
+     "kin_x_w": 1.314717605427249
+    },
+    {
+     "w_cells": 8,
+     "w": 12.0,
+     "E_u": 0.0,
+     "V4": 5.532341716795707e-31,
+     "kin_per_area": 0.11023377196702237,
+     "kin_x_w": 1.3228052636042684
+    },
+    {
+     "w_cells": 16,
+     "w": 24.0,
+     "E_u": 0.0,
+     "V4": 8.938490780760171e-30,
+     "kin_per_area": 0.05520076382182136,
+     "kin_x_w": 1.3248183317237126
+    }
+   ],
+   "S5 INTERPRETATION (lattice): the per-area inertia of a single (1,2) jump is bounded (max over the angle), so kin <= n_cells x const at fixed h: a lattice minimizer EXISTS": {
+    "pass": true,
+    "detail": "max kin/area over jump angles at h = 1.5: 1.4243 at q = 1.571"
+   },
+   "S5 INTERPRETATION (box + pinned shell, no core): a compact single-generator (1,2) bump has V4 = 0, E_u = lattice residual only, and E_J(J = 200) BELOW the W0 shell's E_J at R = 9 and R = 12 (surface + inertia, core energy not even counted): the shell is not the fixed-J minimizer": {
+    "pass": true,
+    "detail": "best bump r0 14.0 Psi 2.0: E_u 1.083, kin 496.3, E_J 21.23; shells {9.0: (22.0, 454.84), 12.0: (39.1, 255.85)}; all bumps [(12.0, 1.0, 0.028, 51.8, 193.2), (9.0, 1.0, 0.06, 38.5, 259.9), (6.0, 1.0, 0.156, 25.0, 399.6), (14.0, 1.0, 0.018, 60.6, 165.1), (14.0, 2.0, 1.083, 496.3, 21.2), (14.0, 4.0, 55.031, 2353.2, 59.3), (14.0, 8.0, 1386.524, 7552.4, 1387.8)]"
+   },
+   "bumps": [
+    {
+     "r0": 12.0,
+     "Psi": 1.0,
+     "E_u": 0.0275770938827583,
+     "V4": 1.5175143162885435e-25,
+     "kin": 51.757863008334944,
+     "E_J_J200": 193.23493572052521
+    },
+    {
+     "r0": 9.0,
+     "Psi": 1.0,
+     "E_u": 0.05961908340243955,
+     "V4": 1.374688606718661e-27,
+     "kin": 38.48391581775387,
+     "E_J_J200": 259.90843611533967
+    },
+    {
+     "r0": 6.0,
+     "Psi": 1.0,
+     "E_u": 0.15554531634159188,
+     "V4": 5.923113951230837e-28,
+     "kin": 25.037261232575727,
+     "E_J_J200": 399.560252848374
+    },
+    {
+     "r0": 14.0,
+     "Psi": 1.0,
+     "E_u": 0.01792239275986586,
+     "V4": 1.5158272412117005e-25,
+     "kin": 60.562048546726146,
+     "E_J_J200": 165.13783230275214
+    },
+    {
+     "r0": 14.0,
+     "Psi": 2.0,
+     "E_u": 1.0829963363030262,
+     "V4": 2.000621064106667e-25,
+     "kin": 496.2518808192978,
+     "E_J_J200": 21.234053463764756
+    },
+    {
+     "r0": 14.0,
+     "Psi": 4.0,
+     "E_u": 55.03103762462428,
+     "V4": 9.211136917493127e-27,
+     "kin": 2353.1928728834946,
+     "E_J_J200": 59.28058304660512
+    },
+    {
+     "r0": 14.0,
+     "Psi": 8.0,
+     "E_u": 1386.523779720686,
+     "V4": 7.841953665458498e-27,
+     "kin": 7552.403453471609,
+     "E_J_J200": 1387.847861526115
+    }
+   ],
+   "shells": {
+    "9.0": {
+     "kin": 21.986122026882807,
+     "E_J": 454.8351178678417
+    },
+    "12.0": {
+     "kin": 39.08643915890277,
+     "E_J": 255.84809259304885
+    }
+   },
+   "S5 sign: kin >= 0 for a spatial-block generator on a block-diagonal field (F in the +eta block); a BOOST clock over the same twist gives kin < 0 (indefinite): positivity is a property of the spatial sector only": {
+    "pass": true,
+    "detail": "kin(block-diag, spatial gen) = 4.396e+06; kin((1,2) twist, boost clock) = -4.321e+01"
+   }
+  },
+  "F": {
+   "S6 dE_J/dw > 0 at 50 random (R, w, J, kappa, c, V): the shell sharpens to the floor": {
+    "pass": true,
+    "detail": "numeric derivative positive in all cases"
+   },
+   "S6 ramp-only algebra: numeric argmin of E(R) matches R*^4 = J^2/(64 pi^2 c V); omega* = sqrt(V/c) h = 0.011179 at h = 1.5, J-independent": {
+    "pass": true,
+    "detail": "(J, argmin, formula, omega*, sqrt(V/c)h) = [(50.0, 90.771, 90.771, 0.011179, np.float64(0.011179)), (200.0, 181.542, 181.542, 0.011179, np.float64(0.011179)), (800.0, 363.083, 363.083, 0.011179, np.float64(0.011179))]"
+   },
+   "S6 numbers R* = 90.77 / 181.5 / 363.1 at J = 50 / 200 / 800 (c = 0.0324, V = 1.7994e-6)": {
+    "pass": true,
+    "detail": "{50.0: 90.771, 200.0: 181.542, 800.0: 363.083}"
+   },
+   "S6 QUALIFIER: the ramp-dominance assumption 4 pi R^2 c/h >> kappa R does NOT hold at the quoted R* for J = 50 (ratio 1.8) and is marginal at J = 200 (3.5)": {
+    "pass": true,
+    "detail": "ratios ramp/core at R*: {50.0: 1.76, 200.0: 3.52, 800.0: 7.04} with kappa = 14"
+   },
+   "S6 QUALIFIER: with the core law kappa R = 14 R included the bag minimum SHIFTS: R* = 75 / 164 / 345 (ramp-only 91 / 182 / 363) and omega* = 0.0097 / 0.0104 / 0.0108 (ramp-only 0.0112, 4 to 14 percent high), no longer J-independent": {
+    "pass": true,
+    "detail": {
+     "50.0": {
+      "R_star_full": 75.2663,
+      "omega_star_full": 0.00965,
+      "kin": 2591.40372,
+      "surface_term": 0.19215,
+      "inertia_term": 0.24118
+     },
+     "200.0": {
+      "R_star_full": 164.2516,
+      "omega_star_full": 0.01039,
+      "kin": 9622.41764,
+      "surface_term": 0.91506,
+      "inertia_term": 1.03924
+     },
+     "800.0": {
+      "R_star_full": 344.79918,
+      "omega_star_full": 0.01078,
+      "kin": 37096.97197,
+      "surface_term": 4.03241,
+      "inertia_term": 4.31302
+     }
+    }
+   },
+   "S6 W3 FEASIBILITY: every quoted R* (91 to 363, or 75 to 345 with the core law) exceeds every admissible half-box (24 / 36 / 48); the bag model puts an interior R* = 12 at J ~ 2.6 and R* = 20 at J ~ 5.7, an order of magnitude below the W3 grid J = 50 to 220": {
+    "pass": true,
+    "detail": "R*(J=50) = 90.8 > 48; J for R* = 12: 2.61; J for R* = 20: 5.74 (full model, kappa = 14, w = h = 1.5)"
+   },
+   "feasibility": {
+    "J_for_Rstar_12": 2.6090087890625018,
+    "J_for_Rstar_20": 5.741455078125008,
+    "full_model": {
+     "50.0": {
+      "R_star_full": 75.26629686355591,
+      "omega_star_full": 0.009647281042803246,
+      "kin": 2591.4037218444773,
+      "surface_term": 0.1921467682992549,
+      "inertia_term": 0.24118202607008113
+     },
+     "200.0": {
+      "R_star_full": 164.25159815698862,
+      "omega_star_full": 0.010392398636543027,
+      "kin": 9622.417643638855,
+      "surface_term": 0.9150634190681172,
+      "inertia_term": 1.0392398636543025
+     },
+     "800.0": {
+      "R_star_full": 344.7991752624512,
+      "omega_star_full": 0.010782551211074385,
+      "kin": 37096.97196607551,
+      "surface_term": 4.03240758565428,
+      "inertia_term": 4.313020484429754
+     }
+    },
+    "ramp_over_core_at_Rstar": {
+     "50.0": 1.7598744387961498,
+     "200.0": 3.5197488775922996,
+     "800.0": 7.039497755184599
+    }
+   },
+   "S6 QUALIFIER kappa: on the R10 seed with the local clock the interior inertia cut at R is NOT linear over R = 6 to 15 (log-log exponent ~2.8, linear-fit slope 8.8): 'kin_in = 14 R' is imported from the R7 tail law, not measured on this seed at these radii": {
+    "pass": true,
+    "detail": "kin_in(R) = {6.0: 6.66, 9.0: 22.23, 12.0: 50.28, 15.0: 85.37}; exponent 2.80; linear slope 8.81"
+   },
+   "kappa_seed": {
+    "kin_in": {
+     "6.0": 6.661761269079197,
+     "9.0": 22.232795549216085,
+     "12.0": 50.281125268654066,
+     "15.0": 85.36889109015566
+    },
+    "slope": 8.805657306088907,
+    "exponent": 2.804630699060961
+   }
+  },
+  "G": {
+   "their_sigma_0": {
+    "1.5": 1.7061402971438648e-06,
+    "1.0": 1.1373808042418552e-06,
+    "0.75": 8.528728988749016e-07
+   },
+   "their_stops": {
+    "1.5": [
+     "max_iter",
+     0.0005089585648471289
+    ],
+    "1.0": [
+     "max_iter",
+     0.00016567623690745743
+    ],
+    "0.75": [
+     "max_iter",
+     6.363544951811867e-05
+    ]
+   },
+   "W1 all three constrained runs stopped at max_iter with fmax >> 1e-6: sigma_0 values are UNCONVERGED snapshots": {
+    "pass": true,
+    "detail": "{1.5: ('max_iter', 0.0005089585648471289), 1.0: ('max_iter', 0.00016567623690745743), 0.75: ('max_iter', 6.363544951811867e-05)}"
+   },
+   "W1 own constrained wall (L-BFGS, wall parametrized, neighbors free): sigma_0 = h x V4_deg_min exactly, neighbors stay at the vacuum (the problem is per-cell)": {
+    "pass": true,
+    "detail": {
+     "1.5": [
+      0.97183,
+      0.97183
+     ],
+     "1.0": [
+      0.64789,
+      0.64789
+     ],
+     "0.75": [
+      0.48592,
+      0.48592
+     ]
+    }
+   },
+   "own_wall": {
+    "1.5": {
+     "sigma_0_own": 9.718327815847811e-07,
+     "E_u": 0.0,
+     "eigs_wall": [
+      1.0100500866333553,
+      0.1483879593074812,
+      0.1483879593074812
+     ],
+     "M00": 7.999984251126481,
+     "M01": 0.0,
+     "neighbor_max_dev_from_vac": 0.0,
+     "lbfgs_nit": 36,
+     "success": false
+    },
+    "1.0": {
+     "sigma_0_own": 6.478885210565208e-07,
+     "E_u": 0.0,
+     "eigs_wall": [
+      1.0100500866333553,
+      0.1483879593074812,
+      0.1483879593074812
+     ],
+     "M00": 7.999984251126481,
+     "M01": 0.0,
+     "neighbor_max_dev_from_vac": 0.0,
+     "lbfgs_nit": 36,
+     "success": false
+    },
+    "0.75": {
+     "sigma_0_own": 4.859163907923906e-07,
+     "E_u": 0.0,
+     "eigs_wall": [
+      1.0100500866333553,
+      0.1483879593074812,
+      0.1483879593074812
+     ],
+     "M00": 7.999984251126481,
+     "M01": 0.0,
+     "neighbor_max_dev_from_vac": 0.0,
+     "lbfgs_nit": 36,
+     "success": false
+    }
+   },
+   "sigma_0_converged": {
+    "1.5": 9.718327815822898e-07,
+    "1.0": 6.478885210548598e-07,
+    "0.75": 4.859163907911449e-07
+   },
+   "W1 QUALIFIER: the producer's sigma_0 (1.706e-6, 1.137e-6, 8.53e-7) sit ABOVE the converged h V4_deg_min by the same factor at every h (a 12000-iteration snapshot of a per-cell descent)": {
+    "pass": true,
+    "detail": "their/converged = {1.5: 1.7556, 1.0: 1.7555, 0.75: 1.7552}; converged sigma_0 = {1.5: '9.7183e-07', 1.0: '6.4789e-07', 0.75: '4.8592e-07'}"
+   },
+   "W1 CONFIRMED: order-1 scaling of sigma_0 to zero holds for the snapshot AND for the converged wall (sigma_0 = h x const in both)": {
+    "pass": true,
+    "detail": "order snapshot 1.0003, converged 1.000000"
+   },
+   "W1 QUALIFIER: W0's 'sigma_0 = h V4_deg exactly' (V4_deg = 1.7994e-6) describes the UNRELAXED layer; the relaxed wall converges to h x V4_deg_min": {
+    "pass": true,
+    "detail": "V4_deg_min = 6.478885e-07 vs 1.7994e-6 (ratio 2.777); at h = 1.5: 9.7183e-07 vs W0 2.6991e-6 vs W1 snapshot 1.7061e-06"
+   },
+   "W1 release: the exact free gradient at the degenerate cell has ZERO split component (d2 = d3 is preserved by symmetry, not by stability)": {
+    "pass": true,
+    "detail": "|G22 - G33| + |G23| = 0.0e+00; |G|max = 1.81e-07"
+   },
+   "W1 release: V4 curvature along the eigenvalue split is NEGATIVE at the converged minimum and at the snapshot (a saddle: any split grows)": {
+    "pass": true,
+    "detail": "curvature at V4_deg_min: FD -1.1603e-04, analytic 4 W1 sum_p (t_p - C_p) p (p-1) m^(p-2) = -1.1603e-04; at the W1 snapshot cell -2.4710e-04; producer's value -0.0002672623201088476"
+   },
+   "W1 release: the constrained minimum is a SADDLE of V4: Hessian eigenvalues (-5.8e-5, 2.5e-3, 2.5e-2, 6.1e3), stiffness ratio 1e8; V4 has a local MAXIMUM along the split; a scaled descent from a 1e-3 split runs to the vacuum spectrum (gap 0.3, V4 -> 0)": {
+    "pass": true,
+    "detail": "Hessian eigs [-5.801317140067097e-05, 0.0024684377384361538, 0.024947301266277682, 6127.25522465539]; V4 along the split (s = -0.1..0.1) ['4.210e-07', '5.249e-07', '6.479e-07', '5.249e-07', '4.210e-07']; descent end [8.0, 1.0, -0.0, 0.3], gap 0.300000, V4 4.2e-31"
+   },
+   "hessian_eigs": [
+    -5.801317140067097e-05,
+    0.0024684377384361538,
+    0.024947301266277682,
+    6127.25522465539
+   ],
+   "curvature": {
+    "at_min_FD": -0.00011602564692671789,
+    "at_min_analytic": -0.00011602667378712267,
+    "at_snapshot": -0.0002470984953482295,
+    "producer": -0.0002672623201088476
+   },
+   "W1 QUALIFIED LABEL (v3 record): the split eps diag(+1,-1) starts at gap 2 eps = 2.0e-3, so 'the gap goes 0.001 -> 0.0020' misreports the start and the flag's clause 'gap_end > eps' is satisfied by the initial condition (cannot fail); the measured monotone growth is 0.2 percent (2.0000e-3 -> 2.0042e-3), the instability itself rests on the curvature sign": {
+    "pass": true,
+    "detail": "gap_end 0.0020042299535264763, first logged gap 0.0020003842790276283, growth 0.21 percent; curvature -0.0002672623201088476; unstable flag True; eigs_end [1.0048480702812437, 0.1514046327352032, 0.1494004027816767]"
+   },
+   "W1 FIRE-RATE ARTIFACT: under the producer's own fire_proj the gap moves < 2 percent in 36000 iterations because dt sits at 1e-3 to 1e-2 (dt_max 0.1; the W1 released traces show the same), i.e. ~30 time units per 12000 iterations against a split growth rate of ~1e-4 per time unit: 12000 iterations cannot resolve the instability": {
+    "pass": true,
+    "detail": "(it, gap) [(0, 0.002), (12000, 0.002003), (24000, 0.002007), (36000, 0.002009)]; dt at the chunk ends ['1.74e-03', '1.74e-03', '1.74e-03']; producer's released-run dt ['7.27e-03', '1.16e-02', '3.49e-03', '1.02e-02', '7.38e-03', '6.49e-03', '3.90e-03', '6.24e-03', '3.41e-03', '5.45e-03', '7.02e-03', '1.74e-03']; growth rate 9.79e-05/time"
+   },
+   "split_growth": {
+    "gaps": [
+     [
+      0,
+      0.002
+     ],
+     [
+      12000,
+      0.0020034928879889835
+     ],
+     [
+      24000,
+      0.0020065002629701123
+     ],
+     [
+      36000,
+      0.002009187619264746
+     ]
+    ],
+    "dts": [
+     0.0017415669074151096,
+     0.0017415669074151096,
+     0.0017415669074151096
+    ],
+    "their_dt": [
+     0.0072692150109487305,
+     0.01162512711258855,
+     0.0034919648145047884,
+     0.01015353721892121,
+     0.007380824516600873,
+     0.006491988844679689,
+     0.0039001374182361485,
+     0.006237206242389116,
+     0.00340643074707424,
+     0.005447657054485673,
+     0.007015415296716249,
+     0.0017415669074151096
+    ],
+    "rate": 9.789722673863225e-05
+   },
+   "W1 release_stability: its constrained and released FIRE runs (log_every = 4000) stop at the FIRST log line by the plateau defect (section J), not at 12000 or f_tol": {
+    "pass": true,
+    "detail": "logged iterations con ['4000'], rel ['4000']"
+   }
+  },
+  "H": {
+   "W2 own slab (converged wall cell, own rotation incl. the pinned end): E_stat(Delta q) range 0.0 exactly; kin lo = hi = 4 delta^4/h, co = 2x, dq-independent; a0 at the wall cell = 0 exactly": {
+    "pass": true,
+    "detail": {
+     "n32L48": [
+      0.0,
+      0.0216,
+      0.0216,
+      0.0432
+     ],
+     "n48L48": [
+      0.0,
+      0.0324,
+      0.0324,
+      0.0648
+     ],
+     "n64L48": [
+      0.0,
+      0.0432,
+      0.0432,
+      0.0864
+     ],
+     "n48L72": [
+      0.0,
+      0.0216,
+      0.0216,
+      0.0432
+     ],
+     "n64L96": [
+      0.0,
+      0.0216,
+      0.0216,
+      0.0432
+     ]
+    }
+   },
+   "W2 their kin_wall/area (0.0216 / 0.0324 / 0.0432 one flank; 2x co-rotating; L-flat) reproduced to 1e-12": {
+    "pass": true,
+    "detail": {
+     "n32L48": 0.021599999999999994,
+     "n48L48": 0.0324,
+     "n64L48": 0.04319999999999999,
+     "n48L72": 0.021599999999999994,
+     "n64L96": 0.021599999999999994
+    }
+   },
+   "W2 rotate_half: excluding or including the (diagonal, degenerate) wall cell in the rotation gives the identical field (R commutes with it) and identical pinned-end handling": {
+    "pass": true,
+    "detail": "max |M_a - M_b| = 0.0e+00; pinned end rotated to R d R^T (on the vacuum orbit, V4 = 0.0e+00)"
+   },
+   "W2 registry cross-check: I1(omega) = U - omega^2 T with eta^0 eta^i = -1, so kin = 4 T = -4 C; B (linear) = 0; own kin equals -4 C": {
+    "pass": true,
+    "detail": "own kin 0.77760000, -4C 0.77760000, B 0.0e+00"
+   },
+   "W2 control (2,3) jump: own inertia = 32 delta^4 sin^4(dq)/h from BOTH flank cells (kz-1 fwd, kz bwd); the producer's two_freq_kin(M, kz-1) masks cell kz-1 out and reports HALF (max 0.0864 vs 0.1728)": {
+    "pass": true,
+    "detail": "sin^4 law holds: True; contributing cells [15, 16]; own/theirs = [2.0, 2.0, 2.0] at every angle; own max 0.1728"
+   },
+   "W2 controls: (2,3) twist kin*w falls ~1/w^2 (ratios -> 4: lattice artifact, S4 continuum zero); (1,2) twist kin*w -> 1.3255 = int_0^1 f (1.3228 at w = 8 cells, 0.2 percent off)": {
+    "pass": true,
+    "detail": "(2,3) ratios [2.373, 3.525, 3.877]; (1,2) kin*w [(1, 1.1440482055281158), (2, 1.281837855065871), (4, 1.314717605427249), (8, 1.3228052636042684)]; analytic 1.32549"
+   },
+   "own_rows": {
+    "n32L48": {
+     "h": 1.5,
+     "E_range": 0.0,
+     "kin_lo": 0.021599999999999998,
+     "kin_hi": 0.021599999999999998,
+     "kin_co": 0.043199999999999995,
+     "kin_lo_range": 0.0,
+     "kin_hi_range": 2.0816681711721685e-17,
+     "a0_wall_max": 0.0,
+     "prediction": 0.021599999999999998
+    },
+    "n48L48": {
+     "h": 1.0,
+     "E_range": 0.0,
+     "kin_lo": 0.0324,
+     "kin_hi": 0.0324,
+     "kin_co": 0.0648,
+     "kin_lo_range": 0.0,
+     "kin_hi_range": 2.7755575615628914e-17,
+     "a0_wall_max": 0.0,
+     "prediction": 0.0324
+    },
+    "n64L48": {
+     "h": 0.75,
+     "E_range": 0.0,
+     "kin_lo": 0.043199999999999995,
+     "kin_hi": 0.043199999999999995,
+     "kin_co": 0.08639999999999999,
+     "kin_lo_range": 0.0,
+     "kin_hi_range": 4.163336342344337e-17,
+     "a0_wall_max": 0.0,
+     "prediction": 0.043199999999999995
+    },
+    "n48L72": {
+     "h": 1.5,
+     "E_range": 0.0,
+     "kin_lo": 0.021599999999999998,
+     "kin_hi": 0.021599999999999998,
+     "kin_co": 0.043199999999999995,
+     "kin_lo_range": 0.0,
+     "kin_hi_range": 2.0816681711721685e-17,
+     "a0_wall_max": 0.0,
+     "prediction": 0.021599999999999998
+    },
+    "n64L96": {
+     "h": 1.5,
+     "E_range": 0.0,
+     "kin_lo": 0.021599999999999998,
+     "kin_hi": 0.021599999999999998,
+     "kin_co": 0.043199999999999995,
+     "kin_lo_range": 0.0,
+     "kin_hi_range": 2.0816681711721685e-17,
+     "a0_wall_max": 0.0,
+     "prediction": 0.021599999999999998
+    }
+   }
+  },
+  "I": {
+   "gates verbatim: FIRE dt0 0.01, dt_max 0.1, 12000 iterations or fmax < 1e-6; h ladder (32,48),(48,48),(64,48) = h 1.5/1.0/0.75; L ladder (48,72),(64,96) at h 1.5": {
+    "pass": true,
+    "detail": "fire_proj defaults True; MAXIT/FTOL True; ladders True"
+   },
+   "projection as pre-registered: the (2,3) block of M(z=0) (the two smallest spatial eigenvalues) replaced by its trace part": {
+    "pass": true,
+    "detail": "degenerate_project: mean of the two smallest eigenvalues in the local eigenframe"
+   },
+   "verdict vocabulary carried: W1 ESTABLISHED_KINEMATIC / 'W2 decides'; W2 ESTABLISHED_KINEMATIC / CANDIDATE_REFUTED / 'W3 does not run'": {
+    "pass": true,
+    "detail": "strings present"
+   },
+   "two-frequency read: kin_of is the primary instrument, the pre-registered omega_decompose per half-space is the cross-check (rel dev 0)": {
+    "pass": true,
+    "detail": "registry used as cross-check only"
+   },
+   "DEVIATION (documented in the scripts): W1/W2 run on 4 x 4 x n slabs with the z ends pinned, not on n^3 boxes with a full pinned shell (admissible for a 1D profile and a planar slab; not the W3 geometry)": {
+    "pass": true,
+    "detail": "NXY = 4 in both scripts"
+   },
+   "UNFALSIFIABLE: both W2 gates (E_stat range < 1e-9; |L-exponent| < 0.1) pass for an ARBITRARY unrelaxed degenerate cell diag(6.6, 1.2, 0.05, 0.05): they are identities of the planar slab, not tests of the wall": {
+    "pass": true,
+    "detail": "E_stat ranges [np.float64(0.0), np.float64(0.0), np.float64(0.0)]; kin/area vs L {48.0: 0.021599999999999998, 72.0: 0.021599999999999998, 96.0: 0.021599999999999998}; L-exponent -1.2e-16"
+   },
+   "W1 verdict logic can fail (order < 0.5 and sigma > 1e-12 both required) but 'order 1' is an identity of any one-cell planar layer (sigma_0 = h x V4_cell), so the W1 fail was decided at W0": {
+    "pass": true,
+    "detail": "verdict condition present; the mechanism is in section G"
+   }
+  },
+  "J": {
+   "fire_proj plateau defect: with log_every > plateau[0] (2000), back = plateau[0] // log_every = 0 and the plateau test compares the row with ITSELF: the run stops 'plateau' at the FIRST log line while the energy is still falling (log_every 2500 -> stops at 2500; 1000 -> runs to 5000)": {
+    "pass": true,
+    "detail": "log_every 2500: stop plateau @ 2500 E 5.392684e-06; log_every 1000: stop max_iter @ 5000 E 4.884388e-06"
+   },
+   "W3 exposure of the plateau defect: m5_32_r13w_w3.py calls fire_proj with log_every = 250 (back = 8), so W3 is NOT hit; W1 release_stability (log_every 4000) IS hit": {
+    "pass": true,
+    "detail": "grep of the call sites"
+   },
+   "fire_proj fixed-J gradient (sign, factor J^2/(4 kin^2), a0 frozen) is the exact complex-step gradient of E_stat + J^2/(4 kin) at frozen a0": {
+    "pass": true,
+    "detail": "rel errs ['9.4e-16', '4.7e-16', '1.7e-14']"
+   },
+   "W3 CAVEAT: with a0 REFRESHED from M each step (a0_local(M)), the reported E_J is NOT the function whose gradient drives the descent: the neglected da0/dM term is O(1) on the hedgehog": {
+    "pass": true,
+    "detail": "rel mismatch between the frozen-a0 gradient and the FD gradient of E_J with refreshed a0: ['3.4e-02', '9.6e-02', '9.3e-01']"
+   },
+   "kin_density(M, a0).sum() == kin_of(M, a0)": {
+    "pass": true,
+    "detail": "consistent"
+   },
+   "a0_local == +/- [G1, M] on the vacuum and on a (2,3)-rotated vacuum; on a (1,2)-rotated vacuum it is the CO-ROTATED clock R [G1, d] R^T, not [G1, M]": {
+    "pass": true,
+    "detail": "vac True, G1-rotated True, G3-rotated differs True, equals co-rotated True"
+   },
+   "degenerate_project: idempotent, gap 0, leading eigenvalue and off-mask cells untouched; time row untouched, so on a NON-block-diagonal cell a0 != 0 after projection (both a0_G1 and a0_local)": {
+    "pass": true,
+    "detail": "idempotent+spectrum ok True; |a0_G1| 0.684, |a0_local| 0.370 on a projected random full cell (W3 fields are block-diagonal, so not hit)"
+   },
+   "W3 CAVEAT: on the projected hedgehog shell (R = 9, R10 seed) the FREE gradient has a constraint-normal (split) component of the same order as fmax; fire_proj measures fmax on the unprojected force, so f_tol cannot certify a constrained stationary point": {
+    "pass": true,
+    "detail": "max normal component on the shell 1.215e-01 vs fmax 8.588e-01 (ratio 0.14); shell cells 416"
+   },
+   "W3 shell generator: on the projected hedgehog shell gap23 = 0 exactly and a0_local = 0 there, while [G1, M] does NOT vanish (frame caveat of section A): W3 correctly uses a0_local": {
+    "pass": true,
+    "detail": "max gap 4.7e-16; |a0_local| 5.6e-16; |a0_G1| 0.761"
+   }
+  },
+  "summary": {
+   "pass": 61,
+   "checks": 61,
+   "lines": [
+    "PASS [A] S1 identity a0 = (d2 - d3)(E23 + E32) on a random diagonal M: max |a0 - target| = 0.00e+00",
+    "PASS [A] S1 iff: a0 = 0 exactly with (block = m I, decoupled); each of 6 single violations gives a0 != 0: a0(good) == 0: True; violations detected: [np.True_, np.True_, np.True_, np.True_, np.True_, np.True_]",
+    "PASS [A] S1 frame caveat: a degenerate cell (gap 0) rotated by 0.7 in the (1,2) plane has a0_G1 != 0 but a0_local = 0: gap23 = 2.8e-17, max|a0_G1| = 0.4188 (= (1-m) sin(2 psi)/... nonzero), max|a0_local| = 9.7e-17",
+    "PASS [B] S2 F_0z = (d2 - d3)(d3' - d2')(E23 - E32) and density 4<F,F> = 8 (d2 - d3)^2 (d2' - d3')^2 (d0', d1' drop out): density 0.0782248136 vs 0.0782248136; d0' = 0.50, d1' = -0.15 present and irrelevant",
+    "PASS [B] S2 linear ramp: kin/area = (8/3) delta^4 / w: quadrature 9.39130435e-03 vs 9.39130435e-03",
+    "PASS [B] S2 stencil fact: INS4.branches('sym') is the fwd/bwd energy average (the central-difference d1 branch is never used by a_fields): [('fwd', 0.5), ('bwd', 0.5)]",
+    "PASS [B] S2 lattice one-cell layer: the ONLY kinetic cells are (fwd, z, kz-1) and (bwd, z, kz+1), weight 1/2 each, 4 delta^4/h per flank per area: cells = {'fwd/dir2/cell15': 0.04859999999999999, 'bwd/dir2/cell17': 0.04859999999999999}; expected per flank per column = 4.860000e-02",
+    "PASS [B] S2 flank inertia is INDEPENDENT of the wall cell's (d0, d1, m): the same 2 x 4 delta^4/h for three different degenerate cells at three h: {'unrelaxed diag(8,1,.15,.15) h1.5': 0.0432, 'unrelaxed diag(8,1,.15,.15) h1.0': 0.0648, 'unrelaxed diag(8,1,.15,.15) h0.75': 0.0864, 'W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.5': 0.0432, 'W1 snapshot diag(7.999997,1.0033,.1503,.1503) h1.0': 0.0648, 'W1 snapshot diag(7.999997,1.0033,.1503,.1503) h0.75': 0.0864, 'random degenerate diag(7.9,1.2,.1,.1) h1.5': 0.0432, 'random degenerate diag(7.9,1.2,.1,.1) h1.0': 0.0648, 'random degenerate diag(7.9,1.2,.1,.1) h0.75': 0.0864}",
+    "PASS [C] S3 random planar profile (all 10 entries incl. time row): E_u == 0.0 exactly for fwd/bwd/sym, own F and e_parts; x-perturbed control E_u != 0 (negative here: the eta metric is indefinite on full 4x4 fields): E_u = {'fwd': (0.0, 0.0), 'bwd': (0.0, 0.0), 'sym': (0.0, 0.0)}; control E_u = -6.691e+02",
+    "PASS [C] S3 orientation wall: V4 = 0 at random angles in BOTH the (2,3) and (1,2) planes; lattice jump has E_u = 0 and V4 = 0: [np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_, np.True_]",
+    "PASS [C] S3 V4_deg for diag(8, 1, 0.15, 0.15) = 1.7994e-6 per volume: own 1.7994130395e-06 vs theirs 1.7994130395e-06",
+    "PASS [C] S3 QUALIFIER: the RELAXED one-cell layer's V4 is the constrained minimum on the degenerate manifold, strictly below 1.7994e-6: min V4 over diag(d0,d1,m,m) = 6.478885e-07 at d0 7.999984 d1 1.010050 m 0.148388 (ratio 1.7994e-6/min = 2.777); allowing M01: 6.478885e-07 (no further gain); V4 > 0 strictly (power sums p = 1..4 fix the multiset, Newton identities)",
+    "PASS [D] S4 continuum: uniform vacuum with an arbitrary phase phi(x, t), exact jets A_mu = d_mu phi [G1, M]: every F_mu nu = 0 (20 random points): max |F| = 3.5e-18",
+    "PASS [D] S4 QUALIFIER: on the LATTICE the same phase field has E_u != 0 and F_0i != 0, both densities O(h^2) (exponent ~2 across h 1.5 -> 0.75 -> 0.375): E_u/vol: 6.842e-06, 2.391e-06, 6.631e-07 (exp 1.52, 1.85); kin/vol: 3.621e-05, 1.069e-05, 2.829e-06 (exp 1.76, 1.92)",
+    "PASS [D] S4 non-uniform background M0(z) (random symmetric, full 4x4) with chi(z,t): F_0z = R chi_t [X, d_z M0] R^T, the chi_z chi_t [X,X] piece absent: rel err 8.5e-11 (FD step 1e-5); |F| = 4.000",
+    "PASS [E] S5 f(psi) = 8 (delta - 1)^2 (1 - (1 - delta^2) cos^2 psi): own numeric density at 12 random angles: max rel err 1.2e-15",
+    "PASS [E] S5 f > 0 everywhere: min f = 8 (1-delta)^2 delta^2 = 0.3528 at psi = 0, so any (1,2) twist carries inertia: min f = 0.3528",
+    "PASS [E] S5 lattice (1,2) twist over w cells: E_u == 0, V4 = 0, kin/area * w -> int_0^1 f dpsi = 1.3255 (own build, own kin): kin*w = [1.14405, 1.28184, 1.31472, 1.32281, 1.32482] -> 1.32549; E_u = [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]",
+    "PASS [E] S5 INTERPRETATION (lattice): the per-area inertia of a single (1,2) jump is bounded (max over the angle), so kin <= n_cells x const at fixed h: a lattice minimizer EXISTS: max kin/area over jump angles at h = 1.5: 1.4243 at q = 1.571",
+    "PASS [E] S5 INTERPRETATION (box + pinned shell, no core): a compact single-generator (1,2) bump has V4 = 0, E_u = lattice residual only, and E_J(J = 200) BELOW the W0 shell's E_J at R = 9 and R = 12 (surface + inertia, core energy not even counted): the shell is not the fixed-J minimizer: best bump r0 14.0 Psi 2.0: E_u 1.083, kin 496.3, E_J 21.23; shells {9.0: (22.0, 454.84), 12.0: (39.1, 255.85)}; all bumps [(12.0, 1.0, 0.028, 51.8, 193.2), (9.0, 1.0, 0.06, 38.5, 259.9), (6.0, 1.0, 0.156, 25.0, 399.6), (14.0, 1.0, 0.018, 60.6, 165.1), (14.0, 2.0, 1.083, 496.3, 21.2), (14.0, 4.0, 55.031, 2353.2, 59.3), (14.0, 8.0, 1386.524, 7552.4, 1387.8)]",
+    "PASS [E] S5 sign: kin >= 0 for a spatial-block generator on a block-diagonal field (F in the +eta block); a BOOST clock over the same twist gives kin < 0 (indefinite): positivity is a property of the spatial sector only: kin(block-diag, spatial gen) = 4.396e+06; kin((1,2) twist, boost clock) = -4.321e+01",
+    "PASS [F] S6 dE_J/dw > 0 at 50 random (R, w, J, kappa, c, V): the shell sharpens to the floor: numeric derivative positive in all cases",
+    "PASS [F] S6 ramp-only algebra: numeric argmin of E(R) matches R*^4 = J^2/(64 pi^2 c V); omega* = sqrt(V/c) h = 0.011179 at h = 1.5, J-independent: (J, argmin, formula, omega*, sqrt(V/c)h) = [(50.0, 90.771, 90.771, 0.011179, np.float64(0.011179)), (200.0, 181.542, 181.542, 0.011179, np.float64(0.011179)), (800.0, 363.083, 363.083, 0.011179, np.float64(0.011179))]",
+    "PASS [F] S6 numbers R* = 90.77 / 181.5 / 363.1 at J = 50 / 200 / 800 (c = 0.0324, V = 1.7994e-6): {50.0: 90.771, 200.0: 181.542, 800.0: 363.083}",
+    "PASS [F] S6 QUALIFIER: the ramp-dominance assumption 4 pi R^2 c/h >> kappa R does NOT hold at the quoted R* for J = 50 (ratio 1.8) and is marginal at J = 200 (3.5): ratios ramp/core at R*: {50.0: 1.76, 200.0: 3.52, 800.0: 7.04} with kappa = 14",
+    "PASS [F] S6 QUALIFIER: with the core law kappa R = 14 R included the bag minimum SHIFTS: R* = 75 / 164 / 345 (ramp-only 91 / 182 / 363) and omega* = 0.0097 / 0.0104 / 0.0108 (ramp-only 0.0112, 4 to 14 percent high), no longer J-independent: {50.0: {'R_star_full': 75.2663, 'omega_star_full': 0.00965, 'kin': 2591.40372, 'surface_term': 0.19215, 'inertia_term': 0.24118}, 200.0: {'R_star_full': 164.2516, 'omega_star_full': 0.01039, 'kin': 9622.41764, 'surface_term': 0.91506, 'inertia_term': 1.03924}, 800.0: {'R_star_full': 344.79918, 'omega_star_full': 0.01078, 'kin': 37096.97197, 'surface_term': 4.03241, 'inertia_term': 4.31302}}",
+    "PASS [F] S6 W3 FEASIBILITY: every quoted R* (91 to 363, or 75 to 345 with the core law) exceeds every admissible half-box (24 / 36 / 48); the bag model puts an interior R* = 12 at J ~ 2.6 and R* = 20 at J ~ 5.7, an order of magnitude below the W3 grid J = 50 to 220: R*(J=50) = 90.8 > 48; J for R* = 12: 2.61; J for R* = 20: 5.74 (full model, kappa = 14, w = h = 1.5)",
+    "PASS [F] S6 QUALIFIER kappa: on the R10 seed with the local clock the interior inertia cut at R is NOT linear over R = 6 to 15 (log-log exponent ~2.8, linear-fit slope 8.8): 'kin_in = 14 R' is imported from the R7 tail law, not measured on this seed at these radii: kin_in(R) = {6.0: 6.66, 9.0: 22.23, 12.0: 50.28, 15.0: 85.37}; exponent 2.80; linear slope 8.81",
+    "PASS [G] W1 all three constrained runs stopped at max_iter with fmax >> 1e-6: sigma_0 values are UNCONVERGED snapshots: {1.5: ('max_iter', 0.0005089585648471289), 1.0: ('max_iter', 0.00016567623690745743), 0.75: ('max_iter', 6.363544951811867e-05)}",
+    "PASS [G] W1 own constrained wall (L-BFGS, wall parametrized, neighbors free): sigma_0 = h x V4_deg_min exactly, neighbors stay at the vacuum (the problem is per-cell): {1.5: (0.97183, 0.97183), 1.0: (0.64789, 0.64789), 0.75: (0.48592, 0.48592)}",
+    "PASS [G] W1 QUALIFIER: the producer's sigma_0 (1.706e-6, 1.137e-6, 8.53e-7) sit ABOVE the converged h V4_deg_min by the same factor at every h (a 12000-iteration snapshot of a per-cell descent): their/converged = {1.5: 1.7556, 1.0: 1.7555, 0.75: 1.7552}; converged sigma_0 = {1.5: '9.7183e-07', 1.0: '6.4789e-07', 0.75: '4.8592e-07'}",
+    "PASS [G] W1 CONFIRMED: order-1 scaling of sigma_0 to zero holds for the snapshot AND for the converged wall (sigma_0 = h x const in both): order snapshot 1.0003, converged 1.000000",
+    "PASS [G] W1 QUALIFIER: W0's 'sigma_0 = h V4_deg exactly' (V4_deg = 1.7994e-6) describes the UNRELAXED layer; the relaxed wall converges to h x V4_deg_min: V4_deg_min = 6.478885e-07 vs 1.7994e-6 (ratio 2.777); at h = 1.5: 9.7183e-07 vs W0 2.6991e-6 vs W1 snapshot 1.7061e-06",
+    "PASS [G] W1 release: the exact free gradient at the degenerate cell has ZERO split component (d2 = d3 is preserved by symmetry, not by stability): |G22 - G33| + |G23| = 0.0e+00; |G|max = 1.81e-07",
+    "PASS [G] W1 release: V4 curvature along the eigenvalue split is NEGATIVE at the converged minimum and at the snapshot (a saddle: any split grows): curvature at V4_deg_min: FD -1.1603e-04, analytic 4 W1 sum_p (t_p - C_p) p (p-1) m^(p-2) = -1.1603e-04; at the W1 snapshot cell -2.4710e-04; producer's value -0.0002672623201088476",
+    "PASS [G] W1 release: the constrained minimum is a SADDLE of V4: Hessian eigenvalues (-5.8e-5, 2.5e-3, 2.5e-2, 6.1e3), stiffness ratio 1e8; V4 has a local MAXIMUM along the split; a scaled descent from a 1e-3 split runs to the vacuum spectrum (gap 0.3, V4 -> 0): Hessian eigs [-5.801317140067097e-05, 0.0024684377384361538, 0.024947301266277682, 6127.25522465539]; V4 along the split (s = -0.1..0.1) ['4.210e-07', '5.249e-07', '6.479e-07', '5.249e-07', '4.210e-07']; descent end [8.0, 1.0, -0.0, 0.3], gap 0.300000, V4 4.2e-31",
+    "PASS [G] W1 QUALIFIED LABEL (v3 record): the split eps diag(+1,-1) starts at gap 2 eps = 2.0e-3, so 'the gap goes 0.001 -> 0.0020' misreports the start and the flag's clause 'gap_end > eps' is satisfied by the initial condition (cannot fail); the measured monotone growth is 0.2 percent (2.0000e-3 -> 2.0042e-3), the instability itself rests on the curvature sign: gap_end 0.0020042299535264763, first logged gap 0.0020003842790276283, growth 0.21 percent; curvature -0.0002672623201088476; unstable flag True; eigs_end [1.0048480702812437, 0.1514046327352032, 0.1494004027816767]",
+    "PASS [G] W1 FIRE-RATE ARTIFACT: under the producer's own fire_proj the gap moves < 2 percent in 36000 iterations because dt sits at 1e-3 to 1e-2 (dt_max 0.1; the W1 released traces show the same), i.e. ~30 time units per 12000 iterations against a split growth rate of ~1e-4 per time unit: 12000 iterations cannot resolve the instability: (it, gap) [(0, 0.002), (12000, 0.002003), (24000, 0.002007), (36000, 0.002009)]; dt at the chunk ends ['1.74e-03', '1.74e-03', '1.74e-03']; producer's released-run dt ['7.27e-03', '1.16e-02', '3.49e-03', '1.02e-02', '7.38e-03', '6.49e-03', '3.90e-03', '6.24e-03', '3.41e-03', '5.45e-03', '7.02e-03', '1.74e-03']; growth rate 9.79e-05/time",
+    "PASS [G] W1 release_stability: its constrained and released FIRE runs (log_every = 4000) stop at the FIRST log line by the plateau defect (section J), not at 12000 or f_tol: logged iterations con ['4000'], rel ['4000']",
+    "PASS [H] W2 own slab (converged wall cell, own rotation incl. the pinned end): E_stat(Delta q) range 0.0 exactly; kin lo = hi = 4 delta^4/h, co = 2x, dq-independent; a0 at the wall cell = 0 exactly: {'n32L48': (0.0, 0.0216, 0.0216, 0.0432), 'n48L48': (0.0, 0.0324, 0.0324, 0.0648), 'n64L48': (0.0, 0.0432, 0.0432, 0.0864), 'n48L72': (0.0, 0.0216, 0.0216, 0.0432), 'n64L96': (0.0, 0.0216, 0.0216, 0.0432)}",
+    "PASS [H] W2 their kin_wall/area (0.0216 / 0.0324 / 0.0432 one flank; 2x co-rotating; L-flat) reproduced to 1e-12: {'n32L48': 0.021599999999999994, 'n48L48': 0.0324, 'n64L48': 0.04319999999999999, 'n48L72': 0.021599999999999994, 'n64L96': 0.021599999999999994}",
+    "PASS [H] W2 rotate_half: excluding or including the (diagonal, degenerate) wall cell in the rotation gives the identical field (R commutes with it) and identical pinned-end handling: max |M_a - M_b| = 0.0e+00; pinned end rotated to R d R^T (on the vacuum orbit, V4 = 0.0e+00)",
+    "PASS [H] W2 registry cross-check: I1(omega) = U - omega^2 T with eta^0 eta^i = -1, so kin = 4 T = -4 C; B (linear) = 0; own kin equals -4 C: own kin 0.77760000, -4C 0.77760000, B 0.0e+00",
+    "PASS [H] W2 control (2,3) jump: own inertia = 32 delta^4 sin^4(dq)/h from BOTH flank cells (kz-1 fwd, kz bwd); the producer's two_freq_kin(M, kz-1) masks cell kz-1 out and reports HALF (max 0.0864 vs 0.1728): sin^4 law holds: True; contributing cells [15, 16]; own/theirs = [2.0, 2.0, 2.0] at every angle; own max 0.1728",
+    "PASS [H] W2 controls: (2,3) twist kin*w falls ~1/w^2 (ratios -> 4: lattice artifact, S4 continuum zero); (1,2) twist kin*w -> 1.3255 = int_0^1 f (1.3228 at w = 8 cells, 0.2 percent off): (2,3) ratios [2.373, 3.525, 3.877]; (1,2) kin*w [(1, 1.1440482055281158), (2, 1.281837855065871), (4, 1.314717605427249), (8, 1.3228052636042684)]; analytic 1.32549",
+    "PASS [I] gates verbatim: FIRE dt0 0.01, dt_max 0.1, 12000 iterations or fmax < 1e-6; h ladder (32,48),(48,48),(64,48) = h 1.5/1.0/0.75; L ladder (48,72),(64,96) at h 1.5: fire_proj defaults True; MAXIT/FTOL True; ladders True",
+    "PASS [I] projection as pre-registered: the (2,3) block of M(z=0) (the two smallest spatial eigenvalues) replaced by its trace part: degenerate_project: mean of the two smallest eigenvalues in the local eigenframe",
+    "PASS [I] verdict vocabulary carried: W1 ESTABLISHED_KINEMATIC / 'W2 decides'; W2 ESTABLISHED_KINEMATIC / CANDIDATE_REFUTED / 'W3 does not run': strings present",
+    "PASS [I] two-frequency read: kin_of is the primary instrument, the pre-registered omega_decompose per half-space is the cross-check (rel dev 0): registry used as cross-check only",
+    "PASS [I] DEVIATION (documented in the scripts): W1/W2 run on 4 x 4 x n slabs with the z ends pinned, not on n^3 boxes with a full pinned shell (admissible for a 1D profile and a planar slab; not the W3 geometry): NXY = 4 in both scripts",
+    "PASS [I] UNFALSIFIABLE: both W2 gates (E_stat range < 1e-9; |L-exponent| < 0.1) pass for an ARBITRARY unrelaxed degenerate cell diag(6.6, 1.2, 0.05, 0.05): they are identities of the planar slab, not tests of the wall: E_stat ranges [np.float64(0.0), np.float64(0.0), np.float64(0.0)]; kin/area vs L {48.0: 0.021599999999999998, 72.0: 0.021599999999999998, 96.0: 0.021599999999999998}; L-exponent -1.2e-16",
+    "PASS [I] W1 verdict logic can fail (order < 0.5 and sigma > 1e-12 both required) but 'order 1' is an identity of any one-cell planar layer (sigma_0 = h x V4_cell), so the W1 fail was decided at W0: verdict condition present; the mechanism is in section G",
+    "PASS [J] fire_proj plateau defect: with log_every > plateau[0] (2000), back = plateau[0] // log_every = 0 and the plateau test compares the row with ITSELF: the run stops 'plateau' at the FIRST log line while the energy is still falling (log_every 2500 -> stops at 2500; 1000 -> runs to 5000): log_every 2500: stop plateau @ 2500 E 5.392684e-06; log_every 1000: stop max_iter @ 5000 E 4.884388e-06",
+    "PASS [J] W3 exposure of the plateau defect: m5_32_r13w_w3.py calls fire_proj with log_every = 250 (back = 8), so W3 is NOT hit; W1 release_stability (log_every 4000) IS hit: grep of the call sites",
+    "PASS [J] fire_proj fixed-J gradient (sign, factor J^2/(4 kin^2), a0 frozen) is the exact complex-step gradient of E_stat + J^2/(4 kin) at frozen a0: rel errs ['9.4e-16', '4.7e-16', '1.7e-14']",
+    "PASS [J] W3 CAVEAT: with a0 REFRESHED from M each step (a0_local(M)), the reported E_J is NOT the function whose gradient drives the descent: the neglected da0/dM term is O(1) on the hedgehog: rel mismatch between the frozen-a0 gradient and the FD gradient of E_J with refreshed a0: ['3.4e-02', '9.6e-02', '9.3e-01']",
+    "PASS [J] kin_density(M, a0).sum() == kin_of(M, a0): consistent",
+    "PASS [J] a0_local == +/- [G1, M] on the vacuum and on a (2,3)-rotated vacuum; on a (1,2)-rotated vacuum it is the CO-ROTATED clock R [G1, d] R^T, not [G1, M]: vac True, G1-rotated True, G3-rotated differs True, equals co-rotated True",
+    "PASS [J] degenerate_project: idempotent, gap 0, leading eigenvalue and off-mask cells untouched; time row untouched, so on a NON-block-diagonal cell a0 != 0 after projection (both a0_G1 and a0_local): idempotent+spectrum ok True; |a0_G1| 0.684, |a0_local| 0.370 on a projected random full cell (W3 fields are block-diagonal, so not hit)",
+    "PASS [J] W3 CAVEAT: on the projected hedgehog shell (R = 9, R10 seed) the FREE gradient has a constraint-normal (split) component of the same order as fmax; fire_proj measures fmax on the unprojected force, so f_tol cannot certify a constrained stationary point: max normal component on the shell 1.215e-01 vs fmax 8.588e-01 (ratio 0.14); shell cells 416",
+    "PASS [J] W3 shell generator: on the projected hedgehog shell gap23 = 0 exactly and a0_local = 0 there, while [G1, M] does NOT vanish (frame caveat of section A): W3 correctly uses a0_local: max gap 4.7e-16; |a0_local| 5.6e-16; |a0_G1| 0.761"
+   ],
+   "runtime_s": 59.2
+  }
+ },
+ "w012_recheck": {
+  "R": {
+   "J1 fixed: log_every 2500 > plateau[0] no longer stops at the first log line (runs to 5000, energy still falling); a genuinely flat energy (vacuum, f_tol = 0) is still caught as 'plateau' at the third log line (back = 2)": {
+    "pass": true,
+    "detail": "descending run: stop max_iter @ 5000; flat run: stop plateau @ 3000"
+   },
+   "J7 fixed: on the projected hedgehog shell the linearized projection equals the analytic tangent projection (max dev 1e-6 level), its constraint-normal component drops from 0.12 to ~0, and fire_proj's logged fmax is max|F_tangent|": {
+    "pass": true,
+    "detail": "normal component: raw 1.215e-01, projected 2.13e-09 (fmax 8.588e-01); max|Fp - T_own| = 5.05e-09; fire_proj fmax 8.587520e-01 vs max|Fp| 8.587520e-01"
+   },
+   "J7 residual (design note, not a defect): only F is projected, v is not; with F tangent at every step v is tangent up to the manifold curvature, and M is re-projected after each step": {
+    "pass": true,
+    "detail": "source read"
+   },
+   "S6 corrected numbers: own full-minimum R*/omega* for both V references match the producer's (V_projected 75.3/164.3/344.8, omega 0.00965/0.01039/0.01078; V_min 100.9/216.6/450.2, omega 0.00599/0.00634/0.00652) to < 1e-3; kappa = 14 is labeled an R7 import": {
+    "pass": true,
+    "detail": "{'V_projected_J50': (75.27, 75.27, 7.258223262885696e-06, 1.1565190566124021e-05), 'V_projected_J200': (164.25, 164.25, 8.47762638962715e-06, 1.4929488765814562e-05), 'V_projected_J800': (344.8, 344.8, 4.229344009121309e-06, 7.90830189559919e-06), 'V_min_J50': (100.9, 100.91, 1.8726300927665948e-05, 3.1119142443136704e-05), 'V_min_J200': (216.63, 216.63, 1.7127199982810566e-06, 3.096081826566534e-06), 'V_min_J800': (450.2, 450.2, 1.7990632890013868e-06, 3.4131921983180787e-06)}"
+   },
+   "S6 corrected feasibility: at the producer's J_for_Rstar values (1.566, 3.445, V_min) the full bag minimum sits at R* = 12 and 20 (own argmin); all six R* exceed 48": {
+    "pass": true,
+    "detail": "{'J_for_Rstar_12_Vmin': (1.5655195756213294, 12.0), 'J_for_Rstar_20_Vmin': (3.44513660428328, 20.0)}"
+   },
+   "S4 lattice-residual check (added for D2): own E_u and kin on the producer's phase field reproduce the exponents 1.87 / 1.87 and the values": {
+    "pass": true,
+    "detail": "own exponents 1.8653, 1.8716; own E_u(h=1.5) 2.109630e-03 vs 2.109630e-03; W0 22/22"
+   },
+   "W0 docstring carries the A3 (frame), D2 (lattice residual) and E7 (sign) qualifications": {
+    "pass": true,
+    "detail": "grep of the module docstring for the three qualifiers"
+   },
+   "W1 summary corrected: converged_reference = h x 6.4789e-7 (9.718e-7 / 6.479e-7 / 4.859e-7), snapshot flag true, fmax_at_stop 5.1e-4 / 1.7e-4 / 6.4e-5 recorded, the W0 row relabeled 'projected_point'": {
+    "pass": true,
+    "detail": "converged_reference {'1.5': 9.71832781584829e-07, '1.0': 6.478885210565526e-07, '0.75': 4.859163907924145e-07}; fmax_at_stop {'1.5': 0.0005089586530004908, '1.0': 0.00016565326887985066, '0.75': 6.36355412808598e-05}"
+   },
+   "G7 fixed: release_stability's constrained and released stages now run 12000 iterations each (12 log lines, last at 12000)": {
+    "pass": true,
+    "detail": "con lines 12 (last ['12000']), rel lines 12 (last ['12000'])"
+   },
+   "G6 corrected: gap_start = 2 eps recorded; curvature -2.019e-4 at the 12000 + 12000 released cell reproduced (own re-run of the two stages on a 1x1 column, analytic formula on the resulting diagonal cell, M00 = 7.999993); monotone growth 0.16 percent under FIRE; per-cell descent from the split reaches the vacuum spectrum (gap 0.2999); flag true by all three clauses": {
+    "pass": true,
+    "detail": "gap_start 0.0020000000000000018; curvature own -2.01858e-04 (cell diag [7.9999927, 1.0054869, 0.1504423, 0.1504423]) vs -2.01850e-04; growth 0.165 percent, monotone True; per-cell end eigs [1.000010255788328, 0.29995331738872455, 3.639693511487082e-05], V4 5.5e-13"
+   },
+   "G6 residual fragility (note): the growth clause gap_end > gap_start (1 + 1e-3) passes with a 1.65x margin (growth 1.65e-3); the instability evidence is the curvature sign and the per-cell descent, the FIRE trajectory adds little": {
+    "pass": true,
+    "detail": "growth / threshold = 1.65"
+   },
+   "H6 fixed: the (2,3) jump control now reads a0 on every cell: kin/area = 32 delta^4 sin^4(dq)/h at all 25 angles, max 0.17280": {
+    "pass": true,
+    "detail": "law holds at all angles: True; max 0.17280"
+   },
+   "I6 applied: the W2 verdict string flags BOTH gates as identities of a diagonal planar slab and the pass as carrying no evidential weight, while keeping the pre-registered PASS/W3-runs outcome": {
+    "pass": true,
+    "detail": "W2 PASS on the pre-registered gates (E_stat(Delta q) constant, kin_wall/area L-exponent -0.000); W3 runs. Qualification (W0 S3/S4 + audit I6): BOTH gates are id..."
+   },
+   "unchanged within roundoff: W1 sigma_0 snapshots moved by 6e-9 relative (the J7 force path perturbs FIRE's P-sign decisions at roundoff), W2 kin_wall/area identical": {
+    "pass": true,
+    "detail": "sigma_0(h=1.5) rel change 6.4e-09"
+   }
+  },
+  "summary": {
+   "pass": 14,
+   "checks": 14,
+   "lines": [
+    "PASS [R] J1 fixed: log_every 2500 > plateau[0] no longer stops at the first log line (runs to 5000, energy still falling); a genuinely flat energy (vacuum, f_tol = 0) is still caught as 'plateau' at the third log line (back = 2): descending run: stop max_iter @ 5000; flat run: stop plateau @ 3000",
+    "PASS [R] J7 fixed: on the projected hedgehog shell the linearized projection equals the analytic tangent projection (max dev 1e-6 level), its constraint-normal component drops from 0.12 to ~0, and fire_proj's logged fmax is max|F_tangent|: normal component: raw 1.215e-01, projected 2.13e-09 (fmax 8.588e-01); max|Fp - T_own| = 5.05e-09; fire_proj fmax 8.587520e-01 vs max|Fp| 8.587520e-01",
+    "PASS [R] J7 residual (design note, not a defect): only F is projected, v is not; with F tangent at every step v is tangent up to the manifold curvature, and M is re-projected after each step: source read",
+    "PASS [R] S6 corrected numbers: own full-minimum R*/omega* for both V references match the producer's (V_projected 75.3/164.3/344.8, omega 0.00965/0.01039/0.01078; V_min 100.9/216.6/450.2, omega 0.00599/0.00634/0.00652) to < 1e-3; kappa = 14 is labeled an R7 import: {'V_projected_J50': (75.27, 75.27, 7.258223262885696e-06, 1.1565190566124021e-05), 'V_projected_J200': (164.25, 164.25, 8.47762638962715e-06, 1.4929488765814562e-05), 'V_projected_J800': (344.8, 344.8, 4.229344009121309e-06, 7.90830189559919e-06), 'V_min_J50': (100.9, 100.91, 1.8726300927665948e-05, 3.1119142443136704e-05), 'V_min_J200': (216.63, 216.63, 1.7127199982810566e-06, 3.096081826566534e-06), 'V_min_J800': (450.2, 450.2, 1.7990632890013868e-06, 3.4131921983180787e-06)}",
+    "PASS [R] S6 corrected feasibility: at the producer's J_for_Rstar values (1.566, 3.445, V_min) the full bag minimum sits at R* = 12 and 20 (own argmin); all six R* exceed 48: {'J_for_Rstar_12_Vmin': (1.5655195756213294, 12.0), 'J_for_Rstar_20_Vmin': (3.44513660428328, 20.0)}",
+    "PASS [R] S4 lattice-residual check (added for D2): own E_u and kin on the producer's phase field reproduce the exponents 1.87 / 1.87 and the values: own exponents 1.8653, 1.8716; own E_u(h=1.5) 2.109630e-03 vs 2.109630e-03; W0 22/22",
+    "PASS [R] W0 docstring carries the A3 (frame), D2 (lattice residual) and E7 (sign) qualifications: grep of the module docstring for the three qualifiers",
+    "PASS [R] W1 summary corrected: converged_reference = h x 6.4789e-7 (9.718e-7 / 6.479e-7 / 4.859e-7), snapshot flag true, fmax_at_stop 5.1e-4 / 1.7e-4 / 6.4e-5 recorded, the W0 row relabeled 'projected_point': converged_reference {'1.5': 9.71832781584829e-07, '1.0': 6.478885210565526e-07, '0.75': 4.859163907924145e-07}; fmax_at_stop {'1.5': 0.0005089586530004908, '1.0': 0.00016565326887985066, '0.75': 6.36355412808598e-05}",
+    "PASS [R] G7 fixed: release_stability's constrained and released stages now run 12000 iterations each (12 log lines, last at 12000): con lines 12 (last ['12000']), rel lines 12 (last ['12000'])",
+    "PASS [R] G6 corrected: gap_start = 2 eps recorded; curvature -2.019e-4 at the 12000 + 12000 released cell reproduced (own re-run of the two stages on a 1x1 column, analytic formula on the resulting diagonal cell, M00 = 7.999993); monotone growth 0.16 percent under FIRE; per-cell descent from the split reaches the vacuum spectrum (gap 0.2999); flag true by all three clauses: gap_start 0.0020000000000000018; curvature own -2.01858e-04 (cell diag [7.9999927, 1.0054869, 0.1504423, 0.1504423]) vs -2.01850e-04; growth 0.165 percent, monotone True; per-cell end eigs [1.000010255788328, 0.29995331738872455, 3.639693511487082e-05], V4 5.5e-13",
+    "PASS [R] G6 residual fragility (note): the growth clause gap_end > gap_start (1 + 1e-3) passes with a 1.65x margin (growth 1.65e-3); the instability evidence is the curvature sign and the per-cell descent, the FIRE trajectory adds little: growth / threshold = 1.65",
+    "PASS [R] H6 fixed: the (2,3) jump control now reads a0 on every cell: kin/area = 32 delta^4 sin^4(dq)/h at all 25 angles, max 0.17280: law holds at all angles: True; max 0.17280",
+    "PASS [R] I6 applied: the W2 verdict string flags BOTH gates as identities of a diagonal planar slab and the pass as carrying no evidential weight, while keeping the pre-registered PASS/W3-runs outcome: W2 PASS on the pre-registered gates (E_stat(Delta q) constant, kin_wall/area L-exponent -0.000); W3 runs. Qualification (W0 S3/S4 + audit I6): BOTH gates are id...",
+    "PASS [R] unchanged within roundoff: W1 sigma_0 snapshots moved by 6e-9 relative (the J7 force path perturbs FIRE's P-sign decisions at roundoff), W2 kin_wall/area identical: sigma_0(h=1.5) rel change 6.4e-09"
+   ],
+   "runtime_s": 29.6
+  }
+ },
+ "w3": {
+  "A": {
+   "end-state numbers (E_u, V4, two-region kin, omega, E_J, rigid kin) recomputed from the saved fields with own jets/eta/generator for 8 runs across R_s, J, box, and the frozen run: all within 1e-9 of the records": {
+    "pass": true,
+    "detail": "max rel dev 2.8e-16 over 8 runs"
+   },
+   "the refreshed generator inflates the READ, not only the field: on the SAME end field the kin with the seed's (shelled) a0 is 12 to 80x smaller than with a0 refreshed wherever kin inflated 50x or more (ratio 0.012 to 0.085), and within a factor 1.6 where it inflated under 5x (R_s 15 J 50: 0.96; R_s 21 n48: 0.62): 'kin' and 'E_J' are generator-choice statements (E_J 16.3 becomes 70 at R_s 9 J 200 with the seed's a0)": {
+    "pass": true,
+    "detail": "n32_L48_R6_J200_it3000: inflation 991x, seed/refreshed 0.012, E_J 138.3 vs 11.8; n32_L48_R9_J200_it3000: inflation 121x, seed/refreshed 0.065, E_J 70.0 vs 16.3; n32_L48_R9_J200_it12000: inflation 468x, seed/refreshed 0.019, E_J 60.3 vs 10.1; n32_L48_R12_J800_it3000: inflation 332x, seed/refreshed 0.045, E_J 233.2 vs 27.9; n32_L48_R15_J50_it3000: inflation 2x, seed/refreshed 0.960, E_J 16.8 vs 16.6; n48_L48_R9_J200_it3000: inflation 135x, seed/refreshed 0.059, E_J 43.9 vs 14.6; n48_L72_R21_J200_it3000: inflation 5x, seed/refreshed 0.621, E_J 37.8 vs 31.1; n32_L48_R9_J200_it3000_frz: inflation 339x, seed/refreshed 0.085, E_J 33.2 vs 18.9"
+   },
+   "the producer's '30x to 1000x above the seed' understates the spread: the inflation over the 20 runs ranges from 1.7x (R_s 15 J 50) to 5478x (R_s 6 J 800); 121x at R_s 9 J 200 (3000 iterations), 468x at 12000; the J 50 runs at R_s 12 and 15 inflate under 4x": {
+    "pass": true,
+    "detail": "min n32_L48_R15_J50_it3000 1.7x; max n32_L48_R6_J800_it3000 5478x"
+   },
+   "inflation_all_runs": {
+    "w3_n32_L48_R12_J200_it3000": 40.809831962716224,
+    "w3_n32_L48_R12_J50_it3000": 3.7629128936694767,
+    "w3_n32_L48_R12_J800_it3000": 331.60664202319253,
+    "w3_n32_L48_R15_J200_it3000": 16.379580077112923,
+    "w3_n32_L48_R15_J50_it3000": 1.6873658328161654,
+    "w3_n32_L48_R15_J800_it3000": 183.81452774116894,
+    "w3_n32_L48_R6_J200_it3000": 991.1500769313913,
+    "w3_n32_L48_R6_J50_it3000": 154.176694785429,
+    "w3_n32_L48_R6_J800_it3000": 5478.399239527627,
+    "w3_n32_L48_R9_J180_it3000": 115.72558225547847,
+    "w3_n32_L48_R9_J200_it12000": 468.27976915699185,
+    "w3_n32_L48_R9_J200_it3000": 121.40940878393405,
+    "w3_n32_L48_R9_J200_it3000_frz": 339.2369740224282,
+    "w3_n32_L48_R9_J220_it3000": 153.74729794844464,
+    "w3_n32_L48_R9_J50_it3000": 14.47522192789875,
+    "w3_n32_L48_R9_J800_it3000": 872.4186241466574,
+    "w3_n48_L48_R9_J200_it3000": 135.27429762630138,
+    "w3_n48_L72_R15_J200_it3000": 10.92015612320631,
+    "w3_n48_L72_R21_J200_it3000": 4.565595536714511,
+    "w3_n48_L72_R9_J200_it3000": 69.68709430927647
+   },
+   "rows": {
+    "w3_n32_L48_R6_J200_it3000": {
+     "mine": {
+      "E_u": 9.403181054349647,
+      "V4": 0.9149904482840909,
+      "kin": 6602.805194346411,
+      "omega": 0.015145078047376598,
+      "E_J": 11.832679307371397,
+      "kin_rigid": 6880.002193888473,
+      "kin_seed_a0": 78.11240533063453,
+      "E_J_seed_a0": 138.33880993608045
+     },
+     "theirs": {
+      "E_u": 9.403181054349647,
+      "V4": 0.9149904482840909,
+      "kin": 6602.805194346409,
+      "omega": 0.015145078047376604,
+      "E_J": 11.832679307371397,
+      "kin_rigid_control": 6880.002193888472
+     },
+     "max_rel_dev": 2.7548736484053014e-16
+    },
+    "w3_n32_L48_R9_J200_it3000": {
+     "mine": {
+      "E_u": 11.757697210126407,
+      "V4": 0.8432850406524983,
+      "kin": 2699.270563244406,
+      "omega": 0.037047045732164156,
+      "E_J": 16.30568682399532,
+      "kin_rigid": 2958.9075396926733,
+      "kin_seed_a0": 174.22963955390563,
+      "E_J_seed_a0": 69.99649787948488
+     },
+     "theirs": {
+      "E_u": 11.757697210126407,
+      "V4": 0.8432850406524983,
+      "kin": 2699.270563244406,
+      "omega": 0.037047045732164156,
+      "E_J": 16.30568682399532,
+      "kin_rigid_control": 2958.907539692673
+     },
+     "max_rel_dev": 1.5368758394312533e-16
+    },
+    "w3_n32_L48_R9_J200_it12000": {
+     "mine": {
+      "E_u": 7.850014567529722,
+      "V4": 1.2474159362932127,
+      "kin": 10411.168367501505,
+      "omega": 0.009605069908594535,
+      "E_J": 10.057937494682388,
+      "kin_rigid": 10655.478569258385,
+      "kin_seed_a0": 195.35292502233676,
+      "E_J_seed_a0": 60.28683551967614
+     },
+     "theirs": {
+      "E_u": 7.85001456752972,
+      "V4": 1.2474159362932127,
+      "kin": 10411.168367501505,
+      "omega": 0.009605069908594535,
+      "E_J": 10.057937494682387,
+      "kin_rigid_control": 10655.478569258383
+     },
+     "max_rel_dev": 2.2628707553586657e-16
+    },
+    "w3_n32_L48_R12_J800_it3000": {
+     "mine": {
+      "E_u": 17.16444588332831,
+      "V4": 1.098468301672818,
+      "kin": 16673.555107485867,
+      "omega": 0.023990084743259907,
+      "E_J": 27.85894808230509,
+      "kin_rigid": 16941.784100633937,
+      "kin_seed_a0": 744.2418799783624,
+      "E_J_seed_a0": 233.24678475763235
+     },
+     "theirs": {
+      "E_u": 17.164445883328312,
+      "V4": 1.098468301672818,
+      "kin": 16673.55510748587,
+      "omega": 0.023990084743259903,
+      "E_J": 27.85894808230509,
+      "kin_rigid_control": 16941.784100633933
+     },
+     "max_rel_dev": 2.1818854969078441e-16
+    },
+    "w3_n32_L48_R15_J50_it3000": {
+     "mine": {
+      "E_u": 11.530099805703728,
+      "V4": 0.7044242994793327,
+      "kin": 144.04855001093304,
+      "omega": 0.17355259735764464,
+      "E_J": 16.57333903912418,
+      "kin_rigid": 370.0510866990936,
+      "kin_seed_a0": 138.22355646000963,
+      "E_J_seed_a0": 16.756184638355805
+     },
+     "theirs": {
+      "E_u": 11.530099805703728,
+      "V4": 0.7044242994793327,
+      "kin": 144.04855001093304,
+      "omega": 0.17355259735764464,
+      "E_J": 16.57333903912418,
+      "kin_rigid_control": 370.0510866990937
+     },
+     "max_rel_dev": 1.5360965256948463e-16
+    },
+    "w3_n48_L48_R9_J200_it3000": {
+     "mine": {
+      "E_u": 12.228700250456935,
+      "V4": 0.5568603587099094,
+      "kin": 5441.168036670933,
+      "omega": 0.018378406865225752,
+      "E_J": 14.62340129568942,
+      "kin_rigid": 5711.036613813492,
+      "kin_seed_a0": 321.7493370388931,
+      "E_J_seed_a0": 43.865655729273335
+     },
+     "theirs": {
+      "E_u": 12.228700250456935,
+      "V4": 0.5568603587099094,
+      "kin": 5441.168036670933,
+      "omega": 0.018378406865225752,
+      "E_J": 14.62340129568942,
+      "kin_rigid_control": 5711.036613813492
+     },
+     "max_rel_dev": 0.0
+    },
+    "w3_n48_L72_R21_J200_it3000": {
+     "mine": {
+      "E_u": 19.795504228526347,
+      "V4": 0.43213770743101637,
+      "kin": 916.7377076288233,
+      "omega": 0.10908245528446056,
+      "E_J": 31.135887464403424,
+      "kin_rigid": 1356.803072098844,
+      "kin_seed_a0": 569.0731503025135,
+      "E_J_seed_a0": 37.80007527723186
+     },
+     "theirs": {
+      "E_u": 19.795504228526347,
+      "V4": 0.43213770743101637,
+      "kin": 916.7377076288233,
+      "omega": 0.10908245528446056,
+      "E_J": 31.135887464403424,
+      "kin_rigid_control": 1356.803072098844
+     },
+     "max_rel_dev": 0.0
+    },
+    "w3_n32_L48_R9_J200_it3000_frz": {
+     "mine": {
+      "E_u": 16.616334912758315,
+      "V4": 0.9190767454670183,
+      "kin": 7542.186286175378,
+      "omega": 0.01325875498239778,
+      "E_J": 18.861287156465114,
+      "kin_rigid": 7803.617749341853,
+      "kin_seed_a0": 637.4122383294902,
+      "E_J_seed_a0": 33.2238459220664
+     },
+     "theirs": {
+      "E_u": 16.616334912758315,
+      "V4": 0.9190767454670183,
+      "kin": 637.4122383294903,
+      "omega": 0.1568843426384106,
+      "E_J": 33.223845922066396,
+      "kin_rigid_control": 7803.617749341852
+     },
+     "max_rel_dev": 2.4117534817192397e-16
+    }
+   }
+  },
+  "B": {
+   "producer's per-run monotone flags reproduce from the traces; 9 of 20 runs (all R_s 6, R_s 9 at J 180/200/220/800 and the 12000-iteration run, R_s 15 J 50) are NOT monotone: 'kin grows monotonically' is false as a literal, the net trend is up with 10 to 20 percent dips (the producer's own kin_monotone_all_runs is False)": {
+    "pass": true,
+    "detail": "non-monotone: ['n32_L48_R15_J50_it3000', 'n32_L48_R6_J200_it3000', 'n32_L48_R6_J50_it3000', 'n32_L48_R6_J800_it3000', 'n32_L48_R9_J180_it3000', 'n32_L48_R9_J200_it12000', 'n32_L48_R9_J200_it3000', 'n32_L48_R9_J220_it3000', 'n32_L48_R9_J800_it3000']"
+   },
+   "growth still going in the last quarter of EVERY run (kin_end > kin at 3/4): last-quarter growth 4 percent (R_s 15 J 50) to 77 percent (R_s 9 J 180); no plateau anywhere": {
+    "pass": true,
+    "detail": "last-quarter growth: min 0.044 max 0.770"
+   },
+   "12000 iterations at R_s 9 J 200: kin at the quarter marks 2653 -> 6436 -> 8313 -> 10411, +25 percent in the last quarter, fmax 0.076 (packet f_tol 1e-6): no stationary point reached": {
+    "pass": true,
+    "detail": "quarters [2653, 6436, 8313, 10411], fmax_end 7.64e-02"
+   },
+   "frozen-a0 control (a0 fixed at the shelled seed, the functional whose exact gradient drives the descent): kin (frozen read) rises monotonically 27 -> 637 and omega FALLS 0.48 -> 0.157, still falling at the end (the producer's end line 'omega 0.157 still rising' has the direction of omega wrong; kin is what rises): same direction as the refreshed runs": {
+    "pass": true,
+    "detail": "kin 26.7 -> 637.4; omega 0.484 -> 0.1569"
+   },
+   "reproducibility floor: the 3000- and 12000-iteration runs at R_s 9 J 200 (same seed, same call) agree to 1e-12 through iteration 750 and diverge from iteration 1000 (roundoff amplified by FIRE): at iteration 3000 E_J differs by 0.063 (0.4 percent) and kin by 1.7 percent": {
+    "pass": true,
+    "detail": "|dE| per log row: ['1.9e-12', '2.1e-12', '1.6e-13', '4.7e-02', '1.7e-01', '3.9e-01', '7.7e-02', '5.7e-02', '2.7e-01', '6.4e-01', '5.6e-01', '6.3e-02']"
+   },
+   "last_quarter_growth": {
+    "w3_n32_L48_R12_J200_it3000": 0.2988972816012836,
+    "w3_n32_L48_R12_J50_it3000": 0.27612347687164274,
+    "w3_n32_L48_R12_J800_it3000": 0.4351678818790232,
+    "w3_n32_L48_R15_J200_it3000": 0.22919856351223955,
+    "w3_n32_L48_R15_J50_it3000": 0.04394554588542654,
+    "w3_n32_L48_R15_J800_it3000": 0.5465468433834932,
+    "w3_n32_L48_R6_J200_it3000": 0.13009843404068122,
+    "w3_n32_L48_R6_J50_it3000": 0.1646220005805219,
+    "w3_n32_L48_R6_J800_it3000": 0.20349865453676208,
+    "w3_n32_L48_R9_J180_it3000": 0.7695776573657407,
+    "w3_n32_L48_R9_J200_it12000": 0.2524374849304378,
+    "w3_n32_L48_R9_J200_it3000": 0.28569019159390585,
+    "w3_n32_L48_R9_J200_it3000_frz": 0.16980786109666424,
+    "w3_n32_L48_R9_J220_it3000": 0.5206197102004417,
+    "w3_n32_L48_R9_J50_it3000": 0.26904529705599356,
+    "w3_n32_L48_R9_J800_it3000": 0.16476707929276757,
+    "w3_n48_L48_R9_J200_it3000": 0.2910123877563373,
+    "w3_n48_L72_R15_J200_it3000": 0.23449915225560347,
+    "w3_n48_L72_R21_J200_it3000": 0.2004855277862323,
+    "w3_n48_L72_R9_J200_it3000": 0.47522522539756906
+   },
+   "monotone": {
+    "w3_n32_L48_R12_J200_it3000": true,
+    "w3_n32_L48_R12_J50_it3000": true,
+    "w3_n32_L48_R12_J800_it3000": true,
+    "w3_n32_L48_R15_J200_it3000": true,
+    "w3_n32_L48_R15_J50_it3000": false,
+    "w3_n32_L48_R15_J800_it3000": true,
+    "w3_n32_L48_R6_J200_it3000": false,
+    "w3_n32_L48_R6_J50_it3000": false,
+    "w3_n32_L48_R6_J800_it3000": false,
+    "w3_n32_L48_R9_J180_it3000": false,
+    "w3_n32_L48_R9_J200_it12000": false,
+    "w3_n32_L48_R9_J200_it3000": false,
+    "w3_n32_L48_R9_J200_it3000_frz": true,
+    "w3_n32_L48_R9_J220_it3000": false,
+    "w3_n32_L48_R9_J50_it3000": true,
+    "w3_n32_L48_R9_J800_it3000": false,
+    "w3_n48_L48_R9_J200_it3000": true,
+    "w3_n48_L72_R15_J200_it3000": true,
+    "w3_n48_L72_R21_J200_it3000": true,
+    "w3_n48_L72_R9_J200_it3000": true
+   }
+  },
+  "C": {
+   "E_J(R_s) at fixed J is monotone INCREASING over the grid on all four ladders (own numbers), so the argmin is the grid's LOWER edge in every ladder (6 on n32, 9 on n48 L72): 'R* = 6' is a grid-edge argmin, not an interior minimum": {
+    "pass": true,
+    "detail": "n32_L48_J50: E_J [np.float64(10.47), np.float64(13.23), np.float64(15.47), np.float64(16.57)] argmin 6.0; n32_L48_J200: E_J [np.float64(11.83), np.float64(16.31), np.float64(19.56), np.float64(23.75)] argmin 6.0; n32_L48_J800: E_J [np.float64(16.14), np.float64(23.06), np.float64(27.86), np.float64(30.42)] argmin 6.0; n48_L72_J200: E_J [np.float64(19.34), np.float64(28.06), np.float64(31.14)] argmin 9.0"
+   },
+   "the relaxed kin DECREASES with R_s on every ladder (6603 -> 1398 at J 200), the reverse of any bag law kin ~ R^p with p > 0: the ordering is set by how much inertia the descent built at the flank in 3000 iterations, larger at small R_s, not by a shell-vs-inertia balance": {
+    "pass": true,
+    "detail": "n32_L48_J50: kin [1027, 322, 189, 144]; n32_L48_J200: kin [6603, 2699, 2052, 1398]; n32_L48_J800: kin [36496, 19396, 16674, 15692]; n48_L72_J200: kin [2836, 1290, 917]"
+   },
+   "at J 200 both terms rise with R_s: E_stat +6.3 (10.3 -> 16.6, the shell area and the melt zone grow) and J^2/(4 kin) +5.6 (1.5 -> 7.2, less inflation at larger R_s); neither term has a minimum inside the grid": {
+    "pass": true,
+    "detail": "E_stat [np.float64(10.32), np.float64(12.6), np.float64(14.69), np.float64(16.6)]; E_kin [1.51, 3.7, 4.87, 7.15]"
+   },
+   "own seed-family bag fit reproduces the producer's: kin_seed(R) ~ 0.0452 R^2.80 (residuals under 6 percent), sigma_3D 0.0018 to 0.0028 (falls with R, mean 0.00245), R*_seed = 16.1 / 28.7 / 51.1 at J = 50 / 200 / 800 (only J 50 inside the free region)": {
+    "pass": true,
+    "detail": "p 2.8046 a 0.04517 sigma [0.00284, 0.00273, 0.00238, 0.00185] R* {50.0: 16.109170545852727, 200.0: 28.688023440117203, 800.0: 51.08956544782724}"
+   },
+   "the bag prediction is REVERSED by the descent: on the seed family E_J DEcreases across the grid at all three J (toward R*_seed beyond or at the grid's upper edge), while the relaxed E_J INcreases across the same grid; the relaxed ordering carries no information about the seed-family bag minimum": {
+    "pass": true,
+    "detail": "J50: seed-family [95.1, 30.9, 16.7, 12.5]; J200: seed-family [1502.4, 452.6, 203.2, 122.4]; J800: seed-family [24019.0, 7199.4, 3186.4, 1879.4]"
+   },
+   "ladders": {
+    "n32_L48_J50": {
+     "Rs": [
+      6.0,
+      9.0,
+      12.0,
+      15.0
+     ],
+     "E_J": [
+      10.471085963908132,
+      13.230615500127916,
+      15.471060043370276,
+      16.57333903912418
+     ],
+     "E_stat": [
+      9.862569656827787,
+      11.288564135588693,
+      12.167738392879542,
+      12.23452410518306
+     ],
+     "E_kin": [
+      0.6085163070803454,
+      1.9420513645392237,
+      3.3033216504907346,
+      4.338814933941116
+     ],
+     "kin": [
+      1027.0883339162153,
+      321.82464965250244,
+      189.20349458162855,
+      144.04855001093304
+     ],
+     "argmin": 6.0
+    },
+    "n32_L48_J200": {
+     "Rs": [
+      6.0,
+      9.0,
+      12.0,
+      15.0
+     ],
+     "E_J": [
+      11.832679307371397,
+      16.30568682399532,
+      19.560205852012277,
+      23.75213673617589
+     ],
+     "E_stat": [
+      10.318171502633737,
+      12.600982250778905,
+      14.686826655773391,
+      16.600629271415336
+     ],
+     "E_kin": [
+      1.51450780473766,
+      3.7047045732164157,
+      4.873379196238886,
+      7.151507464760551
+     ],
+     "kin": [
+      6602.805194346411,
+      2699.270563244406,
+      2051.964273110057,
+      1398.3065877055367
+     ],
+     "argmin": 6.0
+    },
+    "n32_L48_J800": {
+     "Rs": [
+      6.0,
+      9.0,
+      12.0,
+      15.0
+     ],
+     "E_J": [
+      16.144545297764083,
+      23.055838090124823,
+      27.85894808230509,
+      30.41767154839779
+     ],
+     "E_stat": [
+      11.760477728980305,
+      14.806844233198985,
+      18.262914185001126,
+      20.22142074009951
+     ],
+     "E_kin": [
+      4.384067568783779,
+      8.248993856925837,
+      9.596033897303963,
+      10.19625080829828
+     ],
+     "kin": [
+      36495.78787043808,
+      19396.30490398103,
+      16673.555107485867,
+      15692.042399524247
+     ],
+     "argmin": 6.0
+    },
+    "n48_L72_J200": {
+     "Rs": [
+      9.0,
+      15.0,
+      21.0
+     ],
+     "E_J": [
+      19.339904529479288,
+      28.055547052755564,
+      31.135887464403424
+     ],
+     "E_stat": [
+      15.813213492901932,
+      20.303419676619168,
+      20.227641935957365
+     ],
+     "E_kin": [
+      3.526691036577357,
+      7.752127376136396,
+      10.908245528446058
+     ],
+     "kin": [
+      2835.5191584077547,
+      1289.9684841071237,
+      916.7377076288233
+     ],
+     "argmin": 9.0
+    }
+   },
+   "bag_fit": {
+    "p": 2.804630699060961,
+    "a": 0.04516886065163655,
+    "sigma": [
+     0.0028366750371141346,
+     0.0027316650526652436,
+     0.002382970656306974,
+     0.0018458975599923676
+    ],
+    "R_star": {
+     "50.0": 16.109170545852727,
+     "200.0": 28.688023440117203,
+     "800.0": 51.08956544782724
+    },
+    "E_J_seed_family_on_grid": {
+     "50.0": [
+      95.10231450252236,
+      30.8921208482167,
+      16.74223374053177,
+      12.54032046682098
+     ],
+     "200.0": [
+      1502.387808732764,
+      452.56648830447466,
+      203.19390819906863,
+      122.3578415834925
+     ],
+     "800.0": [
+      24018.95571641663,
+      7199.3563676046015,
+      3186.4206995356585,
+      1879.4381794502367
+     ]
+    }
+   }
+  },
+  "D": {
+   "shell gap statistics (min, mean over the shell cells, count of gap < 0.03) recomputed from the end fields for all 20 runs agree with the records": {
+    "pass": true,
+    "detail": "max deviation 0.0e+00"
+   },
+   "'partial melt' at 3000 iterations: the shell's mean gap ends at 0.03 to 0.14 (11 to 46 percent of the vacuum gap 0.3, from 0 imposed) with the median 0.02 to 0.10; only 1 to 64 percent of the shell cells stay below 0.03 (min over the shell is a one-cell reading)": {
+    "pass": true,
+    "detail": "mean gap range 0.032 to 0.137; frac<0.03 range 0.014 to 0.643"
+   },
+   "the degenerate cells stayed at R_s: every cell with gap < 0.03 at the end lies within 2h of R_s in every run (0 to 10 cells per run sit between h and 1.7h from R_s, the melt zone's spread), and 71 to 100 percent of them are shell cells; no new degenerate structure appeared elsewhere": {
+    "pass": true,
+    "detail": "cells beyond h: [8, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 4, 0, 10, 4, 0, 0, 2]; beyond 2h: 0; on-shell fraction min 0.714"
+   },
+   "the melt is PROGRESSIVE: over 12000 iterations the shell's mean gap rises at every quarter (0.081 -> 0.107 -> 0.122 -> 0.131, increments shrinking but not zero) and the count below 0.03 falls 46 -> 6 of 416; at 12000 iterations 'survives' rests on 6 cells while the mean is 44 percent of the vacuum gap": {
+    "pass": true,
+    "detail": "quarters [0.081, 0.1068, 0.1215, 0.1309]; n<0.03 156 -> 6"
+   },
+   "the gap depression extends one bin OUTSIDE the shell (bin 9.0 to 10.5: mean gap 0.165 vs 0.258 in the seed) and one bin inside (7.5 to 9.0: 0.198 vs 0.242): the wall is now two to three cells wide, not one": {
+    "pass": true,
+    "detail": "outside 0.165 vs seed 0.258; inside 0.198 vs 0.242"
+   },
+   "rows": {
+    "w3_n32_L48_R12_J200_it3000": {
+     "gap_min": 0.002563161824414656,
+     "gap_mean": 0.059217099763066446,
+     "gap_median": 0.045838322517326016,
+     "frac_lt_0.03": 0.21391752577319587,
+     "frac_lt_0.1": 0.8969072164948454,
+     "n_low": 174,
+     "n_low_on_shell": 166,
+     "n_low_far": 8,
+     "n_low_far2": 0,
+     "rec_min": 0.002563161824414656,
+     "rec_mean": 0.059217099763066446,
+     "rec_n_low": 174
+    },
+    "w3_n32_L48_R12_J50_it3000": {
+     "gap_min": 0.002560923853250102,
+     "gap_mean": 0.046637645806319475,
+     "gap_median": 0.0460577477510031,
+     "frac_lt_0.03": 0.211340206185567,
+     "frac_lt_0.1": 0.9948453608247423,
+     "n_low": 164,
+     "n_low_on_shell": 164,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.002560923853250102,
+     "rec_mean": 0.046637645806319475,
+     "rec_n_low": 164
+    },
+    "w3_n32_L48_R12_J800_it3000": {
+     "gap_min": 0.0027434454584321644,
+     "gap_mean": 0.08971773373329783,
+     "gap_median": 0.041715771235178806,
+     "frac_lt_0.03": 0.3118556701030928,
+     "frac_lt_0.1": 0.7963917525773195,
+     "n_low": 248,
+     "n_low_on_shell": 242,
+     "n_low_far": 6,
+     "n_low_far2": 0,
+     "rec_min": 0.0027434454584321644,
+     "rec_mean": 0.08971773373329783,
+     "rec_n_low": 248
+    },
+    "w3_n32_L48_R15_J200_it3000": {
+     "gap_min": 0.0006459066852901041,
+     "gap_mean": 0.05005274876530425,
+     "gap_median": 0.03578249622838571,
+     "frac_lt_0.03": 0.3912337662337662,
+     "frac_lt_0.1": 0.8977272727272727,
+     "n_low": 482,
+     "n_low_on_shell": 482,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.0006459066852901041,
+     "rec_mean": 0.05005274876530425,
+     "rec_n_low": 482
+    },
+    "w3_n32_L48_R15_J50_it3000": {
+     "gap_min": 0.00047687911667751437,
+     "gap_mean": 0.035944426585655324,
+     "gap_median": 0.03613667169486186,
+     "frac_lt_0.03": 0.34415584415584416,
+     "frac_lt_0.1": 1.0,
+     "n_low": 424,
+     "n_low_on_shell": 424,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.00047687911667751437,
+     "rec_mean": 0.035944426585655324,
+     "rec_n_low": 424
+    },
+    "w3_n32_L48_R15_J800_it3000": {
+     "gap_min": 0.000838998753771858,
+     "gap_mean": 0.0807334377342703,
+     "gap_median": 0.03657930525347636,
+     "frac_lt_0.03": 0.3782467532467532,
+     "frac_lt_0.1": 0.8327922077922078,
+     "n_low": 466,
+     "n_low_on_shell": 466,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.000838998753771858,
+     "rec_mean": 0.0807334377342703,
+     "rec_n_low": 466
+    },
+    "w3_n32_L48_R6_J200_it3000": {
+     "gap_min": 0.004078826844944317,
+     "gap_mean": 0.07295523247196549,
+     "gap_median": 0.05935884517843133,
+     "frac_lt_0.03": 0.12,
+     "frac_lt_0.1": 0.84,
+     "n_low": 24,
+     "n_low_on_shell": 24,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.004078826844944317,
+     "rec_mean": 0.07295523247196549,
+     "rec_n_low": 24
+    },
+    "w3_n32_L48_R6_J50_it3000": {
+     "gap_min": 0.013648847485611126,
+     "gap_mean": 0.06920813131229347,
+     "gap_median": 0.07352489950395753,
+     "frac_lt_0.03": 0.11,
+     "frac_lt_0.1": 0.88,
+     "n_low": 22,
+     "n_low_on_shell": 22,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.013648847485611126,
+     "rec_mean": 0.06920813131229347,
+     "rec_n_low": 22
+    },
+    "w3_n32_L48_R6_J800_it3000": {
+     "gap_min": 0.0002371949656612693,
+     "gap_mean": 0.10339970414948978,
+     "gap_median": 0.055837578945385505,
+     "frac_lt_0.03": 0.22,
+     "frac_lt_0.1": 0.79,
+     "n_low": 44,
+     "n_low_on_shell": 44,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.0002371949656612693,
+     "rec_mean": 0.10339970414948978,
+     "rec_n_low": 44
+    },
+    "w3_n32_L48_R9_J180_it3000": {
+     "gap_min": 0.0039609207125978485,
+     "gap_mean": 0.0789937932438583,
+     "gap_median": 0.06447608351640997,
+     "frac_lt_0.03": 0.10096153846153846,
+     "frac_lt_0.1": 0.8461538461538461,
+     "n_low": 42,
+     "n_low_on_shell": 42,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.0039609207125978485,
+     "rec_mean": 0.0789937932438583,
+     "rec_n_low": 42
+    },
+    "w3_n32_L48_R9_J200_it12000": {
+     "gap_min": 0.016787244434989246,
+     "gap_mean": 0.1308797281665409,
+     "gap_median": 0.14103613840697987,
+     "frac_lt_0.03": 0.014423076923076924,
+     "frac_lt_0.1": 0.22596153846153846,
+     "n_low": 6,
+     "n_low_on_shell": 6,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.016787244434989246,
+     "rec_mean": 0.1308797281665409,
+     "rec_n_low": 6
+    },
+    "w3_n32_L48_R9_J200_it3000": {
+     "gap_min": 0.0023686346846901463,
+     "gap_mean": 0.08098000033183197,
+     "gap_median": 0.06300581338390888,
+     "frac_lt_0.03": 0.11057692307692307,
+     "frac_lt_0.1": 0.8365384615384616,
+     "n_low": 46,
+     "n_low_on_shell": 46,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.0023686346846901463,
+     "rec_mean": 0.08098000033183197,
+     "rec_n_low": 46
+    },
+    "w3_n32_L48_R9_J200_it3000_frz": {
+     "gap_min": 0.00915981440286423,
+     "gap_mean": 0.08202834403667965,
+     "gap_median": 0.0523167626775726,
+     "frac_lt_0.03": 0.20192307692307693,
+     "frac_lt_0.1": 0.7980769230769231,
+     "n_low": 92,
+     "n_low_on_shell": 84,
+     "n_low_far": 8,
+     "n_low_far2": 0,
+     "rec_min": 0.00915981440286423,
+     "rec_mean": 0.08202834403667965,
+     "rec_n_low": 92
+    },
+    "w3_n32_L48_R9_J220_it3000": {
+     "gap_min": 0.005701405389945485,
+     "gap_mean": 0.08337911684514202,
+     "gap_median": 0.06253675137352029,
+     "frac_lt_0.03": 0.11538461538461539,
+     "frac_lt_0.1": 0.8365384615384616,
+     "n_low": 52,
+     "n_low_on_shell": 48,
+     "n_low_far": 4,
+     "n_low_far2": 0,
+     "rec_min": 0.005701405389945485,
+     "rec_mean": 0.08337911684514202,
+     "rec_n_low": 52
+    },
+    "w3_n32_L48_R9_J50_it3000": {
+     "gap_min": 0.011870711804077644,
+     "gap_mean": 0.06761057991088021,
+     "gap_median": 0.0674152041229056,
+     "frac_lt_0.03": 0.07692307692307693,
+     "frac_lt_0.1": 0.9326923076923077,
+     "n_low": 32,
+     "n_low_on_shell": 32,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.011870711804077644,
+     "rec_mean": 0.06761057991088021,
+     "rec_n_low": 32
+    },
+    "w3_n32_L48_R9_J800_it3000": {
+     "gap_min": 0.00617433163497616,
+     "gap_mean": 0.12411835800552252,
+     "gap_median": 0.05887468308047493,
+     "frac_lt_0.03": 0.16346153846153846,
+     "frac_lt_0.1": 0.7788461538461539,
+     "n_low": 78,
+     "n_low_on_shell": 68,
+     "n_low_far": 10,
+     "n_low_far2": 0,
+     "rec_min": 0.00617433163497616,
+     "rec_mean": 0.12411835800552252,
+     "rec_n_low": 78
+    },
+    "w3_n48_L48_R9_J200_it3000": {
+     "gap_min": 0.01606987849731631,
+     "gap_mean": 0.13657786491587323,
+     "gap_median": 0.1386946331188849,
+     "frac_lt_0.03": 0.01937984496124031,
+     "frac_lt_0.1": 0.1996124031007752,
+     "n_low": 28,
+     "n_low_on_shell": 20,
+     "n_low_far": 4,
+     "n_low_far2": 0,
+     "rec_min": 0.01606987849731631,
+     "rec_mean": 0.13657786491587323,
+     "rec_n_low": 28
+    },
+    "w3_n48_L72_R15_J200_it3000": {
+     "gap_min": 0.0023578488219495597,
+     "gap_mean": 0.05014209861081239,
+     "gap_median": 0.037744969313219065,
+     "frac_lt_0.03": 0.4042207792207792,
+     "frac_lt_0.1": 0.9058441558441559,
+     "n_low": 498,
+     "n_low_on_shell": 498,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 0.0023578488219495597,
+     "rec_mean": 0.05014209861081239,
+     "rec_n_low": 498
+    },
+    "w3_n48_L72_R21_J200_it3000": {
+     "gap_min": 6.497388943718652e-05,
+     "gap_mean": 0.032464031754116454,
+     "gap_median": 0.026010705398604103,
+     "frac_lt_0.03": 0.6433021806853583,
+     "frac_lt_0.1": 0.9361370716510904,
+     "n_low": 1652,
+     "n_low_on_shell": 1652,
+     "n_low_far": 0,
+     "n_low_far2": 0,
+     "rec_min": 6.497388943718652e-05,
+     "rec_mean": 0.032464031754116454,
+     "rec_n_low": 1652
+    },
+    "w3_n48_L72_R9_J200_it3000": {
+     "gap_min": 0.007387560463864712,
+     "gap_mean": 0.10085663683678338,
+     "gap_median": 0.0847764516181552,
+     "frac_lt_0.03": 0.028846153846153848,
+     "frac_lt_0.1": 0.7115384615384616,
+     "n_low": 14,
+     "n_low_on_shell": 12,
+     "n_low_far": 2,
+     "n_low_far2": 0,
+     "rec_min": 0.007387560463864712,
+     "rec_mean": 0.10085663683678338,
+     "rec_n_low": 14
+    }
+   }
+  },
+  "E": {
+   "WHERE: in every run whose kin inflated more than 10x (6 of 7 checked) 99 to 100 percent of the two-region inertia sits in the two cell layers just inside the mask edge (R_s - 2h <= r < R_s) and the core (r < R_s - 2h) carries under 1 percent; the one weakly inflated run (R_s 15 J 50, 1.7x) keeps the seed-like split (67 percent flank)": {
+    "pass": true,
+    "detail": "n32_L48_R6_J200_it3000: 991x, flank 1.000 core 0.000; n32_L48_R9_J200_it3000: 121x, flank 0.997 core 0.003; n32_L48_R9_J200_it12000: 468x, flank 1.000 core 0.000; n32_L48_R15_J50_it3000: 2x, flank 0.668 core 0.332; n32_L48_R12_J800_it3000: 332x, flank 0.999 core 0.001; n48_L72_R9_J200_it3000: 70x, flank 0.996 core 0.004; n32_L48_R9_J200_it3000_frz: 339x, flank 0.991 core 0.009"
+   },
+   "WHAT: in the inflated runs the inertia is carried by EIGENVALUE jets (the diag part of the jets in the local eigenframe), 97 to 99.7 percent of kin, not by orientation jets (the S5 (1,2)-twist channel, 0.3 to 3 percent); the weakly inflated run is half and half": {
+    "pass": true,
+    "detail": "n32_L48_R6_J200_it3000: diag 0.997 off 0.003; n32_L48_R9_J200_it3000: diag 0.972 off 0.028; n32_L48_R9_J200_it12000: diag 0.985 off 0.015; n32_L48_R15_J50_it3000: diag 0.535 off 0.465; n32_L48_R12_J800_it3000: diag 0.982 off 0.018; n48_L72_R9_J200_it3000: diag 0.980 off 0.020; n32_L48_R9_J200_it3000_frz: diag 0.982 off 0.018"
+   },
+   "the diag-jet inertia IS the W0 S2 flank density in the local frame, kin = h^3 sum 8 g^2 (d_i d2 - d_i d3)^2, to 1e-9 on every field (so the read is proportional to the GROWN gap squared: the refreshed generator rewards raising the gap where the ramp is)": {
+    "pass": true,
+    "detail": "max rel dev 3.5e-16"
+   },
+   "eigenvalue jets in a fixed local frame are INVISIBLE to E_u ([diag, diag] = 0): E_u from the diag-only jets is exactly zero on every field; the ramps are paid only through V4 and the cross term with the hedgehog frame gradient": {
+    "pass": true,
+    "detail": "max |E_u diag-only| 1.5e-29"
+   },
+   "the structure is a CELL-SCALE ZIGZAG, not a smooth ramp: 61 to 73 percent of consecutive gap differences along each axis flip sign in the flank on every run (a smooth ramp gives near 0, random 0.5), with the (2,3) gap reaching 1.7 to 2.9 against 0.30 in the vacuum (seed flank max 0.25 to 0.30) and d3 going NEGATIVE down to -0.7 to -1.6 (the spatial block loses positivity) in every J >= 200 run; at J 50 the gap stays under 0.4": {
+    "pass": true,
+    "detail": "n32_L48_R6_J200_it3000: flips [0.71, 0.71, 0.66] gap max 2.56 (seed 0.25) d3 min -1.31; n32_L48_R9_J200_it3000: flips [0.69, 0.69, 0.62] gap max 1.85 (seed 0.28) d3 min -0.80; n32_L48_R9_J200_it12000: flips [0.66, 0.66, 0.68] gap max 2.86 (seed 0.28) d3 min -1.58; n32_L48_R15_J50_it3000: flips [0.7, 0.7, 0.68] gap max 0.37 (seed 0.30) d3 min -0.02; n32_L48_R12_J800_it3000: flips [0.67, 0.67, 0.61] gap max 2.46 (seed 0.29) d3 min -1.23; n48_L72_R9_J200_it3000: flips [0.73, 0.73, 0.67] gap max 1.85 (seed 0.30) d3 min -0.81; n32_L48_R9_J200_it3000_frz: flips [0.69, 0.69, 0.7] gap max 1.74 (seed 0.28) d3 min -0.74"
+   },
+   "NOT the S5 orientation twist: the leading eigenvector tilts under 5 degrees (median 0.3 to 4.7) from the seed's and the (2,3) pair rotates under 10 degrees (median 0.1 to 8.2) in the flank on every run: the frame stayed, the eigenvalues zigzagged": {
+    "pass": true,
+    "detail": "n32_L48_R6_J200_it3000: tilt 2.5 pair 4.3 deg; n32_L48_R9_J200_it3000: tilt 1.8 pair 2.8 deg; n32_L48_R9_J200_it12000: tilt 2.8 pair 2.6 deg; n32_L48_R15_J50_it3000: tilt 0.3 pair 0.1 deg; n32_L48_R12_J800_it3000: tilt 1.8 pair 2.7 deg; n48_L72_R9_J200_it3000: tilt 1.7 pair 2.4 deg; n32_L48_R9_J200_it3000_frz: tilt 4.7 pair 8.2 deg"
+   },
+   "the frozen-a0 descent builds the SAME zigzag (99 percent of its refreshed-read inertia in the flank, diag-jet share 98 percent); its frozen generator reads 637 of it, the refreshed generator 7542: the factor 12 is the grown gap entering a0 (S1: a0 = (d2 - d3)(E23 + E32)) squared": {
+    "pass": true,
+    "detail": "frz refreshed 7542.2 frozen 637.4"
+   },
+   "rows": {
+    "w3_n32_L48_R6_J200_it3000": {
+     "kin": 6602.805194346411,
+     "frac_flank": 0.9998614507622869,
+     "frac_core": 0.00013854923771307873,
+     "kin_diag_only": 6583.78747841335,
+     "kin_off_only": 19.017715933061414,
+     "E_u_diag_only": 7.65925509892904e-30,
+     "S2_identity": 6583.787478413351,
+     "flip_frac": [
+      0.7096774193548387,
+      0.7096774193548387,
+      0.6612903225806451
+     ],
+     "gap_max_flank": 2.5645550069109584,
+     "gap_p95_flank": 0.40360279349769457,
+     "d3_min_flank": -1.3071629914566274,
+     "n1_tilt_median_deg": 2.5156488475800645,
+     "pair_rot_median_deg": 4.312878013386629,
+     "seed_gap_max_flank": 0.2513952774834466
+    },
+    "w3_n32_L48_R9_J200_it3000": {
+     "kin": 2699.270563244406,
+     "frac_flank": 0.9974153013957164,
+     "frac_core": 0.002584698604283593,
+     "kin_diag_only": 2623.8014006629087,
+     "kin_off_only": 75.46916258149643,
+     "E_u_diag_only": 3.297097707817187e-30,
+     "S2_identity": 2623.8014006629087,
+     "flip_frac": [
+      0.6930379746835443,
+      0.6930379746835443,
+      0.6234177215189873
+     ],
+     "gap_max_flank": 1.8515250836977981,
+     "gap_p95_flank": 0.5463472397763854,
+     "d3_min_flank": -0.8025864217371577,
+     "n1_tilt_median_deg": 1.8069871116333533,
+     "pair_rot_median_deg": 2.817779563784053,
+     "seed_gap_max_flank": 0.2754325850139443
+    },
+    "w3_n32_L48_R9_J200_it12000": {
+     "kin": 10411.168367501505,
+     "frac_flank": 0.9995199080632517,
+     "frac_core": 0.00048009193674831876,
+     "kin_diag_only": 10251.603030055541,
+     "kin_off_only": 159.56533744597016,
+     "E_u_diag_only": 9.239691752852855e-30,
+     "S2_identity": 10251.603030055538,
+     "flip_frac": [
+      0.6645569620253164,
+      0.6645569620253164,
+      0.6772151898734177
+     ],
+     "gap_max_flank": 2.856381086351762,
+     "gap_p95_flank": 0.372203878070935,
+     "d3_min_flank": -1.5827180028913412,
+     "n1_tilt_median_deg": 2.8301343607719724,
+     "pair_rot_median_deg": 2.591581402627985,
+     "seed_gap_max_flank": 0.2754325850139443
+    },
+    "w3_n32_L48_R15_J50_it3000": {
+     "kin": 144.04855001093304,
+     "frac_flank": 0.6681956185252625,
+     "frac_core": 0.3318043814747372,
+     "kin_diag_only": 77.01678577957884,
+     "kin_off_only": 67.03176423135416,
+     "E_u_diag_only": 3.37475560581151e-32,
+     "S2_identity": 77.01678577957884,
+     "flip_frac": [
+      0.6953125,
+      0.6953125,
+      0.6845703125
+     ],
+     "gap_max_flank": 0.3697040762604868,
+     "gap_p95_flank": 0.32889771514253974,
+     "d3_min_flank": -0.020431443965906806,
+     "n1_tilt_median_deg": 0.2538067013060926,
+     "pair_rot_median_deg": 0.13680431433039325,
+     "seed_gap_max_flank": 0.29804814304726873
+    },
+    "w3_n32_L48_R12_J800_it3000": {
+     "kin": 16673.555107485867,
+     "frac_flank": 0.9986144348336292,
+     "frac_core": 0.0013855651663709824,
+     "kin_diag_only": 16377.4861827407,
+     "kin_off_only": 296.0689247451686,
+     "E_u_diag_only": 1.5204041492693102e-29,
+     "S2_identity": 16377.486182740695,
+     "flip_frac": [
+      0.6724683544303798,
+      0.6724683544303798,
+      0.6107594936708861
+     ],
+     "gap_max_flank": 2.4645519924939823,
+     "gap_p95_flank": 0.8306559587026289,
+     "d3_min_flank": -1.2328617073282375,
+     "n1_tilt_median_deg": 1.8306688205346462,
+     "pair_rot_median_deg": 2.748329424217731,
+     "seed_gap_max_flank": 0.29339733131885376
+    },
+    "w3_n48_L72_R9_J200_it3000": {
+     "kin": 2835.5191584077547,
+     "frac_flank": 0.9963774715184268,
+     "frac_core": 0.0036225284815733067,
+     "kin_diag_only": 2779.8918833174544,
+     "kin_off_only": 55.627275090298625,
+     "E_u_diag_only": 2.8508645729819425e-30,
+     "S2_identity": 2779.8918833174553,
+     "flip_frac": [
+      0.7341772151898734,
+      0.7341772151898734,
+      0.6708860759493671
+     ],
+     "gap_max_flank": 1.8500597218918284,
+     "gap_p95_flank": 0.5939750374835837,
+     "d3_min_flank": -0.8078714902485706,
+     "n1_tilt_median_deg": 1.7137203011459587,
+     "pair_rot_median_deg": 2.403764681882942,
+     "seed_gap_max_flank": 0.29611808615890084
+    },
+    "w3_n32_L48_R9_J200_it3000_frz": {
+     "kin": 7542.186286175378,
+     "frac_flank": 0.9914498806064627,
+     "frac_core": 0.008550119393537295,
+     "kin_diag_only": 7407.28938677719,
+     "kin_off_only": 134.89689939818683,
+     "E_u_diag_only": 1.4369419713795336e-29,
+     "S2_identity": 7407.28938677719,
+     "flip_frac": [
+      0.689873417721519,
+      0.689873417721519,
+      0.6962025316455697
+     ],
+     "gap_max_flank": 1.7372777234368137,
+     "gap_p95_flank": 1.0988075979518404,
+     "d3_min_flank": -0.7369845472746673,
+     "n1_tilt_median_deg": 4.734934583415741,
+     "pair_rot_median_deg": 8.199924447124829,
+     "seed_gap_max_flank": 0.2754325850139443
+    }
+   }
+  },
+  "F": {
+   "dE/dJ central difference over J = 180/200/220 recomputed from the fields: 0.01871 vs omega(200) = 0.03705, 49.5 percent low, matching the producer's numbers": {
+    "pass": true,
+    "detail": "dE/dJ 0.018706 omega 0.037047 ratio 0.505"
+   },
+   "decomposition: the fixed-FIELD derivative is exactly omega (E_J is quadratic in J at fixed M: 0.03705); the measured difference splits into dE_stat/dJ = +0.0090 and d(J^2/4kin)/dJ = +0.0097, the latter cut from 0.037 by kin rising 2573 -> 2699 -> 3418 across the J ladder (a 33 percent spread) at a fixed iteration count": {
+    "pass": true,
+    "detail": "fixed-field 0.03705; dE_stat/dJ 0.00891; d(J^2/4kin)/dJ 0.00979; kin [2573, 2699, 3418]"
+   },
+   "the mismatch is what non-convergence predicts, not roundoff: the same-J reproducibility floor puts 0.0016 on dE/dJ (10x below the 0.018 deficit); the Hellmann-Feynman identity dE/dJ = omega needs a stationary field, and fmax at the end is 0.33 to 0.44 against the packet's 1e-6; a larger J descends kin faster at fixed iterations (kin 3418 at 220 vs 2699 at 200), which lowers the finite difference below omega, the observed sign": {
+    "pass": true,
+    "detail": "floor 0.0016; fmax_end ['0.33', '0.44', '0.39']"
+   },
+   "numbers": {
+    "dEdJ": 0.018706030169364184,
+    "omega_200": 0.037047045732164156,
+    "dstat": 0.008914860268399627,
+    "dkin": 0.00979116990096457,
+    "E_J": {
+     "180.0": 15.560048277012916,
+     "200.0": 16.30568682399532,
+     "220.0": 16.308289483787483
+    },
+    "kin": {
+     "180.0": 2572.9032101000416,
+     "200.0": 2699.270563244406,
+     "220.0": 3418.2322415321796
+    }
+   }
+  },
+  "G": {
+   "omega at R_s 9 J 200 after 3000 iterations: 0.0370 (h 1.5, L 48), 0.0184 (h 1.0, L 48), 0.0353 (h 1.5, L 72): the h-dependence is omega ~ h^1.7 (between h and h^2, not h), the L-dependence at fixed h is 5 percent (box-insensitive): it scales like the lattice, not the box, and like neither pre-registered form exactly": {
+    "pass": true,
+    "detail": "omega {'n32_L48_h1.5': 0.037047045732164156, 'n48_L48_h1.0': 0.018378406865225752, 'n48_L72_h1.5': 0.03526691036577357}; h-exponent 1.73; L72/L48 ratio 0.952"
+   },
+   "SEED CONFOUND quantified: the n48 runs start from 3000-iteration seeds with two-region kin 40.2 (h 1.0) and 40.7 (h 1.5) at R_s 9, the n32 run from R10's 12000-iteration state with 22.2: a factor 1.83 in the starting inertia (E_u 13.7 to 14.8 vs 9.05); the n32 3000-iteration R10 state has 40.690, IDENTICAL to the n48 L72 seed's 40.689, so the inner field is box-independent and the L48-vs-L72 comparison is confounded by seed maturity ONLY": {
+    "pass": true,
+    "detail": "n32_it12000 (used): 22.233; n32_it3000 (R10, unused): 40.690; n48_L48_it3000 (used): 40.223; n48_L72_it3000 (used): 40.689"
+   },
+   "what the confound does at the end: the seed-kin ratio 1.83 shrinks to 1.05 in the relaxed kin (2836 vs 2699), so the 3000-iteration end state is dominated by what the descent built, not by the seed; the clean same-seed L comparison is the w3_ctrl run (CLI word w3_ctrl, 28 minutes)": {
+    "pass": true,
+    "detail": "end kin ratio L72/L48 1.050"
+   },
+   "ctrl_seed3000_n32": {
+    "seed": "m5_32_r10 relax_g8_n32_L48_it3000.npy",
+    "kin_start": 48.57547096982245,
+    "kin": 2835.9436237591835,
+    "omega": 0.03526163184705521,
+    "E_u": 14.183965858795522,
+    "V4": 0.5283089482780609,
+    "E_J": 18.238437991779104,
+    "gap_shell_min": 0.007384607849361263,
+    "gap_shell_mean": 0.10086223597277516,
+    "stop": "max_iter",
+    "iters": 3000,
+    "wall_s": 860.4,
+    "kin_last_quarter_growth": 0.47547390773240483,
+    "trace": [
+     {
+      "it": 250,
+      "E": 48.68993476088963,
+      "E_u": 26.041173490709784,
+      "V4": 0.26104917007152634,
+      "fmax": 1.5539145750669305,
+      "dt": 0.003661680691961392,
+      "kin": 446.673601808182,
+      "omega": 0.22387712100108315
+     },
+     {
+      "it": 500,
+      "E": 40.46227621280245,
+      "E_u": 25.06698209085792,
+      "V4": 0.2828201215919142,
+      "fmax": 0.4434476125649871,
+      "dt": 0.010451285881327438,
+      "kin": 661.7050259121485,
+      "omega": 0.1511247400035262
+     },
+     {
+      "it": 750,
+      "E": 35.79314585764693,
+      "E_u": 23.36712504857869,
+      "V4": 0.30735058281928845,
+      "fmax": 0.6621672190490159,
+      "dt": 0.001739512350810242,
+      "kin": 825.1730440143571,
+      "omega": 0.12118670226248945
+     },
+     {
+      "it": 1000,
+      "E": 32.40853970246811,
+      "E_u": 21.81232275861306,
+      "V4": 0.3311929337876695,
+      "fmax": 0.40563733105866095,
+      "dt": 0.004513610602199756,
+      "kin": 974.1818421654484,
+      "omega": 0.1026502401006738
+     },
+     {
+      "it": 1250,
+      "E": 29.477088971482033,
+      "E_u": 20.321471396231505,
+      "V4": 0.3868106201295504,
+      "fmax": 10.495686531184244,
+      "dt": 0.014171180559395783,
+      "kin": 1140.40599264875,
+      "omega": 0.08768806955120977
+     },
+     {
+      "it": 1500,
+      "E": 27.187000039922076,
+      "E_u": 19.127480101502755,
+      "V4": 0.38111952240630625,
+      "fmax": 0.4604953275629843,
+      "dt": 0.005707937206030196,
+      "kin": 1302.3545866591398,
+      "omega": 0.07678400416013016
+     },
+     {
+      "it": 1750,
+      "E": 25.105701907973412,
+      "E_u": 17.998615978944606,
+      "V4": 0.4071785378969008,
+      "fmax": 1.2487750227324776,
+      "dt": 0.003702676482553876,
+      "kin": 1492.5579438957834,
+      "omega": 0.06699907391131905
+     },
+     {
+      "it": 2000,
+      "E": 23.427801299451197,
+      "E_u": 17.07568791433715,
+      "V4": 0.43051619998039076,
+      "fmax": 0.5408061830371508,
+      "dt": 0.007218289307479336,
+      "kin": 1688.7335776748364,
+      "omega": 0.05921597185133656
+     },
+     {
+      "it": 2250,
+      "E": 21.871155778218338,
+      "E_u": 16.213130732861096,
+      "V4": 0.4552632719176452,
+      "fmax": 0.5734467038843761,
+      "dt": 0.0035179754950216834,
+      "kin": 1922.056099329895,
+      "omega": 0.05202761773439598
+     },
+     {
+      "it": 2500,
+      "E": 20.532990029874966,
+      "E_u": 15.468378986495072,
+      "V4": 0.4790804257132603,
+      "fmax": 0.5913140922393149,
+      "dt": 0.009128289020318063,
+      "kin": 2180.7727030483848,
+      "omega": 0.04585530617666637
+     },
+     {
+      "it": 2750,
+      "E": 19.29789580887573,
+      "E_u": 14.777410485402893,
+      "V4": 0.5036910629797577,
+      "fmax": 0.5920601076708777,
+      "dt": 0.003676736762197602,
+      "kin": 2489.5474728079457,
+      "omega": 0.04016794260493076
+     },
+     {
+      "it": 3000,
+      "E": 18.238437991779104,
+      "E_u": 14.183965858795522,
+      "V4": 0.5283089482780609,
+      "fmax": 1.1163174894663856,
+      "dt": 0.01154368533720591,
+      "kin": 2835.9436237591835,
+      "omega": 0.03526163184705521
+     }
+    ]
+   },
+   "w3_ctrl (n32 L48 R_s 9 J 200, 3000 iterations from the 3000-iteration R10 seed, same maturity as the n48 seeds): the omega read with the SAME seed maturity across L 48 / 72 at h 1.5": {
+    "pass": true,
+    "detail": "ctrl omega 0.03526 kin 2835.9 E_J 18.238 vs n48 L72 omega 0.03527 kin 2835.5; n32 12000-seed omega 0.03705"
+   },
+   "omega": {
+    "n32_L48_h1.5": 0.037047045732164156,
+    "n48_L48_h1.0": 0.018378406865225752,
+    "n48_L72_h1.5": 0.03526691036577357
+   },
+   "seed_kin_R9": {
+    "n32_it12000 (used)": 22.232795549216085,
+    "n32_it3000 (R10, unused)": 40.68953970420421,
+    "n48_L48_it3000 (used)": 40.223221499935605,
+    "n48_L72_it3000 (used)": 40.68930103217551
+   }
+  },
+  "H": {
+   "the collected verdict (collect() of 15:54) is the 'no stationary point' FAIL: its two computed gates hold on a recount (0 of 20 runs stopped on f_tol or plateau; kin grew in the last quarter of all 20, min +4 percent), and PERIODIC_ORBIT_EXISTS is withheld: the verdict's headline does not overreach": {
+    "pass": true,
+    "detail": "stops {'max_iter'}; last-quarter growth min 0.044"
+   },
+   "the verdict BODY is a template, not a gate read-out: 'mean gap 0.03 to 0.14', 'dE/dJ != omega', 'the 12000-iteration run included', 'inner flank' and 'the free-inertia theorem (W0 S5) is the mechanism' are string literals in collect(); the only computed word is INCREASES/is not monotone; the closure result (rel_dev) and the shell statistics never enter the branch condition, so those five statements could not have come out differently whatever the data said": {
+    "pass": true,
+    "detail": "literals found 5/5; branch reads rel_dev: False; reads gap_shell_mean: False"
+   },
+   "the else branch asserts 'stationary states reached with the shell surviving' WITHOUT checking stationarity: with zero stationary runs it fires as soon as ONE run's last-quarter growth is <= 0 (the R_s 15 J 50 run sits at +4.4 percent), flipping the verdict from FAIL to a pass-shaped sentence on a dip of one run: a verdict that does not follow from the gates": {
+    "pass": true,
+    "detail": "branch order ok True; verdict(stationary=0, growing=False, tracks=False, survives=True) = 'stationary states reached with the shell surviving'; closest run last-quarter growth 0.044"
+   },
+   "the 'R* tracks the box' branch is blind to the observed pattern: at_box_edge flags only the UPPER grid edge, while every ladder's argmin sits at the LOWER grid edge (R* = min R_s in 4 of 4 ladders) with E_J monotone increasing; no branch tests 'R* interior' (the pass condition), so R* can neither pass nor fail by code": {
+    "pass": true,
+    "detail": "Rstar_n32_L48_J200: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n32_L48_J50: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n32_L48_J800: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n48_L72_J200: R* 9.0 of [9.0, 15.0, 21.0]"
+   },
+   "'shell_survives_all_runs' = all(min over the shell < 0.03) is a ONE-CELL criterion: it stays True at 12000 iterations on 6 of 416 cells with the shell mean at 0.131; the same flag on the MEAN (< 0.03) is False for every run; the melt branch (and the else branch's 'shell surviving') can fail only when the last degenerate cell melts": {
+    "pass": true,
+    "detail": "mean-criterion False; 12000-run n<0.03 6, mean 0.131"
+   },
+   "no run reached a stationary point (min fmax at the end 0.044, packet f_tol 1e-6; all 20 stop = max_iter) and the ladders ran 3000 iterations, a quarter of the packet's 12000: every W3 read is of a state still descending, so 'R* at the smallest radius' is a statement about descent RATE versus R_s at a fixed iteration count, not a bag statement": {
+    "pass": true,
+    "detail": "fmax_end min 0.045 max 3.25; stops {'max_iter'}"
+   },
+   "'the free-inertia theorem (W0 S5) is the mechanism' MIS-ATTRIBUTES: S5 as proven in W0 is the (1,2) ORIENTATION twist at zero static cost; what the descent built is an E_u-blind EIGENVALUE zigzag of the (2,3) gap (97 percent of kin in diag jets at R_s 9 J 200, the pair frame rotated 2.8 degrees median), the W0 S2 flank density with the gap driven to 1.9 and read by a generator that grows with it: a sibling lattice mechanism, paid through V4 and the frame cross term, not S5's twist": {
+    "pass": true,
+    "detail": "diag share 0.972; pair rotation median 2.8 deg"
+   },
+   "the closure gate FAILS as measured (dE/dJ 50 percent below omega) and the shell gate is at best partial (mean gap 0.03 to 0.14 against 0 imposed, melting progressively): under the frozen vocabulary W3 cannot return PERIODIC_ORBIT_EXISTS; the supportable verdict is the fail line, ESTABLISHED_KINEMATIC at best (from W1/W2), with 'no stationary point on the fixed-J functional with a refreshed generator' as the fail mode, which the 15:54 verdict states": {
+    "pass": true,
+    "detail": "rel_dev -0.495; kin_monotone_all_runs False"
+   }
+  },
+  "I": {
+   "g = 32 shell numbers reproduce with own V4 constants: V4 cost of the shell 2.5264e-3 and two-region kin 124.33 at g = 8 and g = 32": {
+    "pass": true,
+    "detail": "costs {8.0: np.float64(0.0025263759074419306), 32.0: np.float64(0.0025263759074254082), 100.0: np.float64(0.0025263759740854702)}; kin {8.0: 124.32972406798723, 32.0: 124.32972406798723, 100.0: 124.32972406798723}"
+   },
+   "the control is an IDENTITY, not a measurement: on the unrelaxed ansatz the g = 8 and g = 32 fields have bit-identical spatial blocks and M00 = g exactly, the projection and the spatial generator never touch M00, and t_p - c_p = sum_k d_k^p - 1 - delta^p is g-free when M00 = g; the shell cost and kin are equal at g = 100 too (kin to 1e-15, the cost to 3e-8, the roundoff of traces of size 1e8): the check cannot fail on this ansatz, a g control with content needs the RELAXED g = 32 field (the owed PAUSE RECORD 3 item)": {
+    "pass": true,
+    "detail": "M00 (min, max, spatial-block diff vs g8) {8.0: (8.0, 8.0, 0.0), 32.0: (32.0, 32.0, 0.0), 100.0: (100.0, 100.0, 0.0)}; cost g100 2.526376e-03"
+   },
+   "on the RELAXED g = 8 seed M00 is not constant (8.0 to 8.00041), so the identity does not transfer: the relaxed shell cost depends on g through (M00 - g); no relaxed g = 32 field exists in W3": {
+    "pass": true,
+    "detail": "relaxed M00 range 8.000000 to 8.000410"
+   },
+   "costs": {
+    "8.0": 0.0025263759074419306,
+    "32.0": 0.0025263759074254082,
+    "100.0": 0.0025263759740854702
+   },
+   "kins": {
+    "8.0": 124.32972406798723,
+    "32.0": 124.32972406798723,
+    "100.0": 124.32972406798723
+   }
+  },
+  "J": {
+   "record schema drift: 19 of 20 checkpoint records (all but the frozen run) predate the kin_with_seed_a0 / E_J_with_seed_a0 fields, run() restores cached records by key without a schema check, and collect()'s 'E_J_refreshed_vs_seed_a0_on_end_fields' is silently EMPTY: the J3 cross-check the producer advertises was never computed for the ladders (section A supplies it)": {
+    "pass": true,
+    "detail": "records without the fields: 19; collected dict: {}"
+   },
+   "the mask edge r < R_s cuts the one-cell shell in HALF (43 to 55 percent of the shell cells lie inside the mask): harmless while the shell is degenerate (a0 = 0 there, S1) but after the partial melt the inside half carries 0.5 to 16 percent of kin (16 percent at J 800); moving the edge to R_s - h/2 changes kin by up to 16 percent, to R_s + h/2 by under 1 percent: a hard mask on a nonzero a0, the deviation the docstring itself names": {
+    "pass": true,
+    "detail": "n32_L48_R9_J200_it3000: shell-in-mask 0.58, kin from it 0.028, mask -h/2 0.972 +h/2 1.000; n32_L48_R12_J800_it3000: shell-in-mask 0.57, kin from it 0.163, mask -h/2 0.837 +h/2 1.001; n32_L48_R15_J800_it3000: shell-in-mask 0.55, kin from it 0.145, mask -h/2 0.855 +h/2 1.001; n48_L72_R9_J200_it3000: shell-in-mask 0.58, kin from it 0.066, mask -h/2 0.934 +h/2 1.001; n32_L48_R15_J50_it3000: shell-in-mask 0.55, kin from it 0.005, mask -h/2 0.995 +h/2 1.008"
+   },
+   "radial_profiles() covers r < L/2 only (np.arange(0, L/2 + dr, dr) excludes its endpoint, so the last bin ends at 24.0, not at L/2 + h as the code intends): 15512 of 32768 cells (47 percent, everything at r >= 24.0 out to the corners at 40.3) are silently dropped from every profile; harmless for kin (the mask zeroes them, kin_bin sums close to 1e-9) and for the gap (pinned or vacuum there), so the profiles are complete where they are used": {
+    "pass": true,
+    "detail": "dropped 15512; last bin ends 24.0; kin_bin sum 2699.270563 vs kin 2699.270563"
+   },
+   "collect() grouping: the ladders take maxit == 3000 only (the 12000-iteration run excluded), the frozen run is excluded via get('frozen') which is None on the 19 old records (correct by accident of the default), the closure uses the three 3000-iteration J runs, and the frozen run's kin_start is the shelled seed's two-region kin: all as intended": {
+    "pass": true,
+    "detail": "collected runs 19 (19 non-frozen), ladders exclude the 12000 run"
+   },
+   "trace consistency: the row 'omega' equals J/(2 kin) and the row 'E' equals E_u + V4 + J^2/(4 kin) with the refreshed kin on every row (the reported E_J and omega are Legendre-consistent with each other, if not with the descent)": {
+    "pass": true,
+    "detail": "12 rows"
+   },
+   "seed caching as documented: all 16 n32 runs use R10's 12000-iteration state (seed.source), the 4 n48 runs the 3000-iteration seeds (seed.maxit 3000): the two ladders are on different seed maturities (section G)": {
+    "pass": true,
+    "detail": "n32 from R10: 16; n48 seeds maxit 3000"
+   },
+   "mask_rows": {
+    "w3_n32_L48_R9_J200_it3000": {
+     "shell_frac_inside_mask": 0.5769230769230769,
+     "kin_frac_from_shell_in_mask": 0.027701359067741137,
+     "kin_mask_minus_h2": 0.9722986409322589,
+     "kin_mask_plus_h2": 1.000387193211548
+    },
+    "w3_n32_L48_R12_J800_it3000": {
+     "shell_frac_inside_mask": 0.5670103092783505,
+     "kin_frac_from_shell_in_mask": 0.16291654830385266,
+     "kin_mask_minus_h2": 0.8370834516961475,
+     "kin_mask_plus_h2": 1.0006412030321352
+    },
+    "w3_n32_L48_R15_J800_it3000": {
+     "shell_frac_inside_mask": 0.551948051948052,
+     "kin_frac_from_shell_in_mask": 0.14524152376479907,
+     "kin_mask_minus_h2": 0.854758476235201,
+     "kin_mask_plus_h2": 1.0007378532950941
+    },
+    "w3_n48_L72_R9_J200_it3000": {
+     "shell_frac_inside_mask": 0.5769230769230769,
+     "kin_frac_from_shell_in_mask": 0.06598664622892159,
+     "kin_mask_minus_h2": 0.9340133537710784,
+     "kin_mask_plus_h2": 1.0008896413322523
+    },
+    "w3_n32_L48_R15_J50_it3000": {
+     "shell_frac_inside_mask": 0.551948051948052,
+     "kin_frac_from_shell_in_mask": 0.004747548873718523,
+     "kin_mask_minus_h2": 0.9952524511262815,
+     "kin_mask_plus_h2": 1.0084980826943737
+    }
+   }
+  },
+  "summary": {
+   "pass": 49,
+   "checks": 49,
+   "lines": [
+    "PASS [A] end-state numbers (E_u, V4, two-region kin, omega, E_J, rigid kin) recomputed from the saved fields with own jets/eta/generator for 8 runs across R_s, J, box, and the frozen run: all within 1e-9 of the records: max rel dev 2.8e-16 over 8 runs",
+    "PASS [A] the refreshed generator inflates the READ, not only the field: on the SAME end field the kin with the seed's (shelled) a0 is 12 to 80x smaller than with a0 refreshed wherever kin inflated 50x or more (ratio 0.012 to 0.085), and within a factor 1.6 where it inflated under 5x (R_s 15 J 50: 0.96; R_s 21 n48: 0.62): 'kin' and 'E_J' are generator-choice statements (E_J 16.3 becomes 70 at R_s 9 J 200 with the seed's a0): n32_L48_R6_J200_it3000: inflation 991x, seed/refreshed 0.012, E_J 138.3 vs 11.8; n32_L48_R9_J200_it3000: inflation 121x, seed/refreshed 0.065, E_J 70.0 vs 16.3; n32_L48_R9_J200_it12000: inflation 468x, seed/refreshed 0.019, E_J 60.3 vs 10.1; n32_L48_R12_J800_it3000: inflation 332x, seed/refreshed 0.045, E_J 233.2 vs 27.9; n32_L48_R15_J50_it3000: inflation 2x, seed/refreshed 0.960, E_J 16.8 vs 16.6; n48_L48_R9_J200_it3000: inflation 135x, seed/refreshed 0.059, E_J 43.9 vs 14.6; n48_L72_R21_J200_it3000: inflation 5x, seed/refreshed 0.621, E_J 37.8 vs 31.1; n32_L48_R9_J200_it3000_frz: inflation 339x, seed/refreshed 0.085, E_J 33.2 vs 18.9",
+    "PASS [A] the producer's '30x to 1000x above the seed' understates the spread: the inflation over the 20 runs ranges from 1.7x (R_s 15 J 50) to 5478x (R_s 6 J 800); 121x at R_s 9 J 200 (3000 iterations), 468x at 12000; the J 50 runs at R_s 12 and 15 inflate under 4x: min n32_L48_R15_J50_it3000 1.7x; max n32_L48_R6_J800_it3000 5478x",
+    "PASS [B] producer's per-run monotone flags reproduce from the traces; 9 of 20 runs (all R_s 6, R_s 9 at J 180/200/220/800 and the 12000-iteration run, R_s 15 J 50) are NOT monotone: 'kin grows monotonically' is false as a literal, the net trend is up with 10 to 20 percent dips (the producer's own kin_monotone_all_runs is False): non-monotone: ['n32_L48_R15_J50_it3000', 'n32_L48_R6_J200_it3000', 'n32_L48_R6_J50_it3000', 'n32_L48_R6_J800_it3000', 'n32_L48_R9_J180_it3000', 'n32_L48_R9_J200_it12000', 'n32_L48_R9_J200_it3000', 'n32_L48_R9_J220_it3000', 'n32_L48_R9_J800_it3000']",
+    "PASS [B] growth still going in the last quarter of EVERY run (kin_end > kin at 3/4): last-quarter growth 4 percent (R_s 15 J 50) to 77 percent (R_s 9 J 180); no plateau anywhere: last-quarter growth: min 0.044 max 0.770",
+    "PASS [B] 12000 iterations at R_s 9 J 200: kin at the quarter marks 2653 -> 6436 -> 8313 -> 10411, +25 percent in the last quarter, fmax 0.076 (packet f_tol 1e-6): no stationary point reached: quarters [2653, 6436, 8313, 10411], fmax_end 7.64e-02",
+    "PASS [B] frozen-a0 control (a0 fixed at the shelled seed, the functional whose exact gradient drives the descent): kin (frozen read) rises monotonically 27 -> 637 and omega FALLS 0.48 -> 0.157, still falling at the end (the producer's end line 'omega 0.157 still rising' has the direction of omega wrong; kin is what rises): same direction as the refreshed runs: kin 26.7 -> 637.4; omega 0.484 -> 0.1569",
+    "PASS [B] reproducibility floor: the 3000- and 12000-iteration runs at R_s 9 J 200 (same seed, same call) agree to 1e-12 through iteration 750 and diverge from iteration 1000 (roundoff amplified by FIRE): at iteration 3000 E_J differs by 0.063 (0.4 percent) and kin by 1.7 percent: |dE| per log row: ['1.9e-12', '2.1e-12', '1.6e-13', '4.7e-02', '1.7e-01', '3.9e-01', '7.7e-02', '5.7e-02', '2.7e-01', '6.4e-01', '5.6e-01', '6.3e-02']",
+    "PASS [C] E_J(R_s) at fixed J is monotone INCREASING over the grid on all four ladders (own numbers), so the argmin is the grid's LOWER edge in every ladder (6 on n32, 9 on n48 L72): 'R* = 6' is a grid-edge argmin, not an interior minimum: n32_L48_J50: E_J [np.float64(10.47), np.float64(13.23), np.float64(15.47), np.float64(16.57)] argmin 6.0; n32_L48_J200: E_J [np.float64(11.83), np.float64(16.31), np.float64(19.56), np.float64(23.75)] argmin 6.0; n32_L48_J800: E_J [np.float64(16.14), np.float64(23.06), np.float64(27.86), np.float64(30.42)] argmin 6.0; n48_L72_J200: E_J [np.float64(19.34), np.float64(28.06), np.float64(31.14)] argmin 9.0",
+    "PASS [C] the relaxed kin DECREASES with R_s on every ladder (6603 -> 1398 at J 200), the reverse of any bag law kin ~ R^p with p > 0: the ordering is set by how much inertia the descent built at the flank in 3000 iterations, larger at small R_s, not by a shell-vs-inertia balance: n32_L48_J50: kin [1027, 322, 189, 144]; n32_L48_J200: kin [6603, 2699, 2052, 1398]; n32_L48_J800: kin [36496, 19396, 16674, 15692]; n48_L72_J200: kin [2836, 1290, 917]",
+    "PASS [C] at J 200 both terms rise with R_s: E_stat +6.3 (10.3 -> 16.6, the shell area and the melt zone grow) and J^2/(4 kin) +5.6 (1.5 -> 7.2, less inflation at larger R_s); neither term has a minimum inside the grid: E_stat [np.float64(10.32), np.float64(12.6), np.float64(14.69), np.float64(16.6)]; E_kin [1.51, 3.7, 4.87, 7.15]",
+    "PASS [C] own seed-family bag fit reproduces the producer's: kin_seed(R) ~ 0.0452 R^2.80 (residuals under 6 percent), sigma_3D 0.0018 to 0.0028 (falls with R, mean 0.00245), R*_seed = 16.1 / 28.7 / 51.1 at J = 50 / 200 / 800 (only J 50 inside the free region): p 2.8046 a 0.04517 sigma [0.00284, 0.00273, 0.00238, 0.00185] R* {50.0: 16.109170545852727, 200.0: 28.688023440117203, 800.0: 51.08956544782724}",
+    "PASS [C] the bag prediction is REVERSED by the descent: on the seed family E_J DEcreases across the grid at all three J (toward R*_seed beyond or at the grid's upper edge), while the relaxed E_J INcreases across the same grid; the relaxed ordering carries no information about the seed-family bag minimum: J50: seed-family [95.1, 30.9, 16.7, 12.5]; J200: seed-family [1502.4, 452.6, 203.2, 122.4]; J800: seed-family [24019.0, 7199.4, 3186.4, 1879.4]",
+    "PASS [D] shell gap statistics (min, mean over the shell cells, count of gap < 0.03) recomputed from the end fields for all 20 runs agree with the records: max deviation 0.0e+00",
+    "PASS [D] 'partial melt' at 3000 iterations: the shell's mean gap ends at 0.03 to 0.14 (11 to 46 percent of the vacuum gap 0.3, from 0 imposed) with the median 0.02 to 0.10; only 1 to 64 percent of the shell cells stay below 0.03 (min over the shell is a one-cell reading): mean gap range 0.032 to 0.137; frac<0.03 range 0.014 to 0.643",
+    "PASS [D] the degenerate cells stayed at R_s: every cell with gap < 0.03 at the end lies within 2h of R_s in every run (0 to 10 cells per run sit between h and 1.7h from R_s, the melt zone's spread), and 71 to 100 percent of them are shell cells; no new degenerate structure appeared elsewhere: cells beyond h: [8, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 4, 0, 10, 4, 0, 0, 2]; beyond 2h: 0; on-shell fraction min 0.714",
+    "PASS [D] the melt is PROGRESSIVE: over 12000 iterations the shell's mean gap rises at every quarter (0.081 -> 0.107 -> 0.122 -> 0.131, increments shrinking but not zero) and the count below 0.03 falls 46 -> 6 of 416; at 12000 iterations 'survives' rests on 6 cells while the mean is 44 percent of the vacuum gap: quarters [0.081, 0.1068, 0.1215, 0.1309]; n<0.03 156 -> 6",
+    "PASS [D] the gap depression extends one bin OUTSIDE the shell (bin 9.0 to 10.5: mean gap 0.165 vs 0.258 in the seed) and one bin inside (7.5 to 9.0: 0.198 vs 0.242): the wall is now two to three cells wide, not one: outside 0.165 vs seed 0.258; inside 0.198 vs 0.242",
+    "PASS [E] WHERE: in every run whose kin inflated more than 10x (6 of 7 checked) 99 to 100 percent of the two-region inertia sits in the two cell layers just inside the mask edge (R_s - 2h <= r < R_s) and the core (r < R_s - 2h) carries under 1 percent; the one weakly inflated run (R_s 15 J 50, 1.7x) keeps the seed-like split (67 percent flank): n32_L48_R6_J200_it3000: 991x, flank 1.000 core 0.000; n32_L48_R9_J200_it3000: 121x, flank 0.997 core 0.003; n32_L48_R9_J200_it12000: 468x, flank 1.000 core 0.000; n32_L48_R15_J50_it3000: 2x, flank 0.668 core 0.332; n32_L48_R12_J800_it3000: 332x, flank 0.999 core 0.001; n48_L72_R9_J200_it3000: 70x, flank 0.996 core 0.004; n32_L48_R9_J200_it3000_frz: 339x, flank 0.991 core 0.009",
+    "PASS [E] WHAT: in the inflated runs the inertia is carried by EIGENVALUE jets (the diag part of the jets in the local eigenframe), 97 to 99.7 percent of kin, not by orientation jets (the S5 (1,2)-twist channel, 0.3 to 3 percent); the weakly inflated run is half and half: n32_L48_R6_J200_it3000: diag 0.997 off 0.003; n32_L48_R9_J200_it3000: diag 0.972 off 0.028; n32_L48_R9_J200_it12000: diag 0.985 off 0.015; n32_L48_R15_J50_it3000: diag 0.535 off 0.465; n32_L48_R12_J800_it3000: diag 0.982 off 0.018; n48_L72_R9_J200_it3000: diag 0.980 off 0.020; n32_L48_R9_J200_it3000_frz: diag 0.982 off 0.018",
+    "PASS [E] the diag-jet inertia IS the W0 S2 flank density in the local frame, kin = h^3 sum 8 g^2 (d_i d2 - d_i d3)^2, to 1e-9 on every field (so the read is proportional to the GROWN gap squared: the refreshed generator rewards raising the gap where the ramp is): max rel dev 3.5e-16",
+    "PASS [E] eigenvalue jets in a fixed local frame are INVISIBLE to E_u ([diag, diag] = 0): E_u from the diag-only jets is exactly zero on every field; the ramps are paid only through V4 and the cross term with the hedgehog frame gradient: max |E_u diag-only| 1.5e-29",
+    "PASS [E] the structure is a CELL-SCALE ZIGZAG, not a smooth ramp: 61 to 73 percent of consecutive gap differences along each axis flip sign in the flank on every run (a smooth ramp gives near 0, random 0.5), with the (2,3) gap reaching 1.7 to 2.9 against 0.30 in the vacuum (seed flank max 0.25 to 0.30) and d3 going NEGATIVE down to -0.7 to -1.6 (the spatial block loses positivity) in every J >= 200 run; at J 50 the gap stays under 0.4: n32_L48_R6_J200_it3000: flips [0.71, 0.71, 0.66] gap max 2.56 (seed 0.25) d3 min -1.31; n32_L48_R9_J200_it3000: flips [0.69, 0.69, 0.62] gap max 1.85 (seed 0.28) d3 min -0.80; n32_L48_R9_J200_it12000: flips [0.66, 0.66, 0.68] gap max 2.86 (seed 0.28) d3 min -1.58; n32_L48_R15_J50_it3000: flips [0.7, 0.7, 0.68] gap max 0.37 (seed 0.30) d3 min -0.02; n32_L48_R12_J800_it3000: flips [0.67, 0.67, 0.61] gap max 2.46 (seed 0.29) d3 min -1.23; n48_L72_R9_J200_it3000: flips [0.73, 0.73, 0.67] gap max 1.85 (seed 0.30) d3 min -0.81; n32_L48_R9_J200_it3000_frz: flips [0.69, 0.69, 0.7] gap max 1.74 (seed 0.28) d3 min -0.74",
+    "PASS [E] NOT the S5 orientation twist: the leading eigenvector tilts under 5 degrees (median 0.3 to 4.7) from the seed's and the (2,3) pair rotates under 10 degrees (median 0.1 to 8.2) in the flank on every run: the frame stayed, the eigenvalues zigzagged: n32_L48_R6_J200_it3000: tilt 2.5 pair 4.3 deg; n32_L48_R9_J200_it3000: tilt 1.8 pair 2.8 deg; n32_L48_R9_J200_it12000: tilt 2.8 pair 2.6 deg; n32_L48_R15_J50_it3000: tilt 0.3 pair 0.1 deg; n32_L48_R12_J800_it3000: tilt 1.8 pair 2.7 deg; n48_L72_R9_J200_it3000: tilt 1.7 pair 2.4 deg; n32_L48_R9_J200_it3000_frz: tilt 4.7 pair 8.2 deg",
+    "PASS [E] the frozen-a0 descent builds the SAME zigzag (99 percent of its refreshed-read inertia in the flank, diag-jet share 98 percent); its frozen generator reads 637 of it, the refreshed generator 7542: the factor 12 is the grown gap entering a0 (S1: a0 = (d2 - d3)(E23 + E32)) squared: frz refreshed 7542.2 frozen 637.4",
+    "PASS [F] dE/dJ central difference over J = 180/200/220 recomputed from the fields: 0.01871 vs omega(200) = 0.03705, 49.5 percent low, matching the producer's numbers: dE/dJ 0.018706 omega 0.037047 ratio 0.505",
+    "PASS [F] decomposition: the fixed-FIELD derivative is exactly omega (E_J is quadratic in J at fixed M: 0.03705); the measured difference splits into dE_stat/dJ = +0.0090 and d(J^2/4kin)/dJ = +0.0097, the latter cut from 0.037 by kin rising 2573 -> 2699 -> 3418 across the J ladder (a 33 percent spread) at a fixed iteration count: fixed-field 0.03705; dE_stat/dJ 0.00891; d(J^2/4kin)/dJ 0.00979; kin [2573, 2699, 3418]",
+    "PASS [F] the mismatch is what non-convergence predicts, not roundoff: the same-J reproducibility floor puts 0.0016 on dE/dJ (10x below the 0.018 deficit); the Hellmann-Feynman identity dE/dJ = omega needs a stationary field, and fmax at the end is 0.33 to 0.44 against the packet's 1e-6; a larger J descends kin faster at fixed iterations (kin 3418 at 220 vs 2699 at 200), which lowers the finite difference below omega, the observed sign: floor 0.0016; fmax_end ['0.33', '0.44', '0.39']",
+    "PASS [G] omega at R_s 9 J 200 after 3000 iterations: 0.0370 (h 1.5, L 48), 0.0184 (h 1.0, L 48), 0.0353 (h 1.5, L 72): the h-dependence is omega ~ h^1.7 (between h and h^2, not h), the L-dependence at fixed h is 5 percent (box-insensitive): it scales like the lattice, not the box, and like neither pre-registered form exactly: omega {'n32_L48_h1.5': 0.037047045732164156, 'n48_L48_h1.0': 0.018378406865225752, 'n48_L72_h1.5': 0.03526691036577357}; h-exponent 1.73; L72/L48 ratio 0.952",
+    "PASS [G] SEED CONFOUND quantified: the n48 runs start from 3000-iteration seeds with two-region kin 40.2 (h 1.0) and 40.7 (h 1.5) at R_s 9, the n32 run from R10's 12000-iteration state with 22.2: a factor 1.83 in the starting inertia (E_u 13.7 to 14.8 vs 9.05); the n32 3000-iteration R10 state has 40.690, IDENTICAL to the n48 L72 seed's 40.689, so the inner field is box-independent and the L48-vs-L72 comparison is confounded by seed maturity ONLY: n32_it12000 (used): 22.233; n32_it3000 (R10, unused): 40.690; n48_L48_it3000 (used): 40.223; n48_L72_it3000 (used): 40.689",
+    "PASS [G] what the confound does at the end: the seed-kin ratio 1.83 shrinks to 1.05 in the relaxed kin (2836 vs 2699), so the 3000-iteration end state is dominated by what the descent built, not by the seed; the clean same-seed L comparison is the w3_ctrl run (CLI word w3_ctrl, 28 minutes): end kin ratio L72/L48 1.050",
+    "PASS [G] w3_ctrl (n32 L48 R_s 9 J 200, 3000 iterations from the 3000-iteration R10 seed, same maturity as the n48 seeds): the omega read with the SAME seed maturity across L 48 / 72 at h 1.5: ctrl omega 0.03526 kin 2835.9 E_J 18.238 vs n48 L72 omega 0.03527 kin 2835.5; n32 12000-seed omega 0.03705",
+    "PASS [H] the collected verdict (collect() of 15:54) is the 'no stationary point' FAIL: its two computed gates hold on a recount (0 of 20 runs stopped on f_tol or plateau; kin grew in the last quarter of all 20, min +4 percent), and PERIODIC_ORBIT_EXISTS is withheld: the verdict's headline does not overreach: stops {'max_iter'}; last-quarter growth min 0.044",
+    "PASS [H] the verdict BODY is a template, not a gate read-out: 'mean gap 0.03 to 0.14', 'dE/dJ != omega', 'the 12000-iteration run included', 'inner flank' and 'the free-inertia theorem (W0 S5) is the mechanism' are string literals in collect(); the only computed word is INCREASES/is not monotone; the closure result (rel_dev) and the shell statistics never enter the branch condition, so those five statements could not have come out differently whatever the data said: literals found 5/5; branch reads rel_dev: False; reads gap_shell_mean: False",
+    "PASS [H] the else branch asserts 'stationary states reached with the shell surviving' WITHOUT checking stationarity: with zero stationary runs it fires as soon as ONE run's last-quarter growth is <= 0 (the R_s 15 J 50 run sits at +4.4 percent), flipping the verdict from FAIL to a pass-shaped sentence on a dip of one run: a verdict that does not follow from the gates: branch order ok True; verdict(stationary=0, growing=False, tracks=False, survives=True) = 'stationary states reached with the shell surviving'; closest run last-quarter growth 0.044",
+    "PASS [H] the 'R* tracks the box' branch is blind to the observed pattern: at_box_edge flags only the UPPER grid edge, while every ladder's argmin sits at the LOWER grid edge (R* = min R_s in 4 of 4 ladders) with E_J monotone increasing; no branch tests 'R* interior' (the pass condition), so R* can neither pass nor fail by code: Rstar_n32_L48_J200: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n32_L48_J50: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n32_L48_J800: R* 6.0 of [6.0, 9.0, 12.0, 15.0]; Rstar_n48_L72_J200: R* 9.0 of [9.0, 15.0, 21.0]",
+    "PASS [H] 'shell_survives_all_runs' = all(min over the shell < 0.03) is a ONE-CELL criterion: it stays True at 12000 iterations on 6 of 416 cells with the shell mean at 0.131; the same flag on the MEAN (< 0.03) is False for every run; the melt branch (and the else branch's 'shell surviving') can fail only when the last degenerate cell melts: mean-criterion False; 12000-run n<0.03 6, mean 0.131",
+    "PASS [H] no run reached a stationary point (min fmax at the end 0.044, packet f_tol 1e-6; all 20 stop = max_iter) and the ladders ran 3000 iterations, a quarter of the packet's 12000: every W3 read is of a state still descending, so 'R* at the smallest radius' is a statement about descent RATE versus R_s at a fixed iteration count, not a bag statement: fmax_end min 0.045 max 3.25; stops {'max_iter'}",
+    "PASS [H] 'the free-inertia theorem (W0 S5) is the mechanism' MIS-ATTRIBUTES: S5 as proven in W0 is the (1,2) ORIENTATION twist at zero static cost; what the descent built is an E_u-blind EIGENVALUE zigzag of the (2,3) gap (97 percent of kin in diag jets at R_s 9 J 200, the pair frame rotated 2.8 degrees median), the W0 S2 flank density with the gap driven to 1.9 and read by a generator that grows with it: a sibling lattice mechanism, paid through V4 and the frame cross term, not S5's twist: diag share 0.972; pair rotation median 2.8 deg",
+    "PASS [H] the closure gate FAILS as measured (dE/dJ 50 percent below omega) and the shell gate is at best partial (mean gap 0.03 to 0.14 against 0 imposed, melting progressively): under the frozen vocabulary W3 cannot return PERIODIC_ORBIT_EXISTS; the supportable verdict is the fail line, ESTABLISHED_KINEMATIC at best (from W1/W2), with 'no stationary point on the fixed-J functional with a refreshed generator' as the fail mode, which the 15:54 verdict states: rel_dev -0.495; kin_monotone_all_runs False",
+    "PASS [I] g = 32 shell numbers reproduce with own V4 constants: V4 cost of the shell 2.5264e-3 and two-region kin 124.33 at g = 8 and g = 32: costs {8.0: np.float64(0.0025263759074419306), 32.0: np.float64(0.0025263759074254082), 100.0: np.float64(0.0025263759740854702)}; kin {8.0: 124.32972406798723, 32.0: 124.32972406798723, 100.0: 124.32972406798723}",
+    "PASS [I] the control is an IDENTITY, not a measurement: on the unrelaxed ansatz the g = 8 and g = 32 fields have bit-identical spatial blocks and M00 = g exactly, the projection and the spatial generator never touch M00, and t_p - c_p = sum_k d_k^p - 1 - delta^p is g-free when M00 = g; the shell cost and kin are equal at g = 100 too (kin to 1e-15, the cost to 3e-8, the roundoff of traces of size 1e8): the check cannot fail on this ansatz, a g control with content needs the RELAXED g = 32 field (the owed PAUSE RECORD 3 item): M00 (min, max, spatial-block diff vs g8) {8.0: (8.0, 8.0, 0.0), 32.0: (32.0, 32.0, 0.0), 100.0: (100.0, 100.0, 0.0)}; cost g100 2.526376e-03",
+    "PASS [I] on the RELAXED g = 8 seed M00 is not constant (8.0 to 8.00041), so the identity does not transfer: the relaxed shell cost depends on g through (M00 - g); no relaxed g = 32 field exists in W3: relaxed M00 range 8.000000 to 8.000410",
+    "PASS [J] record schema drift: 19 of 20 checkpoint records (all but the frozen run) predate the kin_with_seed_a0 / E_J_with_seed_a0 fields, run() restores cached records by key without a schema check, and collect()'s 'E_J_refreshed_vs_seed_a0_on_end_fields' is silently EMPTY: the J3 cross-check the producer advertises was never computed for the ladders (section A supplies it): records without the fields: 19; collected dict: {}",
+    "PASS [J] the mask edge r < R_s cuts the one-cell shell in HALF (43 to 55 percent of the shell cells lie inside the mask): harmless while the shell is degenerate (a0 = 0 there, S1) but after the partial melt the inside half carries 0.5 to 16 percent of kin (16 percent at J 800); moving the edge to R_s - h/2 changes kin by up to 16 percent, to R_s + h/2 by under 1 percent: a hard mask on a nonzero a0, the deviation the docstring itself names: n32_L48_R9_J200_it3000: shell-in-mask 0.58, kin from it 0.028, mask -h/2 0.972 +h/2 1.000; n32_L48_R12_J800_it3000: shell-in-mask 0.57, kin from it 0.163, mask -h/2 0.837 +h/2 1.001; n32_L48_R15_J800_it3000: shell-in-mask 0.55, kin from it 0.145, mask -h/2 0.855 +h/2 1.001; n48_L72_R9_J200_it3000: shell-in-mask 0.58, kin from it 0.066, mask -h/2 0.934 +h/2 1.001; n32_L48_R15_J50_it3000: shell-in-mask 0.55, kin from it 0.005, mask -h/2 0.995 +h/2 1.008",
+    "PASS [J] radial_profiles() covers r < L/2 only (np.arange(0, L/2 + dr, dr) excludes its endpoint, so the last bin ends at 24.0, not at L/2 + h as the code intends): 15512 of 32768 cells (47 percent, everything at r >= 24.0 out to the corners at 40.3) are silently dropped from every profile; harmless for kin (the mask zeroes them, kin_bin sums close to 1e-9) and for the gap (pinned or vacuum there), so the profiles are complete where they are used: dropped 15512; last bin ends 24.0; kin_bin sum 2699.270563 vs kin 2699.270563",
+    "PASS [J] collect() grouping: the ladders take maxit == 3000 only (the 12000-iteration run excluded), the frozen run is excluded via get('frozen') which is None on the 19 old records (correct by accident of the default), the closure uses the three 3000-iteration J runs, and the frozen run's kin_start is the shelled seed's two-region kin: all as intended: collected runs 19 (19 non-frozen), ladders exclude the 12000 run",
+    "PASS [J] trace consistency: the row 'omega' equals J/(2 kin) and the row 'E' equals E_u + V4 + J^2/(4 kin) with the refreshed kin on every row (the reported E_J and omega are Legendre-consistent with each other, if not with the descent): 12 rows",
+    "PASS [J] seed caching as documented: all 16 n32 runs use R10's 12000-iteration state (seed.source), the 4 n48 runs the 3000-iteration seeds (seed.maxit 3000): the two ladders are on different seed maturities (section G): n32 from R10: 16; n48 seeds maxit 3000"
+   ],
+   "runtime_s": 20.1
+  }
+ },
+ "w3_ctrl": {
+  "G_ctrl": {
+   "numbers": {
+    "seed": "m5_32_r10 relax_g8_n32_L48_it3000.npy",
+    "kin_start": 48.57547096982245,
+    "kin": 2835.9436237591835,
+    "omega": 0.03526163184705521,
+    "E_u": 14.183965858795522,
+    "V4": 0.5283089482780609,
+    "E_J": 18.238437991779104,
+    "gap_shell_min": 0.007384607849361263,
+    "gap_shell_mean": 0.10086223597277516,
+    "stop": "max_iter",
+    "iters": 3000,
+    "wall_s": 860.4,
+    "kin_last_quarter_growth": 0.47547390773240483,
+    "trace": [
+     {
+      "it": 250,
+      "E": 48.68993476088963,
+      "E_u": 26.041173490709784,
+      "V4": 0.26104917007152634,
+      "fmax": 1.5539145750669305,
+      "dt": 0.003661680691961392,
+      "kin": 446.673601808182,
+      "omega": 0.22387712100108315
+     },
+     {
+      "it": 500,
+      "E": 40.46227621280245,
+      "E_u": 25.06698209085792,
+      "V4": 0.2828201215919142,
+      "fmax": 0.4434476125649871,
+      "dt": 0.010451285881327438,
+      "kin": 661.7050259121485,
+      "omega": 0.1511247400035262
+     },
+     {
+      "it": 750,
+      "E": 35.79314585764693,
+      "E_u": 23.36712504857869,
+      "V4": 0.30735058281928845,
+      "fmax": 0.6621672190490159,
+      "dt": 0.001739512350810242,
+      "kin": 825.1730440143571,
+      "omega": 0.12118670226248945
+     },
+     {
+      "it": 1000,
+      "E": 32.40853970246811,
+      "E_u": 21.81232275861306,
+      "V4": 0.3311929337876695,
+      "fmax": 0.40563733105866095,
+      "dt": 0.004513610602199756,
+      "kin": 974.1818421654484,
+      "omega": 0.1026502401006738
+     },
+     {
+      "it": 1250,
+      "E": 29.477088971482033,
+      "E_u": 20.321471396231505,
+      "V4": 0.3868106201295504,
+      "fmax": 10.495686531184244,
+      "dt": 0.014171180559395783,
+      "kin": 1140.40599264875,
+      "omega": 0.08768806955120977
+     },
+     {
+      "it": 1500,
+      "E": 27.187000039922076,
+      "E_u": 19.127480101502755,
+      "V4": 0.38111952240630625,
+      "fmax": 0.4604953275629843,
+      "dt": 0.005707937206030196,
+      "kin": 1302.3545866591398,
+      "omega": 0.07678400416013016
+     },
+     {
+      "it": 1750,
+      "E": 25.105701907973412,
+      "E_u": 17.998615978944606,
+      "V4": 0.4071785378969008,
+      "fmax": 1.2487750227324776,
+      "dt": 0.003702676482553876,
+      "kin": 1492.5579438957834,
+      "omega": 0.06699907391131905
+     },
+     {
+      "it": 2000,
+      "E": 23.427801299451197,
+      "E_u": 17.07568791433715,
+      "V4": 0.43051619998039076,
+      "fmax": 0.5408061830371508,
+      "dt": 0.007218289307479336,
+      "kin": 1688.7335776748364,
+      "omega": 0.05921597185133656
+     },
+     {
+      "it": 2250,
+      "E": 21.871155778218338,
+      "E_u": 16.213130732861096,
+      "V4": 0.4552632719176452,
+      "fmax": 0.5734467038843761,
+      "dt": 0.0035179754950216834,
+      "kin": 1922.056099329895,
+      "omega": 0.05202761773439598
+     },
+     {
+      "it": 2500,
+      "E": 20.532990029874966,
+      "E_u": 15.468378986495072,
+      "V4": 0.4790804257132603,
+      "fmax": 0.5913140922393149,
+      "dt": 0.009128289020318063,
+      "kin": 2180.7727030483848,
+      "omega": 0.04585530617666637
+     },
+     {
+      "it": 2750,
+      "E": 19.29789580887573,
+      "E_u": 14.777410485402893,
+      "V4": 0.5036910629797577,
+      "fmax": 0.5920601076708777,
+      "dt": 0.003676736762197602,
+      "kin": 2489.5474728079457,
+      "omega": 0.04016794260493076
+     },
+     {
+      "it": 3000,
+      "E": 18.238437991779104,
+      "E_u": 14.183965858795522,
+      "V4": 0.5283089482780609,
+      "fmax": 1.1163174894663856,
+      "dt": 0.01154368533720591,
+      "kin": 2835.9436237591835,
+      "omega": 0.03526163184705521
+     }
+    ]
+   },
+   "control ran to max_iter with kin still growing in the last quarter (the runaway is seed-independent)": {
+    "pass": true,
+    "detail": "kin 48.6 -> 2835.9, last-quarter growth 0.475"
+   },
+   "same-seed-maturity L comparison at h 1.5: omega(L48, 3000-it seed) vs omega(L72, 3000-it seed) within 25 percent, and the 12000-it-seed omega within the same band: the box is not the control variable of omega at 3000 iterations": {
+    "pass": true,
+    "detail": "omega ctrl 0.03526 vs n48 L72 0.03527 vs n32 12000-seed 0.03705"
+   }
+  },
+  "summary": {
+   "pass": 2,
+   "checks": 2,
+   "lines": [
+    "PASS [G_ctrl] control ran to max_iter with kin still growing in the last quarter (the runaway is seed-independent): kin 48.6 -> 2835.9, last-quarter growth 0.475",
+    "PASS [G_ctrl] same-seed-maturity L comparison at h 1.5: omega(L48, 3000-it seed) vs omega(L72, 3000-it seed) within 25 percent, and the 12000-it-seed omega within the same band: the box is not the control variable of omega at 3000 iterations: omega ctrl 0.03526 vs n48 L72 0.03527 vs n32 12000-seed 0.03705"
+   ],
+   "runtime_s": 861.0
+  }
+ }
+}
