@@ -703,6 +703,42 @@
     "H12c": "rigid extensive TRUE; tapered L-independence tautological; no-minimum FALSE at the seed level for a seed-family reason"
    },
    "deviation": "under-resolved cord reader; H12-a threshold below the record's precision"
+  },
+  {
+   "id": "R13-W",
+   "start_utc": "2026-09-02T17:49:00Z",
+   "end_utc": "2026-09-02T20:45:00Z",
+   "status": "CLOSED. W0 22/22 (symbolic closure; audited 56 claims: 38 CONFIRMED, 15 QUALIFIED, 3 REFUTED, all applied, re-check 14/14). W1 FAIL as pre-registered (sigma_0 ~ h^1.000 -> 0; released layer unstable). W2 PASS on the frozen gates, both gates identities of a planar slab (no evidential weight). W3 FAIL: no fixed-J relaxation stationary; the wall convention on L_cert is ESTABLISHED_KINEMATIC at best. W3 audit: 32 claims: 15 CONFIRMED, 10 QUALIFIED, 7 REFUTED, every item applied (collector rebuilt from the saved fields). data/m5_32_r13w_audit.json",
+   "hypothesis": "the author's 2026-08-31 degenerate-wall convention: walls where d2 = d3 decouple constant-omega regions and give a localized fixed-J clock (ledger 6.2 packet)",
+   "artifacts": [
+    "scripts/m5_32_r13w_w0.py",
+    "scripts/m5_32_r13w_common.py",
+    "scripts/m5_32_r13w_w1.py",
+    "scripts/m5_32_r13w_w2.py",
+    "scripts/m5_32_r13w_w3.py",
+    "scripts/m5_32_r13w_audit.py",
+    "data/m5_32_r13w_w0.json",
+    "data/m5_32_r13w_w1.json",
+    "data/m5_32_r13w_w2.json",
+    "data/m5_32_r13w_w3.json",
+    "data/m5_32_r13w_audit.json",
+    "plots/m5_32_r13w_w1.png",
+    "plots/m5_32_r13w_w2.png",
+    "plots/m5_32_r13w_w3.png",
+    "checkpoints/m5_32_r13w/ (20 end fields + 2 seeds + per-run records, local)"
+   ],
+   "claims": {
+    "S1_S2_wall_identity_flank_inertia": "CONFIRMED (exact; lattice one-cell layer 4 delta^4/h per flank, W2 to all digits)",
+    "S3_planar_flatness": "CONFIRMED (E_u == 0.0 exactly for any planar profile; sigma_0 = h V4; V4_deg_min = 6.479e-7 constrained minimum)",
+    "S4_phase_flatness": "CONFIRMED (continuum exact; lattice residual O(h^2), exponents 1.87)",
+    "S5_free_inertia_no_fixed_J_minimizer": "CONFIRMED (auditor's compact (1,2)-texture: E_J 21 vs 455 at J 200 in a 24^3 box)",
+    "S6_bag_closure": "QUALIFIED then fixed (full minimum, both V references, kappa as the R7 import): R* 75 to 450, beyond every box; W3's seed-family closure with measured inputs R* 16 / 29 / 51 at J 50 / 200 / 800",
+    "W1_sigma0": "sigma_0 1.706e-6 / 1.137e-6 / 8.529e-7 at h 1.5 / 1.0 / 0.75 (snapshots; converged h V4_deg_min 9.72e-7 / 6.48e-7 / 4.86e-7), order 1.000, L-flat exactly; released layer: curvature -2.02e-4, per-cell descent reaches the vacuum spectrum",
+    "W2_gates": "E_stat(Dq) range 0.0 exactly; kin_wall/area = 4 delta^4/h exactly (0.0216 / 0.0324 / 0.0432), L-exponent -1e-16, h-exponent -1.000; registry cross-check 0.0; jump control 32 delta^4 sin^4/h",
+    "W3_runaway": "20 runs, all max_iter (min fmax 0.044), kin net growth in every run (dips up to 20 % in 9); R9 J200: kin 22 -> 2699 (3000 it) -> 10411 (12000 it), omega 0.0096; inflation 1.7x to 5478x; frozen-a0 control 27 -> 637 (7542 read refreshed on the same field); inertia in the two layers inside the region edge (8202 + 2205 of 10411)",
+    "W3_ladders": "E_J increases with R_s on every ladder (n32 J 50 / 200 / 800, n48 L72 J 200); dE/dJ 0.0187 vs omega 0.037; omega(h 1.0) = 0.018 vs omega(h 1.5) = 0.037 at equal iterations; L-flat (0.037 vs 0.035)",
+    "W3_audit": "32 claims: 15 CONFIRMED, 10 QUALIFIED, 7 REFUTED, every item applied (collector rebuilt from the saved fields); mechanism = the W0 S2 eigenvalue-zigzag flank inertia at lattice scale (97 to 99.7 % of kin in the two layers inside the region edge, gap driven to 1.9 to 3.9, d3 negative), not the S5 orientation twist; shell melting; omega ~ h^1.73, box-independent at equal seed maturity; frozen control omega falls 0.48 -> 0.16"
+   }
   }
  ],
  "free_rungs_used": 1,

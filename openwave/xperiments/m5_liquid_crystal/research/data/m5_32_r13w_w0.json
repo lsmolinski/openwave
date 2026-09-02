@@ -1,0 +1,223 @@
+{
+ "S1 wall identity a0 = (d2 - d3)(E23 + E32)": {
+  "pass": true,
+  "detail": "exact in the block eigenframe"
+ },
+ "S1 a0 = 0 iff the (2,3) block is a multiple of the identity and decoupled": {
+  "pass": true,
+  "detail": "solve(a0 = 0) -> [{m02: 0, m03: 0, m12: 0, m13: 0, m22: m33, m23: 0}]"
+ },
+ "S2 F_0z = (d2 - d3)(d3' - d2')(E23 - E32) on a fixed-frame profile": {
+  "pass": true,
+  "detail": "exact"
+ },
+ "S2 kinetic density 8 (d2 - d3)^2 (d2' - d3')^2, zero ON the wall, flank-borne": {
+  "pass": true,
+  "detail": "8*(d2(z) - d3(z))**2*(Derivative(d2(z), z) - Derivative(d3(z), z))**2"
+ },
+ "S2 linear ramp of width w: kin/area = (8/3) delta^4 / w per unit omega^2": {
+  "pass": true,
+  "detail": "8*delta**4/(3*w)"
+ },
+ "S2 lattice one-cell layer: kin/area = 4 delta^4 / h per rotating flank (sym stencil)": {
+  "pass": true,
+  "detail": "4*delta**4/h"
+ },
+ "S2_numbers": {
+  "delta": 0.3,
+  "continuum_ramp_coeff_(8/3)delta^4": 0.0216,
+  "lattice_flank_coeff_4delta^4": 0.0324,
+  "lattice_flank_per_area_at_h": {
+   "1.5": 0.021599999999999998,
+   "1.0": 0.0324,
+   "0.75": 0.043199999999999995
+  }
+ },
+ "S3 planar profile: F_xy = F_xz = F_yz = 0 identically (static energy = V4 only)": {
+  "pass": true,
+  "detail": "symbolic, general symmetric M(z)"
+ },
+ "S3 orientation wall in the (2,3) plane G1: tr((M eta)^p) invariant, V4 = 0 at every angle": {
+  "pass": true,
+  "detail": "[0, 0, 0, 0]"
+ },
+ "S3 orientation wall in the (1,2) plane G3: tr((M eta)^p) invariant, V4 = 0 at every angle": {
+  "pass": true,
+  "detail": "[0, 0, 0, 0]"
+ },
+ "S3 lattice: a random planar profile has E_u == 0.0 exactly under the sym stencil": {
+  "pass": true,
+  "detail": "E_u = np.float64(0.0), V4 = 7.13397e+07"
+ },
+ "S3 lattice: one-cell degenerate layer has E_u == 0.0 and tension sigma_0 = h V4_deg": {
+  "pass": true,
+  "detail": "E_u = np.float64(0.0), sigma_0 = 2.699120e-06, h V4_deg = 2.699119559220475e-06"
+ },
+ "S3_numbers": {
+  "V4_deg_per_volume": 1.7994130394803167e-06,
+  "sigma_0_one_cell_at_h1.5": 2.699119559220475e-06
+ },
+ "S4 uniform vacuum with an ARBITRARY phase phi(x,t): every F_mu nu = 0 (no action at all)": {
+  "pass": true,
+  "detail": "symbolic, both the time and the space pairs"
+ },
+ "S4 non-uniform background: F_0z = R (chi_t [X, d_z M0]) R^T, the phase couples only through [X, dM0]": {
+  "pass": true,
+  "detail": "symbolic; the chi_z chi_t [X, X] piece is identically zero"
+ },
+ "S5 non-commuting twist psi(z) in the (1,2) plane: V4 = 0, E_u = 0, kin density = psi'^2 f(psi)": {
+  "pass": true,
+  "detail": "f(psi) = 8*(delta - 1)**2*(delta**2*cos(psi(z))**2 - cos(psi(z))**2 + 1)"
+ },
+ "S5 f(psi) >= 0 with positive mean: inertia ~ Psi^2/w at ZERO static cost (kin unbounded at fixed J)": {
+  "pass": true,
+  "detail": "mean f over a period at delta = 0.3: 2.13393, min 0.353"
+ },
+ "S5 lattice: twists of width w have E_u == 0.0, V4 = 0, and kin/area * w roughly constant (~1/w)": {
+  "pass": true,
+  "detail": "kin/area * w = [1.281838, 1.314718, 1.322805]"
+ },
+ "S5_numbers": [
+  {
+   "w_cells": 2,
+   "w": 3.0,
+   "E_u": 0.0,
+   "V4": 3.9478173644590965e-30,
+   "kin_per_area": 0.4272792850219569
+  },
+  {
+   "w_cells": 4,
+   "w": 6.0,
+   "E_u": 0.0,
+   "V4": 1.297844958565928e-28,
+   "kin_per_area": 0.2191196009045415
+  },
+  {
+   "w_cells": 8,
+   "w": 12.0,
+   "E_u": 0.0,
+   "V4": 1.297844958565928e-28,
+   "kin_per_area": 0.11023377196702236
+  }
+ ],
+ "S6 dE_J/dw > 0 termwise: the shell sharpens to the lattice floor at every R and J": {
+  "pass": true,
+  "detail": "pi*J**2*c/(4*pi*R*c + kappa*w)**2 + 4*pi*R**2*V"
+ },
+ "S6 ramp-dominated floor: R*^4 = J^2/(64 pi^2 c V4_deg) is h-independent": {
+  "pass": true,
+  "detail": "J**2/(64*pi**2*V*c)"
+ },
+ "S6 omega* = J h/(8 pi c R*^2) is LINEAR in h (-> 0 in the continuum) in the ramp-dominated limit": {
+  "pass": true,
+  "detail": "sqrt(V)*h/sqrt(c)"
+ },
+ "S6 V4 on the degenerate manifold: projected point 1.80e-6, constrained minimum 6.48e-7 (audit C4)": {
+  "pass": true,
+  "detail": "V_pt 1.7994e-06, V_min 6.4789e-07 at [7.99998425 1.01005009 0.14838796]"
+ },
+ "S6 numbers: every R* (both V references, J = 50 / 200 / 800) lies beyond every admissible half-box (48)": {
+  "pass": true,
+  "detail": "{\"V_projected_J50\": [75.3, 0.00965], \"V_projected_J200\": [164.3, 0.01039], \"V_projected_J800\": [344.8, 0.01078], \"V_min_J50\": [100.9, 0.00599], \"V_min_J200\": [216.6, 0.00634], \"V_min_J800\": [450.2, 0.00652]}"
+ },
+ "S6_numbers": {
+  "c_lattice_one_flank": 0.0324,
+  "V4_deg_projected_point": 1.7994130394803167e-06,
+  "V4_deg_constrained_min": 6.478885210565526e-07,
+  "kappa_import_R7": 14.0,
+  "note": "R* from the full minimum of 4 pi R^2 h V + J^2/(4 (kappa R + 4 pi R^2 c/h)) at h = 1.5",
+  "V_projected_J50": {
+   "R_star": 75.26684316710791,
+   "omega_star": 0.009647169471449885,
+   "ramp_over_core": 1.459282185582262,
+   "surface_term": 0.19214955761791025,
+   "kinetic_term": 0.24117923678624711
+  },
+  "V_projected_J200": {
+   "R_star": 164.25299063247658,
+   "omega_star": 0.010392243485660656,
+   "ramp_over_core": 3.184555815984188,
+   "surface_term": 0.9150789343969961,
+   "kinetic_term": 1.0392243485660655
+  },
+  "V_projected_J800": {
+   "R_star": 344.79771699429244,
+   "omega_star": 0.010782636483418926,
+   "ramp_over_core": 6.684977672334319,
+   "surface_term": 4.0323734769929365,
+   "kinetic_term": 4.31305459336757
+  },
+  "V_min_J50": {
+   "R_star": 100.90624226560566,
+   "omega_star": 0.005985954622427327,
+   "ramp_over_core": 1.9563817951726679,
+   "surface_term": 0.1243476194201507,
+   "kinetic_term": 0.14964886556068316
+  },
+  "V_min_J200": {
+   "R_star": 216.63069157672894,
+   "omega_star": 0.006340792861051752,
+   "ramp_over_core": 4.200060687631373,
+   "surface_term": 0.5731144794508709,
+   "kinetic_term": 0.6340792861051752
+  },
+  "V_min_J800": {
+   "R_star": 450.20247050617627,
+   "omega_star": 0.00652341121356893,
+   "ramp_over_core": 8.728577119358818,
+   "surface_term": 2.475239097342924,
+   "kinetic_term": 2.6093644854275717
+  },
+  "J_for_Rstar_12_Vmin": 1.5655195756213294,
+  "J_for_Rstar_20_Vmin": 3.44513660428328
+ },
+ "S4 lattice residual of the (2,3) phase flatness is O(h^2) in E_u and kin (audit D2)": {
+  "pass": true,
+  "detail": "exponents E_u 1.87, kin 1.87; [{'h': 1.5, 'E_u': 0.002109630171520663, 'kin': 2.208603905110908}, {'h': 0.75, 'E_u': 0.0005790130704702644, 'kin': 0.6035625775752858}]"
+ },
+ "S4_lattice_residual": {
+  "rows": [
+   {
+    "h": 1.5,
+    "E_u": 0.002109630171520663,
+    "kin": 2.208603905110908
+   },
+   {
+    "h": 0.75,
+    "E_u": 0.0005790130704702644,
+    "kin": 0.6035625775752858
+   }
+  ],
+  "exp_E_u": 1.8653222889396728,
+  "exp_kin": 1.871559443473411
+ },
+ "summary": {
+  "pass": 22,
+  "checks": 22,
+  "lines": [
+   "PASS S1 wall identity a0 = (d2 - d3)(E23 + E32): exact in the block eigenframe",
+   "PASS S1 a0 = 0 iff the (2,3) block is a multiple of the identity and decoupled: solve(a0 = 0) -> [{m02: 0, m03: 0, m12: 0, m13: 0, m22: m33, m23: 0}]",
+   "PASS S2 F_0z = (d2 - d3)(d3' - d2')(E23 - E32) on a fixed-frame profile: exact",
+   "PASS S2 kinetic density 8 (d2 - d3)^2 (d2' - d3')^2, zero ON the wall, flank-borne: 8*(d2(z) - d3(z))**2*(Derivative(d2(z), z) - Derivative(d3(z), z))**2",
+   "PASS S2 linear ramp of width w: kin/area = (8/3) delta^4 / w per unit omega^2: 8*delta**4/(3*w)",
+   "PASS S2 lattice one-cell layer: kin/area = 4 delta^4 / h per rotating flank (sym stencil): 4*delta**4/h",
+   "PASS S3 planar profile: F_xy = F_xz = F_yz = 0 identically (static energy = V4 only): symbolic, general symmetric M(z)",
+   "PASS S3 orientation wall in the (2,3) plane G1: tr((M eta)^p) invariant, V4 = 0 at every angle: [0, 0, 0, 0]",
+   "PASS S3 orientation wall in the (1,2) plane G3: tr((M eta)^p) invariant, V4 = 0 at every angle: [0, 0, 0, 0]",
+   "PASS S3 lattice: a random planar profile has E_u == 0.0 exactly under the sym stencil: E_u = np.float64(0.0), V4 = 7.13397e+07",
+   "PASS S3 lattice: one-cell degenerate layer has E_u == 0.0 and tension sigma_0 = h V4_deg: E_u = np.float64(0.0), sigma_0 = 2.699120e-06, h V4_deg = 2.699119559220475e-06",
+   "PASS S4 uniform vacuum with an ARBITRARY phase phi(x,t): every F_mu nu = 0 (no action at all): symbolic, both the time and the space pairs",
+   "PASS S4 non-uniform background: F_0z = R (chi_t [X, d_z M0]) R^T, the phase couples only through [X, dM0]: symbolic; the chi_z chi_t [X, X] piece is identically zero",
+   "PASS S5 non-commuting twist psi(z) in the (1,2) plane: V4 = 0, E_u = 0, kin density = psi'^2 f(psi): f(psi) = 8*(delta - 1)**2*(delta**2*cos(psi(z))**2 - cos(psi(z))**2 + 1)",
+   "PASS S5 f(psi) >= 0 with positive mean: inertia ~ Psi^2/w at ZERO static cost (kin unbounded at fixed J): mean f over a period at delta = 0.3: 2.13393, min 0.353",
+   "PASS S5 lattice: twists of width w have E_u == 0.0, V4 = 0, and kin/area * w roughly constant (~1/w): kin/area * w = [1.281838, 1.314718, 1.322805]",
+   "PASS S6 dE_J/dw > 0 termwise: the shell sharpens to the lattice floor at every R and J: pi*J**2*c/(4*pi*R*c + kappa*w)**2 + 4*pi*R**2*V",
+   "PASS S6 ramp-dominated floor: R*^4 = J^2/(64 pi^2 c V4_deg) is h-independent: J**2/(64*pi**2*V*c)",
+   "PASS S6 omega* = J h/(8 pi c R*^2) is LINEAR in h (-> 0 in the continuum) in the ramp-dominated limit: sqrt(V)*h/sqrt(c)",
+   "PASS S6 V4 on the degenerate manifold: projected point 1.80e-6, constrained minimum 6.48e-7 (audit C4): V_pt 1.7994e-06, V_min 6.4789e-07 at [7.99998425 1.01005009 0.14838796]",
+   "PASS S6 numbers: every R* (both V references, J = 50 / 200 / 800) lies beyond every admissible half-box (48): {\"V_projected_J50\": [75.3, 0.00965], \"V_projected_J200\": [164.3, 0.01039], \"V_projected_J800\": [344.8, 0.01078], \"V_min_J50\": [100.9, 0.00599], \"V_min_J200\": [216.6, 0.00634], \"V_min_J800\": [450.2, 0.00652]}",
+   "PASS S4 lattice residual of the (2,3) phase flatness is O(h^2) in E_u and kin (audit D2): exponents E_u 1.87, kin 1.87; [{'h': 1.5, 'E_u': 0.002109630171520663, 'kin': 2.208603905110908}, {'h': 0.75, 'E_u': 0.0005790130704702644, 'kin': 0.6035625775752858}]"
+  ],
+  "runtime_s": 14.6
+ }
+}
