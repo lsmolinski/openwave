@@ -27,13 +27,14 @@
 | M9.7 | Jacobson substitute | Parked. Not [P]. Record at `a5640709` | author per-task PR |
 | M9.8+ | Entanglement-gravity campaign | Parked. Papers 14 to 73 (A1/A2 ansatz, first law, Gauss and enclosed-energy results, vacuum-energy negatives); the author registers each as a task row before its PR. Record at `a5640709` | author per-task PR |
 
-## STATUS AT A GLANCE (2026-08-22)
+## STATUS AT A GLANCE (2026-09-02)
 
 | Question | Answer |
 | --- | --- |
 | Where is M9? | Registered column (admission: discussion #442, 2026-08-15; activation merge: PR #441). MODELS.md column present, Hehl-Datta certification at ⚠️, every other cell 🚧 |
 | What kind of column? | Gravity-certification EFT. Matter installed. Closer to M8 than M5 |
 | What decides the first cell? | An in-platform gravity result against a pre-registered gate, landed by a per-task PR. M9.2 C1 passed only as inherited Newton, C2 failed, so the Newton cell stays 🚧 |
+| Is the column staffed? | No. The collaborator invitation was issued twice and expired unaccepted, and the author last posted 2026-08-20, so the column is registered and dormant. The registered slice stands on maintainer reruns of both gates, so no result here waits on contact |
 
 ## CONVENTIONS
 
@@ -60,6 +61,13 @@ neighbors record \(I_B\) / axial negatives. Official M9.2 is Newton only.
 | [M9.2](tasks/m9_2_task_details.md) | Newton limit | ⚠️ Closed 2026-08-15. C1 PASS, C2 FAIL (Dirichlet images). Inherited Einstein, not GEM; the MODELS.md Newton cell stays 🚧. [note](findings/m9_2_newton_note.md) | 2026-08-15 |
 
 ## CHANGE-LOG
+
+2026-09-02. Column dormant. The collaborator invitation was issued at
+admission and re-issued at activation; both expired unaccepted, so the
+author holds no repository role. No author activity since the 2026-08-20
+comment on PR #441. Backlog rows stay parked and return as per-task PRs
+whenever the author resumes. Nothing is withdrawn and nothing is waiting
+on the maintainer side.
 
 2026-08-22. Activation merge (PR #441) trimmed to the onboarding slice:
 scaffold, M9.1, M9.2. Campaign records M9.3 to M9.73, latex and the
