@@ -1,0 +1,170 @@
+{
+ "1a slice potential == V_M5 + 2c^2 + 2b^2 + 6(b - f^2)^2 + W(f)": {
+  "pass": true,
+  "detail": ""
+ },
+ "1b slice inertia == f^2 + 4 b^2": {
+  "pass": true,
+  "detail": "4*b**2 + f**2"
+ },
+ "1c kinetic metric diag(1/4, 1/2, 1/2, 1/2)": {
+  "pass": true,
+  "detail": "bd**2/2 + cd**2/2 + fd**2/2 + md**2/4"
+ },
+ "2 transverse first derivatives of V_omega vanish on the slice": {
+  "pass": true,
+  "detail": "{'u': '0', 'v': '0', 'q': '0', 'Im psi': '0'}"
+ },
+ "2b shear Hessians u, v both carry -omega^2 and differ": {
+  "pass": true,
+  "detail": "Huu = 16*b**2 - 6*b + 16*c**2 - 6*c + 8*m**2 - 6*m - w2 + 2; Hvv = 16*b**2 + 6*b + 16*c**2 - 6*c + 8*m**2 - 6*m - w2 + 2"
+ },
+ "3a V_M5(-N N^T) == 2": {
+  "pass": true,
+  "detail": "2"
+ },
+ "3b V_M5 >= 0 with minimum 0 on the rank-one projector orbit (60 random BFGS starts)": {
+  "pass": true,
+  "detail": "min V_M5 = 8.99e-15, eigenvalues at the argmin [-0.0, 0.0, 1.0]"
+ },
+ "3c axis lock, phase lock, W nonnegative on random samples": {
+  "pass": true,
+  "detail": "{'V_M5': 8.992806499463768e-15, 'axis': 0.21309124020748044, 'lock': 0.028963224471531976, 'W': 0.027205720782946585}"
+ },
+ "3d W(f) = f^2 (2 f^2 - 4 f + 3) > 0 for f > 0 (bracket has no real root)": {
+  "pass": true,
+  "detail": "disc = -8"
+ },
+ "4a d_m V_omega is proportional to m (deep branch m = 0 consistent)": {
+  "pass": true,
+  "detail": "m*(8*b**2 + 8*c**2 + 4*m**2 - 3*m - 1)"
+ },
+ "4b d_f V_omega = 0  <=>  omega^2 = 32 f^2 - 12 f + 6 - 24 b": {
+  "pass": true,
+  "detail": ""
+ },
+ "4c pA == (1/2) d_c V_omega on m = 0": {
+  "pass": true,
+  "detail": ""
+ },
+ "4d pB == d_b V_omega on m = 0": {
+  "pass": true,
+  "detail": ""
+ },
+ "5a Maxwell root and omega_*^2 reproduce the certified values to 1e-20": {
+  "pass": true,
+  "detail": "c = 0.3028076451867738036908, b = 0.6577343777232492519317, f = 0.8143614969985677671857, omega*^2 = 1.663945700059150298856193, max dev 4.26e-21"
+ },
+ "5b fixed-omega Hessian positive definite at the root": {
+  "pass": true,
+  "detail": "eigenvalues [8.4046, 10.7356, 49.1637]"
+ },
+ "5c rational witnesses: V_omega(0, 31/100, 13/20, 41/50) = -13739/18750000 at 5/3 and -33854777/25000000 at 45/16": {
+  "pass": true,
+  "detail": "-13739/18750000, -33854777/25000000"
+ },
+ "5d hence omega_c^2 < 5/3 < 45/16 and omega_*^2 < 5/3": {
+  "pass": true,
+  "detail": "omega*^2 = 1.663946"
+ },
+ "5e V_omega = 0 at the root (equal depth with the vacuum)": {
+  "pass": true,
+  "detail": "-2.22e-16"
+ },
+ "6a stationary radius R = 2 sigma / p": {
+  "pass": true,
+  "detail": "2*sigma/p"
+ },
+ "6b F''(R_c) = -8 pi sigma": {
+  "pass": true,
+  "detail": ""
+ },
+ "6c E_crit = 16 pi sigma^3 / (3 p^2)": {
+  "pass": true,
+  "detail": ""
+ },
+ "6d dE/dQ = omega on E = F + omega Q with dF/domega = -Q": {
+  "pass": true,
+  "detail": ""
+ },
+ "7 independent sigma_0 (last status-0 rung, L >= 8) within 1e-8 of 0.72929841786, route spread < 1e-8": {
+  "pass": true,
+  "detail": "L = 10.0: sigma_0 = 0.729298417863 (routes 0.729298417863, 0.729298417863); dev from theirs 3.52e-13; L = 12 rung (status 1) 0.729298417865"
+ },
+ "sigma0_ladder": [
+  {
+   "r1": 0.7300734293791611,
+   "r2": 0.7231252692876085,
+   "r3": 0.7370215894707137,
+   "fi_drift": 0.0017370400890266424,
+   "status": 0,
+   "nodes": 40253,
+   "L": 2.0
+  },
+  {
+   "r1": 0.7293064885046093,
+   "r2": 0.7291952040617813,
+   "r3": 0.7294177729474374,
+   "fi_drift": 1.8548154556652374e-05,
+   "status": 0,
+   "nodes": 4583,
+   "L": 3.0
+  },
+  {
+   "r1": 0.7292984274258314,
+   "r2": 0.7292957402248991,
+   "r3": 0.7293011146267638,
+   "fi_drift": 2.813580182170483e-06,
+   "status": 1,
+   "nodes": 259285,
+   "L": 4.5
+  },
+  {
+   "r1": 0.729298417878156,
+   "r2": 0.7292983671287656,
+   "r3": 0.7292984686275461,
+   "fi_drift": 5.645547107580029e-08,
+   "status": 1,
+   "nodes": 111626,
+   "L": 6.0
+  },
+  {
+   "r1": 0.7292984179023733,
+   "r2": 0.7292984180405199,
+   "r3": 0.7292984177642269,
+   "fi_drift": 3.6675112946582544e-10,
+   "status": 1,
+   "nodes": 138186,
+   "L": 8.0
+  },
+  {
+   "r1": 0.7292984178628523,
+   "r2": 0.7292984178628247,
+   "r3": 0.7292984178628799,
+   "fi_drift": 5.204170427930421e-15,
+   "status": 0,
+   "nodes": 21783,
+   "L": 10.0
+  },
+  {
+   "r1": 0.7292984178648829,
+   "r2": 0.7292984178720011,
+   "r3": 0.7292984178577645,
+   "fi_drift": 1.9012236229798418e-11,
+   "status": 1,
+   "nodes": 252756,
+   "L": 12.0
+  }
+ ],
+ "8 thin-wall radius at delta = 0.001: R_m / (2 sigma_0 / p) == chi = 1.000328 (their R_m 1218.761785)": {
+  "pass": true,
+  "detail": "p = 1.197178387e-03, 2 sigma_0/p = 1218.362152, their R_m / ours = 1.000328"
+ },
+ "summary": {
+  "passed": 24,
+  "total": 24,
+  "fails": [],
+  "wall_s": 44.8,
+  "pinned_main": "71bbe9a276a2e53c2b88e1a1d4aaf8c9d0ee915f"
+ }
+}
