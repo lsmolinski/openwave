@@ -1,0 +1,200 @@
+{
+ "entrants": {
+  "K_lambda": {
+   "definition": "K_lambda: E = (1/2) sum_a [sum_i (d_i lambda_a)^2 + omega^2 (d_t lambda_a)^2], lambda_a eigenvalues of N = M eta, d_mu lambda_a = (v_a^T eta A_mu eta v_a)/(v_a^T eta v_a)",
+   "hash": "a8d4c1033309"
+  },
+  "R_eta": {
+   "definition": "R_G with G = eta: sum_mu nu G_cd [(A_mu)^(nu c)(A_nu)^(mu d) - (A_mu)^(mu c)(A_nu)^(nu d)], mixed pairs by delta, G covariant (0,2); E-density = c_R R_G",
+   "hash": "4252f6d4671a"
+  },
+  "R_etaMeta": {
+   "definition": "R_G with G = etaMeta: sum_mu nu G_cd [(A_mu)^(nu c)(A_nu)^(mu d) - (A_mu)^(mu c)(A_nu)^(nu d)], mixed pairs by delta, G covariant (0,2); E-density = c_R R_G",
+   "hash": "5ec97cc2c5aa"
+  },
+  "R_Minv": {
+   "definition": "R_G with G = Minv: sum_mu nu G_cd [(A_mu)^(nu c)(A_nu)^(mu d) - (A_mu)^(mu c)(A_nu)^(nu d)], mixed pairs by delta, G covariant (0,2); E-density = c_R R_G",
+   "hash": "019973aba6a6"
+  },
+  "R_hcov": {
+   "definition": "R_G with G = hcov: sum_mu nu G_cd [(A_mu)^(nu c)(A_nu)^(mu d) - (A_mu)^(mu c)(A_nu)^(nu d)], mixed pairs by delta, G covariant (0,2); E-density = c_R R_G",
+   "hash": "bc636e8aeb2a"
+  },
+  "K_P_h": {
+   "definition": "K_P^h (H-adjoint form, the author's 2026-09-05 correction, invariant order): E = (1/2)[sum_i tr(Om_i^T H Om_i H^-1) + omega^2 tr(Om_0^T H Om_0 H^-1)], Om_mu = P A_mu eta P, H = eta + 2 (eta u)(eta u)^T, H^-1 = eta + 2 u u^T; = the Frobenius norm of the projected jet in the eta-orthonormal eigenbasis (PSD everywhere)",
+   "hash": "c8e352d5d299"
+  },
+  "K_P": {
+   "definition": "K_P: E = (1/2)[sum_i tr((P A_i eta P)^2) + omega^2 tr((P a0 eta P)^2)], N = M eta, P = (N - lambda_t)(N - 1), lambda_t the timelike eigenvalue of the vacuum (-g)",
+   "hash": "2d05f9cfd77b"
+  }
+ },
+ "covariance": {
+  "K_lambda": 5.0082569500324265e-15,
+  "R_eta": 2.336960939651302e-15,
+  "R_etaMeta": 7.364681127458613e-15,
+  "R_Minv": 7.732280448943568e-14,
+  "R_hcov": 4.747168237985722e-15,
+  "K_P_h": 3.6770773359957064e-15,
+  "K_P": 2.9527422908717003e-15
+ },
+ "covariance_control_noeta": 0.6524868836093715,
+ "positivity_min_on_orbit": 1.0010268724532563,
+ "positivity_off_shell": {
+  "K_P_min": -22286.79447589643,
+  "K_P_frac_negative": 0.005,
+  "K_lambda_min": 0.9457183925830267
+ },
+ "K_P_h_off_shell": {
+  "min": 108.17534018456976,
+  "frac_negative": 0.0,
+  "plain_frac_negative_same_probes": 0.0115
+ },
+ "klambda_fd_rel": 1.0573715845879241e-08,
+ "gradient_gates": {
+  "K_P": 2.1202279642056397e-15,
+  "R_etaMeta": 5.11100994142424e-14,
+  "R_Minv": 5.444772043790781e-16,
+  "R_eta": 1.8942472139385786e-14
+ },
+ "vacuum_channels": {
+  "boost_1": {
+   "intended": 0.0,
+   "literal": 0.0,
+   "K_lambda": 0.0
+  },
+  "boost_2": {
+   "intended": 0.0,
+   "literal": -41501013.168384,
+   "K_lambda": 0.0
+  },
+  "boost_3": {
+   "intended": 0.0,
+   "literal": -84934656.0,
+   "K_lambda": 0.0
+  },
+  "rot_23_clock": {
+   "intended": 194.43513600000003,
+   "literal": 167.34009599999996,
+   "K_lambda": 0.0
+  },
+  "rot_13_tilt": {
+   "intended": 0.0,
+   "literal": 0.0,
+   "K_lambda": 0.0
+  },
+  "rot_12_tilt": {
+   "intended": 0.0,
+   "literal": 0.0,
+   "K_lambda": 0.0
+  }
+ },
+ "lines": [
+  {
+   "check": "covariance: every entrant (static + omega^2 densities) under 3 boosts + 3 rotations",
+   "value": 7.732280448943568e-14,
+   "threshold": 1e-10,
+   "pass": true
+  },
+  {
+   "check": "no-eta control (K_P built on M instead of M eta) FAILS covariance under a boost",
+   "value": 0.6524868836093715,
+   "threshold": 0.001,
+   "pass": true
+  },
+  {
+   "check": "positivity ON the vacuum orbit: K_P static, K_P omega^2, K_lambda static >= 0 (200 cells)",
+   "value": 1.0010268724532563,
+   "threshold": -1e-12,
+   "pass": true
+  },
+  {
+   "check": "PROPERTY: K_P static density is INDEFINITE off the vacuum spectrum (min < 0 on random cells)",
+   "value": -22286.79447589643,
+   "threshold": 0.0,
+   "pass": true
+  },
+  {
+   "check": "K_lambda static density >= 0 off-shell as well (a sum of squares)",
+   "value": 0.9457183925830267,
+   "threshold": -1e-12,
+   "pass": true
+  },
+  {
+   "check": "K_P^h (H-adjoint) static density >= 0 on 2000 random OFF-shell probes (the plain form's negative fraction on the same probes reported)",
+   "value": 108.17534018456976,
+   "threshold": -1e-12,
+   "pass": true
+  },
+  {
+   "check": "K_P^h == K_P on the vacuum orbit (rel)",
+   "value": 3.4434865555751076e-12,
+   "threshold": 1e-10,
+   "pass": true
+  },
+  {
+   "check": "plain K_P recomputed from the eigenbasis blocks (sig_a sig_b weights) == kp_static off-shell (rel)",
+   "value": 2.50438051131779e-15,
+   "threshold": 1e-10,
+   "pass": true
+  },
+  {
+   "check": "K_lambda: perturbation formula vs finite differences of the sorted spectrum (rel)",
+   "value": 1.0573715845879241e-08,
+   "threshold": 1e-05,
+   "pass": true
+  },
+  {
+   "check": "complex-step gradient gate: K_P (rel, 4 random directions, n = 8)",
+   "value": 2.1202279642056397e-15,
+   "threshold": 1e-09,
+   "pass": true
+  },
+  {
+   "check": "complex-step gradient gate: R_etaMeta (rel, 4 random directions, n = 8)",
+   "value": 5.11100994142424e-14,
+   "threshold": 1e-09,
+   "pass": true
+  },
+  {
+   "check": "complex-step gradient gate: R_Minv (rel, 4 random directions, n = 8)",
+   "value": 5.444772043790781e-16,
+   "threshold": 1e-09,
+   "pass": true
+  },
+  {
+   "check": "complex-step gradient gate: R_eta (rel, 4 random directions, n = 8)",
+   "value": 1.8942472139385786e-14,
+   "threshold": 1e-09,
+   "pass": true
+  },
+  {
+   "check": "K_P (intended roots) at the vacuum: zero on 3 boosts + 2 tilts, nonzero on the (2,3) clock",
+   "value": 194.43513600000003,
+   "threshold": 1e-12,
+   "pass": true
+  },
+  {
+   "check": "K_P clock stiffness at the vacuum = [f(delta) f(0)]^2 (delta - 0)^2 (analytic)",
+   "value": 1.4617578908373849e-16,
+   "threshold": 1e-12,
+   "pass": true
+  },
+  {
+   "check": "MUTANT: the literal polynomial (N - g)(N - 1) in our convention is NOT blind to boosts",
+   "value": 84934656.0,
+   "threshold": 1e-12,
+   "pass": true
+  },
+  {
+   "check": "K_lambda omega^2 coefficient is exactly 0 on all six vacuum generator channels",
+   "value": 0.0,
+   "threshold": 1e-14,
+   "pass": true
+  }
+ ],
+ "summary": {
+  "pass": 17,
+  "total": 17
+ }
+}

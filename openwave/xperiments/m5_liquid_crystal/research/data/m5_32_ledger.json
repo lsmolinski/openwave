@@ -739,9 +739,190 @@
     "W3_ladders": "E_J increases with R_s on every ladder (n32 J 50 / 200 / 800, n48 L72 J 200); dE/dJ 0.0187 vs omega 0.037; omega(h 1.0) = 0.018 vs omega(h 1.5) = 0.037 at equal iterations; L-flat (0.037 vs 0.035)",
     "W3_audit": "32 claims: 15 CONFIRMED, 10 QUALIFIED, 7 REFUTED, every item applied (collector rebuilt from the saved fields); mechanism = the W0 S2 eigenvalue-zigzag flank inertia at lattice scale (97 to 99.7 % of kin in the two layers inside the region edge, gap driven to 1.9 to 3.9, d3 negative), not the S5 orientation twist; shell melting; omega ~ h^1.73, box-independent at equal seed maturity; frozen control omega falls 0.48 -> 0.16"
    }
+  },
+  {
+   "id": "R14-0",
+   "start_utc": "2026-09-04T23:42:00Z",
+   "end_utc": "2026-09-05T00:58:00Z",
+   "status": "CLOSED, audited (14 claims: 10 CONFIRMED, 4 QUALIFIED, 0 REFUTED; corrections applied). The author's 09-03 algebra: P249 split exact; degenerate-vacuum Goldstones 5 with charges (0,1,1,1,1) and the charge-2 split; R_eta EL == 0; R_G total derivative CONFIRMED on rotation orbits and single-plane boost textures, REFUTED on two-plane boost orbits for eta M eta, M^-1, h_cov; R_G no omega^2; K_lambda inert; K_P blind to tilts/boosts with the intended roots (the literal polynomial is not, in our convention); K_P blind to the twist sheet (continuum), charges the zigzag; S5 free inertia survives the whole two-derivative set. Own findings: plain K_P indefinite off-shell (the author's H-adjoint fix, invariant order tr(Om^T H Om H^-1), adopted); M^-1 undefined on the singular certified vacuum; the vacuum ticks under the local clock (K_P inertia volume-extensive); K_P static on the hedgehog tail L-divergent (1.34).",
+   "hypothesis": "the model author's 2026-09-03 analysis holds on our stack (ledger 6.3 R14-0)",
+   "artifacts": [
+    "scripts/m5_32_r14_terms.py",
+    "scripts/m5_32_r14_0_verify.py",
+    "scripts/m5_32_r14_0_audit.py",
+    "data/m5_32_r14_terms_selftest.json",
+    "data/m5_32_r14_0_verify.json",
+    "data/m5_32_r14_0_audit.json"
+   ],
+   "claims": {
+    "P249_split": "CONFIRMED",
+    "goldstones_charges": "CONFIRMED (+ V4-type quartic softness, 7 flat)",
+    "R_eta_EL": "CONFIRMED",
+    "R_G_orbit_total_derivative": "REFUTED on boost orbits (two or more planes), CONFIRMED on rotation orbits",
+    "R_G_no_omega2": "CONFIRMED",
+    "K_lambda_inert": "CONFIRMED",
+    "K_P_channel_blindness": "CONFIRMED (intended roots); literal roots QUALIFIED",
+    "K_P_sheet_blind": "CONFIRMED (twist, continuum); charges the zigzag (addition)",
+    "S5_survives": "CONFIRMED (theorem-level: no fixed-J minimizer on L_cert + any two-derivative entrant)",
+    "K_P_plain_indefinite": "FOUND (author's 09-05 H-adjoint correction confirmed independently)",
+    "K_P_tail_divergent": "FOUND (exponent 1.34 sym / 1.47 central)"
+   },
+   "deviations": "the 09-05 reply folded in at the boundary: K_P^h entrant, Lovelock fallback dropped, basis extended (T1..T4), Coulomb-form and zigzag rows, C on lambda 0 and 1"
+  },
+  {
+   "id": "R14-A",
+   "start_utc": "2026-09-05T00:15:00Z",
+   "end_utc": "2026-09-05T01:55:00Z",
+   "status": "CLOSED, audited (9 claims: 4 CONFIRMED, 4 QUALIFIED, 1 REFUTED, applied). Two-derivative class (also with the quartics): CLASS_INFEASIBLE with an exact certificate on both assemblies; binding structure = the Coulomb 1/d-form row against both tails (+ zigzag or relaxed pair); full B+ infeasible at norm <= 100 on both; above 100 the assemblies differ (producer 675 via I1_h; audit 200 via I6 on its own Coulomb block), either far outside O(1) and linear-response validity. Certified I1's boost-tangent omega^2 coefficient negative on the hedgehog (K_T >= 0.064 repairs it). data/m5_32_r14_a_audit.json",
+   "hypothesis": "is there any c on the frozen basis B (extended 09-05) with finite tails, bounded sheet inertia, an attractive dressed pair, positive kinetic forms, the Coulomb sector kept, and UV boundedness (ledger 6.3 R14-A)",
+   "artifacts": [
+    "scripts/m5_32_r14_a_lp.py",
+    "data/m5_32_r14_a_rows.json",
+    "data/m5_32_r14_a_lp.json",
+    "data/m5_32_r14_a_refine.json",
+    "scripts/m5_32_r14_a_audit.py",
+    "data/m5_32_r14_a_audit.json"
+   ],
+   "claims": {
+    "two_derivative_class": "CLASS_INFEASIBLE (exact certificate)",
+    "with_quartics": "CLASS_INFEASIBLE (exact certificate)",
+    "full_basis_norm_le_300": "INFEASIBLE",
+    "full_basis_unbounded": "MARGINAL at norm 675 (I1_h-dominated)",
+    "binding_row": "the zigzag sheet",
+    "author_prediction": "CONFIRMED for the two-derivative class, QUALIFIED for the full basis"
+   }
+  },
+  {
+   "id": "R14-C",
+   "start_utc": "2026-09-05T00:40:00Z",
+   "end_utc": "2026-09-05T03:05:00Z",
+   "status": "CLOSED, audited (9 claims: 1 CONFIRMED, 4 QUALIFIED, 4 REFUTED, applied). INSTRUMENT DEFECT: the energy-gradient wrapper stacked in the pool workers (18 of 24 heals under accumulated coefficients; archived, c_R = +-1 rerun with an x_eff self-check). Audit-corrected linear response on the g = 32 R3 seeds: E_int(18)-E_int(10) = -882 + 2058 c_R (lambda 0), -2316 + 2058 c_R (lambda 1): the sign follows c_R only for c_R > 0.43 (lambda 0) and never within |c_R| <= 1 at lambda 1; the R_G slope scales with g; the static 3x3 record IS changed (-5.54 vs +0.28 per unit); the ansatz R_G pair energy is a boundary-flux term with no power law (dE/dd grows with d). K_lambda: lambda_1, lambda_3 Yukawa exchange attractive (model only; no light scale on V4), lambda_2 ill-defined; tr N deficit 0.067 at the core.",
+   "hypothesis": "does R_G flip the dressed-pair sign with sign(c_R) leaving the static record untouched; does K_lambda with a light scale give an attractive Yukawa (ledger 6.3 R14-C)",
+   "artifacts": [
+    "scripts/m5_32_r14_c_newton.py",
+    "data/m5_32_r14_c_newton.json",
+    "plots/m5_32_r14_c_newton.png",
+    "checkpoints/m5_32_r14/c_relax/ (24 end fields, local)",
+    "scripts/m5_32_r14_c_audit.py",
+    "data/m5_32_r14_c_audit.json",
+    "checkpoints/m5_32_r14/c_relax_stacked/ (the discarded first-run heals, local)"
+   ],
+   "claims": {
+    "sign_follows_cR": "QUALIFIED (threshold c_R > 0.43 at lambda 0, g 32; none within |c_R| <= 1 at lambda 1)",
+    "static_record_unchanged": "REFUTED",
+    "pair_law_d-2": "REFUTED (no power law: boundary flux)",
+    "K_lambda_yukawa": "CONFIRMED for lambda_1, lambda_3 as a model; physics QUALIFIED",
+    "instrument": "wrapper stacking defect found by the audit, fixed, heals rerun"
+   }
+  },
+  {
+   "id": "R14-D",
+   "start_utc": "2026-09-05T00:45:00Z",
+   "end_utc": "2026-09-05T03:20:00Z",
+   "status": "CLOSED, audited (8 claims: 5 CONFIRMED, 1 QUALIFIED, 2 REFUTED, applied). L_cert + c K_P^h: the vacuum TICKS (K_P^h inertia volume-extensive, crossover omega^2 9.3e-9), V_eff unbounded along the split (sealed behind eigenvalue collisions), fixed J bounded; audit: a far-split clock-active minimum family is born by a saddle-node at omega 1.01e-3 (outside my box). D' V4 + mu s^2: on the split line second order (my scan); in the full (m2, m3) plane (audit) FIRST order for mu >= 5.6e-4: exterior at rest (0.157, 0.157), rotating interior off the fixed-sum line, tension 0.63 (mu 1e-3) / 4.03 (1e-2), thin-wall R 1.1e3 down to 54. Verdict: no P250 object on L_cert (the exterior ticks); MAXWELL_CROSSING_EXISTS on the modified action at the plane level.",
+   "hypothesis": "does L_cert + c K_P^h have a clock-active bulk with a Maxwell crossing, hence a coexistence wall and a bag law (ledger 6.3 R14-D)",
+   "artifacts": [
+    "scripts/m5_32_r14_d_bridge.py",
+    "data/m5_32_r14_d_bridge.json",
+    "plots/m5_32_r14_d_bridge.png",
+    "scripts/m5_32_r14_d_audit.py",
+    "data/m5_32_r14_d_audit.json"
+   ],
+   "claims": {
+    "vacuum_ticks": "CONFIRMED",
+    "unbounded_fixed_omega": "CONFIRMED (sealed behind eigenvalue collisions)",
+    "no_clock_active_bulk_on_L_cert": "REFUTED as stated (a far-split saddle-node family exists); the P250 structure (exterior at rest) still absent",
+    "D_prime_second_order": "QUALIFIED: true on the split line, FALSE in the plane for mu >= 5.6e-4",
+    "P250_object_on_modified_action": "EXISTS at the plane level (audit)"
+   }
+  },
+  {
+   "id": "R14-B",
+   "start_utc": "2026-09-05T01:06:00Z",
+   "end_utc": "2026-09-05T05:00:00Z",
+   "status": "CLOSED, audited (8 claims: 4 CONFIRMED, 3 QUALIFIED, 1 REFUTED, applied; n64 rung added 05:00 UTC: kin_KP 1.54e7 / omega 6.50e-6 at h 0.75, L 48: h-stable at fixed volume across h 1.5/1.0/0.75, so the inertia is extensive in the physical volume (0.63-0.78 of the vacuum per unit volume) and omega ~ J/L^3). CANDIDATE_REFUTED at c = 1, 3 (J 50/200/800): no stationary state (logarithmic plateau, dt collapsed), fixed-J term invisible, omega = J/(2 kin) a lattice cell count (kin_KP extensive in cells, 0.63-0.71 of the vacuum per cell, a third to half in the pinned shell; the n48 L48 and L72 end fields are the same lattice-index function: h-blind, so the L^-3 reading is an h^3 identity). Gap dropped 0.30 -> 0.24 in the first 100 iterations then stalled. The three c runs are one trajectory at three speeds; M_0i = 0 is an invariant subspace never left (boost sector unsampled; a saddle at c = 0.3, undecided there). Overnight controls: continuation to 6000 it (gap re-opens 0.241 -> 0.266, E_KP -1.6 percent: the closure fails definitively); plain-K_P boost run identical to the H-adjoint one to 6 digits (the correction is inert here); g = 32 control: omega 2.6e-8 = the g = 8 value / 230 (g^-4 from the polynomial roots), same gap drop, no stationarity.",
+   "hypothesis": "does the fixed-J descent converge on L_cert + c K_P^h across the h x L ladder (ledger 6.3 R14-B)",
+   "artifacts": [
+    "scripts/m5_32_r14_b_fixedj.py",
+    "data/m5_32_r14_b_fixedj.json",
+    "plots/m5_32_r14_b_fixedj.png",
+    "checkpoints/m5_32_r14/b_fixedj/ (end fields, local)",
+    "scripts/m5_32_r14_b_audit.py",
+    "data/m5_32_r14_b_audit.json"
+   ],
+   "claims": {
+    "stationary_state": "NONE (logarithmic plateau)",
+    "omega": "a lattice cell count, no continuum limit (h-blind descent)",
+    "gap_closure": "started in the first 100 iterations (0.30 -> 0.24, K_P^h -40 to -60 %) then stalled",
+    "c_scan": "one trajectory at three speeds; c = 0.3 undecided (boost-sector saddle)",
+    "author_prediction": "verdict CONFIRMED at c >= 1, mechanism NOT"
+   }
+  },
+  {
+   "id": "R14-B2 (free rung 3/12)",
+   "start_utc": "2026-09-05T04:22:00Z",
+   "end_utc": "2026-09-05T04:40:00Z",
+   "status": "CLOSED, audited (overnight audit: 3 CONFIRMED to the iteration; the blow-up sits in the hedgehog core; the LP's plane-wave UV rows are blind to F-built terms (F = 0 on a single wave), which is why the corner existed). RUNAWAY: the auditor's norm-200 LP corner (I6 -177, R_etaMeta 10.4, R_hcov -10.8, K_lambda 2.1) is unbounded once the relaxed hedgehog re-relaxes under it: a localized UV blow-up within 50 iterations at a seed distance of 4e-3 (E -459 -> -21582 -> non-finite; I6 8.8 -> 128, E_u 9 -> 172), identical at J = 0 and J = 200.",
+   "hypothesis": "does the only bounded-looking corner of the R14-A cone survive the author's outer loop (re-relaxation)",
+   "artifacts": [
+    "scripts/m5_32_r14_b2_vertex.py",
+    "data/m5_32_r14_b2_vertex.json",
+    "checkpoints/m5_32_r14/b2_vertex/ (local)"
+   ],
+   "claims": {
+    "corner_bounded": "REFUTED (runaway, pre-registered)"
+   }
+  },
+  {
+   "id": "R14-D2 (free rung 2/12)",
+   "start_utc": "2026-09-05T04:15:00Z",
+   "end_utc": "2026-09-05T04:45:00Z",
+   "status": "CLOSED, audited (overnight audit: 5 CONFIRMED, 1 QUALIFIED: the straight-path bound is 4.42 / 0.70, an upper bound; tension confirmed by three routes to five digits). WALL_EXISTS on the modified potential V4 + mu (m2-m3)^2: the coexistence wall between the exterior at rest (0.157, 0.157) and the rotating interior at omega_* relaxed on the reduced 1D functional with an analytic gradient: sigma 4.026 (mu 1e-2) / 0.631 (mu 1e-3) = the R14-D audit's path-optimized Bogomolny 4.03 / 0.63 to three digits (independent methods); plateaus reached; reduction certified on a lattice slab (registry vs reduced 5e-6); widths 3500 / 7700 box units; bag radii ~1e4 at 1.03 omega_*. Never on L_cert; far beyond any certified box.",
+   "hypothesis": "does the P250-type coexistence wall exist as a stationary object on the 4x4 field (modified potential), with the tension the audit predicted",
+   "artifacts": [
+    "scripts/m5_32_r14_d2_wall.py",
+    "data/m5_32_r14_d2_wall.json",
+    "plots/m5_32_r14_d2_wall.png"
+   ],
+   "claims": {
+    "wall_exists": "YES (both mu)",
+    "tension": "matches the audit's Bogomolny value to 3 digits",
+    "scale": "thousands of box units, bags ~1e4: not a certified-lattice object"
+   }
+  },
+  {
+   "id": "R14-B' (free rung 1/12)",
+   "start_utc": "2026-09-05T04:07:00Z",
+   "end_utc": "2026-09-05T05:35:00Z",
+   "status": "CLOSED pre-audit. Boost-seeded fixed-J descents (rapidity-0.1 dressing, max|M_0i| 0.90) at c 0.3 and 1, J 200, n32, 3000 it: NO boost runaway; the boost content decays 1.8 percent, E_u falls 17 -> 2 / 20 -> 4.5, K_P^h drains as unboosted, omega 1.96e-5 / 5.83e-6 (= the unboosted volume-ticking numbers), gap 0.245; kin_I1 with the local generator drops to 10-22 on the dressed field. The c = 0.3 CANDIDATE_REFUTED stands with the boost sector sampled.",
+   "hypothesis": "does the unsampled boost sector (a saddle at c = 0.3 per the R14-B audit) run away from a boost-dressed seed",
+   "artifacts": [
+    "scripts/m5_32_r14_b_fixedj.py (tags *_boost)",
+    "data/m5_32_r14_b_fixedj.json",
+    "checkpoints/m5_32_r14/b_fixedj/ (local)"
+   ],
+   "claims": {
+    "boost_runaway": "NOT observed within 3000 it (probe decays)",
+    "c_0.3_verdict": "stands"
+   }
+  },
+  {
+   "id": "R14-B3 (free rung 4/12)",
+   "start_utc": "2026-09-05T04:33:00Z",
+   "end_utc": "2026-09-05T06:55:00Z",
+   "status": "CLOSED pre-audit (frozen-generator twin done: same end, a monotone E_J descent 9335 -> 9191, the core degenerates, the fixed-J reward 0.01 vs the K_P^h static cost 9180). The P250 structure imposed by hand (exterior r > 12 degenerate) on L_cert + K_P^h at fixed J: the descent degenerates the core too within 100 iterations (no gap above 0.002 anywhere), kin collapses 1956 -> 32, omega = J/2kin = 3.1 is a residual; the reported E_J RISES 9340 -> 9501 (the refreshed-generator descent is not the gradient flow of E_J: R13-W J3); residual K_P^h static 9180 = the radial profile of the degenerate eigenvalue. No localized clock survives.",
+   "hypothesis": "does a localized fixed-J clock survive inside an exterior at rest on L_cert + K_P^h",
+   "artifacts": [
+    "scripts/m5_32_r14_b_fixedj.py (tag degext, degext_frz)",
+    "checkpoints/m5_32_r14/b_fixedj/ (local)"
+   ],
+   "claims": {
+    "localized_clock_in_exterior_at_rest": "NO (the core degenerates too)",
+    "convention_caveat": "E_J rises: J3"
+   }
   }
  ],
- "free_rungs_used": 1,
+ "free_rungs_used": 4,
  "stop": {
   "rule": "SAFETY (plan section 7): a document contradiction reaching the OpenWave record's canonical claims",
   "at": "2026-08-28T17:55:00Z",

@@ -326,3 +326,58 @@ The author's reply to this note (record: [`m5_32_convo.md`](../tasks/m5_32_convo
 
 What changed in the reading of § 4.1: the extensive inertia has the same radial shape for the ring and the point, so it is a property of the clock CONVENTION (the rigid rotation of the vacuum frame), not of the object; the § 8 question 1 (which clock localization is physical) is now the load-bearing one, and a clock flow that vanishes in the vacuum is the candidate to build. Not computed here: the 12000-iteration ring ladder, relaxed-ring fixed J with a box-scaled taper, the direct dilation test of the (F·F)² class against a flipped static sector.
 
+
+## 11. Addendum (2026-09-05): R13-W and the R14 ladder (the two-derivative class and the coexistence conjecture)
+
+The coordination thread (record: [`m5_32_convo.md`](../tasks/m5_32_convo.md), 2026-08-29 to 2026-09-05) carried the author's degenerate-wall clock convention (tested as R13-W, [ledger § 6.2](m5_32_candidate_ledger.md)), then the author's 2026-09-03 analysis with three two-derivative candidate terms and a structural conjecture, and the corrections of 2026-09-05; the R14 packet was frozen in [ledger § 6.3](m5_32_candidate_ledger.md) before any number and ran as an autonomous ladder ([task record](../tasks/m5_32_task_details.md), R14 section, with five independent audits). Equations first, the code map, then the results with their gates.
+
+### 11.1 The entrants (equations; the E-orientation: a positive coefficient is the energy-positive sense of the certified `4 I1`)
+
+| Term | Definition | Character |
+| --- | --- | --- |
+| `K_lambda` | `E = (1/2) sum_a [ sum_i (d_i lambda_a)^2 + omega^2 (d_t lambda_a)^2 ]`, `lambda_a` the eigenvalues of `N = M eta`; on the lattice the static part is the certified finite difference of the sorted spectrum fields; `d_mu lambda_a = (v_a^T eta A_mu eta v_a) / (v_a^T eta v_a)` | zero on every Lorentz-orbit texture and on every generator channel: an eigenvalue-channel stiffness only |
+| `R_G` | `sum_{mu nu} G_cd [ (A_mu)^{nu c} (A_nu)^{mu d} - (A_mu)^{mu c} (A_nu)^{nu d} ]`, the derivative index of one jet contracted by delta with a raw internal index of the other, `G` a covariant (0,2) tensor: `eta`, `eta M eta`, `M^-1`, `h_cov = eta + 2 (eta u)(eta u)^T` | no `eta^{mu nu}`, hence no omega^2 content for any `G`; `R_eta` has EL identically zero; `M^-1` is undefined on the certified vacuum (eigenvalue 0) |
+| `K_P^h` | `E = (1/2) [ sum_i tr(Om_i^T H Om_i H^-1) + omega^2 tr(Om_0^T H Om_0 H^-1) ]`, `Om_mu = P A_mu eta P`, `P = (N - lambda_t)(N - 1)` with `lambda_t = -g` the vacuum's timelike eigenvalue, `H = eta + 2 (eta u)(eta u)^T`, `H^-1 = eta + 2 u u^T`: the Frobenius norm of the projected jet in the eta-orthonormal eigenbasis of `N` (PSD everywhere) | blind to boosts and tilts at the vacuum; phase stiffness `[f(lambda_2) f(lambda_3)]^2 (lambda_2 - lambda_3)^2` on the (2,3) block, `f(x) = (x + g)(x - 1)`; the plain trace `tr(Om^2)` is indefinite off the vacuum spectrum, and the transposed placement `tr(Om H Om^T H^-1)` is not invariant (R14-0 audit) |
+| `T1 .. T4` | `T1 = eta^{mu nu} tr(A_mu eta A_nu eta)`, `T2 = eta^{mu nu} tr(A_mu eta) tr(A_nu eta)`, `T3 = div_b eta^{bd} div_d` with `div^b = sum_mu (A_mu)^{mu b}`, `T4 = sum_{mu nu} (A_mu)^{mu nu} tr(A_nu eta)` | the covariant constant-coefficient quadratic jet forms; `T5 = T3 + R_eta`; the Frank form with zero splay `Q_F = T1 - T3` is in the span |
+
+The modified potential of R14-D: `V' = V4 + mu (m2 - m3)^2` (the (2,3) eigenvalue penalty, class C3).
+
+### 11.2 Equation-to-code map (additions)
+
+| Equation | Code |
+| --- | --- |
+| the entrants, their selftests (covariance, positivity on the orbit, the perturbation formula against finite differences, complex-step gradient gates) | [`m5_32_r14_terms.py`](../scripts/m5_32_r14_terms.py): `klam_static_fd`, `klam_kin`, `klam_energy_grad`, `rg_density`, `rg_grad`, `rg_hcov_energy_grad`, `kp_static` (plain), `kp_h_static`, `kp_h_kin`, `kp_h_energy_grad` (jets and eigenbasis chained) |
+| the R14-0 statements, each with a named mutation | [`m5_32_r14_0_verify.py`](../scripts/m5_32_r14_0_verify.py) |
+| the LP: basis, rows, the exact UV quadratic forms, cutting planes, the rational certificate | [`m5_32_r14_a_lp.py`](../scripts/m5_32_r14_a_lp.py): `build_basis`, `build_rows`, `uv_quadratic_forms`, `stage_refine`, `farkas`; the quadratic forms `d_T1 .. d_T4` |
+| the fixed-J descent with `K_P^h` | [`m5_32_r14_b_fixedj.py`](../scripts/m5_32_r14_b_fixedj.py): `fire_kph` |
+| the Newton arms | [`m5_32_r14_c_newton.py`](../scripts/m5_32_r14_c_newton.py): `wrapped_energy_grad` (over `m5_32_r2_b_bounded.energy_grad`), `stage_klambda` |
+| the rotating-frame potential of uniform states, the modified potential, the split line | [`m5_32_r14_d_bridge.py`](../scripts/m5_32_r14_d_bridge.py): `v4`, `iota`, `main` |
+| the coexistence wall on the reduced 1D functional and its lattice cross-check | [`m5_32_r14_d2_wall.py`](../scripts/m5_32_r14_d2_wall.py): `F_reduced`, `relax_wall`, `lattice_check` |
+| the LP corner under the descent | [`m5_32_r14_b2_vertex.py`](../scripts/m5_32_r14_b2_vertex.py) |
+| the term catalog | [`m5_32_term_catalog.md`](m5_32_term_catalog.md) |
+
+### 11.3 Results, each with its pre-registered gate (the numbers and the audit counts in the task record)
+
+| Rung | Gate | Audited outcome |
+| --- | --- | --- |
+| R13-W (2026-09-02) | the wall convention gives a localized fixed-J clock on `L_cert` (W1 tension, W2 decoupling, W3 bag) | `ESTABLISHED_KINEMATIC` at best: every planar profile has `E_u = 0` (walls tensionless), the phase field on the vacuum has no action, a non-commuting planar twist carries inertia at zero static cost (no fixed-J minimizer on `L_cert`, a theorem), W3 not stationary (eigenvalue-zigzag flank inertia) |
+| R14-0 | the author's 09-03 statements, CONFIRMED / QUALIFIED / REFUTED each with a mutation | 10 / 4 / 0 in the audit; the orbit theorem holds on rotation orbits and single-plane boost textures and fails on two-plane boost textures for the three `M`-dependent `G`; the free inertia (S5) survives the whole two-derivative set |
+| R14-A | `CLASS_INFEASIBLE` (certificate) or `CONE_FEASIBLE` (vertices) over the frozen basis and rows, exact UV forms included | the two-derivative class, with or without the quartics: `CLASS_INFEASIBLE` with an exact rational certificate on both the producer's and the auditor's assembly (the binding structure: the like-charge 1/d form against the two hedgehog tails, with the zigzag sheet or the relaxed pair); the full basis has no point below coefficient norm 100, and its bounded corners above that (an `I1_h` corner at 675, an `I6` corner at 200 on the auditor's Coulomb block) are outside the linear-response validity of the rows; the certified `4 I1` has a negative omega^2 coefficient on the hedgehog boost tangents, repaired by `K_T >= 0.064` in every feasible point |
+| R14-B | `PERIODIC_ORBIT_EXISTS` (ladder convergence) or `CANDIDATE_REFUTED` | `CANDIDATE_REFUTED` at c = 1, 3: no stationary state (logarithmic plateau), the fixed-J term numerically invisible, `omega = J / (2 kin)` a lattice cell count (the exterior ticks; the descent is h-blind); the pre-registered (2,3) closure started and stalled; the boost sector never sampled (a saddle at c = 0.3, undecided there) |
+| R14-C | G2-lite per term and sign | `R_G`: the pair slope is `(certified) + c_R (R_G slope)`, `-882 + 2058 c_R` at lambda 0 and `-2316 + 2058 c_R` at lambda 1 on the g = 32 pairs, so the sign follows `c_R` only above 0.43 and never within `\|c_R\| <= 1` at lambda 1; the R_G slope scales with g; the static 3x3 record is changed; on the ansatz the R_G pair energy is a boundary-flux term with no power law. `K_lambda`: no long-range static exchange on `V4` (core overlap, exponent 6); an attractive Yukawa only with an assumed light mass |
+| R14-D | `MAXWELL_CROSSING_EXISTS` or `NO_CLOCK_ACTIVE_BULK` | on `L_cert + c K_P^h` the exterior ticks and the fixed-omega functional is unbounded along the split (sealed behind eigenvalue collisions; a far-split pocket is born at omega 1.0e-3): the P250 object (an exterior at rest) does not exist with the certified potential. On `V4 + mu (m2 - m3)^2`, `mu >= 5.6e-4`, a first-order crossing exists at the plane level (audit): an exterior at rest at the diagonal minimum 0.157, a rotating interior off the fixed-sum line, tension 0.63 to 4.0, thin-wall radius 1100 down to 54 |
+| R14-D2, R14-B', R14-B2 (overnight, 2026-09-05) | the wall constructed on the reduced 1D functional and cross-checked on a lattice slab; the boost-seeded descents; the `I6` corner under the descent | to be filled from the task record at the close |
+
+### 11.4 Not computed (in addition to § 6)
+
+The author's gates 1 to 3 of 2026-09-05 (an exact Noether clock charge of a cyclic action, the principal symbol and strong hyperbolicity after constraints, the constrained second variation of `E - omega J`); a Hamiltonian time integrator (the Floquet lifetime, wall formation); the other eight directions of the 4x4 field at the D and D2 phases (`m0`, `m1` and the off-diagonals frozen); the R14-B ladder beyond 3000 / 1000 / 600 iterations; the Lovelock class (dropped: every ghost-free epsilon-epsilon structure vanishes on planar profiles).
+
+### 11.5 The adversarial audit record of the ladder
+
+| Rung | Claims | CONFIRMED | QUALIFIED | REFUTED | Applied |
+| --- | --- | --- | --- | --- | --- |
+| R14-0 | 14 | 10 | 4 | 0 | the V4-type flat count (7), the H-adjoint order, the stencil dependence of the tail exponent |
+| R14-A | 9 | 4 | 4 | 1 | the certificate's support reading, the norm ladder above 100, the eps artifact of the stored `K_P^h` forms, the negative certified boost inertia |
+| R14-B | 8 | 4 | 3 | 1 | the volume-law reading (an h-blind descent), the iteration-100 start values, the unsampled boost sector |
+| R14-C | 9 | 1 | 4 | 4 | the wrapper-stacking defect (heals rerun), the threshold in `c_R`, the pair law, the g = 32 cfg |
+| R14-D | 8 | 5 | 1 | 2 | the box artifact of the fixed-omega scan, the plane-level first-order crossing |

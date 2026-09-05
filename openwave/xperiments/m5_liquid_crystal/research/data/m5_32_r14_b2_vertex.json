@@ -1,0 +1,44 @@
+{
+ "rung": "R14-B2",
+ "vertex": {
+  "I6": -176.997,
+  "R_etaMeta": 10.363,
+  "R_hcov": -10.802,
+  "K_lambda": 2.132
+ },
+ "runs": {
+  "J0": {
+   "stop": "non-finite",
+   "iters": 49,
+   "E_start": -459.46284063891756,
+   "E_end": -21581.794799216248,
+   "I6_start": 8.784651991511938,
+   "I6_end": 128.37642969063097,
+   "E_u_start": 9.047206511335569,
+   "E_u_end": 172.16355432818403,
+   "V4_end": 24.596131784180393,
+   "dist_from_seed_end": 0.004120165199221774,
+   "max_abs_M_end": 8.01464948642469,
+   "gap_mean_end": 0.295369223946218,
+   "omega_end": null,
+   "fmax_end": 3559.700732168227
+  },
+  "J200": {
+   "stop": "non-finite",
+   "iters": 49,
+   "E_start": -423.93256113483454,
+   "E_end": -22170.93259119605,
+   "I6_start": 8.784653382157664,
+   "I6_end": 131.84007226718484,
+   "E_u_start": 9.047208070354772,
+   "E_u_end": 177.01872746119497,
+   "V4_end": 24.162616338874326,
+   "dist_from_seed_end": 0.004140035335934968,
+   "max_abs_M_end": 8.014501350380744,
+   "gap_mean_end": 0.29538302524679216,
+   "omega_end": 0.17751740743726951,
+   "fmax_end": 3584.6059892731814
+  }
+ },
+ "verdict": "RUNAWAY: the corner is unbounded once the field re-relaxes (E -> -2e4 and non-finite within 50 iterations, a localized UV blow-up: I6 8.8 -> 128, E_u 9 -> 172 at a seed distance of 4e-3)"
+}
