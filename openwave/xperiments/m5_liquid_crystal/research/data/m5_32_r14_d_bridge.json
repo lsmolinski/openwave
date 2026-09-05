@@ -1,0 +1,875 @@
+{
+ "rung": "R14-D",
+ "selftest_formulas_vs_registry": true,
+ "L_cert_plus_cKP": {
+  "c=0.3": {
+   "omega=0": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [
+     [
+      0.0,
+      0.30000000000000004,
+      0.0
+     ],
+     [
+      0.30000000000000004,
+      0.0,
+      0.0
+     ]
+    ],
+    "other_minima": [],
+    "V_eff_min_on_box": 0.0,
+    "argmin_on_box": [
+     0.0,
+     0.30000000000000004
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.0001": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [
+     [
+      -0.010000000000000009,
+      0.31000000000000005,
+      -6.233448701379579e-07
+     ],
+     [
+      0.31000000000000005,
+      -0.010000000000000009,
+      -6.233448701379579e-07
+     ]
+    ],
+    "other_minima": [],
+    "V_eff_min_on_box": -6.233448701379579e-07,
+    "argmin_on_box": [
+     -0.010000000000000009,
+     0.31000000000000005
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.001": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [],
+    "other_minima": [
+     [
+      -0.84,
+      0.21999999999999997,
+      -0.0010291184491660434
+     ],
+     [
+      0.21999999999999997,
+      -0.84,
+      -0.0010291184491660434
+     ]
+    ],
+    "V_eff_min_on_box": -0.0010291184491660434,
+    "argmin_on_box": [
+     -0.84,
+     0.21999999999999997
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.01": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -0.7913818371757695,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.03": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -7.424756837175768,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.1": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -82.87939746217576,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "V_eff_along_large_split(omega=1e-2)": [
+    -0.02912269806796932,
+    -0.03251620162422015,
+    -19.24429655887322,
+    -945.4445879790069
+   ],
+   "iota_over_V4_along_large_split": [
+    4765630.59648928,
+    187398.43492016618,
+    790643.6841414976,
+    195865.80362762389
+   ],
+   "fixed_J": {
+    "J=0.001": {
+     "E_J_min": 4.285919461250733e-09,
+     "state_m2_m3": [
+      0.0,
+      0.30000000000000004
+     ],
+     "omega": 8.571838922501466e-06,
+     "V4_at_min": 0.0,
+     "split": -0.30000000000000004
+    },
+    "J=0.01": {
+     "E_J_min": 4.1448675980099284e-07,
+     "state_m2_m3": [
+      -0.010000000000000009,
+      0.31000000000000005
+     ],
+     "omega": 7.601726806833236e-05,
+     "V4_at_min": 3.4400419459331086e-08,
+     "split": -0.32000000000000006
+    },
+    "J=0.1": {
+     "E_J_min": 2.0989274484083125e-05,
+     "state_m2_m3": [
+      -0.12,
+      0.3700000000000001
+     ],
+     "omega": 0.0003205059485246868,
+     "V4_at_min": 4.963977057848787e-06,
+     "split": -0.4900000000000001
+    },
+    "J=1": {
+     "E_J_min": 0.0005191702242504714,
+     "state_m2_m3": [
+      -0.49,
+      0.3900000000000001
+     ],
+     "omega": 0.0006562168878048593,
+     "V4_at_min": 0.00019106178034804176,
+     "split": -0.8800000000000001
+    }
+   }
+  },
+  "c=1": {
+   "omega=0": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [
+     [
+      0.0,
+      0.30000000000000004,
+      0.0
+     ],
+     [
+      0.30000000000000004,
+      0.0,
+      0.0
+     ]
+    ],
+    "other_minima": [],
+    "V_eff_min_on_box": 0.0,
+    "argmin_on_box": [
+     0.0,
+     0.30000000000000004
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.0001": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [],
+    "other_minima": [
+     [
+      -0.040000000000000036,
+      0.33000000000000007,
+      -2.478452989366163e-06
+     ],
+     [
+      0.33000000000000007,
+      -0.040000000000000036,
+      -2.478452989366163e-06
+     ]
+    ],
+    "V_eff_min_on_box": -2.478452989366163e-06,
+    "argmin_on_box": [
+     -0.040000000000000036,
+     0.33000000000000007
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.001": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -0.009475528154718792,
+    "argmin_on_box": [
+     -1.0,
+     0.09000000000000008
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.01": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -2.7261162121757696,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.03": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -24.83736621217577,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.1": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -276.35283496217585,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "V_eff_along_large_split(omega=1e-2)": [
+    -0.09755430698365955,
+    -0.124802723400106,
+    -66.12409539628678,
+    -3603.912043173623
+   ],
+   "iota_over_V4_along_large_split": [
+    4765630.59648928,
+    187398.43492016618,
+    790643.6841414976,
+    195865.80362762389
+   ],
+   "fixed_J": {
+    "J=0.001": {
+     "E_J_min": 1.2857758383752197e-09,
+     "state_m2_m3": [
+      0.0,
+      0.30000000000000004
+     ],
+     "omega": 2.5715516767504395e-06,
+     "V4_at_min": 0.0,
+     "split": -0.30000000000000004
+    },
+    "J=0.01": {
+     "E_J_min": 1.2857758383752198e-07,
+     "state_m2_m3": [
+      0.0,
+      0.30000000000000004
+     ],
+     "omega": 2.57155167675044e-05,
+     "V4_at_min": 0.0,
+     "split": -0.30000000000000004
+    },
+    "J=0.1": {
+     "E_J_min": 8.194113372102886e-06,
+     "state_m2_m3": [
+      -0.06999999999999995,
+      0.3500000000000001
+     ],
+     "omega": 0.00013364657371941788,
+     "V4_at_min": 1.5117846861319908e-06,
+     "split": -0.42000000000000004
+    },
+    "J=1": {
+     "E_J_min": 0.00023612494813334605,
+     "state_m2_m3": [
+      -0.36,
+      0.4099999999999999
+     ],
+     "omega": 0.00031726926699381065,
+     "V4_at_min": 7.749031463644073e-05,
+     "split": -0.7699999999999999
+    }
+   }
+  },
+  "c=3": {
+   "omega=0": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [
+     [
+      0.0,
+      0.30000000000000004,
+      0.0
+     ],
+     [
+      0.30000000000000004,
+      0.0,
+      0.0
+     ]
+    ],
+    "other_minima": [],
+    "V_eff_min_on_box": 0.0,
+    "argmin_on_box": [
+     0.0,
+     0.30000000000000004
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.0001": {
+    "n_local_minima": 2,
+    "ticking_vacuum": [],
+    "other_minima": [
+     [
+      -0.12,
+      0.3700000000000001,
+      -1.0636357422729125e-05
+     ],
+     [
+      0.3700000000000001,
+      -0.12,
+      -1.0636357422729125e-05
+     ]
+    ],
+    "V_eff_min_on_box": -1.0636357422729125e-05,
+    "argmin_on_box": [
+     -0.12,
+     0.3700000000000001
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.001": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -0.04512714967576951,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.01": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -8.25392871217577,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.03": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -74.58767871217576,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "omega=0.1": {
+    "n_local_minima": 0,
+    "ticking_vacuum": [],
+    "other_minima": [],
+    "V_eff_min_on_box": -829.1340849621758,
+    "argmin_on_box": [
+     -1.0,
+     1.5
+    ],
+    "bounded_on_box": true
+   },
+   "V_eff_along_large_split(omega=1e-2)": [
+    -0.2930731895999174,
+    -0.388478499902637,
+    -200.06637778889692,
+    -11199.53334372967
+   ],
+   "iota_over_V4_along_large_split": [
+    4765630.59648928,
+    187398.43492016618,
+    790643.6841414976,
+    195865.80362762389
+   ],
+   "fixed_J": {
+    "J=0.001": {
+     "E_J_min": 4.2859194612507327e-10,
+     "state_m2_m3": [
+      0.0,
+      0.30000000000000004
+     ],
+     "omega": 8.571838922501466e-07,
+     "V4_at_min": 0.0,
+     "split": -0.30000000000000004
+    },
+    "J=0.01": {
+     "E_J_min": 4.285919461250733e-08,
+     "state_m2_m3": [
+      0.0,
+      0.30000000000000004
+     ],
+     "omega": 8.571838922501466e-06,
+     "V4_at_min": 0.0,
+     "split": -0.30000000000000004
+    },
+    "J=0.1": {
+     "E_J_min": 3.295483941696524e-06,
+     "state_m2_m3": [
+      -0.040000000000000036,
+      0.33000000000000007
+     ],
+     "omega": 5.703124851893518e-05,
+     "V4_at_min": 4.439215157497648e-07,
+     "split": -0.3700000000000001
+    },
+    "J=1": {
+     "E_J_min": 0.00011180981601157506,
+     "state_m2_m3": [
+      -0.26,
+      0.4099999999999999
+     ],
+     "omega": 0.00015855506416963415,
+     "V4_at_min": 3.2532283926757986e-05,
+     "split": -0.6699999999999999
+    }
+   }
+  }
+ },
+ "degenerate_state": {
+  "V4_deg_per_volume": 1.7994130394803167e-06,
+  "iota_vac": 194.435136,
+  "omega2_crossover_c1": 9.254567237684431e-09,
+  "verdict_on_L_cert_plus_cKP": "NO_CLOCK_ACTIVE_BULK distinct from the ticking vacuum at any scanned omega; the degenerate exterior is never favored at fixed omega (the vacuum ticks with volume-extensive inertia); V_eff unbounded below along the large-split direction for omega != 0"
+ },
+ "D_prime_modified_potential": {
+  "mu=0.0001": {
+   "mu": 0.0001,
+   "V'_min_at_s": 0.0,
+   "V'_deg_is_vacuum": true,
+   "V'_at_split_delta": 9e-06,
+   "V'_at_0": 1.7994130394803167e-06,
+   "c=0.3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 8.724612815964364e-08,
+    "omega2_delta_well_crossing": 1.2344454314607836e-07,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.00030022275712406315,
+    "s_star": 0.064,
+    "V_eff_bulk_minus_exterior_at_crossing": -4.375800631871122e-09,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 579.3535686416038,
+    "iota_bulk": 9.40634210592678,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.0655,
+      "pressure": 4.896923648081537e-09,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.069,
+      "pressure": 6.028352136627856e-09,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.08,
+      "pressure": 1.0930081236296922e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.1055,
+      "pressure": 3.315922407917032e-08,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=1": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 2.6173838447893087e-08,
+    "omega2_delta_well_crossing": 3.703336294382351e-08,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.00016521334063573703,
+    "s_star": 0.07200000000000001,
+    "V_eff_bulk_minus_exterior_at_crossing": -7.090596877423732e-09,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 580.3063557102272,
+    "iota_bulk": 11.89582957800189,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.0735,
+      "pressure": 7.755182074878564e-09,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.077,
+      "pressure": 9.175165466715012e-09,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.08700000000000001,
+      "pressure": 1.510549455006393e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.111,
+      "pressure": 4.0424862548317086e-08,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 8.724612815964362e-09,
+    "omega2_delta_well_crossing": 1.2344454314607836e-08,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 9.576416086795169e-05,
+    "s_star": 0.0785,
+    "V_eff_bulk_minus_exterior_at_crossing": -9.903627750018059e-09,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 581.162991042021,
+    "iota_bulk": 14.130946921546807,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.08,
+      "pressure": 1.0691755113174202e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.0825,
+      "pressure": 1.2360327183312602e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.092,
+      "pressure": 1.917424793899683e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.1155,
+      "pressure": 4.714938848435943e-08,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   }
+  },
+  "mu=0.001": {
+   "mu": 0.001,
+   "V'_min_at_s": 0.0,
+   "V'_deg_is_vacuum": true,
+   "V'_at_split_delta": 8.999999999999999e-05,
+   "V'_at_0": 1.7994130394803167e-06,
+   "c=0.3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 1.3898582547709162e-06,
+    "omega2_delta_well_crossing": 1.5120824485913164e-06,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.0011890167424419898,
+    "s_star": 0.096,
+    "V_eff_bulk_minus_exterior_at_crossing": -7.698541153920612e-08,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 583.836852881547,
+    "iota_bulk": 21.088426757650115,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.1015,
+      "pressure": 9.59694393497937e-08,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.1115,
+      "pressure": 1.4017859630735355e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.14100000000000001,
+      "pressure": 3.6021022173134463e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.2015,
+      "pressure": 1.5425460290224983e-06,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=1": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 4.169574764312748e-07,
+    "omega2_delta_well_crossing": 4.5362473457739486e-07,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.0006543189129712968,
+    "s_star": 0.11950000000000001,
+    "V_eff_bulk_minus_exterior_at_crossing": -1.8457616070784682e-07,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 588.270272305999,
+    "iota_bulk": 32.560622339442084,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.124,
+      "pressure": 2.1348325252041765e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.132,
+      "pressure": 2.775672932637929e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.1575,
+      "pressure": 5.674265192611142e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.2135,
+      "pressure": 1.951530384274864e-06,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 1.389858254770916e-07,
+    "omega2_delta_well_crossing": 1.5120824485913165e-07,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.000379269019073225,
+    "s_star": 0.136,
+    "V_eff_bulk_minus_exterior_at_crossing": -3.1147001453592407e-07,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 591.9600913547931,
+    "iota_bulk": 42.04812661864934,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.14,
+      "pressure": 3.488012253033952e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.147,
+      "pressure": 4.297533102707271e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.1705,
+      "pressure": 7.788908542012768e-07,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.223,
+      "pressure": 2.334243660198321e-06,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   }
+  },
+  "mu=0.01": {
+   "mu": 0.01,
+   "V'_min_at_s": 0.0,
+   "V'_deg_is_vacuum": true,
+   "V'_at_split_delta": 0.0009,
+   "V'_at_0": 1.7994130394803167e-06,
+   "c=0.3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 1.4415979520883643e-05,
+    "omega2_delta_well_crossing": 1.5398461503043697e-05,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.0038256634954202126,
+    "s_star": 0.10200000000000001,
+    "V_eff_bulk_minus_exterior_at_crossing": -7.929140571394135e-07,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 584.8769626493056,
+    "iota_bulk": 23.78701277621112,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.1085,
+      "pressure": 1.016400392764615e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.1205,
+      "pressure": 1.5459079202509962e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.155,
+      "pressure": 4.259679338137216e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.2245,
+      "pressure": 1.9244713932504837e-05,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=1": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 4.324793856265092e-06,
+    "omega2_delta_well_crossing": 4.619538450913109e-06,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.002105272272765707,
+    "s_star": 0.13,
+    "V_eff_bulk_minus_exterior_at_crossing": -2.0857255811296466e-06,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 590.563283302489,
+    "iota_bulk": 38.46302084434126,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.135,
+      "pressure": 2.44009979690099e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.145,
+      "pressure": 3.2313194966737278e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.17450000000000002,
+      "pressure": 6.860852769247561e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.23800000000000002,
+      "pressure": 2.4460166478474973e-05,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   },
+   "c=3": {
+    "maxwell_crossing": true,
+    "omega2_instability_of_exterior": 1.441597952088364e-06,
+    "omega2_delta_well_crossing": 1.5398461503043698e-06,
+    "V4_second_derivative_at_0_along_split": -7.943991347915377e-05,
+    "F0_small_split_inertia_coefficient": 2303.064694940664,
+    "order": "SECOND (continuous onset, no wall)",
+    "barrier_between_exterior_and_bulk_at_crossing": 0.0,
+    "order_measured": "SECOND (no barrier: sigma = 0, no bag)",
+    "omega_star": 0.0012202987472088173,
+    "s_star": 0.149,
+    "V_eff_bulk_minus_exterior_at_crossing": -3.6522533239623352e-06,
+    "sigma_first_integral": 0.0,
+    "kappa_at_0": 575.766173735166,
+    "kappa_at_s_star": 595.2022831400471,
+    "iota_bulk": 50.33937566864057,
+    "bags": [
+     {
+      "omega_over_omega_star": 1.001,
+      "s_bulk": 0.1535,
+      "pressure": 4.117283733314621e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.003,
+      "s_bulk": 0.1625,
+      "pressure": 5.1298086625355305e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.01,
+      "s_bulk": 0.189,
+      "pressure": 9.533593588795741e-06,
+      "R_thin_wall": 0.0
+     },
+     {
+      "omega_over_omega_star": 1.03,
+      "s_bulk": 0.2485,
+      "pressure": 2.9343355425293465e-05,
+      "R_thin_wall": 0.0
+     }
+    ],
+    "omega_star_within_radiation_window(mu_gap=sqrt(V4 curvature)?)": "not assessed here"
+   }
+  }
+ },
+ "wall_s": 1.1
+}
