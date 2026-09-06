@@ -1,0 +1,372 @@
+{
+  "claims": {
+    "H1": {
+      "alpha_by_term": {
+        "-4I1": "0",
+        "-4I1_h": "0",
+        "K_P^23": "0",
+        "reg_eta": "2*w*(delta + s - 1)**2",
+        "reg_h": "2*w*(delta + s - 1)**2"
+      },
+      "verdict": "CONFIRMED"
+    },
+    "H2": {
+      "C2_eta": "8*s**2*(delta + s - 1)**2",
+      "C2_h": "8*s**2*(delta + s - 1)**2",
+      "C2_matches_8s2": true,
+      "L2_matches": true,
+      "FF_per_k2_theta2": "8*omega**2*s**2*(delta + s - 1)**2",
+      "verdict": "CONFIRMED"
+    },
+    "H3": {
+      "kappa2_eta": "2*(delta + s - 1)**2",
+      "kappa2_h": "2*(delta + s - 1)**2",
+      "regulator_L2_matches": true,
+      "alpha_total(I1+KP+reg_eta)": "2*w*(delta + s - 1)**2",
+      "gamma_total(I1+KP+reg_eta)": "2*(16*omega**2*s**2 - w)*(delta + s - 1)**2",
+      "eps_total(I1+KP+reg_eta)": "-2*omega**2*(2*c_P*s**2 - delta**2*w + 2*delta*s*w + 2*delta*w + 3*s**2*w - 2*s*w - w)",
+      "gamma_total_matches": true,
+      "Omega2_dispersion": "(2*c_P*omega**2*s**2 + k**2*(-16*omega**2*s**2 + w)*(delta + s - 1)**2 + omega**2*w*(-delta + 3*s + 1)*(delta + s - 1))/(w*(delta + s - 1)**2)",
+      "hyperbolic_iff": "alpha>0 and gamma<0: w>0 (with delta+s!=1) and w > 16 omega^2 s^2",
+      "verdict": "CONFIRMED"
+    },
+    "H4": {
+      "KP_L0": "4*c_P*omega**2*s**2",
+      "KP_L2": {
+        "eps (theta^2)": "-4*c_P*omega**2*s**2"
+      },
+      "static_12_sheet": {
+        "-4I1": "0",
+        "-4I1_h": "0",
+        "K_P^23": "0",
+        "reg_eta": "-2*w*(delta + s - 1)**2*Derivative(psi(z), z)**2",
+        "reg_h": "-2*w*(delta + s - 1)**2*Derivative(psi(z), z)**2"
+      },
+      "static_13_sheet": {
+        "-4I1": "0",
+        "-4I1_h": "0",
+        "K_P^23": "0",
+        "reg_eta": "-2*w*(-delta + s + 1)**2*Derivative(psi(z), z)**2",
+        "reg_h": "-2*w*(-delta + s + 1)**2*Derivative(psi(z), z)**2"
+      },
+      "static_23_sheet": {
+        "-4I1": "0",
+        "-4I1_h": "0",
+        "K_P^23": "-4*c_P*s**2*Derivative(psi(z), z)**2",
+        "reg_eta": "-8*s**2*w*Derivative(psi(z), z)**2",
+        "reg_h": "-8*s**2*w*Derivative(psi(z), z)**2"
+      },
+      "verdict": "CONFIRMED"
+    },
+    "H5": {
+      "tau_dependent": {
+        "-4I1": false,
+        "-4I1_h": false,
+        "K_P^23": false,
+        "reg_eta": false,
+        "reg_h": false
+      },
+      "L1": {
+        "-4I1": "0",
+        "-4I1_h": "0",
+        "K_P^23": "0",
+        "reg_eta": "0",
+        "reg_h": "0"
+      },
+      "verdict": "CONFIRMED"
+    }
+  },
+  "mutations": {
+    "a_tilt_13_inside": {
+      "-4I1": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {
+          "gamma (theta_z^2)": "32*omega**2*s**2*(-delta + s + 1)**2"
+        },
+        "tau_dependent": false
+      },
+      "-4I1_h": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {
+          "gamma (theta_z^2)": "32*omega**2*s**2*(-delta + s + 1)**2"
+        },
+        "tau_dependent": false
+      },
+      "K_P^23": {
+        "L0": "4*c_P*omega**2*s**2",
+        "L1": "0",
+        "L2": {
+          "eps (theta^2)": "-4*c_P*omega**2*s**2"
+        },
+        "tau_dependent": false
+      },
+      "reg_eta": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "0",
+        "L2": {
+          "eps (theta^2)": "-2*omega**2*w*(-delta + s + 1)*(delta + 3*s - 1)",
+          "alpha (theta_t^2)": "2*w*(-delta + s + 1)**2",
+          "gamma (theta_z^2)": "-2*w*(-delta + s + 1)**2"
+        },
+        "tau_dependent": false
+      },
+      "reg_h": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "0",
+        "L2": {
+          "eps (theta^2)": "-2*omega**2*w*(-delta + s + 1)*(delta + 3*s - 1)",
+          "alpha (theta_t^2)": "2*w*(-delta + s + 1)**2",
+          "gamma (theta_z^2)": "-2*w*(-delta + s + 1)**2"
+        },
+        "tau_dependent": false
+      }
+    },
+    "b_tilt_12_outside": {
+      "-4I1": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {
+          "gamma (theta_z^2)": "32*omega**2*s**2*(delta**2 + 4*delta*s*cos(tau)**2 - 2*delta*s - 2*delta + s**2 - 4*s*cos(tau)**2 + 2*s + 1)"
+        },
+        "tau_dependent": true
+      },
+      "-4I1_h": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {
+          "gamma (theta_z^2)": "32*omega**2*s**2*(delta**2 + 4*delta*s*cos(tau)**2 - 2*delta*s - 2*delta + s**2 - 4*s*cos(tau)**2 + 2*s + 1)"
+        },
+        "tau_dependent": true
+      },
+      "K_P^23": {
+        "L0": "4*c_P*omega**2*s**2",
+        "L1": "0",
+        "L2": {},
+        "tau_dependent": false
+      },
+      "reg_eta": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "0",
+        "L2": {
+          "alpha (theta_t^2)": "2*w*(delta**2 - 4*delta*s*sin(tau)**2 + 2*delta*s - 2*delta + s**2 + 4*s*sin(tau)**2 - 2*s + 1)",
+          "gamma (theta_z^2)": "-2*w*(delta**2 - 4*delta*s*sin(tau)**2 + 2*delta*s - 2*delta + s**2 + 4*s*sin(tau)**2 - 2*s + 1)"
+        },
+        "tau_dependent": true
+      },
+      "reg_h": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "0",
+        "L2": {
+          "alpha (theta_t^2)": "2*w*(delta**2 - 4*delta*s*sin(tau)**2 + 2*delta*s - 2*delta + s**2 + 4*s*sin(tau)**2 - 2*s + 1)",
+          "gamma (theta_z^2)": "-2*w*(delta**2 - 4*delta*s*sin(tau)**2 + 2*delta*s - 2*delta + s**2 + 4*s*sin(tau)**2 - 2*s + 1)"
+        },
+        "tau_dependent": true
+      }
+    },
+    "c_cross_terms_main": {
+      "-4I1": {},
+      "-4I1_h": {},
+      "K_P^23": {},
+      "reg_eta": {},
+      "reg_h": {}
+    },
+    "d_s_equals_0": {
+      "-4I1": {
+        "L0": "0",
+        "L2": {
+          "gamma (theta_z^2)": "0"
+        }
+      },
+      "-4I1_h": {
+        "L0": "0",
+        "L2": {
+          "gamma (theta_z^2)": "0"
+        }
+      },
+      "K_P^23": {
+        "L0": "0",
+        "L2": {
+          "eps (theta^2)": "0"
+        }
+      },
+      "reg_eta": {
+        "L0": "0",
+        "L2": {
+          "eps (theta^2)": "2*omega**2*w*(delta - 1)**2",
+          "alpha (theta_t^2)": "2*w*(delta - 1)**2",
+          "gamma (theta_z^2)": "-2*w*(delta - 1)**2"
+        }
+      },
+      "reg_h": {
+        "L0": "0",
+        "L2": {
+          "eps (theta^2)": "2*omega**2*w*(delta - 1)**2",
+          "alpha (theta_t^2)": "2*w*(delta - 1)**2",
+          "gamma (theta_z^2)": "-2*w*(delta - 1)**2"
+        }
+      }
+    },
+    "e_tilt_23_inside": {
+      "-4I1": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {},
+        "tau_dependent": false
+      },
+      "-4I1_h": {
+        "L0": "0",
+        "L1": "0",
+        "L2": {},
+        "tau_dependent": false
+      },
+      "K_P^23": {
+        "L0": "4*c_P*omega**2*s**2",
+        "L1": "8*c_P*omega*s**2*theta_t",
+        "L2": {
+          "alpha (theta_t^2)": "4*c_P*s**2",
+          "gamma (theta_z^2)": "-4*c_P*s**2"
+        },
+        "tau_dependent": false
+      },
+      "reg_eta": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "16*omega*s**2*theta_t*w",
+        "L2": {
+          "alpha (theta_t^2)": "8*s**2*w",
+          "gamma (theta_z^2)": "-8*s**2*w"
+        },
+        "tau_dependent": false
+      },
+      "reg_h": {
+        "L0": "8*omega**2*s**2*w",
+        "L1": "16*omega*s**2*theta_t*w",
+        "L2": {
+          "alpha (theta_t^2)": "8*s**2*w",
+          "gamma (theta_z^2)": "-8*s**2*w"
+        },
+        "tau_dependent": false
+      }
+    },
+    "b_tilt_12_outside_at_phases": {
+      "-4I1": {
+        "gamma (theta_z^2)": {
+          "tau=0": "32*omega**2*s**2*(delta + s - 1)**2",
+          "tau=pi/2": "32*omega**2*s**2*(-delta + s + 1)**2",
+          "tau=pi/4": "32*omega**2*s**2*(delta**2 - 2*delta + s**2 + 1)"
+        }
+      },
+      "-4I1_h": {
+        "gamma (theta_z^2)": {
+          "tau=0": "32*omega**2*s**2*(delta + s - 1)**2",
+          "tau=pi/2": "32*omega**2*s**2*(-delta + s + 1)**2",
+          "tau=pi/4": "32*omega**2*s**2*(delta**2 - 2*delta + s**2 + 1)"
+        }
+      },
+      "K_P^23": {},
+      "reg_eta": {
+        "alpha (theta_t^2)": {
+          "tau=0": "2*w*(delta + s - 1)**2",
+          "tau=pi/2": "2*w*(-delta + s + 1)**2",
+          "tau=pi/4": "2*w*(delta**2 - 2*delta + s**2 + 1)"
+        },
+        "gamma (theta_z^2)": {
+          "tau=0": "-2*w*(delta + s - 1)**2",
+          "tau=pi/2": "-2*w*(-delta + s + 1)**2",
+          "tau=pi/4": "-2*w*(delta**2 - 2*delta + s**2 + 1)"
+        }
+      },
+      "reg_h": {
+        "alpha (theta_t^2)": {
+          "tau=0": "2*w*(delta + s - 1)**2",
+          "tau=pi/2": "2*w*(-delta + s + 1)**2",
+          "tau=pi/4": "2*w*(delta**2 - 2*delta + s**2 + 1)"
+        },
+        "gamma (theta_z^2)": {
+          "tau=0": "-2*w*(delta + s - 1)**2",
+          "tau=pi/2": "-2*w*(-delta + s + 1)**2",
+          "tau=pi/4": "-2*w*(delta**2 - 2*delta + s**2 + 1)"
+        }
+      }
+    },
+    "f_delta_plus_s_equals_1": {
+      "-4I1": {
+        "gamma (theta_z^2)": "0"
+      },
+      "-4I1_h": {
+        "gamma (theta_z^2)": "0"
+      },
+      "K_P^23": {
+        "eps (theta^2)": "-4*c_P*omega**2*s**2"
+      },
+      "reg_eta": {
+        "eps (theta^2)": "0",
+        "alpha (theta_t^2)": "0",
+        "gamma (theta_z^2)": "0"
+      },
+      "reg_h": {
+        "eps (theta^2)": "0",
+        "alpha (theta_t^2)": "0",
+        "gamma (theta_z^2)": "0"
+      }
+    }
+  },
+  "not_claimed_but_found": [
+    "the (1,3) tilt is the mirror channel: every coefficient maps under s -> -s, i.e. (delta+s-1) -> (delta-s-1); the K_P^23 and I1 background values are even in s so they are unchanged",
+    "a tilt IN the rotation plane (2,3) inside the frame has a nonzero L1 = 8 c_P omega s^2 theta_t (+16 omega s^2 w theta_t for the regulator): it is the rotation phase itself; it is a total time derivative and drops from the action, and its L2 is a pure regulator/K_P wave term with alpha = -gamma = 4 c_P s^2 (K_P) and 8 s^2 w (regulator); I1 gives nothing",
+    "at delta + s = 1 the (1,2) tilt rotates two EQUAL eigenvalues (1 and delta+s): every quadratic coefficient vanishes except the K_P^23 mass term -4 c_P omega^2 s^2 theta^2, so the K_P^23 eps is NOT proportional to kappa_2 and does not vanish on the gauge direction; it comes from the projector P23 moving with theta while the spectrum is degenerate",
+    "the tilt OUTSIDE the rotating frame is tau-dependent for I1 and the regulator (kappa_2 oscillates between 2(delta+s-1)^2 at tau=0 and 2(delta-s-1)^2 at tau=pi/2), while K_P^23 gives NO quadratic term at all (the projector then rotates rigidly with the tilt and Om_z vanishes); the producer's tau-independence rests on the tilt being inside the frame, as the brief states",
+    "the static (2,3) twist sheet (twist in the ROTATION plane, omega = 0) gives -4 I1 = 0 as well, but the static K_P^23 density there is NOT zero: -4 c_P s^2 psi'(z)^2 for any amplitude (the twist stays inside the P23 eigenplane, so Om_z survives); the static K_P^23 vanishes only on the (1,2) and (1,3) sheets, where A_z is off-diagonal between the eigenplanes and P23 A_z eta P23 = 0; the static regulator is -2 w (delta+s-1)^2 psi'^2 on the (1,2) sheet",
+    "at s = 0 the I1, I1_h and K_P^23 quadratic forms vanish as expected, but the regulator's theta^2 coefficient does NOT: eps(reg) = +2 w omega^2 (delta-1)^2 with alpha = 2 w (delta-1)^2, so the single-tilt dispersion at s = 0 is Omega^2 = k^2 - omega^2 in the rotating frame; a static D = diag(g,1,delta,delta) has lab-frame massless tilts Omega_lab^2 = k^2 and the rotating frame should give (k -/+ omega)^2, so the single-theta ansatz drops the Coriolis coupling to the (1,3) partner tilt (the cross term theta_12_t theta_13 of the two-tilt problem); this does not touch the principal symbol (hyperbolicity) but the k = 0 gap Omega^2(0) = -eps_tot/alpha_tot should not be read as physical"
+  ],
+  "main": {
+    "-4I1": {
+      "L0": "0",
+      "L1": "0",
+      "L2": {
+        "gamma (theta_z^2)": "32*omega**2*s**2*(delta + s - 1)**2"
+      },
+      "tau_dependent": false
+    },
+    "-4I1_h": {
+      "L0": "0",
+      "L1": "0",
+      "L2": {
+        "gamma (theta_z^2)": "32*omega**2*s**2*(delta + s - 1)**2"
+      },
+      "tau_dependent": false
+    },
+    "K_P^23": {
+      "L0": "4*c_P*omega**2*s**2",
+      "L1": "0",
+      "L2": {
+        "eps (theta^2)": "-4*c_P*omega**2*s**2"
+      },
+      "tau_dependent": false
+    },
+    "reg_eta": {
+      "L0": "8*omega**2*s**2*w",
+      "L1": "0",
+      "L2": {
+        "eps (theta^2)": "-2*omega**2*w*(-delta + 3*s + 1)*(delta + s - 1)",
+        "alpha (theta_t^2)": "2*w*(delta + s - 1)**2",
+        "gamma (theta_z^2)": "-2*w*(delta + s - 1)**2"
+      },
+      "tau_dependent": false
+    },
+    "reg_h": {
+      "L0": "8*omega**2*s**2*w",
+      "L1": "0",
+      "L2": {
+        "eps (theta^2)": "-2*omega**2*w*(-delta + 3*s + 1)*(delta + s - 1)",
+        "alpha (theta_t^2)": "2*w*(delta + s - 1)**2",
+        "gamma (theta_z^2)": "-2*w*(delta + s - 1)**2"
+      },
+      "tau_dependent": false
+    }
+  },
+  "Omega2_at_k0_total": "omega**2*(2*c_P*s**2 - delta**2*w + 2*delta*s*w + 2*delta*w + 3*s**2*w - 2*s*w - w)/(w*(delta + s - 1)**2)",
+  "Omega2_at_k0_total_s0": "-omega**2",
+  "runtime_s": 31.8
+}

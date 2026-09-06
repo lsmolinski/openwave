@@ -1,0 +1,570 @@
+{
+ "definitions": "M5.32 R15-V-a (the floor witness on homogeneous jets) and R15-H (the tilt channel), symbolic.\n\nEquations first.  eta = diag(-1, 1, 1, 1); M(x) 4x4 symmetric contravariant; A_mu = d_mu M;\nF_mu nu = A_mu eta A_nu - A_nu eta A_mu;  <F, F>_G = tr(G F G F^T) for an internal metric G.\n    I1   = sum_{mu<nu} eta^mu eta^nu <F_mu nu, F_mu nu>_eta          (the certified term, L_cert = -4 I1 - V4)\n    I1_h = sum_{mu<nu} eta^mu eta^nu <F_mu nu, F_mu nu>_h,  h = eta + 2 (eta u)(eta u)^T,\n           u the timelike unit eigenvector of N = M eta (u = Q e0 for M = Q D Q^T, Q in SO(1,3))\nE-orientation (static): E = +4 x I1 (resp. I1_h) at omega = 0.\n\nR15-V-a.  The jet of the author's floor witness at one point: the vacuum D = diag(g, 1, delta, delta4)\ndressed by a boost along axis a with rapidity chi (gradient b along axis s) and a (1,2) twist by\npsi (gradient k along axis t = 3), TWIST INSIDE:  M = L_a(chi) R_12(psi) D R_12^T L_a^T,\nTWIST AFTER:  M = R_12(psi) L_a(chi) D L_a^T R_12^T.  The only curvature is F_st = [b d_chi M, k d_psi M]_eta\n(s != t), and the static E-density of each form is U_G = 4 <F_st, F_st>_G = b^2 k^2 c_G(chi, psi).\nClaims (pre-registered, ledger 6.4): V1 c_eta < 0 (twist inside, the author's -2 b^2 k^2 g^2 (delta-1)^2 at\nchi -> 0); V2 c_h > 0 (the author's +2 b^2 k^2 g^2 (delta-1)^2); V3 twist after: c_eta == c_h; V4 the exact\nsymbolic coefficients.\n\n",
+ "author_coefficient": "-2 b^2 k^2 g^2 (delta-1)^2 (eta), +2 b^2 k^2 g^2 (delta-1)^2 (h)",
+ "pairs": [
+  {
+   "order": "inside",
+   "boost_axis": 1,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(g + 1)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(g + 1)**2",
+   "c_eta_minus_c_h_general": "16*(delta - 1)**2*(-4*delta**2*sin(psi)**8*sinh(chi)**6 - 12*delta**2*sin(psi)**8*sinh(chi)**4 - 12*delta**2*sin(psi)**8*sinh(chi)**2 + 4*delta**2*sin(psi)**8*cosh(chi)**6 - 5*delta**2*sin(psi)**8 + 4*delta**2*sin(psi)**6*sinh(chi)**6 + 12*delta**2*sin(psi)**6*sinh(chi)**4 + 12*delta**2*sin(psi)**6*sinh(chi)**2 - 4*delta**2*sin(psi)**6*cosh(chi)**6 + 7*delta**2*sin(psi)**6 - 3*delta**2*sin(psi)**4 + delta**2*cos(psi)**8 - delta**2*cos(psi)**6 - 8*delta*g*sin(psi)**6*sinh(chi)**6 - 24*delta*g*sin(psi)**6*sinh(chi)**4 - 24*delta*g*sin(psi)**6*sinh(chi)**2 + 8*delta*g*sin(psi)**6*cosh(chi)**6 - 8*delta*g*sin(psi)**6 + 8*delta*g*sin(psi)**4*sinh(chi)**6 + 24*delta*g*sin(psi)**4*sinh(chi)**4 + 24*delta*g*sin(psi)**4*sinh(chi)**2 - 8*delta*g*sin(psi)**4*cosh(chi)**6 + 8*delta*g*sin(psi)**4 - 2*delta*g*sin(psi)**2 + 8*delta*sin(psi)**8*sinh(chi)**6 + 24*delta*sin(psi)**8*sinh(chi)**4 + 24*delta*sin(psi)**8*sinh(chi)**2 - 8*delta*sin(psi)**8*cosh(chi)**6 + 8*delta*sin(psi)**8 - 16*delta*sin(psi)**6*sinh(chi)**6 - 48*delta*sin(psi)**6*sinh(chi)**4 - 48*delta*sin(psi)**6*sinh(chi)**2 + 16*delta*sin(psi)**6*cosh(chi)**6 - 16*delta*sin(psi)**6 + 8*delta*sin(psi)**4*sinh(chi)**6 + 24*delta*sin(psi)**4*sinh(chi)**4 + 24*delta*sin(psi)**4*sinh(chi)**2 - 8*delta*sin(psi)**4*cosh(chi)**6 + 8*delta*sin(psi)**4 - 4*g**2*sin(psi)**4*sinh(chi)**6 - 12*g**2*sin(psi)**4*sinh(chi)**4 - 12*g**2*sin(psi)**4*sinh(chi)**2 + 4*g**2*sin(psi)**4*cosh(chi)**6 - 4*g**2*sin(psi)**4 + 4*g**2*sin(psi)**2*sinh(chi)**6 + 12*g**2*sin(psi)**2*sinh(chi)**4 + 12*g**2*sin(psi)**2*sinh(chi)**2 - 4*g**2*sin(psi)**2*cosh(chi)**6 + 4*g**2*sin(psi)**2 - g**2 + 8*g*sin(psi)**6*sinh(chi)**6 + 24*g*sin(psi)**6*sinh(chi)**4 + 24*g*sin(psi)**6*sinh(chi)**2 - 8*g*sin(psi)**6*cosh(chi)**6 + 6*g*sin(psi)**6 - 16*g*sin(psi)**4*sinh(chi)**6 - 48*g*sin(psi)**4*sinh(chi)**4 - 48*g*sin(psi)**4*sinh(chi)**2 + 16*g*sin(psi)**4*cosh(chi)**6 - 10*g*sin(psi)**4 + 8*g*sin(psi)**2*sinh(chi)**6 + 24*g*sin(psi)**2*sinh(chi)**4 + 24*g*sin(psi)**2*sinh(chi)**2 - 8*g*sin(psi)**2*cosh(chi)**6 + 4*g*sin(psi)**2 - 2*g*cos(psi)**6 - 2*sin(psi)**8 + 5*sin(psi)**6 - 3*sin(psi)**4 - 4*cos(psi)**8*sinh(chi)**6 - 12*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*sinh(chi)**2 + 4*cos(psi)**8*cosh(chi)**6 - 2*cos(psi)**8 + 4*cos(psi)**6*sinh(chi)**6 + 12*cos(psi)**6*sinh(chi)**4 + 12*cos(psi)**6*sinh(chi)**2 - 4*cos(psi)**6*cosh(chi)**6 + cos(psi)**6)",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0.5_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 1,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(g + 1)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(g + 1)**2",
+   "c_eta_minus_c_h_general": "16*(delta - 1)**2*(-4*delta**2*sin(psi)**8*sinh(chi)**6 - 12*delta**2*sin(psi)**8*sinh(chi)**4 - 12*delta**2*sin(psi)**8*sinh(chi)**2 + 4*delta**2*sin(psi)**8*cosh(chi)**6 - 5*delta**2*sin(psi)**8 + 4*delta**2*sin(psi)**6*sinh(chi)**6 + 12*delta**2*sin(psi)**6*sinh(chi)**4 + 12*delta**2*sin(psi)**6*sinh(chi)**2 - 4*delta**2*sin(psi)**6*cosh(chi)**6 + 7*delta**2*sin(psi)**6 - 3*delta**2*sin(psi)**4 + delta**2*cos(psi)**8 - delta**2*cos(psi)**6 - 8*delta*g*sin(psi)**6*sinh(chi)**6 - 24*delta*g*sin(psi)**6*sinh(chi)**4 - 24*delta*g*sin(psi)**6*sinh(chi)**2 + 8*delta*g*sin(psi)**6*cosh(chi)**6 - 8*delta*g*sin(psi)**6 + 8*delta*g*sin(psi)**4*sinh(chi)**6 + 24*delta*g*sin(psi)**4*sinh(chi)**4 + 24*delta*g*sin(psi)**4*sinh(chi)**2 - 8*delta*g*sin(psi)**4*cosh(chi)**6 + 8*delta*g*sin(psi)**4 - 2*delta*g*sin(psi)**2 + 8*delta*sin(psi)**8*sinh(chi)**6 + 24*delta*sin(psi)**8*sinh(chi)**4 + 24*delta*sin(psi)**8*sinh(chi)**2 - 8*delta*sin(psi)**8*cosh(chi)**6 + 8*delta*sin(psi)**8 - 16*delta*sin(psi)**6*sinh(chi)**6 - 48*delta*sin(psi)**6*sinh(chi)**4 - 48*delta*sin(psi)**6*sinh(chi)**2 + 16*delta*sin(psi)**6*cosh(chi)**6 - 16*delta*sin(psi)**6 + 8*delta*sin(psi)**4*sinh(chi)**6 + 24*delta*sin(psi)**4*sinh(chi)**4 + 24*delta*sin(psi)**4*sinh(chi)**2 - 8*delta*sin(psi)**4*cosh(chi)**6 + 8*delta*sin(psi)**4 - 4*g**2*sin(psi)**4*sinh(chi)**6 - 12*g**2*sin(psi)**4*sinh(chi)**4 - 12*g**2*sin(psi)**4*sinh(chi)**2 + 4*g**2*sin(psi)**4*cosh(chi)**6 - 4*g**2*sin(psi)**4 + 4*g**2*sin(psi)**2*sinh(chi)**6 + 12*g**2*sin(psi)**2*sinh(chi)**4 + 12*g**2*sin(psi)**2*sinh(chi)**2 - 4*g**2*sin(psi)**2*cosh(chi)**6 + 4*g**2*sin(psi)**2 - g**2 + 8*g*sin(psi)**6*sinh(chi)**6 + 24*g*sin(psi)**6*sinh(chi)**4 + 24*g*sin(psi)**6*sinh(chi)**2 - 8*g*sin(psi)**6*cosh(chi)**6 + 6*g*sin(psi)**6 - 16*g*sin(psi)**4*sinh(chi)**6 - 48*g*sin(psi)**4*sinh(chi)**4 - 48*g*sin(psi)**4*sinh(chi)**2 + 16*g*sin(psi)**4*cosh(chi)**6 - 10*g*sin(psi)**4 + 8*g*sin(psi)**2*sinh(chi)**6 + 24*g*sin(psi)**2*sinh(chi)**4 + 24*g*sin(psi)**2*sinh(chi)**2 - 8*g*sin(psi)**2*cosh(chi)**6 + 4*g*sin(psi)**2 - 2*g*cos(psi)**6 - 2*sin(psi)**8 + 5*sin(psi)**6 - 3*sin(psi)**4 - 4*cos(psi)**8*sinh(chi)**6 - 12*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*sinh(chi)**2 + 4*cos(psi)**8*cosh(chi)**6 - 2*cos(psi)**8 + 4*cos(psi)**6*sinh(chi)**6 + 12*cos(psi)**6*sinh(chi)**4 + 12*cos(psi)**6*sinh(chi)**2 - 4*cos(psi)**6*cosh(chi)**6 + cos(psi)**6)",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0.5_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 1,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  },
+  {
+   "order": "inside",
+   "boost_axis": 2,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(delta + g)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(delta + g)**2",
+   "c_eta_minus_c_h_general": "16*(delta - 1)**2*(-2*delta**2*sin(psi)**8 + 5*delta**2*sin(psi)**6 - 3*delta**2*sin(psi)**4 - 4*delta**2*cos(psi)**8*sinh(chi)**6 - 12*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*sinh(chi)**2 + 4*delta**2*cos(psi)**8*cosh(chi)**6 - 2*delta**2*cos(psi)**8 + 4*delta**2*cos(psi)**6*sinh(chi)**6 + 12*delta**2*cos(psi)**6*sinh(chi)**4 + 12*delta**2*cos(psi)**6*sinh(chi)**2 - 4*delta**2*cos(psi)**6*cosh(chi)**6 + delta**2*cos(psi)**6 + 8*delta*g*sin(psi)**6*sinh(chi)**6 + 24*delta*g*sin(psi)**6*sinh(chi)**4 + 24*delta*g*sin(psi)**6*sinh(chi)**2 - 8*delta*g*sin(psi)**6*cosh(chi)**6 + 6*delta*g*sin(psi)**6 - 16*delta*g*sin(psi)**4*sinh(chi)**6 - 48*delta*g*sin(psi)**4*sinh(chi)**4 - 48*delta*g*sin(psi)**4*sinh(chi)**2 + 16*delta*g*sin(psi)**4*cosh(chi)**6 - 10*delta*g*sin(psi)**4 + 8*delta*g*sin(psi)**2*sinh(chi)**6 + 24*delta*g*sin(psi)**2*sinh(chi)**4 + 24*delta*g*sin(psi)**2*sinh(chi)**2 - 8*delta*g*sin(psi)**2*cosh(chi)**6 + 4*delta*g*sin(psi)**2 - 2*delta*g*cos(psi)**6 + 8*delta*sin(psi)**8*sinh(chi)**6 + 24*delta*sin(psi)**8*sinh(chi)**4 + 24*delta*sin(psi)**8*sinh(chi)**2 - 8*delta*sin(psi)**8*cosh(chi)**6 + 8*delta*sin(psi)**8 - 16*delta*sin(psi)**6*sinh(chi)**6 - 48*delta*sin(psi)**6*sinh(chi)**4 - 48*delta*sin(psi)**6*sinh(chi)**2 + 16*delta*sin(psi)**6*cosh(chi)**6 - 16*delta*sin(psi)**6 + 8*delta*sin(psi)**4*sinh(chi)**6 + 24*delta*sin(psi)**4*sinh(chi)**4 + 24*delta*sin(psi)**4*sinh(chi)**2 - 8*delta*sin(psi)**4*cosh(chi)**6 + 8*delta*sin(psi)**4 - 4*g**2*sin(psi)**4*sinh(chi)**6 - 12*g**2*sin(psi)**4*sinh(chi)**4 - 12*g**2*sin(psi)**4*sinh(chi)**2 + 4*g**2*sin(psi)**4*cosh(chi)**6 - 4*g**2*sin(psi)**4 + 4*g**2*sin(psi)**2*sinh(chi)**6 + 12*g**2*sin(psi)**2*sinh(chi)**4 + 12*g**2*sin(psi)**2*sinh(chi)**2 - 4*g**2*sin(psi)**2*cosh(chi)**6 + 4*g**2*sin(psi)**2 - g**2 - 8*g*sin(psi)**6*sinh(chi)**6 - 24*g*sin(psi)**6*sinh(chi)**4 - 24*g*sin(psi)**6*sinh(chi)**2 + 8*g*sin(psi)**6*cosh(chi)**6 - 8*g*sin(psi)**6 + 8*g*sin(psi)**4*sinh(chi)**6 + 24*g*sin(psi)**4*sinh(chi)**4 + 24*g*sin(psi)**4*sinh(chi)**2 - 8*g*sin(psi)**4*cosh(chi)**6 + 8*g*sin(psi)**4 - 2*g*sin(psi)**2 - 4*sin(psi)**8*sinh(chi)**6 - 12*sin(psi)**8*sinh(chi)**4 - 12*sin(psi)**8*sinh(chi)**2 + 4*sin(psi)**8*cosh(chi)**6 - 5*sin(psi)**8 + 4*sin(psi)**6*sinh(chi)**6 + 12*sin(psi)**6*sinh(chi)**4 + 12*sin(psi)**6*sinh(chi)**2 - 4*sin(psi)**6*cosh(chi)**6 + 7*sin(psi)**6 - 3*sin(psi)**4 + cos(psi)**8 - cos(psi)**6)",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0.5_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 2,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(delta + g)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(delta + g)**2",
+   "c_eta_minus_c_h_general": "16*(delta - 1)**2*(-2*delta**2*sin(psi)**8 + 5*delta**2*sin(psi)**6 - 3*delta**2*sin(psi)**4 - 4*delta**2*cos(psi)**8*sinh(chi)**6 - 12*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*sinh(chi)**2 + 4*delta**2*cos(psi)**8*cosh(chi)**6 - 2*delta**2*cos(psi)**8 + 4*delta**2*cos(psi)**6*sinh(chi)**6 + 12*delta**2*cos(psi)**6*sinh(chi)**4 + 12*delta**2*cos(psi)**6*sinh(chi)**2 - 4*delta**2*cos(psi)**6*cosh(chi)**6 + delta**2*cos(psi)**6 + 8*delta*g*sin(psi)**6*sinh(chi)**6 + 24*delta*g*sin(psi)**6*sinh(chi)**4 + 24*delta*g*sin(psi)**6*sinh(chi)**2 - 8*delta*g*sin(psi)**6*cosh(chi)**6 + 6*delta*g*sin(psi)**6 - 16*delta*g*sin(psi)**4*sinh(chi)**6 - 48*delta*g*sin(psi)**4*sinh(chi)**4 - 48*delta*g*sin(psi)**4*sinh(chi)**2 + 16*delta*g*sin(psi)**4*cosh(chi)**6 - 10*delta*g*sin(psi)**4 + 8*delta*g*sin(psi)**2*sinh(chi)**6 + 24*delta*g*sin(psi)**2*sinh(chi)**4 + 24*delta*g*sin(psi)**2*sinh(chi)**2 - 8*delta*g*sin(psi)**2*cosh(chi)**6 + 4*delta*g*sin(psi)**2 - 2*delta*g*cos(psi)**6 + 8*delta*sin(psi)**8*sinh(chi)**6 + 24*delta*sin(psi)**8*sinh(chi)**4 + 24*delta*sin(psi)**8*sinh(chi)**2 - 8*delta*sin(psi)**8*cosh(chi)**6 + 8*delta*sin(psi)**8 - 16*delta*sin(psi)**6*sinh(chi)**6 - 48*delta*sin(psi)**6*sinh(chi)**4 - 48*delta*sin(psi)**6*sinh(chi)**2 + 16*delta*sin(psi)**6*cosh(chi)**6 - 16*delta*sin(psi)**6 + 8*delta*sin(psi)**4*sinh(chi)**6 + 24*delta*sin(psi)**4*sinh(chi)**4 + 24*delta*sin(psi)**4*sinh(chi)**2 - 8*delta*sin(psi)**4*cosh(chi)**6 + 8*delta*sin(psi)**4 - 4*g**2*sin(psi)**4*sinh(chi)**6 - 12*g**2*sin(psi)**4*sinh(chi)**4 - 12*g**2*sin(psi)**4*sinh(chi)**2 + 4*g**2*sin(psi)**4*cosh(chi)**6 - 4*g**2*sin(psi)**4 + 4*g**2*sin(psi)**2*sinh(chi)**6 + 12*g**2*sin(psi)**2*sinh(chi)**4 + 12*g**2*sin(psi)**2*sinh(chi)**2 - 4*g**2*sin(psi)**2*cosh(chi)**6 + 4*g**2*sin(psi)**2 - g**2 - 8*g*sin(psi)**6*sinh(chi)**6 - 24*g*sin(psi)**6*sinh(chi)**4 - 24*g*sin(psi)**6*sinh(chi)**2 + 8*g*sin(psi)**6*cosh(chi)**6 - 8*g*sin(psi)**6 + 8*g*sin(psi)**4*sinh(chi)**6 + 24*g*sin(psi)**4*sinh(chi)**4 + 24*g*sin(psi)**4*sinh(chi)**2 - 8*g*sin(psi)**4*cosh(chi)**6 + 8*g*sin(psi)**4 - 2*g*sin(psi)**2 - 4*sin(psi)**8*sinh(chi)**6 - 12*sin(psi)**8*sinh(chi)**4 - 12*sin(psi)**8*sinh(chi)**2 + 4*sin(psi)**8*cosh(chi)**6 - 5*sin(psi)**8 + 4*sin(psi)**6*sinh(chi)**6 + 12*sin(psi)**6*sinh(chi)**4 + 12*sin(psi)**6*sinh(chi)**2 - 4*sin(psi)**6*cosh(chi)**6 + 7*sin(psi)**6 - 3*sin(psi)**4 + cos(psi)**8 - cos(psi)**6)",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0_psi0.785": [
+     -293.7844,
+     293.7844
+    ],
+    "certified_chi0.5_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0.5_psi0.785": [
+     -293.7844,
+     293.7844
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 2,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  },
+  {
+   "order": "inside",
+   "boost_axis": 3,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "0",
+   "c_h_chi0_psi0": "0",
+   "c_eta_minus_c_h_general": "0",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 3,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "0",
+   "c_h_chi0_psi0": "0",
+   "c_eta_minus_c_h_general": "0",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "order": "inside",
+   "boost_axis": 3,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  },
+  {
+   "order": "after",
+   "boost_axis": 1,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(g + 1)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(g + 1)**2",
+   "c_eta_minus_c_h_general": "16*(g + 1)**2*(-24*delta**2*sin(psi)**10*sinh(chi)**4 + 84*delta**2*sin(psi)**8*sinh(chi)**4 + 12*delta**2*sin(psi)**8*sinh(chi)**2 - 108*delta**2*sin(psi)**6*sinh(chi)**4 - 36*delta**2*sin(psi)**6*sinh(chi)**2 - delta**2*sin(psi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 60*delta**2*sin(psi)**4*sinh(chi)**4 + 36*delta**2*sin(psi)**4*sinh(chi)**2 + 3*delta**2*sin(psi)**4 - 12*delta**2*sin(psi)**2*sinh(chi)**4 - 12*delta**2*sin(psi)**2*sinh(chi)**2 - 3*delta**2*sin(psi)**2 + 16*delta**2*cos(psi)**10*sinh(chi)**4 - 44*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*sinh(chi)**2 + 28*delta**2*cos(psi)**6*sinh(chi)**4 + 12*delta**2*cos(psi)**6*sinh(chi)**2 - delta**2*cos(psi)**6 + 48*delta*g*sin(psi)**10*sinh(chi)**6 - 192*delta*g*sin(psi)**8*sinh(chi)**6 - 36*delta*g*sin(psi)**8*sinh(chi)**4 + 296*delta*g*sin(psi)**6*sinh(chi)**6 + 120*delta*g*sin(psi)**6*sinh(chi)**4 + 4*delta*g*sin(psi)**6*sinh(chi)**2 + 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 216*delta*g*sin(psi)**4*sinh(chi)**6 - 144*delta*g*sin(psi)**4*sinh(chi)**4 - 12*delta*g*sin(psi)**4*sinh(chi)**2 + 72*delta*g*sin(psi)**2*sinh(chi)**6 + 72*delta*g*sin(psi)**2*sinh(chi)**4 + 12*delta*g*sin(psi)**2*sinh(chi)**2 - 32*delta*g*cos(psi)**10*sinh(chi)**6 + 112*delta*g*cos(psi)**8*sinh(chi)**6 + 36*delta*g*cos(psi)**8*sinh(chi)**4 - 72*delta*g*cos(psi)**6*sinh(chi)**6 - 24*delta*g*cos(psi)**6*sinh(chi)**4 + 4*delta*g*cos(psi)**6*sinh(chi)**2 - 8*delta*g*sinh(chi)**6 - 12*delta*g*sinh(chi)**4 - 4*delta*g*sinh(chi)**2 + 48*delta*sin(psi)**10*sinh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**4 - 192*delta*sin(psi)**8*sinh(chi)**6 - 204*delta*sin(psi)**8*sinh(chi)**4 - 24*delta*sin(psi)**8*sinh(chi)**2 + 294*delta*sin(psi)**6*sinh(chi)**6 + 330*delta*sin(psi)**6*sinh(chi)**4 + 70*delta*sin(psi)**6*sinh(chi)**2 + 2*delta*sin(psi)**6*cosh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**4 - 210*delta*sin(psi)**4*sinh(chi)**6 - 246*delta*sin(psi)**4*sinh(chi)**4 - 66*delta*sin(psi)**4*sinh(chi)**2 - 6*delta*sin(psi)**4*cosh(chi)**6 + 66*delta*sin(psi)**2*sinh(chi)**6 + 78*delta*sin(psi)**2*sinh(chi)**4 + 18*delta*sin(psi)**2*sinh(chi)**2 + 6*delta*sin(psi)**2*cosh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**4 + 112*delta*cos(psi)**8*sinh(chi)**6 + 124*delta*cos(psi)**8*sinh(chi)**4 + 24*delta*cos(psi)**8*sinh(chi)**2 - 74*delta*cos(psi)**6*sinh(chi)**6 - 86*delta*cos(psi)**6*sinh(chi)**4 - 26*delta*cos(psi)**6*sinh(chi)**2 + 2*delta*cos(psi)**6*cosh(chi)**6 - 8*delta*sinh(chi)**6 - 12*delta*sinh(chi)**4 - 4*delta*sinh(chi)**2 - 24*g**2*sin(psi)**10*sinh(chi)**8 + 108*g**2*sin(psi)**8*sinh(chi)**8 + 24*g**2*sin(psi)**8*sinh(chi)**6 - 192*g**2*sin(psi)**6*sinh(chi)**8 - 88*g**2*sin(psi)**6*sinh(chi)**6 - 4*g**2*sin(psi)**6*sinh(chi)**4 - 40*g**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 + 168*g**2*sin(psi)**4*sinh(chi)**8 + 120*g**2*sin(psi)**4*sinh(chi)**6 + 12*g**2*sin(psi)**4*sinh(chi)**4 - 72*g**2*sin(psi)**2*sinh(chi)**8 - 72*g**2*sin(psi)**2*sinh(chi)**6 - 12*g**2*sin(psi)**2*sinh(chi)**4 + 16*g**2*cos(psi)**10*sinh(chi)**8 - 68*g**2*cos(psi)**8*sinh(chi)**8 - 24*g**2*cos(psi)**8*sinh(chi)**6 + 40*g**2*cos(psi)**6*sinh(chi)**8 + 8*g**2*cos(psi)**6*sinh(chi)**6 - 4*g**2*cos(psi)**6*sinh(chi)**4 + 12*g**2*sinh(chi)**8 + 16*g**2*sinh(chi)**6 + 4*g**2*sinh(chi)**4 - 48*g*sin(psi)**10*sinh(chi)**8 - 48*g*sin(psi)**10*sinh(chi)**6 + 216*g*sin(psi)**8*sinh(chi)**8 + 240*g*sin(psi)**8*sinh(chi)**6 + 36*g*sin(psi)**8*sinh(chi)**4 - 380*g*sin(psi)**6*sinh(chi)**8 - 460*g*sin(psi)**6*sinh(chi)**6 - 116*g*sin(psi)**6*sinh(chi)**4 - 4*g*sin(psi)**6*cosh(chi)**8 + 4*g*sin(psi)**6*cosh(chi)**6 - 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 324*g*sin(psi)**4*sinh(chi)**8 + 420*g*sin(psi)**4*sinh(chi)**6 + 132*g*sin(psi)**4*sinh(chi)**4 + 12*g*sin(psi)**4*cosh(chi)**8 - 12*g*sin(psi)**4*cosh(chi)**6 - 132*g*sin(psi)**2*sinh(chi)**8 - 180*g*sin(psi)**2*sinh(chi)**6 - 60*g*sin(psi)**2*sinh(chi)**4 - 12*g*sin(psi)**2*cosh(chi)**8 + 12*g*sin(psi)**2*cosh(chi)**6 + 32*g*cos(psi)**10*sinh(chi)**8 + 32*g*cos(psi)**10*sinh(chi)**6 - 136*g*cos(psi)**8*sinh(chi)**8 - 160*g*cos(psi)**8*sinh(chi)**6 - 36*g*cos(psi)**8*sinh(chi)**4 + 84*g*cos(psi)**6*sinh(chi)**8 + 100*g*cos(psi)**6*sinh(chi)**6 + 28*g*cos(psi)**6*sinh(chi)**4 - 4*g*cos(psi)**6*cosh(chi)**8 + 4*g*cos(psi)**6*cosh(chi)**6 + 20*g*sinh(chi)**8 + 28*g*sinh(chi)**6 + 8*g*sinh(chi)**4 + 4*g*cosh(chi)**8 - 4*g*cosh(chi)**6 - 24*sin(psi)**10*sinh(chi)**8 - 48*sin(psi)**10*sinh(chi)**6 - 24*sin(psi)**10*sinh(chi)**4 + 96*sin(psi)**8*sinh(chi)**8 + 180*sin(psi)**8*sinh(chi)**6 + 84*sin(psi)**8*sinh(chi)**4 + 12*sin(psi)**8*cosh(chi)**8 - 12*sin(psi)**8*cosh(chi)**6 - 155*sin(psi)**6*sinh(chi)**8 - 272*sin(psi)**6*sinh(chi)**6 - 118*sin(psi)**6*sinh(chi)**4 - 37*sin(psi)**6*cosh(chi)**8 + 36*sin(psi)**6*cosh(chi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 129*sin(psi)**4*sinh(chi)**8 + 216*sin(psi)**4*sinh(chi)**6 + 90*sin(psi)**4*sinh(chi)**4 + 39*sin(psi)**4*cosh(chi)**8 - 36*sin(psi)**4*cosh(chi)**6 - 57*sin(psi)**2*sinh(chi)**8 - 96*sin(psi)**2*sinh(chi)**6 - 42*sin(psi)**2*sinh(chi)**4 - 15*sin(psi)**2*cosh(chi)**8 + 12*sin(psi)**2*cosh(chi)**6 + 16*cos(psi)**10*sinh(chi)**8 + 32*cos(psi)**10*sinh(chi)**6 + 16*cos(psi)**10*sinh(chi)**4 - 56*cos(psi)**8*sinh(chi)**8 - 100*cos(psi)**8*sinh(chi)**6 - 44*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*cosh(chi)**8 + 12*cos(psi)**8*cosh(chi)**6 + 29*cos(psi)**6*sinh(chi)**8 + 48*cos(psi)**6*sinh(chi)**6 + 18*cos(psi)**6*sinh(chi)**4 + 11*cos(psi)**6*cosh(chi)**8 - 12*cos(psi)**6*cosh(chi)**6 + 8*sinh(chi)**8 + 12*sinh(chi)**6 + 4*sinh(chi)**4 + 4*cosh(chi)**8 - 4*cosh(chi)**6)*cosh(chi)**2",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0_psi0.785": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "certified_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0_psi0.785": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0.5_psi0.000": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "certified_chi0.5_psi0.785": [
+     11718.015796521506,
+     12525.494759688043
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 1,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(g + 1)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(g + 1)**2",
+   "c_eta_minus_c_h_general": "16*(g + 1)**2*(-24*delta**2*sin(psi)**10*sinh(chi)**4 + 84*delta**2*sin(psi)**8*sinh(chi)**4 + 12*delta**2*sin(psi)**8*sinh(chi)**2 - 108*delta**2*sin(psi)**6*sinh(chi)**4 - 36*delta**2*sin(psi)**6*sinh(chi)**2 - delta**2*sin(psi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 60*delta**2*sin(psi)**4*sinh(chi)**4 + 36*delta**2*sin(psi)**4*sinh(chi)**2 + 3*delta**2*sin(psi)**4 - 12*delta**2*sin(psi)**2*sinh(chi)**4 - 12*delta**2*sin(psi)**2*sinh(chi)**2 - 3*delta**2*sin(psi)**2 + 16*delta**2*cos(psi)**10*sinh(chi)**4 - 44*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*sinh(chi)**2 + 28*delta**2*cos(psi)**6*sinh(chi)**4 + 12*delta**2*cos(psi)**6*sinh(chi)**2 - delta**2*cos(psi)**6 + 48*delta*g*sin(psi)**10*sinh(chi)**6 - 192*delta*g*sin(psi)**8*sinh(chi)**6 - 36*delta*g*sin(psi)**8*sinh(chi)**4 + 296*delta*g*sin(psi)**6*sinh(chi)**6 + 120*delta*g*sin(psi)**6*sinh(chi)**4 + 4*delta*g*sin(psi)**6*sinh(chi)**2 + 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 216*delta*g*sin(psi)**4*sinh(chi)**6 - 144*delta*g*sin(psi)**4*sinh(chi)**4 - 12*delta*g*sin(psi)**4*sinh(chi)**2 + 72*delta*g*sin(psi)**2*sinh(chi)**6 + 72*delta*g*sin(psi)**2*sinh(chi)**4 + 12*delta*g*sin(psi)**2*sinh(chi)**2 - 32*delta*g*cos(psi)**10*sinh(chi)**6 + 112*delta*g*cos(psi)**8*sinh(chi)**6 + 36*delta*g*cos(psi)**8*sinh(chi)**4 - 72*delta*g*cos(psi)**6*sinh(chi)**6 - 24*delta*g*cos(psi)**6*sinh(chi)**4 + 4*delta*g*cos(psi)**6*sinh(chi)**2 - 8*delta*g*sinh(chi)**6 - 12*delta*g*sinh(chi)**4 - 4*delta*g*sinh(chi)**2 + 48*delta*sin(psi)**10*sinh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**4 - 192*delta*sin(psi)**8*sinh(chi)**6 - 204*delta*sin(psi)**8*sinh(chi)**4 - 24*delta*sin(psi)**8*sinh(chi)**2 + 294*delta*sin(psi)**6*sinh(chi)**6 + 330*delta*sin(psi)**6*sinh(chi)**4 + 70*delta*sin(psi)**6*sinh(chi)**2 + 2*delta*sin(psi)**6*cosh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**4 - 210*delta*sin(psi)**4*sinh(chi)**6 - 246*delta*sin(psi)**4*sinh(chi)**4 - 66*delta*sin(psi)**4*sinh(chi)**2 - 6*delta*sin(psi)**4*cosh(chi)**6 + 66*delta*sin(psi)**2*sinh(chi)**6 + 78*delta*sin(psi)**2*sinh(chi)**4 + 18*delta*sin(psi)**2*sinh(chi)**2 + 6*delta*sin(psi)**2*cosh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**4 + 112*delta*cos(psi)**8*sinh(chi)**6 + 124*delta*cos(psi)**8*sinh(chi)**4 + 24*delta*cos(psi)**8*sinh(chi)**2 - 74*delta*cos(psi)**6*sinh(chi)**6 - 86*delta*cos(psi)**6*sinh(chi)**4 - 26*delta*cos(psi)**6*sinh(chi)**2 + 2*delta*cos(psi)**6*cosh(chi)**6 - 8*delta*sinh(chi)**6 - 12*delta*sinh(chi)**4 - 4*delta*sinh(chi)**2 - 24*g**2*sin(psi)**10*sinh(chi)**8 + 108*g**2*sin(psi)**8*sinh(chi)**8 + 24*g**2*sin(psi)**8*sinh(chi)**6 - 192*g**2*sin(psi)**6*sinh(chi)**8 - 88*g**2*sin(psi)**6*sinh(chi)**6 - 4*g**2*sin(psi)**6*sinh(chi)**4 - 40*g**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 + 168*g**2*sin(psi)**4*sinh(chi)**8 + 120*g**2*sin(psi)**4*sinh(chi)**6 + 12*g**2*sin(psi)**4*sinh(chi)**4 - 72*g**2*sin(psi)**2*sinh(chi)**8 - 72*g**2*sin(psi)**2*sinh(chi)**6 - 12*g**2*sin(psi)**2*sinh(chi)**4 + 16*g**2*cos(psi)**10*sinh(chi)**8 - 68*g**2*cos(psi)**8*sinh(chi)**8 - 24*g**2*cos(psi)**8*sinh(chi)**6 + 40*g**2*cos(psi)**6*sinh(chi)**8 + 8*g**2*cos(psi)**6*sinh(chi)**6 - 4*g**2*cos(psi)**6*sinh(chi)**4 + 12*g**2*sinh(chi)**8 + 16*g**2*sinh(chi)**6 + 4*g**2*sinh(chi)**4 - 48*g*sin(psi)**10*sinh(chi)**8 - 48*g*sin(psi)**10*sinh(chi)**6 + 216*g*sin(psi)**8*sinh(chi)**8 + 240*g*sin(psi)**8*sinh(chi)**6 + 36*g*sin(psi)**8*sinh(chi)**4 - 380*g*sin(psi)**6*sinh(chi)**8 - 460*g*sin(psi)**6*sinh(chi)**6 - 116*g*sin(psi)**6*sinh(chi)**4 - 4*g*sin(psi)**6*cosh(chi)**8 + 4*g*sin(psi)**6*cosh(chi)**6 - 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 324*g*sin(psi)**4*sinh(chi)**8 + 420*g*sin(psi)**4*sinh(chi)**6 + 132*g*sin(psi)**4*sinh(chi)**4 + 12*g*sin(psi)**4*cosh(chi)**8 - 12*g*sin(psi)**4*cosh(chi)**6 - 132*g*sin(psi)**2*sinh(chi)**8 - 180*g*sin(psi)**2*sinh(chi)**6 - 60*g*sin(psi)**2*sinh(chi)**4 - 12*g*sin(psi)**2*cosh(chi)**8 + 12*g*sin(psi)**2*cosh(chi)**6 + 32*g*cos(psi)**10*sinh(chi)**8 + 32*g*cos(psi)**10*sinh(chi)**6 - 136*g*cos(psi)**8*sinh(chi)**8 - 160*g*cos(psi)**8*sinh(chi)**6 - 36*g*cos(psi)**8*sinh(chi)**4 + 84*g*cos(psi)**6*sinh(chi)**8 + 100*g*cos(psi)**6*sinh(chi)**6 + 28*g*cos(psi)**6*sinh(chi)**4 - 4*g*cos(psi)**6*cosh(chi)**8 + 4*g*cos(psi)**6*cosh(chi)**6 + 20*g*sinh(chi)**8 + 28*g*sinh(chi)**6 + 8*g*sinh(chi)**4 + 4*g*cosh(chi)**8 - 4*g*cosh(chi)**6 - 24*sin(psi)**10*sinh(chi)**8 - 48*sin(psi)**10*sinh(chi)**6 - 24*sin(psi)**10*sinh(chi)**4 + 96*sin(psi)**8*sinh(chi)**8 + 180*sin(psi)**8*sinh(chi)**6 + 84*sin(psi)**8*sinh(chi)**4 + 12*sin(psi)**8*cosh(chi)**8 - 12*sin(psi)**8*cosh(chi)**6 - 155*sin(psi)**6*sinh(chi)**8 - 272*sin(psi)**6*sinh(chi)**6 - 118*sin(psi)**6*sinh(chi)**4 - 37*sin(psi)**6*cosh(chi)**8 + 36*sin(psi)**6*cosh(chi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 129*sin(psi)**4*sinh(chi)**8 + 216*sin(psi)**4*sinh(chi)**6 + 90*sin(psi)**4*sinh(chi)**4 + 39*sin(psi)**4*cosh(chi)**8 - 36*sin(psi)**4*cosh(chi)**6 - 57*sin(psi)**2*sinh(chi)**8 - 96*sin(psi)**2*sinh(chi)**6 - 42*sin(psi)**2*sinh(chi)**4 - 15*sin(psi)**2*cosh(chi)**8 + 12*sin(psi)**2*cosh(chi)**6 + 16*cos(psi)**10*sinh(chi)**8 + 32*cos(psi)**10*sinh(chi)**6 + 16*cos(psi)**10*sinh(chi)**4 - 56*cos(psi)**8*sinh(chi)**8 - 100*cos(psi)**8*sinh(chi)**6 - 44*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*cosh(chi)**8 + 12*cos(psi)**8*cosh(chi)**6 + 29*cos(psi)**6*sinh(chi)**8 + 48*cos(psi)**6*sinh(chi)**6 + 18*cos(psi)**6*sinh(chi)**4 + 11*cos(psi)**6*cosh(chi)**8 - 12*cos(psi)**6*cosh(chi)**6 + 8*sinh(chi)**8 + 12*sinh(chi)**6 + 4*sinh(chi)**4 + 4*cosh(chi)**8 - 4*cosh(chi)**6)*cosh(chi)**2",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0_psi0.785": [
+     -317.52,
+     317.52
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "certified_chi0_psi0.000": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0_psi0.785": [
+     -317.52,
+     317.52
+    ],
+    "certified_chi0.5_psi0.000": [
+     11718.015796521506,
+     12525.494759688043
+    ],
+    "certified_chi0.5_psi0.785": [
+     11718.015796521506,
+     12525.494759688043
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 1,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  },
+  {
+   "order": "after",
+   "boost_axis": 2,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(delta + g)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(delta + g)**2",
+   "c_eta_minus_c_h_general": "16*(delta + g)**2*(-24*delta**2*sin(psi)**10*sinh(chi)**8 - 48*delta**2*sin(psi)**10*sinh(chi)**6 - 24*delta**2*sin(psi)**10*sinh(chi)**4 + 96*delta**2*sin(psi)**8*sinh(chi)**8 + 180*delta**2*sin(psi)**8*sinh(chi)**6 + 84*delta**2*sin(psi)**8*sinh(chi)**4 + 12*delta**2*sin(psi)**8*cosh(chi)**8 - 12*delta**2*sin(psi)**8*cosh(chi)**6 - 155*delta**2*sin(psi)**6*sinh(chi)**8 - 272*delta**2*sin(psi)**6*sinh(chi)**6 - 118*delta**2*sin(psi)**6*sinh(chi)**4 - 37*delta**2*sin(psi)**6*cosh(chi)**8 + 36*delta**2*sin(psi)**6*cosh(chi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 129*delta**2*sin(psi)**4*sinh(chi)**8 + 216*delta**2*sin(psi)**4*sinh(chi)**6 + 90*delta**2*sin(psi)**4*sinh(chi)**4 + 39*delta**2*sin(psi)**4*cosh(chi)**8 - 36*delta**2*sin(psi)**4*cosh(chi)**6 - 57*delta**2*sin(psi)**2*sinh(chi)**8 - 96*delta**2*sin(psi)**2*sinh(chi)**6 - 42*delta**2*sin(psi)**2*sinh(chi)**4 - 15*delta**2*sin(psi)**2*cosh(chi)**8 + 12*delta**2*sin(psi)**2*cosh(chi)**6 + 16*delta**2*cos(psi)**10*sinh(chi)**8 + 32*delta**2*cos(psi)**10*sinh(chi)**6 + 16*delta**2*cos(psi)**10*sinh(chi)**4 - 56*delta**2*cos(psi)**8*sinh(chi)**8 - 100*delta**2*cos(psi)**8*sinh(chi)**6 - 44*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*cosh(chi)**8 + 12*delta**2*cos(psi)**8*cosh(chi)**6 + 29*delta**2*cos(psi)**6*sinh(chi)**8 + 48*delta**2*cos(psi)**6*sinh(chi)**6 + 18*delta**2*cos(psi)**6*sinh(chi)**4 + 11*delta**2*cos(psi)**6*cosh(chi)**8 - 12*delta**2*cos(psi)**6*cosh(chi)**6 + 8*delta**2*sinh(chi)**8 + 12*delta**2*sinh(chi)**6 + 4*delta**2*sinh(chi)**4 + 4*delta**2*cosh(chi)**8 - 4*delta**2*cosh(chi)**6 - 48*delta*g*sin(psi)**10*sinh(chi)**8 - 48*delta*g*sin(psi)**10*sinh(chi)**6 + 216*delta*g*sin(psi)**8*sinh(chi)**8 + 240*delta*g*sin(psi)**8*sinh(chi)**6 + 36*delta*g*sin(psi)**8*sinh(chi)**4 - 380*delta*g*sin(psi)**6*sinh(chi)**8 - 460*delta*g*sin(psi)**6*sinh(chi)**6 - 116*delta*g*sin(psi)**6*sinh(chi)**4 - 4*delta*g*sin(psi)**6*cosh(chi)**8 + 4*delta*g*sin(psi)**6*cosh(chi)**6 - 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 324*delta*g*sin(psi)**4*sinh(chi)**8 + 420*delta*g*sin(psi)**4*sinh(chi)**6 + 132*delta*g*sin(psi)**4*sinh(chi)**4 + 12*delta*g*sin(psi)**4*cosh(chi)**8 - 12*delta*g*sin(psi)**4*cosh(chi)**6 - 132*delta*g*sin(psi)**2*sinh(chi)**8 - 180*delta*g*sin(psi)**2*sinh(chi)**6 - 60*delta*g*sin(psi)**2*sinh(chi)**4 - 12*delta*g*sin(psi)**2*cosh(chi)**8 + 12*delta*g*sin(psi)**2*cosh(chi)**6 + 32*delta*g*cos(psi)**10*sinh(chi)**8 + 32*delta*g*cos(psi)**10*sinh(chi)**6 - 136*delta*g*cos(psi)**8*sinh(chi)**8 - 160*delta*g*cos(psi)**8*sinh(chi)**6 - 36*delta*g*cos(psi)**8*sinh(chi)**4 + 84*delta*g*cos(psi)**6*sinh(chi)**8 + 100*delta*g*cos(psi)**6*sinh(chi)**6 + 28*delta*g*cos(psi)**6*sinh(chi)**4 - 4*delta*g*cos(psi)**6*cosh(chi)**8 + 4*delta*g*cos(psi)**6*cosh(chi)**6 + 20*delta*g*sinh(chi)**8 + 28*delta*g*sinh(chi)**6 + 8*delta*g*sinh(chi)**4 + 4*delta*g*cosh(chi)**8 - 4*delta*g*cosh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**4 - 192*delta*sin(psi)**8*sinh(chi)**6 - 204*delta*sin(psi)**8*sinh(chi)**4 - 24*delta*sin(psi)**8*sinh(chi)**2 + 294*delta*sin(psi)**6*sinh(chi)**6 + 330*delta*sin(psi)**6*sinh(chi)**4 + 70*delta*sin(psi)**6*sinh(chi)**2 + 2*delta*sin(psi)**6*cosh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**4 - 210*delta*sin(psi)**4*sinh(chi)**6 - 246*delta*sin(psi)**4*sinh(chi)**4 - 66*delta*sin(psi)**4*sinh(chi)**2 - 6*delta*sin(psi)**4*cosh(chi)**6 + 66*delta*sin(psi)**2*sinh(chi)**6 + 78*delta*sin(psi)**2*sinh(chi)**4 + 18*delta*sin(psi)**2*sinh(chi)**2 + 6*delta*sin(psi)**2*cosh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**4 + 112*delta*cos(psi)**8*sinh(chi)**6 + 124*delta*cos(psi)**8*sinh(chi)**4 + 24*delta*cos(psi)**8*sinh(chi)**2 - 74*delta*cos(psi)**6*sinh(chi)**6 - 86*delta*cos(psi)**6*sinh(chi)**4 - 26*delta*cos(psi)**6*sinh(chi)**2 + 2*delta*cos(psi)**6*cosh(chi)**6 - 8*delta*sinh(chi)**6 - 12*delta*sinh(chi)**4 - 4*delta*sinh(chi)**2 - 24*g**2*sin(psi)**10*sinh(chi)**8 + 108*g**2*sin(psi)**8*sinh(chi)**8 + 24*g**2*sin(psi)**8*sinh(chi)**6 - 192*g**2*sin(psi)**6*sinh(chi)**8 - 88*g**2*sin(psi)**6*sinh(chi)**6 - 4*g**2*sin(psi)**6*sinh(chi)**4 - 40*g**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 + 168*g**2*sin(psi)**4*sinh(chi)**8 + 120*g**2*sin(psi)**4*sinh(chi)**6 + 12*g**2*sin(psi)**4*sinh(chi)**4 - 72*g**2*sin(psi)**2*sinh(chi)**8 - 72*g**2*sin(psi)**2*sinh(chi)**6 - 12*g**2*sin(psi)**2*sinh(chi)**4 + 16*g**2*cos(psi)**10*sinh(chi)**8 - 68*g**2*cos(psi)**8*sinh(chi)**8 - 24*g**2*cos(psi)**8*sinh(chi)**6 + 40*g**2*cos(psi)**6*sinh(chi)**8 + 8*g**2*cos(psi)**6*sinh(chi)**6 - 4*g**2*cos(psi)**6*sinh(chi)**4 + 12*g**2*sinh(chi)**8 + 16*g**2*sinh(chi)**6 + 4*g**2*sinh(chi)**4 + 48*g*sin(psi)**10*sinh(chi)**6 - 192*g*sin(psi)**8*sinh(chi)**6 - 36*g*sin(psi)**8*sinh(chi)**4 + 296*g*sin(psi)**6*sinh(chi)**6 + 120*g*sin(psi)**6*sinh(chi)**4 + 4*g*sin(psi)**6*sinh(chi)**2 + 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 216*g*sin(psi)**4*sinh(chi)**6 - 144*g*sin(psi)**4*sinh(chi)**4 - 12*g*sin(psi)**4*sinh(chi)**2 + 72*g*sin(psi)**2*sinh(chi)**6 + 72*g*sin(psi)**2*sinh(chi)**4 + 12*g*sin(psi)**2*sinh(chi)**2 - 32*g*cos(psi)**10*sinh(chi)**6 + 112*g*cos(psi)**8*sinh(chi)**6 + 36*g*cos(psi)**8*sinh(chi)**4 - 72*g*cos(psi)**6*sinh(chi)**6 - 24*g*cos(psi)**6*sinh(chi)**4 + 4*g*cos(psi)**6*sinh(chi)**2 - 8*g*sinh(chi)**6 - 12*g*sinh(chi)**4 - 4*g*sinh(chi)**2 - 24*sin(psi)**10*sinh(chi)**4 + 84*sin(psi)**8*sinh(chi)**4 + 12*sin(psi)**8*sinh(chi)**2 - 108*sin(psi)**6*sinh(chi)**4 - 36*sin(psi)**6*sinh(chi)**2 - sin(psi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 60*sin(psi)**4*sinh(chi)**4 + 36*sin(psi)**4*sinh(chi)**2 + 3*sin(psi)**4 - 12*sin(psi)**2*sinh(chi)**4 - 12*sin(psi)**2*sinh(chi)**2 - 3*sin(psi)**2 + 16*cos(psi)**10*sinh(chi)**4 - 44*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*sinh(chi)**2 + 28*cos(psi)**6*sinh(chi)**4 + 12*cos(psi)**6*sinh(chi)**2 - cos(psi)**6)*cosh(chi)**2",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0_psi0.785": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "certified_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0_psi0.785": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0.5_psi0.000": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "certified_chi0.5_psi0.785": [
+     11778.377341237227,
+     12465.133214972322
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 2,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "-8*(delta - 1)**2*(delta + g)**2",
+   "c_h_chi0_psi0": "8*(delta - 1)**2*(delta + g)**2",
+   "c_eta_minus_c_h_general": "16*(delta + g)**2*(-24*delta**2*sin(psi)**10*sinh(chi)**8 - 48*delta**2*sin(psi)**10*sinh(chi)**6 - 24*delta**2*sin(psi)**10*sinh(chi)**4 + 96*delta**2*sin(psi)**8*sinh(chi)**8 + 180*delta**2*sin(psi)**8*sinh(chi)**6 + 84*delta**2*sin(psi)**8*sinh(chi)**4 + 12*delta**2*sin(psi)**8*cosh(chi)**8 - 12*delta**2*sin(psi)**8*cosh(chi)**6 - 155*delta**2*sin(psi)**6*sinh(chi)**8 - 272*delta**2*sin(psi)**6*sinh(chi)**6 - 118*delta**2*sin(psi)**6*sinh(chi)**4 - 37*delta**2*sin(psi)**6*cosh(chi)**8 + 36*delta**2*sin(psi)**6*cosh(chi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 40*delta**2*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 129*delta**2*sin(psi)**4*sinh(chi)**8 + 216*delta**2*sin(psi)**4*sinh(chi)**6 + 90*delta**2*sin(psi)**4*sinh(chi)**4 + 39*delta**2*sin(psi)**4*cosh(chi)**8 - 36*delta**2*sin(psi)**4*cosh(chi)**6 - 57*delta**2*sin(psi)**2*sinh(chi)**8 - 96*delta**2*sin(psi)**2*sinh(chi)**6 - 42*delta**2*sin(psi)**2*sinh(chi)**4 - 15*delta**2*sin(psi)**2*cosh(chi)**8 + 12*delta**2*sin(psi)**2*cosh(chi)**6 + 16*delta**2*cos(psi)**10*sinh(chi)**8 + 32*delta**2*cos(psi)**10*sinh(chi)**6 + 16*delta**2*cos(psi)**10*sinh(chi)**4 - 56*delta**2*cos(psi)**8*sinh(chi)**8 - 100*delta**2*cos(psi)**8*sinh(chi)**6 - 44*delta**2*cos(psi)**8*sinh(chi)**4 - 12*delta**2*cos(psi)**8*cosh(chi)**8 + 12*delta**2*cos(psi)**8*cosh(chi)**6 + 29*delta**2*cos(psi)**6*sinh(chi)**8 + 48*delta**2*cos(psi)**6*sinh(chi)**6 + 18*delta**2*cos(psi)**6*sinh(chi)**4 + 11*delta**2*cos(psi)**6*cosh(chi)**8 - 12*delta**2*cos(psi)**6*cosh(chi)**6 + 8*delta**2*sinh(chi)**8 + 12*delta**2*sinh(chi)**6 + 4*delta**2*sinh(chi)**4 + 4*delta**2*cosh(chi)**8 - 4*delta**2*cosh(chi)**6 - 48*delta*g*sin(psi)**10*sinh(chi)**8 - 48*delta*g*sin(psi)**10*sinh(chi)**6 + 216*delta*g*sin(psi)**8*sinh(chi)**8 + 240*delta*g*sin(psi)**8*sinh(chi)**6 + 36*delta*g*sin(psi)**8*sinh(chi)**4 - 380*delta*g*sin(psi)**6*sinh(chi)**8 - 460*delta*g*sin(psi)**6*sinh(chi)**6 - 116*delta*g*sin(psi)**6*sinh(chi)**4 - 4*delta*g*sin(psi)**6*cosh(chi)**8 + 4*delta*g*sin(psi)**6*cosh(chi)**6 - 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**8 - 80*delta*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 324*delta*g*sin(psi)**4*sinh(chi)**8 + 420*delta*g*sin(psi)**4*sinh(chi)**6 + 132*delta*g*sin(psi)**4*sinh(chi)**4 + 12*delta*g*sin(psi)**4*cosh(chi)**8 - 12*delta*g*sin(psi)**4*cosh(chi)**6 - 132*delta*g*sin(psi)**2*sinh(chi)**8 - 180*delta*g*sin(psi)**2*sinh(chi)**6 - 60*delta*g*sin(psi)**2*sinh(chi)**4 - 12*delta*g*sin(psi)**2*cosh(chi)**8 + 12*delta*g*sin(psi)**2*cosh(chi)**6 + 32*delta*g*cos(psi)**10*sinh(chi)**8 + 32*delta*g*cos(psi)**10*sinh(chi)**6 - 136*delta*g*cos(psi)**8*sinh(chi)**8 - 160*delta*g*cos(psi)**8*sinh(chi)**6 - 36*delta*g*cos(psi)**8*sinh(chi)**4 + 84*delta*g*cos(psi)**6*sinh(chi)**8 + 100*delta*g*cos(psi)**6*sinh(chi)**6 + 28*delta*g*cos(psi)**6*sinh(chi)**4 - 4*delta*g*cos(psi)**6*cosh(chi)**8 + 4*delta*g*cos(psi)**6*cosh(chi)**6 + 20*delta*g*sinh(chi)**8 + 28*delta*g*sinh(chi)**6 + 8*delta*g*sinh(chi)**4 + 4*delta*g*cosh(chi)**8 - 4*delta*g*cosh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**6 + 48*delta*sin(psi)**10*sinh(chi)**4 - 192*delta*sin(psi)**8*sinh(chi)**6 - 204*delta*sin(psi)**8*sinh(chi)**4 - 24*delta*sin(psi)**8*sinh(chi)**2 + 294*delta*sin(psi)**6*sinh(chi)**6 + 330*delta*sin(psi)**6*sinh(chi)**4 + 70*delta*sin(psi)**6*sinh(chi)**2 + 2*delta*sin(psi)**6*cosh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**6 + 80*delta*sin(psi)**4*cos(psi)**6*sinh(chi)**4 - 210*delta*sin(psi)**4*sinh(chi)**6 - 246*delta*sin(psi)**4*sinh(chi)**4 - 66*delta*sin(psi)**4*sinh(chi)**2 - 6*delta*sin(psi)**4*cosh(chi)**6 + 66*delta*sin(psi)**2*sinh(chi)**6 + 78*delta*sin(psi)**2*sinh(chi)**4 + 18*delta*sin(psi)**2*sinh(chi)**2 + 6*delta*sin(psi)**2*cosh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**6 - 32*delta*cos(psi)**10*sinh(chi)**4 + 112*delta*cos(psi)**8*sinh(chi)**6 + 124*delta*cos(psi)**8*sinh(chi)**4 + 24*delta*cos(psi)**8*sinh(chi)**2 - 74*delta*cos(psi)**6*sinh(chi)**6 - 86*delta*cos(psi)**6*sinh(chi)**4 - 26*delta*cos(psi)**6*sinh(chi)**2 + 2*delta*cos(psi)**6*cosh(chi)**6 - 8*delta*sinh(chi)**6 - 12*delta*sinh(chi)**4 - 4*delta*sinh(chi)**2 - 24*g**2*sin(psi)**10*sinh(chi)**8 + 108*g**2*sin(psi)**8*sinh(chi)**8 + 24*g**2*sin(psi)**8*sinh(chi)**6 - 192*g**2*sin(psi)**6*sinh(chi)**8 - 88*g**2*sin(psi)**6*sinh(chi)**6 - 4*g**2*sin(psi)**6*sinh(chi)**4 - 40*g**2*sin(psi)**4*cos(psi)**6*sinh(chi)**8 + 168*g**2*sin(psi)**4*sinh(chi)**8 + 120*g**2*sin(psi)**4*sinh(chi)**6 + 12*g**2*sin(psi)**4*sinh(chi)**4 - 72*g**2*sin(psi)**2*sinh(chi)**8 - 72*g**2*sin(psi)**2*sinh(chi)**6 - 12*g**2*sin(psi)**2*sinh(chi)**4 + 16*g**2*cos(psi)**10*sinh(chi)**8 - 68*g**2*cos(psi)**8*sinh(chi)**8 - 24*g**2*cos(psi)**8*sinh(chi)**6 + 40*g**2*cos(psi)**6*sinh(chi)**8 + 8*g**2*cos(psi)**6*sinh(chi)**6 - 4*g**2*cos(psi)**6*sinh(chi)**4 + 12*g**2*sinh(chi)**8 + 16*g**2*sinh(chi)**6 + 4*g**2*sinh(chi)**4 + 48*g*sin(psi)**10*sinh(chi)**6 - 192*g*sin(psi)**8*sinh(chi)**6 - 36*g*sin(psi)**8*sinh(chi)**4 + 296*g*sin(psi)**6*sinh(chi)**6 + 120*g*sin(psi)**6*sinh(chi)**4 + 4*g*sin(psi)**6*sinh(chi)**2 + 80*g*sin(psi)**4*cos(psi)**6*sinh(chi)**6 - 216*g*sin(psi)**4*sinh(chi)**6 - 144*g*sin(psi)**4*sinh(chi)**4 - 12*g*sin(psi)**4*sinh(chi)**2 + 72*g*sin(psi)**2*sinh(chi)**6 + 72*g*sin(psi)**2*sinh(chi)**4 + 12*g*sin(psi)**2*sinh(chi)**2 - 32*g*cos(psi)**10*sinh(chi)**6 + 112*g*cos(psi)**8*sinh(chi)**6 + 36*g*cos(psi)**8*sinh(chi)**4 - 72*g*cos(psi)**6*sinh(chi)**6 - 24*g*cos(psi)**6*sinh(chi)**4 + 4*g*cos(psi)**6*sinh(chi)**2 - 8*g*sinh(chi)**6 - 12*g*sinh(chi)**4 - 4*g*sinh(chi)**2 - 24*sin(psi)**10*sinh(chi)**4 + 84*sin(psi)**8*sinh(chi)**4 + 12*sin(psi)**8*sinh(chi)**2 - 108*sin(psi)**6*sinh(chi)**4 - 36*sin(psi)**6*sinh(chi)**2 - sin(psi)**6 - 40*sin(psi)**4*cos(psi)**6*sinh(chi)**4 + 60*sin(psi)**4*sinh(chi)**4 + 36*sin(psi)**4*sinh(chi)**2 + 3*sin(psi)**4 - 12*sin(psi)**2*sinh(chi)**4 - 12*sin(psi)**2*sinh(chi)**2 - 3*sin(psi)**2 + 16*cos(psi)**10*sinh(chi)**4 - 44*cos(psi)**8*sinh(chi)**4 - 12*cos(psi)**8*sinh(chi)**2 + 28*cos(psi)**6*sinh(chi)**4 + 12*cos(psi)**6*sinh(chi)**2 - cos(psi)**6)*cosh(chi)**2",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0_psi0.785": [
+     -270.0488,
+     270.0488
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "certified_chi0_psi0.000": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0_psi0.785": [
+     -270.0488,
+     270.0488
+    ],
+    "certified_chi0.5_psi0.000": [
+     11778.377341237227,
+     12465.133214972322
+    ],
+    "certified_chi0.5_psi0.785": [
+     11778.377341237227,
+     12465.133214972322
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 2,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  },
+  {
+   "order": "after",
+   "boost_axis": 3,
+   "grad_axis": 1,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "0",
+   "c_h_chi0_psi0": "0",
+   "c_eta_minus_c_h_general": "0",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 3,
+   "grad_axis": 2,
+   "twist_axis": 3,
+   "c_eta_chi0_psi0": "0",
+   "c_h_chi0_psi0": "0",
+   "c_eta_minus_c_h_general": "0",
+   "numeric_[U_eta,U_h]_b1_k1": {
+    "degenerate_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "degenerate_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0_psi0.785": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.000": [
+     0.0,
+     0.0
+    ],
+    "certified_chi0.5_psi0.785": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "order": "after",
+   "boost_axis": 3,
+   "grad_axis": 3,
+   "twist_axis": 3,
+   "c_eta": "0 (s = t: one gradient direction, F = 0)",
+   "c_h": "0"
+  }
+ ]
+}

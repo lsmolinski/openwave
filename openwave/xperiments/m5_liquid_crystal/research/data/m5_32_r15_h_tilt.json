@@ -1,0 +1,64 @@
+{
+ "definitions": "R15-H.  The rotating split background M = R_23(omega t) R_12(theta(t, z)) D_s R_12^T R_23^T,\nD_s = diag(g, 1, delta + s, delta - s), the tilt theta INSIDE the rotating frame.  A_0 = omega d_tau M + theta_t d_theta M,\nA_z = theta_z d_theta M; only F_0z is nonzero.  Lagrangian densities (T - V orientation):\n    L(-4 I1)   = +4 <F_0z, F_0z>_eta            (eta^0 eta^z = -1)\n    L(-4 I1_h) = +4 <F_0z, F_0z>_h              (u = e0 here: h = 1, the Frobenius form)\n    L(K_P^23)  = (c_P / 2) [tr(Om_0^T eta Om_0 eta) - tr(Om_z^T eta Om_z eta)],  Om_mu = P23 A_mu eta P23,\n                 P23 = Q diag(0, 0, 1, 1) Q^T (= the exact Lagrange projector, Q the spatial rotation)\n    L(reg)     = w [tr(A_0 G A_0 G) - tr(A_z G A_z G)],  G in {eta, h} (h = 1 here); kappa_2 := tr(Y G Y G),\n                 Y = d_theta M at theta = 0.\n    V4^dd and mu (lambda_2 - lambda_3)^2 depend on the spectrum only: constant in theta, dropped.\nQuadratic form in (theta, theta_t, theta_z):  L_2 = alpha theta_t^2 + gamma theta_z^2 + eps theta^2 + cross terms.\nPlane wave e^{i(k z - Omega t)}: Omega^2 = -(gamma k^2 + eps) / alpha.  Hyperbolic iff alpha > 0 and gamma < 0.\nClaims: H1 alpha = 0 for every curvature term and for K_P^23 (only the regulator supplies alpha = w kappa_2);\nH2 gamma(-4 I1) = 4 omega^2 |C|^2 with |C|^2 = 4 s^2 (delta + s - 1)^2 (the author's <F_0z, F_0z> = 4 k^2 omega^2 s^2 (delta+s-1)^2);\nH3 the hyperbolicity inequality in our normalization (compare the author's w kappa_2 > 16 omega^2 s^2);\nH4 K_P^23 has no theta_t^2 and no theta_z^2 term, and its STATIC density is exactly zero on any (1,2) twist sheet\ntheta = psi(z) of any amplitude (the projector kills the (1,2) block), so the sheet is a free direction of K_P^23.\n\nusage: python3 m5_32_r15_vh_symbolic.py va | h\n",
+ "kappa_2": {
+  "eta": "2*(delta + s - 1)**2",
+  "h": "2*(delta + s - 1)**2"
+ },
+ "|C|^2 = <[d_tau M, d_theta M]_eta, same>_eta at theta 0": "8*s**2*(delta + s - 1)**2",
+ "terms": {
+  "-4 I1": {
+   "L_0 (background)": "0",
+   "L_1": "0",
+   "L_2 quadratic form": {
+    "theta_z^2": "32*omega**2*s**2*(delta + s - 1)**2"
+   },
+   "tau_dependent": false
+  },
+  "-4 I1_h (h = 1 on this background)": {
+   "L_0 (background)": "0",
+   "L_1": "0",
+   "L_2 quadratic form": {
+    "theta_z^2": "32*omega**2*s**2*(delta + s - 1)**2"
+   },
+   "tau_dependent": false
+  },
+  "K_P^23": {
+   "L_0 (background)": "4*c_P*omega**2*s**2",
+   "L_1": "0",
+   "L_2 quadratic form": {
+    "theta^2": "-4*c_P*omega**2*s**2"
+   },
+   "tau_dependent": false
+  },
+  "regulator G = eta": {
+   "L_0 (background)": "8*omega**2*s**2*w",
+   "L_1": "0",
+   "L_2 quadratic form": {
+    "theta^2": "-2*omega**2*w*(-delta + 3*s + 1)*(delta + s - 1)",
+    "theta_t^2": "2*w*(delta + s - 1)**2",
+    "theta_z^2": "-2*w*(delta + s - 1)**2"
+   },
+   "tau_dependent": false
+  },
+  "regulator G = h (= 1)": {
+   "L_0 (background)": "8*omega**2*s**2*w",
+   "L_1": "0",
+   "L_2 quadratic form": {
+    "theta^2": "-2*omega**2*w*(-delta + 3*s + 1)*(delta + s - 1)",
+    "theta_t^2": "2*w*(delta + s - 1)**2",
+    "theta_z^2": "-2*w*(delta + s - 1)**2"
+   },
+   "tau_dependent": false
+  }
+ },
+ "hyperbolicity": {
+  "alpha_total": "2*w*(delta + s - 1)**2",
+  "gamma_total": "2*(16*omega**2*s**2 - w)*(delta + s - 1)**2",
+  "hyperbolic_iff": "alpha > 0 and gamma < 0  <=>  -2*(16*omega**2*s**2 - w)*(delta + s - 1)**2 > 0",
+  "author": "w kappa_2 > 16 omega^2 s^2"
+ },
+ "H4_static_on_finite_twist_sheet": {
+  "K_P^23 static density": "0",
+  "I1 static density": "0"
+ }
+}
