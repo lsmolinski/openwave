@@ -1,0 +1,127 @@
+{
+ "P23 idempotent": {
+  "ok": true,
+  "value": 1.2649083169780084e-13
+ },
+ "P23 rank 2 (trace)": {
+  "ok": true,
+  "value": 1.2301271112846734e-13
+ },
+ "P23 commutes with N": {
+  "ok": true,
+  "value": 9.715318827208108e-15
+ },
+ "P23 == the author's formula at lambda_2 = lambda_3 (vacuum)": {
+  "ok": true,
+  "value": 3.2862601528904634e-14
+ },
+ "H-adjoint form == eta form on the projected block": {
+  "ok": true,
+  "value": 1.7763568394002505e-15
+ },
+ "P23 u = 0 (timelike eigenvector killed)": {
+  "ok": true,
+  "value": 4.2833668191905146e-14
+ },
+ "V4^dd = 0 and E_u = 0 on the degenerate vacuum": {
+  "ok": true,
+  "value": [
+   0.0,
+   0.0
+  ]
+ },
+ "a0_local = 0 on the degenerate vacuum (the (2,3) rotation is a symmetry)": {
+  "ok": true,
+  "value": 0.0
+ },
+ "kin_I1 = 0 and kin_KP23 = 0 on the degenerate vacuum for the G1 clock": {
+  "ok": true,
+  "value": [
+   0.0,
+   0.0
+  ]
+ },
+ "split = 0 on the degenerate vacuum": {
+  "ok": true,
+  "value": 9.547918011776346e-15
+ },
+ "gradient gate K_P^23 static: analytic vs central FD vs complex step": {
+  "ok": true,
+  "value": {
+   "analytic": 5.7604981955876795,
+   "fd": 5.760498196893948,
+   "cs": 5.760498195587687,
+   "rel_fd": 2.2676317676013925e-10,
+   "rel_cs": 1.233474452442929e-15
+  }
+ },
+ "gradient gate K_P^23 kinetic (frozen a0): analytic vs central FD vs complex step": {
+  "ok": true,
+  "value": {
+   "analytic": -0.019338176573521118,
+   "fd": -0.019338165735405255,
+   "cs": -0.019338176573557037,
+   "rel_fd": 5.604521137838295e-07,
+   "rel_cs": 1.857423535096455e-12
+  }
+ },
+ "gradient gate split term: analytic vs central FD vs complex step": {
+  "ok": true,
+  "value": {
+   "analytic": -0.04339859794158389,
+   "fd": -0.04339859731306017,
+   "cs": -0.04339859794156899,
+   "rel_fd": 1.44825814218771e-08,
+   "rel_cs": 3.434383784854105e-13
+  }
+ },
+ "gradient gate L_P total static: analytic vs central FD vs complex step": {
+  "ok": true,
+  "value": {
+   "analytic": -13722.075651001891,
+   "fd": -13722.075663736177,
+   "cs": -13722.075651002055,
+   "rel_fd": 9.280145905730722e-10,
+   "rel_cs": 1.1930341333395304e-14
+  }
+ },
+ "covariance of K_P^23 and the split term under a global boost": {
+  "ok": true,
+  "value": [
+   2.510815761803184,
+   2.5108157618031846,
+   0.1168213476541597,
+   0.11682134765415746
+  ]
+ },
+ "covariance of K_P^23 and the split term under a global rotation": {
+  "ok": true,
+  "value": [
+   2.510815761803184,
+   2.5108157618031846,
+   0.1168213476541597,
+   0.1168213476541601
+  ]
+ },
+ "no-eta control (plain Frobenius) FAILS covariance under the boost": {
+  "ok": true,
+  "value": [
+   0.7440426360052382,
+   0.914690784746891
+  ]
+ },
+ "E_u == 4 I1 (registry read at omega 0, fixes the I1^h E-orientation)": {
+  "ok": true,
+  "value": [
+   0.01017921025849398,
+   0.010179210258493982
+  ]
+ },
+ "I1h_static_on_random_field": 0.2535808447680058,
+ "the certified stack patched on every loaded instance": {
+  "ok": true,
+  "value": 6
+ },
+ "n_pass": 19,
+ "n_total": 19
+}

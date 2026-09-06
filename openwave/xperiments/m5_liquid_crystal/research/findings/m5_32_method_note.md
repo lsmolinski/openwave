@@ -381,3 +381,58 @@ The author's gates 1 to 3 of 2026-09-05 (an exact Noether clock charge of a cycl
 | R14-B | 8 | 4 | 3 | 1 | the volume-law reading (an h-blind descent), the iteration-100 start values, the unsampled boost sector |
 | R14-C | 9 | 1 | 4 | 4 | the wrapper-stacking defect (heals rerun), the threshold in `c_R`, the pair law, the g = 32 cfg |
 | R14-D | 8 | 5 | 1 | 2 | the box artifact of the fixed-omega scan, the plane-level first-order crossing |
+
+## 12. Addendum (2026-09-06): R15, the floor witness, the tilt channel, and the author's projector object
+
+The author's 2026-09-05 reply (record: [`m5_32_convo.md`](../tasks/m5_32_convo.md), the 16:54 UTC entry) accepted the R14 verdicts and pre-registered a new object on the degenerate vacuum, a floor witness for the certified kinetic term, and a tilt-channel claim; the R15 packet was frozen in [ledger § 6.4](m5_32_candidate_ledger.md) before any number and ran 2026-09-05 20:18 UTC to 2026-09-06 (every number and the five audits in the [task record](../tasks/m5_32_task_details.md), R15 section).
+
+### 12.1 The objects (equations; E-orientation as in § 11.1)
+
+| Object | Definition |
+| --- | --- |
+| the degenerate vacuum | `d = diag(g, 1, delta, delta)`, `N = M eta` with spectrum `(-g, 1, delta, delta)`; `V4^dd = W1 sum_{p=1..4} (tr N^p - C_p)^2`, `C_p = (-g)^p + 1 + 2 delta^p` |
+| the split stiffness | `mu (lambda_2 - lambda_3)^2 = mu (s^2 - 4 p)`, `s = tr N - lambda_g - lambda_1`, `p = det N / (lambda_g lambda_1)`, `lambda_g`, `lambda_1` the two isolated eigenvalues (read per cell, Newton-polished on the characteristic polynomial so the map is holomorphic and the complex-step gate is exact) |
+| the projector | `P23 = I - P_g - P_1`, `P_g = (N - lambda_1)(N^2 - s N + p) / [(lambda_g - lambda_1)(lambda_g^2 - s lambda_g + p)]`, `P_1` likewise; equals the author's `(N - g)(N - 1) / [(lambda_23 - g)(lambda_23 - 1)]` at `lambda_2 = lambda_3` and is a projector everywhere (the reading asked back to the author) |
+| `K_P^23` | `E = (1/2) [ sum_i tr(Om_i^T eta Om_i eta) + omega^2 tr(Om_0^T eta Om_0 eta) ]`, `Om_mu = P23 A_mu eta P23`; THEOREM: `tr(Om^T H Om H^-1) = tr(Om^T eta Om eta)` on the projected block for `H = eta + 2 (eta u)(eta u)^T`, because `P23 u = 0` |
+| `L_P` (our reading of the author's object) | `E_stat = E_u + V4^dd + mu SPLIT + c_P K_P^23`, descents under the certified `-4 I1` (`E_u`), `-4 I1^h` read on the end fields (`E = +4 x` the Lagrangian read at omega 0) |
+| the floor witness (jets) | `M = L_a(chi) R_12(psi) D R_12^T L_a^T` (twist inside) or `R_12 L_a D L_a^T R_12^T` (after); `F_st = [b d_chi M, k d_psi M]_eta`; `U_G = 4 <F_st, F_st>_G = b^2 k^2 c_G` |
+| the tilt channel | `M = R_23(omega t) R_12(theta(t, z)) D_s R_12^T R_23^T`, `D_s = diag(g, 1, delta + s, delta - s)`; `L_2 = alpha theta_t^2 + gamma theta_z^2 + eps theta^2`; regulator `w [tr(A_0 G A_0 G) - tr(A_z G A_z G)]` |
+| the reduced planar functional | `F = int dz { (c/2)(m2'^2 + m3'^2) + V4^dd + mu s^2 - omega^2 [c s^2 + 8 s^2 s'^2] }` on `diag(g, 1, m2(z), m3(z))`, `s = m2 - m3`; `V_eff = V4^dd + (mu - omega^2 c) s^2` |
+| the fixed-J functional | `E_J = E_stat + J^2 / (4 kin_tot)`, `kin_tot = kin_I1 + c_P kin_KP23`, `a0 = a0_local(M)` refreshed each step and frozen in the gradient |
+
+### 12.2 Equation-to-code map (additions)
+
+| Equation | Code |
+| --- | --- |
+| the trace targets, the split, the projector, `K_P^23` energy and exact gradient, `L_P`, the fixed-J FIRE, the 19 selftests | [`m5_32_r15_common.py`](../scripts/m5_32_r15_common.py): `cp_dd`, `spectrum_parts`, `projectors`, `kp23_cells`, `kp23_energy_grad`, `split_cells`, `split_energy_grad`, `lp_parts`, `lp_grad`, `lp_kin_grad`, `fire_lp`, `i1h_static`, `selftest` |
+| the floor-witness jets and the tilt channel | [`m5_32_r15_vh_symbolic.py`](../scripts/m5_32_r15_vh_symbolic.py): `va_mode`, `h_mode` (`taylor2`) |
+| the witness on the lattice | [`m5_32_r15_vb_lattice.py`](../scripts/m5_32_r15_vb_lattice.py): `boost_field`, `twist_field`, `run_grid` |
+| the Hessian, the relaxations, the reads, the calibrated verdict | [`m5_32_r15_m_hedgehog.py`](../scripts/m5_32_r15_m_hedgehog.py): `hess_mode`, `relax_mode`, `reads`, `static_density`, `collect_mode` |
+| the tails | [`m5_32_r15_p2_tail.py`](../scripts/m5_32_r15_p2_tail.py) |
+| the reduced functional, the theorem check, the onset, the diagonal-sector wall, the slab check | [`m5_32_r15_p3_wall.py`](../scripts/m5_32_r15_p3_wall.py): `veff`, `F_reduced`, `theorem_check`, `onset_scan`, `ising_wall`, `slab_check` |
+| fixed J and the stationarity test | [`m5_32_r15_p4_fixedj.py`](../scripts/m5_32_r15_p4_fixedj.py): `main`, `stationarity`, `verdict` |
+
+### 12.3 Results, each with its pre-registered gate
+
+| Rung | Gate | Audited outcome |
+| --- | --- | --- |
+| R15-V | V1 sign eta negative growing `k^2`, V2 sign h positive, V3 twist-after hides, V4 the symbolic coefficient | V1, V2 CONFIRMED (jets: `c_eta = -8 (delta - 1)^2 (g + d_a)^2 = -c_h`, rapidity-independent; lattice n64: `-515 / -1739 / -3583` against `+557 / +1835 / +4002`); V3 QUALIFIED (both positive, unequal, the jet-level equality only at rapidity 0); V4 the author's coefficient is the large-g leading form at ratio exactly 4; on the relaxed hedgehog both forms go negative; the lattice numbers are grid-divergent through the dressing's origin |
+| R15-H | H1 no `theta_t^2` from curvature terms, H2 the `omega^2 k^2 theta^2` coefficient, H3 the hyperbolicity inequality, H4 `K_P^23` blind to the (1,2) sheet | all CONFIRMED exactly: `gamma(-4 I1) = 32 omega^2 s^2 (delta + s - 1)^2`, `alpha` only from the regulator, hyperbolic iff `w > 16 omega^2 s^2`, the static `K_P^23` exactly zero on any (1,2) twist sheet (a free direction: no fixed-J minimizer by the R13-W theorem) |
+| R15-M | ADMISSIBLE / NOT_LOCALIZED / RUNAWAY | ADMISSIBLE on all eight (calibrated rule; the pre-registered 0.8 fraction fails the certified reference itself); a finite-energy hedgehog with a `1/R` tail, the pair staying degenerate, the exterior the seed's; the Hessian null counts as predicted (7 then 5, split stiffness `4 mu`) |
+| R15-P-ii | L-exponent 0 (finite) against 1.34 | TAIL_FINITE: `K_P^23 ~ r^-4.1`, exponent 0.08 to 0.11 (the seed's `1/L`) |
+| R15-P-iii | CONTINUOUS_ONSET at `omega_c^2 = mu / (c kappa_P)` or FIRST_ORDER_CROSSING | CONTINUOUS_ONSET on all nine points, a theorem (`V4^dd >= 0`); no coexistence wall; the Ising wall a Goldstone saddle (audit); the decay length `(1/2) sqrt(c/mu)` is not what the hedgehog's split shows (2.1 to 2.4 regardless of `c_P`) |
+| R15-P-iv | PERIODIC_ORBIT_EXISTS / CANDIDATE_REFUTED / BLIND_BY_THEOREM | CANDIDATE_REFUTED (no stationary state): the descent inflates the split in the innermost cells to buy inertia (`E_J` 3.7e5 to 89 in 600 iterations, the fixed-J term 43 of 89, the kinetic density lattice-scale) and pins itself on the `lambda_1 = lambda_3` eigenvalue crossing, the branch cut of the ordered-label `P23` and of `a0_local` (the audit: the finite-difference curvature is a kink, 90 percent of the reported inertia a labeling artifact); n48 L72 replicates it (`E_J` 98.72, six cells on the crossing at r 1.3, gap 3.6e-6) |
+
+### 12.4 Not computed (in addition to §§ 6 and 11.4)
+
+A fixed-J descent under `-4 I1^h` (no exact gradient in the registry); a label-free fixed-J functional (a `P23` defined off the crossing, the author's call); the M-b descents to stationarity and n64 L96; the P-iii functional with the off-diagonal (2,3) entry free beyond the audit's Goldstone identification; the diagonal-entry reading of the split term (the author's choice is asked).
+
+### 12.5 The adversarial audit record of the ladder
+
+| Rung | Claims | CONFIRMED | QUALIFIED | REFUTED | Applied |
+| --- | --- | --- | --- | --- | --- |
+| R15-V | 7 | 5 | 2 | 0 | the hedgehog cross terms relative to the hedgehog's own `E_u`; the grid divergence of the dressed baseline; the stencil attenuation of the k growth; the h-column normalization mismatch |
+| R15-H | 5 | 5 | 0 | 0 | the regulator's `s = 0` term (the Coriolis partner); the (2,3) sheet not free for `K_P^23` |
+| R15-M | 6 | 2 | 4 | 0 | the tail is the seed's; the certified reference's z-axis line; the split identities; the gradient level; the mu dependence at `c_P 0` |
+| R15-P-iii | 5 | 3 | 2 | 0 | the 32-vs-16 criterion; the Ising wall a Goldstone saddle; the decay length `(1/2) sqrt(c/mu)`; the two readings of the split term |
+| R15-P-iv | 5 | 3 | 2 | 0 | the branch-cut pinning replaces the stiff-valley reading; the split sits in six cells, not a shell; the label-free inertia |
