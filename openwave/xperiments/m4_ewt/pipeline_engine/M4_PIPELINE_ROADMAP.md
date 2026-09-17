@@ -23,9 +23,9 @@ This document captures:
 1. **Why** the previous implementation only *simulated* EWT and did not
    *realise* it (Section 1).
 2. **What** the core conceptual commitments are that the new engine must
-   honour (Sections 2–4).
+   honour (Sections 2–5).
 3. **How** to build the engine (Block 1) and the physics (Block 2), with
-   concrete, checkable work items (Sections 5–7).
+   concrete, checkable work items (Sections 6–7).
 4. **What** from the old implementation is obsolete and should not be ported
    (Section 8).
 5. **Which** questions remain genuinely open and require author input or
@@ -515,7 +515,7 @@ Infrastructure only. No specific physics. Each item is a work unit.
 
 - [ ] Define `GeometricConstants` feature.
 - [ ] Implement `ComputeGeometry` lifecycle processor that imports from
-      `ewt_emergence_engine.py` and populates the feature.
+      `m4_7_ewt_emergence_engine.py` and populates the feature.
 - [ ] Wire as `external_provides` for pipelines that need it.
 - [ ] Add a test: computed `A_pi`, `eps_M`, `N_geom` match the engine.
 
@@ -742,7 +742,7 @@ The following should **not** be ported. Each is listed with the reason.
 - Idea of flux mesh (rendering, Block 3).
 - Idea of granule motion (rendering, Block 3).
 - `constants.EWAVE_*` (absorbed into `OpenWaveUnitSystem`).
-- `ewt_emergence_engine.py` formulas (absorbed into `GeometricConstants`).
+- `m4_7_ewt_emergence_engine.py` formulas (absorbed into `GeometricConstants`).
 
 ---
 
@@ -890,7 +890,7 @@ Section 13 (Changelog).
 
 ## 14. OpenWave Compliance
 
-### 14.2. What this document is, and what it is not
+### 14.1. What this document is, and what it is not
 
 **Is** — a design rationale and a work plan for the pipeline_engine. It
 explains *why* the tool exists, *what* it must express, and *how* the work is
@@ -916,7 +916,7 @@ When this document and a task document disagree, the task document wins. When
 this document and the manuscript disagree, the manuscript wins. When the
 manuscript and the model author disagree, the author wins.
 
-### 14.3. TaskID mapping
+### 14.2. TaskID mapping
 
 The following TaskIDs are proposed for the roadmap. They are assigned in
 creation order and are never reused. The list is a proposal; the M4 maintainer
@@ -970,7 +970,5 @@ assigns the final IDs when the rows are added to `m4_roadmap.md`.
 IDs `M4.1`–`M4.19` are already used or reserved by the existing roadmap
 (M4.1 K-selectivity, M4.2 Coulomb, M4.3–M4.12 gravity and emergence work).
 The proposed assignment continues the sequence without collision.
-
-
 
 *End of document.*
