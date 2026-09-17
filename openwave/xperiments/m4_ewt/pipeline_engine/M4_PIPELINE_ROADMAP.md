@@ -888,4 +888,89 @@ Section 13 (Changelog).
 
 ---
 
+## 14. OpenWave Compliance
+
+### 14.2. What this document is, and what it is not
+
+**Is** — a design rationale and a work plan for the pipeline_engine. It
+explains *why* the tool exists, *what* it must express, and *how* the work is
+organised.
+
+**Is not** — a roadmap, a task document, or a findings note. It does not
+replace `m4_roadmap.md`, `tasks/m4_<n>_task_details.md`, or `findings/`.
+Those documents carry the criteria, the numbers, and the verdicts.
+
+The correct flow for a work item is:
+
+```
+this document  →  m4_roadmap.md row  →  tasks/m4_<n>_task_details.md
+                (design intent)        (preview)               (the record)
+                                       ↓
+                              scripts/m4_<n>_*.py
+                              data/m4_<n>_*.csv
+                              plots/m4_<n>_*.png
+                              findings/m4_<n>_*.md
+```
+
+When this document and a task document disagree, the task document wins. When
+this document and the manuscript disagree, the manuscript wins. When the
+manuscript and the model author disagree, the author wins.
+
+### 14.3. TaskID mapping
+
+The following TaskIDs are proposed for the roadmap. They are assigned in
+creation order and are never reused. The list is a proposal; the M4 maintainer
+assigns the final IDs when the rows are added to `m4_roadmap.md`.
+
+**Block 1 — Engine**
+
+| Proposed ID | Item | Depends on |
+|---|---|---|
+| M4.20 | UnitSystem feature | — |
+| M4.21 | Multi-field FeatureBag | M4.20 |
+| M4.22 | Trackers per voxel | M4.21 |
+| M4.23 | Multi-field evolution | M4.21 |
+| M4.24 | Source terms (additive) | M4.23 |
+| M4.25 | Reflector interface | M4.23 |
+| M4.26 | WC motion (drift) | M4.25 |
+| M4.27 | EMC boundary (analytic) | M4.20 |
+| M4.28 | Energy budget tracker | M4.22, M4.23 |
+| M4.29 | Stability metrics | M4.22 |
+| M4.30 | Experiment runner | M4.20 |
+| M4.31 | Geometric constants provider | M4.20 |
+| M4.32 | Checkpoint / restart | M4.21 |
+| M4.33 | Live monitor | M4.22 |
+| M4.34 | Research logging schema | M4.30 |
+| M4.35 | Universe scaling strategy | M4.20 |
+| M4.36 | Vacuum energy strategy | M4.20 |
+| M4.37 | Diagnostic hooks | M4.29 |
+| M4.38 | Deterministic seeds | M4.30 |
+| M4.39 | Parameter sweep DSL | M4.30 |
+| M4.40 | Artifact versioning | M4.30 |
+
+**Block 2 — Physics**
+
+| Proposed ID | Item | Depends on |
+|---|---|---|
+| M4.41 | Soliton assembly contract | M4.23, M4.24 |
+| M4.42 | Base wave variants | M4.41 |
+| M4.43 | WC reflector variants | M4.25, M4.42 |
+| M4.44 | Longitudinal↔transverse coupling | M4.25 |
+| M4.45 | EMC density dynamics | M4.21, M4.27 |
+| M4.46 | Wave speed modulation | M4.45 |
+| M4.47 | Density-modulated nonlinearity | M4.45, M4.46 |
+| M4.48 | EMC Wall variants | M4.27, M4.45 |
+| M4.49 | WC motion rule variants | M4.26, M4.45 |
+| M4.50 | WC topology variants | M4.23 |
+| M4.51 | WC spacing variants | M4.50 |
+| M4.52 | K-selectivity sweep | M4.47–M4.51 |
+| M4.53 | Energy conservation verification | M4.28, M4.52 |
+| M4.54 | Emergent α | M4.44, M4.52 |
+
+IDs `M4.1`–`M4.19` are already used or reserved by the existing roadmap
+(M4.1 K-selectivity, M4.2 Coulomb, M4.3–M4.12 gravity and emergence work).
+The proposed assignment continues the sequence without collision.
+
+
+
 *End of document.*
