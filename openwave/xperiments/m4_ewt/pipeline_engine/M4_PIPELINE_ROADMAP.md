@@ -50,7 +50,7 @@ interference of `Ψ_in` and `Ψ_out`, bounded by the particle radius.
 
 The old implementation defined wave centres as **hard-pinned regions**:
 
-```
+```text
 ψ = A · sin(ω t + offset) · r̂    inside a ball of radius R around each WC
 ```
 
@@ -72,7 +72,7 @@ Neither emerged from dynamics.
 
 Yee's standing-wave geometry prescribes *decreasing* wavelengths from the core:
 
-```
+```text
 r_wavelength(n) = 2Kλ − 2nλ
 r_x = (K + 2·Σ_{n=1..x}(K−n)) · λ
 ```
@@ -96,7 +96,7 @@ self-consistency between `|Ψ|²` and `ρ(r)`.
 
 M4.9 established the microscopic relation:
 
-```
+```text
 v_phys(η) = a(η) · sqrt(k(η)/m₀)  ∝  η^{+1/2}
 ```
 
@@ -104,7 +104,7 @@ where `η = ρ/ρ₀`. The local wave speed depends on the local EMC density.
 Because the soliton itself depletes EMC, `c²(r) = c₀²·ρ(r)/ρ₀`, and the
 wave equation becomes *automatically nonlinear*:
 
-```
+```text
 ∂²Ψ/∂t² = c²(ρ) ∇²Ψ = c₀² (1 − β|Ψ|²) ∇²Ψ
 ```
 
@@ -149,7 +149,7 @@ Energy conservation in EWT is a consequence of the **unitarity of reflection
 at the WC** and the **Hermiticity of the wave equation**, not an external
 constraint. If the WC reflection satisfies
 
-```
+```text
 |Ψ_out|² + |Ψ_spin|² = |Ψ_in|²
 ```
 
@@ -165,7 +165,7 @@ The medium carries an always-on base wave (Yee: "waves flow through all of
 matter"). This wave supplies `Ψ_in` to the WC. The WC reflects part of it as
 `Ψ_out` and converts part of it into transverse spin. In steady state:
 
-```
+```text
 flux_in = flux_out + flux_spin
 ```
 
@@ -181,7 +181,7 @@ manuscript describes.
 
 `ρ(r)` is not an input. It is a solution of
 
-```
+```text
 ∂ρ/∂t = D ∇²ρ − γ(ρ − ρ₀) − β |Ψ|²
 ```
 
@@ -237,7 +237,7 @@ irrelevant for stability.
 
 A `UnitSystem` is a feature providing at least:
 
-```
+```text
 c            : wave speed in these units
 lambda       : fundamental wavelength (λ_ν)
 dx           : grid step in these units
@@ -253,7 +253,7 @@ N_nu_eff     : effective volume deficit
 
 Plus conversion methods:
 
-```
+```text
 to_physical_length(x)   -> metres
 to_physical_time(t)     -> seconds
 to_physical_energy(E)   -> joules
@@ -263,7 +263,7 @@ to_physical_density(r)  -> 1/m³
 ### 3.2. Implementations
 
 **NaturalUnitSystem** (default for research):
-```
+```text
 c      = 1
 lambda = 1
 dx     = 1 / K_grid     (e.g. 0.05 for 20 voxels/λ)
@@ -272,7 +272,7 @@ dt     = 0.9 · dx / c   (CFL-safe)
 Advantages: f32-safe (all values near 1), `gamma` dimensionless, fast.
 
 **OpenWaveUnitSystem**:
-```
+```text
 c      = 0.3 am/rs
 lambda = EWAVE_LENGTH / ATTOMETER   (≈ 28.5 am)
 dx     = lambda / 12
@@ -281,7 +281,7 @@ dt     = 0.9 · dx / c
 Advantages: comparable to legacy xparameters.
 
 **SIUnitSystem**:
-```
+```text
 c      = 299792458 m/s
 lambda = 2.8540965e-17 m
 dx     = r_e / 200
@@ -334,7 +334,7 @@ for K = 1 and maybe K = 2.
 
 The analytic far-field is:
 
-```
+```text
 ρ(r) → N_stat · (1 − r_s/r)   for r ≫ r_core
 ```
 
@@ -367,7 +367,7 @@ simulated feature without changing the contract.
 The base wave is the always-on ground-state oscillation of the medium. In
 natural units:
 
-```
+```text
 Ψ_base(r, t) = A_0 · cos(k·r − ω·t)
 ```
 
@@ -384,7 +384,7 @@ zero.
 Implementation consequence: `E_base` is **excluded** from the conservation
 check. The check is
 
-```
+```text
 d/dt (E_soliton + E_deformation) + flux_through_boundary = 0
 ```
 
@@ -607,7 +607,7 @@ physics layer supplies the specific mechanisms.
 
 Before any specific mechanism, define how the pieces compose:
 
-```
+```text
 Ψ_total = Ψ_base + Ψ_soliton
 ρ(r)    = ρ₀ − β |Ψ_soliton|²        (initial guess)
 c²(r)   = c₀² · ρ(r) / ρ₀
@@ -902,7 +902,7 @@ Those documents carry the criteria, the numbers, and the verdicts.
 
 The correct flow for a work item is:
 
-```
+```text
 this document  →  m4_roadmap.md row  →  tasks/m4_<n>_task_details.md
                 (design intent)        (preview)               (the record)
                                        ↓
