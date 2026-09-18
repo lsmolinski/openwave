@@ -1,4 +1,4 @@
-# M4 Pipeline Engine — Implementation Roadmap
+# M4 Pipeline Engine — Implementation Plan
 
 > **Status:** DRAFT (working document)
 > **Scope:** The pipeline_engine as the realisation substrate for Enhanced EWT.
@@ -105,7 +105,7 @@ Because the soliton itself depletes EMC, `c²(r) = c₀²·ρ(r)/ρ₀`, and the
 wave equation becomes *automatically nonlinear*:
 
 ```text
-∂²Ψ/∂t² = c²(ρ) ∇²Ψ = c₀² (1 − β|Ψ|²) ∇²Ψ
+∂²Ψ/∂t² = c²(ρ) ∇²Ψ = c₀² (1 − β_nl |Ψ|²) ∇²Ψ
 ```
 
 The old implementation instead injected a Klein–Gordon-style potential
@@ -118,8 +118,8 @@ were fitted, not derived.
 The old `compute_force_vector` used `F = −∇E_local`, where `E_local` was a
 heuristic `ρ·V·(f·A)²` with `f` hard-coded to the base frequency. This
 measured the *internal* energy gradient, not the *external* EMC density
-gradient. The push-out picture requires `F_pressure = −α∇ρ(r)`, where `ρ(r)`
-is the EMC packing density, not the soliton's energy density.
+gradient. The push-out picture requires `F_pressure = −α_p·∇ρ(r)`, where
+`ρ(r)` is the EMC packing density, not the soliton's energy density.
 
 ### 1.7. Summary table
 
@@ -133,7 +133,7 @@ is the EMC packing density, not the soliton's energy density.
 | `ρ(r)` self-consistent | Fixed profile | No push-out feedback |
 | `c²(ρ)` nonlinearity | External `V(ψ)` | Coupling fitted |
 | `F = −∇ρ` gravity | `F = −∇E` | Measures wrong gradient |
-| EMC Wall as boundary | Dirichlet `ψ = 0` | No profile, no sign change |
+| Boundary as EMC wall | Dirichlet `ψ = 0` | No profile, no sign change |
 | BCC lattice | Simple cubic stencil | Medium ≠ medium of theory |
 
 ---
@@ -182,7 +182,7 @@ manuscript describes.
 `ρ(r)` is not an input. It is a solution of
 
 ```text
-∂ρ/∂t = D ∇²ρ − γ(ρ − ρ₀) − β |Ψ|²
+∂ρ/∂t = D ∇²ρ − γ_ρ (ρ − ρ₀) − β_ρ |Ψ|²
 ```
 
 in the simplest model, or a richer evolution with inertia. In steady state,
@@ -190,19 +190,22 @@ in the simplest model, or a richer evolution with inertia. In steady state,
 `ρ > ρ₀` that reverses the sign of the nonlinearity — is a **consequence**
 of the dynamics, not a parameter.
 
-### 2.4. Scales are separable
+### 2.4. The tail is analytic; the core is simulated
 
-Three distinct length scales appear in the theory:
+The far-field deficit
 
-| Scale | Value (electron) | Role |
-|---|---|---|
-| Soliton core | `K²λ = 100 λ_ν ≈ r_e` | Standing-wave boundary |
-| EMC deficit range | `r_e/α ≈ 137 r_e` | Where `ρ(r) → N_stat` |
-| Compton wavelength | `λ_C ≈ 2π · 137 r_e` | Quantum scattering scale |
+```text
+ρ(r) → N_stat · (1 − r_s/r)   for r ≫ r_core
+```
 
-**The core is simulated. The far-field deficit is treated analytically.**
-No single simulation resolves both scales; the connection is made at the
-boundary of the simulated domain.
+is already derived analytically in the M4.11 lock-in scan and in the gravity
+sector work. The pipeline does not re-derive it and does not simulate it.
+The simulated domain covers the core, `r ≤ r_domain`, with `r_domain` a
+small multiple of `r_core`.
+
+This separation is deliberate: the core is where the soliton structure lives
+and where K-selectivity must emerge; the tail is a solved analytic problem
+that does not need a discretised field.
 
 ### 2.5. Units are pluggable
 
@@ -224,10 +227,36 @@ of:
 
 - Topology (1-3-6, golden-angle, BCC, line, random).
 - Spacing (exact `n·λ`, exact `(n+½)λ`, perturbed, swept).
-- Coupling (none, push-out without wall, push-out with wall).
+- Coupling (none, push-out only, push-out with feedback).
 
 Only then can we say which of these factors is necessary, sufficient, or
 irrelevant for stability.
+
+### 2.7. What α is, and what it is not
+
+The manuscript defines `α` as a purely geometric ratio:
+
+```text
+α = x² / S = 1 / (4π³ + π² + π)
+```
+
+where `S` is the emission surface (sphere plus cone) and `x` is a bookkeeping
+amplitude that cancels. With the BCC correction:
+
+```text
+α = 1 / (A_π − ε_M) ≈ 7.29733855 × 10⁻³
+```
+
+This is the value the engine loads from `GeometricConstants`. It is a
+**parameter**, not a derived quantity. The engine uses it as the reflection
+coefficient at a wave centre; it does not derive it from the field.
+
+A dynamic counterpart — whether some field ratio at a WC coincides with this
+value — is a **consistency observation**, not a second derivation. The
+engine measures several candidate ratios (Section 7, item 2.2b) so that the
+coincidence, if any, can be recorded. A mismatch is not a failure of the
+plan; it means the geometric ratio has no direct dynamic manifestation in
+this engine.
 
 ---
 
@@ -249,6 +278,9 @@ N_geom       : 8π⁴ · (1 − ζ)
 gamma        : 1 / eps_M
 X_eff        : geometric dilution factor
 N_nu_eff     : effective volume deficit
+A_base       : base wave amplitude
+r_domain     : simulated domain radius
+r_core       : soliton core radius (K²λ)
 ```
 
 Plus conversion methods:
@@ -263,30 +295,36 @@ to_physical_density(r)  -> 1/m³
 ### 3.2. Implementations
 
 **NaturalUnitSystem** (default for research):
+
 ```text
 c      = 1
 lambda = 1
 dx     = 1 / K_grid     (e.g. 0.05 for 20 voxels/λ)
-dt     = 0.9 · dx / c   (CFL-safe)
+dt     = CFL_SAFETY · dx / (c · √3),   CFL_SAFETY ≈ 0.9
 ```
-Advantages: f32-safe (all values near 1), `gamma` dimensionless, fast.
+
+The 3D leapfrog bound is `dx / (c · √3)`. `CFL_SAFETY = 0.9` of that bound
+gives `dt ≈ 0.52 · dx / c`. A 1D run may use `dt = CFL_SAFETY · dx / c` as
+a validation figure; the default is 3D and takes the `√3` factor.
 
 **OpenWaveUnitSystem**:
+
 ```text
 c      = 0.3 am/rs
 lambda = EWAVE_LENGTH / ATTOMETER   (≈ 28.5 am)
 dx     = lambda / 12
-dt     = 0.9 · dx / c
+dt     = CFL_SAFETY · dx / (c · √3)
 ```
-Advantages: comparable to legacy xparameters.
 
 **SIUnitSystem**:
+
 ```text
 c      = 299792458 m/s
 lambda = 2.8540965e-17 m
 dx     = r_e / 200
-dt     = ...
+dt     = CFL_SAFETY · dx / (c · √3)
 ```
+
 Used primarily for output conversion.
 
 ### 3.3. Consequences for processors
@@ -305,62 +343,40 @@ This rule is checkable by inspection: grep for numeric literals in
 
 ---
 
-## 4. Universe scaling strategy
+## 4. Simulation domain and boundary
 
-### 4.1. The scale problem
+The soliton core is the object the pipeline simulates. Its radius is
+`r_core = K²λ`. For K = 10, `r_core = 100 λ_ν`; with `dx = 0.05` (20 voxels
+per λ_ν) the core occupies 2000 voxels in radius, and a full 3D box is
+`(4000)³ ≈ 6.4 × 10¹⁰` voxels. A truncated domain is used:
 
-For K = 10 (electron), the core radius is `r_core = K²λ = 100 λ_ν`. With
-`dx = 0.05` (20 voxels per λ_ν), the core occupies 2000 voxels in radius.
-A full 3D simulation of the core is `(4000)³ ≈ 6.4 × 10¹⁰` voxels. This
-is not tractable.
+- **Simulated:** `r ≤ r_domain`, with `r_domain ~ 50 λ_ν`.
+- **Analytic, not simulated:** the far-field deficit tail
+  `ρ(r) → N_stat (1 − r_s/r)`. The tail is already derived analytically in
+  the M4.11 lock-in scan and in the gravity sector work; the pipeline does
+  not re-derive it.
+- **Not simulated:** the EMC wall peak near `r_e/α`. It lies outside the
+  domain and is a separate feature from the tail.
 
-### 4.2. Three strategies
+The boundary at `r = r_domain` is one of:
 
-**(a) Full 3D simulation of the core** — ideal but infeasible at K = 10.
-May become feasible for K = 1 (neutrino) where `r_core = 1λ_ν`.
+- **Absorbing** — waves leave and do not return. Default for isolated
+  soliton tests.
+- **Periodic** — the domain wraps. No leakage, at the cost of wrap-around
+  artefacts when the soliton's tail meets itself.
+- **Reflecting** — waves bounce. Use only when the test specifically
+  requires reflections.
 
-**(b) 1D radial simulation** — exploits spherical symmetry. `r_core = 100λ_ν`
-becomes 2000 voxels in 1D. Loses all angular structure (spin, 1-3-6 topology),
-but is an excellent validation tool for radial dynamics.
+The choice is per experiment, not global. There is no attempt to model the
+tail at the boundary; the tail is analytic elsewhere.
 
-**(c) 3D simulation of a truncated domain** — simulate `r ≤ r_domain` with
-`r_domain ~ 50 λ_ν`, and impose an **analytic outer boundary condition** that
-represents the far-field `1/r` tail.
-
-**Recommendation:** Start with (c). Use (b) for validation. Attempt (a) only
-for K = 1 and maybe K = 2.
-
-### 4.3. The outer boundary
-
-The analytic far-field is:
-
-```text
-ρ(r) → N_stat · (1 − r_s/r)   for r ≫ r_core
-```
-
-where `r_s = 2 G M / c²` is the gravitational radius. The boundary condition
-at `r = r_domain` imposes this tail; it is not a Dirichlet `ψ = 0` and it is
-not a reflecting wall.
-
-Two additional boundary types are available for testing:
-
-- **Absorbing (Sommerfeld)** — for isolating solitons from their environment.
-- **Periodic** — for homogeneous-medium tests without boundaries.
-
-### 4.4. The EMC wall
-
-The EMC wall at `r_wall ~ r_e/α ≈ 137 r_e` is **outside the simulated
-domain** in strategy (c). It enters only as a **modification of the analytic
-boundary condition**, not as a simulated field. Its role — reversing the sign
-of the nonlinearity to prevent outward leakage — is realised by the boundary,
-not by a local peak in `ρ(r)`.
-
-If later simulations extend the domain, the wall can be promoted to a
-simulated feature without changing the contract.
+**Validation with K = 1.** The neutrino (`K = 1`, `r_core = 1 λ_ν`) fits
+inside the truncated domain without truncation, so it serves as the
+validation case for the core dynamics before the K > 1 runs begin.
 
 ---
 
-## 5. Vacuum energy strategy
+## 5. Vacuum layer
 
 ### 5.1. What the base wave is
 
@@ -373,37 +389,71 @@ natural units:
 
 with `k = 2π/λ = 2π` and `ω = 2π·c/λ = 2π`.
 
-### 5.2. Is it a source or a carrier?
+### 5.2. The conservation check
 
-The base wave **carries** energy (it is a non-zero field), but it does not
-**supply** energy in the sense of a reservoir that can be drawn down. In
-steady state, the flux it carries in equals the flux it carries out of any
-closed surface, so its net contribution to the energy budget of a soliton is
-zero.
-
-Implementation consequence: `E_base` is **excluded** from the conservation
-check. The check is
+The energy budget excludes `E_base`. The check is:
 
 ```text
-d/dt (E_soliton + E_deformation) + flux_through_boundary = 0
+E_soliton     = ∫ (½ |∂Ψ/∂t|²/c² + ½ |∇Ψ|²) dV
+E_deformation = ∫ ½ κ (ρ − ρ₀)² dV
+E_total       = E_soliton + E_deformation
+check:          dE_total/dt + flux_through_boundary = 0
 ```
 
-where `E_soliton = ∫ |∇Ψ_soliton|² dV` and `E_deformation = ∫ (ρ − ρ₀)² dV`.
+The kinetic term is required: without it, a standing wave's gradient-only
+integral oscillates at `2ω` and the conservation test fails by construction.
+The deformation term uses `κ`, the stiffness supplied by the unit system.
 
 ### 5.3. Coupling to the soliton
 
 The soliton interacts with the base wave only **at the WC**, through
-reflection. There is no volume coupling. This preserves the locality of
-the interaction and avoids the "pumping" problem: a volume-coupled base
-wave would continuously inject energy everywhere, and the soliton would
-either grow without bound or require an explicit damping term.
+reflection. There is no volume coupling. This preserves the locality of the
+interaction and avoids the "pumping" problem: a volume-coupled base wave
+would continuously inject energy everywhere, and the soliton would either
+grow without bound or require an explicit damping term.
 
-### 5.4. Open question
+### 5.4. The vacuum layer is swappable
 
-Whether the base wave is truly non-dissipative, or whether it slowly relaxes
-toward an equilibrium (which would break conservation at cosmological
-timescales), is an **author-gated question** and is not resolved by this
-document. For in-simulation purposes, the base wave is treated as steady.
+Energy should not disappear. But the simulation domain is finite, waves
+reflect off its boundaries, and there is no obvious way to keep a
+non-equilibrium steady state running forever without either injecting energy
+or bleeding it. The problem is real and not resolved here.
+
+The plan's response is to make the vacuum layer **swappable**. The interface
+is fixed; the implementations are variants:
+
+```text
+VacuumProvider:
+    seed(ctx)         # called once, at t = 0
+    step(ctx)         # called every step; may inject or absorb
+    energy_budget()   # returns what the provider contributed or removed
+```
+
+Candidate implementations, in order of increasing physical fidelity:
+
+- **V1 — static vacuum.** `Ψ_base` is set once and does not evolve. The
+  soliton evolves on top of a fixed background. No energy exchange, no
+  reflection problem from the vacuum side, but the background does not
+  respond to the soliton.
+- **V2 — passive vacuum.** `Ψ_base` evolves with the wave equation but is
+  never re-driven. Energy leaks through the boundary and is lost. Simple,
+  but not conservative.
+- **V3 — periodic box.** The domain wraps. No leakage. The vacuum is
+  conserved by construction, at the cost of wrap-around artefacts when the
+  soliton's tail meets itself.
+- **V4 — absorbing boundary with re-injection.** Waves leaving the domain
+  are absorbed; an equal flux is injected at the boundary to keep the total
+  energy constant. Conservative in the budget sense, but the injection is
+  artificial and can seed artifacts.
+- **V5 — self-consistent vacuum.** `Ψ_base` and the soliton are coupled;
+  the base wave responds to the soliton's presence and the total energy is
+  conserved by a Hamiltonian structure. The most physical, but also the
+  hardest to implement and the most likely to be numerically stiff.
+
+The plan starts with **V1** for testing the engine, moves to **V3** for
+K-selectivity (where the wrap-around artefacts may be tolerable if the
+domain is large enough), and leaves **V4** and **V5** as research targets.
+Which one is physically correct is author-gated (Section 9, Q2).
 
 ---
 
@@ -433,7 +483,7 @@ Infrastructure only. No specific physics. Each item is a work unit.
 
 - [ ] Define `TrackerFields` feature.
 - [ ] Fields: `energy_long_local`, `energy_trans_local`, `amp_local`,
-      `freq_local`, `rho_local`, `wall_proximity`.
+      `freq_local`, `rho_local`.
 - [ ] Implement `TrackersUpdate` processor in `Stage.MEASURE`.
 - [ ] Implement 3-plane sampling (as in the legacy `sample_avg_trackers`)
       to compute global averages without full reductions.
@@ -477,22 +527,23 @@ Infrastructure only. No specific physics. Each item is a work unit.
 - [ ] Add a test: no-op drift → positions unchanged; default drift on a
       static `ρ` → WCs move to minimum.
 
-### 1.7 — EMC Wall (analytic boundary)
+### 1.7 — Boundary condition
 
-- [ ] Define `EMCBoundary` feature: `r_wall`, `wall_profile`,
-      `boundary_condition`.
-- [ ] Implement `EMCBoundaryProcessor` in `Stage.POST_UPDATE`.
-- [ ] Boundary condition modifies the far-field `1/r` tail. Not Dirichlet.
-- [ ] Add a test: wave hitting the boundary is partially reflected,
-      partially transmitted, energy conserved.
+- [ ] Define `BoundaryCondition` feature: `kind` (`absorbing` | `periodic`
+      | `reflecting`), `r_domain`.
+- [ ] Implement `BoundaryProcessor` in `Stage.POST_UPDATE`.
+- [ ] Absorbing: waves leave without reflection. Periodic: wrap. Reflecting:
+      mirror.
+- [ ] Add a test: wave hitting absorbing boundary leaves the domain without
+      reflection, energy accounted for in `flux_boundary`.
 
 ### 1.8 — Energy budget tracker
 
 - [ ] Define `EnergyBudget` feature.
-- [ ] Fields: `E_long`, `E_trans`, `E_deform`, `flux_boundary`, `dE_dt`.
+- [ ] Fields: `E_kin`, `E_grad`, `E_deform`, `flux_boundary`, `dE_dt`.
+- [ ] `E_soliton = E_kin + E_grad`; `E_total = E_soliton + E_deform`.
 - [ ] Implement `EnergyBudgetUpdate` in `Stage.MEASURE`.
-- [ ] Add a test: harmonic oscillator in 1D → `dE/dt ≈ 0` to machine
-      precision.
+- [ ] Add a test: 1D harmonic oscillator → `dE/dt ≈ 0` to machine precision.
 
 ### 1.9 — Stability metrics
 
@@ -549,22 +600,25 @@ This is folded into 1.0. Listed separately only for traceability.
 - [ ] `events`: annihilation, boundary hits, instability detected.
 - [ ] Add a test: schema validates against a JSON schema.
 
-### 1.16 — Universe scaling strategy
+### 1.16 — Simulation domain configuration
 
 This is the decision documented in Section 4. Work items:
 
 - [ ] Add `r_domain` and `r_core` to `UnitSystem`.
-- [ ] Implement the analytic boundary condition (Section 4.3).
-- [ ] Document the choice: strategy (c) as default.
-- [ ] Add a test: for K = 1, simulation of the full core at 20 voxels/λ.
+- [ ] Implement the boundary condition processor (1.7).
+- [ ] Document the choice: `r_domain ~ 50 λ_ν`.
+- [ ] Add a test: for K = 1, the whole core fits inside `r_domain`.
 
-### 1.17 — Vacuum energy strategy
+### 1.17 — Vacuum layer provider
 
 This is the decision documented in Section 5. Work items:
 
-- [ ] Add `A_base` (base wave amplitude) to `UnitSystem`.
-- [ ] Implement `SeedBaseWave` (in 1.4).
-- [ ] Implement the conservation check **excluding** `E_base`.
+- [ ] Define `VacuumProvider` interface: `seed`, `step`, `energy_budget`.
+- [ ] Implement V1 (static), V3 (periodic), and V4 (absorbing with
+      re-injection). V2 and V5 are deferred.
+- [ ] Wire the provider as an external feature.
+- [ ] Implement the conservation check excluding `E_base`, including the
+      kinetic term.
 - [ ] Add a test: base wave alone → `dE_soliton/dt = 0` trivially.
 
 ### 1.18 — Diagnostic hooks
@@ -579,7 +633,9 @@ This is the decision documented in Section 5. Work items:
 
 - [ ] Add `seed` to `RunContext` (already present).
 - [ ] All random initialisation reads from `ctx.run.seed`.
-- [ ] Add a test: two runs with same seed → bit-identical output.
+- [ ] Add a test: two runs with same seed within a backend → bit-identical
+      output; two runs across backends → equal to a stated tolerance at the
+      parsed-value level.
 
 ### 1.20 — Parameter sweep DSL
 
@@ -609,7 +665,7 @@ Before any specific mechanism, define how the pieces compose:
 
 ```text
 Ψ_total = Ψ_base + Ψ_soliton
-ρ(r)    = ρ₀ − β |Ψ_soliton|²        (initial guess)
+ρ(r)    = ρ₀ − β_ρ |Ψ_soliton|²        (initial guess)
 c²(r)   = c₀² · ρ(r) / ρ₀
 ```
 
@@ -621,19 +677,43 @@ foundation; all variants below are refinements.
 - [ ] Add a test: static `Ψ_soliton`, no coupling → no soliton, only
       dispersion.
 
-### 2.1 — Base wave
+### 2.1 — Vacuum implementation
 
-- [ ] **B1a**: static base wave (`A_base` constant in time).
-- [ ] **B1b**: oscillating base wave (time-dependent phase).
-- [ ] **B1c**: base wave coupled to soliton (feedback).
-- [ ] Recommended start: **B1b** — closest to EWT and analytically tractable.
+- [ ] **V1**: static vacuum.
+- [ ] **V2**: passive vacuum (leaky).
+- [ ] **V3**: periodic box.
+- [ ] **V4**: absorbing boundary with re-injection.
+- [ ] **V5**: self-consistent vacuum (deferred).
+- [ ] Recommended start: **V1** for engine tests, **V3** for K-selectivity.
 
 ### 2.2 — WC as reflector
 
-- [ ] **B2a**: perfect reflection, no spin conversion.
-- [ ] **B2b**: reflection with `α` conversion (`|Ψ_spin|² = α|Ψ_in|²`).
-- [ ] **B2c**: geometry-dependent reflection (local `α`).
-- [ ] Recommended start: **B2b** — this is what makes `α` emergent.
+The reflection coefficient `α` is **loaded from `GeometricConstants`**, not
+derived. Its value is `α = 1/(A_π − ε_M) ≈ 7.29733855 × 10⁻³`, fixed by the
+geometric derivation in the manuscript.
+
+- [ ] **B2a**: perfect reflection, no spin conversion
+      (`reflect_coeff_trans = 0`).
+- [ ] **B2b**: reflection with `α` conversion
+      (`reflect_coeff_trans = α`, loaded). Unitarity:
+      `|Ψ_out|² + |Ψ_spin|² = |Ψ_in|²`.
+- [ ] **B2c**: geometry-dependent reflection (local `α`, if variants warrant).
+- [ ] Recommended start: **B2b**.
+
+**Optional consistency observation (not a derivation).** The engine may
+record three candidate ratios near a WC:
+
+```text
+r1 = |Ψ_spin|² / |Ψ_in|²   (Yee's spin energy fraction)
+r2 = |Ψ_out|  / |Ψ_in|     (amplitude reflection ratio)
+r3 = |Ψ_out|² / |Ψ_in|²    (energy reflection ratio)
+```
+
+Each is compared with the geometric `α`. A match is evidence that the
+corresponding field quantity is what the geometric ratio describes. A
+mismatch for all three means the geometric `α` has no direct dynamic
+counterpart in this engine; that is a valid observation, not a failure of
+the plan.
 
 ### 2.3 — Longitudinal ↔ transverse coupling
 
@@ -644,8 +724,9 @@ foundation; all variants below are refinements.
 
 ### 2.4 — EMC density dynamics
 
-- [ ] **B4a**: instantaneous (`ρ = ρ₀ − β|Ψ|²`).
-- [ ] **B4b**: relaxation dynamics (`∂ρ/∂t = D∇²ρ − γ(ρ−ρ₀) − β|Ψ|²`).
+- [ ] **B4a**: instantaneous (`ρ = ρ₀ − β_ρ|Ψ|²`).
+- [ ] **B4b**: relaxation dynamics
+      (`∂ρ/∂t = D∇²ρ − γ_ρ(ρ−ρ₀) − β_ρ|Ψ|²`).
 - [ ] **B4c**: inertial dynamics (full wave equation for `ρ`).
 - [ ] Recommended start: **B4a** for tests; promote to **B4b** for
       self-consistent solitons.
@@ -664,55 +745,51 @@ foundation; all variants below are refinements.
 - [ ] **B6c**: nonlinearity in `c²(ρ)` instead of in `F`.
 - [ ] Recommended start: **B6a** — matches manuscript Variant B.
 
-### 2.7 — EMC Wall
+### 2.7 — WC motion rule
 
-- [ ] **B7a**: wall without peak (`ρ_wall < ρ₀`).
-- [ ] **B7b**: wall with peak (`ρ_wall > ρ₀`).
-- [ ] **B7c**: wall coupled to `|Ψ|²`.
-- [ ] Recommended start: **B7b**, but note that at strategy (c) the wall
-      is analytic (Section 4.4), so this is a *boundary condition* variant.
+- [ ] **B7a**: `F = −∇ρ` (EMC density gradient).
+- [ ] **B7b**: `F = −∇|Ψ|²` (energy gradient).
+- [ ] **B7c**: `F = −∇(ρ + |Ψ|²)`.
+- [ ] **B7d**: `F = 0` (control).
+- [ ] Recommended start: **B7a** — matches push-out.
 
-### 2.8 — WC motion rule
+### 2.8 — WC topology
 
-- [ ] **B8a**: `F = −∇ρ` (EMC density gradient).
-- [ ] **B8b**: `F = −∇|Ψ|²` (energy gradient).
-- [ ] **B8c**: `F = −∇(ρ + |Ψ|²)`.
-- [ ] **B8d**: `F = 0` (control).
-- [ ] Recommended start: **B8a** — matches push-out.
+- [ ] **B8a**: `tetrahedron_10_locked` (r1 = 1λ, r2 = 2λ).
+- [ ] **B8b**: `tetrahedron_10_unlocked` (legacy r1, r2).
+- [ ] **B8c**: `golden_angle`.
+- [ ] **B8d**: `bcc_lattice`.
+- [ ] **B8e**: `line` (negative control).
+- [ ] **B8f**: `random` (negative control).
 
-### 2.9 — WC topology
+### 2.9 — WC spacing
 
-- [ ] **B9a**: `tetrahedron_10_locked` (r1 = 1λ, r2 = 2λ).
-- [ ] **B9b**: `tetrahedron_10_unlocked` (legacy r1, r2).
-- [ ] **B9c**: `golden_angle`.
-- [ ] **B9d**: `bcc_lattice`.
-- [ ] **B9e**: `line` (negative control).
-- [ ] **B9f**: `random` (negative control).
+- [ ] **B9a**: sweep spacing at fixed topology.
+- [ ] **B9b**: `n·λ` vs `(n+½)·λ`.
+- [ ] **B9c**: perturbation ±10%, ±20%.
 
-### 2.10 — WC spacing
+### 2.10 — K-selectivity
 
-- [ ] **B10a**: sweep spacing at fixed topology.
-- [ ] **B10b**: `n·λ` vs `(n+½)·λ`.
-- [ ] **B10c**: perturbation ±10%, ±20%.
+Every `K` must be run from **three perturbed initial conditions**. If the
+final state is the same for all three, the selection is energetic. If the
+final state depends on the initial condition, the sweep is measuring basins
+of attraction, not selection.
 
-### 2.11 — K-selectivity
+Final energies of `K = 9, 10, 11` are compared. A genuine energetic optimum
+should sit below its neighbours.
 
-- [ ] **B11a**: sweep K = 2..12 at fixed topology, spacing, coupling.
-- [ ] **B11b**: K × topology sweep.
-- [ ] **B11c**: K × spacing sweep.
-- [ ] **B11d**: full sweep.
+- [ ] **B10a**: sweep K = 2..12 at fixed topology, spacing, coupling.
+- [ ] **B10b**: K × topology sweep.
+- [ ] **B10c**: K × spacing sweep.
+- [ ] **B10d**: full sweep.
+- [ ] **B10e**: three-initial-condition control; final-energy comparison.
 
-### 2.12 — Energy conservation verification
+### 2.11 — Energy conservation verification
 
-- [ ] **B12a**: measure `dE/dt` for isolated soliton.
-- [ ] **B12b**: measure boundary flux.
-- [ ] **B12c**: compare stable vs unstable K.
-
-### 2.13 — Emergent `α`
-
-- [ ] **B13a**: measure `|Ψ_trans|² / |Ψ_long|²` near WCs.
-- [ ] **B13b**: compare with `1/(8π⁷(1−ζ))`.
-- [ ] **B13c**: verify `α` does not drift in time.
+- [ ] **B11a**: measure `dE_total/dt` for isolated soliton, including the
+      kinetic term.
+- [ ] **B11b**: measure boundary flux.
+- [ ] **B11c**: compare stable vs unstable K.
 
 ---
 
@@ -730,8 +807,8 @@ The following should **not** be ported. Each is listed with the reason.
 | `V_MODE = 3` (double-well) | Not relevant to EWT |
 | `V_MODE = 4,5,6,7,9,10` | Simplified profiles, superseded by 2.4 |
 | `energy_local_aJ` with hardcoded `base_frequency` | Superseded by `EnergyBudget` |
-| `compute_force_vector` (`F = −∇E`) | Superseded by `F = −∇ρ` (2.8) |
-| `DirichletBoundaryProcessor` (`ψ = 0`) | Superseded by analytic EMC boundary (1.7) |
+| `compute_force_vector` (`F = −∇E`) | Superseded by `F = −∇ρ` (2.7) |
+| `DirichletBoundaryProcessor` (`ψ = 0`) | Superseded by `BoundaryCondition` (1.7) |
 | Simple cubic Laplacian | To be replaced by BCC stencil if needed |
 | `seed_wave` modes 0, 1 | Kept as utilities, not central |
 | `detect_annihilation` | Deferred until reflectors work |
@@ -746,56 +823,63 @@ The following should **not** be ported. Each is listed with the reason.
 
 ---
 
-## 9. Open questions
+## 9. Open questions and working assumptions
 
-These require author input or further research. They are **not** to be
-resolved by inference.
+Each entry is either an open question (author-gated, do not resolve by
+inference) or a working assumption (a draft answer that can be revised as
+the work progresses). Assumptions are marked as such.
 
-### Q1. Is `r_wall = 137 r_e` a size or a range?
+### Q2. Which vacuum implementation is physically correct?
 
-The manuscript says the deficit extends to `r_e/α ≈ 137 r_e`. This is
-interpreted as a *range* — the distance over which `ρ(r) → N_stat` — not as
-the size of the electron. Confirmation needed.
-
-### Q2. Is the base wave truly steady?
-
-If the base wave slowly relaxes (cosmological timescales), conservation is
-only approximate in-simulation. If it is genuinely steady, conservation is
-exact. The manuscript does not resolve this.
-
-### Q3. Is the EMC wall a physical peak or an effective boundary?
-
-At strategy (c), the wall is *outside* the simulated domain and enters as a
-boundary condition. If the domain is later extended, the wall becomes a
-simulated field. Which interpretation is preferred?
+Open question. The plan offers five (`V1`–`V5`, Section 5.4) and starts
+with `V1` for engine tests and `V3` for K-selectivity. The choice is a
+compromise: physical fidelity against numerical tractability. Author-gated.
 
 ### Q4. What is the correct unit system for research?
 
-Natural units are recommended for tractability. But the manuscript's
-predictions are in SI. The choice affects how `γ` enters the dynamics.
+Natural units are recommended for tractability. The manuscript's
+predictions are in SI. The choice affects how `γ` enters the dynamics. Not
+blocking; the `UnitSystem` abstraction (item 1.0) makes the choice
+revisitable.
 
 ### Q5. What is the correct definition of "stability"?
 
 Several candidates: lifetime, localization, sphericity, frequency stability.
-Which is primary? Or are all co-primary?
+All are measured (item 1.9). The primary definition is author-gated.
 
 ### Q6. Should the WC motion be continuous or discrete?
 
-Yee's picture suggests continuous drift toward amplitude minima. But the
-"lock-in" language suggests discrete jumps between nodes. Which is correct?
+Open question. Yee's picture suggests continuous drift toward amplitude
+minima; "lock-in" language suggests discrete jumps. Both are testable
+(item 2.7). Author-gated.
 
-### Q7. Is `K = 10` a topological necessity or an energetic optimum?
+### Q7 (working assumption). K = 10: topological or energetic?
 
-The manuscript argues topology (winding number `Q = 10`). But if `Q` is not
-conserved in the simulation (e.g., under continuous deformations that
-change the count of wave centres), then `K = 10` must be selected
-energetically. Which mechanism is operative?
+Draft: treat the selection as **energetic** for the purposes of the K-sweep
+(item 2.10). Run each `K` from three perturbed initial conditions, compare
+final energies across K = 9, 10, 11. If `K = 10` sits below its neighbours
+for all three initial conditions, the selection is energetic. If the
+topological argument is also correct, the topological and energetic
+selections coincide and the test cannot distinguish them — but it confirms
+the engine reproduces the manuscript's prediction.
 
-### Q8. Does the soliton require spin to be stable?
+If different initial conditions give different final states at the same K,
+that falsifies the energetic reading. This is a working assumption, not a
+settled answer. Update if the K-sweep shows something else.
 
-Yee's picture includes spin from the start. If spin is required, then
-`Ψ_trans` must be seeded along with `Ψ_long`. If not, the soliton can be
-purely longitudinal. Which is correct?
+### Q8 (working assumption). Does spin stabilise the soliton?
+
+Draft: start with longitudinal-only dynamics. If K-selectivity emerges
+without spin (item 2.10), spin is not necessary for the selection mechanism.
+Add spin later (items 2.2b, 2.3) to see if it changes the picture.
+
+The rationale: the K-selectivity question is separable from the spin
+question. If spin turns out to be necessary, the test in 2.10 will show
+different results with and without the transverse coupling. Until then,
+starting without spin keeps the first round of tests simpler.
+
+This is a working assumption, not a settled answer. Update if the K-sweep
+or the stability metrics show that spin is load-bearing.
 
 ---
 
@@ -808,8 +892,8 @@ evolution)
 
 **Phase B — Physics interfaces (Block 1.4–1.7)**
 
-1.4 (Source terms) → 1.5 (Reflector interface) → 1.6 (WC motion) → 1.7 (EMC
-boundary)
+1.4 (Source terms) → 1.5 (Reflector interface) → 1.6 (WC motion) → 1.7
+(Boundary condition)
 
 **Phase C — Measurement (Block 1.8–1.9)**
 
@@ -818,14 +902,14 @@ boundary)
 **Phase D — Research infrastructure (Block 1.10–1.21)**
 
 1.10 (Experiment runner) → 1.11 (Geometry provider) → 1.13 (Checkpoint) →
-1.14 (Live monitor) → 1.15 (Logging schema) → 1.16 (Scaling) → 1.17 (Vacuum
-energy) → 1.18 (Diagnostics) → 1.19 (Seeds) → 1.20 (Sweep DSL) → 1.21
-(Artifacts)
+1.14 (Live monitor) → 1.15 (Logging schema) → 1.16 (Domain config) → 1.17
+(Vacuum layer) → 1.18 (Diagnostics) → 1.19 (Seeds) → 1.20 (Sweep DSL) →
+1.21 (Artifacts)
 
 **Phase E — Physics variants (Block 2)**
 
 In the order 2.0 → 2.1 → 2.2 → 2.3 → 2.4 → 2.5 → 2.6 → 2.7 → 2.8 → 2.9 →
-2.10 → 2.11 → 2.12 → 2.13.
+2.10 → 2.11.
 
 **Phase F — Rendering (Block 3, out of scope here)**
 
@@ -846,23 +930,34 @@ launcher. Only after the physics is validated in headless mode.
 - **`ρ`** — EMC packing density (low inside a soliton).
 - **`N_ν,stat`** — Statutory background EMC density (undisturbed vacuum).
 - **`N_ν,eff`** — Effective EMC density inside the soliton.
+- **`X_eff`** — Geometric dilution factor. `X_eff = A_π · 3 · K_WC · √2 / C_unif`,
+  with `C_unif = 1/K_WC + 1 + α/(π L_p)`. Converts `N_ν,stat` into `N_ν,eff`.
 - **Push-out** — The mechanism by which `ρ_E` displaces EMC, creating `ρ < N_stat`.
-- **EMC Wall** — The local peak `ρ > N_stat` at the outer boundary of the soliton's deficit range.
-- **`α`** — Fine-structure constant. In EWT, `|Ψ_out|/|Ψ_in|` at a WC.
+- **Tail** — The far-field deficit `ρ(r) → N_stat (1 − r_s/r)`. Analytic;
+  not simulated (Section 2.4).
+- **`α`** — Fine-structure constant. Geometric value: `α = 1/(A_π − ε_M) ≈ 7.29733855e-03`.
+  Loaded from `GeometricConstants`, used as the reflection coefficient at a WC.
+  The dynamic interpretation (whether a field ratio coincides with this value)
+  is a consistency observation, not a derivation.
 - **`ε_M`** — Magnetic deficit. `1/(N_geom π³) ≈ 1/(8π⁷(1−ζ))`.
 - **`A_π`** — Geometric core of the soliton. `4π³ + π² + π`.
 - **`N_geom`** — Effective BCC stiffness. `8π⁴(1−ζ)`.
 - **`γ`** — Nonlinear coupling. `1/ε_M`.
+- **`β_nl`** — Normalisation coefficient in the density-modulated nonlinearity
+  (Section 1.5, item 2.6).
+- **`β_ρ`** — Rate coefficient in the EMC density evolution (Section 2.3,
+  item 2.4).
 - **NESS** — Non-Equilibrium Steady State. The soliton's dynamical regime.
 - **Reflector** — A WC that satisfies `|Ψ_out|² + |Ψ_spin|² = |Ψ_in|²`.
 - **Feature** — A typed object stored in `FeatureBag`, keyed by its class.
 - **Processor** — A stateless pipeline stage that reads and writes features.
+- **VacuumProvider** — The swappable vacuum layer (Section 5.4).
 
 ---
 
 ## 12. How to use this document
 
-This document is a **working roadmap**, not a specification. It records:
+This document is a **working plan**, not a specification. It records:
 
 - **Why** the tool exists (Sections 1–2).
 - **What** the tool must express (Sections 3–5).
@@ -876,29 +971,20 @@ pre-registered pass/fail criteria. The roadmap row in `m4_roadmap.md`
 references that task document.
 
 When a work item is complete, mark the checkbox and add a one-line note in
-Section 13 (Changelog).
+Section 15 (Changelog).
 
 ---
 
-## 13. Changelog
+## 13. Document scope and precedence
 
-| Date | Change | Author |
-|---|---|---|
-| 2026-09-17 | Initial draft. | Lukasz Smolinski  |
+**What this document is** — a design rationale and a work plan for the
+pipeline_engine. It explains *why* the tool exists, *what* it must express,
+and *how* the work is organised.
 
----
-
-## 14. OpenWave Compliance
-
-### 14.1. What this document is, and what it is not
-
-**Is** — a design rationale and a work plan for the pipeline_engine. It
-explains *why* the tool exists, *what* it must express, and *how* the work is
-organised.
-
-**Is not** — a roadmap, a task document, or a findings note. It does not
-replace `m4_roadmap.md`, `tasks/m4_<n>_task_details.md`, or `findings/`.
-Those documents carry the criteria, the numbers, and the verdicts.
+**What this document is not** — a roadmap, a task document, or a findings
+note. It does not replace `m4_roadmap.md`, `tasks/m4_<n>_task_details.md`,
+or `findings/`. Those documents carry the criteria, the numbers, and the
+verdicts.
 
 The correct flow for a work item is:
 
@@ -916,7 +1002,9 @@ When this document and a task document disagree, the task document wins. When
 this document and the manuscript disagree, the manuscript wins. When the
 manuscript and the model author disagree, the author wins.
 
-### 14.2. TaskID mapping
+---
+
+## 14. TaskID mapping
 
 The following TaskIDs are proposed for the roadmap. They are assigned in
 creation order and are never reused. The list is a proposal; the M4 maintainer
@@ -933,7 +1021,7 @@ assigns the final IDs when the rows are added to `m4_roadmap.md`.
 | M4.24 | Source terms (additive) | M4.23 |
 | M4.25 | Reflector interface | M4.23 |
 | M4.26 | WC motion (drift) | M4.25 |
-| M4.27 | EMC boundary (analytic) | M4.20 |
+| M4.27 | Boundary condition | M4.20 |
 | M4.28 | Energy budget tracker | M4.22, M4.23 |
 | M4.29 | Stability metrics | M4.22 |
 | M4.30 | Experiment runner | M4.20 |
@@ -941,8 +1029,8 @@ assigns the final IDs when the rows are added to `m4_roadmap.md`.
 | M4.32 | Checkpoint / restart | M4.21 |
 | M4.33 | Live monitor | M4.22 |
 | M4.34 | Research logging schema | M4.30 |
-| M4.35 | Universe scaling strategy | M4.20 |
-| M4.36 | Vacuum energy strategy | M4.20 |
+| M4.35 | Simulation domain configuration | M4.20 |
+| M4.36 | Vacuum layer provider | M4.20 |
 | M4.37 | Diagnostic hooks | M4.29 |
 | M4.38 | Deterministic seeds | M4.30 |
 | M4.39 | Parameter sweep DSL | M4.30 |
@@ -953,22 +1041,31 @@ assigns the final IDs when the rows are added to `m4_roadmap.md`.
 | Proposed ID | Item | Depends on |
 |---|---|---|
 | M4.41 | Soliton assembly contract | M4.23, M4.24 |
-| M4.42 | Base wave variants | M4.41 |
-| M4.43 | WC reflector variants | M4.25, M4.42 |
+| M4.42 | Vacuum implementation variants | M4.36 |
+| M4.43 | WC reflector variants | M4.25, M4.41 |
 | M4.44 | Longitudinal↔transverse coupling | M4.25 |
 | M4.45 | EMC density dynamics | M4.21, M4.27 |
 | M4.46 | Wave speed modulation | M4.45 |
 | M4.47 | Density-modulated nonlinearity | M4.45, M4.46 |
-| M4.48 | EMC Wall variants | M4.27, M4.45 |
-| M4.49 | WC motion rule variants | M4.26, M4.45 |
-| M4.50 | WC topology variants | M4.23 |
-| M4.51 | WC spacing variants | M4.50 |
-| M4.52 | K-selectivity sweep | M4.47–M4.51 |
-| M4.53 | Energy conservation verification | M4.28, M4.52 |
-| M4.54 | Emergent α | M4.44, M4.52 |
+| M4.48 | WC motion rule variants | M4.26, M4.45 |
+| M4.49 | WC topology variants | M4.23 |
+| M4.50 | WC spacing variants | M4.49 |
+| M4.51 | K-selectivity sweep | M4.47–M4.50 |
+| M4.52 | Energy conservation verification | M4.28, M4.51 |
 
-IDs `M4.1`–`M4.19` are already used or reserved by the existing roadmap
-(M4.1 K-selectivity, M4.2 Coulomb, M4.3–M4.12 gravity and emergence work).
-The proposed assignment continues the sequence without collision.
+IDs `M4.1`–`M4.13` are used or reserved by the existing roadmap. IDs
+`M4.14`–`M4.19` are currently unassigned. The proposed assignment continues
+the sequence without collision.
+
+---
+
+## 15. Changelog
+
+| Date | Change | Author |
+|---|---|---|
+| 2026-09-17 | Initial draft. | Lukasz Smolinski |
+| 2026-09-18 | Renamed to `M4_PIPELINE_PLAN.md`. B1: CFL bound with `√3`. B2: item 2.13 removed; `α` treated as loaded geometric parameter; glossary and Section 2.7 updated. B3: kinetic term added to energy budget. Vacuum layer made swappable (V1–V5). Tail treated as analytic; wall peak not simulated. Section 4 shortened. Q1, Q3 removed. Q2 reformulated as vacuum-choice question. Q7, Q8 converted to working assumptions with drafts. Renamed `β` to `β_nl` / `β_ρ`. Added `X_eff`, `N_nu_eff`, `VacuumProvider` to glossary. | Lukasz Smolinski |
+
+---
 
 *End of document.*
