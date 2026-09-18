@@ -15,13 +15,17 @@ Three implementations are provided:
     SIUnitSystem         metres and seconds. For output conversion only;
                          f32 field precision is not sufficient for
                          simulation at the soliton scale.
+
+`UnitSystem` is an abstract base class, so FeatureBag keying by the
+method resolution order makes a registered instance reachable through
+the abstract type without a separate registration step.
 """
 
 from __future__ import annotations
 
 import math
+from abc import ABC
 from dataclasses import dataclass
-from typing import Protocol, runtime_checkable
 
 from openwave.common import constants
 
@@ -47,8 +51,8 @@ _ELECTRON_REST_ENERGY_J = _M_E * _C_PHYSICAL_MS**2      # ~8.19e-14 J
 # =============================================================================
 # Geometric constants.
 #
-# Pure numbers, independent of the unit system. All three implementations
-# return the same values.
+# Pure numbers, independent of the unit system. All implementations return
+# the same values.
 #
 # Reference: manuscript v5.0.x, Section "Geometric Equation of the
 # Fine-Structure Constant and the Deficit Terms"; M4.7 emergence engine.
@@ -96,76 +100,7 @@ _N_NU_EFF = _N_NU_STAT / _X_EFF
 
 
 # =============================================================================
-# Contract
-# =============================================================================
-
-
-@runtime_checkable
-class UnitSystem(Protocol):
-    """
-    A unit system for M4 simulations.
-
-    Every field is a dimensional or geometric constant the engine needs.
-    Every method converts an engine quantity to SI for output. Processors
-    must read all dimensional values through this interface; a processor
-    that writes a dimensional literal directly is a bug.
-    """
-
-    # --- Core constants ---------------------------------------------------
-    c: float
-    """Wave speed in these units."""
-
-    wavelength: float
-    """Fundamental wavelength (lambda_nu) in these units."""
-
-    dx: float
-    """Grid step in these units."""
-
-    dt: float
-    """Time step in these units. Must respect the 3D CFL bound."""
-
-    rho_0: float
-    """Statutory background density (N_nu,stat) in these units."""
-
-    # --- Geometric constants, unit-independent ----------------------------
-    A_pi: float
-    """Geometric core of the soliton: 4*pi^3 + pi^2 + pi."""
-
-    eps_M: float
-    """Magnetic deficit: 1 / (N_geom * pi^3)."""
-
-    N_geom: float
-    """Effective BCC stiffness: 8*pi^4 * (1 - zeta)."""
-
-    gamma: float
-    """Nonlinear coupling: 1 / eps_M."""
-
-    X_eff: float
-    """Geometric dilution factor."""
-
-    N_nu_eff: float
-    """Effective volume deficit inside a soliton."""
-
-    # --- Conversion to SI -------------------------------------------------
-    def to_physical_length(self, x: float) -> float:
-        """Convert a length in engine units to metres."""
-        ...
-
-    def to_physical_time(self, t: float) -> float:
-        """Convert a time in engine units to seconds."""
-        ...
-
-    def to_physical_energy(self, E: float) -> float:
-        """Convert an energy in engine units to joules."""
-        ...
-
-    def to_physical_density(self, rho: float) -> float:
-        """Convert a number density in engine units to 1/m^3."""
-        ...
-
-
-# =============================================================================
-# Shared geometric constants
+# Geometric mixin
 # =============================================================================
 
 
@@ -204,12 +139,34 @@ class _GeometricMixin:
 
 
 # =============================================================================
+# Abstract base
+# =============================================================================
+
+
+class UnitSystem(_GeometricMixin, ABC):
+    """
+    Abstract base for all unit systems.
+
+    Subclasses supply the core constants (c, wavelength, dx, dt, rho_0)
+    and the conversion methods. The geometric constants (A_pi, eps_M,
+    N_geom, gamma, X_eff, N_nu_eff) come from _GeometricMixin and are
+    identical across every implementation.
+
+    This is a marker base with no abstract methods: a subclass that fails
+    to provide a required field or method will raise AttributeError at
+    first use, which is sufficient for a small internal hierarchy.
+    """
+
+    pass
+
+
+# =============================================================================
 # Natural units
 # =============================================================================
 
 
 @dataclass(frozen=True)
-class NaturalUnitSystem(_GeometricMixin):
+class NaturalUnitSystem(UnitSystem):
     """
     Natural units: lambda_nu = 1, c = 1.
 
@@ -285,7 +242,7 @@ class NaturalUnitSystem(_GeometricMixin):
 
 
 @dataclass(frozen=True)
-class OpenWaveUnitSystem(_GeometricMixin):
+class OpenWaveUnitSystem(UnitSystem):
     """
     Attometres and rontoseconds, as in the legacy OpenWave xparameters.
 
@@ -355,7 +312,7 @@ class OpenWaveUnitSystem(_GeometricMixin):
 
 
 @dataclass(frozen=True)
-class SIUnitSystem(_GeometricMixin):
+class SIUnitSystem(UnitSystem):
     """
     Metres and seconds.
 
@@ -416,3 +373,34 @@ class SIUnitSystem(_GeometricMixin):
 
     def to_physical_density(self, rho: float) -> float:
         return rho
+
+
+# =============================================================================
+# Factory
+# =============================================================================
+
+
+def make_unit_system(kind: str) -> UnitSystem:
+    """
+    Return a UnitSystem instance by name.
+
+    Parameters
+    ----------
+    kind : {"natural", "openwave", "si"}
+        The unit system to construct.
+
+    Raises
+    ------
+    ValueError
+        If the name does not match any known unit system.
+    """
+    if kind == "natural":
+        return NaturalUnitSystem()
+    if kind == "openwave":
+        return OpenWaveUnitSystem()
+    if kind == "si":
+        return SIUnitSystem()
+    raise ValueError(
+        f"unknown unit system: {kind!r}. "
+        f"Valid names are 'natural', 'openwave', 'si'."
+    )

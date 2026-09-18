@@ -10,11 +10,13 @@ import math
 import sys
 
 from openwave.common import constants
+from openwave.xperiments.m4_ewt.pipeline_engine.context import FeatureBag
 from openwave.xperiments.m4_ewt.pipeline_engine.physics.units import (
     NaturalUnitSystem,
     OpenWaveUnitSystem,
     SIUnitSystem,
     UnitSystem,
+    make_unit_system,
 )
 
 
@@ -42,11 +44,11 @@ def test_si_default_construction():
 
 
 # ---------------------------------------------------------------------------
-# Protocol conformance
+# Inheritance
 # ---------------------------------------------------------------------------
 
 
-def test_all_implementations_satisfy_protocol():
+def test_all_implementations_are_unit_systems():
     for factory in (NaturalUnitSystem, OpenWaveUnitSystem, SIUnitSystem):
         units = factory()
         assert isinstance(units, UnitSystem), factory.__name__
@@ -108,7 +110,6 @@ def test_geometric_constants_identical_across_systems():
 
 def test_geometric_constants_expected_values():
     units = NaturalUnitSystem()
-    # Derived values, reference: M4.7 emergence engine output.
     assert math.isclose(units.A_pi, 137.036303775878, rel_tol=1e-12)
     assert math.isclose(units.N_geom, 778.8025178842, rel_tol=1e-10)
     assert math.isclose(units.eps_M, 4.1411697693e-05, rel_tol=1e-10)
@@ -118,7 +119,6 @@ def test_geometric_constants_expected_values():
 def test_rho_0_is_statutory_density():
     for factory in (NaturalUnitSystem, OpenWaveUnitSystem, SIUnitSystem):
         units = factory()
-        # N_nu_stat is O(1e52).
         assert 1e51 < units.rho_0 < 1e53, factory.__name__
 
 
@@ -132,7 +132,6 @@ def test_length_round_trip():
         units = factory()
         for x in (1.0, 10.0, 100.0):
             physical = units.to_physical_length(x)
-            # Convert back using the unit factor.
             back = physical / units.to_physical_length(1.0)
             assert math.isclose(back, x, rel_tol=1e-12), factory.__name__
 
@@ -147,14 +146,10 @@ def test_time_round_trip():
 
 
 def test_cross_system_length_consistency():
-    # The same physical length expressed in any unit system should convert
-    # to the same SI value.
-    length_m = 1e-15  # 1 femtometre
+    length_m = 1e-15
     for factory in (NaturalUnitSystem, OpenWaveUnitSystem, SIUnitSystem):
         units = factory()
-        # Express in engine units.
         engine = length_m / units.to_physical_length(1.0)
-        # Convert back.
         back_m = units.to_physical_length(engine)
         assert math.isclose(back_m, length_m, rel_tol=1e-12), factory.__name__
 
@@ -188,6 +183,71 @@ def test_cfl_safety_validation():
 
 
 # ---------------------------------------------------------------------------
+# Factory
+# ---------------------------------------------------------------------------
+
+
+def test_factory_returns_correct_types():
+    assert isinstance(make_unit_system("natural"), NaturalUnitSystem)
+    assert isinstance(make_unit_system("openwave"), OpenWaveUnitSystem)
+    assert isinstance(make_unit_system("si"), SIUnitSystem)
+
+
+def test_factory_rejects_unknown_name():
+    try:
+        make_unit_system("furlongs_per_fortnight")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("expected ValueError")
+
+
+# ---------------------------------------------------------------------------
+# FeatureBag MRO keying
+# ---------------------------------------------------------------------------
+
+
+def test_feature_bag_keys_by_mro():
+    bag = FeatureBag()
+    units = NaturalUnitSystem()
+    bag.set(units)
+
+    assert bag.require(NaturalUnitSystem) is units
+    assert bag.require(UnitSystem) is units
+
+    # object is excluded from the key set.
+    try:
+        bag.require(object)
+    except KeyError:
+        pass
+    else:
+        raise AssertionError("require(object) should fail")
+
+
+def test_feature_bag_overwrites_same_type():
+    bag = FeatureBag()
+    a1 = NaturalUnitSystem(grid_voxels_per_lambda=10)
+    a2 = NaturalUnitSystem(grid_voxels_per_lambda=40)
+    bag.set(a1)
+    bag.set(a2)
+    assert bag.require(NaturalUnitSystem) is a2
+    assert bag.require(UnitSystem) is a2
+
+
+def test_feature_bag_distinct_concrete_types_coexist():
+    bag = FeatureBag()
+    a = NaturalUnitSystem()
+    b = OpenWaveUnitSystem()
+    bag.set(a)
+    bag.set(b)
+    # Concrete keys are independent.
+    assert bag.require(NaturalUnitSystem) is a
+    assert bag.require(OpenWaveUnitSystem) is b
+    # The shared base points to the most recent write.
+    assert bag.require(UnitSystem) is b
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 
@@ -197,7 +257,7 @@ def main() -> int:
         test_natural_default_construction,
         test_openwave_default_construction,
         test_si_default_construction,
-        test_all_implementations_satisfy_protocol,
+        test_all_implementations_are_unit_systems,
         test_natural_core_constants,
         test_openwave_core_constants,
         test_si_core_constants,
@@ -210,6 +270,11 @@ def main() -> int:
         test_cross_system_length_consistency,
         test_grid_voxels_per_lambda_validation,
         test_cfl_safety_validation,
+        test_factory_returns_correct_types,
+        test_factory_rejects_unknown_name,
+        test_feature_bag_keys_by_mro,
+        test_feature_bag_overwrites_same_type,
+        test_feature_bag_distinct_concrete_types_coexist,
     ]
     passed = 0
     for t in tests:
