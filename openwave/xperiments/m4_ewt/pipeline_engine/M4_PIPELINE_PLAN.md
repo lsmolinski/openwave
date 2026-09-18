@@ -253,7 +253,7 @@ coefficient at a wave centre; it does not derive it from the field.
 
 A dynamic counterpart — whether some field ratio at a WC coincides with this
 value — is a **consistency observation**, not a second derivation. The
-engine measures several candidate ratios (Section 7, item 2.2b) so that the
+engine measures several candidate ratios (Section 7, item 2.2, variant B2b) so that the
 coincidence, if any, can be recorded. A mismatch is not a failure of the
 plan; it means the geometric ratio has no direct dynamic manifestation in
 this engine.
