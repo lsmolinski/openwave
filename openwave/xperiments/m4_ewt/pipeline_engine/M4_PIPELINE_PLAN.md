@@ -105,8 +105,12 @@ Because the soliton itself depletes EMC, `c²(r) = c₀²·ρ(r)/ρ₀`, and the
 wave equation becomes *automatically nonlinear*:
 
 ```text
-∂²Ψ/∂t² = c²(ρ) ∇²Ψ = c₀² (1 − β_nl |Ψ|²) ∇²Ψ
+∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ) + c₀² (β_ρ/ρ₀) |∇Ψ|² Ψ
 ```
+
+where the second term is the Euler-Lagrange correction that keeps the
+gradient energy `½c²|∇Ψ|²` conserved when `c²` varies with the field. See
+Section 5.2.
 
 The old implementation instead injected a Klein–Gordon-style potential
 `V(ψ) = (c₁/4)u² − (c₂/6)u³` with `u = |ψ|²`. Mathematically this gives an
@@ -252,10 +256,10 @@ coefficient at a wave centre; it does not derive it from the field.
 
 A dynamic counterpart — whether some field ratio at a WC coincides with this
 value — is a **consistency observation**, not a second derivation. The
-engine measures several candidate ratios (Section 7, item 2.2b) so that the
-coincidence, if any, can be recorded. A mismatch is not a failure of the
-plan; it means the geometric ratio has no direct dynamic manifestation in
-this engine.
+engine measures several candidate ratios (Section 7, item 2.2, variant B2b)
+so that the coincidence, if any, can be recorded. A mismatch is not a failure
+of the plan; it means the geometric ratio has no direct dynamic manifestation
+in this engine.
 
 ---
 
@@ -355,11 +359,14 @@ Two length scales matter, and they are not the same:
   region. The EMC tail continues beyond it, and the tail is analytic.
 
 - **The wave-centre neighbourhood.** The region the K-sweep actually
-  measures. Its size is set by the topology: the largest wave-centre pair
-  separation plus a buffer of a few λ. From the geometry tests, the
-  largest separations at K = 10 are about 4 λ_ν (tetrahedron_10_locked)
-  and about 0.7 λ_ν (golden angle). A domain of `r_domain ~ 10 λ_ν`
-  covers every topology in the sweep with a wide margin.
+  measures. Its size is set by half the largest wave-centre pair
+  separation — the configuration's own radius — plus a buffer of a few λ.
+  From the geometry tests, the largest separations at K = 10 are about
+  3.7 λ_ν (tetrahedron_10_locked) and about 0.7 λ_ν (golden angle), so
+  the configuration radii are about 1.85 λ_ν and 0.35 λ_ν respectively.
+  A domain of `r_domain ~ 10 λ_ν` covers every topology in the sweep with
+  a wide margin, including the `line` negative control at K = 12 whose
+  radius is 5.5 λ_ν.
 
 The simulation runs on the wave-centre neighbourhood. The soliton extent
 and the tail are not resolved; they are analytic inputs.
@@ -415,21 +422,42 @@ The kinetic term is required: without it, a standing wave's gradient-only
 integral oscillates at `2ω` and the conservation test fails by construction.
 The deformation term uses `κ`, the stiffness supplied by the unit system.
 
-The wave equation is implemented in the divergence form
-`∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ)`, not `c²(ρ) ∇²Ψ`. The divergence form conserves
-`½|∂Ψ/∂t|² + ½c²|∇Ψ|²`, which is what the budget measures. The two forms
-differ by a `∇c² · ∇Ψ` term that matters when `c` varies in space.
+The wave equation is implemented in the Euler-Lagrange form derived from
+the Lagrangian
+
+```text
+L = ½ |∂Ψ/∂t|² − ½ c²(|Ψ|²) |∇Ψ|²
+```
+
+which gives
+
+```text
+∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ) + c₀² (β_ρ/ρ₀) |∇Ψ|² Ψ
+```
+
+where the second term is the variation of `c²` with respect to `|Ψ|²`
+(one-component case, `c² = c₀²(1 − β_ρ|Ψ|²/ρ₀)`). The plain divergence form
+`∇·(c²∇Ψ)` alone does not conserve the gradient energy `½c²|∇Ψ|²` when `c²`
+depends on the field: the exchange term `½ ∫ ∂(c²)/∂t · |∇Ψ|²` appears on
+the right-hand side of the identity and does not vanish when `c²` moves.
+The Euler-Lagrange form above cancels it exactly, so the budget holds as
+written.
 
 For the EMC density dynamics variants (item 2.4):
 
-- **B4a (instantaneous), B4c (inertial):** the density is either a
-  function of `|Ψ|²` at each step or has its own conservative evolution.
-  `E_total` is conserved to numerical tolerance and the check applies.
+- **B4a (instantaneous):** the density is a function of `|Ψ|²` at each
+  step. The Euler-Lagrange form above applies, `E_total` is conserved to
+  numerical tolerance, and the check applies.
 - **B4b (relaxation):** the `D∇²ρ` and `−γ_ρ(ρ − ρ₀)` terms dissipate.
   The budget carries a ledger entry `P_deform` for the rate at which the
   deformation energy is lost, and the check becomes
   `dE_total/dt + flux + P_deform = 0`. `P_deform > 0` means the
   deformation is dissipating; `P_deform < 0` means it is being driven.
+- **B4c (inertial):** the density carries its own kinetic energy. The
+  deformation energy becomes
+  `E_deformation = ∫ (½ |∂ρ/∂t|²/c_ρ² + ½ κ |∇ρ|² + ½ κ (ρ − ρ₀)²) dV`,
+  and the budget includes it. B4c is deferred until the extra term is
+  added to the tracker.
 
 ### 5.3. Coupling to the soliton
 
@@ -1078,8 +1106,9 @@ manuscript and the model author disagree, the author wins.
 ## 14. TaskID mapping
 
 The following TaskIDs are proposed for the roadmap. They are assigned in
-creation order and are never reused. The list is a proposal; the M4 maintainer
-assigns the final IDs when the rows are added to `m4_roadmap.md`.
+creation order and are never reused. The list is a proposal until the pull
+request that adds the rows; the IDs are allocated there and re-checked
+against the live roadmap for collisions.
 
 **Block 1 — Engine**
 
@@ -1137,6 +1166,7 @@ the sequence without collision.
 | 2026-09-17 | Initial draft. | Lukasz Smolinski |
 | 2026-09-18 | Renamed to `M4_PIPELINE_PLAN.md`. B1: CFL bound with `√3`. B2: item 2.13 removed; `α` treated as loaded geometric parameter; glossary and Section 2.7 updated. B3: kinetic term added to energy budget. Vacuum layer made swappable (V1–V5). Tail treated as analytic; wall peak not simulated. Section 4 shortened. Q1, Q3 removed. Q2 reformulated as vacuum-choice question. Q7, Q8 converted to working assumptions with drafts. Renamed `β` to `β_nl` / `β_ρ`. Added `X_eff`, `N_nu_eff`, `VacuumProvider` to glossary. | Lukasz Smolinski |
 | 2026-09-20 | Section 4 rewritten: soliton neighbourhood simulated (`r_domain ~ 10 λ_ν`), soliton extent `K²λ` and the tail treated as analytic input. Section 2.4 header and body aligned. Section 5.2: equation stated in divergence form, dissipation ledger added for B4b. Item 2.2: coefficient multiplies amplitude; consistency observation conditional on not loading `α`. Item 2.10 rewritten: structural (V3) and energetic (V2/V4) tests. Q7 rewritten as two-observable test. Section 1.7 table row for `α` removed. Section 3.1: `r_core` labelled theoretical scale. | Lukasz Smolinski |
+| 2026-09-20 | Round three. Section 1.5 and Section 5.2: equation in Euler-Lagrange form with the exchange term `c₀²(β_ρ/ρ₀)\|∇Ψ\|²Ψ`; the plain divergence form does not conserve the gradient energy when `c²` depends on the field. B4c: `E_deformation` gains the density kinetic term `½\|∂ρ/∂t\|²/c_ρ²`, deferred until added. Section 4: `r_domain` sized by half the largest wave-centre pair separation plus a buffer, with measured numbers. Section 2.7: reference to "item 2.2, variant B2b". Section 14 preamble: IDs allocated by the author at row creation. | Lukasz Smolinski |
 
 ---
 
