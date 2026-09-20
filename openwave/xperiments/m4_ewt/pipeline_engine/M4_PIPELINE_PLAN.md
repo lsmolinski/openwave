@@ -129,7 +129,6 @@ gradient. The push-out picture requires `F_pressure = −α_p·∇ρ(r)`, where
 | `Ψ_in` + `Ψ_out` | Single `ψ` | No distinction, no closure |
 | Decreasing `λ(n)` | One `base_wavelength` | Ring structure absent |
 | `Ψ_long` + `Ψ_trans` | One vector field | Spin not emergent |
-| `α` from `\|Ψ_out\|/\|Ψ_in\|` | `α` as input | Not derived |
 | `ρ(r)` self-consistent | Fixed profile | No push-out feedback |
 | `c²(ρ)` nonlinearity | External `V(ψ)` | Coupling fitted |
 | `F = −∇ρ` gravity | `F = −∇E` | Measures wrong gradient |
@@ -190,7 +189,7 @@ in the simplest model, or a richer evolution with inertia. In steady state,
 `ρ > ρ₀` that reverses the sign of the nonlinearity — is a **consequence**
 of the dynamics, not a parameter.
 
-### 2.4. The tail is analytic; the core is simulated
+### 2.4. The tail is analytic; the soliton neighbourhood is simulated
 
 The far-field deficit
 
@@ -198,14 +197,14 @@ The far-field deficit
 ρ(r) → N_stat · (1 − r_s/r)   for r ≫ r_core
 ```
 
-is already derived analytically in the M4.11 lock-in scan and in the gravity
-sector work. The pipeline does not re-derive it and does not simulate it.
-The simulated domain covers the core, `r ≤ r_domain`, with `r_domain` a
-small multiple of `r_core`.
+is taken as analytic input (granted in M4.4; derivation in the manuscript).
+The pipeline does not re-derive it and does not simulate it. The simulated
+domain covers the soliton and its immediate neighbourhood; the tail beyond
+is analytic.
 
-This separation is deliberate: the core is where the soliton structure lives
-and where K-selectivity must emerge; the tail is a solved analytic problem
-that does not need a discretised field.
+This separation is deliberate: the soliton neighbourhood is where the
+wave-centre structure lives and where K-selectivity must emerge; the tail
+is a solved analytic problem that does not need a discretised field.
 
 ### 2.5. Units are pluggable
 
@@ -253,7 +252,7 @@ coefficient at a wave centre; it does not derive it from the field.
 
 A dynamic counterpart — whether some field ratio at a WC coincides with this
 value — is a **consistency observation**, not a second derivation. The
-engine measures several candidate ratios (Section 7, item 2.2, variant B2b) so that the
+engine measures several candidate ratios (Section 7, item 2.2b) so that the
 coincidence, if any, can be recorded. A mismatch is not a failure of the
 plan; it means the geometric ratio has no direct dynamic manifestation in
 this engine.
@@ -280,7 +279,7 @@ X_eff        : geometric dilution factor
 N_nu_eff     : effective volume deficit
 A_base       : base wave amplitude
 r_domain     : simulated domain radius
-r_core       : soliton core radius (K²λ)
+r_core       : soliton extent (K²λ), theoretical scale
 ```
 
 Plus conversion methods:
@@ -345,18 +344,30 @@ This rule is checkable by inspection: grep for numeric literals in
 
 ## 4. Simulation domain and boundary
 
-The soliton core is the object the pipeline simulates. Its radius is
-`r_core = K²λ`. For K = 10, `r_core = 100 λ_ν`; with `dx = 0.05` (20 voxels
-per λ_ν) the core occupies 2000 voxels in radius, and a full 3D box is
-`(4000)³ ≈ 6.4 × 10¹⁰` voxels. A truncated domain is used:
+The pipeline simulates the soliton and its immediate neighbourhood. The
+far-field tail of the EMC deficit extends far beyond any tractable domain
+and is treated analytically (Section 2.4); it is not simulated.
 
-- **Simulated:** `r ≤ r_domain`, with `r_domain ~ 50 λ_ν`.
-- **Analytic, not simulated:** the far-field deficit tail
-  `ρ(r) → N_stat (1 − r_s/r)`. The tail is already derived analytically in
-  the M4.11 lock-in scan and in the gravity sector work; the pipeline does
-  not re-derive it.
-- **Not simulated:** the EMC wall peak near `r_e/α`. It lies outside the
-  domain and is a separate feature from the tail.
+Two length scales matter, and they are not the same:
+
+- **The soliton extent**, `r_core = K²λ`. For K = 10 this is 100 λ_ν, for
+  K = 12 it is 144 λ_ν. It is a theoretical scale of the standing-wave
+  region. The EMC tail continues beyond it, and the tail is analytic.
+
+- **The wave-centre neighbourhood.** The region the K-sweep actually
+  measures. Its size is set by the topology: the largest wave-centre pair
+  separation plus a buffer of a few λ. From the geometry tests, the
+  largest separations at K = 10 are about 4 λ_ν (tetrahedron_10_locked)
+  and about 0.7 λ_ν (golden angle). A domain of `r_domain ~ 10 λ_ν`
+  covers every topology in the sweep with a wide margin.
+
+The simulation runs on the wave-centre neighbourhood. The soliton extent
+and the tail are not resolved; they are analytic inputs.
+
+At `dx = 0.05` (20 voxels per λ_ν) and `r_domain = 10 λ_ν`, the box is
+400 voxels in diameter, about 6.4 × 10⁷ voxels in 3D. Tractable. A domain
+that instead resolved the soliton extent `r_core = K²λ` would be
+1.9 × 10¹¹ voxels at K = 12 and is not.
 
 The boundary at `r = r_domain` is one of:
 
@@ -370,9 +381,9 @@ The boundary at `r = r_domain` is one of:
 The choice is per experiment, not global. There is no attempt to model the
 tail at the boundary; the tail is analytic elsewhere.
 
-**Validation with K = 1.** The neutrino (`K = 1`, `r_core = 1 λ_ν`) fits
-inside the truncated domain without truncation, so it serves as the
-validation case for the core dynamics before the K > 1 runs begin.
+**Validation with K = 1.** The neutrino has a single wave centre and no
+extended soliton structure. It fits inside the domain trivially and serves
+as the validation case for the local dynamics before the K > 1 runs begin.
 
 ---
 
@@ -403,6 +414,22 @@ check:          dE_total/dt + flux_through_boundary = 0
 The kinetic term is required: without it, a standing wave's gradient-only
 integral oscillates at `2ω` and the conservation test fails by construction.
 The deformation term uses `κ`, the stiffness supplied by the unit system.
+
+The wave equation is implemented in the divergence form
+`∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ)`, not `c²(ρ) ∇²Ψ`. The divergence form conserves
+`½|∂Ψ/∂t|² + ½c²|∇Ψ|²`, which is what the budget measures. The two forms
+differ by a `∇c² · ∇Ψ` term that matters when `c` varies in space.
+
+For the EMC density dynamics variants (item 2.4):
+
+- **B4a (instantaneous), B4c (inertial):** the density is either a
+  function of `|Ψ|²` at each step or has its own conservative evolution.
+  `E_total` is conserved to numerical tolerance and the check applies.
+- **B4b (relaxation):** the `D∇²ρ` and `−γ_ρ(ρ − ρ₀)` terms dissipate.
+  The budget carries a ledger entry `P_deform` for the rate at which the
+  deformation energy is lost, and the check becomes
+  `dE_total/dt + flux + P_deform = 0`. `P_deform > 0` means the
+  deformation is dissipating; `P_deform < 0` means it is being driven.
 
 ### 5.3. Coupling to the soliton
 
@@ -606,8 +633,8 @@ This is the decision documented in Section 4. Work items:
 
 - [ ] Add `r_domain` and `r_core` to `UnitSystem`.
 - [ ] Implement the boundary condition processor (1.7).
-- [ ] Document the choice: `r_domain ~ 50 λ_ν`.
-- [ ] Add a test: for K = 1, the whole core fits inside `r_domain`.
+- [ ] Document the choice: `r_domain ~ 10 λ_ν`.
+- [ ] Add a test: for K = 1, the whole soliton fits inside `r_domain`.
 
 ### 1.17 — Vacuum layer provider
 
@@ -694,8 +721,8 @@ geometric derivation in the manuscript.
 
 - [ ] **B2a**: perfect reflection, no spin conversion
       (`reflect_coeff_trans = 0`).
-- [ ] **B2b**: reflection with `α` conversion
-      (`reflect_coeff_trans = α`, loaded). Unitarity:
+- [ ] **B2b**: reflection with conversion, `|Ψ_spin| = √α · |Ψ_in|`
+      (coefficient multiplies amplitude). Unitarity:
       `|Ψ_out|² + |Ψ_spin|² = |Ψ_in|²`.
 - [ ] **B2c**: geometry-dependent reflection (local `α`, if variants warrant).
 - [ ] Recommended start: **B2b**.
@@ -710,8 +737,11 @@ r3 = |Ψ_out|² / |Ψ_in|²    (energy reflection ratio)
 ```
 
 Each is compared with the geometric `α`. A match is evidence that the
-corresponding field quantity is what the geometric ratio describes. A
-mismatch for all three means the geometric `α` has no direct dynamic
+corresponding field quantity is what the geometric ratio describes, but
+only on a variant that does not load `α` at the wave centre (B2c, if
+implemented). On B2b the conversion is set to the loaded `α`, so r1
+equals the loaded value by construction and r2, r3 follow from unitarity.
+A mismatch for all three means the geometric `α` has no direct dynamic
 counterpart in this engine; that is a valid observation, not a failure of
 the plan.
 
@@ -770,19 +800,39 @@ the plan.
 
 ### 2.10 — K-selectivity
 
-Every `K` must be run from **three perturbed initial conditions**. If the
-final state is the same for all three, the selection is energetic. If the
-final state depends on the initial condition, the sweep is measuring basins
-of attraction, not selection.
+The sweep runs on both a conservative and a dissipative vacuum, and
+measures two observables.
 
-Final energies of `K = 9, 10, 11` are compared. A genuine energetic optimum
-should sit below its neighbours.
+**Structural (V3, conservative).** For each K, run from three perturbed
+initial conditions at matched initial energy. Measure:
 
-- [ ] **B10a**: sweep K = 2..12 at fixed topology, spacing, coupling.
-- [ ] **B10b**: K × topology sweep.
-- [ ] **B10c**: K × spacing sweep.
-- [ ] **B10d**: full sweep.
-- [ ] **B10e**: three-initial-condition control; final-energy comparison.
+- localization: does the configuration stay bounded, or spread?
+- sphericity: does it stay compact?
+- WC return-to-initial: after the perturbation, do the wave centres
+  return to their starting configuration?
+- configuration fidelity: does the final state resemble the initial
+  topology, or has it drifted?
+
+K = 10 is structurally selected if it is the only K whose configuration
+survives all three perturbations.
+
+**Energetic (V2 or V4, dissipative).** For each K, run from three
+perturbed initial conditions and let the dynamics settle. Measure:
+
+- final energy: is E(K = 10) below E(K = 9) and E(K = 11)?
+- convergence: do the three seeds land in the same final state?
+
+K = 10 is energetically selected if it has the lowest final energy and
+its seeds converge.
+
+- [ ] B10a: sweep K = 2..12 at fixed topology, spacing, coupling, on V3.
+- [ ] B10b: same sweep on V2 or V4.
+- [ ] B10c: K × topology sweep.
+- [ ] B10d: K × spacing sweep.
+- [ ] B10e: structural comparison (V3) — three initial conditions at
+      matched energy.
+- [ ] B10f: energetic comparison (V2/V4) — three initial conditions,
+      final energies and convergence.
 
 ### 2.11 — Energy conservation verification
 
@@ -855,17 +905,38 @@ minima; "lock-in" language suggests discrete jumps. Both are testable
 
 ### Q7 (working assumption). K = 10: topological or energetic?
 
-Draft: treat the selection as **energetic** for the purposes of the K-sweep
-(item 2.10). Run each `K` from three perturbed initial conditions, compare
-final energies across K = 9, 10, 11. If `K = 10` sits below its neighbours
-for all three initial conditions, the selection is energetic. If the
-topological argument is also correct, the topological and energetic
-selections coincide and the test cannot distinguish them — but it confirms
-the engine reproduces the manuscript's prediction.
+The two readings are distinguished by what the K-sweep can measure, and
+that in turn depends on the vacuum implementation (Section 5.4).
 
-If different initial conditions give different final states at the same K,
-that falsifies the energetic reading. This is a working assumption, not a
-settled answer. Update if the K-sweep shows something else.
+- **On a conservative box (V3):** final energy equals initial energy by
+  construction. Comparing final energies across K compares the seeds, not
+  the physics, and "different seeds give different final states" is
+  expected on any conservative dynamics — not a falsifier. The observable
+  that does discriminate on V3 is **structural**: does the configuration
+  stay localized, keep its shape, and avoid collapse under perturbation?
+  If only K = 10 survives at fixed initial energy, the selection is
+  structural.
+
+- **On a dissipative box (V2, V4):** the dynamics can relax, so final
+  energies and attractors are meaningful. Different seeds converging to
+  the same low-energy state is evidence for energetic selection.
+
+**Working assumption:** run the sweep on both, and let the two
+observables stand as separate tests.
+
+- Primary: structural comparison on V3 (localization, sphericity,
+  WC return-to-initial after perturbation, configuration fidelity).
+- Secondary: energy comparison on V2 or V4 (final energies across K,
+  convergence to a shared attractor across seeds).
+
+If the structural test shows K = 10 is uniquely stable, the selection is
+topological or geometric regardless of the energy. If the energy test
+shows K = 10 is the unique minimum on a dissipative box, the selection is
+energetic. If neither holds, neither reading is supported by the engine
+as written.
+
+This is a working assumption, not a settled answer. Update as the sweep
+runs.
 
 ### Q8 (working assumption). Does spin stabilise the soliton?
 
@@ -1065,6 +1136,7 @@ the sequence without collision.
 |---|---|---|
 | 2026-09-17 | Initial draft. | Lukasz Smolinski |
 | 2026-09-18 | Renamed to `M4_PIPELINE_PLAN.md`. B1: CFL bound with `√3`. B2: item 2.13 removed; `α` treated as loaded geometric parameter; glossary and Section 2.7 updated. B3: kinetic term added to energy budget. Vacuum layer made swappable (V1–V5). Tail treated as analytic; wall peak not simulated. Section 4 shortened. Q1, Q3 removed. Q2 reformulated as vacuum-choice question. Q7, Q8 converted to working assumptions with drafts. Renamed `β` to `β_nl` / `β_ρ`. Added `X_eff`, `N_nu_eff`, `VacuumProvider` to glossary. | Lukasz Smolinski |
+| 2026-09-20 | Section 4 rewritten: soliton neighbourhood simulated (`r_domain ~ 10 λ_ν`), soliton extent `K²λ` and the tail treated as analytic input. Section 2.4 header and body aligned. Section 5.2: equation stated in divergence form, dissipation ledger added for B4b. Item 2.2: coefficient multiplies amplitude; consistency observation conditional on not loading `α`. Item 2.10 rewritten: structural (V3) and energetic (V2/V4) tests. Q7 rewritten as two-observable test. Section 1.7 table row for `α` removed. Section 3.1: `r_core` labelled theoretical scale. | Lukasz Smolinski |
 
 ---
 
