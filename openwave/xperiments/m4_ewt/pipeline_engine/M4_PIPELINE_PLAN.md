@@ -105,12 +105,12 @@ Because the soliton itself depletes EMC, `c²(r) = c₀²·ρ(r)/ρ₀`, and the
 wave equation becomes *automatically nonlinear*:
 
 ```text
-∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ) + c₀² (β_ρ/ρ₀) |∇Ψ|² Ψ
+∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ) + c₀² (β_ρ/ρ₀) |∇Ψ|² Ψ − 2 κ β_ρ² Ψ³
 ```
 
 where the second term is the Euler-Lagrange correction that keeps the
-gradient energy `½c²|∇Ψ|²` conserved when `c²` varies with the field. See
-Section 5.2.
+gradient energy `½c²|∇Ψ|²` conserved when `c²` varies with the field. The last two terms are the Euler-Lagrange corrections. 
+See Section 5.2.
 
 The old implementation instead injected a Klein–Gordon-style potential
 `V(ψ) = (c₁/4)u² − (c₂/6)u³` with `u = |ψ|²`. Mathematically this gives an
@@ -359,14 +359,13 @@ Two length scales matter, and they are not the same:
   region. The EMC tail continues beyond it, and the tail is analytic.
 
 - **The wave-centre neighbourhood.** The region the K-sweep actually
-  measures. Its size is set by half the largest wave-centre pair
-  separation — the configuration's own radius — plus a buffer of a few λ.
-  From the geometry tests, the largest separations at K = 10 are about
-  3.7 λ_ν (tetrahedron_10_locked) and about 0.7 λ_ν (golden angle), so
-  the configuration radii are about 1.85 λ_ν and 0.35 λ_ν respectively.
-  A domain of `r_domain ~ 10 λ_ν` covers every topology in the sweep with
-  a wide margin, including the `line` negative control at K = 12 whose
-  radius is 5.5 λ_ν.
+  measures. Its size is set by the largest distance from the
+  configuration centre to a wave centre, plus a buffer of a few λ. From
+  the geometry tests, the measured configuration radii at K = 10 are
+  2.00 λ_ν (tetrahedron_10_locked) and 0.36 λ_ν (golden angle); the
+  `line` negative control at K = 12 has radius 5.50 λ_ν. A domain of
+  `r_domain ~ 10 λ_ν` covers every topology in the sweep with a wide
+  margin.
 
 The simulation runs on the wave-centre neighbourhood. The soliton extent
 and the tail are not resolved; they are analytic inputs.
@@ -412,7 +411,7 @@ with `k = 2π/λ = 2π` and `ω = 2π·c/λ = 2π`.
 The energy budget excludes `E_base`. The check is:
 
 ```text
-E_soliton     = ∫ (½ |∂Ψ/∂t|²/c² + ½ |∇Ψ|²) dV
+E_soliton     = ∫ (½ |∂Ψ/∂t|² + ½ c²(ρ) |∇Ψ|²) dV
 E_deformation = ∫ ½ κ (ρ − ρ₀)² dV
 E_total       = E_soliton + E_deformation
 check:          dE_total/dt + flux_through_boundary = 0
@@ -434,7 +433,6 @@ which gives
 ```text
 ∂²Ψ/∂t² = ∇·(c²(ρ) ∇Ψ) + c₀² (β_ρ/ρ₀) |∇Ψ|² Ψ
 ```
-
 where the second term is the variation of `c²` with respect to `|Ψ|²`
 (one-component case, `c² = c₀²(1 − β_ρ|Ψ|²/ρ₀)`). The plain divergence form
 `∇·(c²∇Ψ)` alone does not conserve the gradient energy `½c²|∇Ψ|²` when `c²`
@@ -443,11 +441,20 @@ the right-hand side of the identity and does not vanish when `c²` moves.
 The Euler-Lagrange form above cancels it exactly, so the budget holds as
 written.
 
+Under B4a the deformation energy carries the slaved density. With
+`ρ = ρ₀ − β_ρ|Ψ|²` and the deformation potential `½ κ (ρ − ρ₀)²` treated
+as a real term in the Lagrangian, the equation gains one more
+contribution, `− 2 κ β_ρ² Ψ³` in the real one-component case, so that
+`E_total` closes. The alternative drops `E_deformation` under B4a
+entirely, treating the slaved density as bookkeeping rather than a second
+energy. This plan takes R2: the density has energy in every variant, and
+the equation pays for it.
+
 For the EMC density dynamics variants (item 2.4):
 
 - **B4a (instantaneous):** the density is a function of `|Ψ|²` at each
-  step. The Euler-Lagrange form above applies, `E_total` is conserved to
-  numerical tolerance, and the check applies.
+  step, and the equation carries the extra term `− 2 κ β_ρ² Ψ³` from the
+  deformation potential. `E_total` is conserved to numerical tolerance.
 - **B4b (relaxation):** the `D∇²ρ` and `−γ_ρ(ρ − ρ₀)` terms dissipate.
   The budget carries a ledger entry `P_deform` for the rate at which the
   deformation energy is lost, and the check becomes
@@ -458,6 +465,15 @@ For the EMC density dynamics variants (item 2.4):
   `E_deformation = ∫ (½ |∂ρ/∂t|²/c_ρ² + ½ κ |∇ρ|² + ½ κ (ρ − ρ₀)²) dV`,
   and the budget includes it. B4c is deferred until the extra term is
   added to the tracker.
+
+**Rule.** The budget enumerates every term the selected variants put in
+the equation. A variant that adds a potential to the Lagrangian adds its
+matching term to the stepper and its energy to `E_total`. The B6a
+recommended start, for instance, adds `F = γ_nl (1 − ρ/ρ₀) |Ψ|² Ψ`, which
+under B4a is `γ_nl (β_ρ/ρ₀) Ψ⁵` and carries its own potential
+`− γ_nl (β_ρ/ρ₀) Ψ⁶ / 6`; without that term the drift does not converge.
+The budget is not a fixed formula, it is the sum of the active terms.
+
 
 ### 5.3. Coupling to the soliton
 
@@ -596,7 +612,8 @@ Infrastructure only. No specific physics. Each item is a work unit.
 
 - [ ] Define `EnergyBudget` feature.
 - [ ] Fields: `E_kin`, `E_grad`, `E_deform`, `flux_boundary`, `dE_dt`.
-- [ ] `E_soliton = E_kin + E_grad`; `E_total = E_soliton + E_deform`.
+- [ ] `E_soliton = E_kin + E_grad` with `E_kin = ∫ ½ |∂Ψ/∂t|² dV` and
+      `E_grad = ∫ ½ c²(ρ) |∇Ψ|² dV`; `E_total = E_soliton + E_deform`.
 - [ ] Implement `EnergyBudgetUpdate` in `Stage.MEASURE`.
 - [ ] Add a test: 1D harmonic oscillator → `dE/dt ≈ 0` to machine precision.
 
@@ -864,8 +881,9 @@ its seeds converge.
 
 ### 2.11 — Energy conservation verification
 
-- [ ] **B11a**: measure `dE_total/dt` for isolated soliton, including the
-      kinetic term.
+- [ ] **B11a**: measure `dE_total/dt` for isolated soliton, using the
+      definition from Section 5.2 (`E_kin` without `/c²`, `E_grad` with
+      `c²(ρ)`) and including the deformation term of the active variant.
 - [ ] **B11b**: measure boundary flux.
 - [ ] **B11c**: compare stable vs unstable K.
 
@@ -1042,10 +1060,14 @@ launcher. Only after the physics is validated in headless mode.
 - **`A_π`** — Geometric core of the soliton. `4π³ + π² + π`.
 - **`N_geom`** — Effective BCC stiffness. `8π⁴(1−ζ)`.
 - **`γ`** — Nonlinear coupling. `1/ε_M`.
-- **`β_nl`** — Normalisation coefficient in the density-modulated nonlinearity
-  (Section 1.5, item 2.6).
 - **`β_ρ`** — Rate coefficient in the EMC density evolution (Section 2.3,
   item 2.4).
+- **`γ_nl`** — Coupling coefficient in the density-modulated nonlinearity
+  (item 2.6, variant B6a). Under B4a it contributes `γ_nl (β_ρ/ρ₀) Ψ⁵` to
+  the equation and `− γ_nl (β_ρ/ρ₀) Ψ⁶ / 6` to the deformation potential.
+- **`κ`** — Stiffness of the EMC density deformation. Enters `E_deformation`
+  as `½ κ (ρ − ρ₀)²`.
+- **`c_ρ`** — Characteristic wave speed of the density field, used by B4c.
 - **NESS** — Non-Equilibrium Steady State. The soliton's dynamical regime.
 - **Reflector** — A WC that satisfies `|Ψ_out|² + |Ψ_spin|² = |Ψ_in|²`.
 - **Feature** — A typed object stored in `FeatureBag`, keyed by its class.
@@ -1167,6 +1189,7 @@ the sequence without collision.
 | 2026-09-18 | Renamed to `M4_PIPELINE_PLAN.md`. B1: CFL bound with `√3`. B2: item 2.13 removed; `α` treated as loaded geometric parameter; glossary and Section 2.7 updated. B3: kinetic term added to energy budget. Vacuum layer made swappable (V1–V5). Tail treated as analytic; wall peak not simulated. Section 4 shortened. Q1, Q3 removed. Q2 reformulated as vacuum-choice question. Q7, Q8 converted to working assumptions with drafts. Renamed `β` to `β_nl` / `β_ρ`. Added `X_eff`, `N_nu_eff`, `VacuumProvider` to glossary. | Lukasz Smolinski |
 | 2026-09-20 | Section 4 rewritten: soliton neighbourhood simulated (`r_domain ~ 10 λ_ν`), soliton extent `K²λ` and the tail treated as analytic input. Section 2.4 header and body aligned. Section 5.2: equation stated in divergence form, dissipation ledger added for B4b. Item 2.2: coefficient multiplies amplitude; consistency observation conditional on not loading `α`. Item 2.10 rewritten: structural (V3) and energetic (V2/V4) tests. Q7 rewritten as two-observable test. Section 1.7 table row for `α` removed. Section 3.1: `r_core` labelled theoretical scale. | Lukasz Smolinski |
 | 2026-09-20 | Round three. Section 1.5 and Section 5.2: equation in Euler-Lagrange form with the exchange term `c₀²(β_ρ/ρ₀)\|∇Ψ\|²Ψ`; the plain divergence form does not conserve the gradient energy when `c²` depends on the field. B4c: `E_deformation` gains the density kinetic term `½\|∂ρ/∂t\|²/c_ρ²`, deferred until added. Section 4: `r_domain` sized by half the largest wave-centre pair separation plus a buffer, with measured numbers. Section 2.7: reference to "item 2.2, variant B2b". Section 14 preamble: IDs allocated by the author at row creation. | Lukasz Smolinski |
+| 2026-09-21 | Round four. R2 applied: `E_total` carries the deformation energy in every variant; the equation gains `− 2 κ β_ρ² Ψ³` under B4a. Section 5.2 states the budget as the sum of the active variant's terms (B6a rule). Section 1.5 equation aligned. Section 4: `r_domain` sized by the configuration radius about its centre, with the measured values. Glossary: `β_nl` removed; `γ_nl`, `κ`, `c_ρ` added. Item 1.8 and item 2.11 B11a aligned with the new definition. | Lukasz Smolinski |
 
 ---
 
