@@ -1538,7 +1538,7 @@ condition. Until then the tests below are specified but not run.
 ### Two questions, one variable each
 
 - **Arrangement at fixed count (R6).** With K held at 10, is 1-3-6 the
-  stable arrangement, and do the other arrangements the factory builds at
+  stable arrangement, and do the other arrangements item 2.8 names at
   K = 10 fail?
 - **Count at fixed arrangement (R7).** With the winning arrangement held
   fixed, does K = 10 stay stable when one node is removed (K = 9) or added
@@ -1550,9 +1550,10 @@ decide the other.
 
 ### R6. Arrangement at K = 10: does 1-3-6 win?
 
-Test: fix K = 10. Run each of the arrangements the factory builds at
+Test: fix K = 10. Run each of these arrangements from item 2.8 at
 K = 10 — `tetrahedron_10_locked` (1-3-6), `golden_angle`, `bcc_lattice`,
-`line`, `random` (item 2.8) — through the perturbation protocol (R8).
+`line`, `random` (`bcc_lattice` and `random` are not built yet: B8d and
+B8f) — through the perturbation protocol (R8).
 Record, for each arrangement, whether the wave centres return to near
 their initial positions, stay bounded, or escape.
 
@@ -1784,7 +1785,7 @@ studies.
 | 2026-09-22 | Round eight. Milestone 2 renamed from "Spin extension" to "Nodal lock-in"; new Section 15 with tests R6 (attractor), R7 (discrete vs continuous minima), R8 (attractor count per K). Spin extension moved to Section 16 as Milestone 3. Section 17 is the changelog. Section 12 references updated. Q6 linked to Milestone 2 R7; Q11 explicitly linked to Milestone 2 as the complementary capacity-selection test. Glossary: `Nodal lock-in` entry added. | Lukasz Smolinski |
 | 2026-09-22 | Round nine (review response). Section 2.10 lead-in changed from "pipeline A" to "vacuum variants"; the structural half runs on V3 and the energetic half on V2 or V4, irrespective of the pipeline preset, which is orthogonal. Section 2.3 and Section 3.2 corrected: the EMC Wall peak `rho > rho_0` arrives with B4c only; B4b obeys the maximum principle and `c_max = c_0` for both B4a and B4b. Item 1.16 aligned. Item 1.23 test 2 now names the staggered leapfrog invariant as the machine-precision quantity, and states that the Section 5.2 energy is scored by O(dt^2) convergence under refinement. Q10 tightened: `U(dt/2)` is a half kick and half drift, not a kick alone. Q11 given the turnover mechanism: capacity selection peaks at K = 10 because larger K redistributes the same energy over more centres. Comment-tier fixes: "(updated)" dropped from the Q10 heading. Applied as maintainer edits at merge: trailing newline restored (MD047); `theory/_CITATIONS.md` extended with the v5.0.2 row (DOI 10.5281/zenodo.22875996, published 2026-09-21). | Lukasz Smolinski |
 | 2026-09-22 | Round ten (post-merge). Section 15 restructured: R6 split, with a cross-check paragraph; R8 moved to the topology x K grid; a new "Two independent axes" paragraph added ahead of R6a. Q11 rewritten: the prediction is stated for both topologies, and a peak at K=10 is told apart from a knee. The earlier "energy redistributed over centres" wording is removed. | Lukasz Smolinski |
-| 2026-09-25 | Round eleven (restart). Section 15 rewritten around two questions, one variable each: arrangement at fixed count (R6) and count at fixed arrangement (R7), both using one perturbation protocol (R8). The previous R6a-R6d, R7 and R8 are replaced; the section is renamed from "Nodal lock-in" to "Stability and K-selectivity". The reviewer's note on the 1-3-6 K axis is addressed by removing the claim that 1-3-6 exists at any K other than 10: the K = 9 and K = 11 analogues are a new work item, and which node is added or removed is left as an implementation detail. Q11 (Section 9) restated as out of Milestone 2 scope: it is the excess-amplitude question, deferred. Item 2.10 B10g now points to R8 for the return / bounded / escape classes. Section 16 lead and activation signal widened from Milestone 1 to Milestones 1 and 2; its opening sentence updated to Sections 1-15. Glossary "Nodal lock-in" reference updated (Q6, not R7). Q6 tail reference updated. | Łukasz Smoliński |
+| 2026-09-25 | Round eleven (restart). Section 15 rewritten around two questions, one variable each: arrangement at fixed count (R6) and count at fixed arrangement (R7), both using one perturbation protocol (R8). The previous R6a-R6d, R7 and R8 are replaced; the section is renamed from "Nodal lock-in" to "Stability and K-selectivity". The reviewer's note on the 1-3-6 K axis is addressed by removing the claim that 1-3-6 exists at any K other than 10: the K = 9 and K = 11 analogues are a new work item, and which node is added or removed is left as an implementation detail. Q11 (Section 9) restated as out of Milestone 2 scope: it is the excess-amplitude question, deferred. Item 2.10 B10g now points to R8 for the return / bounded / escape classes. Section 16 lead and activation signal widened from Milestone 1 to Milestones 1 and 2; its opening sentence updated to Sections 1-15. Glossary "Nodal lock-in" reference updated (Q6, not R7). Q6 tail reference updated. Applied as maintainer edits at merge: R6 and the Section 15 lead name the item 2.8 arrangements rather than the factory's, since `bcc_lattice` and `random` are not built yet (B8d, B8f); trailing newline restored (MD047). | Łukasz Smoliński |
 
 ---
 
