@@ -1,0 +1,79 @@
+{
+ "n16_rows": {
+  "P4_d0.3_w25_n16_L24": {
+   "status": "OK",
+   "gate": "FALLING",
+   "kick": "FALLING",
+   "seed_gate": {
+    "intended": [
+     4
+    ],
+    "reads": {
+     "R9": {
+      "partition": [
+       4
+      ],
+      "total": 4.0
+     }
+    },
+    "PASS": true
+   },
+   "E": 10.746801190203009,
+   "interior": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "stop": null
+  },
+  "P3_1_d0.3_w25_n16_L24": {
+   "status": "OK",
+   "gate": "FALLING",
+   "kick": "FALLING",
+   "seed_gate": {
+    "intended": [
+     3,
+     1
+    ],
+    "reads": {
+     "R9": {
+      "partition": [
+       3,
+       1
+      ],
+      "total": 4.0
+     }
+    },
+    "PASS": true
+   },
+   "E": 10.038049733678031,
+   "interior": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "stop": null
+  }
+ },
+ "n16_ok": true,
+ "n16_wall_s": 41.4,
+ "labels": {
+  "five_distinct": "BRANCH_COUNT 5",
+  "two_same": "BRANCH_COUNT 4",
+  "three_rows": "CENSUS_INSUFFICIENT",
+  "closed": "MOMENT_CHANNEL_CLOSED",
+  "open": "MOMENT_CHANNEL_OPEN"
+ },
+ "labels_ok": true,
+ "wiring": {
+  "jobs": 5,
+  "tags_unique": true
+ },
+ "PASS": true
+}

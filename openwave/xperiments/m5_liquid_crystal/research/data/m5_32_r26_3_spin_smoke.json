@@ -1,0 +1,25 @@
+{
+ "spin_reads_wall_s": 1.2,
+ "C": {
+  "internal": 14070.772691545233,
+  "orbital": 1403.4271466045493,
+  "rigid": 14031.367755248113
+ },
+ "moments": {
+  "r2_energy_weighted": 298.8359350824596,
+  "energy_total_density_sum": 8.822672411371894,
+  "r2_charge_weighted_abs": 206.12189935885363,
+  "charge_total": 0.9988517140265234,
+  "charge_abs_total": 3.5703765823653417,
+  "rho_r2_energy_weighted_xy": 154.19398602199286
+ },
+ "seed_charge_inside_r12": 0.993704815665498,
+ "seed_charge_ok": true,
+ "labels": {
+  "conv": "SPIN_PHYS_BOX_CONVERGED",
+  "dep": "SPIN_PHYS_BOX_DEPENDENT",
+  "insuf": "SPIN_PHYS_INSUFFICIENT"
+ },
+ "labels_ok": true,
+ "PASS": true
+}

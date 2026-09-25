@@ -1,0 +1,3332 @@
+{
+ "task": "M5.32 R26-2",
+ "rows": {
+  "d0.01_w25_n64_L48": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "tag": "d0.01_w25_n64_L48",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 8.967088094480353e-09,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 2.951386579733617e-11,
+   "gate_M": 2.951386579733617e-10,
+   "gate_scaled": 0.00032913545050932737,
+   "gate_at_floor": true,
+   "E_seed_dev": 8.934830570803118e-09,
+   "E_seed_plain": 8.934830571915472e-09,
+   "seed_rel_diff": 1.2449642200822e-10,
+   "gmax_seed_M": 1.0156083717814655e-05,
+   "T_seed_bps": 2.9782768569343725e-09,
+   "T_seed_kicked": 3.725534198831803e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     26845.4660433889,
+     18.457137037087005,
+     1.0,
+     71.48061022110322
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054781204287393
+   },
+   "lbfgs": {
+    "f_start": 1.2464026759562128,
+    "f_end": 0.49391674007387465,
+    "gmax_end": 25.161486422162465,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.7549778034354008,
+      "gmax": 32.029399117871506,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.6454433521055775,
+      "gmax": 37.06849746426994,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.5764266012354032,
+      "gmax": 29.738705228459978,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.5429677215102273,
+      "gmax": 20.560044453874966,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.524384926069399,
+      "gmax": 13.429692535364325,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.5160651127256953,
+      "gmax": 14.23735957826026,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.507782539251453,
+      "gmax": 19.194278500177013,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.49391674007387465,
+      "gmax": 25.161486422162465,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 8.875837196223589e-10,
+   "V4_per_len": 5.887479202379706e-10,
+   "T": 1.4763316398603294e-09,
+   "T_over_delta4": 0.14763316398603293,
+   "T_over_T_bps": 0.4939167400738746,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.5770177074441174,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 2.2562526533560206e-05,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.46352698560831546,
+    "M33_minus_1": 0.0022473402341849358,
+    "M00_minus_8": 1.1660215015751874e-06,
+    "z_variation": 0.005950444315458133
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.46352698560831546,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1144.3,
+   "sector": "free",
+   "precond": "scaled"
+  },
+  "d0.03_w25_n64_L48": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "tag": "d0.03_w25_n64_L48",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 7.269880485081004e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 3.927377828364148e-11,
+   "gate_M": 3.927377828364148e-10,
+   "gate_scaled": 1.6206777414389862e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.243708193781787e-07,
+   "E_seed_plain": 7.243708193782564e-07,
+   "seed_rel_diff": 1.071404199561616e-13,
+   "gmax_seed_M": 7.182409700131755e-05,
+   "T_seed_bps": 2.4145693979272623e-07,
+   "T_seed_kicked": 3.02039277336594e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     8944.463272304467,
+     6.152071902418964,
+     1.0,
+     23.816151739411502
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.030572261599490152
+   },
+   "lbfgs": {
+    "f_start": 1.2463999014416887,
+    "f_end": 0.234822426595114,
+    "gmax_end": 21.066428859139982,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.7043224497169541,
+      "gmax": 12.216737496671147,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.6253899366066347,
+      "gmax": 11.56569986201214,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.5611426817156732,
+      "gmax": 24.646576995325958,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.5083623083253764,
+      "gmax": 15.011674193798735,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.4689110024540925,
+      "gmax": 12.21352456002323,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.4074919914818889,
+      "gmax": 29.34319137667256,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.30748125708692153,
+      "gmax": 29.620789501705374,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.234822426595114,
+      "gmax": 21.066428859139982,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 5.261715386648647e-08,
+   "V4_per_len": 4.287212018953054e-09,
+   "T": 5.6904365885439524e-08,
+   "T_over_delta4": 0.07025230356227102,
+   "T_over_T_bps": 0.234822426595114,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.2788115497853389,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 0.0005105014001780302,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.7321420278015025,
+    "M33_minus_1": 0.01679473086026636,
+    "M00_minus_8": 1.4191114357705223e-06,
+    "z_variation": 0.00930897407314936
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.7321420278015025,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1145.3,
+   "sector": "free",
+   "precond": "scaled"
+  },
+  "d0.003_w25_n64_L48": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "tag": "d0.003_w25_n64_L48",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 7.262597820153543e-11,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 2.995385554923427e-11,
+   "gate_M": 2.995385554923427e-10,
+   "gate_scaled": 0.012373198801996032,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.236474519600323e-11,
+   "E_seed_plain": 7.236474538986133e-11,
+   "seed_rel_diff": 2.6789025375867122e-09,
+   "gmax_seed_M": 1.0285999826499635e-06,
+   "T_seed_bps": 2.4121581732001077e-11,
+   "T_seed_kicked": 3.017374671030241e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     89489.46737373345,
+     61.524139979175345,
+     1.0,
+     238.2808972620266
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054503229952076
+   },
+   "lbfgs": {
+    "f_start": 1.2464030416184257,
+    "f_end": 0.4746520848384374,
+    "gmax_end": 53.4974207295556,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8030571497727939,
+      "gmax": 73.19678849167325,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.7053285870232335,
+      "gmax": 104.7083789014903,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.6278521228253493,
+      "gmax": 101.81565826426711,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.5575990192642866,
+      "gmax": 111.24752593450951,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.5233682492816643,
+      "gmax": 84.20481812452239,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.5029874102508876,
+      "gmax": 67.53146290146384,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.48667232358085055,
+      "gmax": 69.44991794478176,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.4746520848384374,
+      "gmax": 53.4974207295556,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 6.898643856396807e-12,
+   "V4_per_len": 4.5920467991997595e-12,
+   "T": 1.1490690655596567e-11,
+   "T_over_delta4": 0.14186037846415514,
+   "T_over_T_bps": 0.47465208483843746,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 0.5515459067626731,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.2951008372476913e-06,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.48414564537482524,
+    "M33_minus_1": 0.0007017960751050841,
+    "M00_minus_8": 3.460455625751517e-07,
+    "z_variation": 0.004394840008447957
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.48414564537482524,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1150.9,
+   "sector": "free",
+   "precond": "scaled"
+  },
+  "d0.03_w25_n48_L48": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "tag": "d0.03_w25_n48_L48",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 9.693173980108005e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 9.3456184020435e-11,
+   "gate_M": 9.3456184020435e-10,
+   "gate_scaled": 2.892432887686403e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 9.631402504831478e-07,
+   "E_seed_plain": 9.63140250479174e-07,
+   "seed_rel_diff": 4.125936041055816e-12,
+   "gmax_seed_M": 0.00016856058291686275,
+   "T_seed_bps": 2.4078506262078696e-07,
+   "T_seed_kicked": 3.0136739384332556e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     11925.951029739288,
+     8.202762536558618,
+     1.0,
+     31.754868985882005
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07246758305064332
+   },
+   "lbfgs": {
+    "f_start": 1.2436272967421456,
+    "f_end": 0.1583607277411382,
+    "gmax_end": 16.07323443821703,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.6786244948168721,
+      "gmax": 20.695845215884226,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.5588217302254362,
+      "gmax": 18.690443489388194,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.5138777385902148,
+      "gmax": 11.030693803476955,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.4710781002834174,
+      "gmax": 20.219617774618676,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.336131533545431,
+      "gmax": 46.67549324723421,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.22359962212057502,
+      "gmax": 26.760586799253243,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.1792632955972141,
+      "gmax": 21.136217324630824,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.1583607277411382,
+      "gmax": 16.07323443821703,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 3.737842143185263e-08,
+   "V4_per_len": 9.970307084315914e-10,
+   "T": 3.837545214028422e-08,
+   "T_over_delta4": 0.04737710140775831,
+   "T_over_T_bps": 0.1583607277411382,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.18802633362941132,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 0.000519335526109004,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.6826783999013953,
+    "M33_minus_1": 0.015011655198874745,
+    "M00_minus_8": 4.1891734525734137e-07,
+    "z_variation": 0.005871041262531067
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.6826783999013953,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 665.0,
+   "sector": "free",
+   "precond": "scaled"
+  },
+  "d0.01_w25_n48_L48": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "tag": "d0.01_w25_n48_L48",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 1.1956117459307138e-08,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 6.968217569718514e-11,
+   "gate_M": 6.968217569718514e-10,
+   "gate_scaled": 0.0005828160850238355,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.1879987499387008e-08,
+   "E_seed_plain": 1.18799875003923e-08,
+   "seed_rel_diff": 8.462066569827612e-11,
+   "gmax_seed_M": 2.3825384210137436e-05,
+   "T_seed_bps": 2.969996874846752e-09,
+   "T_seed_kicked": 3.717254236993467e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     35793.95472451853,
+     24.60951604944934,
+     1.0,
+     95.3074802948043
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07240962854607154
+   },
+   "lbfgs": {
+    "f_start": 1.2436325586948134,
+    "f_end": 0.15108880062880245,
+    "gmax_end": 49.45834134401526,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.7071256961342963,
+      "gmax": 51.10150787194982,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.5681500687805454,
+      "gmax": 54.97196227763367,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.5044453156634982,
+      "gmax": 41.67206247319942,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.4632441606685241,
+      "gmax": 57.886972381898545,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.37903314099672786,
+      "gmax": 116.60474630094285,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.2358699523548815,
+      "gmax": 69.23870527164661,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.17431931599275044,
+      "gmax": 60.079275678053754,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.15108880062880245,
+      "gmax": 49.45834134401526,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 4.4054176166988207e-10,
+   "V4_per_len": 1.1067100106068035e-11,
+   "T": 4.516088617759501e-10,
+   "T_over_delta4": 0.04516088617759501,
+   "T_over_T_bps": 0.15108880062880245,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.17650933099832447,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 5.913297384515529e-05,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.7234692921397198,
+    "M33_minus_1": 0.005518367346690756,
+    "M00_minus_8": 1.9288233232828134e-07,
+    "z_variation": 0.00268367206678697
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.7234692921397198,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 670.9,
+   "sector": "free",
+   "precond": "scaled"
+  },
+  "d0.01_w25_n64_L48_block": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "tag": "d0.01_w25_n64_L48_block",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 8.967088094480353e-09,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 2.951386579733617e-11,
+   "gate_M": 2.951386579733617e-10,
+   "gate_scaled": 0.00032913545050932737,
+   "gate_at_floor": true,
+   "E_seed_dev": 8.934830570803118e-09,
+   "E_seed_plain": 8.934830571915472e-09,
+   "seed_rel_diff": 1.2449642200822e-10,
+   "gmax_seed_M": 1.0156083717814655e-05,
+   "T_seed_bps": 2.9782768569343725e-09,
+   "T_seed_kicked": 3.725533892773369e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     26845.4660433889,
+     18.457137037087005,
+     1.0,
+     71.48061022110322
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054781204287393
+   },
+   "lbfgs": {
+    "f_start": 1.2464025735622928,
+    "f_end": 0.5740587158547351,
+    "gmax_end": 14.817068717523798,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.7775796359076129,
+      "gmax": 27.601688712473372,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.7457184050011695,
+      "gmax": 14.954647446559948,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.7124906811274834,
+      "gmax": 24.5075892068527,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.6776235848429178,
+      "gmax": 15.330744471823996,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.6547793891184024,
+      "gmax": 14.56918087996744,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.6321801106524255,
+      "gmax": 13.278054419273596,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.6038487180820874,
+      "gmax": 13.811068869052797,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.5740587158547351,
+      "gmax": 14.817068717523798,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.1292269809945402e-09,
+   "V4_per_len": 5.866513778300181e-10,
+   "T": 1.7158783588245584e-09,
+   "T_over_delta4": 0.17158783588245582,
+   "T_over_T_bps": 0.5740587158547351,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.6706434856029981,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.328659604920049e-05,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006608762173065941,
+    "M00_minus_8": 1.1775895814025716e-06,
+    "z_variation": 0.006452042288641337
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.0006608762173065941,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1162.3,
+   "precond": "scaled"
+  },
+  "d0.03_w25_n64_L48_block": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "tag": "d0.03_w25_n64_L48_block",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 7.269880485081004e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 3.927377828364148e-11,
+   "gate_M": 3.927377828364148e-10,
+   "gate_scaled": 1.6206777414389862e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.243708193781787e-07,
+   "E_seed_plain": 7.243708193782562e-07,
+   "seed_rel_diff": 1.0699425294394312e-13,
+   "gmax_seed_M": 7.182409700131755e-05,
+   "T_seed_bps": 2.4145693979272623e-07,
+   "T_seed_kicked": 3.0203927865189747e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     8944.463272304467,
+     6.152071902418964,
+     1.0,
+     23.816151739411502
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.030572261599490152
+   },
+   "lbfgs": {
+    "f_start": 1.2463999068694402,
+    "f_end": 0.617125694235836,
+    "gmax_end": 4.492946446445506,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.776096386007307,
+      "gmax": 9.348433811636609,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.7456443879166451,
+      "gmax": 7.250856940313544,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.7284409787523063,
+      "gmax": 4.647806843437983,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.6828349028265736,
+      "gmax": 9.449370619487725,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.6559940316564161,
+      "gmax": 6.93084306250896,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.6394379530817772,
+      "gmax": 3.919123618052012,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.6288904854888177,
+      "gmax": 3.997629689885159,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.617125694235836,
+      "gmax": 4.492946446445506,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 9.625377549563421e-08,
+   "V4_per_len": 5.329389254993814e-08,
+   "T": 1.4954766804557235e-07,
+   "T_over_delta4": 0.18462675067354614,
+   "T_over_T_bps": 0.617125694235836,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.7327314248349852,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 0.00010887727897176078,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.002001121637299856,
+    "M00_minus_8": 3.5796962431315178e-06,
+    "z_variation": 0.0394882518690398
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.002001121637299856,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1171.2,
+   "precond": "scaled"
+  },
+  "d0.003_w25_n64_L48_block": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "tag": "d0.003_w25_n64_L48_block",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 7.262597820153543e-11,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 2.995385554923427e-11,
+   "gate_M": 2.995385554923427e-10,
+   "gate_scaled": 0.012373198801996032,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.236474519600323e-11,
+   "E_seed_plain": 7.236474538986133e-11,
+   "seed_rel_diff": 2.6789025375867122e-09,
+   "gmax_seed_M": 1.0285999826499635e-06,
+   "T_seed_bps": 2.4121581732001077e-11,
+   "T_seed_kicked": 3.017374678289826e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     89489.46737373345,
+     61.524139979175345,
+     1.0,
+     238.2808972620266
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054503229952076
+   },
+   "lbfgs": {
+    "f_start": 1.2464030446171812,
+    "f_end": 0.5673586448889605,
+    "gmax_end": 69.53803040720784,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8050034054108287,
+      "gmax": 80.49437222071043,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.7561896762875542,
+      "gmax": 54.54053298163293,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.72123613320043,
+      "gmax": 94.17616187885187,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.6722981830544275,
+      "gmax": 78.18078802234321,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.6421404863288422,
+      "gmax": 39.20153615944847,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.6222353340151459,
+      "gmax": 51.26938640512597,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.5909573038270717,
+      "gmax": 64.7456620254493,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.5673586448889605,
+      "gmax": 69.53803040720784,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 9.295314958305875e-12,
+   "V4_per_len": 4.439677233746901e-12,
+   "T": 1.3734992192052774e-11,
+   "T_over_delta4": 0.16956780484015768,
+   "T_over_T_bps": 0.5673586448889605,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 0.659270965514534,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.6834224935105282e-06,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.00017609744410821784,
+    "M00_minus_8": 3.1594401169362146e-07,
+    "z_variation": 0.00903278984627772
+   },
+   "core_radius": null,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.00017609744410821784,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1172.2,
+   "precond": "scaled"
+  },
+  "d0.003_w25_n64_L48_block_plain": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.003_w25_n64_L48_block_plain",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 7.262597820153543e-11,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 2.995385554923427e-11,
+   "gate_M": 2.995385554923427e-10,
+   "gate_scaled": 0.012373198801996032,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.236474519600323e-11,
+   "E_seed_plain": 7.236474538986133e-11,
+   "seed_rel_diff": 2.6789025375867122e-09,
+   "gmax_seed_M": 1.0285999826499635e-06,
+   "T_seed_bps": 2.4121581732001077e-11,
+   "T_seed_kicked": 3.0173746529058356e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054503229952076
+   },
+   "lbfgs": {
+    "f_start": 1.2464030341316807,
+    "f_end": 0.8667068579598318,
+    "gmax_end": 0.001050445753001684,
+    "iters": 21,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 21,
+      "f": 0.8667068579598318,
+      "gmax": 0.001050445753001684,
+      "chunk_iters": 21,
+      "scipy": "ABNORMAL: "
+     }
+    ]
+   },
+   "E_u_per_len": 1.2017247371844777e-11,
+   "V4_per_len": 8.964563752592557e-12,
+   "T": 2.0981811124437336e-11,
+   "T_over_delta4": 0.2590347052399671,
+   "T_over_T_bps": 0.8667068579598319,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 1.0071137052597054,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 2.5429883453131918e-11,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.00019355422035497818,
+    "M00_minus_8": 3.445273695964109e-07,
+    "z_variation": 0.00011235276310066038
+   },
+   "core_radius": 2.4388901005730963,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.00019355422035497818,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 22.2
+  },
+  "d0.001_w25_n64_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w25_n64_L48_block_plain",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.988696484423458e-13,
+   "T_ref": 8.966089453270375e-13,
+   "kappa_bps": 0.04756658188973631,
+   "floor_M": 2.9381161647581605e-11,
+   "gate_M": 2.9381161647581605e-10,
+   "gate_scaled": 0.327692042341434,
+   "gate_at_floor": true,
+   "E_seed_dev": 8.933839043214856e-13,
+   "E_seed_plain": 8.933838991687022e-13,
+   "seed_rel_diff": 5.767714637592675e-09,
+   "gmax_seed_M": 1.1841244877018466e-07,
+   "T_seed_bps": 2.977946347738285e-13,
+   "T_seed_kicked": 3.7251215787443215e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054478794008708
+   },
+   "lbfgs": {
+    "f_start": 1.2464034398136368,
+    "f_end": 0.8678211331834004,
+    "gmax_end": 0.01855850328393789,
+    "iters": 19,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 19,
+      "f": 0.8678211331834004,
+      "gmax": 0.01855850328393789,
+      "chunk_iters": 19,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 1.4835990790217065e-13,
+   "V4_per_len": 1.1100548908319038e-13,
+   "T": 2.59365396985361e-13,
+   "T_over_delta4": 0.259365396985361,
+   "T_over_T_bps": 0.8678211331834003,
+   "T_slaved3": 2.5758954553904536e-13,
+   "T_slaved3_over_delta4": 0.25758954553904534,
+   "T_over_T_slaved3": 1.0068941130456184,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.6639720056259914e-11,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.422381249038267e-05,
+    "M00_minus_8": 1.1424727830444681e-07,
+    "z_variation": 3.380241797655125e-05
+   },
+   "core_radius": 2.4388840104759955,
+   "core_radius_bps": 3.817348044845006,
+   "departure_max": 6.422381249038267e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 18.4
+  },
+  "d0.001_w25_n96_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 25.0,
+   "n": 96,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w25_n96_L48_block_plain",
+   "h": 0.5,
+   "w": 0.018100596975,
+   "T_bps": 2.988696484423458e-13,
+   "T_ref": 5.977392968846916e-13,
+   "kappa_bps": 0.04756658188973631,
+   "floor_M": 8.923949535155953e-12,
+   "gate_M": 8.923949535155953e-11,
+   "gate_scaled": 0.1492950117495362,
+   "gate_at_floor": true,
+   "E_seed_dev": 5.967807447963962e-13,
+   "E_seed_plain": 5.96780737621144e-13,
+   "seed_rel_diff": 1.2023263747413175e-08,
+   "gmax_seed_M": 3.534689679845751e-08,
+   "T_seed_bps": 2.983903723981981e-13,
+   "T_seed_kicked": 3.731077845990989e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 19147.829638734846,
+    "k_t": 0.1357544773125,
+    "k_u": 0.00905030753780358
+   },
+   "lbfgs": {
+    "f_start": 1.2483963712731243,
+    "f_end": 0.8698141993957891,
+    "gmax_end": 0.008528228400572975,
+    "iters": 21,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 21,
+      "f": 0.8698141993957891,
+      "gmax": 0.008528228400572975,
+      "chunk_iters": 21,
+      "scipy": "ABNORMAL: "
+     }
+    ]
+   },
+   "E_u_per_len": 1.4895527077282422e-13,
+   "V4_per_len": 1.1100579321075576e-13,
+   "T": 2.5996106398358e-13,
+   "T_over_delta4": 0.25996106398357993,
+   "T_over_T_bps": 0.8698141993957891,
+   "T_slaved3": 2.5758954553904536e-13,
+   "T_slaved3_over_delta4": 0.25758954553904534,
+   "T_over_T_slaved3": 1.0092065787824263,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 5.097657247830548e-12,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.470318525408914e-05,
+    "M00_minus_8": 1.1509992958735893e-07,
+    "z_variation": 3.726142172588709e-05
+   },
+   "core_radius": 2.4518144071641874,
+   "core_radius_bps": 3.817348044845006,
+   "departure_max": 6.470318525408914e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 69.7
+  },
+  "d0.03_w25_n48_L48_block_plain": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.03_w25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 9.693173980108005e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 9.3456184020435e-11,
+   "gate_M": 9.3456184020435e-10,
+   "gate_scaled": 2.892432887686403e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 9.631402504831478e-07,
+   "E_seed_plain": 9.63140250479174e-07,
+   "seed_rel_diff": 4.125936041055816e-12,
+   "gmax_seed_M": 0.00016856058291686275,
+   "T_seed_bps": 2.4078506262078696e-07,
+   "T_seed_kicked": 3.013674060785668e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07246758305064332
+   },
+   "lbfgs": {
+    "f_start": 1.2436273472322794,
+    "f_end": 0.8376435979516151,
+    "gmax_end": 0.09058699171807633,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8394753243591919,
+      "gmax": 1.0478636827070476,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8383514023548027,
+      "gmax": 0.05512749704612099,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8379396956160078,
+      "gmax": 0.076278031976291,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8377767970740851,
+      "gmax": 0.013418077304935227,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8377164281887595,
+      "gmax": 0.08523292325871616,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8376788755538743,
+      "gmax": 0.11083589314159929,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8376596285342075,
+      "gmax": 0.0076851898427319106,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8376435979516151,
+      "gmax": 0.09058699171807633,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.024748787777656e-07,
+   "V4_per_len": 1.0051074942895058e-07,
+   "T": 2.0298562820671618e-07,
+   "T_over_delta4": 0.25059954099594595,
+   "T_over_T_bps": 0.8376435979516151,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.9945587953374662,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 2.9269182368597227e-06,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0020410230877473032,
+    "M00_minus_8": 3.6521791813015625e-06,
+    "z_variation": 0.0008149729499212315
+   },
+   "core_radius": 2.5441397643504837,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.0020410230877473032,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 593.1
+  },
+  "d0.003_w25_n48_L48_block_plain": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.003_w25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 9.683463760204723e-11,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 6.952031689496226e-11,
+   "gate_M": 6.952031689496226e-10,
+   "gate_scaled": 0.021537845945372495,
+   "gate_at_floor": true,
+   "E_seed_dev": 9.62181099972801e-11,
+   "E_seed_plain": 9.621811031447135e-11,
+   "seed_rel_diff": 3.2965856982596455e-09,
+   "gmax_seed_M": 2.412932167771092e-06,
+   "T_seed_bps": 2.4054527499320025e-11,
+   "T_seed_kicked": 3.0106691120556116e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07240303952478995
+   },
+   "lbfgs": {
+    "f_start": 1.243633140624037,
+    "f_end": 0.8639376121492656,
+    "gmax_end": 0.003886688770155497,
+    "iters": 21,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 21,
+      "f": 0.8639376121492656,
+      "gmax": 0.003886688770155497,
+      "chunk_iters": 21,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 1.1950284074507262e-11,
+   "V4_per_len": 8.964487321305781e-12,
+   "T": 2.091477139581304e-11,
+   "T_over_delta4": 0.2582070542692968,
+   "T_over_T_bps": 0.8639376121492656,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 1.0038958405532703,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.2545536617665137e-10,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0001915518696253097,
+    "M00_minus_8": 3.409631095981543e-07,
+    "z_variation": 9.670446795090905e-05
+   },
+   "core_radius": 2.4131475230667228,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.0001915518696253097,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 7.9
+  },
+  "d0.001_w25_n48_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.988696484423458e-13,
+   "T_ref": 1.1954785937693833e-12,
+   "kappa_bps": 0.04756658188973631,
+   "floor_M": 6.960198581781682e-11,
+   "gate_M": 6.960198581781682e-10,
+   "gate_scaled": 0.5822102225884236,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.1878672781385639e-12,
+   "E_seed_plain": 1.1878672636702593e-12,
+   "seed_rel_diff": 1.2180068421834085e-08,
+   "gmax_seed_M": 2.777760537096854e-07,
+   "T_seed_bps": 2.9696681953464097e-13,
+   "T_seed_kicked": 3.7168423162805674e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07240246030242864
+   },
+   "lbfgs": {
+    "f_start": 1.243633248023703,
+    "f_end": 0.865050927557583,
+    "gmax_end": 0.01226393162175839,
+    "iters": 26,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 26,
+      "f": 0.865050927557583,
+      "gmax": 0.01226393162175839,
+      "chunk_iters": 26,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 1.4753163630947196e-13,
+   "V4_per_len": 1.1100583029438805e-13,
+   "T": 2.5853746660386e-13,
+   "T_over_delta4": 0.25853746660385996,
+   "T_over_T_bps": 0.865050927557583,
+   "T_slaved3": 2.5758954553904536e-13,
+   "T_slaved3_over_delta4": 0.25758954553904534,
+   "T_over_T_slaved3": 1.0036799671463024,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.466126772926359e-11,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.355835902027707e-05,
+    "M00_minus_8": 1.1306333647098654e-07,
+    "z_variation": 3.526515346408132e-05
+   },
+   "core_radius": 2.413190428578575,
+   "core_radius_bps": 3.817348044845006,
+   "departure_max": 6.355835902027707e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 20.4
+  },
+  "d0.01_w25_n48_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 1.1956117459307138e-08,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 6.968217569718514e-11,
+   "gate_M": 6.968217569718514e-10,
+   "gate_scaled": 0.0005828160850238355,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.1879987499387008e-08,
+   "E_seed_plain": 1.18799875003923e-08,
+   "seed_rel_diff": 8.462066569827612e-11,
+   "gmax_seed_M": 2.3825384210137436e-05,
+   "T_seed_bps": 2.969996874846752e-09,
+   "T_seed_kicked": 3.717254195253523e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 153182.63710987876,
+    "k_t": 1.0860358185,
+    "k_u": 0.07240962854607154
+   },
+   "lbfgs": {
+    "f_start": 1.2436325447304326,
+    "f_end": 0.8512884837111925,
+    "gmax_end": 0.2280356563096089,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8523286095965168,
+      "gmax": 0.07470769673313395,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8518158344565194,
+      "gmax": 0.4063066172046043,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8516109203124019,
+      "gmax": 0.015812904451174673,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8515015330327452,
+      "gmax": 0.011996676947265502,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8514346879302568,
+      "gmax": 0.05461378320583602,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.851359023648183,
+      "gmax": 0.027988349924192992,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8513139328947387,
+      "gmax": 0.20796614371373442,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8512884837111925,
+      "gmax": 0.2280356563096089,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.2879827576253887e-09,
+   "V4_per_len": 1.256543518126234e-09,
+   "T": 2.5445262757516224e-09,
+   "T_over_delta4": 0.25445262757516224,
+   "T_over_T_bps": 0.8512884837111925,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.9945168677035359,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 2.726421091747877e-07,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006509879031391108,
+    "M00_minus_8": 1.1610659989003125e-06,
+    "z_variation": 0.0005817319246937454
+   },
+   "core_radius": 2.5278286405244517,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.0006509879031391108,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 606.4
+  },
+  "d0.01_w100_n48_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 100.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "w",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w100_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.0724023879,
+   "T_bps": 5.978058729653569e-09,
+   "T_ref": 2.3912234918614277e-08,
+   "kappa_bps": 0.0951437596918022,
+   "floor_M": 2.9651852528743376e-10,
+   "gate_M": 2.9651852528743376e-09,
+   "gate_scaled": 0.0012400284887491275,
+   "gate_at_floor": true,
+   "E_seed_dev": 2.3610739847664134e-08,
+   "E_seed_plain": 2.361073985172657e-08,
+   "seed_rel_diff": 1.7205882640664295e-10,
+   "gmax_seed_M": 9.306956047639321e-05,
+   "T_seed_bps": 5.9026849619160335e-09,
+   "T_seed_kicked": 7.3971995746653115e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 612730.548439515,
+    "k_t": 4.344143274,
+    "k_u": 0.28963851418428616
+   },
+   "lbfgs": {
+    "f_start": 1.2373915863308995,
+    "f_end": 0.8464795636163417,
+    "gmax_end": 0.0005646944295329792,
+    "iters": 1621,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8469171474565981,
+      "gmax": 3.6496952847147637,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8466222646076444,
+      "gmax": 0.7593613392424088,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8465003705141547,
+      "gmax": 0.09990714180486977,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1621,
+      "f": 0.8464795636163417,
+      "gmax": 0.0005646944295329792,
+      "chunk_iters": 121,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 2.574248141963805e-09,
+   "V4_per_len": 2.4860564027862103e-09,
+   "T": 5.060304544750015e-09,
+   "T_over_delta4": 0.5060304544750015,
+   "T_over_T_bps": 0.8464795636163417,
+   "T_slaved3": 5.117110344497731e-09,
+   "T_slaved3_over_delta4": 0.5117110344497731,
+   "T_over_T_slaved3": 0.988898851905979,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.3503105856225474e-09,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006370657287257941,
+    "M00_minus_8": 1.1361581009339261e-06,
+    "z_variation": 0.00025474651670169806
+   },
+   "core_radius": 1.7662920346305162,
+   "core_radius_bps": 2.699122378995024,
+   "departure_max": 0.0006370657287257941,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 259.0
+  },
+  "d0.001_w6.25_n48_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 6.25,
+   "n": 48,
+   "L": 48.0,
+   "arm": "w",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w6.25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.00452514924375,
+   "T_bps": 1.494348242211729e-13,
+   "T_ref": 5.977392968846916e-13,
+   "kappa_bps": 0.023783290944868155,
+   "floor_M": 1.7580304735489012e-11,
+   "gate_M": 1.7580304735489012e-10,
+   "gate_scaled": 0.29411325015963247,
+   "gate_at_floor": true,
+   "E_seed_dev": 5.958264600459038e-13,
+   "E_seed_plain": 5.958264536527925e-13,
+   "seed_rel_diff": 1.072982123916016e-08,
+   "gmax_seed_M": 7.027472136771531e-08,
+   "T_seed_bps": 1.4895661501147596e-13,
+   "T_seed_kicked": 1.8631532104881079e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 38295.65927746969,
+    "k_t": 0.271508954625,
+    "k_u": 0.01810061507560716
+   },
+   "lbfgs": {
+    "f_start": 1.2467998809504566,
+    "f_end": 0.868217969674581,
+    "gmax_end": 0.0018399610337219827,
+    "iters": 33,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 33,
+      "f": 0.868217969674581,
+      "gmax": 0.0018399610337219827,
+      "chunk_iters": 33,
+      "scipy": "ABNORMAL: "
+     }
+    ]
+   },
+   "E_u_per_len": 7.423923484087521e-14,
+   "V4_per_len": 5.550276484310944e-14,
+   "T": 1.2974199968398465e-13,
+   "T_over_delta4": 0.12974199968398462,
+   "T_over_T_bps": 0.868217969674581,
+   "T_slaved3": 1.2879477276952268e-13,
+   "T_slaved3_over_delta4": 0.12879477276952267,
+   "T_over_T_slaved3": 1.0073545447077812,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.0998170145922083e-12,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.431916133031734e-05,
+    "M00_minus_8": 1.1441692038260953e-07,
+    "z_variation": 5.021951725989377e-05
+   },
+   "core_radius": 3.4447750667651773,
+   "core_radius_bps": 5.398545377318225,
+   "departure_max": 6.431916133031734e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 18.6
+  },
+  "d0.001_w100_n48_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 100.0,
+   "n": 48,
+   "L": 48.0,
+   "arm": "w",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w100_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.0724023879,
+   "T_bps": 5.977392968846916e-13,
+   "T_ref": 2.3909571875387666e-12,
+   "kappa_bps": 0.09513316377947262,
+   "floor_M": 2.7095150630847706e-10,
+   "gate_M": 2.7095150630847706e-09,
+   "gate_scaled": 1.1332344540530754,
+   "gate_at_floor": true,
+   "E_seed_dev": 2.360814315528135e-12,
+   "E_seed_plain": 2.360814284197018e-12,
+   "seed_rel_diff": 1.3271317883928083e-08,
+   "gmax_seed_M": 1.084991112298602e-06,
+   "T_seed_bps": 5.902035788820337e-13,
+   "T_seed_kicked": 7.3963840330683e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 612730.548439515,
+    "k_t": 4.344143274,
+    "k_u": 0.28960984120971456
+   },
+   "lbfgs": {
+    "f_start": 1.2373929690781427,
+    "f_end": 0.8588112013442395,
+    "gmax_end": 0.02548638454077938,
+    "iters": 42,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 42,
+      "f": 0.8588112013442395,
+      "gmax": 0.02548638454077938,
+      "chunk_iters": 42,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 2.9133487781358136e-13,
+   "V4_per_len": 2.2201032583462162e-13,
+   "T": 5.13345203648203e-13,
+   "T_over_delta4": 0.5133452036482029,
+   "T_over_T_bps": 0.8588112013442395,
+   "T_slaved3": 5.151790910780907e-13,
+   "T_slaved3_over_delta4": 0.5151790910780907,
+   "T_over_T_slaved3": 0.9964402914216686,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 6.093685430215337e-11,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.206374991712948e-05,
+    "M00_minus_8": 1.1040501846082407e-07,
+    "z_variation": 2.4667088934762684e-05
+   },
+   "core_radius": 1.6822458475815947,
+   "core_radius_bps": 2.6992726886591125,
+   "departure_max": 6.206374991712948e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 15.6
+  },
+  "d0.01_w25_n64_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w25_n64_L48_block_plain",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 8.967088094480353e-09,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 2.951386579733617e-11,
+   "gate_M": 2.951386579733617e-10,
+   "gate_scaled": 0.00032913545050932737,
+   "gate_at_floor": true,
+   "E_seed_dev": 8.934830570803118e-09,
+   "E_seed_plain": 8.934830571915472e-09,
+   "seed_rel_diff": 1.2449642200822e-10,
+   "gmax_seed_M": 1.0156083717814655e-05,
+   "T_seed_bps": 2.9782768569343725e-09,
+   "T_seed_kicked": 3.72553428634935e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.03054781204287393
+   },
+   "lbfgs": {
+    "f_start": 1.2464027052358004,
+    "f_end": 0.8534903138010288,
+    "gmax_end": 0.46243529021721425,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8549505611691461,
+      "gmax": 0.06311527564050849,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8543494734984721,
+      "gmax": 0.012870024160356949,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8540049371355171,
+      "gmax": 0.378631666147603,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8537296695586796,
+      "gmax": 0.016173086065712036,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8536143864093605,
+      "gmax": 0.009218918635234467,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8535575237064394,
+      "gmax": 0.010295081231026876,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8535144790703856,
+      "gmax": 0.026445307579680225,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8534903138010288,
+      "gmax": 0.46243529021721425,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.298251664795698e-09,
+   "V4_per_len": 1.2528559457508041e-09,
+   "T": 2.551107610546502e-09,
+   "T_over_delta4": 0.2551107610546502,
+   "T_over_T_bps": 0.8534903138010287,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.9970891533693926,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 4.1466979853743484e-07,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006573664455000738,
+    "M00_minus_8": 1.1727108173431589e-06,
+    "z_variation": 0.0005058307162403644
+   },
+   "core_radius": 2.5531048019837295,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.0006573664455000738,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1142.0
+  },
+  "d0.03_w25_n64_L48_block_plain": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 64,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.03_w25_n64_L48_block_plain",
+   "h": 0.75,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 7.269880485081004e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 3.927377828364148e-11,
+   "gate_M": 3.927377828364148e-10,
+   "gate_scaled": 1.6206777414389862e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 7.243708193781787e-07,
+   "E_seed_plain": 7.243708193782562e-07,
+   "seed_rel_diff": 1.0699425294394312e-13,
+   "gmax_seed_M": 7.182409700131755e-05,
+   "T_seed_bps": 2.4145693979272623e-07,
+   "T_seed_kicked": 3.0203928113794705e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 64623.925030730104,
+    "k_t": 0.4581713609296875,
+    "k_u": 0.030572261599490152
+   },
+   "lbfgs": {
+    "f_start": 1.2463999171284104,
+    "f_end": 0.8397087583405103,
+    "gmax_end": 0.024442321242522463,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8431006218904287,
+      "gmax": 2.7013176461132895,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8412537733616461,
+      "gmax": 0.2800840150189319,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8406487520269519,
+      "gmax": 0.18757912141205593,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8403050914493077,
+      "gmax": 0.010680192389373616,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8400943873168268,
+      "gmax": 0.011267573535272293,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8399490234030119,
+      "gmax": 0.07542621995859418,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.839784532498954,
+      "gmax": 0.11700780408006795,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8397087583405103,
+      "gmax": 0.024442321242522463,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.0302803086406524e-07,
+   "V4_per_len": 1.0045804631631064e-07,
+   "T": 2.034860771803759e-07,
+   "T_over_delta4": 0.251217379235032,
+   "T_over_T_bps": 0.8397087583405104,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.9970108207974361,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 5.923091807036498e-07,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.002061747800434037,
+    "M00_minus_8": 3.6896402081746755e-06,
+    "z_variation": 0.000851492998073707
+   },
+   "core_radius": 2.5655032697552707,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.002061747800434037,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 1147.2
+  },
+  "d0.003_w25_n32_L48_block_plain": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 32,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.003_w25_n32_L48_block_plain",
+   "h": 1.5,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 1.4525195640307085e-10,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 2.2871887201802714e-10,
+   "gate_M": 2.2871887201802715e-09,
+   "gate_scaled": 0.04723906190633416,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.431967769525319e-10,
+   "E_seed_plain": 1.431967772135379e-10,
+   "seed_rel_diff": 1.8227085177786563e-09,
+   "gmax_seed_M": 7.9051726381248e-06,
+   "T_seed_bps": 2.386612949208865e-11,
+   "T_seed_kicked": 2.991829655851422e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 516991.40024584084,
+    "k_t": 3.6653708874375,
+    "k_u": 0.24436025839616607
+   },
+   "lbfgs": {
+    "f_start": 1.2358510260126878,
+    "f_end": 0.85615381211392,
+    "gmax_end": 0.011282703640950785,
+    "iters": 40,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 40,
+      "f": 0.85615381211392,
+      "gmax": 0.011282703640950785,
+      "chunk_iters": 40,
+      "scipy": "ABNORMAL: "
+     }
+    ]
+   },
+   "E_u_per_len": 1.176174777534137e-11,
+   "V4_per_len": 8.9645882565743e-12,
+   "T": 2.0726336031915672e-11,
+   "T_over_delta4": 0.2558806917520453,
+   "T_over_T_bps": 0.8561538121139202,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 0.9948510618918318,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 5.462782591213841e-10,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.00018594382552213537,
+    "M00_minus_8": 3.309808723391446e-07,
+    "z_variation": 0.00010873856963004394
+   },
+   "core_radius": 2.353826824223405,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.00018594382552213537,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 5.8
+  },
+  "d0.001_w25_n32_L48_block_plain": {
+   "delta": 0.001,
+   "w1s": 25.0,
+   "n": 32,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.001_w25_n32_L48_block_plain",
+   "h": 1.5,
+   "w": 0.018100596975,
+   "T_bps": 2.988696484423458e-13,
+   "T_ref": 1.793217890654075e-12,
+   "kappa_bps": 0.04756658188973631,
+   "floor_M": 2.294159702315368e-10,
+   "gate_M": 2.294159702315368e-09,
+   "gate_scaled": 1.2793535656052233,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.7678457563840535e-12,
+   "E_seed_plain": 1.7678457538234985e-12,
+   "seed_rel_diff": 1.4484040523227866e-09,
+   "gmax_seed_M": 9.100343909883713e-07,
+   "T_seed_bps": 2.9464095939734225e-13,
+   "T_seed_kicked": 3.69358373467781e-13,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 516991.40024584084,
+    "k_t": 3.6653708874375,
+    "k_u": 0.24435830352069665
+   },
+   "lbfgs": {
+    "f_start": 1.2358510654822583,
+    "f_end": 0.8572689307555638,
+    "gmax_end": 0.11024776025066911,
+    "iters": 19,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 19,
+      "f": 0.8572689307555638,
+      "gmax": 0.11024776025066911,
+      "chunk_iters": 19,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 1.4520600424164267e-13,
+   "V4_per_len": 1.1100565971381838e-13,
+   "T": 2.56211663955461e-13,
+   "T_over_delta4": 0.25621166395546097,
+   "T_over_T_bps": 0.8572689307555637,
+   "T_slaved3": 2.5758954553904536e-13,
+   "T_slaved3_over_delta4": 0.25758954553904534,
+   "T_over_T_slaved3": 0.9946508637192518,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1575647293391398e-10,
+     6.507218964569177e-08,
+     -3.240823311535107e-08
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.9769825608604103e-10,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 6.169817368117947e-05,
+    "M00_minus_8": 1.0975487185760358e-07,
+    "z_variation": 3.3647538363618806e-05
+   },
+   "core_radius": 2.353945678174677,
+   "core_radius_bps": 3.817348044845006,
+   "departure_max": 6.169817368117947e-05,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 5.5
+  },
+  "d0.03_w25_n32_L48_block_plain": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 32,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.03_w25_n32_L48_block_plain",
+   "h": 1.5,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 1.4539760970162008e-06,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 3.079135344757058e-10,
+   "gate_M": 3.079135344757058e-09,
+   "gate_scaled": 6.35320350398322e-05,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.4333841819506503e-06,
+   "E_seed_plain": 1.4333841819579513e-06,
+   "seed_rel_diff": 5.093540573948247e-12,
+   "gmax_seed_M": 0.0005528991624958172,
+   "T_seed_bps": 2.388973636584417e-07,
+   "T_seed_kicked": 2.994795985575803e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 516991.40024584084,
+    "k_t": 3.6653708874375,
+    "k_u": 0.24457809279592121
+   },
+   "lbfgs": {
+    "f_start": 1.2358370918428243,
+    "f_end": 0.8317293427560496,
+    "gmax_end": 0.008740880254158406,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8323259553165152,
+      "gmax": 0.23309447158917232,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8318714320631265,
+      "gmax": 0.006036874783875399,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8318053090050215,
+      "gmax": 0.0011733219719759211,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8317856310629819,
+      "gmax": 0.0026143922804970857,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8317761038607459,
+      "gmax": 0.014825398431912402,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8317546739618898,
+      "gmax": 0.00648681522880547,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8317361478010467,
+      "gmax": 0.0028185959119648263,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8317293427560496,
+      "gmax": 0.008740880254158406,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.0204936879292726e-07,
+   "V4_per_len": 9.950306179945452e-08,
+   "T": 2.015524305923818e-07,
+   "T_over_delta4": 0.24883016122516277,
+   "T_over_T_bps": 0.8317293427560496,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.9875366267958523,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 4.2363436521424057e-07,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0019891566078511502,
+    "M00_minus_8": 3.5594892366930253e-06,
+    "z_variation": 0.0009141628115800817
+   },
+   "core_radius": 2.491674719223157,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.0019891566078511502,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 244.2
+  },
+  "d0.01_w6.25_n48_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 6.25,
+   "n": 48,
+   "L": 48.0,
+   "arm": "w",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w6.25_n48_L48_block_plain",
+   "h": 1.0,
+   "w": 0.00452514924375,
+   "T_bps": 1.4945146824133923e-09,
+   "T_ref": 5.978058729653569e-09,
+   "kappa_bps": 0.02378593992295055,
+   "floor_M": 1.829269728351226e-11,
+   "gate_M": 1.829269728351226e-10,
+   "gate_scaled": 0.0003059972829101384,
+   "gate_at_floor": true,
+   "E_seed_dev": 5.95892614547619e-09,
+   "E_seed_plain": 5.95892614630354e-09,
+   "seed_rel_diff": 1.3884216119909884e-10,
+   "gmax_seed_M": 6.0273401366515155e-06,
+   "T_seed_bps": 1.4897315363690475e-09,
+   "T_seed_kicked": 1.86336028368546e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 38295.65927746969,
+    "k_t": 0.271508954625,
+    "k_u": 0.018102407136517885
+   },
+   "lbfgs": {
+    "f_start": 1.2467995835788266,
+    "f_end": 0.8539060855521895,
+    "gmax_end": 0.005112195334244912,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8558690645720094,
+      "gmax": 0.15553855707649109,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8547242323404708,
+      "gmax": 0.16574522609873357,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8544031487962266,
+      "gmax": 0.5562850297885624,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8542240266682004,
+      "gmax": 0.09325688426544763,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8541201549591861,
+      "gmax": 0.0030070604391506587,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8540280698470719,
+      "gmax": 0.022688328685537,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8539581263967709,
+      "gmax": 0.1195952920807999,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8539060855521895,
+      "gmax": 0.005112195334244912,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 6.532293491271101e-10,
+   "V4_per_len": 6.229458331327833e-10,
+   "T": 1.2761751822598935e-09,
+   "T_over_delta4": 0.12761751822598935,
+   "T_over_T_bps": 0.8539060855521895,
+   "T_slaved3": 1.2792775861244328e-09,
+   "T_slaved3_over_delta4": 0.12792775861244327,
+   "T_over_T_slaved3": 0.997574878276467,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 3.056100394557704e-09,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006577250650563471,
+    "M00_minus_8": 1.1730111104668595e-06,
+    "z_variation": 0.00048237850778258193
+   },
+   "core_radius": 3.612377200025434,
+   "core_radius_bps": 5.398244757990048,
+   "departure_max": 0.0006577250650563471,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 573.7
+  },
+  "d0.01_w25_n32_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 32,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w25_n32_L48_block_plain",
+   "h": 1.5,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 1.7934176188960706e-08,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 2.398005917629446e-10,
+   "gate_M": 2.398005917629446e-09,
+   "gate_scaled": 0.0013371151773927184,
+   "gate_at_floor": true,
+   "E_seed_dev": 1.7680399056827376e-08,
+   "E_seed_plain": 1.7680399057804508e-08,
+   "seed_rel_diff": 5.526639476869237e-11,
+   "gmax_seed_M": 7.806354114761808e-05,
+   "T_seed_bps": 2.946733176137896e-09,
+   "T_seed_kicked": 3.693990118480791e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 516991.40024584084,
+    "k_t": 3.6653708874375,
+    "k_u": 0.24438249634299145
+   },
+   "lbfgs": {
+    "f_start": 1.2358493904240582,
+    "f_end": 0.8452553820154001,
+    "gmax_end": 0.0011063522536774542,
+    "iters": 1673,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8456642476768216,
+      "gmax": 0.43912172293939417,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8453334376832514,
+      "gmax": 2.0549134167643377,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8452698693267534,
+      "gmax": 0.420473652255504,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1673,
+      "f": 0.8452553820154001,
+      "gmax": 0.0011063522536774542,
+      "chunk_iters": 173,
+      "scipy": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+     }
+    ]
+   },
+   "E_u_per_len": 1.2860116419645619e-09,
+   "V4_per_len": 1.2404815156573506e-09,
+   "T": 2.526493157621912e-09,
+   "T_over_delta4": 0.2526493157621912,
+   "T_over_T_bps": 0.8452553820154,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.9874687030497872,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.984151624450521e-09,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0006336226225922559,
+    "M00_minus_8": 1.1300170577044355e-06,
+    "z_variation": 0.00027805019300174844
+   },
+   "core_radius": 2.4746852313846595,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.0006336226225922559,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 99.7
+  },
+  "d0.003_w25_n96_L48_block_plain": {
+   "delta": 0.003,
+   "w1s": 25.0,
+   "n": 96,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.003_w25_n96_L48_block_plain",
+   "h": 0.5,
+   "w": 0.018100596975,
+   "T_bps": 2.4208659400511806e-11,
+   "T_ref": 4.841731880102361e-11,
+   "kappa_bps": 0.04756700999036462,
+   "floor_M": 8.6521632374129e-12,
+   "gate_M": 8.6521632374129e-11,
+   "gate_scaled": 0.0053609927924571366,
+   "gate_at_floor": true,
+   "E_seed_dev": 4.833967468782272e-11,
+   "E_seed_plain": 4.833967481048497e-11,
+   "seed_rel_diff": 2.5375067504046345e-09,
+   "gmax_seed_M": 3.070432772343806e-07,
+   "T_seed_bps": 2.416983734391136e-11,
+   "T_seed_kicked": 3.022200219397338e-11,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 19147.829638734846,
+    "k_t": 0.1357544773125,
+    "k_u": 0.009050379940598744
+   },
+   "lbfgs": {
+    "f_start": 1.2483963566084308,
+    "f_end": 0.8612106417148099,
+    "gmax_end": 0.0035092809134328125,
+    "iters": 2000,
+    "verdict": "AT_GATE",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8629091392235779,
+      "gmax": 0.07572633370095025,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8615010063381331,
+      "gmax": 0.06932756488505949,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8612928409681949,
+      "gmax": 0.20404367008985594,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8612106417148099,
+      "gmax": 0.0035092809134328125,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.1016904911628017e-11,
+   "V4_per_len": 9.831850185742019e-12,
+   "T": 2.0848755097370037e-11,
+   "T_over_delta4": 0.25739203823913626,
+   "T_over_T_bps": 0.8612106417148099,
+   "T_slaved3": 2.0833606984850567e-11,
+   "T_slaved3_over_delta4": 0.257205024504328,
+   "T_over_T_slaved3": 1.0007270998502797,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.0472438184842609e-09,
+     5.883378107472662e-07,
+     -2.8968881586773076e-07
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 5.6636657582674606e-11,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.0001951536601948097,
+    "M00_minus_8": 3.473745735504963e-07,
+    "z_variation": 0.0007147213788352499
+   },
+   "core_radius": 2.5525284152048013,
+   "core_radius_bps": 3.8173308668389283,
+   "departure_max": 0.0001951536601948097,
+   "verdict": "AT_GATE",
+   "status": "OK",
+   "wall_s": 1304.9
+  },
+  "d0.01_w25_n96_L48_block_plain": {
+   "delta": 0.01,
+   "w1s": 25.0,
+   "n": 96,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.01_w25_n96_L48_block_plain",
+   "h": 0.5,
+   "w": 0.018100596975,
+   "T_bps": 2.9890293648267846e-09,
+   "T_ref": 5.978058729653569e-09,
+   "kappa_bps": 0.0475718798459011,
+   "floor_M": 8.881503398627576e-12,
+   "gate_M": 8.881503398627575e-11,
+   "gate_scaled": 0.00014856835304363533,
+   "gate_at_floor": true,
+   "E_seed_dev": 5.968471109477188e-09,
+   "E_seed_plain": 5.968471110293711e-09,
+   "seed_rel_diff": 1.3680595503797296e-10,
+   "gmax_seed_M": 3.031576332501739e-06,
+   "T_seed_bps": 2.984235554738594e-09,
+   "T_seed_kicked": 3.731492896020922e-09,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 19147.829638734846,
+    "k_t": 0.1357544773125,
+    "k_u": 0.009051203568258942
+   },
+   "lbfgs": {
+    "f_start": 1.2483961984218122,
+    "f_end": 0.8555797564755666,
+    "gmax_end": 0.016832545136777587,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8587673804251346,
+      "gmax": 1.5742018741292017,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8571645871096405,
+      "gmax": 0.02817763827677377,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8569212314422496,
+      "gmax": 0.2726011179531989,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8567272690498057,
+      "gmax": 0.03629437310997085,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.8563029838369435,
+      "gmax": 0.14658204565201363,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8560103306953531,
+      "gmax": 0.014313907564821041,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8557482557639549,
+      "gmax": 0.5225017736358465,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8555797564755666,
+      "gmax": 0.016832545136777587,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.3304142808382386e-09,
+   "V4_per_len": 1.2269387352185793e-09,
+   "T": 2.557353016056818e-09,
+   "T_over_delta4": 0.2557353016056818,
+   "T_over_T_bps": 0.8555797564755666,
+   "T_slaved3": 2.5585551722488655e-09,
+   "T_slaved3_over_delta4": 0.25585551722488653,
+   "T_over_T_slaved3": 0.9995301425565933,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.184506853185153e-08,
+     6.641742828349513e-06,
+     -3.1429254347976193e-06
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 1.0062594339720098e-08,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.000661795427547851,
+    "M00_minus_8": 1.1802772981184262e-06,
+    "z_variation": 0.0003472395767714414
+   },
+   "core_radius": 2.555367354301522,
+   "core_radius_bps": 3.817135474879496,
+   "departure_max": 0.000661795427547851,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 2248.0
+  },
+  "d0.03_w25_n96_L48_block_plain": {
+   "delta": 0.03,
+   "w1s": 25.0,
+   "n": 96,
+   "L": 48.0,
+   "arm": "h",
+   "sector": "block",
+   "precond": "plain",
+   "tag": "d0.03_w25_n96_L48_block_plain",
+   "h": 0.5,
+   "w": 0.018100596975,
+   "T_bps": 2.423293495027001e-07,
+   "T_ref": 4.846586990054003e-07,
+   "kappa_bps": 0.04761470843160279,
+   "floor_M": 1.1404204980579245e-11,
+   "gate_M": 1.1404204980579245e-10,
+   "gate_scaled": 7.0591150044242836e-06,
+   "gate_at_floor": true,
+   "E_seed_dev": 4.838809203139337e-07,
+   "E_seed_plain": 4.838809203157517e-07,
+   "seed_rel_diff": 3.7572267593783156e-12,
+   "gmax_seed_M": 2.1433259473186484e-05,
+   "T_seed_bps": 2.4194046015696683e-07,
+   "T_seed_kicked": 3.0252280667100796e-07,
+   "preconditioner": {
+    "scales_e_u_v_t": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_e": 19147.829638734846,
+    "k_t": 0.1357544773125,
+    "k_u": 0.009058447881330416
+   },
+   "lbfgs": {
+    "f_start": 1.2483952409884926,
+    "f_end": 0.8412117304235122,
+    "gmax_end": 0.04755131527521672,
+    "iters": 4000,
+    "verdict": "FALLING",
+    "chunks": [
+     {
+      "iters": 500,
+      "f": 0.8462086793967042,
+      "gmax": 0.8402972247573922,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1000,
+      "f": 0.8438487489332688,
+      "gmax": 0.08979443954937803,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 1500,
+      "f": 0.8430572215844762,
+      "gmax": 0.03016814786438163,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2000,
+      "f": 0.8424932685520818,
+      "gmax": 0.0466480333334012,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 2500,
+      "f": 0.842009188218348,
+      "gmax": 0.19966399754052838,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3000,
+      "f": 0.8416933968754119,
+      "gmax": 0.06975028941301027,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 3500,
+      "f": 0.8413573781093945,
+      "gmax": 0.2618371068060896,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     },
+     {
+      "iters": 4000,
+      "f": 0.8412117304235122,
+      "gmax": 0.04755131527521672,
+      "chunk_iters": 500,
+      "scipy": "STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT"
+     }
+    ]
+   },
+   "E_u_per_len": 1.035764811804503e-07,
+   "V4_per_len": 1.0027381024712013e-07,
+   "T": 2.0385029142757044e-07,
+   "T_over_delta4": 0.2516670264537907,
+   "T_over_T_bps": 0.8412117304235122,
+   "T_slaved3": 2.040961571687078e-07,
+   "T_slaved3_over_delta4": 0.25197056440581217,
+   "T_over_T_slaved3": 0.9987953436039751,
+   "slaved3_axis": {
+    "axis_e_t_s_minus_s0": [
+     -1.1179928644443156e-07,
+     6.247601744834898e-05,
+     -2.6441410635746204e-05
+    ],
+    "nodes": 80
+   },
+   "fmax_M_end": 7.682052865760718e-07,
+   "departure": {
+    "M0i": 0.0,
+    "director_row": 0.0,
+    "M33_minus_1": 0.002074345855529458,
+    "M00_minus_8": 3.7124259814428724e-06,
+    "z_variation": 0.0009007408568875025
+   },
+   "core_radius": 2.5814052729479027,
+   "core_radius_bps": 3.815418365837403,
+   "departure_max": 0.002074345855529458,
+   "verdict": "FALLING",
+   "status": "OK",
+   "wall_s": 2250.3
+  }
+ },
+ "collect": {
+  "per_delta": {
+   "0.03": {
+    "rows_h_ratio_verdict_gatefloor": [
+     [
+      1.5,
+      0.9875366267958523,
+      "FALLING",
+      true
+     ],
+     [
+      1.0,
+      0.9945587953374662,
+      "FALLING",
+      true
+     ],
+     [
+      0.75,
+      0.9970108207974361,
+      "FALLING",
+      true
+     ],
+     [
+      0.5,
+      0.9987953436039751,
+      "FALLING",
+      true
+     ]
+    ],
+    "n_at_gate": 0,
+    "extrapolated_T_over_T_slaved3": null,
+    "extrapolation_error": null,
+    "T_slaved3_over_delta4": 0.25197056440581217,
+    "finest_h_T_over_delta4": 0.2516670264537907
+   },
+   "0.01": {
+    "rows_h_ratio_verdict_gatefloor": [
+     [
+      1.5,
+      0.9874687030497872,
+      "AT_GATE",
+      true
+     ],
+     [
+      1.0,
+      0.9945168677035359,
+      "FALLING",
+      true
+     ],
+     [
+      0.75,
+      0.9970891533693926,
+      "FALLING",
+      true
+     ],
+     [
+      0.5,
+      0.9995301425565933,
+      "FALLING",
+      true
+     ]
+    ],
+    "n_at_gate": 1,
+    "extrapolated_T_over_T_slaved3": null,
+    "extrapolation_error": null,
+    "T_slaved3_over_delta4": 0.25585551722488653,
+    "finest_h_T_over_delta4": 0.2557353016056818
+   },
+   "0.003": {
+    "rows_h_ratio_verdict_gatefloor": [
+     [
+      1.5,
+      0.9948510618918318,
+      "AT_GATE",
+      true
+     ],
+     [
+      1.0,
+      1.0038958405532703,
+      "AT_GATE",
+      true
+     ],
+     [
+      0.75,
+      1.0071137052597054,
+      "AT_GATE",
+      true
+     ],
+     [
+      0.5,
+      1.0007270998502797,
+      "AT_GATE",
+      true
+     ]
+    ],
+    "n_at_gate": 4,
+    "extrapolated_T_over_T_slaved3": 1.0061195306697812,
+    "extrapolation_error": 0.008455882521392954,
+    "T_slaved3_over_delta4": 0.257205024504328,
+    "finest_h_T_over_delta4": 0.25739203823913626
+   },
+   "0.001": {
+    "rows_h_ratio_verdict_gatefloor": [
+     [
+      1.5,
+      0.9946508637192518,
+      "AT_GATE",
+      true
+     ],
+     [
+      1.0,
+      1.0036799671463024,
+      "AT_GATE",
+      true
+     ],
+     [
+      0.75,
+      1.0068941130456184,
+      "AT_GATE",
+      true
+     ],
+     [
+      0.5,
+      1.0092065787824263,
+      "AT_GATE",
+      true
+     ]
+    ],
+    "n_at_gate": 4,
+    "extrapolated_T_over_T_slaved3": 1.0109914075796809,
+    "extrapolation_error": 9.100619067248239e-05,
+    "T_slaved3_over_delta4": 0.25758954553904534,
+    "finest_h_T_over_delta4": 0.25996106398357993
+   }
+  },
+  "exponent": {
+   "n32": {
+    "T_exponent": 3.9938479010522023,
+    "T_slaved3_exponent": 3.99704366563747,
+    "n_points": 3
+   }
+  },
+  "w_arm": {
+   "0.01": {
+    "w25": [
+     0.9945168677035359,
+     "FALLING"
+    ],
+    "w100": [
+     0.988898851905979,
+     "AT_GATE"
+    ],
+    "w6.25": [
+     0.997574878276467,
+     "FALLING"
+    ]
+   },
+   "0.001": {
+    "w25": [
+     1.0036799671463024,
+     "AT_GATE"
+    ],
+    "w6.25": [
+     1.0073545447077812,
+     "AT_GATE"
+    ],
+    "w100": [
+     0.9964402914216686,
+     "AT_GATE"
+    ]
+   }
+  },
+  "sector": "block",
+  "precond": "plain",
+  "label": "STRAND_0258_UNRESOLVED",
+  "small_delta_constant": {
+   "0.03": 0.25197056440581217,
+   "0.01": 0.25585551722488653,
+   "0.003": 0.257205024504328,
+   "0.001": 0.25758954553904534,
+   "0.0003": 0.2577240145864818,
+   "bps_leading": 0.2988693122142224
+  }
+ }
+}

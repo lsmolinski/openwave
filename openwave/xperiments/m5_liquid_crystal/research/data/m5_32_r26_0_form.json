@@ -1,0 +1,1162 @@
+{
+ "task": "M5.32 R26-0",
+ "norm": "eta contraction, block-diagonal sector (stated)",
+ "a_tangent": {
+  "generators": {
+   "rot_12": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "commutator",
+    "lower_index_form_agrees": true
+   },
+   "rot_23": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "commutator",
+    "lower_index_form_agrees": true
+   },
+   "rot_31": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "commutator",
+    "lower_index_form_agrees": true
+   },
+   "boost_1": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "anticommutator",
+    "lower_index_form_agrees": true
+   },
+   "boost_2": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "anticommutator",
+    "lower_index_form_agrees": true
+   },
+   "boost_3": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_d/dt_of_pushforward": true,
+    "catalog_form_antisymmetric": true,
+    "catalog_form_is_zero": false,
+    "tangent_equals": "anticommutator",
+    "lower_index_form_agrees": true
+   }
+  },
+  "PASS": true,
+  "fails_if": "a generator fails eta invariance, its tangent G M + M G^T is not symmetric or is not the t-derivative of exp(tG) M exp(tG)^T, a rotation's tangent is not the commutator, a boost's not the anticommutator, or the catalog form G M - M G^T is symmetric or zero",
+  "wall_s": 3.1
+ },
+ "b_catalog_antisymmetric": {
+  "fields": {
+   "clock_local": {
+    "max_abs": 0.01902461403803874,
+    "symmetric_part_over_max": 1.9903333321190532e-27
+   },
+   "plane_1d": {
+    "max_abs": 0.026741693856883467,
+    "symmetric_part_over_max": 5.976108957434328e-28
+   },
+   "rot_z": {
+    "max_abs": 0.030096571024415694,
+    "symmetric_part_over_max": 5.956325686771964e-28,
+    "corrected_antisymmetric_part_over_max": 0.0
+   },
+   "rot_x": {
+    "max_abs": 0.026470649990842008,
+    "symmetric_part_over_max": 4.768214791817699e-28,
+    "corrected_antisymmetric_part_over_max": 5.360142694153906e-17
+   },
+   "boost_z": {
+    "max_abs": 0.027533325963788192,
+    "symmetric_part_over_max": 0.0,
+    "corrected_antisymmetric_part_over_max": 0.0
+   },
+   "boost_x": {
+    "max_abs": 0.027030660722765422,
+    "symmetric_part_over_max": 5.836785961777304e-29,
+    "corrected_antisymmetric_part_over_max": 6.1670784168790274e-18
+   }
+  },
+  "PASS": true,
+  "fails_if": "a catalog field has a symmetric part above 1e-12 of its max (it would then be a tangent after all), or a corrected tangent has an antisymmetric part above 1e-12",
+  "wall_s": 0.2
+ },
+ "c_norm_witness": {
+  "fields": {
+   "d0.01_w100_n48_L48": {
+    "E_u_eta": -45256107578767.29,
+    "E_u_frobenius": 46443814229440.65,
+    "V4": 12846956819540.203,
+    "M0i_max": 439.7846384387941,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.01_w25_n48_L48": {
+    "E_u_eta": -2142837673851116.8,
+    "E_u_frobenius": 2165264589482438.8,
+    "V4": 136944123820371.19,
+    "M0i_max": 1197.4394692226006,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.01_w6.25_n48_L48": {
+    "E_u_eta": -3.2908099268153344e+16,
+    "E_u_frobenius": 3.3029671827424336e+16,
+    "V4": 1830930526642814.0,
+    "M0i_max": 2224.7368279813986,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w100_n48_L48": {
+    "E_u_eta": -21488340779990.16,
+    "E_u_frobenius": 22639459321965.562,
+    "V4": 1376216097449.668,
+    "M0i_max": 284.8293945560988,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n32_L48": {
+    "E_u_eta": -715277150583312.9,
+    "E_u_frobenius": 716910938489643.4,
+    "V4": 19022962989510.793,
+    "M0i_max": 1077.6888291904295,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n48_L48": {
+    "E_u_eta": -1078511213143754.4,
+    "E_u_frobenius": 1082849436808787.5,
+    "V4": 16457523754233.998,
+    "M0i_max": 1150.1548734012026,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n64_L48": {
+    "E_u_eta": -2.743561641808086e+16,
+    "E_u_frobenius": 2.7497781988908776e+16,
+    "V4": 290191685820722.7,
+    "M0i_max": 1998.8343546052697,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n72_L72": {
+    "E_u_eta": -1.4514153540637368e+16,
+    "E_u_frobenius": 1.4546690632823502e+16,
+    "V4": 686424049334755.1,
+    "M0i_max": 1929.0397686674658,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n96_L48": {
+    "E_u_eta": -4.7841953638122584e+16,
+    "E_u_frobenius": 4.802433135867243e+16,
+    "V4": 2257008324470469.0,
+    "M0i_max": 2223.0829125437735,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w25_n96_L96": {
+    "E_u_eta": -2490478122267470.5,
+    "E_u_frobenius": 2501236475264370.5,
+    "V4": 100448891421283.6,
+    "M0i_max": 1169.4817874454816,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.03_w6.25_n48_L48": {
+    "E_u_eta": -4.4922144995230584e+16,
+    "E_u_frobenius": 4.516532464431358e+16,
+    "V4": 1.0134268223627652e+16,
+    "M0i_max": 2559.130209873895,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.1_w100_n48_L48": {
+    "E_u_eta": -558813782973121.25,
+    "E_u_frobenius": 563294779489058.9,
+    "V4": 17049119757368.857,
+    "M0i_max": 772.5538700925467,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.1_w25_n48_L48": {
+    "E_u_eta": -387496531389889.44,
+    "E_u_frobenius": 390757650990606.56,
+    "V4": 26501023857909.598,
+    "M0i_max": 922.9677479717021,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.1_w6.25_n48_L48": {
+    "E_u_eta": -1133963628337630.8,
+    "E_u_frobenius": 1143179797611764.5,
+    "V4": 68076654445499.266,
+    "M0i_max": 902.241807487005,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w100_n48_L48": {
+    "E_u_eta": -91911566048968.55,
+    "E_u_frobenius": 94071339131162.28,
+    "V4": 10754383764835.584,
+    "M0i_max": 656.2508607298787,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n32_L48": {
+    "E_u_eta": -125699751368930.36,
+    "E_u_frobenius": 129238757101751.64,
+    "V4": 17554158626062.307,
+    "M0i_max": 558.839722700736,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n48_L48": {
+    "E_u_eta": -4001011321857771.5,
+    "E_u_frobenius": 4005702855620854.0,
+    "V4": 321062142364706.94,
+    "M0i_max": 1548.9042546571075,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n64_L48": {
+    "E_u_eta": -2.0044291048862684e+16,
+    "E_u_frobenius": 2.020418132372667e+16,
+    "V4": 3465069525412223.5,
+    "M0i_max": 2005.7882759247263,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n72_L72": {
+    "E_u_eta": -1.3324283204526912e+16,
+    "E_u_frobenius": 1.3341863373092386e+16,
+    "V4": 819775410819742.1,
+    "M0i_max": 1757.3086562958467,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n96_L48": {
+    "E_u_eta": -5.075541876988472e+16,
+    "E_u_frobenius": 5.107171699154832e+16,
+    "V4": 1653524680692392.0,
+    "M0i_max": 2034.8368937665023,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w25_n96_L96": {
+    "E_u_eta": -541338239521092.2,
+    "E_u_frobenius": 544994993160261.56,
+    "V4": 13634061163355.623,
+    "M0i_max": 901.8031963103717,
+    "eta_negative": true,
+    "frobenius_positive": true
+   },
+   "d0.3_w6.25_n48_L48": {
+    "E_u_eta": -1.1877361165624182e+16,
+    "E_u_frobenius": 1.1912573471658996e+16,
+    "V4": 1226918232971838.0,
+    "M0i_max": 1996.4556110754536,
+    "eta_negative": true,
+    "frobenius_positive": true
+   }
+  },
+  "n_fields": 22,
+  "n_eta_negative": 22,
+  "block_sector_coincide": {
+   "E_u_eta": 7.243766883165402,
+   "E_u_frobenius": 7.243766883165402,
+   "rel_diff": 0.0
+  },
+  "PASS": true,
+  "fails_if": "a full-kick witness field has a NON-NEGATIVE eta curvature energy (the sign flip is the content: tr(F F^T) is a sum of squares and cannot fail), or the two norms differ on the block-diagonal stored charge, or no witness field is found (AUDIT CORRECTION 2026-09-25)",
+  "wall_s": 3.0
+ },
+ "d_split_residual": {
+  "rows": {
+   "0.3": {
+    "plain_relerr_max": 2.4629131157667577e-11,
+    "telescoped_relerr_max": 5.555910937255855e-15,
+    "gain": 4432.960037662566
+   },
+   "0.03": {
+    "plain_relerr_max": 5.250463209296377e-10,
+    "telescoped_relerr_max": 1.0674148582197876e-12,
+    "gain": 491.88590254898554
+   },
+   "0.01": {
+    "plain_relerr_max": 1.2418287192220312e-09,
+    "telescoped_relerr_max": 3.961078015065315e-11,
+    "gain": 31.35077659412256
+   },
+   "0.003": {
+    "plain_relerr_max": 3.2404351630931654e-08,
+    "telescoped_relerr_max": 9.29922619446095e-11,
+    "gain": 348.4628823227592
+   },
+   "0.001": {
+    "plain_relerr_max": 4.2254177072976053e-07,
+    "telescoped_relerr_max": 1.5062964296016198e-09,
+    "gain": 280.51701008247954
+   }
+  },
+  "PASS": true,
+  "fails_if": "the telescoped bracket is not more accurate than the plain one at some delta, or its relative error at delta 0.001 exceeds 1e-7",
+  "wall_s": 0.0
+ },
+ "e_biaxiality": {
+  "uniaxial": -6.661338147750939e-16,
+  "maximal": 1.0,
+  "vacuum_d0.3": 0.6037554838461059,
+  "vacuum_d0.23": 0.3799266062395261,
+  "delta_at_0.382": 0.23067600720084677,
+  "PASS": true,
+  "fails_if": "the invariant misses 0, 1, 0.604 at delta 0.3 or 0.2307 at beta^2 0.382",
+  "wall_s": 0.0
+ },
+ "f_gap_tail_reader": {
+  "null_S1": {
+   "slope_l0": 0.35120849954726874,
+   "slope_l1": 0.4105931279951904,
+   "slope_l2": -2.793999470848886,
+   "fit_window": [
+    6.0,
+    18.0
+   ],
+   "l1_over_l0_max_in_window": 0.001391464652854678
+  },
+  "null_S1_shells": [
+   [
+    3.0,
+    -0.09904620521430688,
+    -2.0303124861977313e-05,
+    -0.049670931814230816,
+    0.25574664538741243,
+    48
+   ],
+   [
+    4.5,
+    -0.0348275932342106,
+    -3.5310676487632605e-06,
+    -0.021454966427832654,
+    0.2747150338426356,
+    104
+   ],
+   [
+    6.0,
+    0.009334538000785987,
+    -1.2988679678822472e-05,
+    -0.04717974473578224,
+    0.23504813875229164,
+    200
+   ],
+   [
+    7.5,
+    0.06779855579198131,
+    1.2293239832812015e-06,
+    0.027173741024915925,
+    0.34962486778354046,
+    312
+   ],
+   [
+    9.0,
+    0.10207614806400223,
+    -3.387978866937653e-06,
+    0.06947052840457368,
+    0.5496913062567705,
+    416
+   ],
+   [
+    10.5,
+    0.1178904919830603,
+    -4.02522211077394e-06,
+    0.030014427857348407,
+    0.5787529286838038,
+    648
+   ],
+   [
+    12.0,
+    0.1091947493754409,
+    -6.204253601403992e-06,
+    -0.013004311001613542,
+    0.5586556447381006,
+    776
+   ],
+   [
+    13.5,
+    0.08655397650232298,
+    -7.589093492212322e-06,
+    0.027144363495395698,
+    0.5453297597850071,
+    1032
+   ],
+   [
+    15.0,
+    0.06208464322851328,
+    -9.28048366723492e-06,
+    0.012468991764893007,
+    0.5212164194980327,
+    1232
+   ],
+   [
+    16.5,
+    0.04434108631505201,
+    -9.5209528107957e-06,
+    0.020118623470449463,
+    0.47502474759743235,
+    1496
+   ],
+   [
+    18.0,
+    0.01766486320071331,
+    -3.7993577962795507e-06,
+    -0.0002742201076240639,
+    0.3982502472280082,
+    1872
+   ],
+   [
+    19.5,
+    -0.010872111828945704,
+    1.9948987606079337e-05,
+    -0.019737312991231947,
+    0.323045247379851,
+    2000
+   ],
+   [
+    21.0,
+    -0.02531629110328365,
+    1.6956766333944327e-06,
+    -0.027298283964085564,
+    0.29968106220104435,
+    2568
+   ]
+  ],
+  "synthetic": {
+   "slope_l1": -2.0333848443497082,
+   "a1_times_r2_over_A_maxerr": 0.04524514416948211,
+   "slope_l0": -4.746549590676294
+  },
+  "PASS": true,
+  "fails_if": "the stored S1 charge shows an l = 1 coefficient above 5e-3 of l = 0 in the fit window (AUDIT CORRECTION 2026-09-25: the relaxed charge is NOT z-reflection symmetric, its odd part is 0.30 of the field in rms, so this null is a genuine control of the relaxed field, not a symmetry tautology; the OPEN criterion of R26-4 asks for 2e-2, a decade above), or the planted cos(theta) / r^2 tail does not read slope -2 within 0.1 and amplitude within 5 percent on the window",
+  "wall_s": 0.1
+ },
+ "g_physical_generator": {
+  "uniaxial_seed": {
+   "internal": 1711.4533067863256,
+   "orbital": 1655.1288625322627,
+   "rigid": 3.031258539078467,
+   "rigid_over_internal": 0.0017711605260037158
+  },
+  "stored_S1": {
+   "internal": 14070.772691545233,
+   "orbital": 1403.4271466045493,
+   "rigid": 14031.367755248113,
+   "rigid_over_internal": 0.9971995186646148
+  },
+  "stored_S1_within_r": {
+   "3": {
+    "internal": 3.146603436119095,
+    "orbital": 0.022432184942654327,
+    "rigid": 3.1503621430021242
+   },
+   "6": {
+    "internal": 391.03906550398125,
+    "orbital": 1.2487291651508188,
+    "rigid": 394.75514167249094
+   },
+   "9": {
+    "internal": 2175.6332998656026,
+    "orbital": 14.060558754747788,
+    "rigid": 2190.6292200577145
+   },
+   "12": {
+    "internal": 6239.510870672659,
+    "orbital": 115.0236000319914,
+    "rigid": 6380.178406777072
+   },
+   "18": {
+    "internal": 12063.053994093345,
+    "orbital": 729.9098174281254,
+    "rigid": 12440.246211040332
+   }
+  },
+  "fd_check": {
+   "alpha": 0.01,
+   "rel_norm_diff_synthetic_bump": 0.0007352782932627374,
+   "rel_norm_diff_smoothed": 0.08382041449142269,
+   "rel_norm_diff_raw": 0.364850176150703,
+   "note": "interior = 4 units inside the walls; cubic interpolation of the rotated copy; the raw stored field is rough at the cell scale (the strand cores), the control is its Gaussian-smoothed copy (sigma one cell)"
+  },
+  "PASS": true,
+  "fails_if": "the axisymmetric uniaxial seed's C_rigid exceeds 1 percent of C_int, or the finite difference of the rotated smooth off-axis bump differs from a_rigid by over 5 percent in norm (the stored charge, rough at the cell scale, is reported raw and smoothed)",
+  "wall_s": 1.9
+ },
+ "h_partition_reader": {
+  "seeds": {
+   "4": {
+    "partition_intended": [
+     4
+    ],
+    "R9": {
+     "partition": [
+      4
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       4.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "R18": {
+     "partition": [
+      4
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       4.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "E_seed": 25.59893752013444,
+    "block_diagonal": true,
+    "finite": true
+   },
+   "3_1": {
+    "partition_intended": [
+     3,
+     1
+    ],
+    "R9": {
+     "partition": [
+      3,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       0.0,
+       0.0,
+       "N"
+      ],
+      [
+       3.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "R18": {
+     "partition": [
+      3,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       0.0,
+       0.0,
+       "N"
+      ],
+      [
+       3.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "E_seed": 24.943969065879394,
+    "block_diagonal": true,
+    "finite": true
+   },
+   "2_2": {
+    "partition_intended": [
+     2,
+     2
+    ],
+    "R9": {
+     "partition": [
+      2,
+      2
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       2.0,
+       0.0,
+       0.0,
+       "N"
+      ],
+      [
+       2.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "R18": {
+     "partition": [
+      2,
+      2
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       2.0,
+       0.0,
+       0.0,
+       "N"
+      ],
+      [
+       2.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "E_seed": 24.86297745129495,
+    "block_diagonal": true,
+    "finite": true
+   },
+   "2_1_1": {
+    "partition_intended": [
+     2,
+     1,
+     1
+    ],
+    "R9": {
+     "partition": [
+      2,
+      1,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       1.522,
+       6.283,
+       ""
+      ],
+      [
+       1.0,
+       1.522,
+       3.142,
+       ""
+      ],
+      [
+       2.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 8
+    },
+    "R18": {
+     "partition": [
+      2,
+      1,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       1.546,
+       0.025,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       3.166,
+       ""
+      ],
+      [
+       2.0,
+       3.142,
+       0.0,
+       "S"
+      ]
+     ],
+     "unreadable": 0
+    },
+    "E_seed": 24.716282999616748,
+    "block_diagonal": true,
+    "finite": true
+   },
+   "1_1_1_1": {
+    "partition_intended": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "R9": {
+     "partition": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       1.546,
+       0.025,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       1.595,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       3.117,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       4.737,
+       ""
+      ]
+     ],
+     "unreadable": 0
+    },
+    "R18": {
+     "partition": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "total": 4.0,
+     "carriers": [
+      [
+       1.0,
+       1.546,
+       0.025,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       1.546,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       3.166,
+       ""
+      ],
+      [
+       1.0,
+       1.546,
+       4.737,
+       ""
+      ]
+     ],
+     "unreadable": 0
+    },
+    "E_seed": 24.403864162897314,
+    "block_diagonal": true,
+    "finite": true
+   }
+  },
+  "R20_S1_seed_r9": {
+   "partition": [
+    2,
+    2
+   ],
+   "total": 4.0
+  },
+  "S1_vs_2_2_maxdiff": 0.11394098153214066,
+  "stored_S1_end": {
+   "R3": {
+    "partition": [
+     4
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      4.0,
+      null,
+      null
+     ]
+    ],
+    "unreadable": 78,
+    "null_spots": 0
+   },
+   "R4.5": {
+    "partition": [
+     4
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      4.0,
+      null,
+      null
+     ]
+    ],
+    "unreadable": 120,
+    "null_spots": 0
+   },
+   "R6": {
+    "partition": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      1.0,
+      5.146371660001632,
+      3.08461646515933
+     ],
+     [
+      1.0,
+      5.146371660001632,
+      3.08461646515933
+     ],
+     [
+      1.0,
+      5.2915275860901305,
+      -2.828380420955986
+     ],
+     [
+      1.0,
+      5.2915275860901305,
+      -2.828380420955986
+     ]
+    ],
+    "unreadable": 1026,
+    "null_spots": 1
+   },
+   "R9": {
+    "partition": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      1.0,
+      8.039018710759638,
+      4.0465019668914595
+     ],
+     [
+      1.0,
+      8.039018710759638,
+      4.0465019668914595
+     ],
+     [
+      1.0,
+      8.227887801331777,
+      -3.6471718260449077
+     ],
+     [
+      1.0,
+      8.227887801331777,
+      -3.6471718260449077
+     ]
+    ],
+    "unreadable": 798,
+    "null_spots": 3
+   },
+   "R12": {
+    "partition": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     -1,
+     -1
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      1.0,
+      4.042678240706641,
+      11.29852878219625
+     ],
+     [
+      1.0,
+      10.718691614346184,
+      5.395335955855279
+     ],
+     [
+      1.0,
+      10.718691614346184,
+      5.395335955855279
+     ],
+     [
+      1.0,
+      10.97051706844237,
+      -4.862895768059877
+     ],
+     [
+      1.0,
+      10.97051706844237,
+      -4.862895768059877
+     ],
+     [
+      1.0,
+      4.592201188381079,
+      -11.08655439013544
+     ],
+     [
+      -1.0,
+      0.0,
+      12.0
+     ],
+     [
+      -1.0,
+      0.0,
+      -12.0
+     ]
+    ],
+    "unreadable": 32,
+    "null_spots": 6
+   },
+   "R18": {
+    "partition": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     -1,
+     -1,
+     -2,
+     -2
+    ],
+    "total": 4.0,
+    "carriers_hu_rho_z": [
+     [
+      -2.0,
+      0.0,
+      18.0
+     ],
+     [
+      1.0,
+      7.6959916817450775,
+      16.27180727622198
+     ],
+     [
+      1.0,
+      10.722587480863801,
+      14.457735566651609
+     ],
+     [
+      1.0,
+      15.531846448232697,
+      9.097348289942591
+     ],
+     [
+      1.0,
+      15.421616425533998,
+      9.282981569716704
+     ],
+     [
+      -1.0,
+      17.562638340693514,
+      3.9438223228236557
+     ],
+     [
+      1.0,
+      17.80517717936606,
+      2.6411485401965114
+     ],
+     [
+      1.0,
+      17.913325080099543,
+      -1.7643085259320916
+     ],
+     [
+      -1.0,
+      17.73499756300094,
+      -3.0773139976854225
+     ],
+     [
+      1.0,
+      15.959523382105257,
+      -8.32427855228521
+     ],
+     [
+      1.0,
+      15.85853472961269,
+      -8.51509695949894
+     ],
+     [
+      1.0,
+      11.41907911494562,
+      -13.914188160529266
+     ],
+     [
+      1.0,
+      8.48514126286796,
+      -15.874582758270389
+     ],
+     [
+      -2.0,
+      2.204364238465236e-15,
+      -18.0
+     ]
+    ],
+    "unreadable": 80,
+    "null_spots": 0
+   }
+  },
+  "PASS": true,
+  "fails_if": "a census seed does not read its intended partition on r 9 and r 18 with total 4, is not block-diagonal or not finite, or the R20 S1 seed does not read {2,2}",
+  "wall_s": 4.2
+ },
+ "i_virial_scaling": {
+  "E_u_h": 7.243766883165402,
+  "E_u_2h": 3.621883441582701,
+  "ratio_u": 0.5,
+  "V4_h": 0.06315622112825968,
+  "V4_2h": 0.5052497690260774,
+  "ratio_v": 8.0,
+  "virial_stored_S1": {
+   "E_u": 7.243766883165402,
+   "V": 1.578905528206492,
+   "E_u_over_3V": 1.5292801994289742,
+   "note": "under the pinned shell"
+  },
+  "PASS": true,
+  "fails_if": "E_u does not scale as h^-1 or V4 as h^3 on the same array",
+  "wall_s": 1.0
+ },
+ "j_degree_reader": {
+  "S1_seed": {
+   "R6": {
+    "R": 6.0,
+    "center": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "degree": 0.9991165465951924,
+    "min_abs_align": 0.9996835198816884,
+    "gap_dir_min": 0.5900958812990679
+   },
+   "R9": {
+    "R": 9.0,
+    "center": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "degree": 0.9991454693716164,
+    "min_abs_align": 0.9998579975275664,
+    "gap_dir_min": 0.6779684195111391
+   },
+   "R18": {
+    "R": 18.0,
+    "center": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "degree": 0.9991859214714609,
+    "min_abs_align": 0.9999636427642222,
+    "gap_dir_min": 0.6958700121362573
+   }
+  },
+  "R22_2_unlike_d12": {
+   "note": "the R22-2 arrays keep the director only; the cores sit on the x axis at +-d/2",
+   "core_x+6": {
+    "R": 4.0,
+    "center": [
+     6.0,
+     0.0,
+     0.0
+    ],
+    "degree": 0.9991054864695558,
+    "min_abs_align": 0.9360457025366795,
+    "gap_dir_min": 1.0
+   },
+   "core_x-6": {
+    "R": 4.0,
+    "center": [
+     -6.0,
+     0.0,
+     0.0
+    ],
+    "degree": -0.9991054812054033,
+    "min_abs_align": 3.891368742028889e-06,
+    "gap_dir_min": 1.0
+   },
+   "outer_r20": {
+    "R": 20.0,
+    "center": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "degree": 2.3735622980066953e-10,
+    "min_abs_align": 0.0010589922490973694,
+    "gap_dir_min": 1.0
+   }
+  },
+  "PASS": true,
+  "fails_if": "the S1 seed does not read degree 1 on every sphere within 0.02, or the stored R22-2 unlike pair does not read +1 and -1 around its cores and 0 on the outer sphere, or any degree is off an integer by over 0.02 (a sampling failure, the audit's rule)",
+  "wall_s": 0.1
+ },
+ "PASS": true,
+ "wall_s": 14.8
+}
