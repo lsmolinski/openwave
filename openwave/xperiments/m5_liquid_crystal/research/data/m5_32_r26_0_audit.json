@@ -1,0 +1,1776 @@
+{
+ "task": "M5.32 R26-0 audit",
+ "audited_json": "../data/m5_32_r26_0_form.json",
+ "end_vs_gate_maxdiff": 0.0,
+ "a": {
+  "method": "sympy on a symbolic symmetric M for J_12 and K_1 plus a central finite difference of expm(tG) M expm(tG)^T on a random symmetric M",
+  "mine": {
+   "rotation_12": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_commutator": true,
+    "tangent_is_anticommutator": false,
+    "catalog_antisymmetric": true,
+    "catalog_zero": false,
+    "fd_rel_err": 5.8029958907933636e-11,
+    "expected": "commutator"
+   },
+   "boost_1": {
+    "eta_invariance": true,
+    "tangent_symmetric": true,
+    "tangent_is_commutator": false,
+    "tangent_is_anticommutator": true,
+    "catalog_antisymmetric": true,
+    "catalog_zero": false,
+    "fd_rel_err": 7.466060212686915e-11,
+    "expected": "anticommutator"
+   }
+  },
+  "audited": {
+   "rot_12": "commutator",
+   "rot_23": "commutator",
+   "rot_31": "commutator",
+   "boost_1": "anticommutator",
+   "boost_2": "anticommutator",
+   "boost_3": "anticommutator"
+  },
+  "verdict": "CONFIRMED",
+  "note": "rotation: G^T = -G so G M + M G^T = [G, M]; boost: G^T = G so it is {G, M}; the catalog form G M - M G^T is the other bracket in each case and is antisymmetric",
+  "wall_s": 0.11
+ },
+ "b": {
+  "method": "platform gen_catalog on the stored charge, symmetric part measured; corrected tangents [G, M] (rotations, the local ones rebuilt as cross-product matrices of the eigenvectors) and {G, M} (boosts), antisymmetric part measured, and their overlap with the catalog field",
+  "mine": {
+   "clock_local": {
+    "max_abs": 0.01902461403803874,
+    "symmetric_part_over_max": 9.951666660595266e-28,
+    "corrected_antisymmetric_part_over_max": 8.354883079427293e-28,
+    "overlap_catalog_vs_corrected": -7.124111393270179e-19,
+    "audited_symmetric_part_over_max": 1.9903333321190532e-27
+   },
+   "plane_1d": {
+    "max_abs": 0.026741693856883467,
+    "symmetric_part_over_max": 2.988054478717164e-28,
+    "corrected_antisymmetric_part_over_max": 4.962463508219393e-29,
+    "overlap_catalog_vs_corrected": 1.0954993891157615e-18,
+    "audited_symmetric_part_over_max": 5.976108957434328e-28
+   },
+   "rot_z": {
+    "max_abs": 0.030096571024415694,
+    "symmetric_part_over_max": 2.978162843385982e-28,
+    "corrected_antisymmetric_part_over_max": 0.0,
+    "overlap_catalog_vs_corrected": -2.1099701403234343e-19,
+    "audited_symmetric_part_over_max": 5.956325686771964e-28
+   },
+   "rot_x": {
+    "max_abs": 0.026470649990842008,
+    "symmetric_part_over_max": 2.3841073959088494e-28,
+    "corrected_antisymmetric_part_over_max": 2.3108286827676516e-28,
+    "overlap_catalog_vs_corrected": -7.088590500246528e-19,
+    "audited_symmetric_part_over_max": 4.768214791817699e-28
+   },
+   "boost_z": {
+    "max_abs": 0.027533325963788192,
+    "symmetric_part_over_max": 0.0,
+    "corrected_antisymmetric_part_over_max": 0.0,
+    "overlap_catalog_vs_corrected": 6.6805402226222094e-18,
+    "audited_symmetric_part_over_max": 0.0
+   },
+   "boost_x": {
+    "max_abs": 0.027030660722765422,
+    "symmetric_part_over_max": 2.918392980888652e-29,
+    "corrected_antisymmetric_part_over_max": 1.4460900101625615e-29,
+    "overlap_catalog_vs_corrected": -5.053410527228532e-18,
+    "audited_symmetric_part_over_max": 5.836785961777304e-29
+   }
+  },
+  "worst_symmetric_part": 9.951666660595266e-28,
+  "worst_corrected_antisymmetric_part": 8.354883079427293e-28,
+  "verdict": "CONFIRMED",
+  "note": "the catalog field and the corrected tangent are Frobenius-orthogonal (antisymmetric against symmetric), so no rescaling relates them",
+  "wall_s": 0.26
+ },
+ "c": {
+  "method": "own curvature energy (fwd/bwd branch mean, own contraction) under both norms on the 22 full-kick slabs and the stored charge; own plain V4 at W1 x w1s; the platform e_parts as a third read",
+  "mine": {
+   "n_fields": 22,
+   "n_eta_negative": 22,
+   "n_frobenius_positive": 22,
+   "worst_rel_vs_audited_curvature": 4.1246494831349875e-16,
+   "worst_rel_vs_audited_V4": 0.0,
+   "stored_S1": {
+    "E_u_eta": 7.243766883165402,
+    "E_u_frobenius": 7.243766883165402,
+    "platform_E_u": 7.243766883165402
+   },
+   "fields": {
+    "d0.01_w100_n48_L48": {
+     "E_u_eta": -45256107578767.3,
+     "E_u_frobenius": 46443814229440.65,
+     "V4": 12846956819540.203,
+     "M0i_max": 439.7846384387941,
+     "rel_vs_audited": [
+      1.726286333044111e-16,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9744270217599726
+    },
+    "d0.01_w25_n48_L48": {
+     "E_u_eta": -2142837673851116.8,
+     "E_u_frobenius": 2165264589482438.5,
+     "V4": 136944123820371.19,
+     "M0i_max": 1197.4394692226006,
+     "rel_vs_audited": [
+      0.0,
+      1.1545933056604288e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9896424133381858
+    },
+    "d0.01_w6.25_n48_L48": {
+     "E_u_eta": -3.2908099268153344e+16,
+     "E_u_frobenius": 3.3029671827424336e+16,
+     "V4": 1830930526642814.0,
+     "M0i_max": 2224.7368279813986,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.996319292546829
+    },
+    "d0.03_w100_n48_L48": {
+     "E_u_eta": -21488340779990.164,
+     "E_u_frobenius": 22639459321965.566,
+     "V4": 1376216097449.668,
+     "M0i_max": 284.8293945560988,
+     "rel_vs_audited": [
+      1.8178462636991874e-16,
+      1.725416647300417e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9491543271592822
+    },
+    "d0.03_w25_n32_L48": {
+     "E_u_eta": -715277150583312.9,
+     "E_u_frobenius": 716910938489643.5,
+     "V4": 19022962989510.793,
+     "M0i_max": 1077.6888291904295,
+     "rel_vs_audited": [
+      0.0,
+      1.7435917530194826e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9977210727042714
+    },
+    "d0.03_w25_n48_L48": {
+     "E_u_eta": -1078511213143754.5,
+     "E_u_frobenius": 1082849436808787.5,
+     "V4": 16457523754233.998,
+     "M0i_max": 1150.1548734012026,
+     "rel_vs_audited": [
+      1.1590051033001062e-16,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9959936963371214
+    },
+    "d0.03_w25_n64_L48": {
+     "E_u_eta": -2.743561641808086e+16,
+     "E_u_frobenius": 2.749778198890878e+16,
+     "V4": 290191685820722.7,
+     "M0i_max": 1998.8343546052697,
+     "rel_vs_audited": [
+      0.0,
+      1.4546627802974793e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.997739251447517
+    },
+    "d0.03_w25_n72_L72": {
+     "E_u_eta": -1.4514153540637364e+16,
+     "E_u_frobenius": 1.4546690632823496e+16,
+     "V4": 686424049334755.1,
+     "M0i_max": 1929.0397686674658,
+     "rel_vs_audited": [
+      2.7559306085612397e-16,
+      4.1246494831349875e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.997763264992196
+    },
+    "d0.03_w25_n96_L48": {
+     "E_u_eta": -4.784195363812259e+16,
+     "E_u_frobenius": 4.802433135867243e+16,
+     "V4": 2257008324470469.0,
+     "M0i_max": 2223.0829125437735,
+     "rel_vs_audited": [
+      1.672172516304862e-16,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9962023891766916
+    },
+    "d0.03_w25_n96_L96": {
+     "E_u_eta": -2490478122267470.5,
+     "E_u_frobenius": 2501236475264371.0,
+     "V4": 100448891421283.6,
+     "M0i_max": 1169.4817874454816,
+     "rel_vs_audited": [
+      0.0,
+      1.9990113087853955e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9956987861390583
+    },
+    "d0.03_w6.25_n48_L48": {
+     "E_u_eta": -4.492214499523059e+16,
+     "E_u_frobenius": 4.5165324644313576e+16,
+     "V4": 1.0134268223627652e+16,
+     "M0i_max": 2559.130209873895,
+     "rel_vs_audited": [
+      1.780858861670422e-16,
+      1.7712703413518404e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9946157887494869
+    },
+    "d0.1_w100_n48_L48": {
+     "E_u_eta": -558813782973121.3,
+     "E_u_frobenius": 563294779489058.9,
+     "V4": 17049119757368.857,
+     "M0i_max": 772.5538700925467,
+     "rel_vs_audited": [
+      1.118440559348305e-16,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.992045023886069
+    },
+    "d0.1_w25_n48_L48": {
+     "E_u_eta": -387496531389889.44,
+     "E_u_frobenius": 390757650990606.56,
+     "V4": 26501023857909.598,
+     "M0i_max": 922.9677479717021,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.991654367886464
+    },
+    "d0.1_w6.25_n48_L48": {
+     "E_u_eta": -1133963628337630.8,
+     "E_u_frobenius": 1143179797611764.5,
+     "V4": 68076654445499.266,
+     "M0i_max": 902.241807487005,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9919381279363162
+    },
+    "d0.3_w100_n48_L48": {
+     "E_u_eta": -91911566048968.55,
+     "E_u_frobenius": 94071339131162.28,
+     "V4": 10754383764835.584,
+     "M0i_max": 656.2508607298787,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9770411147312104
+    },
+    "d0.3_w25_n32_L48": {
+     "E_u_eta": -125699751368930.36,
+     "E_u_frobenius": 129238757101751.64,
+     "V4": 17554158626062.307,
+     "M0i_max": 558.839722700736,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9726165291884155
+    },
+    "d0.3_w25_n48_L48": {
+     "E_u_eta": -4001011321857771.0,
+     "E_u_frobenius": 4005702855620853.0,
+     "V4": 321062142364706.94,
+     "M0i_max": 1548.9042546571075,
+     "rel_vs_audited": [
+      1.249684041803304e-16,
+      2.4964407896526506e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.998828786374781
+    },
+    "d0.3_w25_n64_L48": {
+     "E_u_eta": -2.0044291048862684e+16,
+     "E_u_frobenius": 2.0204181323726668e+16,
+     "V4": 3465069525412223.5,
+     "M0i_max": 2005.7882759247263,
+     "rel_vs_audited": [
+      0.0,
+      1.979788211117776e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9920862779687976
+    },
+    "d0.3_w25_n72_L72": {
+     "E_u_eta": -1.3324283204526914e+16,
+     "E_u_frobenius": 1.3341863373092386e+16,
+     "V4": 819775410819742.1,
+     "M0i_max": 1757.3086562958467,
+     "rel_vs_audited": [
+      1.5010188310321277e-16,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9986823303406833
+    },
+    "d0.3_w25_n96_L48": {
+     "E_u_eta": -5.075541876988473e+16,
+     "E_u_frobenius": 5.107171699154831e+16,
+     "V4": 1653524680692392.0,
+     "M0i_max": 2034.8368937665023,
+     "rel_vs_audited": [
+      1.5761863844076345e-16,
+      1.5664247202270276e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.993806783082779
+    },
+    "d0.3_w25_n96_L96": {
+     "E_u_eta": -541338239521092.2,
+     "E_u_frobenius": 544994993160261.5,
+     "V4": 13634061163355.623,
+     "M0i_max": 901.8031963103717,
+     "rel_vs_audited": [
+      0.0,
+      1.1467995263145697e-16,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9932902986540026
+    },
+    "d0.3_w6.25_n48_L48": {
+     "E_u_eta": -1.1877361165624182e+16,
+     "E_u_frobenius": 1.1912573471658996e+16,
+     "V4": 1226918232971838.0,
+     "M0i_max": 1996.4556110754536,
+     "rel_vs_audited": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "fro_minus_eta_over_fro": 1.9970441058669155
+    }
+   }
+  },
+  "audited": {
+   "n_eta_negative": 22,
+   "block_sector_coincide": {
+    "E_u_eta": 7.243766883165402,
+    "E_u_frobenius": 7.243766883165402,
+    "rel_diff": 0.0
+   }
+  },
+  "verdict": "QUALIFIED",
+  "note": "the numbers hold to 1e-12; the wording needs one correction: tr(F F^T) is a sum of squares, so the fails_if clause 'a non-positive Frobenius curvature energy' cannot fail on any nonzero field (an unfalsifiable PASS line); the discriminating content is the eta sign flip on every field with M_0i, which the fails_if does not name, and the block-sector coincidence, which it does",
+  "wall_s": 1.66
+ },
+ "d": {
+  "method": "diag(8, s0 + b, s0 - b, 1) with s0 = delta / 2, b on 13 points of [0, s0]; plain tr N^p - C_p in double against the 50-digit mpmath pair bracket, the telescoped sum_k tr(N^k eps N0^{p-1-k}) with N0 = diag(-8, delta, 0, 1); the error normalized by the largest exact bracket, and on V4 itself",
+  "mine": {
+   "0.3": {
+    "plain_relerr_bracket_max": 2.409303690128916e-11,
+    "telescoped_relerr_bracket_max": 1.4098070153970241e-15,
+    "plain_relerr_V4_max": 4.289835910099312e-12,
+    "telescoped_relerr_V4_max": 1.542597471317163e-15,
+    "gain_bracket": 17089.599241711945,
+    "vacuum_point_abs_err_over_delta2": [
+     0.0,
+     0.0
+    ],
+    "audited_plain": 2.4629131157667577e-11,
+    "audited_telescoped": 5.555910937255855e-15
+   },
+   "0.03": {
+    "plain_relerr_bracket_max": 3.4129813951102835e-09,
+    "telescoped_relerr_bracket_max": 2.4135283144025155e-14,
+    "plain_relerr_V4_max": 1.0525048881038847e-10,
+    "telescoped_relerr_V4_max": 2.5543313887394137e-15,
+    "gain_bracket": 141410.45600101812,
+    "vacuum_point_abs_err_over_delta2": [
+     0.0,
+     0.0
+    ],
+    "audited_plain": 5.250463209296377e-10,
+    "audited_telescoped": 1.0674148582197876e-12
+   },
+   "0.01": {
+    "plain_relerr_bracket_max": 2.6074553736378515e-08,
+    "telescoped_relerr_bracket_max": 1.0860877414811311e-13,
+    "plain_relerr_V4_max": 1.6935431800175768e-09,
+    "telescoped_relerr_V4_max": 4.2865355164941085e-15,
+    "gain_bracket": 240077.78322605728,
+    "vacuum_point_abs_err_over_delta2": [
+     0.0,
+     0.0
+    ],
+    "audited_plain": 1.2418287192220312e-09,
+    "audited_telescoped": 3.961078015065315e-11
+   },
+   "0.003": {
+    "plain_relerr_bracket_max": 1.8753510299656258e-07,
+    "telescoped_relerr_bracket_max": 1.5770213417970974e-13,
+    "plain_relerr_V4_max": 7.489089202866802e-09,
+    "telescoped_relerr_V4_max": 1.7314606307278749e-15,
+    "gain_bracket": 1189172.8921236831,
+    "vacuum_point_abs_err_over_delta2": [
+     0.0,
+     0.0
+    ],
+    "audited_plain": 3.2404351630931654e-08,
+    "audited_telescoped": 9.29922619446095e-11
+   },
+   "0.001": {
+    "plain_relerr_bracket_max": 1.9600694444444443e-06,
+    "telescoped_relerr_bracket_max": 6.788048384257069e-13,
+    "plain_relerr_V4_max": 1.0205905629762369e-07,
+    "telescoped_relerr_V4_max": 2.671718890057214e-15,
+    "gain_bracket": 2887530.1610846845,
+    "vacuum_point_abs_err_over_delta2": [
+     0.0,
+     0.0
+    ],
+    "audited_plain": 4.2254177072976053e-07,
+    "audited_telescoped": 1.5062964296016198e-09
+   }
+  },
+  "verdict": "CONFIRMED",
+  "note": "the telescoped form is exact to the last bit on this diagonal family (eps vanishes in the 8 and 1 slots, no large-number cancellation survives), so its floor here is below the audited numbers, which rise toward small delta; the audited telescoped floor therefore measures a residual the diagonal family does not have (a perturbed M_00 or director slot); the ordering claim and the 1e-7 bound hold either way",
+  "wall_s": 0.02
+ },
+ "e": {
+  "method": "the invariant on the traceless part of diag(lams); brentq for the 0.382 crossing",
+  "mine": {
+   "uniaxial": -6.661338147750939e-16,
+   "maximal": 1.0,
+   "vacuum_d0.3": 0.6037554838461059,
+   "vacuum_d0.23": 0.37992660623952645,
+   "delta_at_0.382": 0.2306760072010074
+  },
+  "audited": {
+   "uniaxial": -6.661338147750939e-16,
+   "maximal": 1.0,
+   "vacuum_d0.3": 0.6037554838461059,
+   "vacuum_d0.23": 0.3799266062395261,
+   "delta_at_0.382": 0.23067600720084677
+  },
+  "verdict": "CONFIRMED",
+  "note": "",
+  "wall_s": 0.0
+ },
+ "f": {
+  "method": "two own readers, lattice shell least squares on [1, P1, P2] (shell width h) and a Gauss-Legendre Legendre projection on trilinear-interpolated spheres; the null on the stored charge; a planted gap A cos(th) / r^2 + B / r on a hedgehog-frame tensor (A 0.3, B 0.02)",
+  "mine": {
+   "null_shells_lattice_[R,a0,a1,a2,ncells]": [
+    [
+     3.0,
+     -0.09904620521430688,
+     -2.0303124861977313e-05,
+     -0.049670931814230816,
+     48
+    ],
+    [
+     4.5,
+     -0.0348275932342106,
+     -3.5310676487632605e-06,
+     -0.021454966427832654,
+     104
+    ],
+    [
+     6.0,
+     0.009334538000785987,
+     -1.2988679678822472e-05,
+     -0.04717974473578224,
+     200
+    ],
+    [
+     7.5,
+     0.06779855579198131,
+     1.2293239832812015e-06,
+     0.027173741024915925,
+     312
+    ],
+    [
+     9.0,
+     0.10207614806400223,
+     -3.387978866937653e-06,
+     0.06947052840457368,
+     416
+    ],
+    [
+     10.5,
+     0.1178904919830603,
+     -4.02522211077394e-06,
+     0.030014427857348407,
+     648
+    ],
+    [
+     12.0,
+     0.1091947493754409,
+     -6.204253601403992e-06,
+     -0.013004311001613542,
+     776
+    ],
+    [
+     13.5,
+     0.08655397650232298,
+     -7.589093492212322e-06,
+     0.027144363495395698,
+     1032
+    ],
+    [
+     15.0,
+     0.06208464322851328,
+     -9.28048366723492e-06,
+     0.012468991764893007,
+     1232
+    ],
+    [
+     16.5,
+     0.04434108631505201,
+     -9.5209528107957e-06,
+     0.020118623470449463,
+     1496
+    ],
+    [
+     18.0,
+     0.01766486320071331,
+     -3.7993577962795507e-06,
+     -0.0002742201076240639,
+     1872
+    ],
+    [
+     19.5,
+     -0.010872111828945704,
+     1.9948987606079337e-05,
+     -0.019737312991231947,
+     2000
+    ],
+    [
+     21.0,
+     -0.02531629110328365,
+     1.6956766333944327e-06,
+     -0.027298283964085564,
+     2568
+    ]
+   ],
+   "null_shells_sphere_[R,a0,a1,a2]": [
+    [
+     3.0,
+     -0.08737465528028512,
+     -1.3684540673046129e-05,
+     -0.05186899205809544
+    ],
+    [
+     4.5,
+     -0.025592894251206748,
+     -1.053595225731813e-06,
+     -0.010172505490114836
+    ],
+    [
+     6.0,
+     0.01629342805973657,
+     -3.900253450860166e-06,
+     -0.024814411920337058
+    ],
+    [
+     7.5,
+     0.06672376328006893,
+     -1.0161871495894615e-05,
+     0.026719060359421495
+    ],
+    [
+     9.0,
+     0.11192034619730735,
+     -7.873094588978398e-06,
+     0.05717404051890555
+    ],
+    [
+     10.5,
+     0.11783301001621224,
+     -3.897857871218609e-06,
+     0.018729547991384096
+    ],
+    [
+     12.0,
+     0.1021938198190513,
+     -6.0925775893557604e-06,
+     -0.014513631376563097
+    ],
+    [
+     13.5,
+     0.08099313843776075,
+     -1.0115660928898627e-05,
+     0.006456595408662912
+    ],
+    [
+     15.0,
+     0.05872049547073685,
+     -1.1325490482778488e-05,
+     0.016329473586315348
+    ],
+    [
+     16.5,
+     0.037966581301619354,
+     -7.805142256642498e-06,
+     0.010194741689514241
+    ],
+    [
+     18.0,
+     0.011055912854839634,
+     -8.149175038281659e-06,
+     -0.00909913260838746
+    ],
+    [
+     19.5,
+     -0.011107068457143977,
+     5.48760858695577e-06,
+     -0.01663884097294017
+    ],
+    [
+     21.0,
+     -0.025770771195310974,
+     1.2833009316892761e-05,
+     -0.0260230340680106
+    ]
+   ],
+   "null_l1_over_l0_max_window_lattice": 0.001391464652854678,
+   "null_l1_over_l0_max_window_sphere": 0.0007370874884125398,
+   "null_z_reflection_asymmetry": {
+    "tensor_odd_rms_over_field_rms": 0.29938366092666285,
+    "dev_odd_rms_over_even_rms": 0.6173595883492631,
+    "dev_odd_over_even_rms_per_shell": {
+     "3.0": 0.6924789234023112,
+     "6.0": 0.9219743871479654,
+     "9.0": 0.6708695437854464,
+     "12.0": 0.6081096067691172,
+     "18.0": 0.5784210083036153
+    }
+   },
+   "synthetic_slope_l1_lattice": -2.0333848443497087,
+   "synthetic_slope_l1_sphere": -1.9784412249057848,
+   "synthetic_slope_l0_lattice(planted -1)": -1.0147967390489783,
+   "synthetic_a1_r2_over_A_maxerr_lattice": 0.045245144169484997,
+   "synthetic_a1_r2_over_A_maxerr_sphere": 0.027787808098093114
+  },
+  "audited": {
+   "l1_over_l0_max_in_window": 0.001391464652854678,
+   "synthetic_slope_l1": -2.0333848443497082,
+   "synthetic_amp_maxerr": 0.04524514416948211
+  },
+  "verdict": "QUALIFIED",
+  "note": "the numbers hold (both own readers under 5e-3 on the null, the planted tail read at -2 within 0.1 and 5 percent); the stated REASON does not: the fails_if says the stored charge is z-reflection symmetric on the lattice to about 1e-3, but under the exact cell map k -> n-1-k (the seed reads 4e-16) the tensor field's odd part is 0.30 of the field in rms and the gap deviation's odd part is 0.62 of its even part (0.6 to 0.9 on every shell): the descent did NOT keep the seed's reflection symmetry (the off-axis carriers sit at different positions in the two hemispheres, as the audited R12 carrier list itself shows). The l = 1 null is then a property of the odd part (no cos theta moment), i.e. a genuine, falsifiable control rather than a symmetry tautology; the plan's 'cannot fail on this field' and R26-4's 'only z-asymmetric branches carry a label' should be restated. The l = 0 profile (-0.1 at r 3, +0.1 at r 9 to 12, -0.03 at r 21) is not a power law inside the box, as the record says; the audited synthetic quotes slope_l0 -4.7 with no planted l = 0 term, mine plants B / r and reads it back at -1",
+  "wall_s": 1.68
+ },
+ "g": {
+  "method": "a_int = [J_z, M], a_orb = (x d_y - y d_x) M with own central (o2) and fourth-order (o4) stencils, C by the platform kin_of AND an own kin (with shell masks); the finite difference of the field rotated by +-0.01 rad (cubic interpolation, conjugation by expm) against a_rigid on the interior (four cells off the walls), on a smooth synthetic off-axis three-bump field, the smoothed and the raw charge",
+  "mine": {
+   "seeds_and_charge": {
+    "uniaxial_seed": {
+     "stencil_2": {
+      "internal": 1711.4533067863256,
+      "orbital": 1674.5695348887232,
+      "rigid": 0.7826111785220858
+     },
+     "own_kin": {
+      "internal": 1711.4533067863256,
+      "orbital": 1674.5695348887232,
+      "rigid": 0.7826111785220858
+     },
+     "within_r": {
+      "3": {
+       "internal": 2.65856422765203,
+       "orbital": 2.2638505492854226,
+       "rigid": 0.017321928225607235
+      },
+      "6": {
+       "internal": 121.33346443664242,
+       "orbital": 108.449369531111,
+       "rigid": 0.4031168678839826
+      },
+      "9": {
+       "internal": 327.5865097125334,
+       "orbital": 303.4416725251317,
+       "rigid": 0.6136776511084151
+      },
+      "12": {
+       "internal": 542.596035664103,
+       "orbital": 512.8914647049693,
+       "rigid": 0.6884111890680086
+      },
+      "18": {
+       "internal": 951.4693866832966,
+       "orbital": 916.6118115193228,
+       "rigid": 0.7315234423499875
+      }
+     },
+     "stencil_4": {
+      "internal": 1711.4533067863256,
+      "orbital": 1710.7204974633835,
+      "rigid": 0.05947631997475515
+     },
+     "stencil_fwdbwd": {
+      "internal": 1711.4533067863256,
+      "orbital": 1655.1288625322627,
+      "rigid": 3.0312585390784674
+     },
+     "rigid_over_internal_o2": 0.0004572787206164746,
+     "rigid_over_internal_o4": 3.4751938448403575e-05,
+     "rigid_over_internal_fwdbwd": 0.001771160526003716,
+     "rigid_within_r18_over_internal": 0.00042742822106178437
+    },
+    "stored_S1_end": {
+     "stencil_2": {
+      "internal": 14070.772691545231,
+      "orbital": 1413.190423697115,
+      "rigid": 14030.225556630578
+     },
+     "own_kin": {
+      "internal": 14070.772691545231,
+      "orbital": 1413.1904236971152,
+      "rigid": 14030.225556630578
+     },
+     "within_r": {
+      "3": {
+       "internal": 3.1466034361190944,
+       "orbital": 0.022432184942654324,
+       "rigid": 3.1503621430021242
+      },
+      "6": {
+       "internal": 391.03906550398125,
+       "orbital": 1.2487291651508188,
+       "rigid": 394.755141672491
+      },
+      "9": {
+       "internal": 2175.633299865603,
+       "orbital": 14.06055875474779,
+       "rigid": 2190.6292200577145
+      },
+      "12": {
+       "internal": 6239.510870672659,
+       "orbital": 115.0236000319914,
+       "rigid": 6380.17840677707
+      },
+      "18": {
+       "internal": 12063.053994093345,
+       "orbital": 729.9098174281254,
+       "rigid": 12440.246211040332
+      }
+     },
+     "stencil_4": {
+      "internal": 14070.772691545231,
+      "orbital": 1604.9048345556175,
+      "rigid": 14538.393586577302
+     },
+     "stencil_fwdbwd": {
+      "internal": 14070.772691545231,
+      "orbital": 1403.4271466045493,
+      "rigid": 14031.367755248111
+     },
+     "rigid_over_internal_o2": 0.9971183434056171,
+     "rigid_over_internal_o4": 1.033233490816965,
+     "rigid_over_internal_fwdbwd": 0.9971995186646148,
+     "rigid_within_r18_over_internal": 0.8841196204182418
+    },
+    "stored_S1_gate": {
+     "stencil_2": {
+      "internal": 14070.772691545231,
+      "orbital": 1413.190423697115,
+      "rigid": 14030.225556630578
+     },
+     "own_kin": {
+      "internal": 14070.772691545231,
+      "orbital": 1413.1904236971152,
+      "rigid": 14030.225556630578
+     },
+     "within_r": {
+      "3": {
+       "internal": 3.1466034361190944,
+       "orbital": 0.022432184942654324,
+       "rigid": 3.1503621430021242
+      },
+      "6": {
+       "internal": 391.03906550398125,
+       "orbital": 1.2487291651508188,
+       "rigid": 394.755141672491
+      },
+      "9": {
+       "internal": 2175.633299865603,
+       "orbital": 14.06055875474779,
+       "rigid": 2190.6292200577145
+      },
+      "12": {
+       "internal": 6239.510870672659,
+       "orbital": 115.0236000319914,
+       "rigid": 6380.17840677707
+      },
+      "18": {
+       "internal": 12063.053994093345,
+       "orbital": 729.9098174281254,
+       "rigid": 12440.246211040332
+      }
+     },
+     "stencil_4": {
+      "internal": 14070.772691545231,
+      "orbital": 1604.9048345556175,
+      "rigid": 14538.393586577302
+     },
+     "stencil_fwdbwd": {
+      "internal": 14070.772691545231,
+      "orbital": 1403.4271466045493,
+      "rigid": 14031.367755248111
+     },
+     "rigid_over_internal_o2": 0.9971183434056171,
+     "rigid_over_internal_o4": 1.033233490816965,
+     "rigid_over_internal_fwdbwd": 0.9971995186646148,
+     "rigid_within_r18_over_internal": 0.8841196204182418
+    }
+   },
+   "fd_check": {
+    "synthetic_bump": {
+     "rel_norm_diff_o2": 0.005818487964565546,
+     "rel_norm_diff_o4": 0.000556956796167177,
+     "rel_norm_diff_sign_flipped": 2.0004456009952265
+    },
+    "stored_smoothed_sigma1": {
+     "rel_norm_diff_o2": 0.08357864315298542,
+     "rel_norm_diff_o4": 0.02139174791368084,
+     "rel_norm_diff_sign_flipped": 2.042300303553947
+    },
+    "stored_raw": {
+     "rel_norm_diff_o2": 0.36917947404162527,
+     "rel_norm_diff_o4": 0.17977722177680405,
+     "rel_norm_diff_sign_flipped": 2.224616838724719
+    }
+   }
+  },
+  "audited": {
+   "uniaxial_seed": {
+    "internal": 1711.4533067863256,
+    "orbital": 1655.1288625322627,
+    "rigid": 3.031258539078467,
+    "rigid_over_internal": 0.0017711605260037158
+   },
+   "stored_S1": {
+    "internal": 14070.772691545233,
+    "orbital": 1403.4271466045493,
+    "rigid": 14031.367755248113,
+    "rigid_over_internal": 0.9971995186646148
+   },
+   "fd_check": {
+    "alpha": 0.01,
+    "rel_norm_diff_synthetic_bump": 0.0007352782932627374,
+    "rel_norm_diff_smoothed": 0.08382041449142269,
+    "rel_norm_diff_raw": 0.364850176150703,
+    "note": "interior = 4 units inside the walls; cubic interpolation of the rotated copy; the raw stored field is rough at the cell scale (the strand cores), the control is its Gaussian-smoothed copy (sigma one cell)"
+   }
+  },
+  "verdict": "QUALIFIED",
+  "note": "the numbers are reproduced exactly with the audited orbital stencil (the mean of the platform's fwd and bwd one-sided fields) and inside r 18 with any stencil; the wording needs one correction: the uniaxial seed's 0.18 percent is NOT the interior lattice's cubic residue, it is the two face layers of the box where that stencil halves the derivative (an own central stencil reads 0.046 percent on the full box, the fourth-order one 0.0035 percent, and inside r 18 the residue is 0.043 percent); on the stored charge the face layers move C_orb by 0.70 percent and C_rigid by 0.008 percent, the 0.997 conclusion is unchanged (0.997 to 1.03 across stencils). The sign convention is fixed by the interpolation test (the flipped sign reads about 2 in norm); the audited 7e-4 on its own bump is matched by 5.6e-4 with a fourth-order orbital stencil on mine, 5.8e-3 with the second-order one, both inside the 5 percent gate",
+  "wall_s": 9.82
+ },
+ "h": {
+  "method": "own loop reader (fixed transverse frame, double angle of the middle eigenvector, trilinear sampling) on loops of radius 2h and 3h around the +-z axis at |z0| 3 to 15, around the x and y axes and off-axis; own sphere reader (band plaquettes + cap loops + 2 per pole) on the seed at r 9, 18 and on the stored end field at r 6, 9, 12, 18 with the outward-alignment statistics of the director",
+  "mine": {
+   "seed_loops": {
+    "z_axis_z+3_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9997709865400412,
+     "min_abs_dir_dot_axis": 0.6994580103996625,
+     "min_pair_gap": 0.18282886332404807
+    },
+    "z_axis_z+3_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999708445457077,
+     "min_abs_dir_dot_axis": 0.5507075796442881,
+     "min_pair_gap": 0.23557310577305882
+    },
+    "z_axis_z-3_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9997709865400412,
+     "min_abs_dir_dot_axis": 0.6994580103996624,
+     "min_pair_gap": 0.1828288633240479
+    },
+    "z_axis_z-3_rad4.5": {
+     "half_units": 2,
+     "raw": 1.9999999999999998,
+     "min_transverse_proj": 0.9999708445457077,
+     "min_abs_dir_dot_axis": 0.5507075796442881,
+     "min_pair_gap": 0.23557310577305884
+    },
+    "z_axis_z+6_rad3": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999341527987806,
+     "min_abs_dir_dot_axis": 0.8905299904199865,
+     "min_pair_gap": 0.2460302936761685
+    },
+    "z_axis_z+6_rad4.5": {
+     "half_units": 2,
+     "raw": 1.9999999999999998,
+     "min_transverse_proj": 0.999978962688846,
+     "min_abs_dir_dot_axis": 0.7971870718424433,
+     "min_pair_gap": 0.27625676021393136
+    },
+    "z_axis_z-6_rad3": {
+     "half_units": 2,
+     "raw": 1.9999999999999998,
+     "min_transverse_proj": 0.9999341527987804,
+     "min_abs_dir_dot_axis": 0.8905299904199865,
+     "min_pair_gap": 0.24603029367616844
+    },
+    "z_axis_z-6_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.999978962688846,
+     "min_abs_dir_dot_axis": 0.7971870718424432,
+     "min_pair_gap": 0.27625676021393136
+    },
+    "z_axis_z+9_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999717191332349,
+     "min_abs_dir_dot_axis": 0.9466390899313507,
+     "min_pair_gap": 0.25943990195924527
+    },
+    "z_axis_z+9_rad4.5": {
+     "half_units": 2,
+     "raw": 1.9999999999999998,
+     "min_transverse_proj": 0.999988053294189,
+     "min_abs_dir_dot_axis": 0.8927794101022916,
+     "min_pair_gap": 0.28362086056074
+    },
+    "z_axis_z-9_rad3": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999717191332349,
+     "min_abs_dir_dot_axis": 0.9466390899313508,
+     "min_pair_gap": 0.25943990195924527
+    },
+    "z_axis_z-9_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999880532941892,
+     "min_abs_dir_dot_axis": 0.8927794101022917,
+     "min_pair_gap": 0.28362086056073993
+    },
+    "z_axis_z+12_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999827630027914,
+     "min_abs_dir_dot_axis": 0.9689145926720506,
+     "min_pair_gap": 0.2596909767561459
+    },
+    "z_axis_z+12_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999927236596944,
+     "min_abs_dir_dot_axis": 0.9352970261796348,
+     "min_pair_gap": 0.28355479088590807
+    },
+    "z_axis_z-12_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999827630027917,
+     "min_abs_dir_dot_axis": 0.9689145926720504,
+     "min_pair_gap": 0.25969097675614594
+    },
+    "z_axis_z-12_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999927236596943,
+     "min_abs_dir_dot_axis": 0.9352970261796347,
+     "min_pair_gap": 0.283554790885908
+    },
+    "z_axis_z+15_rad3": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999885491623831,
+     "min_abs_dir_dot_axis": 0.9797695641561611,
+     "min_pair_gap": 0.25927985518211333
+    },
+    "z_axis_z+15_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0000000000000004,
+     "min_transverse_proj": 0.9999951984930665,
+     "min_abs_dir_dot_axis": 0.9571226943504019,
+     "min_pair_gap": 0.2831976951185919
+    },
+    "z_axis_z-15_rad3": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999885491623837,
+     "min_abs_dir_dot_axis": 0.9797695641561615,
+     "min_pair_gap": 0.25927985518211333
+    },
+    "z_axis_z-15_rad4.5": {
+     "half_units": 2,
+     "raw": 2.0,
+     "min_transverse_proj": 0.9999951984930664,
+     "min_abs_dir_dot_axis": 0.9571226943504019,
+     "min_pair_gap": 0.283197695118592
+    },
+    "x_axis_x6": {
+     "half_units": 0,
+     "raw": -4.240739575284689e-16,
+     "min_transverse_proj": 0.8944362616457402,
+     "min_abs_dir_dot_axis": 0.8932669482308222,
+     "min_pair_gap": 0.2689322220294038
+    },
+    "x_axis_x-6": {
+     "half_units": 0,
+     "raw": 4.947529504498804e-16,
+     "min_transverse_proj": 0.8944362616457402,
+     "min_abs_dir_dot_axis": 0.8932669482308221,
+     "min_pair_gap": 0.2689322220294039
+    },
+    "y_axis_y6": {
+     "half_units": 0,
+     "raw": -5.654319433712919e-16,
+     "min_transverse_proj": 0.8944362616457402,
+     "min_abs_dir_dot_axis": 0.8932669482308221,
+     "min_pair_gap": 0.2689322220294038
+    },
+    "y_axis_y-6": {
+     "half_units": 0,
+     "raw": -8.481479150569378e-16,
+     "min_transverse_proj": 0.8944362616457402,
+     "min_abs_dir_dot_axis": 0.8932669482308221,
+     "min_pair_gap": 0.26893222202940387
+    },
+    "x_axis_x9": {
+     "half_units": 0,
+     "raw": -8.481479150569378e-16,
+     "min_transverse_proj": 0.9486992849221932,
+     "min_abs_dir_dot_axis": 0.9482114738280155,
+     "min_pair_gap": 0.2927139371977387
+    },
+    "x_axis_x-9": {
+     "half_units": 0,
+     "raw": -2.8271597168564594e-16,
+     "min_transverse_proj": 0.9486992849221931,
+     "min_abs_dir_dot_axis": 0.9482114738280155,
+     "min_pair_gap": 0.2927139371977386
+    },
+    "y_axis_y9": {
+     "half_units": 0,
+     "raw": -2.8271597168564594e-16,
+     "min_transverse_proj": 0.9486992849221932,
+     "min_abs_dir_dot_axis": 0.9482114738280155,
+     "min_pair_gap": 0.2927139371977386
+    },
+    "y_axis_y-9": {
+     "half_units": 0,
+     "raw": -1.4135798584282297e-16,
+     "min_transverse_proj": 0.9486992849221932,
+     "min_abs_dir_dot_axis": 0.9482114738280155,
+     "min_pair_gap": 0.2927139371977384
+    },
+    "x_axis_x12": {
+     "half_units": 0,
+     "raw": -8.481479150569378e-16,
+     "min_transverse_proj": 0.9701476911908969,
+     "min_abs_dir_dot_axis": 0.9699662585676144,
+     "min_pair_gap": 0.296494364592744
+    },
+    "x_axis_x-12": {
+     "half_units": 0,
+     "raw": -5.654319433712919e-16,
+     "min_transverse_proj": 0.9701476911908969,
+     "min_abs_dir_dot_axis": 0.9699662585676144,
+     "min_pair_gap": 0.2964943645927439
+    },
+    "y_axis_y12": {
+     "half_units": 0,
+     "raw": -7.774689221355263e-16,
+     "min_transverse_proj": 0.9701476911908969,
+     "min_abs_dir_dot_axis": 0.9699662585676141,
+     "min_pair_gap": 0.296494364592744
+    },
+    "y_axis_y-12": {
+     "half_units": 0,
+     "raw": -4.240739575284689e-16,
+     "min_transverse_proj": 0.9701476911908969,
+     "min_abs_dir_dot_axis": 0.9699662585676141,
+     "min_pair_gap": 0.296494364592744
+    },
+    "z_axis_offaxis_x6_y0_z6": {
+     "half_units": 0,
+     "raw": 0.0,
+     "min_transverse_proj": 0.9999421040331733,
+     "min_abs_dir_dot_axis": 0.5538541559031117,
+     "min_pair_gap": 0.24603029367616872
+    },
+    "z_axis_offaxis_x0_y9_z6": {
+     "half_units": 0,
+     "raw": -7.067899292141149e-17,
+     "min_transverse_proj": 0.9999963900304067,
+     "min_abs_dir_dot_axis": 0.4467709235677003,
+     "min_pair_gap": 0.28879821868967115
+    },
+    "z_axis_offaxis_x7_y7_z6": {
+     "half_units": 0,
+     "raw": 3.5339496460705744e-16,
+     "min_transverse_proj": 0.9999796984657805,
+     "min_abs_dir_dot_axis": 0.4213574378297852,
+     "min_pair_gap": 0.2930413097111557
+    }
+   },
+   "seed_spheres": {
+    "R9": {
+     "R": 9.0,
+     "total_half_units": 4,
+     "partition": [
+      2,
+      2
+     ],
+     "poles": {
+      "north": 2,
+      "south": 2
+     },
+     "carriers_[k,rho,z,unreadable]": [],
+     "n_unreadable_plaquettes": 0,
+     "n_plaquettes": 28560,
+     "min_abs_align": 0.9998649676795165,
+     "frac_abs_align_below_0.2": 0.0,
+     "frac_abs_align_below_0.5": 0.0,
+     "min_director_gap": 0.6780430875870935,
+     "min_pair_gap": 0.12195738815032411
+    },
+    "R18": {
+     "R": 18.0,
+     "total_half_units": 4,
+     "partition": [
+      2,
+      2
+     ],
+     "poles": {
+      "north": 2,
+      "south": 2
+     },
+     "carriers_[k,rho,z,unreadable]": [],
+     "n_unreadable_plaquettes": 0,
+     "n_plaquettes": 28560,
+     "min_abs_align": 0.9999660182417766,
+     "frac_abs_align_below_0.2": 0.0,
+     "frac_abs_align_below_0.5": 0.0,
+     "min_director_gap": 0.6958470348613469,
+     "min_pair_gap": 0.12068715611165569
+    }
+   },
+   "end_field_spheres": {
+    "R6": {
+     "R": 6.0,
+     "total_half_units": 4,
+     "partition": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0
+     ],
+     "poles": {
+      "north": 0,
+      "south": 0
+     },
+     "carriers_[k,rho,z,unreadable]": [
+      [
+       1,
+       5.237861097611283,
+       2.9265698560140887,
+       false
+      ],
+      [
+       1,
+       5.237861097611283,
+       2.9265698560140887,
+       false
+      ],
+      [
+       1,
+       5.237861097611285,
+       -2.926569856014086,
+       false
+      ],
+      [
+       1,
+       5.237861097611285,
+       -2.926569856014086,
+       false
+      ]
+     ],
+     "n_unreadable_plaquettes": 2700,
+     "n_plaquettes": 28560,
+     "min_abs_align": 6.088053330670839e-07,
+     "frac_abs_align_below_0.2": 0.12454861111111111,
+     "frac_abs_align_below_0.5": 0.4151736111111111,
+     "min_director_gap": 0.005217131637125005,
+     "min_pair_gap": 0.004872183381861628
+    },
+    "R9": {
+     "R": 9.0,
+     "total_half_units": 4,
+     "partition": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      -1
+     ],
+     "poles": {
+      "north": 0,
+      "south": 0
+     },
+     "carriers_[k,rho,z,unreadable]": [
+      [
+       1,
+       6.975548095831023,
+       5.686978878345531,
+       false
+      ],
+      [
+       -1,
+       6.975548095831023,
+       5.686978878345531,
+       false
+      ],
+      [
+       1,
+       8.111337970276757,
+       3.8995123197582693,
+       false
+      ],
+      [
+       1,
+       8.201046110601892,
+       3.707134026681743,
+       false
+      ],
+      [
+       1,
+       8.201046110601892,
+       -3.707134026681742,
+       false
+      ],
+      [
+       1,
+       8.111337970276757,
+       -3.899512319758272,
+       false
+      ]
+     ],
+     "n_unreadable_plaquettes": 1681,
+     "n_plaquettes": 28560,
+     "min_abs_align": 5.243345781484458e-05,
+     "frac_abs_align_below_0.2": 0.07284722222222222,
+     "frac_abs_align_below_0.5": 0.2321527777777778,
+     "min_director_gap": 0.011599480045062727,
+     "min_pair_gap": 0.003598672086396193
+    },
+    "R12": {
+     "R": 12.0,
+     "total_half_units": 4,
+     "partition": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      -1,
+      -1,
+      -1,
+      -1
+     ],
+     "poles": {
+      "north": -1,
+      "south": -1
+     },
+     "carriers_[k,rho,z,unreadable]": [
+      [
+       1,
+       4.183649077313268,
+       11.247092086308168,
+       false
+      ],
+      [
+       1,
+       10.870859133837929,
+       5.081773479037854,
+       false
+      ],
+      [
+       1,
+       10.870859133837929,
+       5.081773479037854,
+       false
+      ],
+      [
+       -1,
+       11.943387440848213,
+       1.1642578914438044,
+       false
+      ],
+      [
+       1,
+       11.99645910359721,
+       0.29149438368446934,
+       false
+      ],
+      [
+       1,
+       11.99645910359721,
+       -0.2914943836844679,
+       false
+      ],
+      [
+       -1,
+       11.943387440848213,
+       -1.1642578914438029,
+       false
+      ],
+      [
+       1,
+       10.870859133837929,
+       -5.081773479037853,
+       false
+      ],
+      [
+       1,
+       10.870859133837929,
+       -5.081773479037853,
+       false
+      ],
+      [
+       1,
+       4.183649077313273,
+       -11.247092086308168,
+       false
+      ]
+     ],
+     "n_unreadable_plaquettes": 0,
+     "n_plaquettes": 28560,
+     "min_abs_align": 0.4958656317866458,
+     "frac_abs_align_below_0.2": 0.0,
+     "frac_abs_align_below_0.5": 0.0002777777777777778,
+     "min_director_gap": 0.08893170112016158,
+     "min_pair_gap": 0.002291526584864728
+    },
+    "R18": {
+     "R": 18.0,
+     "total_half_units": 4,
+     "partition": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+     ],
+     "poles": {
+      "north": -1,
+      "south": -1
+     },
+     "carriers_[k,rho,z,unreadable]": [
+      [
+       -1,
+       2.6173283912675855,
+       17.808694283755464,
+       false
+      ],
+      [
+       1,
+       8.166316910823618,
+       16.040924789799252,
+       false
+      ],
+      [
+       1,
+       10.83421832896195,
+       14.374272614653755,
+       false
+      ],
+      [
+       1,
+       15.576256846749049,
+       9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749049,
+       9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749049,
+       9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749049,
+       9.021098749271255,
+       false
+      ],
+      [
+       -1,
+       16.007620593761057,
+       8.231408319734655,
+       false
+      ],
+      [
+       -1,
+       16.007620593761057,
+       8.231408319734655,
+       false
+      ],
+      [
+       -1,
+       17.72512701528273,
+       3.133667546517078,
+       false
+      ],
+      [
+       1,
+       17.859583233911334,
+       2.2439444536336577,
+       false
+      ],
+      [
+       1,
+       17.859583233911334,
+       -2.2439444536336595,
+       false
+      ],
+      [
+       -1,
+       17.72512701528273,
+       -3.1336675465170756,
+       false
+      ],
+      [
+       -1,
+       16.00762059376106,
+       -8.231408319734653,
+       false
+      ],
+      [
+       -1,
+       16.00762059376106,
+       -8.231408319734653,
+       false
+      ],
+      [
+       1,
+       15.576256846749047,
+       -9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749047,
+       -9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749047,
+       -9.021098749271255,
+       false
+      ],
+      [
+       1,
+       15.576256846749047,
+       -9.021098749271255,
+       false
+      ],
+      [
+       1,
+       10.834218328961947,
+       -14.374272614653758,
+       false
+      ],
+      [
+       1,
+       8.166316910823623,
+       -16.040924789799252,
+       false
+      ],
+      [
+       -1,
+       2.617328391267589,
+       -17.808694283755464,
+       false
+      ]
+     ],
+     "n_unreadable_plaquettes": 0,
+     "n_plaquettes": 28560,
+     "min_abs_align": 0.6959984147912037,
+     "frac_abs_align_below_0.2": 0.0,
+     "frac_abs_align_below_0.5": 0.0,
+     "min_director_gap": 0.3380809437929171,
+     "min_pair_gap": 0.00018561352014898058
+    }
+   },
+   "end_field_pole_loops": {
+    "z_axis_z+9": {
+     "half_units": 0,
+     "raw": -7.067899292141149e-17,
+     "min_transverse_proj": 0.30575162331349054,
+     "min_abs_dir_dot_axis": 0.2832078550107225,
+     "min_pair_gap": 0.14085158362941153
+    },
+    "z_axis_z-9": {
+     "half_units": 0,
+     "raw": -2.1203697876423444e-16,
+     "min_transverse_proj": 0.3038217491002377,
+     "min_abs_dir_dot_axis": 0.28131434107899517,
+     "min_pair_gap": 0.14080222804529463
+    },
+    "z_axis_z+12": {
+     "half_units": -1,
+     "raw": -0.9999999999999994,
+     "min_transverse_proj": 0.6474897865004886,
+     "min_abs_dir_dot_axis": 0.33128698215424546,
+     "min_pair_gap": 0.00750049264786562
+    },
+    "z_axis_z-12": {
+     "half_units": -1,
+     "raw": -1.0,
+     "min_transverse_proj": 0.6475309576803872,
+     "min_abs_dir_dot_axis": 0.331286284024873,
+     "min_pair_gap": 0.007566860906020378
+    }
+   }
+  },
+  "audited": {
+   "R20_S1_seed_r9": {
+    "partition": [
+     2,
+     2
+    ],
+    "total": 4.0
+   },
+   "stored_S1_end_R12_partition": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "stored_S1_end_R9": null
+  },
+  "verdict": "QUALIFIED",
+  "note": "the seed claims hold on every loop and sphere (2 half-units at each pole from |z0| 3 to 15 at two radii, 0 around the x and y axes and off-axis, {2, 2} with total 4 on r 9 and r 18). Two scope corrections on the end-field statements: (1) 'unreadable at r <= 9' is the audited reader's abort policy, not a property of the field: the director is indeed not outward on part of those spheres (min |d.rhat| 0 on r 6 and r 9, confirmed), but a reader that flags those plaquettes still recovers the total 4 and a partition; on the stored end field my reader (flagging plaquettes with |d.rhat| < 0.15 instead of aborting) reads r 6: partition [1, 1, 1, 1, 0, 0] total 4 with 9.5 percent flagged, min |d.rhat| 0.00, 42 percent below 0.5; r 9: [1, 1, 1, 1, 1, 0, 0, -1] total 4, 5.9 percent flagged, min 0.00, 23 percent below 0.5; r 12: [1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1] total 4, poles {'north': -1, 'south': -1}, none flagged, min 0.50; the r 6 read (four unit carriers at rho 5.2, |z| 2.9) is the two pole-to-pole half lines of report 018 item 2. (2) The partition at r 12 and r 18 is resolution dependent: my 120 x 240 grid finds the audited carriers (rho 4.2 at |z| 11.2, rho 10.9 at |z| 5.1 twice, -1 at each pole) plus hairpin pairs (+1, -1 within a cell) where a line grazes the sphere, so the count of +-1 pairs is a sampling statement and only the net partition (the sum) is invariant",
+  "wall_s": 0.39
+ },
+ "i": {
+  "method": "the same array under cfg(L 48) and cfg(L 96), platform e_parts and own energies",
+  "mine": {
+   "ratio_u_platform": 0.5,
+   "ratio_v_platform": 8.0,
+   "ratio_u_own": 0.5,
+   "ratio_v_own": 8.0,
+   "E_u_h": 7.243766883165402,
+   "V4_h_W1": 0.06315622112825968,
+   "V4_h_w25": 1.5789055282064919,
+   "E_u_over_3V_w25": 1.5292801994289742
+  },
+  "audited": {
+   "ratio_u": 0.5,
+   "ratio_v": 8.0,
+   "E_u_h": 7.243766883165402,
+   "V4_h": 0.06315622112825968
+  },
+  "verdict": "CONFIRMED",
+  "note": "an identity of the discretization (E_u = h^3 x h^-4, V4 = h^3), true on any array; the audited V4_h 0.0632 is at W1 alone, the virial line's V 1.579 at w25, both consistent",
+  "wall_s": 0.45
+ },
+ "j": {
+  "method": "signed solid-angle sum of the triangulated director map on lat-long spheres (91 x 180), the director oriented by continuity (with the ring-closure check) and by the outward rule for the eigenvector field, the stored unit vectors as they are for the R22-2 pair; extra spheres R 3 and a both-cores sphere R 9 as controls",
+  "mine": {
+   "S1_seed": {
+    "R6": {
+     "R": 6.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree_outward_rule": 1.0,
+     "degree_continuity_rule": 1.0,
+     "continuity_ring_closure_failures": 0,
+     "min_abs_align": 0.9996826553905348,
+     "gap_dir_min": 0.5896726876938558,
+     "degree": 1.0
+    },
+    "R9": {
+     "R": 9.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree_outward_rule": 1.0,
+     "degree_continuity_rule": 1.0,
+     "continuity_ring_closure_failures": 0,
+     "min_abs_align": 0.9998559664885058,
+     "gap_dir_min": 0.6779099629132017,
+     "degree": 1.0
+    },
+    "R18": {
+     "R": 18.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree_outward_rule": 1.0,
+     "degree_continuity_rule": 1.0,
+     "continuity_ring_closure_failures": 0,
+     "min_abs_align": 0.999963350545015,
+     "gap_dir_min": 0.6958280648994369,
+     "degree": 1.0
+    }
+   },
+   "R22_2_unlike_d12": {
+    "core_x+6": {
+     "R": 4.0,
+     "center": [
+      6.0,
+      0.0,
+      0.0
+     ],
+     "degree": 0.9999999999999999,
+     "min_abs_align": 0.9348154331797663
+    },
+    "core_x-6": {
+     "R": 4.0,
+     "center": [
+      -6.0,
+      0.0,
+      0.0
+     ],
+     "degree": -1.0,
+     "min_abs_align": 2.322244255925643e-05
+    },
+    "outer_r20": {
+     "R": 20.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree": -7.50964299789997e-17,
+     "min_abs_align": 4.030303222415932e-05
+    },
+    "core_x+6_R3": {
+     "R": 3.0,
+     "center": [
+      6.0,
+      0.0,
+      0.0
+     ],
+     "degree": 0.9999999999999999,
+     "min_abs_align": 0.9731098362588679
+    },
+    "core_x-6_R3": {
+     "R": 3.0,
+     "center": [
+      -6.0,
+      0.0,
+      0.0
+     ],
+     "degree": -0.9999999999999999,
+     "min_abs_align": 0.0001442059197474708
+    },
+    "outer_r16": {
+     "R": 16.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree": 1.987846675914698e-17,
+     "min_abs_align": 6.190977792197572e-06
+    },
+    "both_cores_R9": {
+     "R": 9.0,
+     "center": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "degree": 1.8774107494749925e-17,
+     "min_abs_align": 4.2475733830538154e-05
+    }
+   }
+  },
+  "audited": {
+   "S1_seed": {
+    "R6": 0.9745335111469203,
+    "R9": 0.9895634934218916,
+    "R18": 0.9975976598109644
+   },
+   "R22_2": {
+    "core_x+6": 0.9308749376495637,
+    "core_x-6": -0.930874448595138,
+    "outer_r20": 7.847629510573544e-10
+   }
+  },
+  "verdict": "QUALIFIED",
+  "note": "the topological content holds (+1 on every seed sphere, +1 and -1 around the pair's cores, 0 on the outer spheres and on a sphere enclosing both cores), but the audited numbers 0.975 / 0.990 / 0.998 and +-0.931 are not degrees: the signed solid-angle sum of a triangulated map is an exact integer whenever the sampled director is continuous on the triangulation, and mine reads +-1.0000 to 1e-12 on every sphere including R 3 around the cores; the audited reader therefore carries a discretization residual of up to 7 percent (a flux-integral estimator, not a covering count), and its fails_if tolerance 'within 0.05' measures that estimator, not the field; a degree reader should return integers and report non-integers as a sampling failure. The seed's sign is +1 in the outward orientation; the continuity rule fixes only |degree| (the global sign is the initial choice)",
+  "wall_s": 0.23
+ },
+ "wall_s": 15.2,
+ "all_confirmed_or_qualified": true
+}

@@ -1,0 +1,1498 @@
+{
+ "task": "M5.32 R26-3 audit",
+ "runtime_s": 183.6,
+ "orbital_stencil": "np.gradient edge_order=2 (second-order central interior, second-order one-sided edges); the 4th-order variant reported beside it",
+ "A_ladder": {
+  "S1_d0.3_w25_n32_L48": {
+   "h": 1.5,
+   "L": 48.0,
+   "own_c2": {
+    "C_int": 14070.772691545231,
+    "C_orb": 1413.1188444824468,
+    "C_rigid": 14031.127215820867
+   },
+   "own_c4": {
+    "C_int": 14070.772691545231,
+    "C_orb": 1604.826637635495,
+    "C_rigid": 14539.288628062139
+   },
+   "own_contraction": {
+    "C_int": 14070.772691545233,
+    "C_orb": 1413.118844482447,
+    "C_rigid": 14031.127215820867
+   },
+   "audited": {
+    "C_int": 14070.772691545233,
+    "C_orb": 1403.4271466045493,
+    "C_rigid": 14031.367755248113
+   },
+   "rel_dev_c2_vs_audited": {
+    "C_int": -1.1102230246251565e-16,
+    "C_orb": 0.006905736362122994,
+    "C_rigid": -1.7142977893680467e-05
+   },
+   "sign_test": {
+    "theta_rad": 0.01,
+    "rel_rms_fd_minus_(int-orb)": 0.37241970533440466,
+    "rel_rms_fd_minus_(int+orb)": 2.1451450651566795,
+    "rel_rms_fd_minus_(int-orb)_core_r_lt_9": 0.2203821263354634,
+    "rel_rms_fd_minus_(int-orb)_halo_r_gt_12": 0.38440766396548337,
+    "rel_rms_fd_minus_(int-orb)_halo_4th_order_stencil": 0.16216836597339335,
+    "interior_r_lt": 19.5,
+    "C_rigid_interior_fd": 14000.768573044847,
+    "C_rigid_interior_stencil": 13326.091408096876
+   },
+   "within_r_own": {
+    "3": 3.1503621430021242,
+    "6": 394.75514167249094,
+    "9": 2190.6292200577145,
+    "12": 6380.178406777072,
+    "18": 12440.246211040332
+   },
+   "within_r_audited": {
+    "3": 3.1503621430021242,
+    "6": 394.75514167249094,
+    "9": 2190.6292200577145,
+    "12": 6380.178406777072,
+    "18": 12440.246211040332
+   },
+   "frac_inside_12_own": 0.4547160259215005,
+   "frac_inside_12_audited": 0.4547082307347202,
+   "rms_a_rigid_over_a_int": 1.0366766800877047
+  },
+  "S1_d0.3_w25_n48_L72": {
+   "h": 1.5,
+   "L": 72.0,
+   "own_c2": {
+    "C_int": 26743.855182611394,
+    "C_orb": 2455.3588895007124,
+    "C_rigid": 26629.0338121713
+   },
+   "own_c4": {
+    "C_int": 26743.855182611394,
+    "C_orb": 2818.5027037965933,
+    "C_rigid": 27524.990260966577
+   },
+   "own_contraction": {
+    "C_int": 26743.85518261139,
+    "C_orb": 2455.3588895007124,
+    "C_rigid": 26629.0338121713
+   },
+   "audited": {
+    "C_int": 26743.85518261139,
+    "C_orb": 2446.2992512592286,
+    "C_rigid": 26629.632229487514
+   },
+   "rel_dev_c2_vs_audited": {
+    "C_int": 2.220446049250313e-16,
+    "C_orb": 0.003703405557116568,
+    "C_rigid": -2.247185808113006e-05
+   },
+   "sign_test": {
+    "theta_rad": 0.01,
+    "rel_rms_fd_minus_(int-orb)": 0.3711010842526128,
+    "rel_rms_fd_minus_(int+orb)": 2.3163863544335683,
+    "rel_rms_fd_minus_(int-orb)_core_r_lt_9": 0.24419311132697225,
+    "rel_rms_fd_minus_(int-orb)_halo_r_gt_12": 0.3730977203315683,
+    "rel_rms_fd_minus_(int-orb)_halo_4th_order_stencil": 0.15602380300056137,
+    "interior_r_lt": 31.5,
+    "C_rigid_interior_fd": 27574.683522274034,
+    "C_rigid_interior_stencil": 26411.108151994948
+   },
+   "within_r_own": {
+    "3": 2.683254636454704,
+    "6": 597.9453603874542,
+    "9": 2950.546411463818,
+    "12": 7656.7620937683405,
+    "18": 16329.526782823741
+   },
+   "within_r_audited": {
+    "3": 2.683254636454704,
+    "6": 597.9453603874542,
+    "9": 2950.546411463818,
+    "12": 7656.7620937683405,
+    "18": 16329.52678282374
+   },
+   "frac_inside_12_own": 0.2875343562134302,
+   "frac_inside_12_audited": 0.28752789478218393,
+   "rms_a_rigid_over_a_int": 1.1103045023371108
+  },
+  "S1_d0.3_w25_n64_L96": {
+   "h": 1.5,
+   "L": 96.0,
+   "own_c2": {
+    "C_int": 28960.454238016282,
+    "C_orb": 3209.561729256391,
+    "C_rigid": 28572.433835945998
+   },
+   "own_c4": {
+    "C_int": 28960.454238016282,
+    "C_orb": 3675.6296296879104,
+    "C_rigid": 29615.45405468249
+   },
+   "own_contraction": {
+    "C_int": 28960.454238016282,
+    "C_orb": 3209.5617292563907,
+    "C_rigid": 28572.43383594599
+   },
+   "audited": {
+    "C_int": 28960.454238016282,
+    "C_orb": 3200.9946449487275,
+    "C_rigid": 28573.429575590042
+   },
+   "rel_dev_c2_vs_audited": {
+    "C_int": 0.0,
+    "C_orb": 0.002676381955584617,
+    "C_rigid": -3.484844692547284e-05
+   },
+   "sign_test": {
+    "theta_rad": 0.01,
+    "rel_rms_fd_minus_(int-orb)": 0.343545762806376,
+    "rel_rms_fd_minus_(int+orb)": 2.5874732699086533,
+    "rel_rms_fd_minus_(int-orb)_core_r_lt_9": 0.2594489705220194,
+    "rel_rms_fd_minus_(int-orb)_halo_r_gt_12": 0.34312526677890576,
+    "rel_rms_fd_minus_(int-orb)_halo_4th_order_stencil": 0.14490725896575735,
+    "interior_r_lt": 43.5,
+    "C_rigid_interior_fd": 29991.87873453205,
+    "C_rigid_interior_stencil": 28556.600029319452
+   },
+   "within_r_own": {
+    "3": 2.9321813131531025,
+    "6": 634.5937389451875,
+    "9": 3327.271980022306,
+    "12": 8140.8690303613475,
+    "18": 16125.165871278152
+   },
+   "within_r_audited": {
+    "3": 2.9321813131531025,
+    "6": 634.5937389451875,
+    "9": 3327.271980022306,
+    "12": 8140.8690303613475,
+    "18": 16125.165871278152
+   },
+   "frac_inside_12_own": 0.2849203913500572,
+   "frac_inside_12_audited": 0.2849104623169212,
+   "rms_a_rigid_over_a_int": 0.7764116966838012
+  },
+  "S1_d0.3_w25_n48_L48": {
+   "h": 1.0,
+   "L": 48.0,
+   "own_c2": {
+    "C_int": 22607.328719227367,
+    "C_orb": 2257.3916581114677,
+    "C_rigid": 23287.425991026903
+   },
+   "own_c4": {
+    "C_int": 22607.328719227367,
+    "C_orb": 2717.7091374006245,
+    "C_rigid": 24306.895805554785
+   },
+   "own_contraction": {
+    "C_int": 22607.328719227367,
+    "C_orb": 2257.391658111467,
+    "C_rigid": 23287.425991026903
+   },
+   "audited": {
+    "C_int": 22607.328719227367,
+    "C_orb": 2251.4598008696375,
+    "C_rigid": 23287.776918040487
+   },
+   "rel_dev_c2_vs_audited": {
+    "C_int": 0.0,
+    "C_orb": 0.002634671620403317,
+    "C_rigid": -1.5069150431146205e-05
+   },
+   "sign_test": {
+    "theta_rad": 0.01,
+    "rel_rms_fd_minus_(int-orb)": 0.35581065604090095,
+    "rel_rms_fd_minus_(int+orb)": 2.210232325953431,
+    "rel_rms_fd_minus_(int-orb)_core_r_lt_9": 0.3032224159057588,
+    "rel_rms_fd_minus_(int-orb)_halo_r_gt_12": 0.35315036564598423,
+    "rel_rms_fd_minus_(int-orb)_halo_4th_order_stencil": 0.14697618863597361,
+    "interior_r_lt": 21.0,
+    "C_rigid_interior_fd": 24483.932816410255,
+    "C_rigid_interior_stencil": 22946.494650826506
+   },
+   "within_r_own": {
+    "3": 7.524363108537232,
+    "6": 1120.4199232408373,
+    "9": 6328.629906002943,
+    "12": 11893.18935347197,
+    "18": 21337.55365229711
+   },
+   "within_r_audited": {
+    "3": 7.524363108537232,
+    "6": 1120.4199232408373,
+    "9": 6328.629906002943,
+    "12": 11893.18935347197,
+    "18": 21337.55365229711
+   },
+   "frac_inside_12_own": 0.5107129211298255,
+   "frac_inside_12_audited": 0.5107052251199898,
+   "rms_a_rigid_over_a_int": 1.268626606255705
+  },
+  "S1_d0.3_w25_n64_L64": {
+   "h": 1.0,
+   "L": 64.0,
+   "own_c2": {
+    "C_int": 28310.385922791957,
+    "C_orb": 2590.1741836462534,
+    "C_rigid": 29020.074164633224
+   },
+   "own_c4": {
+    "C_int": 28310.385922791957,
+    "C_orb": 3059.7877032288675,
+    "C_rigid": 30070.671333485916
+   },
+   "own_contraction": {
+    "C_int": 28310.385922791957,
+    "C_orb": 2590.1741836462534,
+    "C_rigid": 29020.074164633224
+   },
+   "audited": {
+    "C_int": 28310.385922791957,
+    "C_orb": 2584.565538624761,
+    "C_rigid": 29020.741797331757
+   },
+   "rel_dev_c2_vs_audited": {
+    "C_int": 0.0,
+    "C_orb": 0.002170053317540166,
+    "C_rigid": -2.3005362964068077e-05
+   },
+   "sign_test": {
+    "theta_rad": 0.01,
+    "rel_rms_fd_minus_(int-orb)": 0.32063407652783193,
+    "rel_rms_fd_minus_(int+orb)": 2.3472924607157,
+    "rel_rms_fd_minus_(int-orb)_core_r_lt_9": 0.30521412443840795,
+    "rel_rms_fd_minus_(int-orb)_halo_r_gt_12": 0.3149322600769855,
+    "rel_rms_fd_minus_(int-orb)_halo_4th_order_stencil": 0.13580939274449363,
+    "interior_r_lt": 29.0,
+    "C_rigid_interior_fd": 30406.44684088567,
+    "C_rigid_interior_stencil": 28996.75490663224
+   },
+   "within_r_own": {
+    "3": 7.010206447884919,
+    "6": 1283.3489021378327,
+    "9": 7039.577942544507,
+    "12": 12901.883880157857,
+    "18": 23379.82576225181
+   },
+   "within_r_audited": {
+    "3": 7.010206447884918,
+    "6": 1283.3489021378327,
+    "9": 7039.577942544507,
+    "12": 12901.883880157857,
+    "18": 23379.82576225181
+   },
+   "frac_inside_12_own": 0.444584800402798,
+   "frac_inside_12_audited": 0.44457457256809646,
+   "rms_a_rigid_over_a_int": 0.9430991860433553
+  }
+ },
+ "A_ratios": {
+  "h1.5_L96_over_L48_rigid": 2.0363605429882363,
+  "h1.5_L96_over_L48_int": 2.0581992810826857,
+  "h1_L64_over_L48_rigid": 1.2461692492684775,
+  "h1_L64_over_L48_int": 1.25226585919964,
+  "h1.5_L96_over_L48_rigid_4th_order_stencil": 2.036925933055761,
+  "h1_L64_over_L48_rigid_4th_order_stencil": 1.237125117663686,
+  "synthetic_sign_test": {
+   "rel_rms_fd_minus_(int-orb)": 0.008331418493092626,
+   "rel_rms_fd_minus_(int+orb)": 0.39511471717789537,
+   "rms_orb_over_rms_int": 0.1983759773056362
+  }
+ },
+ "C_asymmetry": {
+  "charge_S1_d0.3_n32_L48_end": {
+   "rms_M_rot90_minus_M_over_spread": 0.3830063188887694,
+   "rms_M_rot45_minus_M_over_spread_interior": 0.6728398306289645,
+   "rms_M_rot180_minus_M_over_spread": 0.3305162778378261,
+   "spatial_block_spread": 0.23671675654602217,
+   "C_int": 14070.772691545231,
+   "C_orb": 1413.1188444824468,
+   "C_rigid": 14031.127215820867,
+   "C_rigid_over_C_int": 0.9971824236953108,
+   "rms_a_rigid_over_a_int": 1.0366766800877047
+  },
+  "seed_uniaxial_d0_(1,0,0)": {
+   "rms_M_rot90_minus_M_over_spread": 7.149082892373661e-17,
+   "rms_M_rot45_minus_M_over_spread_interior": 6.130708100783125e-05,
+   "rms_M_rot180_minus_M_over_spread": 1.4298165784747322e-16,
+   "spatial_block_spread": 0.27144257569246133,
+   "C_int": 1711.4533067863256,
+   "C_orb": 1672.9261855750904,
+   "C_rigid": 0.7478381267554995,
+   "C_rigid_over_C_int": 0.0004369608705011938,
+   "rms_a_rigid_over_a_int": 0.007432162773511354
+  },
+  "seed_S1_d0.3_(1,0.3,0)": {
+   "rms_M_rot90_minus_M_over_spread": 4.090671139809852e-17,
+   "rms_M_rot45_minus_M_over_spread_interior": 0.014384581831475854,
+   "rms_M_rot180_minus_M_over_spread": 8.181342279619704e-17,
+   "spatial_block_spread": 0.2378068632316548,
+   "C_int": 929.9408553079435,
+   "C_orb": 868.1763344054651,
+   "C_rigid": 27.754166733571445,
+   "C_rigid_over_C_int": 0.029845088077543217,
+   "rms_a_rigid_over_a_int": 0.02598734820995624
+  },
+  "seed_uniaxial_d0_rc1.0": {
+   "rms_M_rot90_minus_M_over_spread": 7.152478438970813e-17,
+   "rms_M_rot45_minus_M_over_spread_interior": 0.005400972756402523,
+   "rms_M_rot180_minus_M_over_spread": 1.4304956877941626e-16,
+   "spatial_block_spread": 0.2721539583399086,
+   "C_int": 2120.1267566509023,
+   "C_orb": 1921.3572592542746,
+   "C_rigid": 42.47266054165247,
+   "C_rigid_over_C_int": 0.020033076045295143,
+   "rms_a_rigid_over_a_int": 0.013616370452205682
+  },
+  "seed_uniaxial_d0_rc0.5": {
+   "rms_M_rot90_minus_M_over_spread": 7.152176459879814e-17,
+   "rms_M_rot45_minus_M_over_spread_interior": 0.007761949506182524,
+   "rms_M_rot180_minus_M_over_spread": 1.4304352919759628e-16,
+   "spatial_block_spread": 0.2721654492203996,
+   "C_int": 2236.8862470082618,
+   "C_orb": 1935.327256574925,
+   "C_rigid": 96.04927243020855,
+   "C_rigid_over_C_int": 0.04293882738054752,
+   "rms_a_rigid_over_a_int": 0.01501929263289001
+  }
+ },
+ "D_delta_arm": {
+  "S1_d0.1_w25_n32_L48": {
+   "delta": 0.1,
+   "E_platform": 13.86980586129987,
+   "E_curv_platform": 10.692217109779468,
+   "V_platform": 3.177588751520402,
+   "E_own": 13.86980586129987,
+   "E_curv_own": 10.692217109779468,
+   "V_own": 3.177588751520402,
+   "E_audited": 13.86980586129987,
+   "fmax_spatial_free_own": 0.00022825727529674714,
+   "fmax_M00_free_own": 9.169090799121538e-10,
+   "gate": 0.0001,
+   "fmax_over_gate": 2.2825727529674715,
+   "fmax_audited_last_chunk": 0.00022825727529674714,
+   "gate_hit_inside_last_chunk": null,
+   "iters": 8000,
+   "gate_label_audited": "FALLING",
+   "last_4_chunk_drops": [
+    0.004494673106906433,
+    0.001932798902933186,
+    0.001341727958624972,
+    0.0002730806516630935
+   ],
+   "last_chunk_iters_with_drop_ge_4e-3": 7250,
+   "drop_criterion_GATE_DROP_x_E": 0.0001386980586129987,
+   "own_C": {
+    "C_int": 17436.933124660296,
+    "C_orb": 10367.818651082685,
+    "C_rigid": 20940.733824268238
+   },
+   "audited_C": {
+    "C_int": 17436.933124660296,
+    "C_orb": 10349.987981653365,
+    "C_rigid": 20939.810132995335
+   },
+   "max_abs_end_minus_gate": 0.0,
+   "max_abs_end_minus_stage": 0.0
+  },
+  "S1_d0.03_w25_n32_L48": {
+   "delta": 0.03,
+   "E_platform": 17.1259464539573,
+   "E_curv_platform": 13.278183561940489,
+   "V_platform": 3.8477628920168105,
+   "E_own": 17.1259464539573,
+   "E_curv_own": 13.27818356194049,
+   "V_own": 3.8477628920168105,
+   "E_audited": 17.1259464539573,
+   "fmax_spatial_free_own": 0.0005104823895069556,
+   "fmax_M00_free_own": 9.155468863510791e-10,
+   "gate": 0.0001,
+   "fmax_over_gate": 5.104823895069556,
+   "fmax_audited_last_chunk": 0.0005104823895069556,
+   "gate_hit_inside_last_chunk": 248,
+   "iters": 8000,
+   "gate_label_audited": "FALLING",
+   "last_4_chunk_drops": [
+    0.00015692308278403289,
+    0.00012506182930493992,
+    4.853393049941701e-05,
+    2.0446181299149657e-05
+   ],
+   "last_chunk_iters_with_drop_ge_4e-3": 2500,
+   "drop_criterion_GATE_DROP_x_E": 0.00017125946453957304,
+   "own_C": {
+    "C_int": 13009.169529387053,
+    "C_orb": 3173.777597239558,
+    "C_rigid": 12901.823158558605
+   },
+   "audited_C": {
+    "C_int": 13009.169529387054,
+    "C_orb": 3153.696987670284,
+    "C_rigid": 12902.509907646585
+   },
+   "max_abs_end_minus_gate": 0.0,
+   "max_abs_end_minus_stage": 0.0
+  },
+  "delta_exponent_own_fit": 0.042255886225411196,
+  "delta_exponent_audited": 0.042255886225411196,
+  "delta_points": [
+   [
+    0.03,
+    12902.509907646585,
+    13009.169529387054,
+    "S1_d0.03_w25_n32_L48",
+    "FALLING"
+   ],
+   [
+    0.1,
+    20939.810132995335,
+    17436.933124660296,
+    "S1_d0.1_w25_n32_L48",
+    "FALLING"
+   ],
+   [
+    0.3,
+    14031.367755248113,
+    14070.772691545233,
+    "R25-2 stored",
+    "STABLE?"
+   ]
+  ],
+  "monotone": false
+ },
+ "E_pairs": {
+  "convention_checks": {
+   "identity_map_n_eq_rhat": 1.0,
+   "antipodal_map_n_eq_minus_rhat": -1.0,
+   "sphere_missing_the_core": -4.417437057588218e-18
+  },
+  "unlike_d6_n32_L48": {
+   "d": 6.0,
+   "n": 32,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 95232,
+   "reads": {
+    "core_x+3": {
+     "R": 2.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 5.627117912942087,
+     "min_interp_norm": 0.848609497399781,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-3": {
+     "R": 2.0,
+     "degree": -1.0000000000000002,
+     "max_edge_angle_deg": 5.6271221946038805,
+     "min_interp_norm": 0.8486094495601787,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 3.0,
+     "degree": 1.766974823035287e-17,
+     "max_edge_angle_deg": 90.0,
+     "min_interp_norm": 0.0,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 2.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 10.410646499242057,
+     "min_interp_norm": 0.6318808966135697,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 4.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 20.254925662554673,
+     "min_interp_norm": 0.6318808966135698,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 6.0,
+     "degree": 3.533949646070574e-17,
+     "max_edge_angle_deg": 11.19719599886322,
+     "min_interp_norm": 0.9261148369118655,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -1.766974823035287e-17,
+     "max_edge_angle_deg": 6.76328079075318,
+     "min_interp_norm": 0.9982899800485836,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 6.0,
+    "n": 32,
+    "L": 48.0,
+    "core_sphere_R": 2.0,
+    "core_x+3": 0.8724628782829603,
+    "core_x-3": -0.8724628782829603,
+    "outer_R": 20.0,
+    "outer_degree": 2.9192451592460857e-07,
+    "mid_degree_R_half_d": -1.468982513313772e-07
+   }
+  },
+  "unlike_d6_n48_L48": {
+   "d": 6.0,
+   "n": 48,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 324864,
+   "reads": {
+    "core_x+3": {
+     "R": 2.0,
+     "degree": 1.0000000000000002,
+     "max_edge_angle_deg": 5.960448439256869,
+     "min_interp_norm": 0.9124789073236017,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-3": {
+     "R": 2.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 5.960451261048451,
+     "min_interp_norm": 0.9124781097820036,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 3.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 92.25000000000036,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 2.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 10.97045453895427,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 4.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 21.385267108606588,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 6.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 11.786594709390563,
+     "min_interp_norm": 0.9589985965290454,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 4.80387600602991,
+     "min_interp_norm": 0.9994134250405888,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 6.0,
+    "n": 48,
+    "L": 48.0,
+    "core_sphere_R": 2.0,
+    "core_x+3": 0.8724628782829603,
+    "core_x-3": -0.8724628782829603,
+    "outer_R": 20.0,
+    "outer_degree": -9.118904842107958e-09,
+    "mid_degree_R_half_d": 4.808123235297974e-07
+   }
+  },
+  "unlike_d8_n32_L48": {
+   "d": 8.0,
+   "n": 32,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 95232,
+   "reads": {
+    "core_x+4": {
+     "R": 3.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 8.42492640129494,
+     "min_interp_norm": 0.8562148573939491,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-4": {
+     "R": 3.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 8.424587840232485,
+     "min_interp_norm": 0.8562146321985666,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 4.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 75.1603436817479,
+     "min_interp_norm": 0.06409763628162973,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 3.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 17.47952887526185,
+     "min_interp_norm": 0.5423009221823493,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 5.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 24.639210287975594,
+     "min_interp_norm": 0.5971747540740913,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 7.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 16.014828972867587,
+     "min_interp_norm": 0.8966920643826843,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 6.7036386296567505,
+     "min_interp_norm": 0.9982468216498431,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 8.0,
+    "n": 32,
+    "L": 48.0,
+    "core_sphere_R": 3.0,
+    "core_x+4": 1.0000000000000002,
+    "core_x-4": -1.0,
+    "outer_R": 20.0,
+    "outer_degree": 2.9703613783161063e-07,
+    "mid_degree_R_half_d": 3.476069296650406e-07
+   }
+  },
+  "unlike_d8_n48_L48": {
+   "d": 8.0,
+   "n": 48,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 324864,
+   "reads": {
+    "core_x+4": {
+     "R": 3.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 7.478544753047066,
+     "min_interp_norm": 0.9395444750735175,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-4": {
+     "R": 3.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 7.478536915971303,
+     "min_interp_norm": 0.9395444685664794,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 4.0,
+     "degree": -0.9999999999999999,
+     "max_edge_angle_deg": 92.24999999999993,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 3.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 16.104916998859483,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 5.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 25.98316986550064,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 7.0,
+     "degree": 3.533949646070574e-17,
+     "max_edge_angle_deg": 13.880438011363013,
+     "min_interp_norm": 0.9582274432655953,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 5.241171735854067,
+     "min_interp_norm": 0.9992389174600255,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 8.0,
+    "n": 48,
+    "L": 48.0,
+    "core_sphere_R": 3.0,
+    "core_x+4": 0.9288712145948843,
+    "core_x-4": -0.9288680665943404,
+    "outer_R": 20.0,
+    "outer_degree": 1.3154888728635555e-07,
+    "mid_degree_R_half_d": 8.837459201430466e-09
+   }
+  },
+  "unlike_d8_n64_L48": {
+   "d": 8.0,
+   "n": 64,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 774144,
+   "reads": {
+    "core_x+4": {
+     "R": 3.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 6.199261959660453,
+     "min_interp_norm": 0.977163473687931,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-4": {
+     "R": 3.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 6.235640683818275,
+     "min_interp_norm": 0.9771635706064008,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 4.0,
+     "degree": 1.4135798584282297e-16,
+     "max_edge_angle_deg": 84.94839704474414,
+     "min_interp_norm": 0.06409763628162973,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 3.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 15.2626338971582,
+     "min_interp_norm": 0.8477503371554959,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 5.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 23.264005291082164,
+     "min_interp_norm": 0.8710974506393253,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 7.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 11.673049869892909,
+     "min_interp_norm": 0.9827400739721621,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -1.766974823035287e-17,
+     "max_edge_angle_deg": 5.246647005136419,
+     "min_interp_norm": 0.9995644284992289,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 8.0,
+    "n": 64,
+    "L": 48.0,
+    "core_sphere_R": 3.0,
+    "core_x+4": 1.0000000000000002,
+    "core_x-4": -1.0000000000000002,
+    "outer_R": 20.0,
+    "outer_degree": -7.922447810915708e-07,
+    "mid_degree_R_half_d": -5.444307145980161e-06
+   }
+  },
+  "unlike_d8_n64_L64": {
+   "d": 8.0,
+   "n": 64,
+   "L": 64.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 774144,
+   "reads": {
+    "core_x+4": {
+     "R": 3.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 7.483887031691197,
+     "min_interp_norm": 0.9394687923377779,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-4": {
+     "R": 3.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 7.48387783205574,
+     "min_interp_norm": 0.9394687695850158,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 4.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 92.24999999999993,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 3.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 16.104916998859483,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 5.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 25.98316986550064,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 7.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 13.859469674217724,
+     "min_interp_norm": 0.9583029061586461,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 28.0,
+     "degree": 8.834874115176436e-18,
+     "max_edge_angle_deg": 14.549907172827002,
+     "min_interp_norm": 0.996607003176215,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 8.0,
+    "n": 64,
+    "L": 64.0,
+    "core_sphere_R": 3.0,
+    "core_x+4": 0.9288853580620754,
+    "core_x-4": -0.9288835379442348,
+    "outer_R": 28.0,
+    "outer_degree": -6.66593265492596e-11,
+    "mid_degree_R_half_d": -6.639384868547202e-08
+   }
+  },
+  "unlike_d10_n32_L48": {
+   "d": 10.0,
+   "n": 32,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 95232,
+   "reads": {
+    "core_x+5": {
+     "R": 4.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 17.778143201081633,
+     "min_interp_norm": 0.6946118877446074,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-5": {
+     "R": 4.0,
+     "degree": -0.9999999999999999,
+     "max_edge_angle_deg": 17.77825501872983,
+     "min_interp_norm": 0.6946113832836831,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 5.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 80.9554182665467,
+     "min_interp_norm": 0.06409763628162976,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 4.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 19.56589500505119,
+     "min_interp_norm": 0.5971747540740913,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 6.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 32.314441307255905,
+     "min_interp_norm": 0.5423009221823493,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 8.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 21.541014030180236,
+     "min_interp_norm": 0.9147116390983869,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 29.524577086966577,
+     "min_interp_norm": 0.964931036316398,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 10.0,
+    "n": 32,
+    "L": 48.0,
+    "core_sphere_R": 4.0,
+    "core_x+5": 1.0,
+    "core_x-5": -1.0000000000000002,
+    "outer_R": 20.0,
+    "outer_degree": -8.220969542777865e-10,
+    "mid_degree_R_half_d": -4.5025886098766197e-07
+   }
+  },
+  "unlike_d10_n48_L48": {
+   "d": 10.0,
+   "n": 48,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 324864,
+   "reads": {
+    "core_x+5": {
+     "R": 4.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 7.727137939926086,
+     "min_interp_norm": 0.9635675222898494,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-5": {
+     "R": 4.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 7.727073348622649,
+     "min_interp_norm": 0.9635678292050518,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 5.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 92.25000000000018,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 4.0,
+     "degree": -3.533949646070574e-17,
+     "max_edge_angle_deg": 20.890090561574716,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 6.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 30.16108214374167,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 8.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 15.725904609983997,
+     "min_interp_norm": 0.9576741828681624,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": -5.300924469105861e-17,
+     "max_edge_angle_deg": 6.0082780527575785,
+     "min_interp_norm": 0.9990002113580807,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 10.0,
+    "n": 48,
+    "L": 48.0,
+    "core_sphere_R": 4.0,
+    "core_x+5": 0.9624608332911473,
+    "core_x-5": -0.9624610420848736,
+    "outer_R": 20.0,
+    "outer_degree": 3.926227961746791e-09,
+    "mid_degree_R_half_d": -1.2483272915966713e-09
+   }
+  },
+  "unlike_d12_n32_L48": {
+   "d": 12.0,
+   "n": 32,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 95232,
+   "reads": {
+    "core_x+6": {
+     "R": 4.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 7.672616836009573,
+     "min_interp_norm": 0.9229547278689324,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-6": {
+     "R": 4.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 7.672625137082603,
+     "min_interp_norm": 0.9229547185523899,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 6.0,
+     "degree": 1.095524390281878e-15,
+     "max_edge_angle_deg": 90.0,
+     "min_interp_norm": 0.0,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 5.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 24.2204812926127,
+     "min_interp_norm": 0.6318808966135697,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 7.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 32.360266162008344,
+     "min_interp_norm": 0.6318808966135703,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 9.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 16.8521687313274,
+     "min_interp_norm": 0.924412073462718,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 10.597608123739722,
+     "min_interp_norm": 0.9957437140527906,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 12.0,
+    "n": 32,
+    "L": 48.0,
+    "core_sphere_R": 4.0,
+    "core_x+6": 0.9308749376495637,
+    "core_x-6": -0.930874448595138,
+    "outer_R": 20.0,
+    "outer_degree": 7.847629510573544e-10,
+    "mid_degree_R_half_d": 4.71453644001054e-09
+   }
+  },
+  "unlike_d12_n48_L48": {
+   "d": 12.0,
+   "n": 48,
+   "L": 48.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 324864,
+   "reads": {
+    "core_x+6": {
+     "R": 4.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 6.9754623952716655,
+     "min_interp_norm": 0.9697258142663454,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-6": {
+     "R": 4.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 6.975459727091888,
+     "min_interp_norm": 0.9697258188459381,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 6.0,
+     "degree": -1.0000000000000002,
+     "max_edge_angle_deg": 92.24999999999993,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 5.0,
+     "degree": 3.533949646070574e-17,
+     "max_edge_angle_deg": 25.276917718375664,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 7.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 33.90864586523041,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 9.0,
+     "degree": -7.067899292141149e-17,
+     "max_edge_angle_deg": 17.613126678611106,
+     "min_interp_norm": 0.9572849447882644,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 20.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 6.794290047386274,
+     "min_interp_norm": 0.9987232596496248,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 12.0,
+    "n": 48,
+    "L": 48.0,
+    "core_sphere_R": 4.0,
+    "core_x+6": 0.9617043785561314,
+    "core_x-6": -0.9617043864518613,
+    "outer_R": 20.0,
+    "outer_degree": -1.541288879764676e-09,
+    "mid_degree_R_half_d": 4.233938500156768e-09
+   }
+  },
+  "unlike_d12_n64_L64": {
+   "d": 12.0,
+   "n": 64,
+   "L": 64.0,
+   "unit_norm_range": [
+    0.9999999999999997,
+    1.0000000000000002
+   ],
+   "lattice_neighbor_pairs_with_negative_dot": 0,
+   "lattice_neighbor_pairs_total": 774144,
+   "reads": {
+    "core_x+6": {
+     "R": 4.0,
+     "degree": 1.0,
+     "max_edge_angle_deg": 6.995240306641194,
+     "min_interp_norm": 0.9695821699083595,
+     "sphere_runs_through_a_core": false
+    },
+    "core_x-6": {
+     "R": 4.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 6.995238147523672,
+     "min_interp_norm": 0.9695820584356274,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d": {
+     "R": 6.0,
+     "degree": -1.0,
+     "max_edge_angle_deg": 92.24999999999993,
+     "min_interp_norm": 2.7755575615628914e-17,
+     "sphere_runs_through_a_core": true
+    },
+    "mid_R_half_d_minus_1": {
+     "R": 5.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 25.276917718375767,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "mid_R_half_d_plus_1": {
+     "R": 7.0,
+     "degree": 0.0,
+     "max_edge_angle_deg": 33.90864586523041,
+     "min_interp_norm": 0.7409421514614584,
+     "sphere_runs_through_a_core": false
+    },
+    "both_cores_R_half_d_plus_3": {
+     "R": 9.0,
+     "degree": 7.067899292141149e-17,
+     "max_edge_angle_deg": 17.5823423908949,
+     "min_interp_norm": 0.9573914177415365,
+     "sphere_runs_through_a_core": false
+    },
+    "outer": {
+     "R": 28.0,
+     "degree": 1.766974823035287e-17,
+     "max_edge_angle_deg": 6.378271873284224,
+     "min_interp_norm": 0.9995467770464093,
+     "sphere_runs_through_a_core": false
+    }
+   },
+   "mid_sphere_R_half_d_ill_posed": true,
+   "audited": {
+    "d": 12.0,
+    "n": 64,
+    "L": 64.0,
+    "core_sphere_R": 4.0,
+    "core_x+6": 0.9617246813719278,
+    "core_x-6": -0.9617251270556211,
+    "outer_R": 28.0,
+    "outer_degree": 2.2764848317773338e-07,
+    "mid_degree_R_half_d": 2.341607714811947e-09
+   }
+  }
+ },
+ "F_label": {
+  "rows": {
+   "S1_d0.3_w25_n32_L48": {
+    "gate_label_r25_2": "AT_GATE",
+    "kick_label_r25_2": "STABLE",
+    "iters": 5750,
+    "fmax_last_chunk": 9.44157514635827e-05,
+    "drop_last_chunk": 1.1410166623093687e-05,
+    "E": 8.822672411371894,
+    "max_abs_end_minus_gate": 0.0,
+    "max_abs_end_minus_stage": 0.0,
+    "kick_stage": {
+     "C_rigid_end": 14031.127215820867,
+     "C_rigid_kick_stage": 14036.56704418781,
+     "rel_sensitivity_rigid": 0.00038769717381007684,
+     "rel_sensitivity_int": 0.00048513536214552915,
+     "max_abs_M_diff": 0.04487924009921668,
+     "audited": 0.0003875257890286598
+    }
+   },
+   "S1_d0.3_w25_n48_L72": {
+    "gate_label_r25_2": "FALLING",
+    "kick_label_r25_2": "FALLING",
+    "iters": 8000,
+    "fmax_last_chunk": 0.006677258426324089,
+    "drop_last_chunk": 0.004665352648515864,
+    "E": 8.625258853346814,
+    "max_abs_end_minus_gate": 0.0,
+    "max_abs_end_minus_stage": 0.0
+   },
+   "S1_d0.3_w25_n64_L96": {
+    "gate_label_r25_2": "FALLING",
+    "kick_label_r25_2": "FALLING",
+    "iters": 6000,
+    "fmax_last_chunk": 0.015423157826609158,
+    "drop_last_chunk": 0.0070983489913292175,
+    "E": 8.904613222698071,
+    "max_abs_end_minus_gate": 0.0,
+    "max_abs_end_minus_stage": 0.0
+   },
+   "S1_d0.3_w25_n48_L48": {
+    "gate_label_r25_2": "FALLING",
+    "kick_label_r25_2": "FALLING",
+    "iters": 8000,
+    "fmax_last_chunk": 0.0024260048378094735,
+    "drop_last_chunk": 0.0022230616102127954,
+    "E": 9.153730675585837,
+    "max_abs_end_minus_gate": 0.0,
+    "max_abs_end_minus_stage": 0.0
+   },
+   "S1_d0.3_w25_n64_L64": {
+    "gate_label_r25_2": "FALLING",
+    "kick_label_r25_2": "FALLING",
+    "iters": 6000,
+    "fmax_last_chunk": 0.005440235125303887,
+    "drop_last_chunk": 0.012219220116278962,
+    "E": 9.13999371209779,
+    "max_abs_end_minus_gate": 0.0,
+    "max_abs_end_minus_stage": 0.0
+   }
+  },
+  "rows_not_at_gate": [
+   "S1_d0.3_w25_n48_L72",
+   "S1_d0.3_w25_n64_L96",
+   "S1_d0.3_w25_n48_L48",
+   "S1_d0.3_w25_n64_L64"
+  ],
+  "label_by_rule": "SPIN_PHYS_INSUFFICIENT",
+  "label_audited": "SPIN_PHYS_INSUFFICIENT",
+  "g_not_evaluated_in_json": true,
+  "g_numeric_keys_present": false,
+  "continuation_probe": {
+   "S1_d0.3_w25_n48_L72": {
+    "iters": 30,
+    "E_before": 8.625258853346814,
+    "E_after": 8.624591026261255,
+    "dE": -0.0006678270855591251,
+    "C_rigid_before": 26629.0338121713,
+    "C_rigid_after": 26623.230886712372,
+    "dC_rigid": -5.802925458927348,
+    "dC_int": -2.797638293755881,
+    "rel_dC_rigid_per_rel_dE": 2.8144898792431614,
+    "last_3_chunk_drops": [
+     0.0049521295003298604,
+     0.0061796094204602525,
+     0.004665352648515864
+    ],
+    "geometric_tail_of_chunk_drops": 0.014373728246277456,
+    "C_rigid_shift_if_tail_at_this_slope": 124.89711091935345,
+    "rel_shift_if_tail_at_this_slope": 0.0046902607056763315,
+    "wall_s": 78.46281504631042
+   },
+   "S1_d0.3_w25_n48_L48": {
+    "iters": 30,
+    "E_before": 9.153730675585837,
+    "E_after": 9.15354921967145,
+    "dE": -0.00018145591438667452,
+    "C_rigid_before": 23287.425991026903,
+    "C_rigid_after": 23287.49009322531,
+    "dC_rigid": 0.06410219840836362,
+    "dC_int": -0.10770246145693818,
+    "rel_dC_rigid_per_rel_dE": -0.13886040848638245,
+    "last_3_chunk_drops": [
+     0.0033324410789905556,
+     0.002681953446558083,
+     0.0022230616102127954
+    ],
+    "geometric_tail_of_chunk_drops": 0.010769428722378394,
+    "C_rigid_shift_if_tail_at_this_slope": -3.8044726127556094,
+    "rel_shift_if_tail_at_this_slope": -0.0001633702502896433,
+    "wall_s": 77.84942698478699
+   }
+  }
+ },
+ "verdicts": {
+  "A": {
+   "verdict": "CONFIRMED",
+   "max_rel_dev_vs_audited": 0.006905736362122994,
+   "own_ratios": {
+    "h1.5_L96_over_L48_rigid": 2.0363605429882363,
+    "h1.5_L96_over_L48_int": 2.0581992810826857,
+    "h1_L64_over_L48_rigid": 1.2461692492684775,
+    "h1_L64_over_L48_int": 1.25226585919964,
+    "h1.5_L96_over_L48_rigid_4th_order_stencil": 2.036925933055761,
+    "h1_L64_over_L48_rigid_4th_order_stencil": 1.237125117663686
+   },
+   "sign_test_synthetic": {
+    "rel_rms_fd_minus_(int-orb)": 0.008331418493092626,
+    "rel_rms_fd_minus_(int+orb)": 0.39511471717789537,
+    "rms_orb_over_rms_int": 0.1983759773056362
+   },
+   "sign_test_charge_residual_halo_max": 0.38440766396548337,
+   "sign_test_charge_residual_core_max": 0.30521412443840795,
+   "own_contraction_matches_kin_of": true,
+   "max_rel_change_C_orb_under_4th_order_orbital_stencil": 0.2039156464652918,
+   "max_rel_change_C_rigid_under_4th_order_orbital_stencil": 0.04377769423381972,
+   "reason": "all fifteen inertias reproduce within 6.9e-03 (own orbital stencil, the platform kin_of) and the own contraction matches kin_of to round-off; the ratios reproduce (h 1.5 2.036, h 1 1.246) and are unchanged under a fourth-order orbital stencil (2.037, 1.237); the interpolated rotation confirms a_rigid = [J_z, M] - (x d_y - y d_x) M (synthetic resolved field: residual 8.3e-03 for the minus sign, 0.40 for the plus). CAVEAT recorded, not a refutation: the orbital term is stencil-sensitive on the charge (C_orb moves 20 percent, C_rigid 4.4 percent under the fourth-order stencil; the spline rotation differs from the stencil by 0.31 rms in the cores, 0.38 in the halo): the cores are not resolved at h, so C_orb is a lattice number at the 15 percent level; the conclusion is not affected because C_orb is a tenth of C_int"
+  },
+  "B": {
+   "verdict": "QUALIFIED",
+   "max_rel_dev_within_r": 2.220446049250313e-16,
+   "frac_inside_12_by_row": {
+    "S1_d0.3_w25_n32_L48": 0.4547160259215005,
+    "S1_d0.3_w25_n48_L72": 0.2875343562134302,
+    "S1_d0.3_w25_n64_L96": 0.2849203913500572,
+    "S1_d0.3_w25_n48_L48": 0.5107129211298255,
+    "S1_d0.3_w25_n64_L64": 0.444584800402798
+   },
+   "rows_near_a_third": [
+    "S1_d0.3_w25_n48_L72",
+    "S1_d0.3_w25_n64_L96"
+   ],
+   "reason": "the within-r numbers reproduce to 2.2e-16 on an own kin density, but 'a third of C_rigid inside r 12 at every box' is not what they say: the fraction is 0.45 (n32 L48), 0.29 (n48 L72), 0.28 (n64 L96), 0.51 (n48 L48), 0.44 (n64 L64); a third holds on the two larger h 1.5 boxes only, the L 48 boxes hold 0.45 (h 1.5) and 0.51 (h 1) inside r 12. The qualitative point (the halo carries the larger or an equal share, so the box law is the halo's) stands on every box"
+  },
+  "C": {
+   "verdict": "CONFIRMED",
+   "charge_rot90_asymmetry": 0.3830063188887694,
+   "charge_rot45_asymmetry": 0.6728398306289645,
+   "charge_rot180_asymmetry": 0.3305162778378261,
+   "seed_uniaxial_rot90_asymmetry": 7.149082892373661e-17,
+   "seed_uniaxial_C_rigid_over_C_int": 0.0004369608705011938,
+   "seed_S1_d0.3_C_rigid_over_C_int": 0.029845088077543217,
+   "seed_uniaxial_rc1.0_C_rigid_over_C_int": 0.020033076045295143,
+   "seed_uniaxial_rc0.5_C_rigid_over_C_int": 0.04293882738054752,
+   "charge_C_rigid_over_C_int": 0.9971824236953108,
+   "charge_rms_a_rigid_over_a_int": 1.0366766800877047,
+   "reason": "the relaxed L 48 charge differs from its own 90-degree copy by 0.38 of its spatial-block spread (45 degrees: 0.67, 180 degrees: 0.33), the uniaxial seed by 7e-17; C_rigid / C_int is 0.997 on the charge against 0.0004 on the seed (audited 0.0018 with the sym edge stencil), and an axisymmetric seed with an UNRESOLVED core (r_c 1.0, 0.5 at h 1.5) still cancels to 0.020, 0.043: the non-cancellation on the charge is asymmetry, not resolution"
+  },
+  "D": {
+   "verdict": "QUALIFIED",
+   "delta_exponent_own_fit": 0.042255886225411196,
+   "monotone": false,
+   "reason": "energies and inertias reproduce and both rows are FALLING by the rule (fmax above 1e-4); the sentence 'their energies still dropping 4e-3 per chunk' does not: delta 0.1: E 13.8698 (own 13.8698), C_rigid 20941, fmax on the free cells 2.3e-04 (2.3 x the gate), last four chunk drops 4.5e-03, 1.9e-03, 1.3e-03, 2.7e-04, the last chunk with a drop of 4e-3 or more ended at iteration 7250; delta 0.03: E 17.1259 (own 17.1259), C_rigid 12902, fmax on the free cells 5.1e-04 (5.1 x the gate), last four chunk drops 1.6e-04, 1.3e-04, 4.9e-05, 2.0e-05, the last chunk with a drop of 4e-3 or more ended at iteration 2500. The delta 0.03 row's last-chunk drop 2.0e-05 is below the descent's own drop criterion (1.7e-04) and the gate was crossed inside its last two chunks (iteration 248 of 250) with the chunk-end fmax 4e-4 to 5e-4: in energy that row is converged, the label is the fmax rule's. The delta law read (own exponent 0.042, not monotone) reproduces"
+  },
+  "E": {
+   "verdict": "QUALIFIED",
+   "mid_sphere_reads_not_zero_or_ill_posed": [
+    "unlike_d6_n32_L48 (+0.00)",
+    "unlike_d6_n48_L48 (-1.00)",
+    "unlike_d8_n32_L48 (-0.00)",
+    "unlike_d8_n48_L48 (-1.00)",
+    "unlike_d8_n64_L48 (+0.00)",
+    "unlike_d8_n64_L64 (-1.00)",
+    "unlike_d10_n32_L48 (-0.00)",
+    "unlike_d10_n48_L48 (-1.00)",
+    "unlike_d12_n32_L48 (+0.00)",
+    "unlike_d12_n48_L48 (-1.00)",
+    "unlike_d12_n64_L64 (-1.00)"
+   ],
+   "reason": "own solid-angle degree on an icosphere (5120 faces, trilinear director): +1 around the +x core and -1 around the -x core to 1e-4, 0 on the outer sphere, 0 on the spheres of radius d/2 - 1 (no core inside) and d/2 + 1 and d/2 + 3 (both cores inside, +1 - 1) on all eleven pairs: the physical statement (both unit charges stay inside the balls, the exterior carries none) is confirmed. The stated '0 on the sphere of radius d/2 about the origin' is ill-posed: that sphere passes THROUGH both cores (the interpolated director's norm reaches 0 on it and neighboring samples differ by 90 degrees), the own reader gives -1 on the six h 1 pairs and 0 on the five h 1.5 pairs [unlike_d6_n32_L48 (+0.00); unlike_d6_n48_L48 (-1.00); unlike_d8_n32_L48 (-0.00); unlike_d8_n48_L48 (-1.00); unlike_d8_n64_L48 (+0.00); unlike_d8_n64_L64 (-1.00); unlike_d10_n32_L48 (-0.00); unlike_d10_n48_L48 (-1.00); unlike_d12_n32_L48 (+0.00); unlike_d12_n48_L48 (-1.00); unlike_d12_n64_L64 (-1.00)], and the audited values on it (1e-9 to 5e-6, non-integers) are the same accident seen from the cell-sampled side; replace that read by d/2 - 1 and d/2 + 1"
+  },
+  "F": {
+   "verdict": "CONFIRMED",
+   "label_follows": true,
+   "rows_not_at_gate": [
+    "S1_d0.3_w25_n48_L72",
+    "S1_d0.3_w25_n64_L96",
+    "S1_d0.3_w25_n48_L48",
+    "S1_d0.3_w25_n64_L64"
+   ],
+   "kick_stage_sensitivity_own": 0.00038769717381007684,
+   "kick_stage_sensitivity_audited": 0.0003875257890286598,
+   "end_gate_stage_arrays_identical_all_rows": true,
+   "g_not_evaluated": true,
+   "continuation_probe_rel_shift_of_C_rigid": {
+    "S1_d0.3_w25_n48_L72": 0.0046902607056763315,
+    "S1_d0.3_w25_n48_L48": -0.0001633702502896433
+   },
+   "reason": "the label follows the rule (R25-2 gate_label FALLING on S1_d0.3_w25_n48_L72, S1_d0.3_w25_n64_L96, S1_d0.3_w25_n48_L48, S1_d0.3_w25_n64_L64); the kick-stage sensitivity on the converged row is 3.88e-04 (audited 3.88e-04); no g number exists in the JSON (g_note on every row). Two notes: (1) the JSON's 'stage_gate' zeros are identities, not measurements, the end, gate and stage arrays are byte-identical on all five rows (R25-2 writes the gate array at the cap and keeps it as the end field), only the kick-stage number carries information, and only on the converged row; (2) the box-dependence conclusion is sound at the observed convergence slope: 30 own L-BFGS-B iterations on the capped n 48 rows move C_rigid -2.2e-04 relative for dE -6.7e-04 (n48 L72), +2.8e-06 relative for dE -1.8e-04 (n48 L48); the geometric tail of the chunk drops implies a C_rigid shift of 0.47 percent, -0.02 percent to convergence, against the factor 2.04 the box ratio carries; a factor-2 reversal would need a slope hundreds of times the observed one, so the INSUFFICIENT label is the rule's conservatism, not a live doubt about the ratio (a different basin under continued descent is the residual unknown the probe cannot exclude)"
+  }
+ }
+}

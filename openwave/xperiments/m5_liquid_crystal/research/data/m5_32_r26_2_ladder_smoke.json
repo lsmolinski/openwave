@@ -1,0 +1,56 @@
+{
+ "form_vs_plain_d0.03": {
+  "E_rel": 1.2392600508277663e-14,
+  "V4_rel": 1.2392600571932937e-14,
+  "grad_max_abs_diff": 8.052438715822063e-10,
+  "grad_max_abs": 2329.376419266661
+ },
+ "complex_step": {
+  "cs": 134.07898425268345,
+  "analytic": 134.07898425268382,
+  "rel": 2.7557057107393567e-15
+ },
+ "T_slaved3_vs_audit": {
+  "0.3": {
+   "mine": 0.0016050930351217962,
+   "audit": 0.001605093035118149,
+   "rel": 2.2724044868027704e-12
+  },
+  "0.03": {
+   "mine": 2.040961571687078e-07,
+   "audit": 2.040961571668963e-07,
+   "rel": 8.875788992668276e-12
+  }
+ },
+ "small_delta_constant": {
+  "0.03": 0.25197056440581217,
+  "0.003": 0.257205024504328,
+  "0.001": 0.25758954553904534,
+  "0.0001": 0.25776242344214223
+ },
+ "row_n16_d0.001": {
+  "status": "OK",
+  "verdict": "FALLING",
+  "T_over_T_slaved3": 0.8315118517585601,
+  "T_over_delta4": 0.21418876000481754,
+  "floor_M": 1.6458826443795825e-10,
+  "gate_M": 1.6458826443795825e-09,
+  "gate_at_floor": true,
+  "seed_rel_diff": 1.4465070127191943e-09,
+  "departure_max": 0.00030328606779103727,
+  "stop": null
+ },
+ "row_wall_s": 1.2,
+ "labels": {
+  "conf": "STRAND_0258_CONFIRMED",
+  "ref": "STRAND_0258_REFUTED",
+  "unres": "STRAND_0258_UNRESOLVED",
+  "exp": 4.0
+ },
+ "labels_ok": true,
+ "wiring": {
+  "jobs": 20,
+  "unique": true
+ },
+ "PASS": true
+}

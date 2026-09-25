@@ -1,0 +1,1108 @@
+{
+ "task": "M5.32 R26-1 adversarial audit",
+ "audited_json": "../data/m5_32_r26_1_catalog.json",
+ "audited_script_read": false,
+ "fields": [
+  {
+   "file": "S1_d0.3_w25_n32_L48.npz",
+   "subdir": "m5_32_r25_2",
+   "note": "named in the task",
+   "n": 32,
+   "L": 48.0,
+   "h": 1.5,
+   "stored_dtype": "float64",
+   "M_max_abs": 8.000145513348942,
+   "M_asymmetry_max_abs": 5.551115123125783e-17,
+   "M_asymmetry_over_max": 6.938767693491652e-18,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    32,
+    48.0,
+    0.3
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 9.951666660595266e-28,
+     "new_antisymmetric_part_over_max": 8.354883079427293e-28,
+     "kin_old": 1.560374522087296,
+     "kin_new": 1.2371047034098095,
+     "ratio_new_over_old": 0.7928254953528387,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.560374522087296,
+     "audited_kin_new": 1.2371047034098095,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 1.9903333321190532e-27,
+     "audited_new_antisymmetric_part_over_max": 1.6709766158854587e-27
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.988054478717164e-28,
+     "new_antisymmetric_part_over_max": 4.962463508219393e-29,
+     "kin_old": 1.5456859631523143,
+     "kin_new": 1.1500965284421487,
+     "ratio_new_over_old": 0.7440686891511975,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.5456859631523143,
+     "audited_kin_new": 1.1500965284421487,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.976108957434328e-28,
+     "audited_new_antisymmetric_part_over_max": 9.924927016438786e-29
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.978162843385982e-28,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 1.722109475097717,
+     "kin_new": 1.838888924431837,
+     "ratio_new_over_old": 1.067811861570237,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.722109475097717,
+     "audited_kin_new": 1.8388889244318374,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 2.4149865929899663e-16,
+     "audited_old_symmetric_part_over_max": 5.956325686771964e-28,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.3841073959088494e-28,
+     "new_antisymmetric_part_over_max": 2.3108286827676516e-28,
+     "kin_old": 1.3546439359092166,
+     "kin_new": 1.2721992007957845,
+     "ratio_new_over_old": 0.9391391841590488,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.3546439359092166,
+     "audited_kin_new": 1.272199200795784,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 3.4907207108153855e-16,
+     "audited_old_symmetric_part_over_max": 4.768214791817699e-28,
+     "audited_new_antisymmetric_part_over_max": 4.621657365535303e-28
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": -0.3392819627540206,
+     "kin_new": -0.36961707098295266,
+     "ratio_new_over_old": 1.0894097286595956,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.33928196275402067,
+     "audited_kin_new": -0.36961707098295266,
+     "rel_kin_old": 1.636136232550134e-16,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.918392980888652e-29,
+     "new_antisymmetric_part_over_max": 1.4460900101625615e-29,
+     "kin_old": -0.5729368432047692,
+     "kin_new": -0.5532117775624026,
+     "ratio_new_over_old": 0.9655720069736956,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.5729368432047692,
+     "audited_kin_new": -0.5532117775624026,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.836785961777304e-29,
+     "audited_new_antisymmetric_part_over_max": 2.892180020325123e-29
+    }
+   },
+   "max_old_symmetric_part": 9.951666660595266e-28,
+   "max_new_antisymmetric_part": 8.354883079427293e-28,
+   "kin_raw_commutator_Jz": 14070.772691545231,
+   "kin_raw_anticommutator_Jz": 37179.96399066045,
+   "worst_rel_vs_audited_kin": 3.4907207108153855e-16,
+   "wall_s": 1.73,
+   "audited_kin_raw_commutator_Jz": 14070.772691545231,
+   "audited_kin_raw_anticommutator_Jz": 37179.96399066045,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0,
+   "own_contraction": {
+    "clock_local": {
+     "own_kin_old": 1.560374522087296,
+     "own_kin_new": 1.2371047034098095,
+     "rel_old_vs_kin_of": 0.0,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "plane_1d": {
+     "own_kin_old": 1.5456859631523143,
+     "own_kin_new": 1.1500965284421487,
+     "rel_old_vs_kin_of": 0.0,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "rot_z": {
+     "own_kin_old": 1.722109475097717,
+     "own_kin_new": 1.838888924431837,
+     "rel_old_vs_kin_of": 0.0,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "rot_x": {
+     "own_kin_old": 1.3546439359092166,
+     "own_kin_new": 1.2721992007957845,
+     "rel_old_vs_kin_of": 0.0,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "boost_z": {
+     "own_kin_old": -0.33928196275402056,
+     "own_kin_new": -0.36961707098295266,
+     "rel_old_vs_kin_of": 1.6361362325501342e-16,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "boost_x": {
+     "own_kin_old": -0.5729368432047695,
+     "own_kin_new": -0.5532117775624026,
+     "rel_old_vs_kin_of": 3.875551163423293e-16,
+     "rel_new_vs_kin_of": 0.0
+    },
+    "raw": {
+     "own_kin_raw_commutator_Jz": 14070.772691545231,
+     "own_kin_raw_anticommutator_Jz": 37179.96399066045,
+     "rel_commutator_vs_kin_of": 0.0,
+     "rel_anticommutator_vs_kin_of": 0.0
+    },
+    "worst_rel_own_vs_platform": 3.875551163423293e-16,
+    "delta_independence_rot_z_kin_old_at_delta_24_rel": 0.0
+   }
+  },
+  {
+   "file": "S1_d0.3_w25_n64_L96.npz",
+   "subdir": "m5_32_r25_2",
+   "note": "named in the task",
+   "n": 64,
+   "L": 96.0,
+   "h": 1.5,
+   "stored_dtype": "float64",
+   "M_max_abs": 8.000148678566276,
+   "M_asymmetry_max_abs": 5.551115123125783e-17,
+   "M_asymmetry_over_max": 6.9387649482042e-18,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    64,
+    96.0,
+    0.3
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 4.688835308654529e-211,
+     "new_antisymmetric_part_over_max": 2.700670461549421e-211,
+     "kin_old": 1.879325775618508,
+     "kin_new": 2.040610969114896,
+     "ratio_new_over_old": 1.085820774444126,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.879325775618508,
+     "audited_kin_new": 2.0406109691148955,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 2.1762561143277786e-16,
+     "audited_old_symmetric_part_over_max": 9.377670617309058e-211,
+     "audited_new_antisymmetric_part_over_max": 5.401340923098842e-211
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 9.583443133853175e-212,
+     "new_antisymmetric_part_over_max": 5.897245190152502e-213,
+     "kin_old": 1.8668823874022615,
+     "kin_new": 1.3195112857961193,
+     "ratio_new_over_old": 0.706799364919929,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.8668823874022615,
+     "audited_kin_new": 1.3195112857961195,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 1.682779126751174e-16,
+     "audited_old_symmetric_part_over_max": 1.916688626770635e-211,
+     "audited_new_antisymmetric_part_over_max": 1.1794490380305004e-212
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 9.569123517602295e-212,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 2.311602538226052,
+     "kin_new": 2.62930941581482,
+     "ratio_new_over_old": 1.1374400972204244,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 2.311602538226052,
+     "audited_kin_new": 2.62930941581482,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 1.913824703520459e-211,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 1.0211943463750398e-211,
+     "new_antisymmetric_part_over_max": 1.1479290742026686e-211,
+     "kin_old": 1.6402251234416647,
+     "kin_new": 1.9032921906766593,
+     "ratio_new_over_old": 1.1603847322390748,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.6402251234416647,
+     "audited_kin_new": 1.9032921906766598,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 2.3332687015974133e-16,
+     "audited_old_symmetric_part_over_max": 2.0423886927500795e-211,
+     "audited_new_antisymmetric_part_over_max": 2.295858148405337e-211
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": -0.4258600452625703,
+     "kin_new": -0.45643488269703475,
+     "ratio_new_over_old": 1.0717955059991906,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.4258600452625703,
+     "audited_kin_new": -0.45643488269703475,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 1.3731894926571476e-212,
+     "new_antisymmetric_part_over_max": 1.3620334897775737e-212,
+     "kin_old": -0.7678614163096636,
+     "kin_new": -0.7401683577257846,
+     "ratio_new_over_old": 0.9639348220972325,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.7678614163096636,
+     "audited_kin_new": -0.7401683577257846,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 2.746378985314295e-212,
+     "audited_new_antisymmetric_part_over_max": 2.7240669795551473e-212
+    }
+   },
+   "max_old_symmetric_part": 4.688835308654529e-211,
+   "max_new_antisymmetric_part": 2.700670461549421e-211,
+   "kin_raw_commutator_Jz": 28960.454238016282,
+   "kin_raw_anticommutator_Jz": 77289.8194448992,
+   "worst_rel_vs_audited_kin": 2.3332687015974133e-16,
+   "wall_s": 15.71,
+   "audited_kin_raw_commutator_Jz": 28960.454238016282,
+   "audited_kin_raw_anticommutator_Jz": 77289.8194448992,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0
+  },
+  {
+   "file": "rad_pin_d0.3_w25_c0.0001_n32_L48.npz",
+   "subdir": "m5_32_r23_1",
+   "note": "named in the task",
+   "n": 32,
+   "L": 48.0,
+   "h": 1.5,
+   "stored_dtype": "float64",
+   "M_max_abs": 8.000107503905229,
+   "M_asymmetry_max_abs": 5.551115123125783e-17,
+   "M_asymmetry_over_max": 6.938800660386154e-18,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    32,
+    48.0,
+    0.3
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 3.951132847894448e-28,
+     "new_antisymmetric_part_over_max": 4.416356255229548e-28,
+     "kin_old": 1.8091416815438355,
+     "kin_new": 2.562631895411854,
+     "ratio_new_over_old": 1.416490439391693,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.8091416815438355,
+     "audited_kin_new": 2.562631895411854,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 7.902265695788896e-28,
+     "audited_new_antisymmetric_part_over_max": 8.832712510459095e-28
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 1.2615281901232465e-27,
+     "new_antisymmetric_part_over_max": 1.6054516337849482e-27,
+     "kin_old": 2.4198065626767646,
+     "kin_new": 1.977986527155644,
+     "ratio_new_over_old": 0.8174151428730799,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 2.419806562676765,
+     "audited_kin_new": 1.977986527155644,
+     "rel_kin_old": 1.8352260742644473e-16,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 2.523056380246493e-27,
+     "audited_new_antisymmetric_part_over_max": 3.2109032675698964e-27
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 4.779460106666958e-28,
+     "new_antisymmetric_part_over_max": 6.490409239790138e-28,
+     "kin_old": 2.727871717086722,
+     "kin_new": 2.8165643544516046,
+     "ratio_new_over_old": 1.032513492775094,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 2.727871717086722,
+     "audited_kin_new": 2.8165643544516046,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 9.558920213333916e-28,
+     "audited_new_antisymmetric_part_over_max": 1.2980818479580277e-27
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 4.573720434133298e-28,
+     "new_antisymmetric_part_over_max": 6.758515636119057e-28,
+     "kin_old": 2.5676506411356925,
+     "kin_new": 2.735972863840875,
+     "ratio_new_over_old": 1.065554955182973,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 2.5676506411356925,
+     "audited_kin_new": 2.735972863840875,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 9.147440868266596e-28,
+     "audited_new_antisymmetric_part_over_max": 1.3517031272238114e-27
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 5.588138168929514e-29,
+     "new_antisymmetric_part_over_max": 5.607551753365611e-29,
+     "kin_old": -0.6345341050553446,
+     "kin_new": -0.6518521653326698,
+     "ratio_new_over_old": 1.0272925602254503,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.6345341050553446,
+     "audited_kin_new": -0.6518521653326699,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 1.7031822300667809e-16,
+     "audited_old_symmetric_part_over_max": 1.1176276337859029e-28,
+     "audited_new_antisymmetric_part_over_max": 1.1215103506731222e-28
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 1.3992509732863774e-29,
+     "new_antisymmetric_part_over_max": 5.583960627330089e-29,
+     "kin_old": -0.6623542429090775,
+     "kin_new": -0.6805035461470094,
+     "ratio_new_over_old": 1.0274012032567643,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.6623542429090775,
+     "audited_kin_new": -0.6805035461470094,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 2.798501946572755e-29,
+     "audited_new_antisymmetric_part_over_max": 1.1167921254660178e-28
+    }
+   },
+   "max_old_symmetric_part": 1.2615281901232465e-27,
+   "max_new_antisymmetric_part": 1.6054516337849482e-27,
+   "kin_raw_commutator_Jz": 5604.265396580283,
+   "kin_raw_anticommutator_Jz": 25557.536769571027,
+   "worst_rel_vs_audited_kin": 1.8352260742644473e-16,
+   "wall_s": 1.75,
+   "audited_kin_raw_commutator_Jz": 5604.265396580283,
+   "audited_kin_raw_anticommutator_Jz": 25557.536769571027,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0
+  },
+  {
+   "file": "S1_Bseed_g8_d0.3_w25_n32.npz",
+   "subdir": "m5_32_r21_1",
+   "note": "auditor's choice (R21-1)",
+   "n": 32,
+   "L": 48.0,
+   "h": 1.5,
+   "stored_dtype": "float64",
+   "M_max_abs": 8.00020145760144,
+   "M_asymmetry_max_abs": 5.551115123125783e-17,
+   "M_asymmetry_over_max": 6.938719171692054e-18,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    32,
+    48.0,
+    0.3
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 3.7227603730129668e-28,
+     "new_antisymmetric_part_over_max": 5.784059619379695e-28,
+     "kin_old": 0.7519027183466637,
+     "kin_new": 0.4079948103271805,
+     "ratio_new_over_old": 0.542616485313829,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.7519027183466637,
+     "audited_kin_new": 0.4079948103271805,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 7.4455207460259335e-28,
+     "audited_new_antisymmetric_part_over_max": 1.156811923875939e-27
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.6714492534716663e-28,
+     "new_antisymmetric_part_over_max": 3.972998813992383e-29,
+     "kin_old": 0.8138388766861886,
+     "kin_new": 0.331231785335507,
+     "ratio_new_over_old": 0.40699921670518574,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.8138388766861886,
+     "audited_kin_new": 0.331231785335507,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.342898506943333e-28,
+     "audited_new_antisymmetric_part_over_max": 7.945997627984766e-29
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.6679193432653425e-28,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 0.7633262558493364,
+     "kin_new": 0.41052823313828724,
+     "ratio_new_over_old": 0.5378148989274598,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.7633262558493364,
+     "audited_kin_new": 0.41052823313828724,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.335838686530685e-28,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.1153958056709416e-28,
+     "new_antisymmetric_part_over_max": 3.774089388987748e-28,
+     "kin_old": 0.7535493009314956,
+     "kin_new": 0.25048827619662206,
+     "ratio_new_over_old": 0.33241126477986566,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.7535493009314956,
+     "audited_kin_new": 0.25048827619662206,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 4.230791611341883e-28,
+     "audited_new_antisymmetric_part_over_max": 7.548178777975496e-28
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": -0.21030473721093437,
+     "kin_new": -0.22779872143927757,
+     "ratio_new_over_old": 1.0831839760737145,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.21030473721093437,
+     "audited_kin_new": -0.22779872143927762,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 2.4368508690710523e-16,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.8970942509776113e-29,
+     "new_antisymmetric_part_over_max": 2.8831202233302546e-29,
+     "kin_old": -0.23575886497220291,
+     "kin_new": -0.23296952090002288,
+     "ratio_new_over_old": 0.9881686566801681,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.23575886497220294,
+     "audited_kin_new": -0.23296952090002282,
+     "rel_kin_old": 1.1772866152414426e-16,
+     "rel_kin_new": 2.382764535755732e-16,
+     "audited_old_symmetric_part_over_max": 5.794188501955223e-29,
+     "audited_new_antisymmetric_part_over_max": 5.766240446660509e-29
+    }
+   },
+   "max_old_symmetric_part": 3.7227603730129668e-28,
+   "max_new_antisymmetric_part": 5.784059619379695e-28,
+   "kin_raw_commutator_Jz": 1022.3165590828231,
+   "kin_raw_anticommutator_Jz": 9167.48104843899,
+   "worst_rel_vs_audited_kin": 2.4368508690710523e-16,
+   "wall_s": 1.81,
+   "audited_kin_raw_commutator_Jz": 1022.3165590828231,
+   "audited_kin_raw_anticommutator_Jz": 9167.48104843899,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0
+  },
+  {
+   "file": "Gam_dr_same_d24_n48_g32.npz",
+   "subdir": "m5_32_r19_1",
+   "note": "auditor's choice (R19-1); the audited JSON parsed its `_d24` tag as delta 24.0",
+   "n": 48,
+   "L": 48.0,
+   "h": 1.0,
+   "stored_dtype": "float64",
+   "M_max_abs": 32.24035829409726,
+   "M_asymmetry_max_abs": 0.0,
+   "M_asymmetry_over_max": 0.0,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    48,
+    48.0,
+    24.0
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 3.7764066917515455,
+     "kin_new": 1.8535855888093402,
+     "ratio_new_over_old": 0.4908331491038704,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 3.7764066917515455,
+     "audited_kin_new": 1.85358558880934,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 1.1979193529858135e-16,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 0.91382966331229,
+     "kin_new": 1.3949331217904581,
+     "ratio_new_over_old": 1.526469513732295,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.91382966331229,
+     "audited_kin_new": 1.3949331217904581,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 1.3466952590721906,
+     "kin_new": 0.9923330634484517,
+     "ratio_new_over_old": 0.7368653425958612,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 1.3466952590721906,
+     "audited_kin_new": 0.9923330634484517,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 2.3367903465896327,
+     "kin_new": 0.8913613478705937,
+     "ratio_new_over_old": 0.38144686328898425,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 2.336790346589633,
+     "audited_kin_new": 0.8913613478705936,
+     "rel_kin_old": 1.900423846316281e-16,
+     "rel_kin_new": 1.245536422773334e-16,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 10.309199660831943,
+     "kin_new": 1.6757682309139423,
+     "ratio_new_over_old": 0.16255075913222825,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 10.309199660831943,
+     "audited_kin_new": 1.6757682309139423,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 0.0,
+     "new_antisymmetric_part_over_max": 0.0,
+     "kin_old": 6.905325250793722,
+     "kin_new": 2.7883317784912407,
+     "ratio_new_over_old": 0.4037944162254689,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 6.905325250793723,
+     "audited_kin_new": 2.7883317784912407,
+     "rel_kin_old": 1.2862224260878005e-16,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 0.0,
+     "audited_new_antisymmetric_part_over_max": 0.0
+    }
+   },
+   "max_old_symmetric_part": 0.0,
+   "max_new_antisymmetric_part": 0.0,
+   "kin_raw_commutator_Jz": 28817.412335718767,
+   "kin_raw_anticommutator_Jz": 62753.73843786189,
+   "worst_rel_vs_audited_kin": 1.900423846316281e-16,
+   "wall_s": 6.02,
+   "audited_kin_raw_commutator_Jz": 28817.412335718767,
+   "audited_kin_raw_anticommutator_Jz": 62753.73843786189,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0
+  },
+  {
+   "file": "m5_22_4_p1_deut.npz",
+   "subdir": "",
+   "note": "the field carrying the audited max symmetric part 1.2e-9 (stored float32)",
+   "n": 32,
+   "L": 48.0,
+   "h": 1.5,
+   "stored_dtype": "float32",
+   "M_max_abs": 8.000362396240234,
+   "M_asymmetry_max_abs": 1.862645149230957e-09,
+   "M_asymmetry_over_max": 2.3282009701289358e-10,
+   "own_envelope_minus_platform": 0.0,
+   "in_audited_json": true,
+   "audited_n_L_delta": [
+    32,
+    48.0,
+    0.3
+   ],
+   "gens": {
+    "clock_local": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 6.073961778583318e-10,
+     "new_antisymmetric_part_over_max": 5.720892338270801e-10,
+     "kin_old": 0.6459014607040197,
+     "kin_new": 0.2596756333427464,
+     "ratio_new_over_old": 0.402035990226288,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.6459014607040197,
+     "audited_kin_new": 0.2596756333427464,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 1.2147923557166636e-09,
+     "audited_new_antisymmetric_part_over_max": 1.1441784676541601e-09
+    },
+    "plane_1d": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.8663549666795935e-10,
+     "new_antisymmetric_part_over_max": 5.892379860005699e-11,
+     "kin_old": 0.6264001612364923,
+     "kin_new": 0.3289615290285971,
+     "ratio_new_over_old": 0.5251619482013516,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.6264001612364924,
+     "audited_kin_new": 0.3289615290285971,
+     "rel_kin_old": 1.772386236992044e-16,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.732709933359187e-10,
+     "audited_new_antisymmetric_part_over_max": 1.1784759720011398e-10
+    },
+    "rot_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 3.1224429537527324e-10,
+     "new_antisymmetric_part_over_max": 5.794579297168454e-10,
+     "kin_old": 0.26737971392429594,
+     "kin_new": 0.21461378466262607,
+     "ratio_new_over_old": 0.8026554502313153,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.26737971392429594,
+     "audited_kin_new": 0.21461378466262607,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 6.244885907505465e-10,
+     "audited_new_antisymmetric_part_over_max": 1.1589158594336908e-09
+    },
+    "rot_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.9283320452357614e-10,
+     "new_antisymmetric_part_over_max": 1.9122906410744132e-10,
+     "kin_old": 0.6213887355140942,
+     "kin_new": 0.5175308383204069,
+     "ratio_new_over_old": 0.832861635144122,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": 0.6213887355140942,
+     "audited_kin_new": 0.5175308383204069,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 5.856664090471523e-10,
+     "audited_new_antisymmetric_part_over_max": 3.8245812821488265e-10
+    },
+    "boost_z": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.026610585502164e-11,
+     "new_antisymmetric_part_over_max": 2.6063992088233087e-11,
+     "kin_old": -0.27506550425420107,
+     "kin_new": -0.31692859161386244,
+     "ratio_new_over_old": 1.1521931565834358,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.27506550425420107,
+     "audited_kin_new": -0.3169285916138624,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 1.7515349734962118e-16,
+     "audited_old_symmetric_part_over_max": 4.053221171004328e-11,
+     "audited_new_antisymmetric_part_over_max": 5.2127984176466173e-11
+    },
+    "boost_x": {
+     "own_catalog_minus_platform_max_abs": 0.0,
+     "old_symmetric_part_over_max": 2.2213597901995825e-11,
+     "new_antisymmetric_part_over_max": 2.3049564635691746e-11,
+     "kin_old": -0.13937590646395606,
+     "kin_new": -0.1327705580564681,
+     "ratio_new_over_old": 0.9526076739153178,
+     "lorentz_condition_max": 0.0,
+     "audited_kin_old": -0.13937590646395606,
+     "audited_kin_new": -0.1327705580564681,
+     "rel_kin_old": 0.0,
+     "rel_kin_new": 0.0,
+     "audited_old_symmetric_part_over_max": 4.442719580399165e-11,
+     "audited_new_antisymmetric_part_over_max": 4.609912927138349e-11
+    }
+   },
+   "max_old_symmetric_part": 6.073961778583318e-10,
+   "max_new_antisymmetric_part": 5.794579297168454e-10,
+   "kin_raw_commutator_Jz": 6489.8382395401695,
+   "kin_raw_anticommutator_Jz": 11322.906568874227,
+   "worst_rel_vs_audited_kin": 1.772386236992044e-16,
+   "wall_s": 1.78,
+   "audited_kin_raw_commutator_Jz": 6489.8382395401695,
+   "audited_kin_raw_anticommutator_Jz": 11322.906568874227,
+   "rel_raw_commutator": 0.0,
+   "rel_raw_anticommutator": 0.0
+  }
+ ],
+ "identity_probe": {
+  "symmetric_M": {
+   "max_old_symmetric_part": 0.0,
+   "max_new_antisymmetric_part": 0.0
+  },
+  "nonsymmetric_M": {
+   "max_old_symmetric_part": 1.0,
+   "max_new_antisymmetric_part": 0.6336385500458744
+  }
+ },
+ "json_rederivations": {
+  "n_ok_fields": 356,
+  "n_channels": 2136,
+  "n_ratio_null": 623,
+  "n_ratio_null_with_negative_kin_old": 623,
+  "n_boost_channels": 712,
+  "n_boost_channels_with_null_ratio": 542,
+  "moved_over_1pct_among_nonnull_ratio": 1490,
+  "moved_over_1pct_among_all_nonzero_kin_old": 1997,
+  "sign_flips_old_vs_new": 68,
+  "audited_n_inertias_moved_over_1pct": 1490,
+  "per_generator_n_recount": {
+   "clock_local": 333,
+   "plane_1d": 340,
+   "rot_z": 331,
+   "rot_x": 339,
+   "boost_z": 82,
+   "boost_x": 88
+  },
+  "audited_per_generator_n": {
+   "clock_local": 333,
+   "plane_1d": 340,
+   "rot_z": 331,
+   "rot_x": 339,
+   "boost_z": 82,
+   "boost_x": 88
+  },
+  "max_old_symmetric_part_recount": 1.2147923557166636e-09,
+  "max_new_antisymmetric_part_recount": 1.1589158594336908e-09,
+  "audited_max_old_symmetric_part": 1.2147923557166636e-09,
+  "audited_max_new_antisymmetric_part": 1.1589158594336908e-09,
+  "distinct_delta_values_parsed": [
+   0.0,
+   0.3,
+   0.6,
+   0.89,
+   0.9224,
+   1.0,
+   2.0,
+   10.0,
+   12.0,
+   14.0,
+   18.0,
+   24.0,
+   30.0
+  ],
+  "n_fields_with_delta_over_2": 91
+ },
+ "claims": {
+  "A": {
+   "method": "own catalog (own generators, own envelope, own normalization) for both signs on 6 stored fields; symmetric/antisymmetric parts over the max entry; the platform's gen_catalog compared entrywise to the own old field; the identity probed on a random symmetric and a random nonsymmetric M",
+   "mine": {
+    "max_old_symmetric_part_6_fields": 6.073961778583318e-10,
+    "max_new_antisymmetric_part_6_fields": 5.794579297168454e-10,
+    "own_old_minus_platform_max_abs": 0.0,
+    "lorentz_condition_max": 0.0,
+    "deut_field": {
+     "stored_dtype": "float32",
+     "M_asymmetry_over_max": 2.3282009701289358e-10,
+     "max_old_symmetric_part": 6.073961778583318e-10
+    },
+    "identity_probe": {
+     "symmetric_M": {
+      "max_old_symmetric_part": 0.0,
+      "max_new_antisymmetric_part": 0.0
+     },
+     "nonsymmetric_M": {
+      "max_old_symmetric_part": 1.0,
+      "max_new_antisymmetric_part": 0.6336385500458744
+     }
+    }
+   },
+   "audited": {
+    "max_old_symmetric_part": 1.2147923557166636e-09,
+    "max_new_antisymmetric_part": 1.1589158594336908e-09,
+    "n_fields": 356
+   },
+   "verdict": "CONFIRMED",
+   "note": "the antisymmetry of w (G M - M G^T) for antisymmetric G (and symmetric G) on a symmetric M is an algebraic identity, so the numerical pass measures the stored M's own symmetry: the audited 1.2e-9 ceiling is the float32-stored m5_22_4_p1_deut field (M asymmetry 2.3e-10 of max); a nonsymmetric M fails the test at 1.00, so the test can fail only there"
+  },
+  "B": {
+   "method": "own construction of the 12 fields, the platform's kin_of on each, on 5 fields the audited JSON holds; on S1 n 32 the own kinetic contraction (sign-matrix eta inner, own one-sided stencils) against kin_of; the raw [J_z, M] and {J_z, M} reads with no envelope",
+   "mine": {
+    "S1_n32_L48": {
+     "clock_local": [
+      1.560374522087296,
+      1.2371047034098095
+     ],
+     "plane_1d": [
+      1.5456859631523143,
+      1.1500965284421487
+     ],
+     "rot_z": [
+      1.722109475097717,
+      1.838888924431837
+     ],
+     "rot_x": [
+      1.3546439359092166,
+      1.2721992007957845
+     ],
+     "boost_z": [
+      -0.3392819627540206,
+      -0.36961707098295266
+     ],
+     "boost_x": [
+      -0.5729368432047692,
+      -0.5532117775624026
+     ]
+    },
+    "S1_n32_L48_raw_commutator_Jz": 14070.772691545231,
+    "S1_n32_L48_raw_anticommutator_Jz": 37179.96399066045,
+    "worst_rel_vs_audited_kin_5_fields": 3.4907207108153855e-16,
+    "worst_rel_vs_audited_raw_5_fields": 0.0,
+    "own_contraction_vs_kin_of_worst_rel": 3.875551163423293e-16,
+    "delta_independence_rel": 0.0
+   },
+   "audited": {
+    "S1_n32_L48_stated": {
+     "clock_local": [
+      1.56,
+      1.24
+     ],
+     "plane_1d": [
+      1.55,
+      1.15
+     ],
+     "rot_z": [
+      1.72,
+      1.84
+     ],
+     "rot_x": [
+      1.35,
+      1.27
+     ],
+     "boost_z": [
+      -0.34,
+      -0.37
+     ],
+     "boost_x": [
+      -0.57,
+      -0.55
+     ]
+    },
+    "raw_stated": [
+     14071,
+     37180
+    ]
+   },
+   "verdict": "CONFIRMED",
+   "note": "the platform's kin_of agrees with the own contraction to round-off; the JSON's ratio_new_over_old is null whenever kin_old < 0 (623 of 2136 channels, 542 of them boosts), so the boost rows carry kin_old / kin_new only; delta does not enter the catalog or kin_of (same rot_z inertia at delta 24), so the R19-1 tags parsed as delta 10 to 30 are a metadata mislabel with no effect on the numbers"
+  },
+  "C": {
+   "method": "own regex over scripts/*.py for gen_catalog CALLS in both spellings (.gen_catalog( and ['gen_catalog']( ), compared to the census; the census's kin_read hit lines screened for the substring kin; the named scripts read at the quoted lines",
+   "mine": {
+    "own_gen_catalog_callers": [
+     "m5_21_16_b_field.py",
+     "m5_21_3_c_films.py",
+     "m5_21_3_f_confirm.py",
+     "m5_21_9_b_audit.py",
+     "m5_21_9_d_fixedj.py",
+     "m5_21_9_e_larmor.py",
+     "m5_22_4_b_omega.py",
+     "m5_32_lagrangian.py",
+     "m5_32_r1_a_symbolic.py",
+     "m5_32_r1_c_screen.py",
+     "m5_32_r25_0_audit.py",
+     "m5_32_r25_2_audit.py",
+     "m5_32_r25_2_charge.py",
+     "m5_32_r2_audit_lattice.py",
+     "m5_32_r9_audit.py"
+    ],
+    "n_own_callers": 15,
+    "callers_missing_from_census": [
+     "m5_21_3_c_films.py",
+     "m5_21_3_f_confirm.py"
+    ],
+    "callers_in_census_without_calls_gen_catalog_hit": [],
+    "census_size": 71,
+    "kin_read_hits": 246,
+    "kin_read_hits_without_kin_substring": 59,
+    "inspect_verdicts_resting_only_on_such_hits": [
+     "m5_11_p0_minimizer.py",
+     "m5_12_audit_b18_pencil.py",
+     "m5_32_r16_3_audit.py",
+     "m5_32_r16_common.py",
+     "m5_32_r24_0_form.py",
+     "m5_5_4_matrix_evolution_check.py"
+    ],
+    "spot_checks": {
+     "m5_32_lagrangian.py": {
+      "audited_verdict": "AFFECTED (the catalog's field reaches a kinetic read)",
+      "site": "lines 631-640: a0s = B3.gen_catalog(cfgc, Mc); k_cert = B3.kin_of(Mc, a0s[nm]); k_reg = term_energy(I1, ..., a0s[nm], 1.0) - e_static; compared to the stored M5.21.16 CHAN rows",
+      "tangent": "the catalog's antisymmetric field (boost_z, boost_x, clock_local)",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "RIGHT as a label; the read is a registry-vs-certified-vs-stored consistency test (the same a0 on both sides), so the fault leaves its pass/fail untouched; the gradient check at 758 uses a random SYMMETRIC a0 (B3.sym4) and is clean"
+     },
+     "m5_22_4_b_omega.py": {
+      "audited_verdict": "AFFECTED (the catalog's field reaches a kinetic read)",
+      "site": "lines 138-142 (p2: kin_of + twist_read per catalog channel on the stored p1 fields) and 167-173 (p3: FIRE relaxation with a0 = catalog clock_local on an omega ladder, E = E_u + E_v + omega^2 kin_end)",
+      "tangent": "the catalog's antisymmetric field, as the velocity of a relaxation",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "RIGHT; the p2 inertias, the argmin channel and the p3 ladder are reads on the anticommutator velocity"
+     },
+     "m5_21_16_b_field.py": {
+      "audited_verdict": "MIXED (catalog and own tangents both read)",
+      "site": "stage_chan lines 156-172: a0s = B3.gen_catalog(cfg, M) into the script's own kin_of (eta and flip contractions), the pass rule boost_kin_eta_all_negative; stage_dress lines 176-205 uses C14's ec.a0_base (a tangent from m5_21_14, not the catalog)",
+      "tangent": "CHAN stage: the catalog's antisymmetric field; DRESS stage: C14 a0_base",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "RIGHT (MIXED); the CHAN pass rule and the stored CHAN rows that m5_32_lagrangian.py checks against are anticommutator reads"
+     },
+     "m5_21_9_d_fixedj.py": {
+      "audited_verdict": "MIXED (catalog and own tangents both read)",
+      "site": "a0_conj lines 57-75: a0 = w [W, M] (the COMMUTATOR, unit norm), the default conv='conj'; the conv != 'conj' branch (lines 80-81, 101-102, 132-133) uses the catalog's clock_local; kin_of at 82, 103, 134",
+      "tangent": "conj rows: the commutator (correct); catalog rows: the anticommutator",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "RIGHT (MIXED); note the docstring at 57-63 already calls the catalog's G M - M G^T an antisymmetric probe flow that exits the symmetric configuration space (M5.21.9)"
+     },
+     "m5_32_r12_a_ring.py": {
+      "audited_verdict": "OWN (builds its own tangent)",
+      "site": "a0_local lines 159-168: a0 = J M - M J, J the local leading-eigenvector rotation (antisymmetric), so the COMMUTATOR; kin_of at 180, own density at 185-193; selftest at 270-281 matches B8.a0_unit to 1e-8",
+      "tangent": "the commutator, own construction; no gen_catalog call",
+      "reaches_kinetic_read": false,
+      "auditor_verdict": "RIGHT (OWN)"
+     },
+     "m5_32_r25_2_charge.py": {
+      "audited_verdict": "MIXED (catalog and own tangents both read)",
+      "site": "spin_gate_reads lines 466-490: a0 = Jz @ M - M @ Jz (the commutator, raw) into kin_of for C; C_cat = kin_of on the catalog's rot_z kept as a reference",
+      "tangent": "the commutator for the verdict, the catalog's field as a labeled reference",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "RIGHT (MIXED)"
+     },
+     "m5_21_9_e_larmor.py": {
+      "audited_verdict": "OWN (builds its own tangent)",
+      "site": "setup lines 148-165: a0 = INS4.gen_catalog(cfg, M)['clock_local']; Mt = om * a0 * free is the INITIAL VELOCITY of the leapfrog; e_tot at 129-132 reads the kinetic energy 0.5 h^3 sum(Mt^2)",
+      "tangent": "the catalog's antisymmetric field seeds the dynamics",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "WRONG: the census says OWN; the catalog field is the dynamics' initial velocity and its Frobenius kinetic energy is read (the regex looks for kin_of-shaped reads and the own_commutator hit overrode the catalog call)"
+     },
+     "m5_21_3_f_confirm.py": {
+      "audited_verdict": "NOT LISTED (absent from reader_census)",
+      "site": "line 70: a0s = g4['gen_catalog'](cfg, M) (a dict call through runpy, missed by the census regex); kin_of on the catalog's fields at 73 and 90 (AFFECTED); and conj_catalog at 32-60 CODES THE CORRECTED FIELD w (G M + M G^T) with kin_of on it at 65-66 (the kinconj_* rows), labeled the audit-adopted variant, audit \u00a7 C7.4",
+      "tangent": "both: the catalog's anticommutator and the corrected conjugation tangent",
+      "reaches_kinetic_read": true,
+      "auditor_verdict": "MISSING from the census; the M5.21.3 record already held the corrected reads and named the catalog's form the antisymmetric variant"
+     },
+     "m5_21_3_c_films.py": {
+      "audited_verdict": "NOT LISTED (absent from reader_census)",
+      "site": "line 69: a0s = g4['gen_catalog'](cfg, M) (dict call); the orbit itself is built by exact exponentiation L M L^T at 76-90",
+      "tangent": "the exact orbit; whether a0s reaches a read was not traced here",
+      "reaches_kinetic_read": null,
+      "auditor_verdict": "MISSING from the census (a caller the regex did not see)"
+     }
+    },
+    "spot_checks_right_of_named": 6
+   },
+   "audited": {
+    "n_census_calls_gen_catalog": 13,
+    "census_callers": [
+     "m5_21_16_b_field.py",
+     "m5_21_9_b_audit.py",
+     "m5_21_9_d_fixedj.py",
+     "m5_21_9_e_larmor.py",
+     "m5_22_4_b_omega.py",
+     "m5_32_lagrangian.py",
+     "m5_32_r1_a_symbolic.py",
+     "m5_32_r1_c_screen.py",
+     "m5_32_r25_0_audit.py",
+     "m5_32_r25_2_audit.py",
+     "m5_32_r25_2_charge.py",
+     "m5_32_r2_audit_lattice.py",
+     "m5_32_r9_audit.py"
+    ]
+   },
+   "verdict": "QUALIFIED",
+   "note": "the six named verdicts hold (lagrangian AFFECTED is a same-a0 consistency test, so its pass/fail is untouched); the census misses the two callers that reach the catalog through a runpy dict (m5_21_3_f_confirm.py: AFFECTED reads AND the corrected kinconj_* reads; m5_21_3_c_films.py), verdicts m5_21_9_e_larmor.py OWN although the catalog field seeds the dynamics' velocity, and 59 of 246 kin_read hits are regex noise (alpha0, omega0, a0= signatures); six inspect verdicts rest on that noise alone"
+  },
+  "D": {
+   "method": "the rule re-applied to the own numbers on 6 fields; the count rules recomputed from the JSON; the provenance of the antisymmetric form traced in the record's scripts",
+   "mine": {
+    "rule_holds_on_own_numbers": true,
+    "moved_over_1pct_among_nonnull_ratio": 1490,
+    "moved_over_1pct_among_all_nonzero_kin_old": 1997,
+    "sign_flips": 68,
+    "n_ratio_null_negative_kin_old": 623,
+    "provenance": [
+     "m5_21_3_f_confirm.py docstring (3): 'THE AUDIT-ADOPTED VARIANT: the conjugation-orbit tangent a0_conj = w (G M + M G^T) (the symmetric, physical velocity of M -> L M L^T; the instrument's a0 = w (G M - M G^T) is the antisymmetric variant, audit \u00a7 C7.4)'",
+     "m5_21_9_d_fixedj.py a0_conj docstring (57-63): 'gen_catalog's GM - MG^T probe flow is antisymmetric and exits the symmetric configuration space'",
+     "m5_32_r1_a_symbolic.py 362 and 410: an a0_symmetry column and 'J1 @ d - d @ J1.T  # antisymmetric (gen_catalog)'",
+     "m5_32_r14_0_verify.py 461-464: 'gen_catalog's channels are the antisymmetric probes X M - M X^T flagged at R1; here every channel is a symmetric tangent'"
+    ]
+   },
+   "audited": {
+    "label": "CATALOG_FAULT_CONFIRMED",
+    "sym_tol": 1e-06,
+    "n_inertias_moved_over_1pct": 1490
+   },
+   "verdict": "QUALIFIED",
+   "note": "the label follows from the numbers and 1e-6 is a safe tolerance (the measured parts sit at 1e-9 or below; float32 storage is the only source above round-off); but the symmetry half of the rule is an identity for any symmetric M, so it cannot fail on the stored fields (it tests storage, not the construction), and the over-1-percent bar is met by 1490 of 1513 positive-kin_old channels (1997 of 2136 counting the negative ones), so the moved count needs its denominator stated; the wording CONFIRMED is right as a re-confirmation: the antisymmetric form was named the antisymmetric variant at the M5.21.3 audit \u00a7 C7.4 with the corrected conjugation catalog coded in m5_21_3_f_confirm.py, restated at M5.21.9 (a0_conj), flagged at M5.32 R1 and R14-0 verify; the R25/R26 record should carry that provenance instead of a 2026-09-24 discovery"
+  }
+ },
+ "summary_table": [
+  [
+   "A",
+   "CONFIRMED"
+  ],
+  [
+   "B",
+   "CONFIRMED"
+  ],
+  [
+   "C",
+   "QUALIFIED"
+  ],
+  [
+   "D",
+   "QUALIFIED"
+  ]
+ ],
+ "wall_s": 30.5
+}

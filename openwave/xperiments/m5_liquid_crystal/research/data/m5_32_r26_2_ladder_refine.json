@@ -1,0 +1,20 @@
+{
+ "d0.001_w25_n64_L48_block_plain.npz": {
+  "h": 0.75,
+  "T_over_T_bps": 0.8678211331834003,
+  "T_over_T_bps_refined_x2_order1": 0.867419975195572,
+  "T_over_T_bps_refined_x2_order3": 0.8686171796726124
+ },
+ "d0.03_w25_n48_L48_block_plain.npz": {
+  "h": 1.0,
+  "T_over_T_bps": 0.8376435979516151,
+  "T_over_T_bps_refined_x2_order1": 0.8415095341307879,
+  "T_over_T_bps_refined_x2_order3": 0.8411184754474469
+ },
+ "d0.01_w25_n96_L48_block_plain.npz": {
+  "h": 0.5,
+  "T_over_T_bps": 0.8555797564755666,
+  "T_over_T_bps_refined_x2_order1": 0.8560891225596168,
+  "T_over_T_bps_refined_x2_order3": 0.8561983929712249
+ }
+}
