@@ -31,8 +31,8 @@ This document captures:
    (Section 8).
 5. **Which** questions remain genuinely open and require author input or
    further research (Section 9).
-6. **What** is deferred to Milestone 2 (nodal lock-in, Section 15) and
-   Milestone 3 (spin extension, Section 16).
+6. **What** is deferred to Milestone 2 (stability and K-selectivity,
+   Section 15) and Milestone 3 (spin extension, Section 16).
 
 Nothing in this document is a claim about nature. It is a **plan for a tool**,
 written so that the tool can express the hypotheses we intend to test.
@@ -1118,7 +1118,9 @@ seeds converge.
       perturbation amplitude over {1%, 2%, 5%} of the
       nearest-neighbour spacing, run three seeds per amplitude, and
       classify each wave centre as return / bounded / escape. Report the
-      survival threshold `epsilon_crit` per `(topology, K)`.
+      survival threshold per `(topology, K)` (the return / bounded /
+      escape classes and the survival threshold are defined in R8,
+      Section 15).
 
 ### 2.11 — Energy conservation verification
 
@@ -1191,7 +1193,8 @@ author-gated.
 
 Open question. Yee's picture suggests continuous drift toward amplitude
 minima; "lock-in" language suggests discrete jumps. Both are testable
-(item 2.7). Author-gated. Related to Milestone 2, R7.
+(item 2.7). Author-gated. Related to item 2.7 (WC motion rule variants).
+Not currently part of Milestone 2.
 
 ### Q7 (working assumption). K = 10: topological or energetic?
 
@@ -1287,40 +1290,29 @@ a dedicated processor. Settled with the 1D toy model.
 
 ### Q11. Is the B6a ground-state threshold the K-selectivity mechanism?
 
-Open question. The K-sweep in item 2.10 measures structural stability at
-fixed amplitude. The B6a threshold is a different observable: the
-amplitude at which the single-shell soliton loses its ground state and
-would need a recursive shell (Onion Model) to continue. If this threshold
-depends on `K`, and if it peaks at `K = 10` in the topology under test,
-then K-selectivity may be a **capacity selection** rather than a
-geometric or energetic one.
+Open question, and out of scope for Milestone 2 (Section 15). Milestone 2
+tests structural stability and K-selectivity at fixed amplitude; the B6a
+threshold is a different observable.
 
-**Two topologies, one prediction.** The measurement must be repeated for
-both physically motivated topologies:
+The B6a threshold is the amplitude at which the single-shell soliton loses
+its ground state and would need a recursive shell (Onion Model) to
+continue. If this threshold depends on K, and if it peaks at K = 10, then
+K-selectivity may be a **capacity selection** rather than a structural
+one.
 
-- `1-3-6` (item 2.8, `tetrahedron_10_locked`);
-- `golden-angle` (item 2.8, `golden_angle`).
+The measurement: for each K-agnostic topology (golden-angle, BCC), sweep
+the amplitude at fixed K, record where the ground state disappears, and
+repeat for every K in 2..12. The discriminating feature is whether
+`threshold(K)` has a peak at K = 10 or only a knee; a knee does not select
+K = 10 over its larger neighbours.
 
-If the threshold peaks at K = 10 in both, capacity selection is
-topology-independent. If it peaks in only one, selection and topology are
-coupled and the plan must say which pairing is the physical one. If
-neither peaks, capacity selection is not the mechanism and the search
-returns to the structural and energetic tests of item 2.10.
-
-The measurement is straightforward in Milestone 1: for each topology,
-sweep the amplitude at fixed `K`, record where the ground state
-disappears, repeat for every `K`. The discriminating feature is whether
-the resulting threshold curve has a peak at K = 10 or only a knee; a knee
-does not select K = 10 over its larger neighbours.
-
-Author-gated, and a candidate for the second observable alongside
-localization in item 2.10.
+Author-gated. Deferred until Milestone 2 has settled whether K = 10 is
+structurally selected. If it is not, capacity selection is a candidate for
+the source.
 
 Related tests: Milestone 2, Section 15. Q11 asks about **capacity**
-selection; R6a-R6c and R8 ask about **positional** selection. They are
-complementary, not alternatives. Both must be evaluated on the same two
-topologies, 1-3-6 and golden-angle, so that a selection mechanism that
-depends on the arrangement can be told apart from one that does not.
+selection; R6 and R7 ask about **structural** selection. They are
+complementary, not alternatives.
 
 ---
 
@@ -1420,8 +1412,8 @@ launcher. Only after the physics is validated in headless mode.
   in the manuscript (Chapter 16). The `r^5/r^3` saturation that motivates
   it is derived in Section 15.2 of v5.0.2.
 - **Nodal lock-in** — the hypothesis that the wave centres settle into
-  discrete BCC nodes rather than a continuum, tested in Milestone 2
-  (Section 15, R7).
+  discrete BCC nodes rather than a continuum. Open (Q6); not currently
+  part of Milestone 2.
 
 ---
 
@@ -1532,184 +1524,138 @@ the sequence without collision.
 
 ---
 
-## 15. Milestone 2 — Nodal lock-in
+## 15. Milestone 2 — Stability and K-selectivity
 
-Milestone 1 tests the stability of the 1-3-6 arrangement as a given
-initial condition. It does not test whether 1-3-6 is an **attractor** of
-the dynamics, nor whether the wave centres settle into **discrete**
-positions (the BCC nodes) or remain on a continuum. Those two questions
-are central to K-selectivity: if all K are equally stable at perfect
-placement, the reason may be that perfect placement is not an attractor,
-and the K-sweep in Milestone 1 measures initial conditions rather than
-dynamical selection.
+Milestone 1 tests the 1-3-6 arrangement as a given initial condition and
+sweeps K at fixed topology. It does not ask whether 1-3-6 is the right
+arrangement at K = 10, nor whether K = 10 is the right count. Milestone 2
+asks those two questions.
 
-Milestone 2 adds the tests below that resolve this. It is deferred until
-Milestone 1 has produced its first K-sweep results, because the tests are
-only meaningful once the baseline stability of the 1-3-6 initial condition
-is known.
+Milestone 2 is deferred until Milestone 1's first K-sweep (item 2.10,
+B10a-B10b) has produced baseline stability results for the 1-3-6 initial
+condition. Until then the tests below are specified but not run.
 
-### Two independent axes: topology and K
+### Two questions, one variable each
 
-Two questions are conflated if the tests are not separated:
+- **Arrangement at fixed count (R6).** With K held at 10, is 1-3-6 the
+  stable arrangement, and do the other arrangements item 2.8 names at
+  K = 10 fail?
+- **Count at fixed arrangement (R7).** With the winning arrangement held
+  fixed, does K = 10 stay stable when one node is removed (K = 9) or added
+  (K = 11)?
 
-- **Topology.** Does a given arrangement self-organise, and stay stable?
-  The candidates are 1-3-6, golden-angle, BCC, line, random (item 2.8).
-  The first two are the physically motivated ones; the rest are controls.
-- **K.** Given a fixed topology, does the count of wave centres select
-  `K = 10` over its neighbours?
+Both use the same perturbation protocol (R8). The two questions isolate
+the arrangement and the count respectively; a result on one does not
+decide the other.
 
-The two are independent. A model can have an attractor 1-3-6 but no K
-selection, or K selection that holds in more than one topology, or
-neither. Only the full 2D sweep (topology x K) distinguishes the cases.
-R6a-R6c and R8 below measure the topology axis and the K axis separately.
+### R6. Arrangement at K = 10: does 1-3-6 win?
 
-### R6a. Is 1-3-6 an attractor of the dynamics?
+Test: fix K = 10. Run each of these arrangements from item 2.8 at
+K = 10 — `tetrahedron_10_locked` (1-3-6), `golden_angle`, `bcc_lattice`,
+`line`, `random` (`bcc_lattice` and `random` are not built yet: B8d and
+B8f) — through the perturbation protocol (R8).
+Record, for each arrangement, whether the wave centres return to near
+their initial positions, stay bounded, or escape.
 
-Test: start from a random scatter of 10 wave centres in `r_domain`, let
-them drift under the active motion rule (variants B7a-B7d), run for `N`
-steps, and check whether the configuration self-organises into 1-3-6. If
-yes, 1-3-6 is a dynamical attractor and the selection mechanism is
-dynamical. If no, 1-3-6 is only an initial condition and any K-selection
-must have a different source.
+Prediction: only 1-3-6 returns (or stays bounded). The others break under
+the same perturbation.
 
-Control: repeat the same test with a random scatter of `K = 9` and
-`K = 11`. If the system organises into the 1-3-6-equivalent shell
-structure at each own count, the attractor is topology-driven; if it
-organises into unrelated arrangements, the attractor is specific to
-`K = 10` alone.
+If two or more arrangements survive equally, K = 10 alone does not select
+1-3-6; the arrangement is not what matters.
 
-### R6b. Does K = 10 select under 1-3-6?
+### R7. Count at fixed arrangement: does K = 10 win over K = 9 and K = 11?
 
-Test: for each `K = 2..12`, start from the 1-3-6 arrangement at that K's
-count (a scaled analogue where the count is not 10; see item 2.8 for the
-geometries), perturb, and measure whether the configuration survives. If
-only `K = 10` survives, K-selection holds under 1-3-6.
+Test: take the arrangement that won R6 (predicted to be 1-3-6). Build the
+K = 9 and K = 11 analogues of that arrangement by removing one node from
+one of the shells (K = 9) and adding one node to one of the shells
+(K = 11, for instance extending the outer shell to seven nodes, i.e.
+1-3-7). Run each through the perturbation protocol (R8). Record, as in
+R6, whether the wave centres return, stay bounded, or escape.
 
-Note on geometry for `K != 10`: item 2.8 lists `golden_angle` and
-`bcc_lattice` for the non-1-3-6 counts. For `K != 10`, R6b uses those
-rather than a scaled 1-3-6, because 1-3-6 is a specific topology for ten
-centres and has no direct analogue at other counts.
+Prediction: K = 10 returns (or stays bounded); K = 9 and K = 11 break
+under the same perturbation.
 
-### R6c. Does K = 10 select under golden-angle?
+Which node is removed and which shell the extra node is added to are
+implementation details; the claim under test is that any such change to
+the count breaks the arrangement.
 
-Test: for each `K = 2..12`, start from the golden-angle arrangement,
-perturb, and measure whether the configuration survives. If only `K = 10`
-survives, K-selection holds under golden-angle.
+Building the K = 9 and K = 11 analogues is a new work item: the factory
+(`physics/wc_factory.py`) currently refuses `tetrahedron_10_locked` at any
+K other than 10. The plan records the requirement, not the specific
+topology of the analogues.
 
-### R6d. Perturbation protocol: how stable, and where do WCs go?
+Optional cross-check: if R7 holds on the winning arrangement, repeat it
+on a second arrangement family (golden-angle or BCC). If K = 10 also wins
+there, the K = 10 selection is arrangement-independent. If it wins only
+on 1-3-6, the selection is arrangement-coupled.
 
-The tests above ask whether a topology survives *a* perturbation. This one
-asks how stable it is, as a function of perturbation amplitude, and where
-the wave centres go when it does not survive.
+### R8. Perturbation protocol
 
-**Perturbation sweep.** For each topology (1-3-6, golden-angle) and each
-`K`, displace every wave centre by a random vector of magnitude `epsilon`,
-with `epsilon` swept over a range (for example 1%, 2%, 5%, 10%, 20%, 50%
-of the nearest-neighbour spacing). For each `epsilon`, run three seeds and
-measure the outcomes below.
+The two tests above share a single perturbation protocol.
 
-**Outcome metrics per wave centre.**
+For each configuration:
 
-- **Return**: the WC converges back to within a small tolerance of its
-  initial position. The configuration is a fixed point of the motion rule
-  under this perturbation.
-- **Bounded drift**: the WC oscillates or drifts but stays inside a ball
-  of radius `r_bound` around its initial position. The topology holds but
-  the positions relax.
-- **Escape**: the WC leaves `r_bound` and does not return. The topology
-  has broken at that centre.
+- Displace every wave centre by a random vector of magnitude `epsilon`
+  around its nominal position.
+- Sweep `epsilon` over a range, expressed as fractions of the
+  nearest-neighbour spacing; the specific values are to be settled at
+  implementation.
+- Run three seeds per `epsilon`.
+- Classify each wave centre at the end of the run:
+  - **return**: converged back to within a small tolerance of its
+    nominal position;
+  - **bounded**: drifts but stays inside a small ball of radius `r_bound`
+    around its nominal position;
+  - **escape**: leaves `r_bound` and does not return.
+- Report the fraction of centres in each class, and the `epsilon` at
+  which the escape fraction crosses a stated level (for example 50%).
 
-Report for each `(topology, K, epsilon)`: the fraction of centres in each
-of the three categories, and the survival threshold `epsilon_crit` at
-which the escape fraction exceeds a stated level (for example, 50%).
+The specific numeric values — perturbation magnitudes, tolerance,
+`r_bound`, the escape threshold — are not fixed here. Which single metric
+best captures "the wave centres do not drift apart" is also open; Q5 and
+item 1.9 name the candidates (`wc_drift`, `localization`, `sphericity`).
+The test reports the metric that is chosen; the plan does not predefine
+a threshold.
 
-**Perturbation growth.** Between the initial perturbation and the final
-state, measure whether the perturbation amplitude grows, stays bounded,
-or decays. A topology with a decay is **asymptotically stable**; one with
-a bounded oscillation is **marginally stable**; one with growth is
-**unstable**. This distinguishes a config that survives by a wide margin
-from one that survives only because the run is short.
+### Cross-check between R6 and R7
 
-**Per-centre, not global.** All metrics above are computed per wave
-centre, not as a single global average, because a topology can fail at one
-centre while the others remain in place. Report both the per-centre
-outcomes and their aggregate.
+R6 asks whether the arrangement is special at the fixed count K = 10;
+R7 asks whether the count is special at the fixed arrangement. The two
+answers can differ:
 
-**Relation to item 2.9 (B9c).** Item 2.9 sweeps the spacing; R6d sweeps
-the perturbation amplitude at fixed spacing. Both are perturbations, but
-of different quantities: spacing is a systematic geometric parameter,
-perturbation is random displacement. The two protocols are complementary.
+- R6 selects 1-3-6, R7 does not → the selection is arrangement-driven.
+- R7 selects K = 10, R6 does not → the selection is count-driven.
+- Both select → the selection is both arrangement- and count-specific.
+- Neither selects → K-selectivity is not a Milestone 2 outcome and the
+  source must be elsewhere (Q11's capacity argument, or the spin
+  extension in Milestone 3).
 
-**Relation to item 1.9 (wc_drift).** The `wc_drift` metric in item 1.9
-measures the mean displacement magnitude but does not distinguish bounded
-from unbounded. R6d's three-category classification is the qualitative
-extension of that metric; `wc_drift` becomes one of the numbers R6d
-reports.
+### Not in Milestone 2
 
-### Cross-check between R6b and R6c
+Two questions are deliberately outside Milestone 2:
 
-If only one topology shows K-selection, the selection and the topology
-are coupled (the K=10 result depends on being arranged as 1-3-6, or as
-golden-angle, whichever survives). If both show it, K-selection is
-topology-independent. If neither shows it, K-selection is not a
-Milestone 2 outcome and the source must be elsewhere (Q11's capacity
-argument, or the spin extension in Milestone 3).
-
-### R7. Are the minima discrete (BCC nodes) or continuous?
-
-Test: place one wave centre halfway between two BCC nodes, let it drift
-under B7a, and record where it settles. If it converges to a node, the
-minima are discrete and the lattice "locks" the wave centre to a
-quantised position. If it settles anywhere on the gradient, the minima are
-continuous and the wave centre can occupy an arbitrary position.
-
-This distinguishes two pictures:
-
-- **Discrete (lock-in)**: the wave centres are pinned to BCC nodes and
-  their count `K` is quantised by the lattice, not by the dynamics.
-- **Continuous (gradient drift)**: the wave centres follow the smooth
-  gradient and can adopt any position; `K` is a label, not a lattice
-  quantity.
-
-The discrete case supports the manuscript's topological argument for
-`K = 10`. The continuous case points to an energetic or capacity argument
-(Q7, Q11) instead.
-
-### R8. How many attractors, and is 1-3-6 one of them?
-
-Test: for each topology in {1-3-6, golden-angle, bcc_lattice, line,
-random} (item 2.8), and for each `K = 2..12`, start from `N >= 10` random
-initial conditions, run each to convergence, and cluster the final
-configurations.
-
-For each `(topology, K)` cell, report:
-
-- the number of distinct final arrangements (clusters);
-- whether 1-3-6 appears as a cluster centre (only meaningful when the
-  topology is 1-3-6, or when a cluster happens to match it);
-- whether the same arrangement appears across topologies for the same K
-  (topology-independent attractor) or only within one topology
-  (topology-specific attractor).
-
-This is the direct measurement of whether 1-3-6 is a preferred
-arrangement in the dynamics, and whether that preference is specific to
-ten centres or generic across K. It is the K-axis analogue of R6a's
-topology-axis test.
+- **The excess-amplitude threshold.** The amplitude at which the
+  single-shell soliton loses its ground state, and whether it depends on
+  K, is a separate observable. It is Q11 in Section 9, and is out of
+  scope here.
+- **Nodal lock-in vs continuous drift.** Whether the wave centres settle
+  on discrete BCC nodes or on a continuum is a mechanism question for the
+  WC motion rule (item 2.7, Q6). It is not tested in Milestone 2.
 
 ---
 
 ## 16. Milestone 3 — Spin extension
 
-Milestone 1 is the non-reflective and reflective pipelines without spin
-(Sections 1-14). Milestone 3 adds the transverse mode back. The plan is
-built so that the transverse mode can be enabled without restructuring:
-`PsiTransField` already exists, the reflector interface already carries
-`reflect_coeff_trans`, and item 2.3 already lists the L<->T coupling
-variants. What is missing is the dynamics of the transverse field and its
-interaction with the rest of the system.
+Milestones 1 and 2 are the non-reflective and reflective pipelines
+without spin (Sections 1-15). Milestone 3 adds the transverse mode back.
+The plan is built so that the transverse mode can be enabled without
+restructuring: `PsiTransField` already exists, the reflector interface
+already carries `reflect_coeff_trans`, and item 2.3 already lists the
+L<->T coupling variants. What is missing is the dynamics of the
+transverse field and its interaction with the rest of the system.
 
 This milestone is deferred, not abandoned. If K-selectivity does not
-emerge in Milestone 1, or if the other criteria (spin-dependent
+emerge in Milestones 1 and 2, or if the other criteria (spin-dependent
 observables) require it, Milestone 3 becomes the next step. A possible
 Milestone 4 (the Onion Model recursion) is flagged in Q11 but not scoped
 here; it would add the mechanism by which a saturated single-shell soliton
@@ -1802,8 +1748,8 @@ each pipeline configuration.
 
 Two signals would move the spin extension from deferred to active:
 
-1. **K-selectivity fails without spin.** If the K-sweep in Milestone 1
-   shows no unique ground state, the missing ingredient may be the
+1. **K-selectivity fails without spin.** If the K-sweeps in Milestones 1
+   and 2 show no unique ground state, the missing ingredient may be the
    transverse mode.
 2. **Observables that depend on spin** (magnetic moment, spin quantum
    number, the full unitarity relation) require the transverse channel to
@@ -1814,8 +1760,9 @@ The AMM does not activate Milestone 3: it is a static geometric quantity
 (Section 2.7), loaded from `GeometricConstants` and not derived from the
 transverse dynamics.
 
-Absent either of the two signals, Milestone 1 is the complete tool for the
-K-selectivity, structural stability, and energy-conservation studies.
+Absent either of the two signals, Milestones 1 and 2 are the complete tool
+for the K-selectivity, structural stability, and energy-conservation
+studies.
 
 > **Reference.** The recursive shell formation (Onion Model) is derived
 > in the manuscript, v5.0.2 or later, Chapter 16 "The Recursive Lepton
@@ -1838,6 +1785,7 @@ K-selectivity, structural stability, and energy-conservation studies.
 | 2026-09-22 | Round eight. Milestone 2 renamed from "Spin extension" to "Nodal lock-in"; new Section 15 with tests R6 (attractor), R7 (discrete vs continuous minima), R8 (attractor count per K). Spin extension moved to Section 16 as Milestone 3. Section 17 is the changelog. Section 12 references updated. Q6 linked to Milestone 2 R7; Q11 explicitly linked to Milestone 2 as the complementary capacity-selection test. Glossary: `Nodal lock-in` entry added. | Lukasz Smolinski |
 | 2026-09-22 | Round nine (review response). Section 2.10 lead-in changed from "pipeline A" to "vacuum variants"; the structural half runs on V3 and the energetic half on V2 or V4, irrespective of the pipeline preset, which is orthogonal. Section 2.3 and Section 3.2 corrected: the EMC Wall peak `rho > rho_0` arrives with B4c only; B4b obeys the maximum principle and `c_max = c_0` for both B4a and B4b. Item 1.16 aligned. Item 1.23 test 2 now names the staggered leapfrog invariant as the machine-precision quantity, and states that the Section 5.2 energy is scored by O(dt^2) convergence under refinement. Q10 tightened: `U(dt/2)` is a half kick and half drift, not a kick alone. Q11 given the turnover mechanism: capacity selection peaks at K = 10 because larger K redistributes the same energy over more centres. Comment-tier fixes: "(updated)" dropped from the Q10 heading. Applied as maintainer edits at merge: trailing newline restored (MD047); `theory/_CITATIONS.md` extended with the v5.0.2 row (DOI 10.5281/zenodo.22875996, published 2026-09-21). | Lukasz Smolinski |
 | 2026-09-22 | Round ten (post-merge). Section 15 restructured: R6 split, with a cross-check paragraph; R8 moved to the topology x K grid; a new "Two independent axes" paragraph added ahead of R6a. Q11 rewritten: the prediction is stated for both topologies, and a peak at K=10 is told apart from a knee. The earlier "energy redistributed over centres" wording is removed. | Lukasz Smolinski |
+| 2026-09-25 | Round eleven (restart). Section 15 rewritten around two questions, one variable each: arrangement at fixed count (R6) and count at fixed arrangement (R7), both using one perturbation protocol (R8). The previous R6a-R6d, R7 and R8 are replaced; the section is renamed from "Nodal lock-in" to "Stability and K-selectivity". The reviewer's note on the 1-3-6 K axis is addressed by removing the claim that 1-3-6 exists at any K other than 10: the K = 9 and K = 11 analogues are a new work item, and which node is added or removed is left as an implementation detail. Q11 (Section 9) restated as out of Milestone 2 scope: it is the excess-amplitude question, deferred. Item 2.10 B10g now points to R8 for the return / bounded / escape classes. Section 16 lead and activation signal widened from Milestone 1 to Milestones 1 and 2; its opening sentence updated to Sections 1-15. Glossary "Nodal lock-in" reference updated (Q6, not R7). Q6 tail reference updated. Applied as maintainer edits at merge: R6 and the Section 15 lead name the item 2.8 arrangements rather than the factory's, since `bcc_lattice` and `random` are not built yet (B8d, B8f); trailing newline restored (MD047). | Łukasz Smoliński |
 
 ---
 
