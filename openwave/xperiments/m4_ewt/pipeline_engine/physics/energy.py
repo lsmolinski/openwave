@@ -149,9 +149,7 @@ def _integrate_energy_const_c2(
 
     # x-edges: interior-interior, then the two shell-interior edges.
     for i, j, k in ti.ndrange((1, nx - 2), (1, ny - 1), (1, nz - 1)):
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i + 1, j, k
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i + 1, j, k)
     for j, k in ti.ndrange((1, ny - 1), (1, nz - 1)):
         out_grad[None] += weight_shell * _edge_energy(
             psi, psi_prev, c2_const, inv_dx, dv, 0, j, k, 1, j, k
@@ -162,9 +160,7 @@ def _integrate_energy_const_c2(
 
     # y-edges.
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 2), (1, nz - 1)):
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i, j + 1, k
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i, j + 1, k)
     for i, k in ti.ndrange((1, nx - 1), (1, nz - 1)):
         out_grad[None] += weight_shell * _edge_energy(
             psi, psi_prev, c2_const, inv_dx, dv, i, 0, k, i, 1, k
@@ -175,9 +171,7 @@ def _integrate_energy_const_c2(
 
     # z-edges.
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 2)):
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i, j, k + 1
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_const, inv_dx, dv, i, j, k, i, j, k + 1)
     for i, j in ti.ndrange((1, nx - 1), (1, ny - 1)):
         out_grad[None] += weight_shell * _edge_energy(
             psi, psi_prev, c2_const, inv_dx, dv, i, j, 0, i, j, 1
@@ -219,9 +213,7 @@ def _integrate_energy_var_c2(
     # x-edges.
     for i, j, k in ti.ndrange((1, nx - 2), (1, ny - 1), (1, nz - 1)):
         c2_half = 0.5 * (c2_field[i, j, k] + c2_field[i + 1, j, k])
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i + 1, j, k
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i + 1, j, k)
     for j, k in ti.ndrange((1, ny - 1), (1, nz - 1)):
         c2_half = 0.5 * (c2_field[0, j, k] + c2_field[1, j, k])
         out_grad[None] += weight_shell * _edge_energy(
@@ -235,9 +227,7 @@ def _integrate_energy_var_c2(
     # y-edges.
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 2), (1, nz - 1)):
         c2_half = 0.5 * (c2_field[i, j, k] + c2_field[i, j + 1, k])
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i, j + 1, k
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i, j + 1, k)
     for i, k in ti.ndrange((1, nx - 1), (1, nz - 1)):
         c2_half = 0.5 * (c2_field[i, 0, k] + c2_field[i, 1, k])
         out_grad[None] += weight_shell * _edge_energy(
@@ -251,9 +241,7 @@ def _integrate_energy_var_c2(
     # z-edges.
     for i, j, k in ti.ndrange((1, nx - 1), (1, ny - 1), (1, nz - 2)):
         c2_half = 0.5 * (c2_field[i, j, k] + c2_field[i, j, k + 1])
-        out_grad[None] += _edge_energy(
-            psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i, j, k + 1
-        )
+        out_grad[None] += _edge_energy(psi, psi_prev, c2_half, inv_dx, dv, i, j, k, i, j, k + 1)
     for i, j in ti.ndrange((1, nx - 1), (1, ny - 1)):
         c2_half = 0.5 * (c2_field[i, j, 0] + c2_field[i, j, 1])
         out_grad[None] += weight_shell * _edge_energy(
@@ -291,9 +279,7 @@ def _weight_shell_for_kind(kind: str) -> float:
         return _WEIGHT_SHELL_DIRICHLET_OR_REFLECTING
     if kind == "periodic":
         return _WEIGHT_SHELL_PERIODIC
-    raise ValueError(
-        f"EnergyBudgetUpdate: unknown BoundaryCondition kind {kind!r}"
-    )
+    raise ValueError(f"EnergyBudgetUpdate: unknown BoundaryCondition kind {kind!r}")
 
 
 class EnergyBudgetUpdate(BaseProcessor):

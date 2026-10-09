@@ -55,7 +55,6 @@ from .evolution import (
 )
 from .units import UnitSystem
 
-
 _TI_INITIALIZED = False
 
 
@@ -485,12 +484,11 @@ def test_energy_total_includes_all_three_components():
     assert b.E_grad > 0.0, b.E_grad
 
     assert b.E_total > b.E_grad + b.E_deform, (
-        f"E_total {b.E_total} not greater than E_grad + E_deform "
-        f"{b.E_grad + b.E_deform}"
+        f"E_total {b.E_total} not greater than E_grad + E_deform " f"{b.E_grad + b.E_deform}"
     )
-    assert abs(b.E_total - (b.E_kin + b.E_grad + b.E_deform)) < 1e-9, (
-        f"E_total {b.E_total} vs sum {b.E_kin + b.E_grad + b.E_deform}"
-    )
+    assert (
+        abs(b.E_total - (b.E_kin + b.E_grad + b.E_deform)) < 1e-9
+    ), f"E_total {b.E_total} vs sum {b.E_kin + b.E_grad + b.E_deform}"
 
 
 def test_dE_dt_zero_on_static_state():
@@ -618,8 +616,7 @@ def test_conservation_at_c_other_than_1():
     # Threshold looser than the c=1 test: the spread scales as
     # (c k dt)^2, so at c=2 it is four times the c=1 value.
     assert spread < 1e-3, (
-        f"E_total spread at c=2 over {steps} steps = {spread}, "
-        f"expected < 1e-3"
+        f"E_total spread at c=2 over {steps} steps = {spread}, " f"expected < 1e-3"
     )
 
 
@@ -674,9 +671,9 @@ def test_dE_dt_matches_finite_difference():
     for step in range(1, steps):
         expected = (r.E_total[step] - r.E_total[step - 1]) / dt
         got = r.dE_dt[step]
-        assert abs(got - expected) < 1e-9, (
-            f"step {step}: dE_dt {got} vs finite difference {expected}"
-        )
+        assert (
+            abs(got - expected) < 1e-9
+        ), f"step {step}: dE_dt {got} vs finite difference {expected}"
 
 
 def test_conservation_at_nonunit_dx():
@@ -701,7 +698,9 @@ def test_conservation_at_nonunit_dx():
 
     arr = np.array(r.E_total)
     spread = (arr.max() - arr.min()) / abs(arr.mean())
-    assert spread < 1e-3, f"E_total spread at dx=0.5 over {steps} steps = {spread}, expected < 1e-3"
+    assert (
+        spread < 1e-3
+    ), f"E_total spread at dx=0.5 over {steps} steps = {spread}, expected < 1e-3"
 
 
 # ======================================================================
@@ -731,8 +730,7 @@ def test_boundary_dirichlet_conserves():
     arr = np.array(r.E_total)
     spread = (arr.max() - arr.min()) / abs(arr.mean())
     assert spread < 5e-4, (
-        f"E_total spread under dirichlet over {steps} steps = "
-        f"{spread}, expected < 5e-4"
+        f"E_total spread under dirichlet over {steps} steps = " f"{spread}, expected < 5e-4"
     )
 
 
@@ -761,8 +759,7 @@ def test_boundary_reflecting_conserves():
     arr = np.array(r.E_total)
     spread = (arr.max() - arr.min()) / abs(arr.mean())
     assert spread < 5e-4, (
-        f"E_total spread under reflecting over {steps} steps = "
-        f"{spread}, expected < 5e-4"
+        f"E_total spread under reflecting over {steps} steps = " f"{spread}, expected < 5e-4"
     )
 
 
@@ -810,8 +807,7 @@ def test_boundary_periodic_conserves():
     arr = np.array(r.E_total)
     spread = (arr.max() - arr.min()) / abs(arr.mean())
     assert spread < 5e-4, (
-        f"E_total spread under periodic over {steps} steps = "
-        f"{spread}, expected < 5e-4"
+        f"E_total spread under periodic over {steps} steps = " f"{spread}, expected < 5e-4"
     )
 
 
