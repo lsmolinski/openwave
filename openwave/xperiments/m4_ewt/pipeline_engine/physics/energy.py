@@ -68,10 +68,11 @@ interior edges weighted by the boundary kind):
 
     The pre-fix versions: a full-grid sum counted the duplicated shell
     nodes (109% swing under reflecting and periodic); a
-    centered-difference gradient over interior voxels lost the shell-
-    touching edges the 6-point Laplacian transports across (15% under
-    dirichlet, 26% loss of gradient score for a mode whose gradient
-    peaks at the shell).
+    centered-difference gradient over interior voxels swung 15% under
+    dirichlet. Separately, an edge sum without the shell-interior
+    edges, which the 6-point Laplacian transports energy across, loses
+    26% of the gradient score of a mode whose gradient peaks at the
+    shell.
 
 Accumulators are f64 to avoid f32 summation loss on larger grids.
 The values are read back to Python floats once per step.

@@ -715,8 +715,10 @@ def test_boundary_dirichlet_conserves():
     registered, E_total conserves. weight_shell is read from the
     feature, and both processors read the same feature.
 
-    Mutation caught: node or edge sums reverted to full-grid scope,
-    or the feature-weights mapping changed.
+    Mutation caught: the dirichlet weight changed (0.5 halves every
+    shell-interior edge). Not caught: node or edge sums reverted to
+    full-grid scope, since the dirichlet shell is zero and adds
+    nothing; the reflecting and periodic tests catch that.
     """
     _ti_init()
     n = 16
